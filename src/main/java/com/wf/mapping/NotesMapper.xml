@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.NotesMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Notes" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="note_num" property="noteNum" jdbcType="VARCHAR" />
+    <result column="resource_num" property="resourceNum" jdbcType="VARCHAR" />
+    <result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
+    <result column="resource_type" property="resourceType" jdbcType="VARCHAR" />
+    <result column="note_content" property="noteContent" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="note_date" property="noteDate" jdbcType="VARCHAR" />
+    <result column="data_state" property="dataState" jdbcType="VARCHAR" />
+    <result column="complaint_status" property="complaintStatus" jdbcType="VARCHAR" />
+    <result column="preliminary_opinions" property="preliminaryOpinions" jdbcType="VARCHAR" />
+    <result column="appeal_reason" property="appealReason" jdbcType="VARCHAR" />
+    <result column="final_opinion" property="finalOpinion" jdbcType="VARCHAR" />
+    <result column="handling_status" property="handlingStatus" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <!-- 查询学科分类信息 -->
+  <select id="selectNotesInfor" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from notes where 1=1  
+    	<if test="userName!=null">
+    		and user_id=#{userName} 
+    	</if>
+    	<if test="noteNum!=null">
+    		and note_num=#{noteNum} 
+    	</if>
+    	<if test="resourceName!=null">
+    		and resource_name=#{resourceName} 
+    	</if>
+    	
+    	<if test="resourceType !=null">
+           	and	resource_type in
+ 		 	<foreach collection="resourceType" index="index" item="item" open="(" separator="," close=")">  
+           	 #{item}   
+   			</foreach>
+        </if> 
+    	
+    	<if test="dataState!=null">
+    		and data_state in
+    		<foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+    		    #{item}
+    		</foreach>
+    	</if>
+    	
+    	<if test="complaintStatus!=null">
+    		and complaint_status in
+    		<foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+    		    #{item}
+    		</foreach>
+    	</if>
+    	
+    	<if test="startTime!=null">
+    		and note_date <![CDATA[ >= ]]> #{startTime}  
+    	</if>
+    	<if test="endTime!=null">
+    		and note_date  <![CDATA[ <= ]]> #{endTime} 
+    	</if>
+    	order by note_date desc
+    	limit #{pageNum},#{pageSize}
+  </select>
+  
+   <select id="selectNotesInforAll" resultMap="BaseResultMap" parameterType="java.util.Map">
+    	 select * from notes where 1=1 
+    	<if test="userName!=null">
+    		and user_id=#{userName}
+    	</if>
+    	<if test="noteNum!=null">
+    		and note_num=#{noteNum}
+    	</if>
+    	<if test="resourceName!=null">
+    		and resource_name=#{resourceName}
+    	</if>
+    	
+    	<if test="resourceType !=null">
+           	and	resource_type in
+ 		 	<foreach collection="resourceType" index="index" item="item" open="(" separator="," close=")">  
+           	 #{item}   
+   			</foreach>
+        </if> 
+    	
+    	<if test="dataState!=null">
+    		and data_state in
+    		<foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+    		    #{item}
+    		</foreach>
+    	</if>
+    	
+    	<if test="complaintStatus!=null">
+    		and complaint_status in
+    		<foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+    		    #{item}
+    		</foreach>
+    	</if>
+    	
+    	<if test="startTime!=null">
+    		and note_date <![CDATA[ >= ]]> #{startTime} 
+    	</if>
+    	<if test="endTime!=null">
+    		and note_date  <![CDATA[ <= ]]> #{endTime}
+    	</if>
+    	order by note_date desc
+  	</select>
+  	
+  	<select id="findNotes" resultMap="BaseResultMap" parameterType="java.lang.String">
+    	select * from notes where id=#{id}
+  	</select>
+  	
+  	<update id="updateNotes" parameterType="com.wf.bean.Notes">
+   		update notes SET  
+   		<if test="complaintStatus!=null">
+   		complaint_status=#{complaintStatus},
+   		</if>
+   		<if test="preliminaryOpinions!=null">
+   		preliminary_opinions=#{preliminaryOpinions},
+   		</if>
+   		<if test="finalOpinion!=null">
+   		final_opinion=#{finalOpinion},
+   		</if>
+   		<if test="dataState!=null">
+   			data_state=#{dataState},
+   		</if>
+   		<if test="handlingStatus!=null">
+   			handling_status=#{handlingStatus}
+   		</if>
+   		where id=#{id}
+    </update>
+    
+    <update id="closeNote">
+    	update notes set data_state='0',handling_status=3
+    	<if test="finalOpinion!=null">
+   			,final_opinion=#{finalOpinion}
+   		</if>
+    	where id=#{id}
+    </update>
+    
+    <update id="openNote">
+    	update notes set data_state='1',handling_status=3 where id=#{id}
+    </update>
+    
+ 
+    
+     <update id="handlingNote">
+    	update notes set handling_status='2' where id=#{id}
+    </update>
+   
+</mapper>

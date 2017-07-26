@@ -1,0 +1,49 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/qikan/js/qikan_findPerson.js"></script>
+
+<body class="hold-transition ">
+		<section class="content" style="margin-top: -16px;">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="portlet box box-primary">
+					<div class="portlet-body" style="height: 475px;overflow: auto;">
+						<div style="width: 350px;margin-left: 15px;" >
+							<div style="float:left; display:inline; margin-top: 5px;"><h4>机构用户名：&nbsp;</h4> </div>
+							<div class="input-group input-group-sm" style=" margin-top: 10px;">
+				                <input id="inUserId" class="form-control" type="text">
+				                    <span class="input-group-btn">
+				                      <button onclick="find(1)" class="btn btn-info btn-flat" type="button">搜索</button>
+				                    </span> 
+				            </div>
+						</div>
+						<!-- <div style="width: 250px;margin-left: 15px;float:left;" >
+							<div style="float:left; display:inline; margin-top: 5px;"><h4>机构名称：&nbsp;</h4> </div>
+							<div class="input-group input-group-sm" style=" margin-top: 10px;">
+				                <input id="inName" class="form-control" type="text">
+				            </div>
+						</div>
+						<div style="width: 250px;margin-left: 600px;float:left;" >
+				            <button onclick="find(1)" class="btn btn-primary" type="button">搜索</button>
+						</div> -->
+						 <div class="content" style="margin-top:0px;">
+				           		 <table class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+						                <thead>
+						               	 	<tr role="row"><th tabindex="0" class="sorting_asc" aria-controls="example1" aria-label="Rendering engine: activate to sort column descending" aria-sort="ascending" rowspan="1" colspan="1">序号</th>
+						                	<th tabindex="0" class="sorting" aria-controls="example1"  aria-label="Browser: activate to sort column ascending" rowspan="1" colspan="1">机构用户名</th>
+						                	<th tabindex="0" class="sorting" aria-controls="example1"  aria-label="Platform(s): activate to sort column ascending" rowspan="1" colspan="1">机构名称</th>
+						                </thead>
+						                <tbody id="textHtml">
+						               </tbody>
+						              </table>
+						              <!--  <div id="page"></div> -->
+						              </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+<?}?>

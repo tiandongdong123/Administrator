@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Wfadmin" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="wangfang_admin_id" property="wangfang_admin_id" jdbcType="VARCHAR" />
+    <result column="user_realname" property="user_realname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="is_male" property="is_male" jdbcType="INTEGER" />
+    <result column="mobile_phone" property="mobile_phone" jdbcType="VARCHAR" />
+    <result column="tel_phone" property="tel_phone" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="role_id" property="role_id" jdbcType="VARCHAR" />
+    <result column="registration_time" property="registration_time" jdbcType="DATE" />
+    <result column="registrant" property="registrant" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <association property="role" javaType="com.wf.bean.Role">
+    	<id column="role_id" jdbcType="VARCHAR" property="roleId" />
+    	<result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    	<result column="purview" jdbcType="LONGVARCHAR" property="purview" />
+    </association>
+    <association property="dept" javaType="com.wf.bean.Department">
+    	<result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    	<result column="dept_describe" jdbcType="LONGVARCHAR" property="deptDescribe" />
+    </association>
+  </resultMap>
+  <resultMap id="BaseMap" type="java.util.Map">
+  	<result column="wangfang_admin_id" property="wangfang_admin_id" jdbcType="VARCHAR" />
+  	<result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  	<result column="purview" jdbcType="LONGVARCHAR" property="purview" />
+  </resultMap>
+  
+  <!-- 通过账户名密码查询用户信息 -->
+  <select id="selectUserInfo" resultMap="BaseResultMap" parameterType="com.wf.bean.Wfadmin" >
+  	select a.*,b.dept_name from wfadmin a left join department b on a.department=b.id  
+  	where a.wangfang_admin_id= #{userName} and a.password = #{passWord}
+  </select>
+  
+  <select id="getAdminPurview" resultMap="BaseMap">
+  	select wf.*,r.role_name,r.purview from wfadmin wf left join role r on wf.role_id = r.role_id 
+  	where wf.wangfang_admin_id = #{wangfang_admin_id}
+  </select>
+</mapper>

@@ -1,0 +1,25 @@
+.ar select{
+	width: 200px;
+	height: 30px;
+}
+.ar input{
+	height: 30px;
+	width: 200px;
+}
+.al{
+	text-align: right;
+}
+.ar{
+	text-align: left;
+}
+#messagetable{
+	margin-left: 50px;
+}
+#messagetable td{
+	padding-left: 15px;
+	padding-top: 10px;
+}
+#messagetable select{
+	padding: 2px 2px 2px 4px;
+}
+

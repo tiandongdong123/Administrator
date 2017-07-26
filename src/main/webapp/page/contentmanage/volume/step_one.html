@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+		<title>创建文辑第一步</title>
+		<link rel="stylesheet" href="../page/contentmanage/css/login.css" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="../page/contentmanage/css/public.css" />
+		<link rel="stylesheet" type="text/css" href="../css/workBench.css" />
+		<script type="text/javascript" src="../page/contentmanage/volume/js/jquery.slideunlock.js"></script>
+		<script src="../page/contentmanage/volume/js/step_one.js"></script>
+	</head>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	内容管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">内容管理</a></li>
+        <li class="active">文辑管理</li>
+      </ol>-->
+    </section> 
+    <section class="content">
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+		<!--main start-->
+		<div class="container">
+			<div class="pagecont  preferredmain">
+				<!--步骤开始-->
+				<div class="pubook_step step01">
+					<div class="step_line">
+						<div class="step_lined">&nbsp;</div>
+					</div>
+					<ul>
+						<li class="sel">
+							<h5>版式设定</h5>
+							<span>1</span>
+						</li>
+						<li>
+							<h5>内容设定</h5>
+							<span>2</span>
+						</li>
+						<li>
+							<h5>制作完成</h5>
+							<span>3</span>
+						</li>
+					</ul>
+				</div>
+				<!--步骤结束 -->
+
+				<div class="Claimeds">
+					<div class="format">
+					<form id="fromList" action="../content/stepTwo.do" method="post" enctype="multipart/form-data">
+						<dl class="format_dl">
+							<dt>文辑名称： <span>*</span></dt>
+							<dd>
+								<input type="text" name="volumeName" id="volumeName" value="${volume.volumeName}">
+							</dd>
+						</dl>
+						<dl class="format_dl">
+							<dt>文辑简介：<span>*</span></dt>
+							<dd>
+								<!--<input type="text">-->
+								<textarea rows="" cols=""  name="volumeAbstract" id="volumeAbstract">${volume.volumeAbstract}</textarea>
+							</dd>
+						</dl>
+						<dl class="subject format_dl">
+							<dt>学科：<span style="color: #FF0000;">*</span></dt>
+							<dd class="choice"><input type="button" value="选择"/ style="width: auto;border: none;margin-right: 7px;"></dd>
+							<dd class="subject_txt"><input type="text" id="checkSubject"/>
+							<input type="hidden"   name="subject" id="subject" value="${volume.subject}">
+							<input type="hidden"   name="subjectName" id="subjectName" value="${volume.subjectName}">
+							<input type="hidden" id="subject_" name="subject" required="required" />
+								<div class="subject_text">
+								</div>
+							</dd>
+						</dl>
+						<!-- <dl class="format_dl">
+							<dt>学科：<span>*</span></dt>
+							<dd>
+								<input type="text"   name="subject" id="subject" value="${volume.subject}">
+							</dd>
+						</dl> -->
+						<dl class="format_dl">
+							<dt>关键词：<span>*</span></dt>
+							<dd>
+								<input type="text" placeholder="输入关键词，以分号隔开"  name="keyword" id="keyword" value="${volume.keyword}">
+							</dd>
+						</dl>
+						<dl class="format_dl">
+							<dt>状态：<span></span></dt>
+							<dd>
+								<select  name="volumeState" id="volumeState" value="${volume.volumeState}">
+									<option value="1">公开</option>
+									<?if(volume.volumeState == 2){?>
+									<option value="2" selected="selected">不公开</option>
+									<?}else{?>
+									<option value="2">不公开</option>
+									<?}?>
+								</select>
+							</dd>
+						</dl>
+						<dl class="format_dl">
+							<input type="text" hidden="true" name="coverUrl" id="coverUrl" value="${volume.coverUrl}">
+							<dt>封面： <span>*</span></dt>
+							<dd>
+								<div class="choosecover ChoiceCover">
+									<div class="choosed" style="background:../images/cover01.jpg">
+									<?if(volume.coverUrl !=null && volume.coverUrl != ""){?>
+										<div class="choosed_title">${volume.volumeName}</div>
+										<div class="choosed_title_two">作者:${publishPerson}</div>
+									<?}else{?>
+										<div class="choosed_title">标题</div>
+										<div class="choosed_title_two">作者:${publishPerson}</div>
+									<?}?>
+										<br>
+										<input type="button" value="使用此模板" class="btn_base2">
+									</div>
+									<!--右侧滚动模板列表-->
+									<div class="coverscrolllist">
+										<div class="effects_box">
+											<ul>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover01.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover02.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover03.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover04.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover01.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover02.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover03.jpg" /></a>
+												</li>
+												<li>
+													<a href="javascript:void(0);" onclick="chooseTem(this);"><img src="../images/cover04.jpg" /></a>
+												</li>
+											</ul>
+											<div><span id="leftbtn" class="btn"><i class="icon"></i></span> <span id="rightbtn" class="btn"><i class="icon"></i></span></div>
+										</div>
+										<script>
+											$(function() {
+												/*effectsBox*/
+												var page = 1;
+												var i = 4;
+												$('.effects_box #leftbtn').click(function() {
+													var $pictureShow = $('.effects_box');
+													var downheight = $pictureShow.height();
+													var len = $('.effects_box ul').find('li').length;
+													var effects = $('.effects_box ul');
+													var page_number = Math.ceil(len / i);
+													if(!effects.is(":animated")) {
+														if(page == 1) {
+															effects.animate({
+																top: '-=' + downheight * (page_number - 1)
+															}, "slow");
+															page = page_number;
+														} else {
+															effects.animate({
+																top: '+=' + downheight
+															}, "slow");
+															page--;
+														}
+													}
+												});
+												$('.effects_box #rightbtn').click(function() {
+													var $pictureShow = $('.effects_box');
+													var downheight = $pictureShow.height();
+													var len = $('.effects_box ul').find('li').length;
+													var effects = $('.effects_box ul');
+													var page_number = Math.ceil(len / i);
+													if(!effects.is(":animated")) {
+														if(page == page_number) {
+															effects.animate({
+																top: '0px'
+															}, "slow");
+															page = 1;
+														} else {
+															effects.animate({
+																top: '-=' + downheight
+															}, "slow");
+															page++;
+														}
+													}
+												});
+
+												$(function() {
+													var _ebox = $(".effects_box ul"),
+														_eboxx = $(".effects_box ul li").height(),
+														_eboxi = _ebox.find("li").length;
+													_ebox.css({
+														height: _eboxx * _eboxi
+													});
+												});
+											});
+										</script>
+									</div>
+
+									<!--右侧滚动模板列表 / -->
+								</div>
+							</dd>
+						</dl>
+					</form>
+						<dl class="format_dl">
+							<dt>&nbsp;</dt>
+							<dd>
+								<div class="step_btn">
+									<input type="submit" value="下一步" class="btn_base" id="submit" onclick="submitForm();">
+								</div>
+							</dd>
+						</dl>
+
+					</div>
+				</div>
+			</div>
+			</div>
+				</div>
+			</div>
+			 </section>
+		</div>
+		<!-- 学科 -->
+		<div class="choice_box" style="display: none;height: 470px;">
+			<div class="choice_triangle"><img src="../images/subject_triangle.png" alt="" /></div>
+			<div class="search">
+				<input type="text" />
+				<a href="javascript:void(0);" ><img onclick="search_subject(this);" src="../images/iconfont-sousuo-small.png" alt="" /></a>
+			</div>
+			<div class="choice_tab">
+				<div class="choice_left">
+					<ul>
+					</ul>
+				</div>
+			</div>
+			<div class="more">
+				学科专业<span style="color: #FF0000;">（最多选择三个）</span>：
+			</div>
+			<div class="choice_btn">
+				<input class="choice_yes" onclick="sub_add();" type="button" value="确定" />
+				<input class="choice_no" onclick="sub_del(this);" type="button" value="取消" />
+			</div>
+		</div>
+		<!--main end-->
+</html>
+<?}?>

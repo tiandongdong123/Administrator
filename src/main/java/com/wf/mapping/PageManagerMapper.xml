@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.PageManagerMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.PageManager" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="page_name" property="pageName" jdbcType="VARCHAR" />
+    <result column="link_address" property="linkAddress" jdbcType="VARCHAR" />
+    <result column="modular_id" property="modularId" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, page_name, link_address, modular_id
+  </sql>
+  <select id="selectList" resultType="java.lang.String">
+    select table_name from pagemanager
+  </select>
+ 
+  <select id="getLink_Address" resultType="java.lang.String">
+    select link_address from pagemanager  where page_name=#{pageName}
+  </select>
+ 
+ <select id="getPage" resultMap="BaseResultMap">
+ 	select * from pagemanager where 1=1
+ 	<if test="ids!=null">
+ 		and modular_id in
+ 		 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	 </foreach>
+ 	</if>
+ 	<if test="pageName!=null and pageName !=''">
+ 		and page_name like #{pageName}
+ 	</if>
+ 	order by add_time desc
+ 	limit #{pageNum},#{pageSize}
+ </select>
+ 
+ <select id="getPageNum" resultType="int">
+ 	select count(1) from pagemanager where 1=1
+ 	<if test="ids!=null">
+ 		and modular_id in
+ 		 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	 </foreach>
+ 	</if>
+ 	<if test="pageName!=null and pageName !=''">
+ 		and page_name like #{pageName}
+ 	</if>
+ </select>
+ 
+  <select id="getPageManagerById" resultMap="BaseResultMap">
+   select * from pagemanager where id = #{id}
+  </select>
+  
+   <select id="getKeyword" resultMap="BaseResultMap">
+   select * from pagemanager where page_name like #{0}
+  </select>
+  
+  
+  <insert id="doAddPageManager" parameterType="com.wf.bean.PageManager">
+    insert into pagemanager
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pageName != null">
+        page_name,
+      </if>
+      <if test="linkAddress != null">
+        link_address,
+      </if>
+      <if test="modularId != null">
+        modular_id,
+      </if>
+      <if test="addTime!=null">
+      	add_time
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkAddress != null">
+        #{linkAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="modularId != null">
+        #{modularId,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="doUpdatePageManager" parameterType="com.wf.bean.PageManager" >
+    update pagemanager
+    set modular_id = #{modularId,jdbcType=VARCHAR},
+      page_name = #{pageName,jdbcType=VARCHAR},
+      link_Address = #{linkAddress,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <delete id="deletePageManager">
+	  delete from pagemanager where id=#{id}
+  </delete>
+  
+  <select id="getAllPage" resultMap="BaseResultMap">
+  	select * from pagemanager where 1=1
+ 	<if test="ids!=null">
+ 		and modular_id in
+ 		 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	 </foreach>
+ 	</if>
+ 	<if test="pageName!=null and pageName !=''">
+ 		and page_name like #{pageName}
+ 	</if>
+  
+  </select>
+  
+  
+</mapper>

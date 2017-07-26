@@ -1,0 +1,78 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+
+<script type="text/javascript">
+	function findSonList(){
+		$("#formid").submit();
+	}
+
+</script>
+
+  <div class="content-wrapper">
+    <section class="content-header"><h1>子账号列表</h1></section>
+
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <form id="formid" action="../auser/tosonaccountnumber.do" method="post">
+              <div class="box-body">
+                <input type="hidden" class="form-control" name="userId" value="${userId}">
+                <div class="form-group input_block">
+                  <label class="input_name">子账号用户名</label>
+                  <input type="text" class="form-control input_width" name="sonId" value="${sonId}">
+                </div>
+                <div id="example1_filter" class="form-group input_block">
+                	<label class="input_name">注册时间</label>
+	                	<input type="text" name="start_time" style="width: 185px;" class="Wdate" onclick="WdatePicker()" value="${start_time}">
+	                	-<input type="text" name="end_time" style="width: 185px;" class="Wdate" onclick="WdatePicker()" value="${end_time}">
+                </div>
+              </div>
+            </form>
+            <div class="box-footer" style="text-align:center;">
+               <button type="button" class="btn btn-primary" onclick="findSonList();">查询</button>
+            </div>
+              <div class="row">
+		       <div class="col-xs-12">
+		         <div class="box">
+		           <div class="box-body table-responsive no-padding">
+		             <table class="table table-hover">
+		               <tbody><tr>
+		                 <th>序号</th>
+		                 <th>子账号ID</th>
+		                 <th>密码</th>
+		                 <th>购买项目</th>
+		                 <th>注册时间</th>
+		               </tr>
+		               <? var i = 0; for(li in list){ i++;?>
+		               	<?if(list.~size>0){?>
+			               <tr>
+			                 <td>${i}</td>
+			                 <td>${li.userId}</td>
+			                 <td>${li.password}</td>
+			                 <? if(!isEmpty(li.sonProjectList)){ ?>
+			                 <td>
+				                 <? var j = 0; for(son in li.sonProjectList){ j++; ?>			                 	
+									${son.name};&nbsp;${son.beginDateTime}-${son.endDateTime};&nbsp;${son.balance}<?if(j<li.sonProjectList.~size){?></br><?}?>
+				                 <?}?>
+				             </td>
+			                 <?}else{?>
+			                 	<td></td>
+			                 <?}?>
+			                 <td>${li.registrationTime,dateFormat ="yyyy-MM-dd HH:mm:ss"}</td>
+			               </tr>
+		               	<?}?>
+		               <?}?>
+		             </tbody>
+		            </table>
+		           </div>
+		         </div>
+		       </div>
+      		  </div>
+              </div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

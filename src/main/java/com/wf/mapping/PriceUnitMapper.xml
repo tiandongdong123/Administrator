@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.PriceUnitMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.PriceUnit" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="unit_name" property="unitName" jdbcType="VARCHAR" />
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR" />
+  </resultMap>
+
+  
+  <select id="getUnit" resultMap="BaseResultMap">
+  select id, unit_name ,unit_code from price_unit limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="getUnitNum" resultType="int">
+  select count(1) from price_unit
+  </select>
+  
+   <delete id="deleteUnit" >
+  	delete from price_unit where id in
+ 	 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    </foreach>
+  </delete>
+  
+   <select id="checkUnit" resultMap="BaseResultMap">
+  	select id, unit_name,unit_code from price_unit where unit_name = #{unitname} and unit_code= #{unitcode}
+   </select>
+   
+   <insert id="doAddUnit">
+   	insert into price_unit (unit_name,unit_code) values (#{unitname},#{unitcode})
+   </insert>
+   
+   <update id="doUpdateUnit">
+    update price_unit set unit_name = #{unitname},unit_code= #{unitcode} where id=#{id}
+   </update>
+   
+   <select id="getRunitName" resultMap="BaseResultMap">
+    select * from price_unit 
+   </select>
+   
+   
+  <select id="getOneUnit" resultMap="BaseResultMap">
+    select * from price_unit  where unit_code= #{unitcode}
+   </select>
+  
+  
+</mapper>

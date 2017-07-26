@@ -1,0 +1,95 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/qikan/js/qikan_jigouList.js"></script>
+
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1>授权列表</h1>
+		<!-- <ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+			<li><a href="#">期刊管理</a></li>
+			<li class="active">授权列表</li>
+		</ol>-->
+	</section> 
+	<section class="content">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="portlet box box-primary">
+					<div class="portlet-body" style="height: 650px;">
+						<div style="width: 400px;margin-left: 15px; ">
+							<div style="float:left; display:inline; margin-top: 10px;">
+								<h4>机构用户名：&nbsp;</h4>
+							</div>
+							<div class="input-group input-group-sm" style=" margin-top: 10px;">
+								<input id="inUserId" class="form-control" type="text"> 
+								 <span class="input-group-btn">
+									<button onclick="find(1)" class="btn btn-info btn-flat" type="button">搜索</button>
+								 </span>
+							</div>
+						</div>
+						<div class="content" style="margin-top:0px;">
+							<table class="table table-bordered table-striped dataTable"
+								role="grid" aria-describedby="example1_info">
+								<thead>
+									<tr role="row">
+										<th tabindex="0" class="sorting_asc" aria-controls="example1"
+											aria-label="Rendering engine: activate to sort column descending"
+											aria-sort="ascending" rowspan="1" colspan="1">序号</th>
+										<!-- <th tabindex="0" class="sorting" aria-controls="example1"
+											aria-label="Browser: activate to sort column ascending"
+											rowspan="1" colspan="1">机构名称</th> -->
+										<th tabindex="0" class="sorting" aria-controls="example1"
+											aria-label="Platform(s): activate to sort column ascending"
+											rowspan="1" colspan="1">机构用户名</th>
+										<th tabindex="0" class="sorting" aria-controls="example1"
+											aria-label="Engine version: activate to sort column ascending"
+											rowspan="1" colspan="1">资源提供商</th>
+										<!-- <th tabindex="0" class="sorting" aria-controls="example1"
+											aria-label="CSS grade: activate to sort column ascending"
+											rowspan="1" colspan="1">用户名</th> -->
+										<th tabindex="0" class="sorting" aria-controls="example1"
+											aria-label="CSS grade: activate to sort column ascending"
+											rowspan="1" colspan="1">操作</th>
+									</tr>
+								</thead>
+								<tbody id="textHtml">
+									<!-- <tr role="row">
+										<td class="sorting_1">Gecko</td>
+										<td>Seamonkey 1.1</td>
+										<td>Win 98+ / OSX.2+</td>
+										<td>1.8</td>
+										<td>A</td>
+									</tr>
+									<tr role="row">
+										<td class="sorting_1">Gecko</td>
+										<td>Netscape Navigator 9</td>
+										<td>Win 98+ / OSX.2+</td>
+										<td>1.8</td>
+										<td>A</td>
+									</tr>
+									<tr role="row">
+										<td class="sorting_1">Gecko</td>
+										<td>Netscape Browser 8</td>
+										<td>Win 98SE+</td>
+										<td>1.7</td>
+										<td>A</td>
+									</tr>
+									<tr role="row">
+										<td class="sorting_1">Gecko</td>
+										<td>Netscape 7.2</td>
+										<td>Win 95+ / Mac OS 8.6-9.2</td>
+										<td>1.7</td>
+										<td>A</td>
+									</tr> -->
+								</tbody>
+							</table>
+							<div id="page"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<?}?>

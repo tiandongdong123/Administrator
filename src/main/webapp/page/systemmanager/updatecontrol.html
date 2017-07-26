@@ -1,0 +1,25 @@
+	<?
+	  include("/inc/header.html") {}
+    ?>
+<script  type="text/javascript"  src="../page/systemmanager/js/updatecontrol.js"> </script>
+<input type="hidden" id="controlid" value="${control.id}">
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+			<div>
+			<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">URL：</label>
+             <input type="text" id="controlip" class="form-control input_width" value="${control.ip}"><span id="checkurl"></span>
+         	</div>
+              <div class="box-footer" style="text-align:center;">
+               	<button type="button" onclick="deletecontrol()"      class="btn btn-primary">删除</button>
+                <button type="button" onclick="doupdatecontrol()"      class="btn btn-primary">提交</button>
+              </div>
+            </div>
+          </div>
+      	 </div>
+      </div>
+    </section>

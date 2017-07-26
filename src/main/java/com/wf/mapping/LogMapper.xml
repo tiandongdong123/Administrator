@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.LogMapper">
+
+	<resultMap type="com.wf.bean.Log" id="BaseResultMap">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="behavior" property="behavior" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="VARCHAR" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="module" property="module" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getLog"  resultMap="BaseResultMap">
+		select * from log where 1=1
+		<if test="null!=username and ''!=username">
+			and username like #{username}
+		</if>
+		<if test="null!=ip and ''!=ip">
+			and ip=#{ip}
+		</if>
+		<if test="null!=behavior and ''!=behavior">
+			and behavior=#{behavior}
+		</if>
+		<if test="null!=startTime and ''!=startTime">
+			and time <![CDATA[   >=  ]]>#{startTime}
+		</if>
+		<if test="null!=endTime and ''!=endTime">
+			and time <![CDATA[   <=  ]]>#{endTime}
+		</if>
+		order by time
+		limit #{pageNum},#{pageSize}
+	</select>
+
+	<select id="getLogCount" resultMap="BaseResultMap">
+		select username,ip,time,behavior from log where 1=1
+		<if test="null!=username and ''!=username">
+			and username like #{username}
+		</if>
+		<if test="null!=ip and ''!=ip">
+			and ip=#{ip}
+		</if>
+		<if test="null!=behavior and ''!=behavior">
+			and behavior=#{behavior}
+		</if>
+		<if test="null!=startTime and ''!=startTime">
+			and time <![CDATA[   >=  ]]>#{startTime}
+		</if>
+		<if test="null!=endTime and ''!=endTime">
+			and time <![CDATA[   <=  ]]>#{endTime}
+		</if>
+	</select>
+	
+	<delete id="deleteLogByID" >
+		delete from log where 
+		<if test="null!=ids">
+			id in
+			<foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+			    #{item}
+			</foreach>
+		</if>
+		<if test="null==ids">
+			1=2
+		</if>
+	</delete>
+</mapper>

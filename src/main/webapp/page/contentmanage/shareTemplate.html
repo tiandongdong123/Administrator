@@ -1,0 +1,93 @@
+<?	
+	layout("/inc/layout.html",{
+			title:'分享模板管理'
+		}){
+?>
+	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+	<script type="text/javascript" src="/wf-framework-adminManager-web/page/contentmanage/js/shareTemplate.js"></script>
+ <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+          分享模板管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li><a href="#">模板管理</a></li>
+        <li class="active">分享模板管理</li>
+      </ol>-->
+    </section> 
+	<input type="hidden" id="pageNum" value="${pageList.pageNum}">
+  	<input type="hidden" id="pageTotal" value="${pageList.pageTotal}">
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+              <div style="width: 500px;height: 40px;margin-left: 100px;">
+              <label class="input_name">       分享类型：</label>
+         	<input type="hidden" id="shareType" value="${shareType!}">
+              	<select id="xkjb" style="width: 266px;height: 33px;">
+              		<option>全部</option>
+              		<? for(template in templates){?>
+              		<option>${template.shareType}</option>
+              		<?}?>
+              	</select>
+                <button onclick="findone()" style="height: 33px;" type="submit" class="btn btn-primary">查询</button>
+              </div>
+		<br/>
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">列表显示</h3>
+
+              <div class="box-tools pull-right">
+                <div class="has-feedback" style="display: none">
+                  <input type="text" class="form-control input-sm" placeholder="Search Mail">
+                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                </div>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <div class="mailbox-controls">
+                <div class="btn-group">
+                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                </div>
+                <!-- /.btn-group -->
+                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addResour()">添加模板内容</button>
+                 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
+                 <button type="button" style="float: right;margin-right: 5px;" onclick="exportshareTemplate();" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+              </div>
+              
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-bordered table-striped">
+                </table>
+                <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.box-body -->
+            
+            <div class="box-footer no-padding">
+              <div class="mailbox-controls">
+                <div class="btn-group">
+                  <button onclick="deleteMore()" type="button" class="btn btn-default btn-sm" ><i class="fa fa-trash-o"></i></button>
+                </div>
+                <!-- /.btn-group -->
+                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                
+                <div id="page" class="pull-right">
+                </div>
+                <span style="display: none" id="here"></span>
+                <!-- /.pull-right -->
+              </div>
+            </div>
+            
+          </div>
+          <!-- /. box -->
+        </div>
+        </div>
+	</div>
+</section>
+</div>	
+<?}?>

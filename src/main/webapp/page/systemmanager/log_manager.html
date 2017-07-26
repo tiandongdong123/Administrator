@@ -1,0 +1,44 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	日志管理
+      </h1>
+     <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">用户管理</a></li>
+        <li class="active">日志管理</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+              <div class="box-body">
+			<div class="form-group input_block">
+           	<label class="input_name">操作时间</label>
+           	<input type="text" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" id="start_time" name="start_time" />
+           	-<input type="text" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" id="end_time" name="end_time" />
+             <button type='button' class='btn btn-primary'>导出</button>
+             <button type='button' class='btn btn-primary'>批量删除</button>
+         	</div>
+          </div>
+         </div>
+       </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

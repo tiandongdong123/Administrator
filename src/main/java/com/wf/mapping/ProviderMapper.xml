@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProviderMapper" >
+  <resultMap id="ProviderMap" type="com.wf.bean.Provider" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name_zh" property="nameZh" jdbcType="VARCHAR" />
+    <result column="provider_name" property="providerName" jdbcType="VARCHAR" />
+    <result column="provider_url" property="providerURL" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getProviders" resultMap="ProviderMap">
+ 	 select * from provider 
+  </select>
+  <select id="getProvider" resultMap="ProviderMap">
+ 	 select * from provider where 1=1
+ 	 <if test="id!=null and id !=''">
+ 		and id =#{id}
+ 	</if>
+  </select>
+  <!--  添加资源供应商 -->
+  <insert id="addProvider" parameterType="com.wf.bean.Provider">
+  	 <selectKey resultType="int" order="AFTER" keyProperty="id">
+		 SELECT LAST_INSERT_ID() AS id    <!-- 获取自增ID -->
+	 </selectKey>
+     insert into provider(name_zh,provider_name)
+     values(#{nameZh},#{providerName})
+  </insert>
+  
+  <!-- 更新资源提供商 名称 -->
+ <update id="updateProvider" parameterType="com.wf.bean.Provider">
+    update provider
+    <set>
+      <if test="nameZh != null" >
+       name_zh = #{nameZh},
+      </if>
+      <if test="providerName != null" >
+       provider_name = #{providerName}
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  	<!-- 删除供应商  -->
+    <delete id="deleteProvider">
+  	delete from provider where id = #{id}
+  </delete>
+ 
+ 
+</mapper>

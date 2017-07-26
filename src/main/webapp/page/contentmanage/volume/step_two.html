@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+		<title>无标题文档</title>
+		<link rel="stylesheet" type="text/css" href="../page/contentmanage/css/public.css" />
+		<link rel="stylesheet" type="text/css" href="../css/workBench.css" />
+		<script src="../page/contentmanage/volume/js/step_two.js"></script>
+	</head>
+<div class="content-wrapper">
+	<!-- 表单参数 -->
+	<form id="fromList" method="post" enctype="multipart/form-data">
+		<input type="text" hidden="true" name="volumeName" id="volumeName" value="${volume.volumeName}">
+		<textarea rows="" cols=""  hidden="true" name="volumeAbstract" id="volumeAbstract">${volume.volumeAbstract}</textarea>
+		<input type="text" hidden="true"  name="subject" id="subject" value="${volume.subject}">
+		<input type="text" hidden="true"  name="subjectName" id="subjectName" value="${volume.subjectName}">
+		<input type="text" hidden="true"  name="keyword" id="keyword" value="${volume.keyword}">
+		<input type="text" hidden="true" name="volumeState" id="volumeState" value="${volume.volumeState}">
+		<input type="text" hidden="true" name="coverUrl" id="coverUrl" value="${volume.coverUrl}">
+		<input type="text" hidden="true" name="volumeChapter" id="volumeChapter"/>
+		<input type="text" hidden="true"  name="volumePrice" id="volumePrice" value="${volume.volumePrice}">
+	</form>
+	 <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+       	内容管理
+      </h1>
+      <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">内容管理</a></li>
+        <li class="active">文辑管理</li>
+      </ol>-->
+    </section> 
+    <section class="content">
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+		<!--main start-->
+		<div class="container">
+			<div class="pagecont  preferredmain">
+				<!--<p class="mycg_title">汇编成果书</p>-->
+				<!--步骤开始-->
+				<div class="pubook_step step02">
+					<div class="step_line">
+						<div class="step_lined">&nbsp;</div>
+					</div>
+					<ul>
+						<li class="sel">
+							<h5>版式设定</h5>
+							<span>1</span></li>
+						<li class="sel">
+							<h5>内容设定</h5>
+							<span>2</span></li>
+						<li>
+							<h5>制作完成</h5>
+							<span>3</span></li>
+					</ul>
+				</div>
+				<!--步骤结束	-->
+				<div class="Claimeds">
+					<div class="format chapter">
+						<span>您可选择该文辑是否分章节：</span><br />
+						<input type="submit" name="chapter" id="chapter" value="分章节" onclick="next(1);"/>
+						<input type="submit" name="noChapter" id="noChapter" value="不分章节" onclick="next(2);"/>
+					</div>
+					<dl class="format_dl">
+						<dt>&nbsp;</dt>
+						<dd>
+							<div class="step_btn">
+								<input type="submit" value="返回上一步" class="btn_base" onclick="returnOne();">
+							</div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+		</div>
+		</div>
+	</div>
+	</section>
+</div>
+</html>
+<?}?>

@@ -1,0 +1,219 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" href="../css/scholar.css">
+<link rel="stylesheet" href="../page/contentmanage/css/login.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="../page/contentmanage/css/public.css" />
+<link rel="stylesheet" type="text/css" href="../css/workBench.css" />
+<script type="text/javascript" src="../page/contentmanage/volume/js/volume_docu.js"></script>
+<script src="../js/laypage-v1.3/laypage/laypage.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+       	文辑管理
+      </h1>
+     <!--   <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">内容管理</a></li>
+        <li class="active">文辑管理</li>
+      </ol> -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group input_block ">
+                  <label class="input_name"> 发布日期</label>
+                  <input id="startTime" type="text"   class="form-control input_time" onclick="WdatePicker()" placeholder="请选择起始时间">
+                  <label>——</label>
+                  <input id="endTime" type="text"   class="form-control input_time" onclick="WdatePicker()" placeholder="请选择结束时间">
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name"> 请输入关键字</label>
+                  <input type="text" id="keywords" class="form-control input_width" placeholder="请输入 文辑编号、文辑名称、发布用户名">
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name">文辑类型</label>
+                  <input type="radio" name="volumeType" value="1">用户文辑
+                  <input type="radio" name="volumeType"  checked="checked"  id="gradio" value="2">优选文辑
+                </div>
+                <div id="state" class="form-group input_block " style="display: black;">
+                  <label  class="input_name">文辑状态</label>
+                  <select id="volumeState" class="form-control input_width" name="select">
+					<option value="0">全部</option>
+					<option value="1">公开</option>
+					<option value="2">私有</option>
+                  </select>
+                </div>
+              </div>
+              <div class="box-footer" style="text-align:center;">
+                <button type="button" class="btn btn-primary" onclick="query()">查询</button>
+              </div>
+            </form>
+            <input type="text" style="display: none;" id="source_data">
+            <!-- 用户文辑 查询结果列表开始 -->
+            <div class="box-body" id="personResult" style="display: none;">
+            <div class="row">
+                <div class="col-md-4">
+                	<!-- <button type="button" class="btn btn-primary" onclick="window.location.href='../content/stepOne.do'">添加文辑</button> -->
+                </div>
+  				<div class="col-md-8" style="text-align:right;">
+  					<button type="button" onclick="exportVolumeDocu();" class="btn btn-primary">导出</button>
+              		<button type="button" class="btn btn-primary" onclick="query()">刷新</button>
+  				</div>
+            </div>
+              <table id="personList" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>
+                  	文辑编号
+                  	<a href="javascript:void(0);" onclick="sort(this,'volume_no','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'volume_no','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>文辑名称</th>
+                  <th>关键词</th>
+                  <th>文辑状态</th>
+                  <th>发布用户ID</th>
+                  <th>
+                  	发布日期
+                  	<a href="javascript:void(0);" onclick="sort(this,'publish_date','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'publish_date','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>
+                  	文辑文献数量
+                  	<a href="javascript:void(0);" onclick="sort(this,'docu_number','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'docu_number','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="plist">
+                </tbody>
+              </table>
+            <!--分页开始-->
+    		<div id="personDivPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+   		    <!--分页结束-->
+            </div>
+          <!-- 查询结果列表结束 -->
+          <!-- 优选文辑查询结果列表开始 -->
+            <div class="box-body" id="goodResult" style="display: none;">
+            <div class="row">
+                <div class="col-md-4">
+                	<button type="button" class="btn btn-primary" onclick="window.location.href='../content/stepOne.do'">添加文辑</button>
+              		<button type="button" class="btn btn-primary" onclick="deleteMore()">批量删除</button>
+                </div>
+  				<div class="col-md-8" style="text-align:right;">
+  					<button type="button"   onclick="exportVolumeDocu();" class="btn btn-primary">导出</button>
+              		<button type="button" class="btn btn-primary">刷新</button>
+  				</div>
+            </div>
+              <table id="goodList" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th><input type="checkbox" onclick="selectAll(this)" name=""></th>
+                  <th>序号</th>
+                  <th>文辑编号
+                  	<a href="javascript:void(0);" onclick="sort(this,'volume_no','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'volume_no','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>学科</th>
+                  <th>文辑名称</th>
+                  <th>关键词</th>
+                  <th>发布用户ID</th>
+                  <th>发布日期
+                  	<a href="javascript:void(0);" onclick="sort(this,'publish_date','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'publish_date','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>文辑文献数量
+                  	<a href="javascript:void(0);" onclick="sort(this,'docu_number','DESC');" class="sort_up" name="sort"></a>
+                  	<a href="javascript:void(0);" onclick="sort(this,'docu_number','ASC');" class="sort_down" name="sort"></a>
+                  </th>
+                  <th>价格</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="glist">
+                </tbody>
+              </table>
+            <!--分页开始-->
+    		<div id="goodDivPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+   		    <!--分页结束-->
+            </div>
+          </div>
+          </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    </div>
+    <!-- 删除是笔记提示框开始-->
+	<div id="push" style="display: none;height:150px;">
+		<input type="text" id="push_id" hidden="true" name="push_id" value="">
+			<div class="export_mask">
+				<div class="export_box">
+					<div class="title_tip">
+						用户文辑推优
+						<a href="javascript:void(0);" onclick="closePush();"><i class="icon icon_close"></i></a>
+					</div>
+					<div class="txt_tip">
+					   <dl class="subject">
+							<dt>学科<span style="color: #FF0000;">*</span></dt>
+							<dd class="choice"><input type="button" value="选择"/></dd>
+							<dd class="subject_txt"><input type="text" id="checkSubject"/>
+							<input type="hidden"   name="subject" id="subject" value="">
+							<input type="hidden"   name="subjectName" id="subjectName" value="">
+							<input type="hidden" id="subject_" name="subject" required="required" />
+								<div class="subject_text">
+								</div>
+							</dd></br></br>
+							<dd style="font-weight: bold;">
+							定价<span style="color: #FF0000;">*</span> 
+								<input type="text" name="price" id="price" value="">
+							</dd>
+						</dl>
+					</div>
+					<div class="export_btn">
+						<a href="javascript:void(0);" onclick="push();" class="export_yes">确 认</a>
+						<a href="javascript:void(0);" onclick="closePush();" class="export_no">取 消</a>
+					</div>
+					<!-- 学科 -->
+					<div class="choice_box" style="display: none;height: 470px;z-index: 999;">
+						<div class="choice_triangle"><img src="../images/subject_triangle.png" alt="" /></div>
+						<div class="search">
+							<input type="text" />
+							<a href="javascript:void(0);" ><img onclick="search_subject(this);" src="../images/iconfont-sousuo-small.png" alt="" /></a>
+						</div>
+						<div class="choice_tab">
+							<div class="choice_left">
+								<ul>
+								</ul>
+							</div>
+						</div>
+						<div class="more">
+							学科专业<span style="color: #FF0000;">（最多选择三个）</span>：
+						</div>
+						<div class="choice_btn">
+							<input class="choice_yes" onclick="sub_add();" type="button" value="确定" />
+							<input class="choice_no" onclick="sub_del(this);" type="button" value="取消" />
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+
+	<!-- 删除是笔记提示框  结束 -->
+  <!-- /.content-wrapper -->
+<?}?>

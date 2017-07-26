@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ResourceMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Resource" >
+    <id column="resource_purchase_id" property="resourcePurchaseId" jdbcType="VARCHAR" />
+    <result column="account_id" property="accountId" jdbcType="VARCHAR" />
+    <result column="resource_purchase_type" property="resourcePurchaseType" jdbcType="INTEGER" />
+    <result column="validity_startTime" property="validityStarttime" jdbcType="DATE" />
+    <result column="validity_endTime" property="validityEndtime" jdbcType="DATE" />
+    <result column="operation_time" property="operationTime" jdbcType="DATE" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="total_money" property="totalMoney" jdbcType="DOUBLE" />
+    <result column="balance_money" property="balanceMoney" jdbcType="DOUBLE" />
+    <result column="purchase_repository" property="purchaseRepository" jdbcType="VARCHAR" />
+    <result column="purchase_number" property="purchaseNumber" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="addResource" parameterType="com.wf.bean.Resource">
+    insert into resource(resource_purchase_id,account_id,resource_purchase_type, 
+      validity_startTime, validity_endTime, 
+      operation_time, operator, total_money, 
+      balance_money, purchase_repository,
+      purchase_number)
+    values (#{resourcePurchaseId}, #{accountId}, #{resourcePurchaseType}, 
+      #{validityStarttime}, #{validityEndtime}, 
+      #{operationTime}, #{operator}, #{totalMoney}, 
+      #{balanceMoney}, #{purchaseRepository},
+      #{purchaseNumber})
+  </insert>
+  
+ <!-- 更新资源购买信息 -->
+ <update id="updateResource" parameterType="com.wf.bean.Resource">
+    update resource
+    <set>
+      <if test="resourcePurchaseType != null and resourcePurchaseType !=''">
+        resource_purchase_type = #{resourcePurchaseType},
+      </if>
+      <if test="validityStarttime != null and validityStarttime !=''">
+        validity_startTime = #{validityStarttime},
+      </if>
+      <if test="validityEndtime != null and validityEndtime !=''">
+        validity_endTime = #{validityEndtime},
+      </if>
+      <if test="totalMoney != null">
+        total_money = #{totalMoney},
+      </if>
+      <if test="purchaseRepository != null and purchaseRepository !=''">
+        purchase_repository = #{purchaseRepository},
+      </if>
+      <if test="purchaseNumber != null and purchaseNumber !=''">
+        purchase_number = #{purchaseNumber},
+      </if>
+    </set>
+    where account_id = #{accountId}
+  </update>
+</mapper>

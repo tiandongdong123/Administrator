@@ -1,0 +1,297 @@
+package com.wf.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wanfangdata.model.BalanceLimitAccount;
+import com.wanfangdata.model.CountLimitAccount;
+import com.wanfangdata.model.TimeLimitAccount;
+import com.wanfangdata.model.UserAccount;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import wfks.accounting.transaction.TransactionProcess;
+import wfks.accounting.transaction.TransactionRequest;
+import wfks.accounting.transaction.TransactionResponse;
+import wfks.authentication.AccountId;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 机构操作类
+ */
+@Service
+public class GroupAccountUtil {
+    @Autowired
+    private TransactionProcess accountingService;
+
+    /**
+     * 生效时间
+     */
+    private static final String BEGIN_DATE_TIME_KEY = "begindatetime";
+    /**
+     * 失效时间
+     */
+    private static final String END_DATE_TIME_KEY = "enddatetime";
+    /**
+     * 操作机构名称
+     */
+    public static final String ORGANNAME_KEY = "organname";
+    /**
+     * 操作key
+     */
+    public static final String OPERATE_KEY = "operate";
+    /**
+     * 更新key
+     */
+    public static final String UPDATE_KEY = "update";
+    /**
+     * 删除key
+     */
+    public static final String DELETE_KEY = "delete";
+
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private static ObjectMapper mapper = new ObjectMapper();
+
+
+    private static Logger log = Logger.getLogger(GroupAccountUtil.class);
+
+    /**
+     * 为机构充值准备的账号信息数据
+     *
+     * @param organName 机构名称
+     * @param begin     有效期开始时间
+     * @param end       有效期结束时间
+     * @return
+     */
+    private static Map<String, String> createExtraData(String organName, Date begin, Date end) {
+        Map<String, String> extraData = new HashMap<String, String>();
+        extraData.put(ORGANNAME_KEY, organName);
+        //对生效时间和失效时间进行格式化"yyyy-MM-dd HH:mm:ss"
+        String begin_date_time = format.format(begin);
+        String end_date_time = format.format(end);
+        extraData.put(BEGIN_DATE_TIME_KEY, begin_date_time);
+        extraData.put(END_DATE_TIME_KEY, end_date_time);
+        return extraData;
+    }
+
+    /**
+     * 创建ProductDetail串
+     *
+     * @param begin 有效期开始时间
+     * @param end   过期时间
+     * @return
+     * @throws IOException
+     */
+    private static String createProductDetail(Long count, Date begin, Date end) throws IOException {
+        Map<String, Object> productDetail = new HashMap<String, Object>();
+        String begin_date_time = format.format(begin);
+        String end_date_time = format.format(end);
+        productDetail.put("count", count);
+        productDetail.put(BEGIN_DATE_TIME_KEY, begin_date_time);
+        productDetail.put(END_DATE_TIME_KEY, end_date_time);
+        try {
+            return mapper.writeValueAsString(productDetail);
+        } catch (IOException e) {
+            log.error("序列化product_detail失败", e);
+            throw e;
+        }
+    }
+
+    /**
+     * 获取交易请求
+     *
+     * @param account   要充值或注册的账户信息
+     * @param userIP    用户ip
+     * @param authToken adminToken
+     * @param updateKey 操作Key
+     * @return 交易请求
+     * @throws IOException
+     */
+    public static TransactionRequest createTransactionRequest(UserAccount account, Long count,
+                                                              String userIP, String authToken, String updateKey) throws IOException {
+        TransactionRequest request = new TransactionRequest();
+        request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
+        request.setUserIP(userIP);
+        request.setAuthToken(authToken);
+        
+        //2017.6.23新增：在request中指定transferOut,指定金额为null
+        Map<AccountId, BigDecimal> transferOut = new HashMap<>();
+        transferOut.put(new AccountId("Operational", "Manual"), null);
+        request.setTransferOut(transferOut);
+        
+        Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime());
+        extraData.put(OPERATE_KEY, updateKey);
+        request.setExtraData(extraData);
+
+        request.setProductDetail(createProductDetail(count, account.getBeginDateTime(), account.getEndDateTime()));
+
+        return request;
+    }
+
+    /**
+     * 提交交易
+     *
+     * @param request      交易请求
+     * @param payChannelId 充值渠道
+     * @return
+     * @throws Exception
+     */
+    public boolean submitRequest(TransactionRequest request, String payChannelId, String updateKey) throws Exception {
+        try {
+            TransactionResponse response = accountingService.submit(request);
+            if (!response.isSuccess()) {
+                if (log.isInfoEnabled()) {
+                    log.info(payChannelId +
+                            (updateKey.equals(UPDATE_KEY) ? "充值" : updateKey.equals(DELETE_KEY) ? "删除" : "")
+                            + "失败, response:" + response);
+                }
+            }
+            return response.isSuccess();
+        } catch (Exception ex) {
+            log.error(payChannelId + updateKey + "过程出错, transactionRequest:" + request);
+            throw ex;
+        }
+    }
+
+    /**
+     * 为余额限时用户充值
+     *
+     * @param before    充值前账户信息，注册余额限时账户可以传null
+     * @param after     将要充值的信息
+     * @param userIP    用户当前ip
+     * @param authToken adminToken
+     * @return 交易是否成功
+     * @throws Exception
+     */
+    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset) throws Exception {
+
+        validate(before, after);
+
+        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY);
+
+        //request.setTurnover(after.getBalance());        	
+    	
+        if(reset){
+        	request.setTurnover(after.getBalance().subtract(before.getBalance()));
+    	}else{
+    		request.setTurnover(after.getBalance());
+    	}
+
+        return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
+    }
+
+
+    /**
+     * 注册或充值给机构限时账户
+     */
+    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken) throws Exception {
+
+        validate(null, account);
+
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY);
+        request.setTurnover(BigDecimal.ZERO);
+        return submitRequest(request, account.getPayChannelId(), UPDATE_KEY);
+    }
+
+    /**
+     * 注册或充值给次数计费用户
+     */
+    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken,boolean reset) throws Exception {
+
+        validate(before, after);
+
+        long count = 0;
+        if(reset){
+        	count = (after.getBalance() - before.getBalance());
+        }else{        	
+        	count = after.getBalance();
+        }
+        
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY);
+        request.setTurnover(BigDecimal.valueOf(count));
+
+        return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
+    }
+
+    /**
+     * 删除账户信息
+     */
+    public boolean deleteAccount(UserAccount account, String userIP, String authToken) throws Exception {
+        //创建交易request
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY);
+        request.setTurnover(BigDecimal.ZERO);
+        return submitRequest(request, account.getPayChannelId(), DELETE_KEY);
+    }
+
+    /**
+     * 当执行充值行为，则需要将充值前账户信息 和 将要充值的账户信息进行匹配验证，
+     * 匹配内容为：机构ID，充值渠道ID，机构名称
+     * 如果信息不匹配将记录日志并抛出异常
+     *
+     * @param before 充值前账户信息
+     * @param after  将要充值的信息
+     */
+    public void validate(UserAccount before, UserAccount after) throws Exception {
+        if (after == null) {
+            //验证after不存在的情况
+            log.error("将要充值用户为null");
+            throw new Exception("将要充值用户为null");
+        }
+
+        if (after != null) {
+            //验证after存在但参数为null的情况
+            if (after.getUserId() == null || after.getUserId().isEmpty()) {
+                log.error("将要充值用户UserId为null，UserAccount:" + after.toString());
+                throw new Exception("将要充值用户UserId为null");
+            }
+            if (after.getPayChannelId() == null || after.getPayChannelId().isEmpty()) {
+                log.error("将要充值用户PayChannelId为null，UserAccount:" + after.toString());
+                throw new Exception("将要充值用户PayChannelId为null");
+            }
+            if (after.getOrganName() == null || after.getOrganName().isEmpty()) {
+                log.error("将要充值用户OrganName为null，UserAccount:" + after.toString());
+                throw new Exception("将要充值用户OrganName为null");
+            }
+        }
+
+        if (before == null) {
+            //验证before 为null的情况
+            return;
+        }
+
+        if (before != null) {
+            //验证before存在但参数为null的情况
+            if (before.getUserId() == null || before.getUserId().isEmpty()) {
+                log.error("充值前用户UserId为null，UserAccount:" + before.toString());
+                throw new Exception("充值前用户UserId为null");
+            }
+            if (after.getPayChannelId() == null || before.getPayChannelId().isEmpty()) {
+                log.error("充值前用户PayChannelId为null，UserAccount:" + before.toString());
+                throw new Exception("充值前用户PayChannelId为null");
+            }
+            if (after.getOrganName() == null || before.getOrganName().isEmpty()) {
+                log.error("充值前用户OrganName为null，UserAccount:" + before.toString());
+                throw new Exception("充值前用户OrganName为null");
+            }
+            //如果是充值行为，充值前账户信息与将要充值的账户信息不符，则抛出异常。
+            if (!before.getUserId().equals(after.getUserId())) {
+                log.error("充值前账户信息与当前充值账户信息不符");
+                throw new Exception("充值前账户信息与当前充值账户信息不符");
+            }
+            if (!before.getPayChannelId().equals(after.getPayChannelId())) {
+                log.error("充值前账户信息与当前充值账户信息不符");
+                throw new Exception("充值前账户信息与当前充值账户信息不符");
+            }
+            if (!before.getOrganName().equals(after.getOrganName())) {
+                log.error("充值前账户信息与当前充值账户信息不符");
+                throw new Exception("充值前账户信息与当前充值账户信息不符");
+            }
+        }
+
+    }
+}

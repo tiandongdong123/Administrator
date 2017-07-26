@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.MatrixLiteratureMapper" >
+  <resultMap id="MatrixLiteratureMap" type="com.wf.bean.MatrixLiterature" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="provider_id" property="providerId" jdbcType="VARCHAR" />
+    <result column="psubject_id" property="psubjectId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="nameen" property="nameen" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="abstracts" property="abstracts" jdbcType="VARCHAR" />
+    <result column="date_period" property="datePeriod" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="pro_resource_id" property="proResourceId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="getMatrixLiterature" resultMap="MatrixLiteratureMap">
+ 	 select * from matrix_literature where 1=1
+ 	 <if test="providerId !=null and providerId !=''">
+ 		and provider_id =#{providerId}
+ 	</if>
+ 	<if test="psubjectId !=null and psubjectId !=''">
+ 		and psubject_id =#{psubjectId}
+ 	</if>
+ 	<if test="startDate !=null and startDate !=''">
+ 		and date_period <![CDATA[  >=  ]]> #{startDate}
+ 	</if>
+ 	<if test="endDate !=null and endDate !=''">
+ 		and date_period <![CDATA[ <= ]]> #{endDate}
+ 	</if>
+ 	<if test="proResourceId != null and proResourceId !='' ">
+ 		and pro_resource_id = #{proResourceId}
+ 	</if>
+ 	<if test="unEqualIds != null and unEqualIds !='' ">
+ 		and id NOT IN 
+		<foreach collection="unEqualIds" item="unEqualId" index="index" open="(" separator="," close=")">
+                    #{unEqualId}
+    	</foreach>
+ 	</if>
+ 	<if test="pagenum != null and pagenum !='' ">
+ 		limit #{pagenum},#{pagesize}
+ 	</if>
+  </select>
+  
+ 
+  <select id="getMatrixLiteratureNum" resultType="int">
+ 	select count(1) from matrix_literature where 1=1
+ 	 <if test="providerId !=null and providerId !=''">
+ 		and provider_id =#{providerId}
+ 	</if>
+ 	<if test="psubjectId !=null and psubjectId !=''">
+ 		and psubject_id =#{psubjectId}
+ 	</if>
+ 	<if test="startDate !=null and startDate !=''">
+ 		and date_period <![CDATA[  >=  ]]> #{startDate}
+ 	</if>
+ 	<if test="endDate !=null and endDate !=''">
+ 		and date_period <![CDATA[ <= ]]> #{endDate}
+ 	</if>
+ 	<if test="proResourceId != null and proResourceId !='' ">
+ 		and pro_resource_id = #{proResourceId}
+ 	</if>
+ 	<if test="unEqualIds != null and unEqualIds !='' ">
+ 		and id NOT IN 
+		<foreach collection="unEqualIds" item="unEqualId" index="index" open="(" separator="," close=")">
+                    #{unEqualId}
+    	</foreach>
+ 	</if>
+  </select>
+
+ <!-- 根据id查询母体 -->
+  <select id="getMatrixLiteratureById" resultMap="MatrixLiteratureMap">
+  		select * from matrix_literature where 1=1
+  		<if test="id != null and id != '' ">
+  			and id = #{id}
+  		</if>
+  </select>
+    <!-- 添加母体文献  -->
+	<insert id="addMatrixLiterature" parameterType="com.wf.bean.MatrixLiterature">
+  	 <selectKey resultType="int" order="AFTER" keyProperty="id">
+		 SELECT LAST_INSERT_ID() AS id    <!-- 获取自增ID -->
+	 </selectKey>
+     insert into matrix_literature(id,provider_id,psubject_id,pro_resource_id,title,nameen,author,abstracts,date_period,cover)
+     values(#{id},#{providerId},#{psubjectId},#{proResourceId},#{title},#{nameen},#{author},#{abstracts},#{datePeriod},#{cover})
+  </insert> 
+  <!-- 更新母体文献 -->
+ <update id="updateMatrixLiterature" parameterType="com.wf.bean.MatrixLiterature">
+    update matrix_literature
+    <set>
+      <if test="providerId != null" >
+        provider_id = #{providerId},
+      </if>
+      <if test="psubjectId != null" >
+        psubject_id = #{psubjectId},
+      </if>
+      <if test="proResourceId != null" >
+        pro_resource_id = #{proResourceId},
+      </if>
+      <if test="title != null" >
+        title = #{title},
+      </if>
+      <if test="nameen != null" >
+        nameen = #{nameen},
+      </if>
+      <if test="author != null" >
+        author = #{author},
+      </if>
+      <if test="abstracts != null" >
+        abstracts = #{abstracts},
+      </if>
+       <if test="datePeriod != null" >
+        date_period = #{datePeriod},
+      </if>
+      <if test="cover != null">
+      	cover =#{cover}
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+  
+  <!-- 删除母体文献 -->
+  	<delete id="deleteMatrixLiterature">
+	  delete from matrix_literature where id=#{id}
+  </delete>
+ 
+ 
+ 
+ 
+</mapper>

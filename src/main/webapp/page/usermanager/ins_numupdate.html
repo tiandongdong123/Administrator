@@ -1,0 +1,680 @@
+<? directive dynamic map;?>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/usermanager/js/ins_information.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/ins_numupdate.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/public.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+  <div class="content-wrapper">
+    <section class="content-header"><h1>账号修改</h1></section>
+
+<section class="content">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box box-primary">
+      	<form id="fromList" method="post" enctype="multipart/form-data">
+          <div class="box-body">
+            <div class="form-group input_block">
+              <label class="input_name">机构用户名</label>
+              <input type="hidden" class="form-control input_width" name="userId" id="userId" value="${map.userId}">
+              <input type="text" class="form-control input_width" value="${map.userId}" readonly="readonly">
+            </div>
+            <div class="form-group input_block">
+              <label class="input_name">机构名称</label>
+              <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution}" onfocus="input_onfocus(this);">
+                <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;">
+				<ul></ul>
+			</div>
+            </div>
+            <div class="checkbox input_block block_left">
+              <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数</label>
+            </div>
+            <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+                <div class="form-group input_block">
+               <label class="input_name">机构账号并发数</label>
+               <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}">
+             </div>
+            </div>
+            <div class="form-group input_block">
+              <label class="input_name">登录方式</label>
+              <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+                <option value="1" <?if(map.loginMode==1){ ?>selected="selected"<?}?>>用户名密码</option>
+                <option value="0" <?if(map.loginMode==0){ ?>selected="selected"<?}?>>IP自动</option>
+                <option value="2" <?if(map.loginMode==2){ ?>selected="selected"<?}?>>用户名密码+IP</option>
+              </select>
+            </div>
+            <div>
+             <div class="form-group input_block" id="upass" <?if(!isEmpty(map.password)&&map.loginMode!=0){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+               <label class="input_name">密码</label>
+               <input type="text" class="form-control input_width" name="password" id="password" value="${map.password!}">
+             </div>
+             <div class="form-group input_block" id="ipvalue" <?if(map.loginMode!=1){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+               <label  class="input_name">账号IP段</label>
+               <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
+             </div>
+            </div>
+            <div class="form-group input_block">
+              <label class="input_name">购买项目</label>
+              <select class="form-control input_width" id="resourcePurchaseType" name="resourcePurchaseType" onchange="selectProject(this,'1','checked');">
+				<option value="1">-添加项目-</option>
+				<?for(pro in project){?>					
+				<option proid="${pro.productDetail}" type="${pro.resourceType}" value="${pro.type}" id="${pro.id}">${pro.name}</option>
+				<?}?>
+              </select>
+            </div>
+            <div class="checkbox input_block block_left">
+              <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>是否开通管理员</label>
+            </div>
+            <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+             
+              <div class="form-group input_block">
+              		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+              		<input type="radio" name="managerType" value="old"  onclick="radioClick('update');"/>选择已有管理员
+                  	<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
+               </div>
+                	
+                <div class="form-group input_block" id="oldManager" style="display: none;">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+                  <select class="form-control input_width" name="adminOldName" id="adminOldName">
+					<option value="">-请选择管理员ID-</option>
+                  </select>
+                </div>
+	       		<div id="newManager">
+	       		<div class="form-group input_block">
+               <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员用户名</label>
+               <input type="text" class="form-control input_width" name="adminname" id="adminname" value="${map.adminname}" onfocus="input_onfocus(this);">
+              	<div class="searchsug searchgroup" style="width: 730px;margin-left: -3px;height: auto;display: none;margin-top: -107px;float: left;">
+				<ul></ul>
+				</div>
+             </div>
+             <div class="form-group input_block">
+               <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
+               <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword" value="${map.adminpassword}">
+             </div>
+             <div class="form-group input_block">
+               <label class="input_name">管理员IP段</label>
+               <textarea class="form-control input_width" rows="3" name="adminIP" id="adminIP"><? if(!isEmpty(map.adminIP)){ var a=0; for(aip in map.adminIP){ ?>${aip.beginIpAddressNumber}-${aip.endIpAddressNumber}<?if(a<map.adminIP.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
+             </div>
+         	 <div class="form-group input_block">
+               <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
+               <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
+             </div>
+	       </div>
+             
+            </div>
+            <div class="checkbox input_block block_left">
+              <label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>checked="checked"<?}?>>是否开通机构子账号</label>
+         </div>
+         <div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+             <div class="form-group input_block">
+               <label class="input_name">设置子帐号上限</label>
+               <input type="text" class="form-control input_width" value="${map.upperlimit}" name="upperlimit" id="upperlimit">
+             </div>
+             <div class="form-group input_block">
+               <label class="input_name">设置子账号并发数</label>
+               <input type="text" class="form-control input_width" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber">
+             </div>
+        	<div class="form-group input_block">
+              <label class="input_name">子账号下载量上限/天</label>
+              <input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit">
+            </div>
+          	<div class="form-group input_block">
+               <label class="input_name">设置子账号扣款模式</label>
+               <select class="form-control input_width" name="chargebacks" id="chargebacks">
+					<option value="0" <?if(map.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
+					<option value="1" <?if(map.chargebacks==1){?>selected="selected"<?}?>>从机构子账号扣款</option>
+               </select>
+            </div>
+          </div>
+          </div>
+          <div id="multplediv">
+          	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
+          	<div class="balance_block" name="full_div">
+           	<div class="resources_title">
+           		<span name="proname">${pro.name}</span>
+           		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
+           		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
+           		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
+           		<button type="button" class="btn btn-primary" style="margin-left:1000px;" 
+           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}');">删除</button>
+           	</div>
+           	<div class="time_block">
+            	<div class="time_input">
+            		<span><b>*</b>时限</span>
+            		<input type="text" class="Wdate" value="${pro.beginDateTime}" name="rdlist[${i}].validityStarttime" id="${pro.payChannelid}_st" onclick="WdatePicker({maxDate:'#F{$dp.$D(${pro.payChannelid}_et)}'})">
+            		<span class="to">至</span>
+            		<input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime" id="${pro.payChannelid}_et" onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
+            	</div>
+           		<?if(pro.type!='time'&&pro.type!='count'){?>	              	
+            		<div class="time_input time_money">
+            			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
+            		</div>
+            	<?}?>
+            	<?if(pro.type!='time'&&pro.type!='balance'){?>              	
+            		<div class="time_input time_money">
+            			<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
+            		</div>
+            	<?}?>
+           	</div>
+<?if(pro.type!='count' && !isEmpty(pro.plList)){?>           		
+<div class="balance_list">
+    <div class="checkbox_check">
+    	<div><b>*</b>选择数据库</div>
+    	<div><input type="checkbox" id="checkbox_id_${i}" onclick="checkedall(${i});">全选</div>
+   	</div>
+    <ul class="checkbox_list">
+     <? var j = 0; for(var m=0;m<pro.plList.~size;m++){ var data = pro.plList[m]; var da = data.productSourceCode; var rt = data.resType;?>
+       	<li><input type="checkbox" class="rdlist[${i}].tableName" name="rdlist[${i}].rldto[${j}].resourceid" value="${da}" <?if(!isEmpty(data.checked)){?>checked="checked"<?}?>>
+		<? if(!isEmpty(data.rp)){ ?>
+       	<i onclick="showProduct(this,1)" class="icon_minus"></i>
+		<ul style="display: none;" class="checkbox_list subset_list">
+		 	<? for(pd in data.rp){ ?>   	
+				<li><input type="checkbox" <?if(!isEmpty(data.product_id)&&strutil.contain(data.product_id,pd.rid)){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
+		 	<?}?>
+		</ul>
+		<?}?>
+       	<? if(!isEmpty(data.abbreviation)){ ?>
+			${data.abbreviation}
+		<?}else{?>
+			${data.tableName}
+		<?}?>
+        <? if(!isEmpty(rt) && (strutil.contain(rt,"perio")||strutil.contain(rt,"degree")||strutil.contain(rt,"conf")||
+			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))){ ?>
+       			<a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
+				    <? if(!isEmpty(data.contract)){?>
+			    	<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
+					books_IDNo,standard_types,company_name,full_IP_range,limited_parcel_time,reading_print,online_visitor,
+					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album; 
+			    	for(var n=0;n<data.contract.~size;n++){
+						if("journal_CLC"==data.contract[n].Field){
+							journal_CLC = data.contract[n];
+						}else if("journal_IDNo"==data.contract[n].Field){
+							journal_IDNo = data.contract[n];
+						}else if("journal_time"==data.contract[n].Field){
+							journal_time = data.contract[n];
+						}else if("degree_CLC"==data.contract[n].Field){
+							degree_CLC = data.contract[n];
+						}else if("degree_types"==data.contract[n].Field){
+							degree_types = data.contract[n];
+						}else if("degree_time"==data.contract[n].Field){
+							degree_time = data.contract[n];
+						}else if("conference_CLC"==data.contract[n].Field){
+							conference_CLC = data.contract[n];
+						}else if("conference_No"==data.contract[n].Field){
+							conference_No = data.contract[n];
+						}else if("patent_IPC"==data.contract[n].Field){
+							patent_IPC = data.contract[n];
+						}else if("books_CLC"==data.contract[n].Field){
+							books_CLC = data.contract[n];
+						}else if("books_IDNo"==data.contract[n].Field){
+							books_IDNo = data.contract[n];
+						}else if("standard_types"==data.contract[n].Field){
+							standard_types = data.contract[n];
+						}else if("company_name"==data.contract[n].Field){
+							company_name = data.contract[n];
+						}else if("full_IP_range"==data.contract[n].Field){
+							full_IP_range = data.contract[n];
+						}else if("limited_parcel_time"==data.contract[n].Field){
+							limited_parcel_time = data.contract[n];
+						}else if("reading_print"==data.contract[n].Field){
+							reading_print = data.contract[n];
+						}else if("online_visitor"==data.contract[n].Field){
+							online_visitor = data.contract[n];
+						}else if("copy_No"==data.contract[n].Field){
+							copy_No = data.contract[n];
+						}else if("total_print_No"==data.contract[n].Field){
+							total_print_No = data.contract[n];
+						}else if("single_print_No"==data.contract[n].Field){
+							single_print_No = data.contract[n];
+						}
+					}
+
+					if(rt=="local chronicles"){
+						for(var n=0;n<data.contract.~size;n++){
+							if("gazetteers_id"==data.contract[n].Field){
+								gazetteers_id=data.contract[n];
+							}else if("gazetteers_type"==data.contract[n].Field){
+								gazetteers_type=data.contract[n];
+							}else if("gazetteers_level"==data.contract[n].Field){
+								gazetteers_level=data.contract[n];
+							}else if("gazetteers_area"==data.contract[n].Field){
+								gazetteers_area=data.contract[n];
+							}else if("gazetteers_album"==data.contract[n].Field){
+								gazetteers_album=data.contract[n];
+							}
+						}
+					}?>
+       			<!-- 详情开始 -->
+			      <div class="nav-tabs-custom" id="tabs_custom_${i}_${j}" style="display: none;">
+			        <ul class="nav nav-tabs">
+		              <?if(strutil.contain(rt,"perio")){?><li><a href="#perio_${i}_${j}" data-toggle="tab">期刊限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"degree")){?><li><a href="#degree_${i}_${j}" data-toggle="tab">学位限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"conf")){?><li><a href="#conf_${i}_${j}" data-toggle="tab">会议限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"patent")){?><li><a href="#patent_${i}_${j}" data-toggle="tab">专利限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"books")){?><li><a href="#book_${i}_${j}" data-toggle="tab">图书限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"standard")){?><li><a href="#standard_${i}_${j}" data-toggle="tab">标准限定</a></li><?}?>
+		              <?if(strutil.contain(rt,"local chronicles")){?><li><a href="#localchronicles_${i}_${j}" data-toggle="tab">地方志限定</a></li><?}?>
+		            </ul>
+			         <div class="tab-content">
+			           <?if(strutil.contain(rt,"perio")){?>	    
+				          <!-- 期刊 -->
+			              <div class="tab-pane" id="perio_${i}_${j}">
+			              		<!-- 中图分类隐藏域 -->
+			              		<label>中图分类法</label>
+								<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
+				              	<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}">${journal_CLC.Value!}</textarea>
+				              <div class="form-group" style="width:60%;">
+		                	   	<label>期刊ID</label>
+		                	    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno">${journal_IDNo.Value!}</textarea>
+		               	   	  </div>
+		               	   	<label>期刊年限</label>
+		               	   	<div class="time_block">
+		               	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
+		               	   		<option value="">-请选择-</option>
+		               	   		<? for(sh in timelimit.startHtml){ ?>		               	   			
+									<?if(!isEmpty(journal_time.Value) && (journal_time.Verb=="LargerThanOrEqualTo" || journal_time.Verb=="WithIn")){?>
+				               	   		<option <?if(journal_time.Value[0]==sh){?>selected="selected"<?}?> value="${sh}">${sh}</option>
+					          		<?}else{?>
+					          			<option value="${sh}">${sh}</option>
+					          		<?}?>
+		               	   		<?}?>
+		               	   		</select>
+		                		年——
+		                		<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}">
+		                		<option value="">-请选择-</option>
+		                		<? for(eh in timelimit.endYearHtml){ ?>		                			
+									<?if(!isEmpty(journal_time.Value) && journal_time.Verb=="LessThanOrEqualTo"){?>
+				                		<option <?if(journal_time.Value[0]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
+					          		<?}else if(!isEmpty(journal_time.Value) && journal_time.Verb=="WithIn"){?>
+					          			<option <?if(journal_time.Value[1]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
+					          		<?}else{?>
+					          			<option value="${eh}">${eh}</option>
+					          		<?}?>
+		                		<?}?>
+		                		</select>
+		                		年
+		                	</div>
+			        	  </div>
+			           <?}?>
+			        <?if(strutil.contain(rt,"degree")){ ?>
+			        <!-- 学位 -->
+			          <div class="tab-pane" id="degree_${i}_${j}">
+						<label>中图分类法</label>
+						<ul class="ztree" id="degreeZtree_${i}_${j}"></ul>
+						<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}">${degree_CLC.Value!}</textarea>
+			              <div class="form-group" style="width:60%;">
+                 	   		<label>论文类型</label>
+                 	   		<div style="height:50px;border:1px solid #C6C6C6;">
+                	    		<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="硕士" <?if(!isEmpty(degree_types.Value)&&array.contain(degree_types.Value,"硕士")){?>checked="checked"<?}?>>硕士论文
+                	    		<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="博士" <?if(!isEmpty(degree_types.Value)&&array.contain(degree_types.Value,"博士")){?>checked="checked"<?}?>>博士论文
+                	    		<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="博士后" <?if(!isEmpty(degree_types.Value)&&array.contain(degree_types.Value,"博士后")){?>checked="checked"<?}?>>博士后论文
+                 	    	</div>
+                	   	  </div>
+                	   	 <label>论文年限</label>
+                	   	 <div class="time_block">
+	               	   		<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}">
+	               	   		<option value="">-请选择-</option>
+	               	   		<?for(sh in timelimit.startHtml){?>	               	   			
+								<?if(!isEmpty(degree_time.Value) && (degree_time.Verb=="LargerThanOrEqualTo" || degree_time.Verb=="WithIn")){?>
+			               	   		<option <?if(degree_time.Value[0]==sh){?>selected="selected"<?}?> value="${sh}">${sh}</option>
+				          		<?}else{?>
+				          			<option value="${sh}">${sh}</option>
+				          		<?}?>
+	               	   		<?}?>
+	               	   		</select>
+                 		 	年——
+                 		 	<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}">
+	               	   		<option value="">-请选择-</option>
+	               	   		<?for(eh in timelimit.endYearHtml){?>		               	   			
+								<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LessThanOrEqualTo"){?>
+			               	   		<option <?if(degree_time.Value[0]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
+				          		<?}else if(!isEmpty(degree_time.Value) && degree_time.Verb=="WithIn"){?>
+				          			<option <?if(degree_time.Value[1]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
+				          		<?}else{?>
+				          			<option value="${eh}">${eh}</option>
+				          		<?}?>
+	               	   		<?}?>
+	               	   		</select>
+                 		 	年
+                 		 </div>
+			          </div>
+			        <?}?>
+			        <?if(strutil.contain(rt,"conf")){?>			        
+			         <!--  会议 -->
+		             <div class="tab-pane" id="conf_${i}_${j}">
+		             <label>中图分类法</label>
+					 <ul class="ztree" id="confZtree_${i}_${j}"></ul>
+		             <textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}">${conference_CLC.Value!}</textarea>
+			              <div class="form-group" style="width:60%;">
+                 	   		<label>会议论文集馆藏号</label>
+                 	    	<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo">${conference_No.Value!}</textarea>
+                	   	  </div>
+		             </div>
+			        <?}?>
+			        <?if(strutil.contain(rt,"local chronicles")){?>			        
+					<!-- 地方志 -->
+					<div class="tab-pane" id="localchronicles_${i}_${j}">
+						<div style="height:400px;border:1px solid #C6C6C6;">
+						<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%">
+						<input type="radio" value="1" name="fzlx" onclick="getSxdr(1,${i},${j})" checked/>分类筛选</td><td style="border:1px solid #C6C6C6;width:85%">
+						<table align=center height="100%" width="100%" border="0"><tr><td align=right width="10%">资源分类</td><td style="align:left;width:90%;padding-left:20px;">
+						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_new" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
+						<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_${i}_${j}" onchange="findArea(this.value,1,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						市 <select id="shi_${i}_${j}" onchange="findArea(this.value,2,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						县 <select id="xian_${i}_${j}" onchange="saveArea(${i},${j})"><option value="">全部</option></select></td></tr>
+						<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;">
+						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="book" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="item" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
+						<tr><td align=right width="10%"><span id="zjfl_${i}_${j}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
+						<a href="javascript:;" onclick="checkfzAll(this,${i},${j})" id="checkfz_${i}_${j}">全选</span></td></tr>
+						<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">
+						<div id="new_class_code_${i}_${j}"></div><div id="item_class_code_${i}_${j}" style="display:none"></div></td></tr></table></td></tr><tr height="40%">
+						<td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,${i},${j})"/>自定义导入</td><td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">
+						<input type="radio" value="book" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" value="item" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
+						<textarea class="form-control" rows="4" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}" style="width:70%;" disabled>${gazetteers_id.Value!}</textarea>
+						<input type="file" name="file" id="file_${i}_${j}" disabled/></td></tr></table>
+						<input type="hidden" value="${gazetteers_level.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersLevel" id="gazetteersLevel_${i}_${j}"/>
+						<input type="hidden" value="${gazetteers_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersArea" id="gazetteersArea_${i}_${j}"/>
+						<input type="hidden" value="${gazetteers_album.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersAlbum" id="gazetteersAlbum_${i}_${j}"/>
+						<input type="hidden" value="${gazetteers_type.Value!}" id="gazetteers_type_${i}_${j}"/>
+						</div>
+					</div>
+			        <?}?>
+			        <?if(strutil.contain(rt,"patent")){?>
+		             <!-- 专利 -->
+		             <div class="tab-pane" id="patent_${i}_${j}">
+			              <div style="padding: 10px;">
+							<div class="wrap">
+								<label>中图分类法</label>
+								<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
+								<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}">${patent_IPC.Value!}</textarea>
+							</div>
+						 </div>
+		             </div>
+			        <?}?>
+			        <?if(strutil.contain(rt,"books")){?>
+			          <!-- 图书  -->
+		              <div class="tab-pane" id="book_${i}_${j}">
+		              	<label>中图分类法</label>
+		              	<ul class="ztree" id="bookZtree_${i}_${j}"></ul>
+		              <textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].booksClc" id="booksClc_${i}_${j}">${books_CLC.Value!}</textarea>
+			              <div class="form-group" style="width:60%;">
+	                	   	<label>图书ID</label>
+	                	    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].booksIdno" id="booksIdno">${books_IDNo.Value!}</textarea>
+	               	   	  </div>
+		              </div>
+		            <?}?>
+		            <?if(strutil.contain(rt,"standard")){?>
+			        <!-- 标准 -->
+					<div class="tab-pane" id="standard_${i}_${j}">
+					<div class="checkbox input_block block_left">
+					<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="行业标准" <?if(array.contain(standard_types.Value,"行业标准")){?>checked="checked"<?}?>>行业标准</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			        <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" onclick="standardShow(${i},${j},this)" value="质检出版社标准" <?if(array.contain(standard_types.Value,"质检出版社标准")){?>checked="checked"<?}?>>质检出版社标准</label>
+					</div>
+					<div id="stand_div_${i}_${j}">
+						<label class="input_name">单位名称</label>
+						<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companyName" id="companyName" value="${company_name.Value!}">
+						<div class="form-group" style="width:60%;">
+							<label>质检出版社标准全文IP范围</label>
+							<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange">${full_IP_range.Value!}</textarea>
+						</div>
+						<div class="time_block">
+							<div class="time_input">
+								<span><b>*</b>限定包库时间</span>
+								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+				          		<?}?>
+								<span class="to">至</span>
+								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LessThanOrEqualTo"){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
+				          		<?}?>
+							</div>
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">版权阅读打印</label>
+							<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint">
+								<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
+								<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
+								<option value="2" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==2){?>selected="selected"<?}?>>授权打印</option>
+								<option value="3" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==3){?>selected="selected"<?}?>>未阅读</option>
+							</select>
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">在线用户数</label>
+							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor" value="${online_visitor.Value!}">-1表示不限制<br>
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">副本数</label>
+							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo" value="${copy_No.Value!}">-1表示不限制<br>
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">打印总份数</label>
+							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo" value="${total_print_No.Value!}">-1表示不限制<br>
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">单标准打印数</label>
+							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo" value="${single_print_No.Value!}">-1表示不限制<br>
+						</div>
+						</div>
+					</div>
+		            <?}?>
+				</div>
+			</div>
+		<!-- 详情结束 -->
+<? }else{ ?>
+      <!-- 详情开始 -->
+      <div class="nav-tabs-custom" id="tabs_custom_${i}_${j}" style="display: none;">
+           <ul class="nav nav-tabs">
+             <?if(strutil.contain(rt,"perio")){?><li><a href="#perio_${i}_${j}" data-toggle="tab">期刊限定</a></li><?}?>
+             <?if(strutil.contain(rt,"degree")){?><li><a href="#degree_${i}_${j}" data-toggle="tab">学位限定</a></li><?}?>
+             <?if(strutil.contain(rt,"conf")){?><li><a href="#conf_${i}_${j}" data-toggle="tab">会议限定</a></li><?}?>
+             <?if(strutil.contain(rt,"patent")){?><li><a href="#patent_${i}_${j}" data-toggle="tab">专利限定</a></li><?}?>
+             <?if(strutil.contain(rt,"books")){?><li><a href="#book_${i}_${j}" data-toggle="tab">图书限定</a></li><?}?>
+             <?if(strutil.contain(rt,"standard")){?><li><a href="#standard_${i}_${j}" data-toggle="tab">标准限定</a></li><?}?>
+             <?if(strutil.contain(rt,"local chronicles")){?><li><a href="#localchronicles_${i}_${j}" data-toggle="tab">地方志限定</a></li><?}?>
+           </ul>
+           <div class="tab-content">
+          <?if(strutil.contain(rt,"perio")){?>			           
+           <!-- 期刊 -->
+             <div class="tab-pane" id="perio_${i}_${j}">
+             	<!-- 中图分类隐藏域 -->
+             	<label>中图分类法</label>
+				<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
+              	<textarea placeholder="格式：[A,B,C]" placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}"></textarea>
+              <div class="form-group" style="width:60%;">
+              	<label>期刊ID</label>
+              	<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno"></textarea>
+             </div>
+       	   	<label>期刊年限</label>
+       	   	<div class="time_block">
+       	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
+             	<option value="">-请选择-</option>
+             	<? for(sh in timelimit.startHtml){ ?><option value="${sh}">${sh}</option><?}?>
+             	</select>
+              	年——
+              	<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}">
+              	<option value="">-请选择-</option>
+              	<? for(eh in timelimit.endYearHtml){ ?><option value="${eh}">${eh}</option><?}?>
+              	</select>
+              	年
+       	  	</div>
+       	  </div>
+          <?}?>
+       <?if(strutil.contain(rt,"degree")){?>
+       <!-- 学位 -->
+         <div class="tab-pane" id="degree_${i}_${j}">
+		<label>中图分类法</label>
+		<ul class="ztree" id="degreeZtree_${i}_${j}"></ul>
+		<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}"></textarea>
+             <div class="form-group" style="width:60%;">
+          	   	<label>论文类型</label><div style="height:50px;border:1px solid #C6C6C6;">
+        	    	<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="硕士">硕士论文
+					<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="博士" >博士论文
+					<input type="checkbox" name="rdlist[${i}].rldto[${j}].degreeTypes" value="博士后">博士后论文
+         	    </div>
+        	</div>
+        	<label>论文年限</label>
+        	<div class="time_block">
+  		    	<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}">
+  		    	<option value="">-请选择-</option>
+          	   	<?for(sh in timelimit.startHtml){?><option value="${sh}">${sh}</option><?}?>
+          	   	</select>
+           		 年——
+           		<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}">
+          	   	<option value="">-请选择-</option>
+          	   	<?for(eh in timelimit.endYearHtml){?><option value="${eh}">${eh}</option><?}?>
+          	   	</select>
+           		 年
+         	</div>
+         </div>
+       <?}?>
+       <?if(strutil.contain(rt,"conf")){?>			        
+        <!-- 会议 -->
+          <div class="tab-pane" id="conf_${i}_${j}">
+           <label>中图分类法</label>
+			<ul class="ztree" id="confZtree_${i}_${j}"></ul>
+           <textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}"></textarea>
+             <div class="form-group" style="width:60%;">
+       	   		<label>会议论文集馆藏号</label>
+       	    	<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo"></textarea>
+      	   	  </div>
+           </div>
+       <?}?>
+       <?if(strutil.contain(rt,"patent")){?>
+        <!-- 专利 -->
+        <div class="tab-pane" id="patent_${i}_${j}">
+          <div style="padding: 10px;">
+			<div class="wrap">
+				<label>中图分类法</label>
+				<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
+				<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}"></textarea>
+			</div>
+		 </div>
+       </div>
+       <?}?>
+       <?if(strutil.contain(rt,"books")){?>
+         <!-- 图书  -->
+         <div class="tab-pane" id="book_${i}_${j}">
+         <label>中图分类法</label>
+         <ul class="ztree" id="bookZtree_${i}_${j}"></ul>
+         <textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].booksClc" id="booksClc_${i}_${j}"></textarea>
+          <div class="form-group" style="width:60%;">
+          	<label>图书ID</label>
+          	<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].booksIdno" id="booksIdno"></textarea>
+         </div>
+         </div>
+        <?}?>
+        <?if(strutil.contain(rt,"local chronicles")){?>
+		<!-- 地方志 -->
+			<div class="tab-pane" id="localchronicles_${i}_${j}">
+				<div style="height:400px;border:1px solid #C6C6C6;">
+				<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%">
+				<input type="radio" value="1" name="fzlx" onclick="getSxdr(1,${i},${j})" checked/>分类筛选</td><td style="border:1px solid #C6C6C6;width:85%">
+				<table align=center height="100%" width="100%" border="0"><tr><td align=right width="10%">资源分类</td><td style="align:left;width:90%;padding-left:20px;">
+				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_new" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
+				<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_${i}_${j}" onchange="findArea(this.value,1,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				市 <select id="shi_${i}_${j}" onchange="findArea(this.value,2,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				县 <select id="xian_${i}_${j}" onchange="saveArea(${i},${j})"><option value="">全部</option></select></td></tr>
+				<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;">
+				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="book" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="item" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
+				<tr><td align=right width="10%"><span id="zjfl_${i}_${j}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
+				<a href="javascript:;" onclick="checkfzAll(this,${i},${j})" id="checkfz_${i}_${j}">全选</span></td></tr>
+				<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">
+				<div id="new_class_code_${i}_${j}"></div><div id="item_class_code_${i}_${j}" style="display:none"></div></td></tr></table></td></tr><tr height="40%">
+				<td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,${i},${j})"/>自定义导入</td><td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">
+				<input type="radio" value="book" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" checked disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" value="item" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
+				<textarea class="form-control" rows="4" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}" style="width:70%;" disabled></textarea>
+				<input type="file" name="file" id="file_${i}_${j}" disabled/></td></tr></table>
+				<input type="hidden" value="book" name="rdlist[${i}].rldto[${j}].gazetteersLevel" id="gazetteersLevel_${i}_${j}"/>
+				<input type="hidden" name="rdlist[${i}].rldto[${j}].gazetteersArea" id="gazetteersArea_${i}_${j}"/>
+				<input type="hidden" name="rdlist[${i}].rldto[${j}].gazetteersAlbum" id="gazetteersAlbum_${i}_${j}"/>
+				</div>
+			</div>
+        <?}?>
+        <?if(strutil.contain(rt,"standard")){?>
+       <!-- 标准 -->
+		<div class="tab-pane" id="standard_${i}_${j}">
+		<div class="checkbox input_block block_left">
+		<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="行业标准">行业标准</label>&nbsp;&nbsp;&nbsp;&nbsp;
+	       <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" onclick="standardShow('${i}',${j},this);" value="质检出版社标准">质检出版社标准</label>
+		</div>
+		<div id="stand_div_${i}_${j}" style="display: none;">
+			<label class="input_name">单位名称</label>
+			<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companyName" id="companyName">
+			<div class="form-group" style="width:60%;">
+				<label>质检出版社标准全文IP范围</label>
+				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange"></textarea>
+			</div>
+			<div class="time_block">
+				<div class="time_input">
+					<span><b>*</b>限定包库时间</span>
+					<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" id="limitedParcelStarttime" onclick="WdatePicker()" type="text">
+					<span class="to">至</span>
+					<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" id="limitedParcelEndtime" onclick="WdatePicker()" type="text">
+				</div>
+			</div>
+			<div class="form-group input_block">
+				<label class="input_name">版权阅读打印</label>
+				<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint">
+					<option value="0">授权阅读打印</option>
+					<option value="1">授权阅读</option>
+					<option value="2">授权打印</option>
+					<option value="3">未阅读</option>
+				</select>
+			</div>
+			<div class="form-group input_block">
+				<label class="input_name">在线用户数</label>
+				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor">-1表示不限制<br>
+			</div>
+			<div class="form-group input_block">
+				<label class="input_name">副本数</label>
+				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo" >-1表示不限制<br>
+			</div>
+			<div class="form-group input_block">
+				<label class="input_name">打印总份数</label>
+				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo">-1表示不限制<br>
+			</div>
+			<div class="form-group input_block">
+				<label class="input_name">单标准打印数</label>
+				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo">-1表示不限制<br>
+			</div>
+			</div>
+		</div>
+     <?}?>
+	</div>
+</div>
+<!-- 详情结束 -->
+<?}?>
+         	<?}?>
+       </li>
+<? j++; }?>
+</ul>
+	</div>
+  <?}?>		        
+</div>
+<? i++;}} ?>
+<!-- 详情 -->
+</div>
+</form>
+<input type="hidden" id="count" value="${i}">
+       <div class="box-footer block_left">
+         <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>
+           <button type="button" onclick="location=location;" class="btn btn-primary">重置</button>
+         </div>
+       </div>
+      </div>
+    </div>
+  </section>
+</div>
+<?}?>

@@ -1,0 +1,86 @@
+<? directive dynamic rlmap; ?>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/add_price.js"> </script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	添加产品定价
+      </h1>
+  <!--<ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li><a href="#">配置管理</a></li>
+        <li class="active">产品单价配置管理</li>
+      </ol>-->
+    </section> 
+
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6" >
+          <div class="box box-primary">
+          <div class="form-group" style="width:40%;margin-left: 30%;">
+           		 <label>平台名称：</label>
+           		 <select id="son" name="son" style = "width:200px;" onchange="select_product();">
+           		 	<option selected="selected">请选择平台名称</option>
+					<?for(var son in rlmap.son){?>
+	      				<option value="${son.sonCode}">${son.sonName}</option>
+	        		<?}?>
+                  </select>
+      			<button type="button"  class="btn btn-info btn-flat" style="margin-left: 20px" onclick="productType();">子系统设置</button>
+            </div>
+           	<div class="form-group" style="width:40%;margin-left: 30%;">
+	           	<label>产品来源：</label>
+	            <select id="product" name='product' style = "width:200px;"  onchange="select_source();">
+	            </select>
+            </div>
+            <div class="form-group" style="width:40%;margin-left: 30%;">
+               <label>产品类型：</label>
+               <select id="rname" name="rname" style="width:200px;">	
+               </select>
+               <button type="button" style="margin-left: 20px"  class="btn btn-info btn-flat" onclick="productType();">产品类型设置</button>
+            </div>
+             <div class="form-group" style="width:40%;margin-left: 30%;">
+           	 <label>产品ID：</label>
+               <input type="text" id="rid" placeholder="" ><span id="checkname"></span><br>
+            </div>
+            <div class="form-group" style="width:40%;margin-left: 30%;">
+           	 <label>产品名称：</label>
+               <input type="text" id="name" placeholder="" ><span id="checkname"></span><br>
+            </div>           
+            <div class="form-group" style="width:40%;margin-left: 30%;">
+            	<label>单位：</label>
+                <select id="unitname" name="unit" style = "width:200px;">
+				<?for(var b in rlmap.Runitname){?>
+     				<option value="${b.unitCode}">${b.unitName}</option>
+       			<?}?>
+                </select>
+                <button type="button" style="margin-left: 20px" class="btn btn-info btn-flat" onclick="addunit()">单位设置</button>
+            </div>
+            <div class="form-group" style="width:40%;margin-left: 30%;">
+            <label>单价：</label>
+          	<input type="text" id="price" placeholder="">元<span id="checkmoney"></span><br>
+         	</div>
+          <!--  <div class="form-group"  style="width:40%;">
+                  <label>数据来源：</label>
+                  <select id="source" style = "width:200px;">
+                    	<?for(var c in rlmap.dbsource){?>
+                 
+      					 <option value="${c.dbSourceCode}" >${c.dbSourceName}</option>
+                 
+        		<?}?>
+                  </select>
+            </div>-->
+            <div class="form-group" style="width:40%;margin: 0 0px;margin-left: 30%;">
+            <button type="button" class="btn btn-info btn-flat" onclick="checkpricerid(1)">保存并继续添加</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-info btn-flat" onclick="checkpricerid(2)">保存</button>
+          	</div>
+          </div>
+      	 </div>
+      </div>
+    </section>
+  </div>
+<?}?>

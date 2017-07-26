@@ -1,0 +1,43 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+    <script src="../page/systemmanager/js/control.js"></script>
+  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+  <section class="content-header">
+      <h1>
+       	监控管理
+      </h1>
+      <!--   <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">用户管理</a></li>
+        <li class="active">监控管理</li>
+      </ol> -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+              <div class="box-body">
+			<div class="form-group input_block">
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height: 900px;"></div>
+    <!-- ECharts单文件引入 -->
+         	</div>
+          </div>
+         </div>
+       </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

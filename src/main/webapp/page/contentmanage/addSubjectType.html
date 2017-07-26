@@ -1,0 +1,62 @@
+<?
+	layout("/inc/layout.html",{title:'添加资讯'}){
+?>
+	
+  <script type="text/javascript" src="../page/contentmanage/js/addSubject.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>添加学科分类</h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>学科分类管理</a></li>
+        <li class="active">添加学科分类</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div id="defaultForm" style="width: 550px;height:130px;text-align: right;padding-top: 20px;">
+	  		<input id="idsub" type="hidden" value="${subject.id!}">
+	  		<input id="level" type="hidden" value="${subject.level!}">
+	  		<label for="inputEmail3" class="col-sm-2 control-label"><b style="color: #FF0000;margin-right: 5px;">*</b>级别</label>
+	  		<select id="xkjb" style="height: 34px;width: 428px;margin-right: 15px;">
+               <option value="">--请选择学科分类级别--</option>
+               <option value="1">一级</option>
+               <option value="2">二级</option>
+               <option value="3">三级</option>
+               <option value="4">四级</option>
+	     	</select>
+	  		<div class="form-group" style="margin-top: 2%;">
+                  <label for="inputEmail3" class="col-sm-2 control-label"><b style="color: #FF0000;margin-right: 5px;">*</b>分类号</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="name" value="${subject.classNum!}" class="form-control" id="inputEmail3" placeholder="分类号">
+                  </div>
+            </div>
+	  		<div class="form-group" style="margin-top: 10%;">
+                  <label for="inputEmail3" class="col-sm-2 control-label"><b style="color: #FF0000;margin-right: 5px;">*</b>分类名称</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="name" value="${subject.className!}" class="form-control" id="inputEmail4" placeholder="分类名称">
+                  </div>
+            </div>
+		</div>
+		<?if(addupdate=="update"){?>
+		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		 	<button type="submit" class="btn btn-primary" onclick="upateSubject()">修改</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="noupdate()">取消</button>
+		</div>
+		<?}?>
+		
+		<?if(addupdate=="add"){?>
+		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		 	<button type="submit" class="btn btn-primary" onclick="submission()">添加</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="reset()">重置</button>
+		</div>
+		<?}?>
+      </div>
+    </section>
+  </div>
+<?}?>

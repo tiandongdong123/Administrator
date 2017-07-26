@@ -1,0 +1,46 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/role_manager.js"> </script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+       	角色管理
+      </h1>
+      <!--  <ol class="breadcrumb">
+        <li><a href="../user/toIndex.do"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="javascript:void(0)">系统管理</a></li>
+        <li class="active">角色管理</li>
+      </ol> -->
+    </section>
+
+    <section class="content">
+        <!-- left column -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <form role="form">
+            </form>
+            <button type="button" style="margin-top: 5px;margin-left: 10px;" class="btn btn-primary" onclick="addrole()">添加角色</button>
+            <table  style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th style="width: 20px;">序号</th>
+                  <th style="width: 40px;">部门名称</th>
+                  <th style="width: 40px;">角色名称</th>
+                  <th style="width: 50px;">角色描述</th>
+                  <th style="width: 200px;">权限</th>
+                  <th style="width: 100px;">操作</th>
+                </tr>
+                </thead>
+                <tbody id="rolebody">
+           
+                </tbody>
+              </table>
+               <div id="page"></div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

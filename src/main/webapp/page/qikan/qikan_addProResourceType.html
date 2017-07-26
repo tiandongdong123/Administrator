@@ -1,0 +1,41 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/public.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/laypage.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_addProResourceType.js"></script>
+
+<style type="text/css">
+	.search dl {
+		margin-bottom: 25px;
+		text-align:left;
+	}
+	.search {
+		width: 100%;
+		margin: 20px auto;
+	}
+</style>
+<body class="hold-transition ">
+	<section class="content" >
+     	<div class="form-group input_block" id="ziyuantigongshang">
+         <label class="input_name">资源提供商</label>
+           <select class="form-control input_width" name="provider" id="provider">
+           </select>
+      </div>
+      <div class="box-body" id="ziyuanleixing">
+                <div class="form-group input_block">
+                  <label class="input_name">资源类型</label>
+                  <input type="text" class="form-control input_width" name="proResourceName" id="proResourceName" placeholder="请输入...">
+                 	<span id="xuanze"></span>
+                  <input type="hidden" id="proResourceId" />
+                </div>
+          </div>
+   </section>
+</body>
+
+<?}?>

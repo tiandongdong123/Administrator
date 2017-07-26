@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- 正式服务开启 -->
+	<dubbo:application name="adminmanager" />
+	<!-- <dubbo:registry address="zookeeper://10.10.184.100:2190" check="false" /> -->
+	<dubbo:registry address="zookeeper://10.10.184.180:2181?backup=10.10.184.181:2181,10.10.184.182:2181" group="wfks_develop" check="false"/>
+	
+	<dubbo:registry address="zookeeper://10.10.184.100:2187?backup=10.10.184.100:2188,10.10.184.100:2189" check="false"/>
+	<!-- 	高级检索/专业检索 -->
+    <dubbo:reference id="searchAllResult" interface="org.bigdata.framework.search.iservice.ISearchCoreResultService"/>
+    <!-- 文辑推优 -->
+    <dubbo:reference id="iVolume" interface="org.bigdata.framework.common.api.volume.IVolumeService"/>
+	<dubbo:reference protocol="dubbo" check="false" id="accountingService" interface="wfks.accounting.transaction.TransactionProcess" />
+	
+	<dubbo:reference id="accountDaoService"  protocol="dubbo" check="false" interface="wfks.accounting.account.AccountDao" />
+
+	<bean id="setting" class="wfks.accounting.WebAccountingSetting">
+		<constructor-arg name="transactionPublicKey"
+						 value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCACO+cmFZNtWJSSZuYYIysAhTnpAl1vLfAgOB8+YK5FbwaR1ETU7a0T9okpVDJfctwU2vsRagVg0BufGv8yALR71Lk8Syp3TqJJQF9/qmXifqIRGzD1yRFw9N5su9g6mf9tnp1HWFyCSH46zVZK/PHgaJ8sYee9JxTJE0L5m/ctQIDAQAB" />
+		<constructor-arg name="transactionUrl" value="http://my.wanfangdata.com.cn/user/transaction" />
+	</bean>
+
+</beans>

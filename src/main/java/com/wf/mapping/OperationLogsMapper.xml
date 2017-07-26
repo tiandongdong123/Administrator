@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.OperationLogsMapper" >
+  <resultMap id="BaseResultMap" type="java.util.Map" >
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="crate_time" property="crateTime" jdbcType="VARCHAR" />
+    <result column="opreation"  property="opreation" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="person" property="person" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="addOperationLogs" parameterType="com.wf.bean.OperationLogs">
+   insert into operation_logs (user_id,crate_time,opreation,reason,person) values  (#{userId},now(),#{opreation},#{reason},#{person})
+  </insert>
+  
+  <select id="selectOperationLogs" resultMap="BaseResultMap" parameterType="java.util.Map"> 
+  select id,user_id,crate_time,person,opreation,reason from operation_logs where 1=1
+  <if test="userId!=null and userId!=''">
+  	and user_id = #{userId}
+  </if>
+   <if test="person!=null and person!=''">
+  	and person = #{person}
+  </if>
+  <if test="startTime!=null and startTime!=''">
+  	and DATE_FORMAT(crate_time,'%y-%c-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%y-%c-%d')
+  </if>
+  <if test="endTime!=null and endTime!=''">
+  	and DATE_FORMAT(crate_time,'%y-%c-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime},'%y-%c-%d')
+  </if>
+   order by crate_time desc limit #{pageNum},#{pageSize}
+  </select>
+  
+  <select id="selectOperationLogsNum" resultType="INTEGER"> 
+  select count(1) from operation_logs where 1=1
+  <if test="userId!=null and userId!=''">
+  	and user_id = #{userId}
+  </if>
+   <if test="person!=null and person!=''">
+  	and person = #{person}
+  </if>
+  <if test="startTime!=null and startTime!=''">
+  	and DATE_FORMAT(crate_time,'%y-%c-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%y-%c-%d')
+  </if>
+  <if test="endTime!=null and endTime!=''">
+  	and DATE_FORMAT(crate_time,'%y-%c-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime},'%y-%c-%d')
+  </if>
+  </select>
+   
+</mapper>

@@ -1,0 +1,90 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_jigouList_xiangqing.js"></script>
+
+<style type="text/css">
+.search dl {
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.search {
+	width: 100%;
+	margin: 0px auto;
+}
+</style>
+<body class=" ">
+	<section class="content">
+		<div style="height: 482px; overflow: auto;">
+			<div class="col-md-12">
+				<div>
+					<div class="search" id="xiangqin">
+						<dl>
+							<dt>机构用户：</dt>
+							<dd style="color: #6495ED;" id="institutionName"></dd>
+						</dl>
+						<dl>
+							<dt>资源提供商：</dt>
+							<dd style="color: #6495ED;" id="providerName"></dd>
+						</dl>
+						<dl class="Year">
+							<dt>资源类型：</dt>
+							<dd>
+								<select name="example1_length" aria-controls="example1"
+									onchange="getProResourceId(this.value)" id="resourceType"
+									class="form-control input-sm">
+								</select>
+							</dd>
+							<dt>年份：</dt>
+							<dd>
+								<input type="text" name="" id="startDate" placeholder="起始年"
+									onchange="getAuthorizeRelationList(1)" /> - <input type="text"
+									name="" id="endDate" placeholder="结束年"
+									onchange="getAuthorizeRelationList(1)" />
+							</dd>
+							<dd style="float: right;">
+								已选择&nbsp;<span id="numFu" style="color: #6495ED;">0</span>&nbsp;条数据
+								<a href='' onclick="deleteAuthorizeRelation()">删除关联</a>
+							</dd>
+						</dl>
+					</div>
+				</div>
+				<div style="margin-top:0px;">
+					<table class="table table-bordered table-striped dataTable"
+						role="grid" aria-describedby="example1_info">
+						<thead>
+							<tr role="row">
+								<th tabindex="0" class="sorting_asc" aria-controls="example1"
+									aria-label="Rendering engine: activate to sort column descending"
+									aria-sort="ascending" rowspan="1" colspan="1">序号</th>
+								<th tabindex="0" class="sorting" aria-controls="example1"
+									aria-label="Browser: activate to sort column ascending"
+									rowspan="1" colspan="1">篇名</th>
+								<th tabindex="0" class="sorting" aria-controls="example1"
+									aria-label="Platform(s): activate to sort column ascending"
+									rowspan="1" colspan="1">所属分类</th>
+								<th tabindex="0" class="sorting" aria-controls="example1"
+									aria-label="Engine version: activate to sort column ascending"
+									rowspan="1" colspan="1">资源类型</th>
+								<th tabindex="0" class="sorting" aria-controls="example1"
+									aria-label="CSS grade: activate to sort column ascending"
+									rowspan="1" colspan="1">操作</th>
+							</tr>
+						</thead>
+						<tbody id="textHtml">
+						</tbody>
+					</table>
+					<div id="page"></div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+</body>
+
+<?}?>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.AuthorizeMapper">
+	<resultMap id="AuthorizeMap" type="com.wf.bean.Authorize">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="institution_id" property="institutionId"
+			jdbcType="VARCHAR" />
+		<result column="provider_id" property="providerId" jdbcType="INTEGER" />
+		<result column="username" property="username" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+
+	<select id="getAuthorize" resultMap="AuthorizeMap">
+		select * from authorize where 1=1
+		<if test="authorize !=null and authorize !=''">
+			<if test="authorize.id !=null and authorize.id !=''">
+				and id =#{authorize.id}
+			</if>
+			<if test="authorize.institutionId !=null and authorize.institutionId !=''">
+				and institution_id like CONCAT('%',#{authorize.institutionId},'%')
+			</if>
+			<if test="authorize.providerId !=null and authorize.providerId !=''">
+				and provider_id =#{authorize.providerId}
+			</if>
+			<if test="authorize.username !=null and authorize.username !=''">
+				and username =#{authorize.username}
+			</if>
+			<if test="authorize.password !=null and authorize.password !=''">
+				and password =#{authorize.password}
+			</if>
+		</if>
+		<!-- <if test="institutionIds !=null and institutionIds !=''">
+			and institution_id in
+			<foreach collection="institutionIds" item="institutionId"
+				index="index" open="(" separator="," close=")">
+				#{institutionId}
+			</foreach>
+		</if> -->
+		<if test="pagenum !=null and pagenum !=''">
+			limit #{pagenum},#{pagesize}
+		</if>
+		order by institution_id
+	</select>
+	<select id="getAuthorizeNum" resultType="int">
+		select count(1) from authorize where 1=1
+		<if test="authorize !=null and authorize !=''">
+			<if test="authorize.id !=null and authorize.id !=''">
+				and id =#{authorize.id}
+			</if>
+			<if test="authorize.institutionId !=null and authorize.institutionId !=''">
+				and institution_id like CONCAT('%',#{authorize.institutionId},'%')
+			</if>
+			<if test="authorize.providerId !=null and authorize.providerId !=''">
+				and provider_id =#{authorize.providerId}
+			</if>
+			<if test="authorize.username !=null and authorize.username !=''">
+				and username =#{authorize.username}
+			</if>
+		</if>
+		<!-- <if test="institutionIds !=null and institutionIds !=''">
+			and institution_id in
+			<foreach collection="institutionIds" item="institutionId"
+				index="index" open="(" separator="," close=")">
+				#{institutionId}
+			</foreach>
+		</if> -->
+
+		<if test="authorize.password !=null and authorize.password !=''">
+			and password =#{authorize.password}
+		</if>
+	</select>
+
+	<select id="getAuthorize2" resultMap="AuthorizeMap">
+		select * from authorize where id =#{id}
+	</select>
+	<select id="getAuthorizeByName" resultMap="AuthorizeMap">
+		select * from authorize where 1=1
+		<if test="institutionId != null and institutionId != '' ">
+			and  institution_id=#{institutionId}
+		</if>
+	</select>
+	<!-- 新增 -->
+	<insert id="addAuthorize" parameterType="com.wf.bean.Authorize">
+		<selectKey resultType="int" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id    <!-- 获取自增ID -->
+		</selectKey>
+		insert into authorize(institution_id,provider_id,username,password)
+		values(#{institutionId},#{providerId},#{username},#{password})
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="deleteAuthorize">
+		delete from authorize where id = #{id}
+	</delete>
+	<!-- 更新 -->
+	<update id="updateAuthorize" parameterType="com.wf.bean.Authorize">
+		update authorize
+		<set>
+			<if test="institutionId != null and institutionId !='' ">
+				institution_id =#{institutionId},
+			</if>
+			<if test="providerId != null and providerId != '' ">
+				provider_id = #{providerId},
+			</if>
+			<if test="username != null and username != '' ">
+				username = #{username},
+			</if>
+			<if test="password != null and password != '' ">
+				password = #{password}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+</mapper>

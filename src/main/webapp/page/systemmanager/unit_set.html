@@ -1,0 +1,78 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/unit_set.js"> </script>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div id="tabs_custom" style="display: none;">
+  	 <div class="form-group input_block">
+		<label class="input_name" style="width: 20%">
+		<b style="color: #FF0000;margin-right: 5px;">*</b>单位Code:
+		</label>
+		<input id="unitcode" readonly="readonly" class="form-control input_width"  placeholder="请输入..." type="text">
+	</div>
+  	<div class="form-group input_block">
+		<label class="input_name" style="width: 20%">
+		<b style="color: #FF0000;margin-right: 5px;">*</b>单位名称:
+		</label>
+		<input id="unitname" class="form-control input_width"  placeholder="请输入..." type="text">
+	</div>
+</div>
+<div id="unit_add" style="display: none;">
+  	<div class="form-group input_block">
+		<label class="input_name" style="width: 20%">
+		<b style="color: #FF0000;margin-right: 5px;">*</b>单位Code:
+		</label>
+		<input id="addunitcode" class="form-control input_width"  placeholder="请输入..." type="text">
+	</div>
+	<div class="form-group input_block">
+		<label class="input_name" style="width: 20%">
+		<b style="color: #FF0000;margin-right: 5px;">*</b>单位名称:
+		</label>
+		<input id="addunitname" class="form-control input_width" placeholder="请输入..." type="text">
+	</div>
+</div>
+
+					
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	单位设置
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li class="active">单位设置</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <button type="button" class="btn btn-primary" onclick="addunit()">新增单位</button>
+            <button type="button" class="btn btn-primary" onclick="goback()">确定</button>
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+               	  <th><input type="checkbox" name=""></th>
+                  <th>序号</th>
+                  <th>单位名称</th>
+                  <th>单位code</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="unitbody">
+                
+                 </tbody>
+              </table>
+              <div id="page"></div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

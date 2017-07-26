@@ -1,0 +1,20 @@
+.b{
+	width: 600px;
+	height: 30px;
+}
+.lm{
+	width: 400px;
+	height: 30px;
+	padding: 2px 2px 2px 4px;
+}
+.tdl{
+	text-align: right;
+}
+.tdr{
+	text-align: left;
+}
+td{
+	padding-left: 40px;
+	padding-top: 20px;
+}
+

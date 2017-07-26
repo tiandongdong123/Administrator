@@ -1,0 +1,126 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/othermanager/js/model_use_manager.js"> </script>
+	<input type="hidden" id="time" value="1">
+	<input type="hidden" id="reserch_domain" >
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	功能模块分析
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">统计管理</a></li>
+        <li class="active">功能模块分析</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            
+          <div class="box-body">
+          <div class="form-group input_block">
+ 		<button id="zuotian" onclick="querytime(this,1)" type='button' name="time" class='btn btn-primary btn-sm btn-success' data-toggle='modal' data-target='myModal'>昨天</button>
+		<button id="qitian" onclick="querytime(this,2)" type='button' name="time" class='btn btn-primary btn-sm' data-toggle='modal' data-target='myModal'>近7天</button>
+		<button id="yigeyue" onclick="querytime(this,3)" type='button' name="time" class='btn btn-primary btn-sm' data-toggle='modal' data-target='myModal'>近30天</button>
+          <input type="text" class="form-control input_time"  onclick="WdatePicker()" id="starttime" name="start_time" />
+	      -<input type="text" class="form-control input_time" onclick="WdatePicker()" id="endtime" name="end_time" />
+          </div>
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">用户属性：</label>
+                  <input id="checkallbox" onclick="checkallbox()" type="checkbox" >全部
+                </div>
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">学历：</label>
+                  <input id="checkallexlevel" onclick="checkallexlevel()" type="checkbox" >全部
+                  <input name="ex_level" value="0" type="checkbox" >大专
+                  <input name="ex_level" value="1" type="checkbox" >本科
+                  <input name="ex_level" value="2" type="checkbox" >硕士
+                  <input name="ex_level" value="3" type="checkbox" >博士
+                  <input name="ex_level" value="4" type="checkbox" >其他
+                  </div>
+                  
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">年龄：</label>
+                  <input id="checkallage" onclick="checkallage()" type="checkbox" >全部
+                  <input name="age" value="0-19" type="checkbox" >20岁以前
+                  <input name="age" value="20-29" type="checkbox" >20-29岁
+                  <input name="age" value="30-39" type="checkbox" >30-39岁
+                  <input name="age" value="40-49" type="checkbox" >40-49岁
+                  <input name="age" value="50-59" type="checkbox" >50-59岁
+                  <input name="age" value="60" type="checkbox" >60岁以上
+                  </div>
+                  
+                  
+                   <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">职称：</label>
+                  <input id="checkalltenure" onclick="checkalltenure()" type="checkbox" >全部
+                  <input name="tenure" value="3" type="checkbox" >正高级
+                  <input name="tenure" value="2" type="checkbox" >副高级
+                  <input name="tenure" value="1" type="checkbox" >中级
+                  <input name="tenure" value="0" type="checkbox" >初级
+                  <input name="tenure" value="4" type="checkbox" >其他
+                  </div>
+                  
+                 <div class="form-group input_block" style="position: relative;">
+							<label for="exampleInputEmail1" class="input_name">感兴趣的主题：</label>
+							<input type="text" id="reserchdomain"  placeholder="请输入感兴趣的主题" style="width:170px">
+							<div class="searchsug" id="searchsug1"  style="position: absolute;border-top:none;height: auto; text-align: left; top: 24px;left:19.3%; width: 170px; display: none;">
+					          <ul>
+					          </ul>
+					        </div>
+				</div>
+                  
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">功能模块：</label>
+                   <input id="checkallmodel" onclick="checkallmodel()" type="checkbox" >全部
+                  <?for(var a in namelist){?>
+                   <input name="model" value="${a}" type="checkbox" >${a}
+                  <?}?>
+                  </div>
+                  <div class="form-group input_block">
+                  <button type="button" class="btn btn-primary" onclick="getselectline()">查询</button>
+         	      </div>
+         	       <div class="form-group input_block">
+         	        分析指标：<select id="type"  onchange="getselectline()">
+             	   <option selected="selected" value="1">浏览量</option>
+             	   <option value="2">访问次数</option>
+             	   <option value="3">独立访客数</option>
+             	   <option value="4">新访客数</option>
+             	   <option value="5">活跃用户数</option>
+             	   </select>
+             		  <div id="main" style="height: 400px;"></div>
+             	   </div>
+             	   <div class="form-group input_block">
+             	   <table class="table table-bordered table-striped">
+					<tr>
+					<th id="analysis_property">功能模块</th>
+					<th>浏览量(PV)</th>
+					<th>访问次数(VV)</th>
+					<th>独立访客数(UV)</th>
+					<th>新访客数</th>
+					<th>活跃用户数</th>
+					<th>活跃率</th>
+					<th>用户粘度（MAU / DAU ）</th>
+					</tr> 
+             	   <tbody id="tablebody">
+             	   </tbody>	   
+					</table>
+					 <div id="page"></div>
+             	   </div>
+          </div>
+      </div>
+       </div>
+        </div>
+    </section>
+  </div>
+<?}?>

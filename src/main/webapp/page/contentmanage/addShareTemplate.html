@@ -1,0 +1,115 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" href="../page/contentmanage/css/addResource.css">
+<script type="text/javascript" src="../page/contentmanage/js/addShareTemplate.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+      <?if(addupdate=="add"){?>
+         	添加分享模板
+      <?}?>
+      <?if(addupdate=="update"){?>
+      		修改分享模板
+      		<input value="${shareTemplate.shareContent}" id="shareContent" type="hidden"/>
+      <?}?>
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>分享模板管理</a></li>
+        <li class="active">添加分享模板</li>
+      </ol>-->
+    </section> 
+    <input value="${addupdate}" id="addupdate" type="hidden"/>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+      	<input type="hidden" id="resourceId" value="${shareTemplate.id!}">
+        <div>
+        	<!-- <select id="core_type" onchange="changecore(this);"></select>
+        	<textarea rows="10" cols="200" id="type_field"></textarea> -->
+        	<table>
+        		<tr>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>分享类型</td>
+	        		<td class="tdr">
+	        			
+	       			  <?if(addupdate=="add"){?>
+			         	<select id="shareType" onchange="shareTypeChange(this);">
+		        			<option value="" id="">请选择分享类型</option>
+		        			<?for(name in names){?>
+		        				<option value="${name.templet_name}" id="${name.id}">${name.templet_name}</option>
+		        			<?}?>
+	        			</select>
+				      <?}?>
+				      <?if(addupdate=="update"){?>
+				      	<select id="shareType" onchange="shareTypeChange(this);">
+		        			<option value="">请选择分享类型</option>
+		        			<?for(name in names){?>
+		        				<option value="${name.templet_name}"  id="${name.id}" <?if(name.templet_name==shareTemplate.shareType){?>selected="selected"<?}?> >${name.templet_name}</option>
+		        			<?}?>
+	        			</select>
+				      	
+				      <?}?>	
+        		</tr>
+        		<tr>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>分享字段</td>
+	        		<td class="tdr" id="filedCheckBox">
+	        			<?if(addupdate=="update"){?>
+	        				<input type='checkbox' value='' style='margin-left:10px' id='checkAll' onclick="checkAll();"/>全部
+					        <?for(filed in fileds){?>
+					        	<input type='checkbox' value="${filed.field_zh}:&dollar;{${filed.field_eng}}" style='margin-left:10px' name='checkOne' onclick="checkOne();" <?if(!isEmpty(filed.check)&& filed.check){?>checked="checked"<?}?> />${filed.field_zh}
+					        <?}?>
+				       <?}?>
+	        		
+	        		</td>
+        		</tr>
+        	</table>
+        	
+        	<!-- <table class="tableizer-table">
+			<thead><tr class="tableizer-firstrow"><th>模块名称</th><th>中文名称</th><th>英文名称</th></tr></thead>
+			<tbody>
+			 <tr><td rowspan="4">文献</td><td>文献标题</td><td>title</td></tr>
+			 <tr><td>作者</td><td>authors_name</td></tr>
+			 <tr><td>摘要</td><td>summary</td></tr>
+			 <tr><td>文献详情页链接</td><td>url</td></tr>
+			 <tr><td rowspan="4">文辑</td><td>文辑名称</td><td>volume_name</td></tr>
+			 <tr><td>发布者</td><td>publish_person</td></tr>
+			 <tr><td>发布时间</td><td>publish_date</td></tr>
+			 <tr><td>文辑详情页链接</td><td>url</td></tr>
+			 <tr><td rowspan="4">期刊</td><td>期刊名称</td><td>perio_title</td></tr>
+			 <tr><td>封面</td><td>&nbsp;</td></tr>
+			 <tr><td>简介</td><td>perio_desc</td></tr>
+			 <tr><td>期刊详情页连接</td><td>url</td></tr>
+			 <tr><td rowspan="3">WFMiner的分析结果</td><td>图表名称</td><td>WFMiner_name</td></tr>
+			 <tr><td>分析结果链接地址</td><td>url</td></tr>
+			 <tr><td>分析图</td><td>&nbsp;</td></tr>
+			 <tr><td rowspan="2">选题助手的分析结果</td><td>图表名称</td><td>WFTopic_name</td></tr>
+			 <tr><td>分析结果链接地址</td><td>url</td></tr>
+			 <tr><td rowspan="2">学术圈</td><td>姓名</td><td>WFSocial_name</td></tr>
+			 <tr><td>主页的URL链接</td><td>url</td></tr>
+			 </tbody>
+			 </table> -->
+        	
+		</div>
+		<br/>
+		<?if(addupdate=="add"){?>
+		<div style="text-align: center;width: 550px;">
+		 	<button type="submit" class="btn btn-primary" onclick="addShareTemplate()">添加</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="reset()">重置</button>
+		</div>
+		<?}?>
+		<?if(addupdate=="update"){?>
+		<div style="text-align: center;width: 550px;">
+		 	<button type="submit" class="btn btn-primary" onclick="updateShareTemplate()">修改</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="noupdate()">取消</button>
+		</div>
+		<?}?>		
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+<?}?>

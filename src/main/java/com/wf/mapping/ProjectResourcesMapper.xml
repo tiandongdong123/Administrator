@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProjectResourcesMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ProjectResources" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="pay_channelId" property="projectId" jdbcType="VARCHAR" />
+    <result column="resource_id" property="resourceId" jdbcType="VARCHAR" />
+    <result column="contract" property="contract" jdbcType="VARCHAR" />
+    <result column="product_id" property="productid" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.util.Map" >
+  	<result column="pay_channelId" property="projectId" jdbcType="VARCHAR" />
+    <result column="resource_id" property="resourceId" jdbcType="VARCHAR" />
+    <result column="contract" property="contract" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectProjectResourcesById" resultMap="BaseResultMap2" parameterType="java.util.Map" >
+    select pr.contract,pr.resource_id,pr.pay_channelId from wfks_pay_channel_resources pr where user_id = #{userId} and pay_channelId = #{projectId}
+  </select>
+  
+  <delete id="deleteResources" parameterType="com.wf.bean.ProjectResources" >
+    delete from wfks_pay_channel_resources where 1=1 
+    <if test="userId != null and userId != ''" >
+	    and user_id = #{userId} 
+    </if>
+    <if test="projectId != null and projectId != ''" >    
+   		and pay_channelId = #{projectId} 
+    </if>
+    <if test="resourceId != null and resourceId != ''" >
+    	and resource_id = #{resourceId}
+    </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.wf.bean.ProjectResources" >
+    insert into wfks_pay_channel_resources (id, user_id, pay_channelId, resource_id, contract,product_id)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, 
+      #{resourceId,jdbcType=VARCHAR}, #{contract,jdbcType=VARCHAR}, #{productid,jdbcType=VARCHAR})
+  </insert>
+  
+<update id="update" parameterType="com.wf.bean.ProjectResources">
+    update wfks_pay_channel_resources
+    <set>
+      <if test="projectId != null and projectId != ''" >
+        pay_channelId = #{projectId},
+      </if>
+      <if test="resourceId != null and resourceId !=''" >
+        resource_id = #{resourceId},
+      </if>
+      <if test="contract != null and contract !=''" >
+        contract = #{contract},
+      </if>
+      <if test="productid != null and productid !=''" >
+        product_id = #{productid},
+      </if>
+    </set>
+    where user_id = #{userId} and pay_channelId = #{projectId} and resource_id = #{resourceId}
+</update>
+</mapper>

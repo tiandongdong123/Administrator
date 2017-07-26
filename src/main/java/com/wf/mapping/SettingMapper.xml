@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.SettingMapper">
+	<resultMap id="SettingMap" type="com.wf.bean.Setting">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="setting_name" property="settingName" jdbcType="VARCHAR" />
+		<result column="setting_key" property="settingKey" jdbcType="VARCHAR" />
+		<result column="setting_value" property="settingValue" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<select id="getSetting" resultMap="SettingMap">
+		select * from setting where 1=1
+		<if test="setting !=null and setting !=''">
+			<if test="setting.id !=null and setting.id !=''">
+				and id =#{setting.id}
+			</if>
+			<if test="setting.settingName !=null and setting.settingName !=''">
+				and setting_name like CONCAT('%',#{setting.settingName},'%')
+			</if>
+			<if test="setting.settingKey !=null and setting.settingKey !=''">
+				and setting_key like CONCAT('%',#{setting.settingKey},'%')
+			</if>
+			<if test="setting.settingValue !=null and setting.settingValue !=''">
+				and setting_value like CONCAT('%',#{setting.settingValue},'%')
+			</if>
+			<if test="setting.remark !=null and setting.remark !=''">
+				and remark like CONCAT('%',#{setting.remark},'%')
+			</if>
+		</if>
+		<if test="pagenum !=null and pagenum !=''">
+			limit #{pagenum},#{pagesize}
+		</if>
+	</select>
+	
+	<select id="getSettingNum" resultType="int">
+		select count(1) from setting where 1=1
+		<if test="setting !=null and setting !=''">
+			<if test="setting.id !=null and setting.id !=''">
+				and id =#{setting.id}
+			</if>
+			<if test="setting.settingName !=null and setting.settingName !=''">
+				and setting_name like CONCAT('%',#{setting.settingName},'%')
+			</if>
+			<if test="setting.settingKey !=null and setting.settingKey !=''">
+				and setting_key like CONCAT('%',#{setting.settingKey},'%')
+			</if>
+			<if test="setting.settingValue !=null and setting.settingValue !=''">
+				and setting_value like CONCAT('%',#{setting.settingValue},'%')
+			</if>
+			<if test="setting.remark !=null and setting.remark !=''">
+				and remark like CONCAT('%',#{setting.remark},'%')
+			</if>
+		</if>
+	</select>
+	
+	<select id="getSettingById" resultMap="SettingMap">
+		select * from setting where 1=1
+		<if test="setting !=null and setting !=''">
+			<if test="setting.id !=null and setting.id !=''">
+				and id =#{setting.id}
+			</if>
+			<if test="setting.settingName !=null and setting.settingName !=''">
+				and setting_name =#{setting.settingName}
+			</if>
+			<if test="setting.settingKey !=null and setting.settingKey !=''">
+				and setting_key =#{setting.settingKey}
+			</if>
+			<if test="setting.settingValue !=null and setting.settingValue !=''">
+				and setting_value =#{setting.settingValue}
+			</if>
+			<if test="setting.remark !=null and setting.remark !=''">
+				and remark =#{setting.remark}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="addSetting" parameterType="com.wf.bean.Setting">
+		<!--  <selectKey resultType="int" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id -->   <!-- 获取自增ID -->
+		<!-- </selectKey>-->
+		insert into setting(id,setting_name,setting_key,setting_value,remark)
+		values(#{id},#{settingName},#{settingKey},#{settingValue},#{remark})
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="deleteSetting">
+		delete from setting where id = #{id}
+	</delete>
+	<!-- 更新 -->
+	<update id="updateSetting" parameterType="com.wf.bean.Setting">
+		update setting
+		<set>
+			<if test="settingName !=null and settingName !=''">
+				 setting_name =#{settingName},
+			</if>
+			<if test="settingKey !=null and settingKey !=''">
+				 setting_key =#{settingKey},
+			</if>
+			<if test="settingValue !=null and settingValue !=''">
+				 setting_value =#{settingValue},
+			</if>
+			<if test="remark !=null and remark !=''">
+				 remark =#{remark}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+</mapper>

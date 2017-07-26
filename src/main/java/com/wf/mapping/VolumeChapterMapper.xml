@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.VolumeChapterMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.VolumeChapter" >
+    <id column="chapter_id" property="chapterId" jdbcType="VARCHAR" />
+    <result column="chapter_title" property="chapterTitle" jdbcType="VARCHAR" />
+    <result column="volume_id" property="volumeId" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    chapter_id, chapter_title, volume_id,number,add_time
+  </sql>
+  <select id="queryChapter" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select * from volume_chapter where volume_id=#{volumeId}
+    ORDER BY add_time ASC
+  </select> 
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from volume_chapter where
+    <if test="_parameter !=null">
+        volume_id in
+	    <foreach collection="_parameter.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if> 
+    <if test="_parameter==null">
+       		1=2
+    </if> 
+  </delete>
+  <insert id="insert" parameterType="java.util.List" >
+    insert into volume_chapter (chapter_id, chapter_title, volume_id,number,add_time)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.chapterId},#{item.chapterTitle},#{item.volumeId},#{item.number},#{item.addTime})  
+    </foreach>
+  </insert>
+</mapper>

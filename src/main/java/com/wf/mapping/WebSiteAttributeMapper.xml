@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.WebSiteAttributeMapper" >
+  <resultMap id="webSiteAttribute" type="com.wf.bean.WebSiteAttribute" >
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="DATE" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR"/>
+    <result column="numbers" property="numbers" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="VARCHAR" />
+    <result column="percent" property="percent" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 查询访客年龄属性 -->
+   <select id="findWebsiteAttributeAge" resultType="java.util.Map">
+ 	 select type,sum(sum) nums ,group_name,sum(numbers) num,IFNULL(sum(numbers)/sum(sum),0) percent
+ 	 from rs_website_survey_visitor_attribute_daily where type = 1 and group_name <![CDATA[<>]]> ''
+ 	 <if test="startTime != null and endTime != ''">
+ 	 	and date &gt;= #{startTime}
+ 	 </if>
+ 	 <if test="endTime != null and endTime !='' ">
+ 	 	and date &lt;=#{endTime}
+ 	 </if>
+ 	 	GROUP BY group_name
+  </select> 
+  <!-- 查询访客男女属性 -->
+   <select id="findWebsiteAttributeGender" resultType="java.util.Map">
+ 	select type,sum(sum) nums ,group_name,sum(numbers) num,IFNULL(sum(numbers)/sum(sum),0) percent
+ 	 from rs_website_survey_visitor_attribute_daily where type = 2 and group_name <![CDATA[<>]]> ''
+ 	 <if test="startTime != null and endTime != ''">
+ 	 	and date &gt;= #{startTime}
+ 	 </if>
+ 	 <if test="endTime != null and endTime !='' ">
+ 	 	and date &lt;=#{endTime}
+ 	 </if>
+ 	 	GROUP BY group_name
+  </select> 
+  
+  <!-- 查询访客学历属性 -->
+   <select id="findWebsiteAttributeEducation" resultType="java.util.Map">
+ 	 select type,sum(sum) nums ,group_name,sum(numbers) num,IFNULL(sum(numbers)/sum(sum),0) percent
+ 	 from rs_website_survey_visitor_attribute_daily where type = 3 and group_name <![CDATA[<>]]> ''
+ 	 <if test="startTime != null and endTime != ''">
+ 	 	and date &gt;= #{startTime}
+ 	 </if>
+ 	 <if test="endTime != null and endTime !='' ">
+ 	 	and date &lt;=#{endTime}
+ 	 </if>
+ 	 	GROUP BY group_name
+  </select> 
+  <!-- 查询访客职称属性 -->
+   <select id="findWebsiteAttributeJobTitle" resultType="java.util.Map">
+ 	 select type,sum(sum) nums ,group_name,sum(numbers) num,IFNULL(sum(numbers)/sum(sum),0) percent
+ 	 from rs_website_survey_visitor_attribute_daily where type = 4 and group_name <![CDATA[<>]]> ''
+ 	 <if test="startTime != null and endTime != ''">
+ 	 	and date &gt;= #{startTime}
+ 	 </if>
+ 	 <if test="endTime != null and endTime !='' ">
+ 	 	and date &lt;=#{endTime}
+ 	 </if>
+ 	 	GROUP BY group_name
+  </select> 
+ 
+   <!-- 查询访客感兴趣属性 -->
+    <select id="findWebsiteAttributeInterest" resultType="java.util.Map">
+ 	select type,sum(sum) nums ,group_name,sum(numbers) num,IFNULL(sum(numbers)/sum(sum),0) percent
+ 	 from rs_website_survey_visitor_attribute_daily where type = 5 and group_name <![CDATA[<>]]> ''
+ 	 <if test="startTime != null and endTime != ''">
+ 	 	and date &gt;= #{startTime}
+ 	 </if>
+ 	 <if test="endTime != null and endTime !='' ">
+ 	 	and date &lt;=#{endTime}
+ 	 </if>
+ 	 	GROUP BY group_name
+  </select>  
+  
+  
+</mapper>

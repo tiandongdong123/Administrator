@@ -1,0 +1,103 @@
+	<?
+	  include("/inc/header.html") {}
+    ?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<?include("/inc/header.html"){}?>
+<script type="text/javascript" src="../page/usermanager/js/ins_information.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/public.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+<script type="text/javascript">
+
+	function addOrUpateAuthority(){
+		var data = new FormData($('#fromList')[0]);
+	    $.ajax({  
+	        url: '../auser/addauthority.do',  
+	        type: 'POST',
+	        data: data,
+	        cache: false,  
+	        processData: false,
+	        contentType: false  
+	    }).done(function(data){
+	    	if(data.flag=="success"){
+	    		layer.msg("设置成功",{icon: 1});
+	    	}else{
+	    		layer.msg("设置失败",{icon: 2});
+	    	}
+	    	setTimeout(function(){ 
+		    	parent.layer.closeAll();
+	        }, 1000);
+	    });
+	}
+	
+	
+	//权限切换
+	function aty(flag,msg){
+		if(flag=='is'){
+			if(msg=='PartyAdminTime'){
+				$("#info").show();
+				$("#date").show();
+			}else if(msg=='NBSPRCTime' || msg=='GEOTimeLimit'){
+				$("#date").show();
+			}
+		}else{
+			$("#info").hide();
+			$("#date").hide();
+		}
+	}
+</script>
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+          <form id="fromList" method="post">
+          <input type="hidden" name="relatedIdAccountType" value="${msg}"/>
+            <div class="form-group input_block">
+                 <label class="input_name">机构账号:</label>
+                 <input type="text" class="form-control input_width" name="userId" id="userId" readonly="readonly" value="${userId!}">
+            </div>
+	        <div class="form-group input_block">
+              	<label class="input_name">是否有权限</label>
+              	<input type="radio" name="authorityType" <?if(!isEmpty(wfks) || !isEmpty(setting)){?>checked="checked"<?}?> value="is"  onclick="aty('is','${msg}');"/>有权限
+                <input type="radio"  name="authorityType" <?if(isEmpty(wfks) && isEmpty(setting)){?>checked="checked"<?}?> value="not" onclick="aty('not','${msg}');"/>无权限
+	        </div>
+	        <div id="info" <?if(!isEmpty(wfks)&&msg=='PartyAdminTime'){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+		        <div class="form-group input_block">
+	              	<label class="input_name">是否试用</label>
+	              	<input type="radio" name="trial" value="isTrial"/>是
+	                <input type="radio" name="trial" checked="checked" value="notTrial"/>否
+		        </div>
+                <div class="form-group input_block">
+                	<label class="input_name">用户ID</label>
+                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${setting.propertyValue!}">
+                </div>
+                <div class="form-group input_block">
+                 	<label class="input_name">密码</label>
+                 	<input type="text" class="form-control input_width" name="password" id="password" value="">
+                </div>
+	        </div>
+			<div id="date" <?if(!isEmpty(wfks)&&msg!='UserLogReport'){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+                <div class="form-group input_block">
+                	<label class="input_name">开始时间</label>
+                	<input type="text" class="form-control input_width" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endtime\')}'})" name="begintime" id="begintime" value="${wfks.begintime!,dateFormat='yyyy-MM-dd'}">
+                </div>
+                <div class="form-group input_block">
+                 	<label class="input_name">结束时间</label>
+                 	<input type="text" class="form-control input_width" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'begintime\')}'})" name="endtime" id="endtime" value="${wfks.endtime!,dateFormat='yyyy-MM-dd'}">
+                </div>
+			</div>
+        </form>
+		<div class="block_left">
+		  <button type="button" class="btn btn-primary" id="submit" onclick="addOrUpateAuthority();">提交</button>
+		  <button type="button" class="btn btn-primary" onclick="location=location;">重置</button>
+		</div>
+        </div>
+        </div>
+      </div>
+   </section>
+</body>
+</html>

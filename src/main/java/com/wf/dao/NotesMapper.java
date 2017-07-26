@@ -1,0 +1,32 @@
+package com.wf.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.wf.bean.Notes;
+public interface NotesMapper {
+	/**
+	 * 笔记管理
+	 * @return
+	 */
+	public List<Object>  selectNotesInfor(Map<String,Object> map);
+	/**
+	 * 笔记管理
+	 * @param map
+	 * @return
+	 */
+	public List<Object>  selectNotesInforAll(Map<String,Object> map);
+	
+	
+	public Notes  findNotes(String id);
+	
+	public int updateNotes(Notes notes);
+	
+	public int closeNote(@Param("id") String id,@Param("finalOpinion")String finalOpinion);
+	
+	boolean handlingNote(@Param("id") String id);
+	
+	public int openNote(@Param("id") String id);
+}

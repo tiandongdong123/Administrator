@@ -1,0 +1,152 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/othermanager/js/card_manager.js"></script>
+<script src="../js/laypage-v1.3/laypage/laypage.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+       	充值卡管理
+      </h1>
+     <!--   <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">其他管理</a></li>
+        <li class="active">充值卡管理</li>
+      </ol>-->
+    </section> 
+<input type="text" style="display: none;" id="data_source">
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group input_block ">
+                  <label class="input_name"> 批次:</label>
+                  <input type="text" id="batchName" class="form-control input_width">批
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name">卡号:</label>
+                  <input type="text" id="numStart" class="form-control input_time">
+                  <label>至</label>
+                  <input type="text" id="numEnd" class="form-control input_time">
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name">申请部门:</label>
+                  <input type="text" id="department" class="form-control input_width">
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name">申请人:</label>
+                  <input type="text" id="person" class="form-control input_width">
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name"> 申请时间:</label>
+                  <input id="startTime" type="text"   class="form-control input_time" onclick="WdatePicker()">
+                  <label>——</label>
+                  <input id="endTime" type="text"   class="form-control input_time" onclick="WdatePicker()">
+                </div>
+                <div class="form-group input_block " id="type_list"> 
+                  <label class="input_name">充值卡类型：</label>
+                  <input id="all_type" type="checkbox" name="cardType" value="">全选
+                </div>
+                <div class="form-group input_block ">
+                  <label class="input_name">批次状态：</label>
+                  <input id="all_state" type="checkbox" name="checkState" value="">全选
+                  <input type="checkbox" name="checkState" value="1">未审核
+                  <input type="checkbox" name="checkState" value="2">已审核未领取
+                  <input type="checkbox" name="checkState" value="3">已领取
+                </div>
+                <div class="form-group input_block " style="display:none;" id="activate">
+                  <label class="input_name">充值卡状态：</label>
+                  <input id="card_state" type="checkbox" name="invokeState" value="">全选
+                  <input type="checkbox" name="invokeState" value="1">未激活
+                  <input type="checkbox" name="invokeState" value="2">已激活
+                  <input type="checkbox" name="invokeState" value="3">已过期
+                </div>
+              </div>
+              <div class="box-footer" style="text-align:center;">
+                <button type="button" class="btn btn-primary" onclick="query()">查询</button>
+              </div>
+            </form>
+            <!-- 查询结果列表开始 -->
+            <div class="box-body" id="result" style="display: none;">
+            <div style="color:#0000FF;text-align:right;">
+              	<button type="button"  onclick="exportAll();" class="btn btn-primary">导出</button>
+            </div>
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>批次</th>
+                  <th>充值卡类型</th>
+                  <th>卡号</th>
+                  <th>密码</th>
+                  <th>面值</th>
+                  <th>有效期</th>
+                  <th>申请日期</th>
+                  <th>激活状态</th>
+                  <th>激活日期</th>
+                  <th>激活用户</th>
+                  <th>激活IP</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="list">
+                </tbody>
+              </table>
+            <!--分页开始-->
+    		<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+   		    <!--分页结束-->
+            </div>
+              <!-- 查询结果列表结束 -->
+               <!-- 查询结果列表开始 -->
+            <div class="box-body" id="result2" style="display: none;">
+            <div style="color:#0000FF;text-align:right;">
+              	<button type="button"  onclick="exportAll();" class="btn btn-primary">导出</button>
+            </div>
+          <!--   <div style="color:#0000FF;text-align:right;">
+              	这段时间内累计充值36次，共计5000.00元
+            </div> -->
+              <table id="example2" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>批次</th>
+                  <th>充值卡类型</th>
+                  <th>面值/数量</th>
+                  <th>总金额</th>
+                  <th>有效期</th>
+                  <th>申请部门</th>
+                  <th>申请人</th>
+                  <th>申请时间</th>
+                  <th>审核状态</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="list2">
+                </tbody>
+              </table>
+            <!--分页开始-->
+    		<div id="divPager2" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+   		    <!--分页结束-->
+            </div>
+        
+          <!-- 查询结果列表结束 -->
+          </div>
+          </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>
