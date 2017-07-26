@@ -1,0 +1,83 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+ <script type="text/javascript" src="../page/systemmanager/js/log.js"></script>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	日志管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">用户管理</a></li>
+        <li class="active">日志管理</li>
+      </ol>->
+    </section> -
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            
+              <div class="box-body">
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">操作用户：</label>
+                  <input type="text" id="user_id" name="user_id" class="form-control input_width" >
+                </div>
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">操作IP：</label>
+                  <input type="text" id="institution_name" name="institution_name" class="form-control input_width" >
+                </div>
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">操作类型：</label>
+                  <select id="restype">
+	                  <option value="">--请选择操作类型--</option>
+	                  <option value="登陆">登陆</option>
+	                  <option value="查询">查询</option>
+	                  <option value="审核">审核</option>
+	                  <option value="下线">下线</option>
+                  </select>
+                </div>
+      			<div class="form-group input_block">
+	           	  <label for="exampleInputEmail1" class="input_name">操作时间：</label>
+	              <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" />
+	              -<input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" />
+	         	</div>
+	            <center><button type='button' class='btn btn-primary' onclick="tabulation()">查询</button></center>
+<!-- 	         	<div style="overflow-y:scroll; height:300px;"> -->
+	 			<div class="mailbox-controls">
+	                <div class="btn-group">
+	                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+	                </div>
+	                 <button type="button" style="float: right;margin-right: 5px;" onclick="exportLog();" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+	             	 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
+	             </div>
+	         	<table  class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th><input type="checkbox" id="checkAll" onclick="checkAll();"></th>
+                  <th>序号</th>
+                  <th>操作用户</th>
+                  <th>操作IP</th>
+                  <th>操作时间</th>
+                  <th>操作类型</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+              </table>
+              <div id="page"></div>	
+              </div>
+          </div>
+      </div>
+        </div>
+    </section>
+  </div>
+<?}?>

@@ -1,0 +1,66 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/data_manager.js"> </script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	数据库配置管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li class="active">数据库配置管理</li>
+      </ol> -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group">
+ 					数据库名称：<input type="text"  id="dataname" placeholder="">&nbsp;&nbsp;&nbsp;
+                  <button type="button" class="btn btn-primary" onclick="datapage(1)">查询</button>
+                </div>
+            </form>
+            <div >
+            	 <button type="button" class="btn btn-primary" onclick="adddata()">添加数据库</button>
+            	 <div style="margin-left: 800px;">
+	            	 <button type="button" class="btn btn-primary" onclick="exportData();">导出</button>
+	            	 <button type="button" class="btn btn-primary" onclick="datapage(1)">刷新</button>
+	            	 <button type="button" class="btn btn-primary" onclick="PushData();">发布</button>
+            	 </div>
+            </div>
+            <table   style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th style="width: 40px;">序号</th>
+                  <td style="width: 60px;">数据库名称</td>
+                  <td style="width: 100px;">数据库描述</td>
+                  <td style="width: 40px;">数据库类型</td>
+                  <td style="width: 120px;">数据库来源</td>
+                  <td style="width: 100px;">资源类型</td>
+                  <td style="width: 100px;">语种</td>
+                  <td style="width: 100px;">自定义策略</td>
+                  <td style="width: 30px;">状态</td>
+                  <td style="width: 120px;">操作</th>
+                </tr>
+                </thead>
+                <tbody id="databody">
+                
+               </tbody>
+              </table>
+              <div id="page"></div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

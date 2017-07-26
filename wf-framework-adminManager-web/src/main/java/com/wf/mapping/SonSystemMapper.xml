@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.SonSystemMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.SonSystem" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="son_name" property="sonName" jdbcType="VARCHAR" />
+     <result column="son_code" property="sonCode" jdbcType="VARCHAR" />
+     <result column="product_source_code" property="productResourceCode" jdbcType="VARCHAR" />
+     
+  </resultMap>
+
+  
+  <select id="getSon" resultMap="BaseResultMap">
+  select id,son_name ,son_code,product_source_code from son_system limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="getSonNum" resultType="int">
+  select count(1) from son_system
+  </select>
+  
+   <delete id="deleteSon" >
+  	delete from son_system where id in
+ 	 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    </foreach>
+  </delete>
+  
+   <select id="checkSon" resultMap="BaseResultMap">
+  	select id,son_name ,son_code,product_source_code from son_system where son_name =  #{sonName} and son_code = #{sonCode} and product_source_code=#{productResourceCode}
+   </select>
+   <select id="getAll" resultMap="BaseResultMap">
+  	select * from son_system 
+   </select>
+   
+   <insert id="doAddSon">
+   	insert into son_system (son_name,son_code,product_source_code) values (#{sonName},#{sonCode},#{productResourceCode})
+   </insert>
+   
+   <update id="doUpdateSon">
+    update son_system set son_name = #{sonName},son_code=#{sonCode},product_source_code=#{productResourceCode} where id=#{id}
+    
+   </update>
+   
+   <select id="getRsonName" resultType="string">
+    select son_name,son_code,product_source_code from son_system 
+   </select>
+  
+  	<select id="getOneSon" resultMap="BaseResultMap">
+    select * from son_system where son_code=#{sonCode} 
+   </select>
+</mapper>

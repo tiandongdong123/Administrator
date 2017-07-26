@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ResourceDetailedMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ResourceDetailed" >
+  	<id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="account_id" property="accountId" jdbcType="VARCHAR" />
+    <result column="resource_purchase_id" property="resourcePurchaseId" jdbcType="VARCHAR" />
+    <result column="journal_CLC" property="journalClc" jdbcType="VARCHAR" />
+    <result column="journal_IDNo" property="journalIdno" jdbcType="VARCHAR" />
+    <result column="journal_startTime" property="journalStarttime" jdbcType="VARCHAR" />
+    <result column="journal_endTime" property="journalEndtime" jdbcType="VARCHAR" />
+    <result column="degree_CLC" property="degreeClc" jdbcType="VARCHAR" />
+    <result column="degree_types" property="degreeTypes" jdbcType="VARCHAR" />
+    <result column="degree_startTime" property="degreeStarttime" jdbcType="VARCHAR" />
+    <result column="degree_endTime" property="degreeEndtime" jdbcType="VARCHAR" />
+    <result column="conference_CLC" property="conferenceClc" jdbcType="VARCHAR" />
+    <result column="conference_No" property="conferenceNo" jdbcType="VARCHAR" />
+    <result column="patent_IPC" property="patentIpc" jdbcType="VARCHAR" />
+    <result column="books_CLC" property="booksClc" jdbcType="VARCHAR" />
+    <result column="books_IDNo" property="booksIdno" jdbcType="VARCHAR" />
+    <result column="standard_types" property="standardTypes" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="full_IP_range" property="fullIpRange" jdbcType="VARCHAR" />
+    <result column="limited_parcel_startTime" property="limitedParcelStarttime" jdbcType="DATE" />
+    <result column="limited_parcel_endTime" property="limitedParcelEndtime" jdbcType="DATE" />
+    <result column="reading_print" property="readingPrint" jdbcType="INTEGER" />
+    <result column="online_visitor" property="onlineVisitor" jdbcType="INTEGER" />
+    <result column="copy_No" property="copyNo" jdbcType="INTEGER" />
+    <result column="total_print_No" property="totalPrintNo" jdbcType="INTEGER" />
+    <result column="single_print_No" property="singlePrintNo" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="addResourceDetailed" parameterType="com.wf.bean.ResourceDetailed">
+    insert into resourcedetailed (id,account_id, resource_purchase_id, journal_CLC, 
+      journal_IDNo, journal_startTime, journal_endTime, 
+      degree_CLC, degree_types, degree_startTime, 
+      degree_endTime, conference_CLC, conference_No, 
+      patent_IPC, books_CLC, books_IDNo, 
+      standard_types, company_name, full_IP_range, 
+      limited_parcel_startTime, limited_parcel_endTime, 
+      reading_print, online_visitor, copy_No, 
+      total_print_No, single_print_No)
+    values (#{id},#{accountId}, #{resourcePurchaseId}, #{journalClc}, 
+      #{journalIdno}, #{journalStarttime}, #{journalEndtime}, 
+      #{degreeClc}, #{degreeTypes}, #{degreeStarttime}, 
+      #{degreeEndtime}, #{conferenceClc}, #{conferenceNo}, 
+      #{patentIpc}, #{booksClc}, #{booksIdno}, 
+      #{standardTypes}, #{companyName}, #{fullIpRange}, 
+      #{limitedParcelStarttime}, #{limitedParcelEndtime}, 
+      #{readingPrint}, #{onlineVisitor}, #{copyNo}, 
+      #{totalPrintNo}, #{singlePrintNo})
+  </insert>
+ 
+ <delete id="deleteResourceDetailed" parameterType="java.lang.String">
+ 	delete from resourcedetailed where account_id = #{accountId}
+ </delete>
+ 
+ <!-- 更新资源购买详细信息 -->
+  <update id="updateResourceDetailed" parameterType="com.wf.bean.ResourceDetailed" >
+    update resourcedetailed
+    <set>
+      <if test="journalClc != null" >
+        journal_CLC = #{journalClc},
+      </if>
+      <if test="journalIdno != null" >
+        journal_IDNo = #{journalIdno},
+      </if>
+      <if test="journalStarttime != null" >
+        journal_startTime = #{journalStarttime},
+      </if>
+      <if test="journalEndtime != null" >
+        journal_endTime = #{journalEndtime},
+      </if>
+      <if test="degreeClc != null" >
+        degree_CLC = #{degreeClc},
+      </if>
+      <if test="degreeTypes != null" >
+        degree_types = #{degreeTypes},
+      </if>
+      <if test="degreeStarttime != null" >
+        degree_startTime = #{degreeStarttime},
+      </if>
+      <if test="degreeEndtime != null" >
+        degree_endTime = #{degreeEndtime},
+      </if>
+      <if test="conferenceClc != null" >
+        conference_CLC = #{conferenceClc},
+      </if>
+      <if test="conferenceNo != null" >
+        conference_No = #{conferenceNo},
+      </if>
+      <if test="patentIpc != null" >
+        patent_IPC = #{patentIpc},
+      </if>
+      <if test="booksClc != null" >
+        books_CLC = #{booksClc},
+      </if>
+      <if test="booksIdno != null" >
+        books_IDNo = #{booksIdno},
+      </if>
+      <if test="standardTypes != null" >
+        standard_types = #{standardTypes},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName},
+      </if>
+      <if test="fullIpRange != null" >
+        full_IP_range = #{fullIpRange},
+      </if>
+      <if test="limitedParcelStarttime != null" >
+        limited_parcel_startTime = #{limitedParcelStarttime},
+      </if>
+      <if test="limitedParcelEndtime != null" >
+        limited_parcel_endTime = #{limitedParcelEndtime},
+      </if>
+      <if test="readingPrint != null" >
+        reading_print = #{readingPrint},
+      </if>
+      <if test="onlineVisitor != null" >
+        online_visitor = #{onlineVisitor},
+      </if>
+      <if test="copyNo != null" >
+        copy_No = #{copyNo},
+      </if>
+      <if test="totalPrintNo != null" >
+        total_print_No = #{totalPrintNo},
+      </if>
+      <if test="singlePrintNo != null" >
+        single_print_No = #{singlePrintNo},
+      </if>
+    </set>
+    where account_id = #{accountId}
+  </update>
+</mapper>

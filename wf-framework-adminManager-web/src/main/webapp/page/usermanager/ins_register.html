@@ -1,0 +1,143 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/usermanager/js/ins_register.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/public.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+<div class="content-wrapper">
+    <section class="content-header"><h1>机构账号注册</h1></section>
+
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+          	<form id="fromList" method="post" enctype="multipart/form-data">
+              <div class="box-body">
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构名称</label>
+                  <input type="text" class="form-control input_width" name="institution" id="institution" onfocus="input_onfocus(this);"/>
+                  	<div class="searchsug" style="width: 730px;height: auto;display: none;">
+						<ul></ul>
+					</div>
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构ID</label>
+                  <input type="text" class="form-control input_width" name="userId" id="userId">
+                </div>
+                <div class="checkbox input_block block_left">
+                  <label><input type="checkbox" id="checkp">设置机构账号并发数</label>
+                </div>
+                <div style="display: none;" id="pconcurrent_div">
+                    <div class="form-group input_block">
+	                  <label class="input_name">机构账号并发数</label>
+	                  <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber">
+	                </div>
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>登录方式</label>
+                  <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+                    <option value="1">用户名密码</option>
+                    <option value="0">IP自动</option>
+                    <option value="2">用户名密码+IP</option>
+                  </select>
+                </div>
+                <div>
+	                <div class="form-group input_block" id="upass">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>密码</label>
+	                  <input type="text" class="form-control input_width" name="password" id="password">
+	                </div>
+	                <div class="form-group input_block" id="ipvalue" style="display: none;">
+	                  <label  class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
+	                  <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment"></textarea>
+	                </div>
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
+                  <select class="form-control input_width" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'1','checked');">
+					<option value="">-添加项目-</option>
+					<?for(pro in project){?>					
+					<option proid="${pro.productDetail}" type="${pro.resourceType}" value="${pro.type}" id="${pro.id}">${pro.name}</option>
+					<?}?>
+                  </select>
+                </div>
+                <input type="hidden" id="count" value="-1"/>
+                <div id="multplediv"></div>
+	            
+                <div class="checkbox input_block block_left">
+                  <label><input type="checkbox" id="checkuser">开通管理员</label>
+                </div>
+                <div id="administrator" style="display: none;">
+           	        <div class="form-group input_block">
+                  		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+                  		<input type="radio" name="managerType" value="old"  onclick="radioClick();"/>选择已有管理员
+                  		<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
+                	</div>
+	                <div class="form-group input_block" id="oldManager" style="display: none;">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+	                  <select class="form-control input_width" name="adminOldName" id="adminOldName">
+						<option value="">-请选择管理员ID-</option>
+	                  </select>
+	                </div>
+	                <div id="newManager">
+	                	<div class="form-group input_block">
+		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+		                  <input type="text" class="form-control input_width" name="adminname" id="adminname" onfocus="input_onfocus(this);"/>
+			              <!--   <div class="searchsug" style="width: 730px;margin-left: -3px;height: auto;display: none;margin-top: -107px;float: left;">
+								<ul></ul>
+							</div> -->
+		                </div>
+		                <div class="form-group input_block">
+		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
+		                  <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword">
+		                </div>
+		                <div class="form-group input_block">
+		                  <label class="input_name">管理员IP段</label>
+		                  <textarea class="form-control input_width" rows="3" name="adminIP" id="adminIP"></textarea>
+		                </div>
+		                <div class="form-group input_block">
+		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
+		                  <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
+		                </div>
+	               </div>
+                </div>
+                <div class="checkbox input_block block_left">
+                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
+	            </div>
+	            <div style="display: none;" id="sconcurrent_div">
+                  	<div class="form-group input_block">
+	                  <label class="input_name">设置子帐号上限</label>
+	                  <input type="text" class="form-control input_width" value="100" name="upperlimit" id="upperlimit">
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name">设置子账号并发数</label>
+	                  <input type="text" class="form-control input_width" value="1" id="sConcurrentnumber" name="sConcurrentnumber">
+	                </div>
+		            <div class="form-group input_block">
+	                  <label class="input_name">子账号下载量上限/天</label>
+	                  <input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit">
+	                </div>
+		            <div class="form-group input_block">
+	                  <label class="input_name">设置子账号扣款模式</label>
+	                  <select class="form-control input_width" name="chargebacks" id="chargebacks">
+						<option value="0">从机构账号扣款</option>
+						<option value="1">从机构子账号扣款</option>
+	                  </select>
+	               	</div>
+                </div>
+                  <div class="box-footer block_left">
+	                <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>
+	                <button type="reset" class="btn btn-primary" onclick="location=location;">重置</button>
+	              </div>
+              </div>
+			  <!-- 详情 -->
+              <div id="detail_0"></div>
+			 </form>
+             <!--专利保护系统(机构版)结束 -->
+            
+            </div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

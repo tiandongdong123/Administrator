@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ResourcePriceMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ResourcePrice" >
+    <id column="rid" property="rid" jdbcType="VARCHAR" />
+    <result column="son_code" property="sonCode" jdbcType="VARCHAR" />
+    <result column="source_code" property="sourceCode" jdbcType="VARCHAR" />
+    <result column="resource_type_code" property="resourceTypeCode" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="unit_code" property="unitCode" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="applyUserType" property="applyUserType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BaseMap" type="java.util.Map">
+    <result column="rid" property="rid" jdbcType="VARCHAR" />
+    <result column="source_code" property="sourceCode" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getPriceByRid" resultMap="BaseMap" parameterType="java.lang.String">
+    select name,rid,source_code from resource_price where applyUserType != '0'
+    <if test="rid != null  and rid != ''">
+    	and rid = #{rid} 
+    </if>
+  </select>
+
+  <select id="getPriceBySourceCode" resultMap="BaseMap" parameterType="java.lang.String">
+    select name,rid,source_code from resource_price where applyUserType != '0'
+    <if test="sourceCode != null  and sourceCode != ''">
+    	and source_code = #{sourceCode} 
+    </if>
+  </select>
+
+  <select id="getPrice" resultMap="BaseResultMap" >
+    	select * from resource_price where 1=1
+    <if test="name != null and name!=''  ">
+    	and name like #{name} 
+    </if>
+    limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="getPriceNum" resultType="int" >
+    	select count(1) from resource_price where 1=1
+    <if test="name != null  and name!='' ">
+    	and name like #{name} 
+    </if>
+  </select>
+  
+  <delete id="deletePrice" >
+  	delete from resource_price where rid in
+ 	 <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    </foreach>
+  </delete>
+  
+  <select id="checkPriceRid" resultMap="BaseResultMap">
+  select rid from resource_price where name=#{name} and rid=#{rid}
+  </select>
+  
+  <insert id="doAddPrice" parameterType="com.wf.bean.ResourcePrice">
+  insert into resource_price (rid, son_code, 
+      source_code, resource_type_code,name,unit_code,price)
+    values (#{rid,jdbcType=VARCHAR}, #{sonCode,jdbcType=VARCHAR}, 
+      #{sourceCode,jdbcType=VARCHAR}, #{resourceTypeCode,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{unitCode,jdbcType=VARCHAR},#{price,jdbcType=DOUBLE})
+  </insert>
+  
+  <select id="getRP" resultMap="BaseResultMap">
+   select * from resource_price where rid = #{rid}
+  </select>
+  
+  <update id="doUpdatePrice">
+     update resource_price
+    set 
+      name = #{name,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      son_code=#{sonCode},
+      source_code=#{sourceCode},
+      resource_type_code=#{resourceTypeCode}
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+</mapper>

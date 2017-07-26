@@ -1,0 +1,227 @@
+<? directive dynamic rlmap;?>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/update_data.js"> </script>
+<input type="hidden" id="checkname">
+<input type="hidden" id="dataid" value="${rlmap.dm.id}">
+  <div id="languagebox" style="display: none;">
+  		语种名称：<input type="text" id="languagename" placeholder=""><span  id="checklname"></span><br>
+  </div>
+  <div id="sourcebox" style="display: none;">
+  		来源名称：<input type="text" id="sourcename" placeholder=""><span  id="checksname"></span><br>
+  </div>
+  <div class="content-wrapper">
+   <section class="content-header">
+      <h1>
+       	数据库配置修改
+      </h1>
+     <!--   <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">用户管理</a></li>
+        <li class="active">数据库管理</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <form>
+				<div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据库名称：</label>
+                  <input type="text" id="dataname" class="form-control input_width" onblur="checkDname(this.value,'${rlmap.dm.tableName}')" value="${rlmap.dm.tableName}"><span id="checkdname"></span>
+                </div>
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">数据库简称：</label>
+                  <input type="text" id="abbreviation" class="form-control input_width" value="${rlmap.dm.abbreviation!}">
+                </div>
+                <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>产品类型code：</label>
+                  <input type="text" readonly="readonly" id="product_source_code" class="form-control input_width"  value="${rlmap.dm.productSourceCode}"><span id="checkdname"></span>
+                </div>
+      			 <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name"  >数据库描述：</label>
+                  <textarea id="datadescribe"  class="form-control input_width"  >${rlmap.dm.tableDescribe}</textarea>
+                </div>
+                 <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">资源类型：</label>
+                  <input type="checkbox"  name="" id="checkalltype" onclick="checktype()" value="">全选&nbsp;&nbsp;&nbsp;
+                  
+                 	<?for(var a in rlmap.resourcetype){?>
+                 		<?var x=0;?>
+                 	    <?for(var ax in rlmap.checkresourcetype){?>
+               			<?if(a.typeCode==ax){?>
+                 		 <?x=1;?>
+               			<?}?>
+               		<?}?>
+               			<?if(x==1){?>
+               			<input type="checkbox" checked="checked" name="resourcetype" id="" value="${a.typeCode}">${a.typeName}&nbsp;&nbsp;&nbsp;
+        				<?}else{?>
+        				<input type="checkbox"  name="resourcetype" id="" value="${a.typeCode}">${a.typeName}&nbsp;&nbsp;&nbsp;
+        		<?}?>
+        		<?}?>
+                </div>
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1"  class="input_name">语种：</label>
+                  <span id="language">
+                   <input type="checkbox"  name="" id="checkalllanguage" onclick="checklanguage()" >全选&nbsp;&nbsp;&nbsp;
+                   
+                   <?for(var b in rlmap.language){?>
+                   <?var x = 0;?>
+               		<?for(var bx in rlmap.checklanguage){?>
+               			
+               			<?if(b.languageCode==bx){?>
+               				 <?x = 1;?>
+               			<?}?>
+               			
+               		<?}?>
+               		<?if(x==1){?>
+               			<input type="checkbox"  name="languagenames" checked="checked" id=""  value="${b.languageCode}">${b.languageName}&nbsp;&nbsp;&nbsp;
+               		<?}else{?>
+               			<input type="checkbox"  name="languagenames"  id=""  value="${b.languageCode}">${b.languageName}&nbsp;&nbsp;&nbsp;
+        			<?}?>
+        			<?}?>
+        			
+                  </span>
+        			<a onclick="addlanguage()" >添加语种：</a>
+                </div>
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">数据库来源：</label>
+                  <input type="checkbox"  name="" id="checkallsource" onclick="checksource()" value="">全选&nbsp;&nbsp;&nbsp;
+                  <span id="source">
+                  
+                   <?for(var c in rlmap.dbsource){?>
+                  		 <?var x = 0;?>
+                       <?for(var cx in rlmap.checksource){?>
+               				<?if(c.dbSourceCode==cx){?>
+                 		 		<?x=1;?>
+               				<?}?>
+        				<?}?>
+						<?if(x==1){?>
+               				<input type="checkbox"  name="sourcenames" checked="checked" id=""  value="${c.dbSourceCode}">${c.dbSourceName}&nbsp;&nbsp;&nbsp;
+							<?}else{?>
+							<input type="checkbox"  name="sourcenames"  id=""  value="${c.dbSourceCode}">${c.dbSourceName}&nbsp;&nbsp;&nbsp;
+        			<?}?>
+        			<?}?>
+        			</span>
+        			<a onclick="addsource()">添加来源</a>
+                </div>
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">数据库类型：</label>
+                  <select id="dbtype">
+                  <?if(rlmap.dm.dbtype=='万方数据库'){?>
+                  <option selected="selected">万方数据库</option>
+                  <option>合作数据库</option>
+                  <?}else{?>
+                   <option >万方数据库</option>
+                  <option selected="selected">合作数据库</option>
+                  <?}?>
+                  </select>
+                </div>
+              <!--    <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">学科分类：</label>
+                  <ul id="treeDemo" class="ztree"></ul>
+                </div> -->
+                  <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">自定义策略：</label>
+                  	<button type="button" class="btn btn-primary" onclick="addcontent()">+</button>
+                  	<button type="button" class="btn btn-primary" onclick="delcontent()">-</button>
+                  	<?if(rlmap.cs.~size>0){?>
+                 	<input type="text" id="i1_0" value="${rlmap.cs[0].paramOne}">
+                 	<?}else{?>
+                 	<input type="text" id="i1_0" >
+                 	<?}?>
+                 	<select id="s1_0">
+                 	<?if(rlmap.cs.~size>0){?>
+                 	
+                 	<?if(rlmap.cs[0].accuracy=='精确'){?>
+                 	<option selected="selected">精确</option>
+                 	<option>模糊</option>
+                 	<?}else{?>
+                 	<option >精确</option>
+                 	<option selected="selected">模糊</option>
+                 	<?}?>
+                 	
+                 	<?}else{?>
+                 	 	<option selected="selected">精确</option>
+                 		<option>模糊</option>
+                 	<?}?>
+                 	</select id="s2_0">
+                 	<?if(rlmap.cs.~size>0){?>
+                 	<input type="text" id="i2_0" value="${rlmap.cs[0].paramTwo}">
+                 	<?}else{?>
+                 	<input type="text" id="i2_0">
+                 	<?}?>
+                 	<select id="s2_0">
+                 	<?if(rlmap.cs.~size>0){?>
+                 	
+                 	<?if(rlmap.cs[0].relation=='与'){?>
+                 	<option selected="selected">与</option>
+                 	<option>或</option>
+                 	<option>非</option>
+                 	<?}else if(rlmap.cs[0].relation=='或'){?>
+                 	<option >与</option>
+                 	<option selected="selected">或</option>
+                 	<option>非</option>
+                 	<?}else{?>
+                 	<option >与</option>
+                 	<option >或</option>
+                 	<option selected="selected">非</option>
+                 	<?}?>
+					 <?}else{?>
+                 	<option selected="selected">与</option>
+                 	<option>或</option>
+                 	<option>非</option>
+                 	<?}?>
+                 	</select>
+                </div>
+                <span id="content">
+				<?if(rlmap.cs.~size>1){?>
+				<?for(var k=1 ;k<rlmap.cs.~size;k++){?>
+				<div class='form-group input_block' id='d${k}'>
+				<input type='text' id='i1_${k}' class='contenttext' value="${rlmap.cs[k].paramOne}">
+				<select  selected='selected' id='s1_${k}'>
+				<?if(rlmap.cs[k].accuracy=='精确'){?>
+                 	<option selected="selected">精确</option>
+                 	<option>模糊</option>
+                 	<?}else{?>
+                 	<option >精确</option>
+                 	<option selected="selected">模糊</option>
+                 	<?}?>
+				</select>
+				<input type='text' id='i2_${k}' value="${rlmap.cs[k].paramTwo}">
+				<select selected='selected' id='s2_${k}'>
+					<?if(rlmap.cs[k].relation=='与'){?>
+                 	<option selected="selected">与</option>
+                 	<option>或</option>
+                 	<option>非</option>
+                 	<?}else if(rlmap.cs[k].relation=='或'){?>
+                 	<option >与</option>
+                 	<option selected="selected">或</option>
+                 	<option>非</option>
+                 	<?}else{?>
+                 	<option >与</option>
+                 	<option >或</option>
+                 	<option selected="selected">非</option>
+                 	<?}?>
+				</select>
+				</div>
+				<?}?>
+				<?}?>
+                </span>
+              <div class="box-footer" style="text-align:center;">
+                <button type="reset"   onclick="resettree()"    class="btn btn-primary">重置</button>
+                <button type="button" onclick="doupdatedata()"      class="btn btn-primary">提交</button>
+              </div>
+              </form>
+            </div>
+          </div>
+      	 </div>
+      </div>
+    </section>
+  </div>
+<?}?>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.CustomMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Custom" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="db_id" property="dbId" jdbcType="VARCHAR" />
+    <result column="param_one" property="paramOne" jdbcType="VARCHAR" />
+    <result column="accuracy" property="accuracy" jdbcType="VARCHAR" />
+    <result column="param_two" property="paramTwo" jdbcType="VARCHAR" />
+    <result column="relation" property="relation" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <insert id="doAddCustom" parameterType="java.util.List">
+  insert into custom (id, db_id, param_one, 
+      accuracy, param_two, relation) values
+     <foreach collection="list" item="item" index="index" separator=","> 
+     (#{item.id,jdbcType=VARCHAR}, #{item.dbId,jdbcType=VARCHAR}, #{item.paramOne,jdbcType=VARCHAR}, 
+      #{item.accuracy,jdbcType=VARCHAR}, #{item.paramTwo,jdbcType=VARCHAR}, #{item.relation,jdbcType=VARCHAR}
+      )
+      </foreach> 
+  </insert>
+  
+  <select id="getCustomById" resultMap="BaseResultMap">
+  select * from custom where db_id =#{dbid}
+  </select>
+  
+  <delete id="doDeleteCustom">
+  delete from custom where db_id =#{dbid}
+  </delete>
+</mapper>

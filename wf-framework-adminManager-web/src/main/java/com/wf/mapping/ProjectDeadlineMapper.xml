@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProjectDeadlineMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ProjectDeadline" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="validity_start_time" property="validityStartTime" jdbcType="DATE" />
+    <result column="validity_end_time" property="validityEndTime" jdbcType="DATE" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.util.Map" >
+  	<result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="validity_start_time" property="validityStartTime" jdbcType="DATE" />
+    <result column="validity_end_time" property="validityEndTime" jdbcType="DATE" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="detail_setting" property="detailSetting" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 通过用户id查询项目 -->
+  <select id="selectDeadlineById" resultMap="BaseResultMap2" parameterType="java.lang.String" >
+    select p.name,p.detail_setting,pd.project_id,pd.validity_start_time,pd.validity_end_time from project_deadline pd 
+    LEFT JOIN project p ON pd.project_id=p.id where pd.user_id = #{userId}
+  </select>
+  
+  <delete id="deleteDeadlineByUserId" parameterType="java.lang.String" >
+    delete from project_deadline where user_id = #{userId}
+  </delete>
+  
+  <insert id="insert" parameterType="com.wf.bean.ProjectDeadline" >
+    insert into project_deadline (id, project_id, user_id, 
+      validity_start_time, validity_end_time)
+    values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{validityStartTime,jdbcType=DATE}, #{validityEndTime,jdbcType=DATE})
+  </insert>
+</mapper>

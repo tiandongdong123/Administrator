@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProjectMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Project" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="authorized_user_type" property="authorizedUserType" jdbcType="INTEGER" />
+    <result column="pay_wallet" property="payWallet" jdbcType="VARCHAR" />
+    <result column="detail_setting" property="detailSetting" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, authorized_user_type, pay_wallet, detail_setting
+  </sql>
+  <select id="findProject" resultMap="BaseResultMap">
+    select * from project
+  </select>
+</mapper>

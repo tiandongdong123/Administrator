@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.DepartmentMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Department" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+    <result column="dept_describe" property="deptDescribe" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getDept" resultMap="BaseResultMap">
+  select * from department ORDER BY id desc limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="getDeptNum" resultType="int">
+  select count(1) from department
+  </select>
+   
+  <insert id="doAddDept" parameterType="com.wf.bean.Department" >
+  insert into department ( dept_name, dept_describe
+    )
+  values (#{deptName,jdbcType=VARCHAR}, #{deptDescribe,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <select id="getDeptById" resultMap="BaseResultMap">
+  	select * from department where id = #{id}
+  </select>
+  
+  <update id="doUpdateDept" parameterType="com.wf.bean.Department">
+      update department
+    <set >
+      <if test="deptName != null and deptName !=''" >
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="deptDescribe != null and deptDescribe !=''" >
+        dept_describe = #{deptDescribe,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteDept">
+	  delete from department where id=#{id}
+  </delete>
+  
+  <select id="checkDept" resultMap="BaseResultMap">
+  select * from department where dept_name = #{deptname}
+  </select>
+  
+  <select id="getAllDept" resultMap="BaseResultMap">
+  select * from department
+  </select>
+  
+</mapper>

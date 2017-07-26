@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.PersonMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Person" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_realname" property="userRealname" jdbcType="VARCHAR" />
+    <result column="user_nickname" property="userNickname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="is_male" property="isMale" jdbcType="INTEGER" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="idcard_number" property="idcardNumber" jdbcType="VARCHAR" />
+    <result column="education_level" property="educationLevel" jdbcType="INTEGER" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="date_birth" property="dateBirth" jdbcType="DATE" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="topical" property="topical" jdbcType="VARCHAR" />
+    <result column="work_unit" property="workUnit" jdbcType="VARCHAR" />
+    <result column="old_work_unit" property="old_work_unit" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="INTEGER" />
+    <result column="is_freeze" property="isFreeze" jdbcType="INTEGER" />
+    <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
+    <result column="user_roles" property="userRoles" jdbcType="INTEGER" />
+    <result column="is_phone_verification" property="is_phone_verification" jdbcType="INTEGER" />
+    <result column="is_email_verification" property="is_email_verification" jdbcType="INTEGER" />
+    <result column="registration_time" property="registrationTime" jdbcType="TIMESTAMP" />
+    <result column="institution" property="institution" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="login_mode" property="loginMode" jdbcType="INTEGER" />
+    <result column="userType" property="usertype" jdbcType="INTEGER" />
+    <result column="award" property="award" jdbcType="VARCHAR" />
+    <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
+    <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+    <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMap2" type="java.util.Map">
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="is_freeze" property="isFreeze" jdbcType="INTEGER" />
+    <result column="institution" property="institution" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="login_mode" property="loginMode" jdbcType="INTEGER" />
+    <result column="userType" property="usertype" jdbcType="INTEGER" />
+    <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+    
+    <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
+    <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
+    
+    <result column="upperlimit" property="upperlimit" jdbcType="INTEGER" />
+    <result column="p_concurrentnumber" property="pConcurrentnumber" jdbcType="INTEGER" />
+    <result column="s_concurrentnumber" property="sConcurrentnumber" jdbcType="INTEGER" />
+    <result column="chargebacks" property="chargebacks" jdbcType="INTEGER" />
+    <result column="downloadUpperLimit" property="downloadupperlimit" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BaseResultMap3" type="java.util.Map" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_realname" property="userRealname" jdbcType="VARCHAR" />
+    <result column="user_nickname" property="userNickname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="is_male" property="isMale" jdbcType="INTEGER" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="idcard_number" property="idcardNumber" jdbcType="VARCHAR" />
+    <result column="education_level" property="educationLevel" jdbcType="INTEGER" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="date_birth" property="dateBirth" jdbcType="DATE" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="topical" property="topical" jdbcType="VARCHAR" />
+    <result column="work_unit" property="workUnit" jdbcType="VARCHAR" />
+    <result column="old_work_unit" property="old_work_unit" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="INTEGER" />
+    <result column="is_freeze" property="isFreeze" jdbcType="INTEGER" />
+    <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
+    <result column="user_roles" property="userRoles" jdbcType="INTEGER" />
+    <result column="is_phone_verification" property="is_phone_verification" jdbcType="INTEGER" />
+    <result column="is_email_verification" property="is_email_verification" jdbcType="INTEGER" />
+    <result column="registration_time" property="registrationTime" jdbcType="TIMESTAMP" />
+    <result column="institution" property="institution" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="login_mode" property="loginMode" jdbcType="INTEGER" />
+    <result column="userType" property="usertype" jdbcType="INTEGER" />
+    <result column="award" property="award" jdbcType="VARCHAR" />
+    <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
+    <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+    <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="QueryPerson" resultMap="BaseResultMap3" >
+   select u.*, ut.openid, ut.status from user u left join user_three ut on u.user_id=ut.user_id where 1=1 and u.userType = '0'
+   <if test="person.userId !=null and person.userId !='' and idType == 1"><!-- 精确查询 -->
+   and u.user_id=#{person.userId}
+   </if>
+   <if test="person.userId !=null and person.userId !='' and idType == 2"><!-- 模糊查询 -->
+   and u.user_id like CONCAT(#{person.userId})
+   </if>
+   <if test="person.userRealname != null and person.userRealname != '' and nameType == 1"><!-- 精确查询 -->
+   and u.user_realname=#{person.userRealname}
+   </if>
+   <if test="person.userRealname != null and person.userRealname != '' and nameType == 2"><!-- 模糊查询 -->
+   and u.user_realname like CONCAT(#{person.userRealname})
+   </if>
+   <if test="person.mobilePhone != null and person.mobilePhone != ''">
+   and u.mobile_phone like CONCAT('%',#{person.mobilePhone},'%')
+   </if>
+   <if test="person.idcardNumber != null and person.idcardNumber != ''">
+   and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
+   </if>
+   <if test="person.email != null and person.email != ''">
+   and u.email like CONCAT('%',#{person.email},'%')
+   </if>
+ 	<if test="person.thirdNum !=null and person.thirdNum != ''">
+   and ut.openid = ${person.thirdNum}
+   </if>
+   <if test="roles!=null and roles!=''">
+   and u.user_roles in
+   		<foreach collection="roles" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	</foreach>
+   </if>
+   limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="QueryPersonNum" resultType="int">
+     select count(1) from user u left join user_three ut on u.user_id=ut.user_id where 1=1 and u.userType = '0'
+   <if test="person.userId !=null and person.userId !='' and idType == 1"><!-- 精确查询 -->
+   and u.user_id=#{person.userId}
+   </if>
+   <if test="person.userId !=null and person.userId !='' and idType == 2"><!-- 模糊查询 -->
+   and u.user_id like CONCAT(#{person.userId})
+   </if>
+   <if test="person.userRealname != null and person.userRealname != '' and nameType == 1"><!-- 精确查询 -->
+   and u.user_realname=#{person.userRealname}
+   </if>
+   <if test="person.userRealname != null and person.userRealname != '' and nameType == 2"><!-- 模糊查询 -->
+   and u.user_realname like CONCAT(#{person.userRealname})
+   </if>
+   <if test="person.mobilePhone != null and person.mobilePhone != ''">
+   and u.mobile_phone like CONCAT('%',#{person.mobilePhone},'%')
+   </if>
+   <if test="person.idcardNumber != null and person.idcardNumber != ''">
+   and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
+   </if>
+   <if test="person.email != null and person.email != ''">
+   and u.email like CONCAT('%',#{person.email},'%')
+   </if>
+	<if test="person.thirdNum !=null and person.thirdNum != ''">
+   and ut.openid = ${person.thirdNum}
+   </if>
+   <if test="roles!=null and roles!=''">
+   and u.user_roles in
+   		<foreach collection="roles" index="index" item="item" open="(" separator="," close=")">  
+            #{item}   
+    	</foreach>
+   </if>
+  </select>
+  
+ <!-- 更新管理员的机构名称与密码 -->
+ <update id="updateRegisterAdmin" parameterType="com.wf.bean.Person">
+    update user
+    <set>
+      <if test="password != null and password !=''" >
+        password = #{password},
+      </if>
+      <if test="institution != null and institution !=''" >
+        institution = #{institution},
+      </if>
+    </set>
+    where user_id = #{userId}
+ </update>
+  
+  <!-- 查询机构账号下机构子账号 -->
+  <select id="sonAccountNumber" resultMap="BaseResultMap3" parameterType="java.util.Map">
+	select user_id,password,registration_time from user where pid = #{userId} and userType = '3'
+	<if test="sonId != null and sonId != ''">
+		and user_id = #{sonId}
+	</if>
+	<if test="start_time != null and start_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[>=]]> DATE_FORMAT(#{start_time},'%y-%c-%d')
+	</if>
+	<if test="end_time != null and end_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[<=]]> DATE_FORMAT(#{end_time},'%y-%c-%d')
+	</if>
+	order by registration_time desc
+  </select>
+  
+  <!-- 通过机构名称查询所属管理员 -->
+  <select id="findInstitutionAdmin" resultMap="BaseResultMap2" parameterType="java.lang.String">
+	select adm.*,(select COUNT(*) from user where pid = adm.user_id and userType = '2') as num
+	from (select u.user_id,u.password,admin_email from user u where u.institution = #{institution} and u.userType = '1') as adm
+  </select>  
+  
+    <!-- 查询机构管理员信息 -->
+  <select id="findadmin" resultMap="BaseResultMap2" parameterType="java.lang.String">
+		select user_id from user where userType = '1' and user_id like CONCAT('%',#{userId},'%') limit 0,5
+  </select>
+  
+  <!-- 查询相似机构ID -->
+  <select id="queryAdminName" resultType="java.lang.String" parameterType="java.lang.String">
+		select user_id from user where userType = '1' and user_id like CONCAT(#{userId},'%') limit 0,5
+  </select>
+  
+  <!-- 查询相似机构名称 -->
+  <select id="queryInstitution" resultType="java.lang.String" parameterType="java.lang.String">
+	select institution from user where userType = '2' and institution like CONCAT('%',#{institution},'%') limit 0,5
+  </select>
+  
+  <!-- 通过主键ID查询用户信息 -->
+  <select id="queryPersonInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from user where user_id = #{userId}
+  </select>
+  
+  <!-- 机构账号注册 -->
+  <insert id="addRegisterInfo" parameterType="com.wf.bean.Person">
+	insert into user(institution,user_id,login_mode,password,userType,pid,is_freeze)
+    values(#{institution},#{userId},#{loginMode},#{password},#{usertype},#{pid},#{isFreeze})
+  </insert>
+  
+  <!-- 机构管理员账号注册 -->
+  <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
+	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode)
+     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode})
+  </insert>
+  
+  <delete id="deleteUser" parameterType="java.lang.String">
+  	delete from user where user_id = #{userId}
+  </delete>
+ 
+  <!-- 移除机构账号管理员 -->
+ <update id="updatePid" parameterType="java.util.Map">
+    update user set pid = #{pid} where user_id = #{userId}
+  </update>
+ 
+ 
+ <!-- 更新机构账号 -->
+ <update id="updateRegisterInfo" parameterType="com.wf.bean.Person">
+    update user
+    <set>
+      <if test="institution != null and institution !=''">
+        institution = #{institution},
+      </if>
+      <if test="password != null and password !=''">
+        password = #{password},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid},
+      </if>
+      <if test="userRealname != null and userRealname !=''" >
+        user_realname = #{userRealname},
+      </if>
+      login_mode = #{loginMode},
+    </set>
+    where user_id = #{userId}
+  </update>
+  
+   <!-- 冻结/解冻 -->
+ <update id="updateUserFreeze" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="isFreeze != null and isFreeze !=''" >
+        is_freeze = #{isFreeze},
+      </if>
+    </set>
+    where user_id = #{userId}
+ </update>
+ 
+  <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
+   select u.user_id,u.password,u.admin_email from user u WHERE u.user_id = #{pid}
+  </select>
+  
+ <update id="updateAllInstitution" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="institution != null and institution !=''" >
+        institution = #{institution},
+      </if>
+    </set>
+    where institution = #{oldins}
+ </update>
+  
+  
+   <update id="updateAllPid" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="pid != null" >
+        pid = #{pid},
+      </if>
+    </set>
+    where pid = #{old_pid}
+ </update>
+ 
+ <!-- 账号修改返显查询的用户信息 -->
+  <select id="findListInfoById" resultMap="BaseResultMap2" parameterType="java.lang.String">
+	select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,
+	uar.upperlimit,uar.p_concurrentnumber,uar.s_concurrentnumber,uar.chargebacks,uar.downloadUpperLimit
+	from user u LEFT JOIN user_account_restriction uar ON u.user_id=uar.user_id WHERE u.user_id = #{userId}
+  </select>
+ 
+ <select id="findListIns" resultMap="BaseResultMap2">
+   select user_id,institution from user WHERE userType = '2'
+ </select>
+ 
+ 
+ <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
+    from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+	<if test="userId !=null and userId !=''"><!-- 精确查询 -->
+		and ((u.user_id = #{userId} and u.userType = '2') or 
+		(u.user_id = (select pid from user where user_id = #{userId} and userType = '3')) or 
+		(u.pid = #{userId} and u.userType = '2')) 
+	</if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and u.userType = '2'  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType = '2'
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and u.userType = '2'
+	</if>
+	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
+  </select>
+  
+  <select id="findListCount" resultType="int" parameterType="java.util.Map">
+   select count(1) from (select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+	<if test="userId !=null and userId !=''"><!-- 精确查询 -->
+		and ((u.user_id = #{userId} and userType = '2') or 
+		(u.user_id = (select pid from user where user_id = #{userId} and userType = '3')) or 
+		(u.pid = #{userId} and userType = '2')) 
+	</if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and userType = '2'  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType = '2'
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and userType = '2'
+	</if>
+	GROUP BY u.user_id) count
+  </select>
+  <select id="getEducations" resultType="java.lang.String" parameterType="java.lang.String">
+  	select education from identify_scholar
+  	where user_id=#{userId}
+  </select>
+    
+  <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
+  	select user_id,institution from user where userType='1'
+  	<if test="null!=institution and ''!=institution">
+  		and institution = #{institution}
+  	</if>
+  </select>
+  
+  <select id="getUserTypeByUserId"  resultType="java.lang.String">
+  	SELECT userType FROM user WHERE user_id=#{userId}
+  </select>
+  
+  <select id="countUser" resultType="java.lang.Integer">
+  	select count(1) from user
+  </select>
+  
+</mapper>

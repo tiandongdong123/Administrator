@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.WebSiteHourlyMapper" >
+  <resultMap id="WebSiteHourly" type="com.wf.bean.WebSiteHourly" >
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="VARCHAR" />
+    <result column="hour" property="hour" jdbcType="VARCHAR"/>
+    <result column="numbers" property="numbers" jdbcType="VARCHAR" />
+  </resultMap>
+  	<!-- 按小时查询 e-charts -->
+  <select id="findPageViewHourly" resultMap="WebSiteHourly">
+  	select * from rs_website_survey_basic_quota_hourly
+  	where 1=1 
+  	<if test="startTime != null and startTime !='' ">
+  		and date &gt;= #{startTime}
+  	</if>
+  	<if test="endTime != null and endTime !='' ">
+  		and date &lt;= #{endTime}
+  	</if>
+  	<if test="type != null and type != '' ">
+  		and type = #{type}
+  	</if>
+  	 order by hour
+  </select>
+  
+  <!-- 查询基础指标列表 按时 -->
+	<select id="basicIndexNum" resultType="java.util.Map">
+		SELECT hour,
+		MAX(CASE type WHEN 1 THEN numbers ELSE 0 END) 网站浏览量,
+		MAX(CASE type WHEN 2 THEN numbers ELSE 0 END) 访问次数,
+		MAX(CASE type WHEN 3 THEN numbers ELSE 0 END) 独立访客数,
+		MAX(CASE type WHEN 4 THEN numbers ELSE 0 END) 新增访客,
+		MAX(CASE type WHEN 5 THEN numbers ELSE 0 END) 独立IP数,
+		MAX(CASE type WHEN 6 THEN numbers ELSE 0 END) 平均访问页面,
+		MAX(CASE type WHEN 8 THEN numbers ELSE 0 END) 平均访问时长,
+		MAX(CASE type WHEN 10 THEN numbers ELSE 0 END) 跳出率
+		FROM rs_website_survey_basic_quota_hourly where 1=1
+		<if test="startTime != null and startTime !=''">
+		<![CDATA[ and date >= #{startTime} ]]>
+		</if>
+		<if test="endTime != null and endTime !=''">
+			<![CDATA[ and date <= #{endTime} ]]>
+		</if>
+				GROUP BY hour
+		<if test="pagenum >-1 and pagesize >-1 ">
+			limit #{pagenum},#{pagesize}
+		</if>
+	</select>
+  
+  <!-- 查询基础指标总条数 -->
+	<select id="getBasicIndexNum" resultType="int">
+		select count(DISTINCT(hour)) from rs_website_survey_basic_quota_hourly
+		where 1=1
+		<if test="startTime != null and startTime !=''">
+			<![CDATA[ and date >= #{startTime} ]]>
+		</if>
+		<if test="endTime != null and endTime !=''">
+			<![CDATA[ and date <= #{endTime} ]]>
+		</if>
+			<!--  group by date-->
+	</select>	
+</mapper>

@@ -1,0 +1,51 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/othermanager/js/update_page_manager.js"> </script>
+<script type="text/javascript" src="../page/othermanager/js/validation_page.js"></script>
+<input type="hidden" id="id" value="${pageManager.id}">
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	分析页面修改
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">统计分析</a></li>
+        <li><a href="#">分析管理</a></li>
+        <li class="active">分析页面管理</li>
+      </ol>-->
+    </section> 
+    <section class="content">
+          <div class="box box-primary">
+			<div id="defaultForm">
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">功能模块</label>
+             <select id="modularId">
+             <?for(var modular in modularList){
+               if(pageManager.modularId == modular.id){?>
+             <option value="${modular.id}" selected="selected">${modular.modularName}</option>
+             <?}else{?>
+             <option value="${modular.id}">${modular.modularName}</option>
+             <?}}?>
+             </select>
+             <a onclick="window.location.href='../page/addModular.do'" href="javascript:void(0);">+ 添加模块 </a>
+         	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">页面名称</label>
+             <input type="text" id="pageName" name="name" class="form-control input_width" value="${pageManager.pageName}">
+         	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">页面链接</label>
+             <input type="text" id="linkAddress" name="address" class="form-control input_width" value="${pageManager.linkAddress}">
+         	</div>
+         	<div class="box-footer" style="text-align:center;">
+                <button type="button" onclick="submission()"  class="btn btn-primary">提交</button>
+              </div>
+      	 </div>
+      </div>
+    </section>
+</div>
+ <?}?> 

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.WfksAccountidMappingMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.WfksAccountidMapping" >
+    <id column="mappingid" property="mappingid" jdbcType="VARCHAR" />
+    <result column="id_accounttype" property="idAccounttype" jdbcType="VARCHAR" />
+    <result column="id_key" property="idKey" jdbcType="VARCHAR" />
+    <result column="relatedid_accounttype" property="relatedidAccounttype" jdbcType="VARCHAR" />
+    <result column="relatedid_key" property="relatedidKey" jdbcType="VARCHAR" />
+    <result column="begintime" property="begintime" jdbcType="TIMESTAMP" />
+    <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="last_updatetime" property="lastUpdatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mappingid, id_accounttype, id_key, relatedid_accounttype, relatedid_key, begintime, 
+    endtime, last_updatetime
+  </sql>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping
+    where id_key = #{idKey,jdbcType=VARCHAR} and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByUserId" parameterType="java.lang.String" >
+    delete from wfks_accountid_mapping where id_key = #{idKey,jdbcType=VARCHAR} 
+    and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.wf.bean.WfksAccountidMapping" >
+    insert into wfks_accountid_mapping (mappingid, id_accounttype, id_key, 
+      relatedid_accounttype, relatedid_key, begintime, 
+      endtime, last_updatetime)
+    values (#{mappingid,jdbcType=VARCHAR}, #{idAccounttype,jdbcType=VARCHAR}, #{idKey,jdbcType=VARCHAR}, 
+      #{relatedidAccounttype,jdbcType=VARCHAR}, #{relatedidKey,jdbcType=VARCHAR}, #{begintime,jdbcType=TIMESTAMP}, 
+      #{endtime,jdbcType=TIMESTAMP}, #{lastUpdatetime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.wf.bean.WfksAccountidMapping" >
+    insert into wfks_accountid_mapping
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mappingid != null" >
+        mappingid,
+      </if>
+      <if test="idAccounttype != null" >
+        id_accounttype,
+      </if>
+      <if test="idKey != null" >
+        id_key,
+      </if>
+      <if test="relatedidAccounttype != null" >
+        relatedid_accounttype,
+      </if>
+      <if test="relatedidKey != null" >
+        relatedid_key,
+      </if>
+      <if test="begintime != null" >
+        begintime,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+      <if test="lastUpdatetime != null" >
+        last_updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mappingid != null" >
+        #{mappingid,jdbcType=VARCHAR},
+      </if>
+      <if test="idAccounttype != null" >
+        #{idAccounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="idKey != null" >
+        #{idKey,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedidAccounttype != null" >
+        #{relatedidAccounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedidKey != null" >
+        #{relatedidKey,jdbcType=VARCHAR},
+      </if>
+      <if test="begintime != null" >
+        #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatetime != null" >
+        #{lastUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.wf.bean.WfksAccountidMapping" >
+    update wfks_accountid_mapping
+    <set >
+      <if test="idAccounttype != null" >
+        id_accounttype = #{idAccounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="idKey != null" >
+        id_key = #{idKey,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedidAccounttype != null" >
+        relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedidKey != null" >
+        relatedid_key = #{relatedidKey,jdbcType=VARCHAR},
+      </if>
+      <if test="begintime != null" >
+        begintime = #{begintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatetime != null" >
+        last_updatetime = #{lastUpdatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where mappingid = #{mappingid,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.wf.bean.WfksAccountidMapping" >
+    update wfks_accountid_mapping
+    set id_accounttype = #{idAccounttype,jdbcType=VARCHAR},
+      id_key = #{idKey,jdbcType=VARCHAR},
+      relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR},
+      relatedid_key = #{relatedidKey,jdbcType=VARCHAR},
+      begintime = #{begintime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP},
+      last_updatetime = #{lastUpdatetime,jdbcType=TIMESTAMP}
+    where mappingid = #{mappingid,jdbcType=VARCHAR}
+  </update>
+</mapper>

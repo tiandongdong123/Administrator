@@ -1,0 +1,53 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_addPSubjectCategory.js"></script>
+
+<body class="hold-transition ">
+	<section class="content">
+		<div class="form-group input_block" id="ziyuantigongshang">
+			<label class="input_name">资源提供商</label> <select
+				class="form-control input_width" name="provider" id="provider"
+				onchange="findResourceNamesById()">
+			</select>
+		</div>
+		<div class="form-group input_block" id="ziyuantigongshang">
+			<label class="input_name">资源类型</label> <select
+				class="form-control input_width" name="resourceName"
+				id="resourceName" onchange="xueke()">
+			</select>
+		</div>
+		<!-- 選擇父類目錄-->
+		<div>
+			<div class="box-body" id="ziyuanleixing">
+				<div class="form-group input_block">
+					<label class="input_name">父节点</label> <input readonly="readonly"
+						type="text" class="form-control input_width" name="parentName"
+						id="parentName" placeholder="根目录"> <input type="hidden"
+						id="parentId" />
+					<button onclick="xuanzexueke()" type='button'
+						class='btn btn-primary btn-sm' data-toggle='modal'
+						data-target='myModal'>选择</button>
+				</div>
+			</div>
+		</div>
+		<div class="box-body">
+			<div class="form-group input_block">
+				<label class="input_name">数据名称</label> <input type="text"
+					class="form-control input_width" name="pCategoryName"
+					id="pCategoryName" placeholder="请输入...">
+			</div>
+		</div>
+		<div class="box-body">
+			<div class="form-group input_block">
+				<label class="input_name">数据库编码</label> <input type="text"
+					class="form-control input_width" name="pCategoryCodes"
+					id="pCategoryCodes" placeholder="请输入...">
+			</div>
+
+		</div>
+	</section>
+</body>
+
+<?}?>

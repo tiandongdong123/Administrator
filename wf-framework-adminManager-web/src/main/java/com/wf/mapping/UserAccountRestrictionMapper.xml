@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.UserAccountRestrictionMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.UserAccountRestriction" >
+    <id column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="upperlimit" property="upperlimit" jdbcType="INTEGER" />
+    <result column="p_concurrentnumber" property="pConcurrentnumber" jdbcType="INTEGER" />
+    <result column="s_concurrentnumber" property="sConcurrentnumber" jdbcType="INTEGER" />
+    <result column="chargebacks" property="chargebacks" jdbcType="INTEGER" />
+    <result column="downloadUpperLimit" property="downloadupperlimit" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteAccountRestriction" parameterType="java.lang.String" >
+    delete from user_account_restriction
+    where user_id = #{userId}
+  </delete>
+  
+  <insert id="insert" parameterType="com.wf.bean.UserAccountRestriction" >
+    insert into user_account_restriction (user_id, upperlimit, p_concurrentnumber, s_concurrentnumber, chargebacks, downloadUpperLimit)
+    values (#{userId,jdbcType=VARCHAR}, #{upperlimit,jdbcType=INTEGER}, #{pConcurrentnumber,jdbcType=INTEGER}, 
+      #{sConcurrentnumber,jdbcType=INTEGER}, #{chargebacks,jdbcType=INTEGER}, #{downloadupperlimit,jdbcType=INTEGER})
+  </insert>
+  
+	<update id="update" parameterType="com.wf.bean.UserAccountRestriction">
+	    update user_account_restriction
+	    <set>
+	      <if test="upperlimit != null" >
+	        upperlimit = #{upperlimit},
+	      </if>
+	      <if test="pConcurrentnumber != null" >
+	        p_concurrentnumber = #{pConcurrentnumber},
+	      </if>
+	      <if test="sConcurrentnumber != null" >
+	        s_concurrentnumber = #{sConcurrentnumber},
+	      </if>
+	      <if test="chargebacks != null and chargebacks !=''" >
+	        chargebacks = #{chargebacks},
+	      </if>
+	      <if test="downloadupperlimit != null and downloadupperlimit !=''" >
+	        downloadUpperLimit = #{downloadupperlimit},
+	      </if>
+	    </set>
+	    where user_id = #{userId}
+	</update>
+</mapper>

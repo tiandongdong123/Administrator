@@ -1,0 +1,154 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript"
+	src="../page/usermanager/js/ins_register.js"></script>
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_ziyuanpeizhi.js"></script>
+	
+<style>
+.btn-sm{
+	margin-bottom: 5px;
+}
+</style>
+
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1>资源配置</h1>
+		<!-- <ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>首页</a>
+			</li>
+			<li><a href="#">期刊管理</a>
+			</li>
+			<li class="active">资源配置</li> -->
+		</ol>
+	</section>
+	<section class="content">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="box box-primary" style="width: 100%">
+					<table>
+						<tr>
+							<th>
+								<div class='panel-body' align='center' id="providerHtml">
+									<h4>资源提供商:</h4>
+								</div>
+							</th>
+							<th>
+								<button onclick="tianjiaProvider()" type='button'
+									class='btn btn-primary btn-sm' data-toggle='modal'
+									data-target='myModal'>添加</button>
+							</th>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-4" style="width: 30%;">
+						<div class="box box-primary"
+							style="height: 600px; overflow: auto;">
+							<div class="box-header">
+								<button type='button' onclick="tianjiaProResourceType()"
+									class='btn btn-danger btn-sm' style="float: right;">新建</button>
+							</div>
+							<table class="table table-condensed">
+								<tbody id="resourceName">
+									<tr>
+										<th style="text-align: center;">#</th>
+										<th>资源类型</th>
+									</tr>
+									<tr>
+										<td style="text-align: center;">1.</td>
+										<td>期刊</td>
+									</tr>
+									<tr>
+										<td style="text-align: center; margin-right: 5px; ">2.</td>
+										<td>学位</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-5" style="width: 70%;height: 600px;">
+						<div class="box box-primary">
+							<div
+								style="width:30%;height: 600px; overflow: auto;border-right-style: solid;border-right-color:#6495ED;float:left;display:inline; ">
+								<div class="box-header">
+									<!-- 新建学科分类 -->
+									<h4 style="margin:0px 0 -5px 5px; ">销售资源数据库：</h4>
+									<div style="margin-top: 10px;">
+										<button type='button' onclick="shanchuxueke()"
+											class='btn btn-danger btn-sm'>删除</button>
+										&nbsp;
+										<button type='button' onclick="updatexueke()"
+											class='btn btn-danger btn-sm'>修改</button>
+										&nbsp;
+										<button type='button' onclick="tianjiaxueke(0)"
+											class='btn btn-danger btn-sm'>新建</button>
+									</div>
+									<hr style="margin-top: 8px;" />
+									<div style="margin-top: -16px;" id="treeDemo" class="ztree"></div>
+								</div>
+							</div>
+							<div style="width:70%;height: 600px; overflow: auto;">
+								<div class="box-header">
+									<h4 style="margin:5px 0 -5px 5px; ">母体文献：</h4>
+									<button type='button' class='btn btn-danger btn-sm'
+										onclick="tianjiamuti()"
+										style="margin:-19px 8px -5px 5px; float: right;">新建</button>
+									<hr />
+								</div>
+								<div class="content" style="margin-top: -30px;">
+									<table class="table table-bordered table-striped dataTable"
+										role="grid" aria-describedby="example1_info">
+										<thead>
+											<tr role="row">
+												<th tabindex="0" class="sorting_asc"
+													aria-controls="example1" style="width: 347px;"
+													aria-label="Rendering engine: activate to sort column descending"
+													aria-sort="ascending" rowspan="1" colspan="1">序号</th>
+												<th tabindex="0" class="sorting" aria-controls="example1"
+													style="width: 422px;"
+													aria-label="Browser: activate to sort column ascending"
+													rowspan="1" colspan="1">母体标题</th>
+												<th tabindex="0" class="sorting" aria-controls="example1"
+													style="width: 375px;"
+													aria-label="Platform(s): activate to sort column ascending"
+													rowspan="1" colspan="1">母体英文名</th>
+												<th tabindex="0" class="sorting" aria-controls="example1"
+													style="width: 301px;"
+													aria-label="Engine version: activate to sort column ascending"
+													rowspan="1" colspan="1">母体作者</th>
+												<th tabindex="0" class="sorting" aria-controls="example1"
+													style="width: 224px;"
+													aria-label="CSS grade: activate to sort column ascending"
+													rowspan="1" colspan="1">学科名称</th>
+												<th tabindex="0" class="sorting" aria-controls="example1"
+													style="width: 224px;"
+													aria-label="CSS grade: activate to sort column ascending"
+													rowspan="1" colspan="1">可操作</th>
+											</tr>
+										</thead>
+										<tbody id="mutiwenxian">
+											<tr class="even" role="row">
+												<td class="sorting_1">Gecko</td>
+												<td>Mozilla 1.3</td>
+												<td>Win 95+ / OSX.1+</td>
+												<td>1.3</td>
+												<td>A</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="page"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<?}?>

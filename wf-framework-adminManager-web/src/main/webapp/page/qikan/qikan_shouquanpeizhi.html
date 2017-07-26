@@ -1,0 +1,293 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<!-- <link type="text/css" rel="stylesheet"
+	href="../page/qikan/css/jquery.steps.css">-->
+
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/public.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/laypage.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_shouquanpeizhi.js"></script>
+
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1>配置界面</h1>
+		<!-- <ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i>首页</a>
+			</li>
+			<li><a href="#">期刊管理</a>
+			</li>
+			<li class="active">配置界面</li>
+		</ol>-->
+	</section> 
+	<section class="content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary">
+
+					<div id="classStep" class="pubook_step step01">
+						<div class="step_line">
+							<div class="step_lined">&nbsp;</div>
+						</div>
+						<ul>
+							<li id="class1" class="sel">
+								<h5>权限配置</h5> <span>1</span>
+							</li>
+							<li id="class2">
+								<h5>链接地址配置</h5> <span>2</span>
+							</li>
+							<li id="class3">
+								<h5>信息确认</h5> <span>3</span>
+							</li>
+						</ul>
+					</div>
+					<!-- 授权配置开始 -->
+					<div id="shouQuanPeiZhi">
+						<div class="search">
+							<dl>
+								<dt>机构用户：</dt>
+								<dd>
+									<input type="text" class="inputbox" id="institutionName"
+										placeholder="请搜索" disabled="true" /> <input type="hidden"
+										id="institutionId" />
+								</dd>
+								<dd>
+									<button class="search_btn" onclick="qinkanfindPerson()">搜索</button>
+								</dd>
+							</dl>
+
+							<dl class="Radio" id="providerHtml">
+								<dt>资源提供商：</dt>
+								<dd>
+									<input type="radio" name="" id="" value="" checked="checked" /><span>cnki</span>
+								</dd>
+								<dd>
+									<input type="radio" name="" id="" value="" /><span>维普</span>
+								</dd>
+							</dl>
+							<dl id="ziyuanType">
+								<dt>资源类型：</dt>
+								<dd>
+									<a href="javascript:void(0);">期刊</a>
+								</dd>
+							</dl>
+							<dl class="Year">
+								<dt>年份：</dt>
+								<dd>
+									<input type="text" name="" id="startDate" placeholder="起始年"
+										onchange="findMatrixLiteratureList(1)" /> - <input type="text"
+										name="" id="endDate" placeholder="结束年"
+										onchange="findMatrixLiteratureList(1)" />
+								</dd>
+							</dl>
+							<dl class="Choice">
+								<dt>已选择：</dt>
+								<dd id="yixuanze">
+									<!-- <span>学科1：工业技术</span> <span>学科2：教科文艺</span> -->
+								</dd>
+								<dd>
+									<button class="btn btn-block btn-default btn-sm" onclick="chongzhi()">重置</button>
+								</dd>
+							</dl>
+						</div>
+						<div class="Configuration">
+							<div class="left" style="width:25%;height: 600px; overflow: auto;border: 1px solid #DFDFDF;float:left;display:inline; ">
+								<div>
+									<div style="margin:5px 0 -8px 15px;"><input id="quanxuan" type="button" onclick="SuQuanXuan()" value="全选"/>
+									<input id="fanxuan" type="button" onclick="SuQuXiao()" value="反选"/></div>
+									<div class="box-header">
+										<h4 style="margin:5px 0 -10px 5px; ">销售资源数据库：</h4>
+										<hr />
+										<div style="margin-top: -16px;" id="treeDemo" class="ztree"></div>
+									</div>
+								</div>
+							</div>
+							<div class="right" style="width:75%;height:600px;overflow: auto;">
+								<div class="LiteratureListBox" >
+									<p>母体文献</p>
+									<ul id="mutiwenxian">
+										<!-- <li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">信息安全学报</a>
+											</h4>
+										</li>
+										<li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">科学技术哲学研究 </a>
+											</h4>
+										</li>
+										<li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">中国远程教育</a>
+											</h4>
+										</li>
+										<li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">信息安全学报</a>
+											</h4>
+										</li>
+										<li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">科学技术哲学研究</a>
+											</h4>
+										</li>
+										<li>
+											<div class="LiteraturePic">
+												<a href="#"> <img src="../page/qikan/images/jou1.jpg"
+													width="150" height="208"> <input type="checkbox" />
+												</a>
+											</div>
+											<h4>
+												<a href="#">中国远程教育</a>
+											</h4>
+										</li> -->
+									</ul>
+								</div>
+
+								<!--page -->
+								<div id="page" style="padding:25px 0px 30px 0px;"></div>
+								<!-- /page  -->
+							</div>
+						</div>
+					</div>
+					<!-- 授权配置   结束 -->
+					<!-- 连接地址配置  开始 -->
+					<div id="lianJieURLPeiZhi">
+						<div class="search link">
+							<dl>
+								<dt>用户名：</dt>
+								<dd>
+									<input type="text" class="inputbox" id="username" />
+								</dd>
+							</dl>
+							<dl>
+								<dt>密码：</dt>
+								<dd>
+									<input type="password" class="inputbox" id="password" />
+								</dd>
+							</dl>
+							<dl class="Details_page">
+								<dt>详情页地址：</dt>
+								<dd>
+									<span>http://</span>
+								</dd>
+								<dd>
+									<input type="text" class="inputbox inputbox1" style="width: 140px;" id="detailsURL" />
+								</dd>
+								<dd>
+									<span>/</span>
+								</dd>
+								<dd>
+									<input type="text" class="inputbox inputbox2" id="detailsURL2" />
+								</dd>
+							</dl>
+							<dl class="reference">
+								<dt></dt>
+								<dd id="reference_address1">参考地址：http://www.cnki.com.cn/Article/CJFDTotal-YYGC201604006.htm
+								</dd>
+							</dl>
+							<dl class="Details_page">
+								<dt>原文下载地址：</dt>
+								<dd>
+									<span>http://</span>
+								</dd>
+								<dd>
+									<input type="text"  class="inputbox inputbox1"  style="width: 140px;" id="downloadURL" />
+								</dd>
+								<dd>
+									<span>/</span>
+								</dd>
+								<dd>
+									<input type="text" class="inputbox inputbox2" id="downloadURL2" />
+								</dd>
+							</dl>
+							<dl class="reference">
+								<dt></dt>
+								<dd id="reference_address2">参考地址：http://www.cnki.com.cn/Article/YYGC201604006.pdf</dd>
+							</dl>
+						</div>
+					</div>
+					<!-- 连接地址配置  结束 -->
+
+					<!-- 信息确认  开始 -->
+					<div id="xinXiQuRen">
+						<!-- <div class="search link confirm">
+							<dl>
+								<dt>机构用户：</dt>
+								<dd>北京大学</dd>
+							</dl>
+							<dl>
+								<dt>资源提供商：</dt>
+								<dd>cnki</dd>
+							</dl>
+							<dl>
+								<dt>资源类型：</dt>
+								<dd>期刊</dd>
+							</dl>
+							<dl>
+								<dt>年份：</dt>
+								<dd><span>1988年</span> - <span>1992年</span></dd>
+							</dl>
+							<dl class="subject">
+								<dt></dt>
+								<dd>学科1：工业技术</dd>
+							</dl>
+							<dl class="subject">
+								<dt></dt>
+								<dd>学科2：教科文艺</dd>
+							</dl>
+							<dl>
+								<dt>连接方式：</dt>
+								<dd>ip</dd>
+							</dl>
+							<dl class="Details_page">
+								<dt>详情页地址：</dt>
+								<dd>http://www.cnki.com.cn/Article/CJFDTotal-YYGC201604006.htm </dd>
+							</dl>
+							<dl class="Details_page">
+								<dt>原文下载地址：</dt>
+								<dd>http://www.cnki.com.cn/Article/YYGC201604006.pdf</dd>
+							</dl>
+					</div> -->
+					</div>
+					<!-- 信息确认  结束 -->
+					<div class="btn_group">
+						<input type="hidden" onclick="shangyibu()" id="classButten1"
+							value="上一步" class="Previous" /> <input type="button"
+							onclick="xiayibu()" id="classButten2" value="下一步" class="next" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<?}?>

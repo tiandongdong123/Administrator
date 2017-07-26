@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.RemindMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Remind" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="batch_name" property="batchName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="apply_department" property="applyDepartment" jdbcType="VARCHAR" />
+    <result column="apply_person" property="applyPerson" jdbcType="VARCHAR" />
+    <result column="apply_date" property="applyDate" jdbcType="VARCHAR" />
+    <result column="is_seen" property="isSeen" jdbcType="INTEGER" />
+    <result column="remind_time" property="remindTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, batch_name, type, apply_department, apply_person, apply_date, is_seen, remind_time
+  </sql>
+  <!-- 添加消息 -->
+  <insert id="insert" parameterType="com.wf.bean.Remind" >
+    insert into remind (id, batch_name, type, 
+      apply_department, apply_person, apply_date, 
+      is_seen, remind_time)
+    values (#{id,jdbcType=VARCHAR}, #{batchName,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{applyDepartment,jdbcType=VARCHAR}, #{applyPerson,jdbcType=VARCHAR}, #{applyDate,jdbcType=VARCHAR}, 
+      #{isSeen,jdbcType=INTEGER}, #{remindTime,jdbcType=VARCHAR})
+  </insert>
+  <!-- 查询消息 -->
+  <select id="query" resultMap="BaseResultMap">
+  	select * from remind
+  	where is_seen=0
+  </select>
+  <!-- 修改查看状态 -->
+  <update id="update">
+  	update remind
+  	set is_seen=1
+  	where is_seen=0
+  </update>
+</mapper>

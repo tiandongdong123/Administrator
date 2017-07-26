@@ -1,0 +1,64 @@
+	<?
+	  include("/inc/header.html") {}
+    ?>
+<script  type="text/javascript"  src="../page/systemmanager/js/add_admin.js"> </script>
+<input type="hidden" id="checkname">
+<input type="hidden" id="cname" value="N">
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <form>
+			<div id="addadmin">
+			<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>用户名：</label>
+             <input type="text" id="username" maxlength="16"  class="form-control input_width" onfocus="showvalue()" onblur="checkadminid(this.value)"><span id="checkadminid"></span>
+         	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码：</label>
+             <input type="password" id="password"  class="form-control input_width"><span id="checkpassword"></span>
+         	</div>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">姓名：</label>
+             <input type="text" id="name" class="form-control input_width" >
+         	</div>
+         	  <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">部门：</label>
+             <select id="deptname">
+             <?for(var dept in deptname){?>
+             <option value="${dept.id}">${dept.deptName}</option>
+             <?}?>
+             </select>
+         	</div>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">手机号码：</label>
+             <input type="text" id="mphone"  maxlength="11" class="form-control input_width" ><span id="chcekmphone"></span>
+         	</div>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">固定电话：</label>
+             <input type="text" id="telphone" maxlength="20" class="form-control input_width" ><span id="checktelphone"></span>
+         	</div>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">邮箱 ：</label>
+             <input type="text" id="email" class="form-control input_width" ><span id="checkemail"></span>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">角色 ：</label>
+             <select id="rolename">
+             <?for(var role in rolename){?>
+             <option value="${role.roleId}">${role.roleName}</option>
+             <?}?>
+             </select>
+         	</div>
+         </div>		
+              <div class="box-footer" style="text-align:center;">
+               <button type="button" onclick="doaddadmin()"      class="btn btn-primary">提交注册信息</button>
+                <button type="reset"       class="btn btn-primary">重置</button>
+              </div>
+              </form>
+            </div>
+          </div>
+      	 </div>
+      </div>
+    </section>

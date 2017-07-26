@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ShareTemplateMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ShareTemplate" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="share_type" property="shareType" jdbcType="VARCHAR" />
+    <result column="share_content" property="shareContent" jdbcType="VARCHAR" />
+    <result column="share_time" property="shareTime" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+ <!-- 查询学科分类信息 -->
+  <select id="selectShareTemplateInfor" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from share_template
+    where 1=1
+    <if test="shareType!=null">
+    	and share_type=#{shareType}
+    </if>
+    <if test="pageNum >-1 and pageSize >-1">  
+        limit #{pageNum},#{pageSize}
+    </if>  
+  </select>
+  
+  <select id="selectShareTemplateInforAll" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from share_template where 1=1
+    <if test="shareType!=null">
+    	and share_type=#{shareType}
+    </if>
+  </select>
+ 
+ <select id="findShareTemplate" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from share_template where id=#{id}
+  </select>
+  
+  <select id="findShareTemplateParam" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from share_template where share_type=#{shareType}
+  </select>
+  
+  <select id="findShareTemplateParamToUpdate" resultMap="BaseResultMap" parameterType="java.util.Map">
+   	select * from share_template where share_type=#{shareType}
+   	<if test="null!=addOrUpdate and ''!=addOrUpdate">
+   		and id <![CDATA[ <> ]]>#{id}
+   	</if>
+ </select>
+  <!-- 查询所有 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from share_template
+  </select>
+  <insert id="insertShareTemplate"  parameterType="com.wf.bean.ShareTemplate">
+           insert into share_template(id,share_type,share_content,share_time)
+               values(#{id},#{shareType},#{shareContent},#{shareTime})
+  </insert>
+  
+  <delete id="deleteShareTemplate" parameterType="java.lang.String">
+           delete from share_template where 
+           <if test="_parameter !=null">
+           		id in
+           		<foreach collection="_parameter.split(',')"  open="(" close=")" separator="," item="item">  
+					#{item}
+				</foreach>
+           </if> 
+           <if test="_parameter==null">
+           		1=2
+           </if> 
+          
+   </delete>
+   
+   <update id="updateShareTemplate" parameterType="com.wf.bean.ShareTemplate">
+   		update share_template SET share_type=#{shareType},share_content=#{shareContent},share_time=#{shareTime} where id=#{id}
+   </update>
+   
+  
+</mapper>

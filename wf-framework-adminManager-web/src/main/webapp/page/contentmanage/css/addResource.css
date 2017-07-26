@@ -1,0 +1,33 @@
+.b{
+	width: 300px;
+	height: 30px;
+}
+.tdl{
+	text-align: right;
+}
+.tdr{
+	text-align: left;
+}
+
+td{
+	padding-left: 50px;
+	padding-top: 20px;
+}
+table.tableizer-table {
+		font-size: 12px;
+		border: 1px solid #CCC; 
+		font-family: Arial, Helvetica, sans-serif;
+		position: absolute;
+  		right: 30px;
+  		top: 70px;
+	} 
+	.tableizer-table td {
+		padding: 4px;
+		margin: 3px;
+		border: 1px solid #CCC;
+	}
+	.tableizer-table th {
+		background-color: #104E8B; 
+		color: #FFF;
+		font-weight: bold;
+	}

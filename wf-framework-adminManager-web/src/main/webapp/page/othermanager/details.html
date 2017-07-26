@@ -1,0 +1,169 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+       	单张充值卡详情页
+      </h1>
+       <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">其他管理</a></li>
+        <li class="active">单张充值卡详情页</li>
+      </ol>-->
+    </section>
+ 
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+         <div class="box box-primary">
+     	 <div style="">
+     		<div>
+              <div style="width:700px; margin:0 auto;background-color:#f9f9f9;border-top: solid 5px #56B699;">
+                <div style=" text-align:center; font-size:16px; line-height:40px"> <i class="fa fa-circle-o text-red"></i>基本信息 </div>
+                <table class="table">
+                    <tbody>
+     				<tr>
+     					<td align="right">充值卡批次</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.batchName}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">充值卡类型</td>
+     					<td width="20px"></td>
+     					<?  var type;
+							if(map.type == 1){
+							 type = "万方充值卡";	
+							}
+							if(map.type == 2){
+							 type = "医药会员卡";	
+							}
+							if(map.type == 3){
+							 type = "医药检索卡";	
+							}
+     					?>
+     					<td align="left">${type}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">卡号</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.cardNum}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">密码</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.password}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">面值</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.value}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">有效期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.validStart}~${map.validEnd}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">生成日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.createDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请部门</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.applyDepartment}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请人</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.applyPerson}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.applyDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">附件</td>
+     					<td width="20px"></td>
+     					<td align="left"><a href="../card/download1.do?url=${map.adjunct}">点击下载</a></td>
+     				</tr>
+     				<tr>
+     					<td align="right">审核部门</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.checkDepartment}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">审核人</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.checkPerson}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">审核日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.checkDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">领取部门</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.pullDepartment}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">领取人</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.pullPerson}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">领取日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.pullDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">激活状态</td>
+     					<td width="20px"></td>
+     					<?  var invokeState;
+							if(map.invokeState == 1){
+							 invokeState = "未激活";	
+							}
+							if(map.invokeState == 2){
+							 invokeState = "已激活";	
+							}
+							if(map.invokeState == 3){
+							 invokeState = "已过期";	
+							}
+     					?>
+     					<td align="left"><font color="red">${invokeState}</font></td>
+     				</tr>
+     				<tr>
+     					<td align="right">激活日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.invokeDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">激活用户</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.invokeUser}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">激活IP</td>
+     					<td width="20px"></td>
+     					<td align="left">${map.invokeIp}</td>
+     				</tr>
+     				</tbody>
+     			</table>
+     		</div>
+     		</div>
+     	</div>
+     	</div>
+     	</div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

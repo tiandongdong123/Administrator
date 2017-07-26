@@ -1,0 +1,62 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/public.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/laypage.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_edit_Authorize.js"></script>
+
+<style type="text/css">
+.search dl {
+	margin-bottom: 25px;
+	text-align: left;
+}
+
+.search {
+	width: 100%;
+	margin: 20px auto;
+}
+</style>
+<body class="hold-transition ">
+	<section class="content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary" style="margin-top: -16px;">
+					<div style="padding-bottom: 20px; margin-top: 5px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								用户名<span></span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<input type="text" class="form-control" id="username"
+									required="required">
+							</div>
+						</div>
+					</div>
+					<div style="padding-bottom: 30px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								密码<span></span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<input type="password" class="form-control" id="password"
+									required="required">
+							</div>
+						</div>
+					</div>
+					<!-- form start -->
+					<input type="hidden" id="institutionId"> <input
+						type="hidden" id="providerId">
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+<?}?>

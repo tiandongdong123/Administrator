@@ -1,0 +1,68 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/admin_manager.js"> </script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	管理员管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="../user/toIndex.do" ><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="javascript:void(0)" >系统管理</a></li>
+        <li class="active">管理员管理</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group">
+                  	<div class="col-sm-4">
+                    <input type="email"  class="form-control" id="inputEmail3" placeholder="请输入检索词">
+                  	</div>
+                  <button type="button" class="btn btn-primary" onclick="adminpage(1)">搜索</button>
+                </div>
+            </form>
+            <button type='button' class='btn btn-primary' onclick="changeadmin(this)">批量冻结</button>&nbsp;&nbsp;&nbsp;
+             <button type='button' class='btn btn-primary' onclick="changeadmin(this)">批量解冻</button>&nbsp;&nbsp;&nbsp;
+             <button type='button' class='btn btn-primary' onclick="addadmin()">添加管理员</button>
+            <table style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+               	  <th style="width: 20px;"><input type="checkbox" id="num" onclick="checkedids()" name=""></th>
+                 <!--  <th>序号</th> -->
+                  <th>用户名</th>
+                  <th>姓名</th>
+                  <th>部门</th>
+                  <th>手机号码</th>
+                  <th>固定电话</th>
+                  <th style="width: 140px;">E-Mail</th>
+                  <th>角色</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="adminbody">
+               
+                </tbody>
+              </table>
+               <div id="page"></div>
+          </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

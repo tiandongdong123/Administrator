@@ -1,0 +1,116 @@
+<? directive dynamic map;?>
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css" href="../page/contentmanage/css/public.css" />
+<link href="../page/contentmanage/css/Preferred.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="../css/workBench.css" />
+<script src="../page/contentmanage/volume/js/volume_details.js"></script>
+<script src="../page/contentmanage/volume/js/jump.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	内容管理
+      </h1>
+     <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">内容管理</a></li>
+        <li class="active">文辑管理</li>
+      </ol> -->
+    </section>
+
+    <!-- Main content -->
+ <section class="content">
+ <div class="row">
+ <!-- left column -->
+ <div class="col-md-6">
+   <!-- general form elements -->
+   <div class="box box-primary">
+   <div class="pagecont">
+    <!--文辑简介 开始-->
+    <div class="PreferredInfo PreferredInfoCover">
+      <div class="PrePic" style="background-size: cover;background-image:url(..${map.volume.coverUrl})">
+		<div class="PrePic_title">
+		<?if(strutil.length(map.volume.volumeName) > 8){
+							var docuTitle = strutil.subStringTo(map.volume.volumeName,0,6);
+						?>
+		${docuTitle}...
+		<?}else{?>
+		${map.volume.volumeName}
+		<?}?>
+		</div>
+		<div class="PrePic_title_two">作者:${map.volume.publishPerson}</div>
+	</div>
+      <div class="PrefText">
+        <h3>${map.volume.volumeName}<i class="icon icon_share2"></i></h3>
+        <div class="PrefTextP">
+          <p>文集简介：<br>
+          <?if(strutil.length(map.volume.volumeAbstract) > 100){
+           var abstract = strutil.subStringTo(map.volume.volumeAbstract,0,100);
+          ?>
+          ${abstract}...<br>
+          <?}else{?>
+          
+          ${map.volume.volumeAbstract}<br>
+          <?}?>
+          </p>
+        <div class="Price">￥${map.volume.volumePrice} <div class="History"><s>单篇记总价￥66</s> 已优惠33.5 </div></div>
+          <div class="Mbtn">
+           		<a href="#" class="read"><i class="icon icon_book"></i>在线阅读</a>
+                <a href="#" class="read"><i class="icon icon_down"></i>下&nbsp;&nbsp;载</a>
+                <a href="#" class="read"><i class="icon icon_collection"></i>收&nbsp;&nbsp;藏</a>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!--文辑简介 结束-->
+    <!--文辑列表 开始-->
+    <div class="PrefArticleList">
+      <div class="left">
+        <ul>
+          <? var i = 1;for(chapter in map.chapters){?>
+          <li>
+            <a href="javascript:void(0)" onclick="jump(this.id)" id="${i}">${chapter.chapterTitle}</a>
+          </li>
+          <?i++;}?>
+        </ul>
+      </div>
+      
+      <div class="right">
+        <div class="title">目录</div>
+        <div class="PrefArticleCon" id="parent" style="position:relative">
+          	<?var h = 1;for(chapter in map.chapters){?>
+          	<div id="son${h}">
+          		<div class="ConTitle">${chapter.chapterTitle}</div>
+          			<ul class="ConCon">
+          				<?var j = 1; for(section in chapter.sections){?>
+           				<li>
+           				<i class=" icon icon_pdf"></i>
+           				<a href="javascript:void(0);" onclick="jump('${section.docuType}','${section.docuId}');"'>${j}、${section.docuTitle}</a>
+           				.......................................................${section.docuAuthor}
+            			</li>
+            			<?j++;}?>
+         			 </ul>
+          		</div>
+        	<?h++;}?>
+        	</div>
+        	<!-- <div class="bottom_buy">
+      			<div class="PrefBuy">
+	       		 	<div class="BuyBtn">
+	          			<a href="#">下载购买</a>
+	        		</div>
+        			<div class="Price">￥32.50</div>
+      			</div>
+      		</div> -->
+      </div>
+    </div>
+    <!--文辑列表 结束-->
+   </div>
+   </div>
+    </div>
+   </div>
+   </section>
+ </div> 
+<?}?>

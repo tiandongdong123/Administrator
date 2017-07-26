@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.PSubjectCategoryMapper" >
+  <resultMap id="PSubjectCategoryMap" type="com.wf.bean.PSubjectCategory" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="provider_id" property="providerId" jdbcType="VARCHAR" />
+    <result column="pcategory_codes" property="pCategoryCodes" jdbcType="VARCHAR" />
+    <result column="pcategory_name" property="pCategoryName" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="pro_resource_id" property="proResourceId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getPSubjectCategory" resultMap="PSubjectCategoryMap">
+ 	 select * from psubject_category where 1=1
+ 	 <if test="providerId !=null and providerId !=''">
+ 		and provider_id =#{providerId}
+ 	</if>
+ 	<if test="proResourceId !=null and proResourceId !=''">
+ 		and pro_resource_id =#{proResourceId}
+ 	</if>
+  </select>
+ 
+  <select id="getPSubjectCategoryParent" resultMap="PSubjectCategoryMap">
+ 	 select * from psubject_category where 1=1
+ 	 <if test="id !=null and id !=''">
+ 		and id =#{id}
+ 	</if>
+  </select>
+ 
+  <!-- 增加学科分类 -->
+  <insert id="addPSubjectCategory" parameterType="com.wf.bean.PSubjectCategory">
+  	<selectKey resultType="int" order="AFTER" keyProperty="id">
+		 SELECT LAST_INSERT_ID() AS id    <!-- 获取自增ID -->
+	 </selectKey>
+	 insert into psubject_category(provider_id,pcategory_codes,pcategory_name,parent_id,pro_resource_id)values
+	 (#{providerId},#{pCategoryCodes},#{pCategoryName},#{parentId},#{proResourceId})
+  </insert>
+  <!-- 修改学科分类 -->
+  <update id="updatePSubjectCategory" parameterType="com.wf.bean.PSubjectCategory">
+  	update psubject_category 
+  	<set>
+      <if test="providerId != null and providerId != '' " >
+        provider_id = #{providerId},
+      </if>
+      <if test="proResourceId != null and proResourceId != '' " >
+        pro_resource_id = #{proResourceId},
+      </if>
+      <if test="pCategoryCodes != null and pCategoryCodes != ''">
+      	pcategory_codes = #{pCategoryCodes},
+      </if>
+      <if test="pCategoryName != null and pCategoryName != ''">
+      	pcategory_name = #{pCategoryName},
+      </if>
+      <if test="parentId != null and parentId != ''">
+      	parent_id = #{parentId}
+      </if>
+      </set>
+      where id = #{id}
+  </update>
+  <!-- 删除学科分类 -->
+ 	<delete id="deletePSubjectCategory">
+ 		delete from psubject_category where id =#{id}
+ 	</delete>
+ 
+ 
+</mapper>

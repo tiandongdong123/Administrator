@@ -1,0 +1,228 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header"><h1>订单管理</h1></section>
+
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box">
+            <!--查询开始  -->
+            <form role="form">
+            <div class="box-header">
+              <div class="input-group input-group-sm" style="width:50%;">
+                <input type="text" class="form-control" placeholder="请输入订单号或用户名或账号名称进行查询">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-info btn-flat">订单查询</button>
+                    </span>
+                    &nbsp;&nbsp;&nbsp;<a href="#">更多查询条件</a>
+              </div>
+              <!--更多查询条件开始  -->
+              <div>
+                <div class="form-group" style="width:40%;">
+                  <label>订单类型</label>
+                  <select class="form-control">
+                    <option>--选择订单类型--</option>
+                    <option>资源下载</option>
+                    <option>相似性检测</option>
+                  </select>
+              	</div>
+              	<label>下单时间</label>
+              	<div class="form-group" style="width:60%;">
+              	<div class="col-xs-4">
+                  <input type="text" class="form-control" placeholder="请选择起始时间">
+                </div>
+             	
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" placeholder="请选择结束时间">
+                </div>
+                </div>
+              	<div class="form-group" style="width:40%;">
+                  <label>用户类型</label>
+                  <select class="form-control">
+                    <option>机构用户</option>
+                    <option>个人用户</option>
+                  </select>
+              	</div>
+              	 <div class="form-group" style="width:100%;">
+                  <label for="inputEmail3" class="col-sm-2 control-label">资源类型</label>
+
+                  <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> 全部
+                      </label>
+                      <label>
+                        <input type="checkbox"> 期刊
+                      </label>
+                      <label>
+                        <input type="checkbox"> 学位
+                      </label>
+                      <label>
+                        <input type="checkbox"> 会议
+                      </label>
+                      <label>
+                        <input type="checkbox"> 专利
+                      </label>
+                      <label>
+                        <input type="checkbox"> 图书
+                      </label>
+                      <label>
+                        <input type="checkbox"> 年鉴
+                      </label>
+                      <label>
+                        <input type="checkbox"> 报纸
+                      </label>
+                      <label>
+                        <input type="checkbox"> 标准
+                      </label>
+                      <label>
+                        <input type="checkbox"> 法规
+                      </label>
+                      <label>
+                        <input type="checkbox"> 科技报告
+                      </label>
+                      <label>
+                        <input type="checkbox"> 成果
+                      </label>
+                      <label>
+                        <input type="checkbox"> 地方志
+                      </label>
+                      <label>
+                        <input type="checkbox"> 视频
+                      </label>
+                    </div>
+                </div>
+                 <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">订单状态</label>
+                  <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> 全部
+                      </label>
+                      <label>
+                        <input type="checkbox"> 等待下载
+                      </label>
+                      <label>
+                        <input type="checkbox"> 订单完成
+                      </label>
+                    </div>
+                </div>
+              </div>
+              <!--更多查询条件结束  -->
+             </form>
+             <!--查询结束  -->
+              <div style="color:#0000FF;text-align:right;">
+              	订单金额总计：300元 &nbsp;&nbsp;&nbsp;
+              	<button type="button" class="btn btn-info btn-flat">导出</button> &nbsp;&nbsp;&nbsp;
+              	<button type="button" class="btn btn-info btn-flat">刷新</button>
+              </div>
+            </div>
+            <!-- 查询列表开始 -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>下单时间</th>
+                  <th>订单号</th>
+                  <th>机构名称</th>
+                  <th>用户名</th>
+                  <th>IP地址</th>
+                  <th>资源类型</th>
+                  <th>资源名称</th>
+                  <th>金额</th>
+                  <th>订单状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>2012111078394320</td>
+                  <td>北京邮电大学</td>
+                  <td>adf</td>
+                  <td>221.156.98.156</td>
+                  <td>学位</td>
+                  <td>CSTR和ACR丁酸型发酵制氢系统</td>
+                  <td>3.00<a href=""><img src="../template/dist/img/u36609.png" style="width:25px;height:25px;"/></a></td>
+                  <td>订单完成</td>
+                </tr>
+                <tr>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>2012111078394320</td>
+                  <td>北京邮电大学</td>
+                  <td>adf</td>
+                  <td>221.156.98.156</td>
+                  <td>学位</td>
+                  <td>CSTR和ACR丁酸型发酵制氢系统</td>
+                  <td>3.00<a href=""><img src="../template/dist/img/u36609.png" style="width:25px;height:25px;"/></a></td>
+                  <td>订单完成</td>
+                </tr>
+                <tr>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>2012111078394320</td>
+                  <td>北京邮电大学</td>
+                  <td>adf</td>
+                  <td>221.156.98.156</td>
+                  <td>学位</td>
+                  <td>CSTR和ACR丁酸型发酵制氢系统</td>
+                  <td>3.00<a href=""><img src="../template/dist/img/u36609.png" style="width:25px;height:25px;"/></a></td>
+                  <td>订单完成</td>
+                </tr>
+                <tr>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>2012111078394320</td>
+                  <td>北京邮电大学</td>
+                  <td>adf</td>
+                  <td>221.156.98.156</td>
+                  <td>学位</td>
+                  <td>CSTR和ACR丁酸型发酵制氢系统</td>
+                  <td>3.00<a href=""><img src="../template/dist/img/u36609.png" style="width:25px;height:25px;"/></a></td>
+                  <td>订单完成</td>
+                </tr>
+                <tr>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>2012111078394320</td>
+                  <td>北京邮电大学</td>
+                  <td>adf</td>
+                 <td>221.156.98.156</td>
+                  <td>学位</td>
+                  <td>CSTR和ACR丁酸型发酵制氢系统</td>
+                  <td>3.00<a href=""><img src="../template/dist/img/u36609.png" style="width:25px;height:25px;"/></a></td>
+                  <td>订单完成</td>
+                </tr>
+               
+              </table>
+            </div>
+            <!-- 查询列表结束 -->
+          </div>
+          <!-- 金额弹窗开始 -->
+          <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>支付方式</th>
+                  <th>金额</th>
+                  <th>扣款时间</th>
+                  <th>资源余额账号</th>
+                  <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>支付宝</td>
+                  <td>20</td>
+                  <td>2016-05-24  12:12:12</td>
+                  <td>33</td>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
+            <!-- 金额弹窗结束 -->
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

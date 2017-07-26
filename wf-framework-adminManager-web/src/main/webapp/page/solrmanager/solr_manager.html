@@ -1,0 +1,93 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/solrmanager/solr_manager.js"></script>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>solr下撤</h1>
+     <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">solr下撤管理</a></li>
+        <li class="active">solr下撤</li>
+      </ol> -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form" id="fromList" method="post">
+              <div class="box-body">
+              	<div class="form-group input_block ">
+                  <label  class="input_name">* 下撤类型</label>
+                  <select id="type" name="type" class="form-control input_width" onchange="getType(this.value)">
+                  		<option value="">--请选择模块名称--</option>
+					 <option value="perio">期刊</option>
+					 <option value="conference">会议</option>
+					 <option value="degree">学位</option>
+					 <option value="gazetteer_new">新方志</option>
+					 <option value="gazetteer_old">旧方志</option>
+					 <option value="Yearbooks">年鉴</option>
+					 <option value="patent">专利</option>
+					 <option value="standards">标准</option>
+					 <option value="legislations">法规</option>
+					 <option value="tech">科技报告</option>
+					 <option value="techResult">科技成果</option>
+					 <option value="video">视频</option>
+					 <option value="books">电子图书</option>
+					 <option value="scholars">学者</option>
+					 <option value="unit">机构</option>
+					 <option value="blob">博文</option>
+                  </select>
+                </div>
+                <div class="form-group input_block ">
+	                <label  class="input_name">* 限定条件</label>
+	                <div id="other" class="form-control input_width">ID：<input name="other_" type="radio" value="id" /></div>
+	                <div id="perio" style="display:none;" class="form-control input_width">
+	                	<table width="100%"><tr><td>期刊ID：<input name="perio_" type="radio" value="perio_id" /></td>
+	                	<td>期刊ID+年：<input name="perio_" type="radio" value="perio_id_y" /></td>
+	                	<td>期刊ID+年+期：<input name="perio_" type="radio" value="perio_id_i" /></td>
+	                	<td>论文ID<input name="perio_" type="radio" value="article_id" /></td>
+	                	</tr></table>
+	             	</div>
+	                <div id="conference" style="display:none;" class="form-control input_width">
+	                	<table width="100%"><tr>
+	                	<td>会议ID：<input name="conference_" type="radio" value="conf_id" /></td>
+	                	<td>  论文ID<input name="conference_" type="radio" value="article_id" /></td>
+	               		</tr></table>
+	             	</div>
+	                <div id="gazetteer_new" style="display:none;" class="form-control input_width">
+	                <table width="100%"><tr>
+	                <td>志书ID：<input name="gazetteer_new_" type="radio" value="gazetteers_id" /></td>
+	               	<td>条目ID<input name="gazetteer_new_" type="radio" value="item_id" /></td>
+	               	</tr></table>
+	             	</div>
+	                <div id="Yearbooks" style="display:none;" class="form-control input_width">
+	                <table width="100%"><tr>
+	                <td>单种ID：<input name="Yearbooks_" type="radio" value="single_id" /></td>
+	                <td>单卷ID<input name="Yearbooks_" type="radio" value="volume_id" /></td>
+	                <td>条目ID<input name="Yearbooks_" type="radio" value="item_id" /></td>
+	                </tr></table>
+	                </div>
+             	</div>
+             	
+                <div class="form-group input_block ">
+                  <label class="input_name">* 输入数据</label>
+                  <textarea rows="3" cols="20" id="data" name="data" style="width:400px;height:200px;"></textarea>
+                </div>
+              <div class="box-footer" style="text-align:center;">
+                <button type="button" class="btn btn-primary" onclick="put()">提交</button>
+                <button type="reset" onclick="chongzhi();" class="btn btn-primary">重置</button>
+              </div>
+            </form>
+          </div>
+      	</div>
+      </div>
+    </section>
+  </div>
+
+<?}?>

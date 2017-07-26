@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.CardTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.CardType" >
+    <result column="card_code" property="cardTypeCode" jdbcType="VARCHAR" />
+    <result column="card_name" property="cardTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="sqllist" >
+    card_code,card_name
+  </sql>
+  <select id="checkcode" resultType="INTEGER">
+  select count(*) from wfks_accounting.card_type where card_code=#{cardTypeCode} and card_name=#{cardTypeName}
+  </select>
+  
+  <insert id="addCode" parameterType="com.wf.bean.CardType" >
+  insert into wfks_accounting.card_type  (card_code,card_name) values (#{cardTypeCode},#{cardTypeName})
+  </insert>
+    
+   <select id="getlist" resultMap="BaseResultMap">
+   select * from wfks_accounting.card_type
+   </select>
+   
+   <select id="getOne" resultMap="BaseResultMap">
+   select * from wfks_accounting.card_type where card_code=#{code}
+   </select>
+</mapper>

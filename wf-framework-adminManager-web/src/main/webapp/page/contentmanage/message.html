@@ -1,0 +1,104 @@
+<?	
+	layout("/inc/layout.html",{
+			title:'资讯管理'
+		}){
+?>
+	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../page/contentmanage/js/findMessage.js"></script>
+ <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+                     资讯管理
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 内容管理</a></li>
+        <li class="active">资讯管理</li>
+      </ol>-->
+    </section> 
+	<input type="hidden" id="pageNum" value="${pageList.pageNum}">
+  	<input type="hidden" id="pageTotal" value="${pageList.pageTotal}">
+  	<input type="hidden" id="branchf" value="${meaasgeMap.branch}">
+  	<input type="hidden" id="columsf" value="${meaasgeMap.colums}">
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+	  		<table id="messagetable">
+	  			<tr>
+	  				<td class="al">添加部门</td>
+	  				<td class="ar">
+	  					<select id="xjbm">
+	  						<option>全部</option>
+	  						<option>市场部</option>
+	  						<option>运维部</option>
+	  					</select>
+	  				</td>
+	  				<td class="al">添加人</td>
+	  				<td class="ar"><input type="text" id="human" value="${meaasgeMap.human!}"></td>
+	  			</tr>
+	  			<tr>
+	  				<td class="al">添加日期</td><td class="ar"><input type="text" id="startTime" value="${meaasgeMap.startTime!}" onclick="WdatePicker()"></td>
+	  				<td>——</td><td class="ar" ><input type="text" id="endTime" value="${meaasgeMap.endTime!}" onclick="WdatePicker()"></td>
+	  			</tr>
+	  			<tr>
+	  				<td class="al">栏目</td>
+	  				<td class="ar">
+		  				<select id="clum">
+		  					<option>全部</option>
+		  					<option>专题聚焦</option>
+		  					<option>科技动态</option>
+		  					<option>基金会议</option>
+		  					<option>万方资讯</option>
+		  				</select>
+	  				</td>
+	  				<td></td><td></td>
+	  			</tr>
+	  		</table>
+		
+		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
+		</div>
+		
+		<br/><br/>
+		<div style="overflow-y :auto;position:relative">
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div  class="box-body no-padding">
+              <div class="mailbox-controls">
+                <div class="btn-group">
+                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                </div>
+                <!-- /.btn-group -->
+                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
+                 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a onclick="exportexecl();" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></button>
+                 <button type="button" style="float: right;margin-right: 5px;"  class="btn btn-default btn-sm"><a onclick="refresh();" href="javascript:void(0);"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+              </div>
+              
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-bordered table-striped">
+                  
+                </table>
+                <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.box-body -->
+            
+            <div class="box-footer no-padding">
+              <div class="mailbox-controls">
+                <div id="page"></div>
+                <span style="display: none" id="here"></span>
+                <!-- /.pull-right -->
+              </div>
+            </div>
+            
+          </div>
+          <!-- /. box -->
+        </div>
+        </div>
+        </div>
+	</div>
+</section>
+</div>	
+<?}?>

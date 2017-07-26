@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.CardMapper" >
+  <resultMap id="BaseResultMap1" type="com.wf.bean.Card" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="batch_id" property="batchId" jdbcType="VARCHAR" />
+    <result column="card_num" property="cardNum" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="INTEGER" />
+    <result column="invoke_state" property="invokeState" jdbcType="INTEGER" />
+    <result column="invoke_date" property="invokeDate" jdbcType="VARCHAR" />
+    <result column="invoke_user" property="invokeUser" jdbcType="VARCHAR" />
+    <result column="invoke_ip" property="invokeIp" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.util.Map" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="batch_id" property="batchId" jdbcType="VARCHAR" />
+    <result column="card_num" property="cardNum" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="INTEGER" />
+    <result column="invoke_state" property="invokeState" jdbcType="INTEGER" />
+    <result column="invoke_date" property="invokeDate" jdbcType="VARCHAR" />
+    <result column="invoke_user" property="invokeUser" jdbcType="VARCHAR" />
+    <result column="invoke_ip" property="invokeIp" jdbcType="VARCHAR" />
+    <result column="batch_name" property="batchName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="valid_start" property="validStart" jdbcType="VARCHAR" />
+    <result column="valid_end" property="validEnd" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="apply_department" property="applyDepartment" jdbcType="VARCHAR" />
+    <result column="apply_person" property="applyPerson" jdbcType="VARCHAR" />
+    <result column="apply_date" property="applyDate" jdbcType="VARCHAR" />
+    <result column="adjunct" property="adjunct" jdbcType="VARCHAR" />
+    <result column="check_state" property="checkState" jdbcType="INTEGER" />
+    <result column="check_department" property="checkDepartment" jdbcType="VARCHAR" />
+    <result column="check_person" property="checkPerson" jdbcType="VARCHAR" />
+    <result column="check_date" property="checkDate" jdbcType="VARCHAR" />
+    <result column="pull_department" property="pullDepartment" jdbcType="VARCHAR" />
+    <result column="pull_person" property="pullPerson" jdbcType="VARCHAR" />
+    <result column="pull_date" property="pullDate" jdbcType="VARCHAR" />
+    <result column="batch_state" property="batchState" jdbcType="INTEGER" />
+    <result column="card_name" property="cardTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, batch_id, card_num, password, value, invoke_state, invoke_date, invoke_user, 
+    invoke_ip,batch_name, type, valid_start, valid_end, 
+    create_date, apply_department, apply_person, apply_date, adjunct, check_state, 
+    check_department, check_person, check_date, pull_department, pull_person, pull_date, 
+    batch_state
+  </sql>
+  <!--充值卡卡号排序计算卡号-->
+  <select id="queryCardNum" resultType="java.lang.String">
+  	select max(card_num) from wfks_accounting.rech_card
+  </select>
+  <!-- 生成充值卡 -->
+  <insert id="insertCards" parameterType="java.util.List">
+  	insert into wfks_accounting.rech_card(id, batch_id, card_num, password, value, invoke_state, invoke_date, invoke_user,invoke_ip)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," >
+    	(#{item.id},#{item.batchId},#{item.cardNum},#{item.password},#{item.value},#{item.invokeState},
+    	#{item.invokeDate},#{item.invokeUser},#{item.invokeIp})
+    </foreach>
+  </insert>
+  <!-- 查询所有条数 -->
+  <select id="queryAll" resultMap="BaseResultMap2" parameterType="java.util.Map">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id and b.type=t.card_code
+  	<if test="batchName!=null">
+  		and b.batch_name=#{batchName}
+  	</if>
+  	<if test="numStart!=null">
+  		and c.card_num <![CDATA[ >= ]]> #{numStart}
+  	</if>
+  	<if test="numEnd!=null">
+  		and c.card_num <![CDATA[ <= ]]> #{numEnd}
+  	</if>
+  	<if test="applyDepartment!=null">
+  		and b.apply_department=#{applyDepartment}
+  	</if>
+  	<if test="applyPerson!=null">
+  		and b.apply_person=#{applyPerson}
+  	</if>
+  	<if test="startTime!=null">
+  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
+  	</if>
+  	<if test="endTime!=null">
+  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
+  	</if>
+  	<if test="cardType!=null">
+       	and b.type in
+        <foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+    <if test="batchState!=null">
+       	and b.batch_state in
+        <foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+    <if test="invokeState!=null">
+       	and c.invoke_state in
+        <foreach collection="invokeState.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+  </select>
+  <!-- 查询所有已审核的充值卡 -->
+  <select id="queryAllCard" resultMap="BaseResultMap2" parameterType="java.util.Map">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id and b.type=t.card_code and b.check_state=2
+  	ORDER BY b.batch_name,c.card_num ASC
+  </select>
+  <!-- 查询充值卡列表 -->
+  <select id="queryCard" resultMap="BaseResultMap2" parameterType="java.util.Map">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id and b.type=t.card_code
+  	<if test="batchName!=null">
+  		and b.batch_name=#{batchName}
+  	</if>
+  	<if test="numStart!=null">
+  		and c.card_num <![CDATA[ >= ]]> #{numStart}
+  	</if>
+  	<if test="numEnd!=null">
+  		and c.card_num <![CDATA[ <= ]]> #{numEnd}
+  	</if>
+  	<if test="applyDepartment!=null">
+  		and b.apply_department=#{applyDepartment}
+  	</if>
+  	<if test="applyPerson!=null">
+  		and b.apply_person=#{applyPerson}
+  	</if>
+  	<if test="startTime!=null">
+  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
+  	</if>
+  	<if test="endTime!=null">
+  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
+  	</if>
+  	<if test="cardType!=null">
+       	and b.type in
+        <foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+    <if test="batchState!=null">
+       	and b.batch_state in
+        <foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+    <if test="invokeState!=null">
+       	and c.invoke_state in
+        <foreach collection="invokeState.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if>
+    limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 根据id单张充值卡详情页 -->
+  <select id="queryOneById" resultMap="BaseResultMap2" parameterType="java.lang.String">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id 
+  	and b.type=t.card_code
+  	and c.id = #{id}
+  </select>
+   <!-- 根据batchId查询所有 -->
+  <select id="queryAllBybatchId" resultMap="BaseResultMap2" parameterType="java.lang.String">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id 
+  	and b.type=t.card_code
+  	and c.batch_id = #{batchId}
+  </select>
+  <!-- 根据batchId  分页充值卡列表 -->
+  <select id="queryCardBybatchId" resultMap="BaseResultMap2" parameterType="java.util.Map">
+  	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
+  	where c.batch_id = b.batch_id 
+  	and b.type=t.card_code
+  	and c.batch_id = #{batchId}
+  	limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 修改充值卡激活状态 -->
+  <update id="updateInvokeState" parameterType="java.util.Map">
+  	update wfks_accounting.rech_card 
+  	set id=#{id},invoke_state=#{invokeState},invoke_user=#{invokeUser},invoke_ip=#{invokeIp},invoke_date=#{invokeDate}
+  	where id=#{id}
+  </update>
+  <!--查询用户万方卡账余额-->
+  <select id="queryCardValue" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select sum(value) from wfks_accounting.rech_card
+  	where invoke_user=#{userId}
+  </select>
+</mapper>

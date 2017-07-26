@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProjectBalanceMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ProjectBalance" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="validity_start_time" property="validityStartTime" jdbcType="DATE" />
+    <result column="validity_end_time" property="validityEndTime" jdbcType="DATE" />
+    <result column="total_money" property="totalMoney" jdbcType="DOUBLE" />
+    <result column="balance_money" property="balanceMoney" jdbcType="DOUBLE" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="java.util.Map" >
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="validity_start_time" property="validityStartTime" jdbcType="DATE" />
+    <result column="validity_end_time" property="validityEndTime" jdbcType="DATE" />
+    <result column="total_money" property="totalMoney" jdbcType="DOUBLE" />
+    <result column="balance_money" property="balanceMoney" jdbcType="DOUBLE" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="detail_setting" property="detailSetting" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectBalanceById" resultMap="BaseResultMap2" parameterType="java.lang.String" >
+    select p.name,p.detail_setting,pb.project_id,pb.validity_start_time,pb.validity_end_time,pb.total_money,pb.balance_money
+    from project_balance pb LEFT JOIN project p ON pb.project_id=p.id where pb.user_id = #{userId}
+  </select>
+  
+  <delete id="deleteBalanceByUserId" parameterType="java.lang.String" >
+    delete from project_balance where user_id = #{userId}
+  </delete>
+  
+  <insert id="insert" parameterType="com.wf.bean.ProjectBalance" >
+    insert into project_balance (id, project_id, user_id, 
+      validity_start_time, validity_end_time, total_money, 
+      balance_money)
+    values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{validityStartTime,jdbcType=DATE}, #{validityEndTime,jdbcType=DATE}, #{totalMoney,jdbcType=DOUBLE}, 
+      #{balanceMoney,jdbcType=DOUBLE})
+  </insert>
+
+</mapper>

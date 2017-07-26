@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ShareTemplateNamesFiledsMapper">
+
+	<select id="getFiledsByShareNameId" parameterType="java.lang.Integer" resultType="com.wf.bean.ShareTemplateNamesFileds">
+		select  * from share_template_names_fileds where share_template_names_id=#{id}
+	</select>
+	
+	<select id="getFiledsByShareNameType" parameterType="java.lang.String" resultType="com.wf.bean.ShareTemplateNamesFileds">
+		select f.* from share_template_names_fileds f left join share_template_names n on f.share_template_names_id=n.id where n.templet_name=#{type}
+	</select>
+	
+</mapper>

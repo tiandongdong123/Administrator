@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ResourceStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ResourceStatistics" >
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="url_type" property="urlType" jdbcType="INTEGER" />
+    <result column="institution_name" property="institutionName" jdbcType="VARCHAR" />
+    <result column="source_name" property="sourceName" jdbcType="VARCHAR" />
+    <result column="date" property="date" jdbcType="DATE" />
+    <result column="numbers" property="numbers" jdbcType="VARCHAR" />
+    <result column="source_type_name" property="sourceTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getLine" resultMap="BaseResultMap">
+	SELECT sum(numbers) numbers,date,source_type_name sourceTypeName
+	from rs_resources_statistics_sourcetype_use_daily 
+	where url_type=#{res.urlType} and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		 and source_type_name=#{res.sourceTypeName}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt;= #{endtime}
+	</if>
+	 group by source_type_name,date order by date asc
+  </select>
+  
+  <select id="getLineByCheckMore" resultMap="BaseResultMap">
+	SELECT sum(numbers) numbers,date,source_type_name sourceTypeName
+	from rs_resources_statistics_sourcetype_use_daily 
+	where url_type=#{res.urlType} and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="sourceTypeName!=null">
+		 and source_type_name in
+		 <foreach collection="sourceTypeName" index="index" item="item" open="(" separator="," close=")">
+		    #{item}
+		 </foreach>
+		 
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt;= #{endtime}
+	</if>
+	 group by source_type_name,date order by date asc
+  </select>
+  
+  <select id="gettable" resultMap="BaseResultMap">
+  	select sum(numbers) numbers ,url_type,source_name,source_type_name from rs_resources_statistics_sourcetype_use_daily
+  	where 1=1 and url_type<![CDATA[ <> ]]>'' and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+  	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		 and source_type_name=#{res.sourceTypeName}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt;= #{endtime}
+	</if>
+	GROUP BY url_type,source_type_name order by url_type
+  </select>
+  
+  <select id='getonetable' resultMap="BaseResultMap">
+ 	 SELECT sum(numbers) numbers,source_name,url_type,source_type_name
+	from rs_resources_statistics_sourcetype_use_daily 
+	where 1=1 url_type <![CDATA[ <> ]]>'' and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		 and source_type_name=#{res.sourceTypeName}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt; #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt; #{endtime}
+	</if>
+	group by url_type
+  </select>
+  
+  <select id="getLineMore" resultMap="BaseResultMap">
+	SELECT sum(numbers) numbers,date,source_type_name sourceTypeName,url_type 
+	from rs_resources_statistics_sourcetype_use_daily
+	where source_type_name=#{res.sourceTypeName}
+	url_type <![CDATA[ <> ]]>'' and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+	<if test="urls!=null">
+		and url_type in(
+	<foreach collection="urls" item="item" index="index" separator=",">  
+    	#{item}
+	</foreach>
+	)
+	</if>
+	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt;= #{endtime}
+	</if>
+	 group by source_type_name,url_type,date order by date asc
+  </select>
+  
+   <select id="getLineMoreByCheckMore" resultMap="BaseResultMap">
+	SELECT sum(numbers) numbers,date,source_type_name sourceTypeName,url_type 
+	from rs_resources_statistics_sourcetype_use_daily
+	where 1=1 url_type <![CDATA[ <> ]]>'' and source_type_name <![CDATA[ <> ]]>''
+	and source_type_name <![CDATA[ <> ]]>'全部'
+	<if test="sourceTypeName!=null">
+		 and source_type_name in
+		 <foreach collection="sourceTypeName" index="index" item="item" open="(" separator="," close=")">
+		    #{item}
+		 </foreach>
+	</if>
+	
+	<if test="urls!=null">
+		and url_type in(
+	<foreach collection="urls" item="item" index="index" separator=",">  
+    	#{item}
+	</foreach>
+	)
+	</if>
+	<if test="res.institutionName!=null and res.institutionName!=''">
+		 and institution_name=#{res.institutionName}
+	</if>
+	<if test="res.sourceName!=null and res.sourceName!=''">
+		 and source_name = #{res.sourceName}
+	</if>
+	<if test="res.userId!=null and res.userId!=''">
+		 and user_id=#{res.userId}
+	</if>
+	<if test="starttime!=null and starttime!=''">
+		 and date &gt;= #{starttime}
+	</if>
+	<if test="endtime!=null and endtime!=''">
+		 and date &lt;= #{endtime}
+	</if>
+	 group by source_type_name,url_type,date order by date asc
+  </select>
+  
+  
+</mapper>

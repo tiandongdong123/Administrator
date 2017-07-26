@@ -1,0 +1,69 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/usermanager/js/public.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+<script type="text/javascript">
+	function submitForm(){
+		$("#submit").attr({disabled: "disabled"});
+		if(!validateFrom()){
+			$("#submit").removeAttr("disabled");
+			return false;
+		}else{
+		    var formData = new FormData();
+		    formData.append('radio', $("input[type='radio']:checked").val());
+		    formData.append('file', $('#file')[0].files[0]);
+		    $.ajax({
+		        url: '../auser/blockunlock.do',
+		        type: 'POST',
+		        cache: false,
+		        data: formData,
+		        processData: false,
+		        contentType: false
+		    }).done(function(data){
+		    	if(data.flag=="success"){
+		    		layer.msg("共  "+data.count+"  条用户信息(成功  "+data.num+"  条)",{icon: 1});
+		    	}else{
+		    		layer.msg("用户名为'"+data.userId+"'的用户不存在", {icon: 2});
+		    	}
+		    });
+		}
+		$("#submit").removeAttr("disabled");
+	}
+	
+	function  download1(title){
+		window.location.href='../auser/worddownload.do?title='+encodeURI(encodeURI(title));
+	}
+</script>
+
+  <div class="content-wrapper">
+    <section class="content-header"><h1>批量冻结/解冻</h1></section>
+
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <form id="fromList" method="post" enctype="multipart/form-data">
+            	<div class="checkbox input_block block_left">
+	      			<label><input type="radio" name="infreeze" value="1">批量冻结账号
+	      			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	     		    <input type="radio" name="infreeze" value="2">批量解冻账号</label>
+     		    </div>
+     		    <div class="form-group input_block">
+     		    	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>上传文档</label>
+					<div class="btn btn-default">
+	                	<p>支持格式：<img src="../images/u301.png"/></p><input type="file" id="file" name="file"/>
+					</div>
+     		    </div>
+     		    <div class="checkbox input_block block_left" style="margin-top: 20px;">
+                 <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                 <button type="button" class="btn btn-primary" onclick="location=location;">重置</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                 <a href="javascript:void(0);" onclick="download1('机构账号批量模板（冻结）');">
+                <img src="../images/u356.png" style="height: 25px;width: 30px;"/>下载模板</a>
+              </div>
+      		</form>
+          </div>
+       </div>
+    </section>
+  </div>
+<?}?>

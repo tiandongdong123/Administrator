@@ -1,0 +1,67 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/systemmanager/js/resource_price_manager.js"> </script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+  <section class="content-header">
+      <h1>
+       	资源单价配置管理
+      </h1>
+       <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">系统管理</a></li>
+        <li class="active">资源单价配置管理</li>
+      </ol>-->
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group">           	
+                  	<div class="col-sm-4">
+                    <input type="email"  class="form-control" id="inputEmail3" placeholder="请输入产品名称">
+                  	</div>
+                  	<!-- <input type="checkbox"  name="" id="checkboxall" onclick="checkall()" value="">全选&nbsp;&nbsp;&nbsp;
+                  	<span id="checkboxs">                 	
+                  	</span> -->
+                  <button type="button" class="btn btn-primary" onclick="pricepage(1)">查询</button>
+                </div>
+            </form>
+            <div >
+            	 <button type="button" class="btn btn-primary" onclick="addprice()" >新增产品定价</button>
+            	 <button type="button" class="btn btn-primary" onclick="deletePrice()">批量删除</button>
+            </div>
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th><input type="checkbox" id="num" name="" onclick="checkedids()"></th>
+                  <th>产品ID</th>
+                  <th>产品名称</th>
+                  <th>产品来源</th>
+                  <th>产品类型</th>
+                  <th>单位</th>
+                  <th>单价</th>
+                  <th>平台名称</th>
+                  <th>适用用户</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="ttab">
+                
+                </tbody>
+              </table>
+              <div id="page"></div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

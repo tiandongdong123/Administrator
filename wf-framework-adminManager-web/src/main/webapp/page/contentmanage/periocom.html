@@ -1,0 +1,62 @@
+<?
+	  include("/inc/header.html") {}
+    ?>
+<link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
+<script type="text/javascript" src="../page/contentmanage/js/periocom.js"></script>
+    <section class="content">
+      <div class="row" ">
+      	<table class="table table-bordered">
+      		<tr>
+	      		<td>期刊id</td>
+	      		<td>
+	      		<input type="hidden" id="noteid" value="${info.perioId}"/>
+	      		${info.perioId}
+	      		</td>
+      		</tr>
+      		<tr>
+      			<td>期刊点评详情</td>
+      			<td>
+      			${info.commentContent}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>初步意见</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${info.preliminaryOpinions}">  
+      			</td>
+      		</tr>
+      		<tr>
+      			<td>申诉理由</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="appealReason" type="text" value="${info.appealReason}">     	
+      			</td>
+      		</tr>
+      		<tr>
+      			<td>最终意见</td>
+      			<td>
+                 	<?if(info.finalOpinion=='经审核你的笔记已通过！'){?>
+                 	<input type="radio" checked='checked'  name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
+      				<input type="radio"  name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
+      				<input type="radio" id="san" onclick="showone();"  name="finalOpinion" value="自定义">自定义<br/>
+      				<input type="text"  id="zdy">
+               		<?}else if(info.finalOpinion=='您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。'){?>
+               		<input type="radio"  name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
+      				<input type="radio"  checked='checked' name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
+      				<input type="radio"  id="san" onclick="showone();"   name="finalOpinion" value="自定义">自定义<br/>
+      				<input type="text"  id="zdy" >
+      				<?}else if(info.finalOpinion==''){?>
+      				<input type="radio"   name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
+      				<input type="radio"   name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
+      				<input type="radio" id="san" onclick="showone();"  checked='checked' name="finalOpinion" value="自定义">自定义<br/>
+      				<input type="text"  id="zdy">
+      				<?}else{?>
+               		<input type="radio"   name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
+      				<input type="radio"   name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
+      				<input type="radio" id="san" onclick="showone();"  checked='checked' name="finalOpinion" value="自定义">自定义<br/>
+      				<input type="text"  id="zdy" value="${info.finalOpinion}" >
+      				<?}?>
+      			</td>
+      		</tr>
+      	</table>
+      	<br/>
+      	<button type="submit" class="btn btn-primary" onclick="revocation('${info.id}');">撤销禁用</button>
+      	<button type="submit" class="btn btn-primary" onclick="maintain('${info.id}')">维持禁用</button>
+      </div>
+    </section>
+

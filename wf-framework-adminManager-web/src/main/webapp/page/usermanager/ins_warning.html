@@ -1,0 +1,92 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+
+<script type="text/javascript">
+
+function checkemail(str){
+	var reg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	if(reg.test(str)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function remindSubmit(flag){
+	if(checkemail($("#remindemail").val())){
+		$.ajax({
+		 	type : "post",
+			url : "../auser/getWarning.do",
+			data:{"amountthreshold":$("#amountthreshold").val(),
+				"datethreshold" : $("#datethreshold").val(),
+				"remindtime" : $("#remindtime").val(),
+				"remindemail" : $("#remindemail").val(),
+				"countthreshold" : $("#countthreshold").val(),
+				"flag" : flag
+			},
+			beforeSend: function(){
+				$("#submit").attr({disabled: "disabled"});
+			},
+			success: function(data){
+			   if(data == "true"){
+				   layer.msg('设置成功', {icon: 1});
+			   }else{
+				   layer.msg('设置失败', {icon: 2});
+			   }
+			},
+			complete: function(){
+				if(flag=="2"){
+					window.location.href="../auser/warning.do";
+				}
+				$("#submit").removeAttr("disabled");
+			}
+		});
+	}else{
+		layer.msg('邮箱格式不正确！', {icon: 2});
+	}
+}
+
+</script>
+<div class="content-wrapper">
+   <section class="content-header"><h1>机构用户预警设置</h1></section>
+
+   <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+              <div class="box-body">
+                <div class="form-group input_block">
+                  <label class="input_name">金额阈值</label>
+                  <input type="text" class="form-control input_width" id="amountthreshold" value="${war.amountthreshold!}" placeholder="金额少于多少进行预警">&nbsp;&nbsp;元
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name">次数阈值</label>
+                  <input type="text" class="form-control input_width" id="countthreshold" value="${war.countthreshold!}" placeholder="次数少于多少进行预警">&nbsp;&nbsp;次
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name">有效期阈值</label>
+                  <input type="text" class="form-control input_width" value="${war.datethreshold!}" id="datethreshold">&nbsp;&nbsp;天
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name">邮件提醒间隔时间</label>
+                  <input type="text" class="form-control input_width" value="${war.remindtime!}" id="remindtime">&nbsp;&nbsp;天
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name">提醒邮箱</label>
+                  <input type="text" class="form-control input_width" id="remindemail" value="${war.remindemail!}" placeholder="请输入邮箱地址(多个以;分割)">
+                </div>
+              </div>
+              <div class="box-footer">
+              	<?if(!isEmpty(war)){?>              
+                	<button type="button" id="submit" onclick="remindSubmit(1);" class="btn btn-primary">更新</button>
+              	<?}else{?>
+              		<button type="button" id="submit" onclick="remindSubmit(2);" class="btn btn-primary">提交</button>
+              	<?}?>
+                <button type="button" onclick="location=location;" class="btn btn-primary">重置</button>
+              </div>
+          </div>
+      </div>
+    </section>
+  </div>
+<?}?>

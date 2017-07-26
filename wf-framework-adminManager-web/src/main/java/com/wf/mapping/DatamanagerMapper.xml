@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.DatamanagerMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Datamanager" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="product_source_code" property="productSourceCode" jdbcType="VARCHAR" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="abbreviation" property="abbreviation" jdbcType="VARCHAR" />
+    <result column="abbreviation" property="abbreviation" jdbcType="VARCHAR" />
+    <result column="table_describe" property="tableDescribe" jdbcType="VARCHAR" />
+    <result column="res_type" property="resType" jdbcType="VARCHAR" />
+    <result column="language" property="language" jdbcType="VARCHAR" />
+    <result column="source_db" property="sourceDb" jdbcType="VARCHAR" />
+    <result column="custom_policy" property="customPolicy" jdbcType="VARCHAR" />
+    <result column="dbtype" property="dbtype" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="source_url" property="sourceUrl" jdbcType="VARCHAR" />
+    <result column="source_type" property="sourceType" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseMap" type="java.util.Map" >
+    <result column="product_source_code" property="productSourceCode" jdbcType="VARCHAR" />
+    <result column="table_name" property="tableName" jdbcType="VARCHAR" />
+    <result column="abbreviation" property="abbreviation" jdbcType="VARCHAR" />
+    <result column="res_type" property="resType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,product_source_code, table_name,abbreviation,table_describe, res_type, language, source_db, custom_policy,dbtype
+  </sql>
+  
+  <select id="selectDataByPsc" resultMap="BaseMap" parameterType="java.lang.String">
+    select product_source_code,table_name,abbreviation,res_type from datamanager where status = '1' and product_source_code = #{productSourceCode}
+  </select>
+  
+  <select id="selectList" resultMap="BaseMap">
+    select product_source_code,table_name,abbreviation,res_type from datamanager where status = '1'
+  </select>
+ 
+ <select id="getData" resultMap="BaseResultMap">
+ 	select * from datamanager where 1=1
+ 	<if test="dataname!=null and dataname !=''">
+ 		and (table_name like #{dataname} or dbtype like #{dataname} or source_db = (select db_source_code from db_source where db_source_name = #{dataname1} ))
+ 	</if>
+ 	and source_type='zy'
+ 	order by add_time desc
+ 	limit #{pagenum},#{pagesize}
+ </select>
+ 
+ <select id="getDataNum" resultType="int">
+ 	select count(1) from datamanager where 1=1
+ 	<if test="dataname!=null and dataname !=''">
+ 		and (table_name like #{dataname} or dbtype like #{dataname} or source_db like #{dataname})
+ 	</if>
+ 	and source_type='zy'
+ </select>
+ 
+ <delete id="deleteData" >
+ 	delete from datamanager  where id=#{id}
+ </delete>
+ 
+  <update id="closeData" >
+ 	update  datamanager set status=0  where id=#{id}
+ </update>
+ 
+  <update id="openData" >
+ 	update  datamanager set status=1  where id=#{id}
+ </update>
+  	
+  	<select id="checkDname" resultMap="BaseResultMap">
+  	select * from datamanager where table_name= #{name}
+  	</select>
+  	
+  	<select id="selectAll"  resultMap="BaseResultMap">
+  	select  * from datamanager 
+  	</select>
+  	
+  	<select id="selectZY"  resultMap="BaseResultMap">
+  	select *  from datamanager  where source_type='zy' and status='1'
+  	</select>
+  	
+  	<insert id="doAddData" parameterType="com.wf.bean.Datamanager" >
+    insert into datamanager
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+       <if test="productSourceCode != null" >
+        product_source_code,
+      </if>
+      <if test="tableName != null" >
+        table_name,
+      </if>
+      <if test="abbreviation != null" >
+        abbreviation,
+      </if>
+      <if test="tableDescribe != null" >
+        table_describe,
+      </if>
+      <if test="resType != null" >
+        res_type,
+      </if>
+      <if test="language != null" >
+        language,
+      </if>
+      <if test="sourceDb != null" >
+        source_db,
+      </if>
+      <if test="customPolicy != null" >
+        custom_policy,
+      </if>
+      <if test="dbtype != null" >
+        dbtype,
+      </if>
+      <if test="sourceType != null" >
+        source_type,
+      </if>
+      <if test="addTime != null" >
+        add_time
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="productSourceCode != null" >
+        #{productSourceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tableName != null" >
+        #{tableName,jdbcType=VARCHAR},
+      </if>
+      <if test="abbreviation != null" >
+        #{abbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="tableDescribe != null" >
+        #{tableDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="resType != null" >
+        #{resType,jdbcType=VARCHAR},
+      </if>
+      <if test="language != null" >
+        #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceDb != null" >
+        #{sourceDb,jdbcType=VARCHAR},
+      </if>
+      <if test="customPolicy != null" >
+        #{customPolicy,jdbcType=VARCHAR},
+      </if>
+      <if test="dbtype != null" >
+        #{dbtype,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceType != null" >
+        #{sourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="getDataManagerById" resultMap="BaseResultMap">
+   select * from datamanager where id = #{id}
+  </select>
+  
+  <select id="getDataManagerBySourceCode" resultMap="BaseResultMap">
+   select * from datamanager where product_source_code = #{productSourceCode}
+  </select>
+  
+  <update id="doUpdateData" parameterType="com.wf.bean.Datamanager" >
+    update datamanager
+    set table_name = #{tableName,jdbcType=VARCHAR},
+	abbreviation = #{abbreviation,jdbcType=VARCHAR},
+      product_source_code = #{productSourceCode,jdbcType=VARCHAR},
+      table_describe = #{tableDescribe,jdbcType=VARCHAR},
+      res_type = #{resType,jdbcType=VARCHAR},
+      language = #{language,jdbcType=VARCHAR},
+      source_db = #{sourceDb,jdbcType=VARCHAR},
+      dbtype = #{dbtype,jdbcType=VARCHAR} ,
+      status = #{status,jdbcType=VARCHAR} 
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="exportData" resultMap="BaseResultMap">
+  	select * from datamanager where 1=1
+ 	<if test="dataname!=null and dataname !=''">
+ 		and (table_name like #{dataname} or dbtype like #{dataname} or source_db = (select db_source_code from db_source where db_source_name = #{dataname1} ))
+ 	</if>
+ 	and source_type='zy'
+ 	order by add_time desc
+  </select>
+  
+</mapper>

@@ -1,0 +1,75 @@
+<?
+	layout("/inc/layout.html",{title:'添加资讯'}){
+?>
+<link rel="stylesheet" href="../page/contentmanage/css/addResource.css">
+<script type="text/javascript" src="../page/contentmanage/js/addResource.js"></script>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper"  id="defaultForm">
+    <!-- Content Header (Page header) -->
+    
+     
+	<section class="content-header">
+	 <?if(addupdate=="add"){?>
+      <h1>
+          添加资源类型
+        <small>13 new messages</small>
+      </h1>
+      <?}?>
+		<?if(addupdate=="update"){?>
+		 <h1>
+         修改资源类型
+        <small>13 new messages</small>
+      </h1>
+		 <?}?>            
+      <!--<ol class="breadcrumb">
+     	 <li> <a href="#"><i class="fa fa-dashboard"></i>首页 </a></li>
+        <li><a href="#"> 内容管理</a></li>
+        <li><a href="#">知识组织管理 </a></li> 
+            <?if(addupdate=="add"){?>
+        <li class="active">添加资源类型</li>
+      <?}?>
+		<?if(addupdate=="update"){?>       
+       <li class="active"> 修改资源类型</li>
+		 <?}?>
+      </ol>-->
+    </section> 
+    <!-- Main content -->
+      <div class="row">
+      	<input type="hidden" id="resourceId" value="${resourceType.id!}">
+        <div>
+        	<table>
+        		<tr>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>资源类型名称</td>
+	        		<td class="tdr"><input value="${resourceType.typeName!}" id="rtypeName" name="name" class="b" type="text"/></td>
+        		</tr>
+        		<tr>
+	        		<td class="tdl">资源类型描述</td>
+	        		<td class="tdr"><textarea id="rtypeDescri" style="overflow:scroll;overflow-x:hidden;" rows="6" cols="80">${resourceType.typedescri!}</textarea></td>
+        		</tr>
+        		<tr>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>资源类型code</td>
+	        		<td class="tdr"><input value="${resourceType.typeCode!}" id="rtypeCode" name="name" class="b" type="text"/></td>
+        		</tr>
+        	</table>
+		</div>
+		<br/>
+		<?if(addupdate=="add"){?>
+		<div style="text-align: center;width: 550px;">
+		 	<button type="submit" class="btn btn-primary" onclick="submission()">添加</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="reset()">重置</button>
+		</div>
+		<?}?>
+		<?if(addupdate=="update"){?>
+		<div style="text-align: center;width: 550px;">
+		 	<button type="submit" class="btn btn-primary" onclick="updateResource()">修改</button>
+		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="submit" class="btn btn-primary" onclick="noupdate()">取消</button>
+		</div>
+		<?}?>
+		
+      </div>
+      <!-- /.row -->
+    <!-- /.content -->
+  </div>
+<?}?>

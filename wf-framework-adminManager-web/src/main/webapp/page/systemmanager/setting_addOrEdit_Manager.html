@@ -1,0 +1,133 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/public.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/laypage.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+	<script type="text/javascript">
+	var settingId = window.parent.getSettingId();
+	$(function(){
+		if(settingId!=""){
+			getSettingById();
+		}
+	});
+	function getSettingById(){
+		$.ajax({
+				type : "post",
+				url : "../dataSource/getSettingById.do",
+				data : {
+					id : settingId,
+				},
+				dataType : "json",
+				async : false,
+				success : function(res) {
+					$("#settingId").val(res.id);
+					$("#settingName").val(res.settingName);
+					$("#settingKey").val(res.settingKey);
+					$("#settingValue").val(res.settingValue);
+					$("#remark").val(res.remark);
+				}
+			});
+	}
+	function addOrEditSubmit(){
+		if($.trim($("#settingName").val()).length<1) {
+		        	alert('名称不能为空！');
+		        	return null;
+		 }
+		 if($.trim($("#settingKey").val()).length<1) {
+		        	alert('英文标识不能为空！');
+		        	return null;
+		 }
+		$.ajax({
+		 	type : "post",
+			url : "../dataSource/addOrUpdateSetting.do",
+			data:{
+					id : $("#settingId").val(),
+					settingName :	$("#settingName").val(),
+					settingKey : $("#settingKey").val(),
+					settingValue : $("#settingValue").val(),
+					remark : $("#remark").val(),
+			},
+			success: function(data){
+			   if(data > 0){
+				    var index = parent.layer.getFrameIndex(window.name);
+					window.parent.find(1);
+					parent.layer.msg('提交成功！');
+					parent.layer.close(index);
+			   }
+			},
+		});
+	}
+</script>
+
+<style type="text/css">
+	.search dl {
+		margin-bottom: 25px;
+		text-align:left;
+	}
+	.search {
+		width: 100%;
+		margin: 20px auto;
+	}
+</style>
+<body class="hold-transition ">
+	<section class="content" >
+      <div class="row" >
+        <div class="col-md-12">
+          <div class="box box-primary" style="margin-top: -16px;">
+          	<input type="hidden" id="settingId">
+          			<div style="padding-bottom: 20px; margin-top: 5px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								名称<span style="color: red;">*</span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<input type="text" class="form-control" id="settingName"  required="required">
+							</div>
+						</div>
+				</div>
+				<div style="padding-bottom: 20px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								英文标识<span style="color: red;">*</span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<input type="text" class="form-control" id="settingKey" required="required">
+							</div>
+						</div>
+				</div>
+				<div style="padding-bottom: 20px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								值<span style="color: #6495ED;">【多值请用‘%’分割】</span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<input type="text" class="form-control" id="settingValue" required="required">
+							</div>
+						</div>
+				</div>
+				<div style="padding-bottom: 30px;">
+						<label for="wordName" class="col-md-4 control-label">
+							<div align="right">
+								备注<span></span>
+							</div> </label>
+						<div class="col-md-8">
+							<div class="input-icon">
+								<textarea id="remark"  rows="3" cols="20" class="form-control" ></textarea> 
+							</div>
+						</div>
+				</div>
+            <!-- form start -->
+              </div>
+             </div>
+            </div>
+         </section>
+</body>
+
+<?}?>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProductTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.ProductType" >
+    <result column="resource_type_code" property="resourceTypeCode" jdbcType="VARCHAR" />
+    <result column="resource_type_name" property="resourceTypeName" jdbcType="VARCHAR" />
+    <result column="product_resource_code" property="productResourceCode" jdbcType="VARCHAR" />
+  </resultMap>
+
+  
+  <select id="getProduct" resultMap="BaseResultMap">
+  select resource_type_code,resource_type_name,product_resource_code from  product_type limit #{pagenum},#{pagesize}
+  </select>
+  
+  <select id="getProductNum" resultType="int">
+  select count(1) from product_type
+  </select>
+  
+   <delete id="deleteProduct" >
+  	delete from product_type where resource_type_code in
+ 	 <foreach collection="ids" index="index" item="ids" open="(" separator="," close=")">  
+            #{ids}   
+    </foreach>
+  </delete>
+  
+   <select id="checkProduct" resultMap="BaseResultMap">
+  	select * from product_type where   resource_type_code = #{resourceTypeCode} and resource_type_name = #{resourceTypeName} and product_resource_code=#{productResourceCode}
+   </select>
+   
+   
+    <select id="getByCode" resultMap="BaseResultMap">
+  	select * from product_type where  product_resource_code=#{productResourceCode}
+   </select>
+   
+   
+   <insert id="doAddProduct">
+   	insert into product_type (resource_type_code,resource_type_name,product_resource_code) values (#{resourceTypeCode},#{resourceTypeName},#{productResourceCode})
+   </insert>
+   
+   <update id="doUpdateProduct">
+    update product_type set resource_type_name = #{resourceTypeName},product_resource_code=#{productResourceCode} where resource_type_code=#{resourceTypeCode}
+   </update>
+   
+   <select id="getRprodutName" resultMap="BaseResultMap">
+    select * from product_type 
+   </select>
+  
+  <select id="getOneProduct" resultMap="BaseResultMap">
+    select * from product_type where resource_type_code=#{resourceTypeCode}
+   </select>
+</mapper>

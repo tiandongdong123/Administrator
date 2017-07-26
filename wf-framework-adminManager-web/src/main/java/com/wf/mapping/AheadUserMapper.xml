@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.AheadUserMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.WarningInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="amountthreshold" property="amountthreshold" jdbcType="VARCHAR" />
+    <result column="datethreshold" property="datethreshold" jdbcType="VARCHAR" />
+    <result column="remindtime" property="remindtime" jdbcType="VARCHAR" />
+    <result column="remindemail" property="remindemail" jdbcType="VARCHAR" />
+    <result column="countthreshold" property="countthreshold" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 新增预警金额阈值 -->
+   <insert id="addWarning" parameterType="com.wf.bean.WarningInfo">
+     insert into ins_warning(id,amountthreshold,datethreshold,remindtime,remindemail,countthreshold)
+     values(#{id},#{amountthreshold},#{datethreshold},#{remindtime},#{remindemail},#{countthreshold})
+   </insert>
+   
+  <!-- 修改预警金额阈值 -->
+  <update id="updateWarning" parameterType="com.wf.bean.WarningInfo">
+  	update ins_warning set amountthreshold=#{amountthreshold},datethreshold=#{datethreshold},remindtime=#{remindtime},remindemail=#{remindemail},countthreshold=#{countthreshold} 
+  	where id = #{id}
+  </update>
+  
+  <select id="findWarning" resultMap="BaseResultMap">
+  	select * from ins_warning
+  </select>
+</mapper>

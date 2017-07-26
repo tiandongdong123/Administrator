@@ -1,0 +1,48 @@
+<?
+	layout("/inc/win_layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/public.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/laypage.css" />
+<link rel="stylesheet" type="text/css"
+	href="../page/qikan/css/Backstage.css" />
+<script type="text/javascript"
+	src="../page/qikan/js/qikan_addProvider.js"></script>
+
+<style type="text/css">
+.search dl {
+	margin-bottom: 25px;
+	text-align: left;
+}
+
+.search {
+	width: 100%;
+	margin: 20px auto;
+}
+</style>
+<body class="hold-transition ">
+	<section class="content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-primary">
+					<!-- form start -->
+					<div class="box-body">
+						<div class="form-group input_block">
+							<label class="input_name">提供商</label> <input type="text"
+								class="form-control input_width" id="nameZh"
+								placeholder="资源提供商名称" required="required">
+						</div>
+						<div class="form-group input_block">
+							<label class="input_name">CODE</label> <input type="text"
+								class="form-control input_width" id="providerName"
+								placeholder="资源提供商CODE码" required="required">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+<?}?>

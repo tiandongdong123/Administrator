@@ -1,0 +1,47 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script  type="text/javascript"  src="../page/othermanager/js/add_modular.js"> </script>
+<script type="text/javascript" src="../page/othermanager/js/validation_page.js"></script>
+<!-- <input type="hidden" id="checkname"> -->
+<!-- <input type="hidden" id="cname" value="N"> -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       	模块添加
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
+        <li><a href="#">统计分析</a></li>
+        <li><a href="#">分析管理</a></li>
+        <li class="active">功能模块管理</li>
+      </ol>-->
+    </section> 
+
+
+    <section class="content">
+          <!-- general form elements -->
+          <div class="box box-primary">
+			<div id="defaultForm">
+	
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">功能模块</label>
+             <input type="text" id="modularName" name="name" class="form-control input_width" >
+         	</div>
+         	 <div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name">页面链接</label>
+             <input type="text" id="linkAddress" name="address" class="form-control input_width" >
+         	</div>
+         	 
+	            <div class="box-footer" style="text-align:center;">
+	            <!-- submission(), -->
+	                <button type="button" onclick="doAddModular();" class="btn btn-primary">提交</button>
+	                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="button" class="btn btn-primary" onclick="reset()">重置</button>
+	            </div>
+            </div>
+      </div>
+    </section>
+</div>  
+ <?}?> 

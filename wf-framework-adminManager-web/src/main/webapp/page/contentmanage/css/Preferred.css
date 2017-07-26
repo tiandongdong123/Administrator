@@ -1,0 +1,161 @@
+@charset "utf-8";
+.PageMainTitle { font-size: 16px; font-weight: bold; line-height: 52px; color: #484848; padding: 0 22px; }
+.pagecont { border: #dfdfdf 1px solid; overflow: hidden; margin-bottom: 20px; }
+.pagecont .right_con { margin-right: 18px; }
+
+.right_con.Preferred_left_con{ margin-right:33%; margin-left:20px}
+.Preferred_right_con {width:29%; float:right}
+
+.Location { margin: 10px 0; color: #417dc9 }
+/* 大tab切换样式*/
+.sibebox { border: solid 1px #dfdfdf; overflow: hidden; }
+.sibebox .navs { height: 52px; border-bottom: solid 1px #dfdfdf; background: #f3f3f3; margin: 0 0 0 -1px }
+.sibebox .navs dl { position: relative; bottom: 1px; *bottom:0px;
+height: 52px; }
+.sibebox .navs dd { float: left;}
+.sibebox .navs dd a { outline: none; border-left: #f3f3f3 1px solid; border-right: #f3f3f3 1px solid; border-bottom: solid 1px #dfdfdf; border-top: solid 1px #dfdfdf; background: #f3f3f3; padding: 0px 30px; font-size: 16px; font-weight: bold; display: inline-block; *display: inline; *zoom: 1; text-align: center; line-height: 52px; color: #484848; text-decoration: none; }
+.sibebox .navs dd.sel a { border-bottom-color: #fff; border-left: #dfdfdf 1px solid; border-right: #dfdfdf 1px solid; background: #fff; color: #417dc9 }
+.sibebox .content { }
+.sibebox .content .within { display: none; clear: both; }
+/* 小tab切换样式*/
+.sibeboxS { overflow: hidden; margin-top: 10px; }
+.sibeboxS .navs { height: 36px; border-bottom: solid 4px #dfdfdf; }
+.sibeboxS .navs dl { position: relative; bottom: 0px; height: 36px; }
+.sibeboxS .navs dd { float: left; color:#5f5f5f; }
+.sibeboxS .navs dd a { padding: 0px 2px; margin-right:10px; outline: none; font-size: 16px; display: inline-block; *display: inline; *zoom: 1; text-align: center; line-height: 36px; color: #484848; text-decoration: none; }
+.sibeboxS .navs dd a:hover { color: #417dc9; }
+.sibeboxS .navs dd.sel a { padding: 0px 2px;color: #417dc9; border-bottom: solid 4px #ff6c00; font-weight: bold; }
+.sibeboxS .content { }
+.sibeboxS .content .within { display: none; clear: both; }
+
+/*左侧导航*/
+.SubjectBar{ background:#dfdfdf; position:relative}
+.SubjectBar .title{line-height:42px; color:#1a4882; font-size:16px; padding-left:15px; height:42px;}
+a.title_more{ padding-right:30px;background:url(../images/down.png) no-repeat center right; display:block; float:left }
+.FmNavTitle { background: #f3f3f3; font-size: 16px; color: #417dc9; font-weight: bold; line-height: 1.5; padding: 10px }
+.FmNav { border: #dfdfdf 1px solid; border-left: none; border-top: 0; }
+.FmNav_list dt, .FmNav_list dd { position: relative; background: #f3f3f3; border-top: #dfdfdf 1px solid; font-weight: normal; font-size: 16px; color: #417dc9; line-height: 29px; padding: 4px 13px; cursor: pointer; }
+.FmNav_list dt { font-weight: bold }
+.FmNav_list dl dd { padding-left: 18px; }
+.FmNav_list dl dl dd { padding-left: 23px; }
+.FmNav_list dd { background: #fff; font-size: 14px; }
+.FmNav_list dt div, .FmNav_list dd div { padding-right: 46px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.FmNav_list dt div { padding-right: 0 }
+.FmNav_list dt span, .FmNav_list dd span { position: absolute; right: 8px; top: 4px; font-size: 12px; color: #626262; font-weight: normal; }
+.FmNav_list dt:hover, .FmNav_list dt.selected { background: #1a64b6; }
+.FmNav_list dd:hover, .FmNav_list dd.selected { background: #568bcf; }
+.FmNav_list dt:hover div, .FmNav_list dt:hover span, .FmNav_list dd:hover div, .FmNav_list dd:hover span, .FmNav_list dt.selected div, .FmNav_list dt.selected span, .FmNav_list dd.selected div, .FmNav_list dd.selected span { color: #fff; font-weight: normal; }
+.FmNav_list dd input { display: inline-block; *display: inline; *zoom: 1; vertical-align: middle; margin-right: 2px; margin-bottom: 2px; }
+.FmNav_list a:hover, .FmNav_list dd:hover a, .FmNav_list dt:hover a { color: #fff; text-decoration: none; }
+
+
+
+/*优选文辑*/
+
+.Preferred_right_con{ float:right;  margin-right:20px;}
+.PreferredListBox { overflow: hidden }
+.stateblock { margin-top: 10px; background: #f3f3f3; border-top: #dfdfdf 1px solid; line-height: 22px; padding: 7px; overflow: hidden; color: #484848; }
+.state { float: left; padding-right: 25px; }
+.stateblock .AgainSearch { float: right; padding-right: 10px; }
+.AgainSearch input { border: #afafaf 1px solid; line-height: 22px; height: 22px; line-height: 18px; padding: 2px 5px; height: 20px; vertical-align: middle; }
+.AgainSearch input.againbtn { width: 80px; background: #e9e9e9; border: #afafaf 1px solid; text-align: center; color: #333333; font-size: 12px; height: 26px; line-height: 18px; padding: 4px 5px; }
+.AgainSearch input.againbtn:hover { background: #fff; }
+.stateblock .switch { float: right; margin-top: 3px; width: 90px; }
+/*年鉴导航*/
+.PreferredList{ overflow: hidden; }
+.PreferredList .BookBock {height: auto;}
+.PreferredList .booktext { min-height:140px;}
+.volume{ overflow:hidden; position:relative;}
+.volume .vo-t{ position:absolute; width:75px; padding-top:5px;}
+.volume .vo-l{ padding-left:75px; white-space:normal;}
+.volume .vo-l a{white-space:nowrap; padding:5px 8px 0 8px; display:block; float: left;}
+
+/*图书导航*/
+.bookList { overflow: hidden; }
+.bookList li { float: left; overflow: hidden; }
+
+.BookBock { overflow: hidden; border-bottom: #dfdfdf 1PX solid; margin: 15px 15px 0px 0;padding-bottom: 15px; position: relative }
+.Preferred_right_con .BookBock { border-bottom: none;}
+.BookBock .bookimg { float: left; position: absolute; }
+.bookimg { width: 101px; height: 139px; padding:0 9px 0 5px; margin-bottom: 20px; position:relative; }
+.bookimg img { width: 99px; height: 137px; border: #dfdfdf 1PX solid }
+.icon-RecomFlag{ position: absolute; display:block; font-size:12px; line-height:19px; text-align:center; color:#fff; left:0px; top:6px; width: 43px; height: 25px; background: url(../images/RecomFlag.png) no-repeat; }
+.icon-RankFlag{ position: absolute; display:block; font-size:12px; line-height:25px; font-weight:bold; text-align:center; color:#fff; left:2px; top:0px; width: 22px; height:30px; background: url(../images/RankFlag.png) no-repeat; }
+.icon-RankFlag.red{background: url(../images/RankFlagRed.png) no-repeat;}
+.booktext { padding-left: 116px; overflow:hidden}
+.booktext h4 { margin: 0; padding: 0; font-size: 16px; font-weight: bold; margin-bottom: 10px; overflow : hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.booktext .bookinfo { color: #898989; line-height: 160% }
+.booktext .bookinfo div { color: #898989; line-height: 160%; }
+.BookBock .OperatBtn1 { float: right; padding-left: 0px; }
+
+.Keyword{ overflow: hidden; margin: 12px 0 12px; float:left}
+.Keyword a{ display:block; white-space:nowrap; float:left; border:#b4d6f9 1px solid; line-height:1; padding:3px 8px 6px 8px; margin:0 2px;}
+.Keyword a:hover{ text-decoration:none; background:#e9f4ff; color:#417dc9;}
+.OperatBtn1 { width: 220px; height: 16px; float: right; text-align: right; padding: 18px 0 8px 30px; font-size: 12px; font-weight: normal; }
+.OperatBtn1 a { display: block; float: right; padding: 0 0 0 15px; }
+.OperatBtn1 a .icon { width: 16px; height: 20px; padding-right:5px; background-image: url(../images/icon_all.png); background-repeat: no-repeat; }
+.icon_export { background-position: -0px 0; }
+.icon_favorite { background-position: -50px 0; }
+.icon_share { background-position: -100px 0; }
+
+.ReadBtn{overflow: hidden; margin: 12px 0 12px; float:left; display:none}
+.ReadBtn a{ display:block; white-space:nowrap; float:left;border:#ff6c00 1px solid; background:#ff6c00;line-height:1; padding:3px 8px 6px 8px; margin:0 2px; color:#fff;}
+.ReadBtn a:hover{ text-decoration:none; border:#ff6c00 1px solid; background:#fff; color:#417dc9;}
+
+.zTreeDemoBackground{ width: 240px; background:#fff; position: absolute; top: 42px; height: 600px; overflow-y:scroll; z-index: 5; left: -1px;  border: #dfdfdf 1px solid;border-top: 0; padding: 0;}
+
+/*详情*/
+.PreferredInfo{ margin:20px; padding-bottom:15px; overflow:hidden; position:relative; min-height:220px; border-bottom:#dfdfdf 1px solid; z-index:0}
+.PrePic{position:absolute; width:170px; overflow:hidden; left:0;  top:0}
+.PrePic img{ width:150px; height:210px; border:#dfdfdf 1px solid;}
+
+.PreferredInfo .OperatBtn1{ width:100%; padding:15px 0; overflow:hidden; float:none; width:auto; text-align:left}
+.PreferredInfo .OperatBtn1 a{ float:left ; padding:0 15px 0 0}
+.PreferredInfo .OperatBtn1 a .icon{ padding-right:0px;}
+.PrefText{ float:left; padding-left:170px; padding-right:50px;}
+.PrefText h3{ font-size:24px; font-weight: normal; padding:0; padding-bottom:15px; margin:0}
+.PrefTextP{ color:#464646;}
+.PrefTextP p{ line-height:1.75; height:90px;}
+.PrefBuy{ width: 250px; overflow: hidden; right: 20px ; top:20px; text-align:right; display:none}
+.PreferredInfo .PrefBuy{position: absolute; }
+.Price{ font-size:20px; font-weight:bold; color:#ff6c00;line-height:20px; margin-bottom:10px;}
+.BuyBtn{  float:right;}
+.BuyBtn a{display:block; background:#ff6c00; color:#fff; line-height:40px; height:40px; padding:0 15px; border:0;-webkit-border-radius: 5px; -moz-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; overflow:hidden}
+.History{ display:inline-block; overflow:hidden; font-size:14px; font-weight:normal; color:#ff6c00;}
+.History s{ color:#666}
+.icon_book { width: 16px; height: 14px; background-position: -150px -48px; margin-right: 5px; }
+.icon_down { width: 16px; height: 14px; background-position: -200px -48px; margin-right: 2px; }
+.icon_pdf{ width: 19px; height: 19px; background-position: -0px -200px; margin-right: 2px; }
+.PrefArticleList{margin:20px; padding-bottom:15px; overflow:hidden; border-bottom:#dfdfdf 1px solid;}
+.PrefArticleList .left{ float:left; width:22%; background:#f3f3f3;}
+.PrefArticleList .left ul{ border:#dfdfdf 1px solid; border-bottom:0}
+.PrefArticleList .left ul li{ padding:5px; line-height:28px; border-bottom:#dfdfdf 1px solid;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+.PrefArticleList .right{ float:left; width:78%}
+.PrefArticleList .right .title{ background:#cce9ff; line-height:50px; text-align:center; font-size:18px; font-weight:bold;}
+.PrefArticleList .right .PrefArticleCon{ padding:15px; color:#484848;}
+.PrefArticleList .right .ConTitle{ font-weight: bold; padding:10px 0}
+.PrefArticleList .right .PrefArticleCon{ height:840px;overflow-y:auto}
+.PrefArticleList .ConCon li{ line-height:1.75; padding:5px 0; overflow:hidden}
+.PrefArticleList .ConCon li .icon_pdf{ margin-right:10px;}
+.bottom_buy{ overflow:hidden; background:#f3f3f3; padding:10px; height:80px;}
+.bottom_buy .PrefBuy{ position:relative; float:right}
+.OtherPref{margin:20px; overflow:hidden;}
+.OtherPref .title{ font-size:16px; font-weight:bold; padding:10px 0}
+
+.OtherPrefList ul { position: relative; margin: 0; padding: 0; height:220px; overflow:hidden}
+.OtherPrefList li { float: left; width: 152px; height:212px; text-align: center; position: relative; margin-right:13px; margin-bottom:20px;}
+.OtherPrefList li img { width: 140px; height:200px; border:#dfdfdf 1px solid; padding:5px}
+.OtherPrefList li h3 { position: absolute; left:5px; bottom: 5px; line-height: 1.125; font-size: 14px; font-weight: normal; color: #fff; background: #000; opacity: 0.7; padding:8px 5px; margin: 0; width: 132px; }
+
+.Preferred_bomb{ padding: 15px 15px 0px ; position:relative; z-index:200; background: #fff; display:none;}
+.Preferred_bomb .triangle{ background:url(../images/sanjiao.png) no-repeat; width:19px; height:11px; position:absolute; top:5px; left:45px; display:block}
+.bomb_block{background:#fff; padding:8px 15px; line-height:24px; text-align:left; border: 1px solid #dfdfdf; }
+.bomb_block p{ padding-bottom:10px;}
+.Mbtn .read{font-size: 14px;display: block;float: left;margin: 0 10px 0 0; height:38px; line-height:38px; padding:0 15px; padding-left:50px;border: #5c9bea 1px solid;background: #417dc9;-webkit-border-radius: 5px;-moz-border-radius: 5px;-o-border-radius: 5px;border-radius: 5px;color: #ffffff;overflow: hidden;/* height:43px;line-height: 43px;*/ position:relative}
+.Mbtn .read .icon{width:21px; height:17px; position: absolute; left:15px;top:50%; margin:0 10px 0 0; margin-top:-8px}
+.Mbtn .read .icon_book{ background-position: 0px -156px;}
+.Mbtn .read .icon_original{ background-position: -151px -156px;}
+.Mbtn .read .icon_down{ background-position: -50px -156px; }
+.Mbtn .read .icon_collection{background-position: -100px -156px;}
+.Mbtn .read:hover {text-decoration: none;background: #417dc9;}

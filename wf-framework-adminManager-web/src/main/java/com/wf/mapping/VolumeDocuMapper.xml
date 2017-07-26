@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.VolumeDocuMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.VolumeDocu" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="docu_title" property="docuTitle" jdbcType="VARCHAR" />
+    <result column="docu_author" property="docuAuthor" jdbcType="VARCHAR" />
+    <result column="docu_id" property="docuId" jdbcType="VARCHAR" />
+    <result column="random_id" property="randomId" jdbcType="VARCHAR" />
+    <result column="docu_type" property="docuType" jdbcType="VARCHAR" />
+    <result column="class_type" property="classType" jdbcType="VARCHAR" />
+    <result column="chapter_id" property="chapterId" jdbcType="VARCHAR" />
+    <result column="volume_id" property="volumeId" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+     <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, docu_title, docu_author,docu_id,random_id, docu_type,class_type,  chapter_id, volume_id,number,add_time
+  </sql>
+  <!-- 有章节查询 -->
+  <select id="queryByChapterId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select * from volume_docu
+    where chapter_id=#{chapterId}
+    ORDER BY add_time ASC
+  </select>
+  <!-- 无章节查询 -->
+  <select id="queryByVolumeId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select * from volume_docu
+    where volume_id=#{volumeId}
+    ORDER BY add_time ASC
+  </select>
+  <delete id="deleteByVolume" parameterType="java.lang.String" >
+    delete from volume_docu where
+   <if test="_parameter !=null">
+	    volume_id in
+	    <foreach collection="_parameter.split(',')"  open="(" close=")" separator="," item="item">  
+		#{item}
+		</foreach>
+    </if> 
+    <if test="_parameter==null">
+    		1=2
+    </if> 
+  </delete>
+  <insert id="insert" parameterType="java.util.List" >
+    insert into volume_docu (id, docu_title, docu_author,docu_id,random_id, docu_type,class_type, chapter_id, volume_id,number,add_time)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.id},#{item.docuTitle},#{item.docuAuthor},#{item.docuId},#{item.randomId},#{item.docuType},#{item.classType},#{item.chapterId},#{item.volumeId},#{item.number},#{item.addTime})  
+    </foreach>
+  </insert>
+</mapper>

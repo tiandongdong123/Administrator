@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.ProResourceTypeMapper">
+	<resultMap type="com.wf.bean.ProResourceType" id="ProResourceTypeMap">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="provider_id" property="providerId" jdbcType="INTEGER"/>
+		<result column="resource_name" property="resourceName" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 根据资源提供商id 查询想、资源类型 -->
+	<select id="findResourceNamesById" resultMap="ProResourceTypeMap">
+		select * from pro_resource_type where 1=1
+		<if test="providerId != null and providerId != '' ">
+			and provider_id = #{providerId}
+		</if>
+	</select>
+	
+	<select id="getProResourceType" resultMap="ProResourceTypeMap" >
+		select * from pro_resource_type where 1=1
+		<if test="id != null and id != '' ">
+			and id =#{id}
+		</if>
+	</select>
+	<!-- 增加资源类型 -->
+	<insert id="addProResourceType" parameterType="com.wf.bean.ProResourceType">
+		<selectKey resultType="int" order="AFTER" keyProperty="id">
+		 SELECT LAST_INSERT_ID() AS id    <!-- 获取自增ID -->
+	 </selectKey>
+     insert into pro_resource_type(provider_id,resource_name)
+     values(#{providerId},#{resourceName})
+	</insert>
+	<!-- 修改资源类型 -->
+	<update id="updateProResourceType" parameterType="com.wf.bean.ProResourceType">
+		update pro_resource_type 
+		<set>
+     	 <if test="providerId != null" >
+        provider_id = #{providerId},
+      </if>
+      <if test="resourceName != null" >
+        resource_name = #{resourceName}
+      </if>
+      </set>
+      where id = #{id}
+	</update>
+	<!-- 删除资源类型 -->
+	<delete id="deleteProResourceType">
+		delete from pro_resource_type where id = #{id}
+	</delete>
+</mapper>

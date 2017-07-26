@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.LanguageMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Language" >
+    <id column="language_id" property="languageId" jdbcType="VARCHAR" />
+    <result column="language_name" property="languageName" jdbcType="VARCHAR" />
+    <result column="language_code" property="languageCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    language_id, language_name, language_code
+  </sql>
+  <select id="getAllLanguage" resultMap="BaseResultMap"  >
+    select 
+    <include refid="Base_Column_List" />
+    from language
+  </select>
+  
+   <select id="checkLName" resultMap="BaseResultMap">
+  select * from language where language_name = #{name} and language_code=#{code}
+  </select>
+  
+    <insert id="doAddLName" parameterType="com.wf.bean.Language" >
+    insert into language (language_id, language_name, language_code)
+    values (#{languageId,jdbcType=VARCHAR}, #{languageName,jdbcType=VARCHAR}, #{languageCode,jdbcType=VARCHAR})
+  	</insert>
+ 	<select id="getOne" resultMap="BaseResultMap">
+ 	select * from language where language_code=#{code}
+ 	</select>
+</mapper>

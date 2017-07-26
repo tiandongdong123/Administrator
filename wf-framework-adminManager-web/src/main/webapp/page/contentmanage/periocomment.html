@@ -1,0 +1,101 @@
+<?	
+	layout("/inc/layout.html",{
+			title:'期刊点评审核'
+		}){
+?>
+	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+ 	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../page/contentmanage/js/periocomment.js"></script> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <section class="content-header">
+      <h1>
+          	期刊点评审核管理
+      </h1>
+      <!--  <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">期刊点评审核管理</li>
+      </ol> -->
+    </section>
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+			<div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name" >用户ID：</label>
+              <input type="text" id="username">
+             </div>
+             <div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name">期刊名称：</label>
+              <input type="text" id="perioname">
+             </div>
+             <div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name"> 点评日期：</label>
+				<input onclick="WdatePicker()" type="text" id="startTime">—<input onclick="WdatePicker()" type="text" id="endTime">
+             </div>
+             <div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name"> 审稿周期：</label>
+              <select id="subtime">
+              <option selected="selected">请选择</option>
+              <option>1个月</option>
+              <option>3个月</option>
+              <option>6个月</option>
+              <option>12个月</option>
+              <option>24个月</option>
+              <option>其他</option>
+              </select>
+             </div>
+             <div class="form-group input_block">
+               <label for="exampleInputEmail1" class="input_name"> 审稿费：</label>
+               <input id="sauditm" type="text">元-<input id="eauditm" type="text">元
+             </div>
+             <div class="form-group input_block">
+               <label for="exampleInputEmail1" class="input_name"> 版面费：</label>
+               <input id="slayoutm" type="text">元-<input id="elayoutm" type="text">元
+             </div>
+              
+              <div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
+				<input type="checkbox" name="dataState" value="1" checked="checked">正常
+				<input type="checkbox" name="dataState" value="0" checked="checked">禁用
+             </div>
+              <div class="form-group input_block">
+              <label for="exampleInputEmail1" class="input_name">申诉状态：</label>
+				<input type="checkbox" name="complaintStatus" value="1">正常
+				<input type="checkbox" name="complaintStatus" value="0" checked="checked">申诉
+             </div>
+             <div class="form-group input_block" style="text-align:center;">
+				<button type="submit" class="btn btn-primary"  onclick="commentpage(1)">查询</button>
+	           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportPerio();">导出</button>
+             </div>
+             
+              <table id="example1" style="table-layout:fixed" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th style="width: 5%">序号</th>
+                  <th style="width: 15%">期刊名称</th>
+                  <th style="width: 10%">录用情况</th>
+                  <th style="width: 7%">审稿周期</th>
+                  <th style="width: 7%">审稿费</th>
+                  <th style="width: 7%">版面费</th>
+                  <th style="width: 15%">自定义点评</th>
+                  <th style="width: 8%">点评用户名</th>
+                  <th style="width: 7%">数据状态</th>
+                  <th style="width: 7%">申诉状态</th>
+                  <th style="width: 10%">操作</th>
+                </tr>
+                </thead>
+                <tbody id="commentbody">
+               
+                </tbody>
+              </table>
+               <div id="page"></div>
+            </div>
+          </div>
+      	 </div>
+</section>
+</div>	
+<?}?>

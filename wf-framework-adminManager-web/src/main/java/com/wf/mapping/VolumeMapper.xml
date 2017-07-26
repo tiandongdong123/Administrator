@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.VolumeMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.Volume" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="volume_no" property="volumeNo" jdbcType="VARCHAR" />
+    <result column="volume_name" property="volumeName" jdbcType="VARCHAR" />
+    <result column="volume_abstract" property="volumeAbstract" jdbcType="VARCHAR" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="subject_name" property="subjectName" jdbcType="VARCHAR" />
+    <result column="cover_url" property="coverUrl" jdbcType="VARCHAR" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+    <result column="volume_state" property="volumeState" jdbcType="INTEGER" />
+    <result column="volume_type" property="volumeType" jdbcType="INTEGER" />
+    <result column="volume_chapter" property="volumeChapter" jdbcType="INTEGER" />
+    <result column="publish_person" property="publishPerson" jdbcType="VARCHAR" />
+    <result column="publish_date" property="publishDate" jdbcType="VARCHAR" />
+    <result column="docu_number" property="docuNumber" jdbcType="INTEGER" />
+    <result column="fulltext_reading_num" property="fulltextReadingNum" jdbcType="INTEGER" />
+    <result column="collection_num" property="collectionNum" jdbcType="INTEGER" />
+    <result column="download_num" property="downloadNum" jdbcType="INTEGER" />
+    <result column="volume_price" property="volumePrice" jdbcType="VARCHAR" />
+    <result column="issue" property="issue" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+   id, user_id, volume_no, volume_name, volume_abstract, subject,subject_name, cover_url, keyword, volume_state, 
+    volume_type, volume_chapter, publish_person, publish_date, docu_number,fulltext_reading_num,collection_num, download_num,
+    volume_price,issue
+  </sql>
+  <!-- 查所有 -->
+  <select id="queryAll" resultMap="BaseResultMap" parameterType="java.util.Map" >
+   	select * from volume 
+   	where 1=1
+   	<if test="startTime!=null">
+   		and publish_date <![CDATA[ >= ]]> #{startTime} 
+   	</if>
+   	<if test="endTime!=null">
+   		and publish_date <![CDATA[ <= ]]> #{endTime} 
+   	</if>
+    <if test="searchWord!=null">
+   		and volume_no like concat('%',#{searchWord},'%') or volume_name like concat('%',#{searchWord},'%')
+   		or publish_person like concat('%',#{searchWord},'%')
+   	</if> 
+   	<if test="volumeType!=null">
+   		and volume_type = #{volumeType}
+   	</if>
+   	<if test="volumeState!=null">
+   		and volume_state = #{volumeState}
+   	</if>
+   	<if test="sortColumn!=null">
+   		ORDER BY ${sortColumn} ${sortWay}
+   	</if>
+  </select>
+  <!-- 分页查询 -->
+  <select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.Map" >
+   	select * from volume
+   	where 1=1
+   	<if test="startTime!=null">
+   		and publish_date <![CDATA[ >= ]]> #{startTime} 
+   	</if>
+   	<if test="endTime!=null">
+   		and publish_date <![CDATA[ <= ]]> #{endTime} 
+   	</if>
+   	<if test="searchWord!=null">
+   		and (volume_no like concat('%',#{searchWord},'%') or volume_name like concat('%',#{searchWord},'%')
+   		or publish_person like concat('%',#{searchWord},'%'))
+   	</if> 
+   	<if test="volumeType!=null">
+   		and volume_type = #{volumeType}
+   	</if>
+   	<if test="volumeState!=null">
+   		and volume_state = #{volumeState}
+   	</if>
+   	<if test="sortColumn!=null">
+   		ORDER BY ${sortColumn} ${sortWay}
+   	</if>
+   	limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 查询详情 -->
+  <select id="queryDetails" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select * from volume where id=#{id}
+  </select>
+  <!-- 查询文辑的最大编号 -->
+  <select id="queryMaxVolumeNo" parameterType="java.lang.String" resultType="java.lang.String">
+  	select max(volume_no) from admin_manager.volume
+  	where volume_no like concat('%',#{letter},'%')
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from volume where 
+    <if test="_parameter !=null">
+        id in
+	    <foreach collection="_parameter.split(',')"  open="(" close=")" separator="," item="item">  
+			#{item}
+		</foreach>
+    </if> 
+    <if test="_parameter==null">
+       		1=2
+    </if> 
+  </delete>
+  <insert id="insert" parameterType="com.wf.bean.Volume" >
+    insert into volume 
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="volumeNo != null" >
+        volume_no,
+      </if>
+      <if test="volumeName != null" >
+        volume_name,
+      </if>
+      <if test="volumeAbstract != null" >
+        volume_abstract,
+      </if>
+      <if test="subject != null" >
+        subject,
+      </if>
+      <if test="subjectName != null" >
+        subject_name,
+      </if>
+      <if test="coverUrl != null" >
+        cover_url,
+      </if>
+      <if test="keyword != null" >
+        keyword,
+      </if>
+      <if test="volumeType != null" >
+        volume_type,
+      </if>
+      <if test="volumeState != null" >
+        volume_state,
+      </if>
+      <if test="volumeChapter != null" >
+        volume_chapter,
+      </if>
+      <if test="publishPerson != null" >
+        publish_person,
+      </if>
+      <if test="publishDate != null" >
+        publish_date,
+      </if>
+      <if test="docuNumber != null" >
+        docu_number,
+      </if>
+      <if test="fulltextReadingNum != null" >
+        fulltext_reading_num,
+      </if>
+      <if test="downloadNum != null" >
+        download_num,
+      </if>
+      <if test="volumePrice != null" >
+        volume_price,
+      </if>
+      <if test="issue != null" >
+        issue,
+      </if>
+      <if test="collectionNum != null" >
+        collection_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="volumeNo != null" >
+        #{volumeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="volumeName != null" >
+        #{volumeName,jdbcType=VARCHAR},
+      </if>
+      <if test="volumeAbstract != null" >
+        #{volumeAbstract,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectName != null" >
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="coverUrl != null" >
+        #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null" >
+        #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="volumeType != null" >
+        #{volumeType,jdbcType=INTEGER},
+      </if>
+      <if test="volumeState != null" >
+        #{volumeState,jdbcType=INTEGER},
+      </if>
+      <if test="volumeChapter != null" >
+        #{volumeChapter,jdbcType=INTEGER},
+      </if>
+      <if test="publishPerson != null" >
+        #{publishPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null" >
+        #{publishDate,jdbcType=VARCHAR},
+      </if>
+      <if test="docuNumber != null" >
+        #{docuNumber,jdbcType=INTEGER},
+      </if>
+      <if test="fulltextReadingNum != null" >
+        #{fulltextReadingNum,jdbcType=INTEGER},
+      </if>
+      <if test="downloadNum != null" >
+        #{downloadNum,jdbcType=INTEGER},
+      </if>
+      <if test="volumePrice != null" >
+        #{volumePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="issue != null" >
+        #{issue,jdbcType=INTEGER},
+      </if>
+      <if test="collectionNum != null" >
+        #{collectionNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <!-- 推优 -->
+  <update id="updateVolumeType" parameterType="java.util.Map">
+  	update volume 
+  	SET  
+  	subject=#{subject},subject_name=#{subjectName},
+  	volume_price=#{volumePrice},volume_type=2,
+  	publish_date=#{publishDate}
+  	where id=#{id}
+  </update>
+  <!-- 发布 -->
+  <update id="updateIssue" parameterType="java.util.Map">
+  	update volume SET  issue=#{issue}
+  	where id=#{id}
+  </update>
+  <!-- 修改价格-->
+  <update id="updatePrice" parameterType="java.util.Map">
+  	update volume SET  volume_price=#{volumePrice}
+  	where id=#{id}
+  </update>
+  <!-- 修改文辑-->
+  <update id="updateVolume" parameterType="com.wf.bean.Volume">
+  	update volume 
+  	<set>
+      <if test="volumeName != null" >
+        volume_name = #{volumeName},
+      </if>
+      <if test="volumeAbstract != null" >
+        volume_abstract = #{volumeAbstract},
+      </if>
+      <if test="subject != null" >
+        subject = #{subject},
+      </if>
+       <if test="subjectName != null" >
+        subject_name = #{subjectName},
+      </if>
+      <if test="coverUrl != null" >
+        cover_url = #{coverUrl},
+      </if>
+      <if test="keyword != null" >
+        keyword = #{keyword},
+      </if>
+      <if test="volumeState != null" >
+        volume_state = #{volumeState},
+      </if>
+      <if test="volumePrice != null" >
+        volume_price = #{volumePrice},
+      </if>
+    </set>
+    where id=#{id}
+  </update>
+</mapper>

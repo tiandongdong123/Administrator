@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.AuthorizeRelationMapper">
+	<resultMap id="AuthorizeRelationMap" type="com.wf.bean.AuthorizeRelation">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="authorize_id" property="authorizeId" jdbcType="VARCHAR" />
+		<result column="institution_id" property="institutionId"
+			jdbcType="VARCHAR" />
+		<result column="provider_id" property="providerId" jdbcType="VARCHAR" />
+		<result column="pro_resource_id" property="proResourceId"
+			jdbcType="INTEGER" />
+		<result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+		<result column="periodical_id" property="periodicalId"
+			jdbcType="VARCHAR" />
+		<result column="details_url" property="detailsURL" jdbcType="VARCHAR" />
+		<result column="download_url" property="downloadURL" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getAuthorizeRelations" resultType="int">
+		select count(id) from auth_perio_relation where 1=1
+		<if test="periodicalId != null and periodicalId != '' ">
+			and periodical_id = #{periodicalId}
+		</if>
+	</select>
+	<!-- 根据供应商名称查询授权关联表信息 -->
+	<select id="getauthorizeRelationByName" resultMap="AuthorizeRelationMap">
+		select * from auth_perio_relation where 1=1
+		<if test="institutionId != null and institutionId != '' ">
+			and institution_id = #{institutionId}
+		</if>
+	</select>
+	<select id="getAuthorizeRelation2" resultMap="AuthorizeRelationMap">
+		select * from auth_perio_relation where 1=1
+		<if test="id !=null and id !=''">
+			and id =#{id}
+		</if>
+	</select>
+
+	<select id="getAuReByPeriodical" resultMap="AuthorizeRelationMap">
+		select * from auth_perio_relation where 1=1
+		<if test="authorizeId !=null and authorizeId !=''">
+			and authorize_id =#{authorizeId}
+		</if>
+	</select>
+
+	<select id="getAuthorizeRelation" resultMap="AuthorizeRelationMap">
+		select * from auth_perio_relation where 1=1
+		<if test="ar.authorizeId !=null and ar.authorizeId !=''">
+			and authorize_id =#{ar.authorizeId}
+		</if>
+		<if test="ar.institutionId !=null and ar.institutionId !=''">
+			and institution_id =#{ar.institutionId}
+		</if>
+		<if test="ar.providerId !=null and ar.providerId !=''">
+			and provider_id =#{ar.providerId}
+		</if>
+		<if test="ar.proResourceId !=null and ar.proResourceId !=''">
+			and pro_resource_id =#{ar.proResourceId}
+		</if>
+		<if test="ar.subjectId !=null and ar.subjectId !=''">
+			and subject_id =#{ar.subjectId}
+		</if>
+		<if test="ar.periodicalId !=null and ar.periodicalId !=''">
+			and periodical_id =#{ar.periodicalId}
+		</if>
+		<if test="onPerIds != null and onPerIds !='' ">
+			and periodical_id IN
+			<foreach collection="onPerIds" item="onPerId" index="index"
+				open="(" separator="," close=")">
+				#{onPerId}
+			</foreach>
+		</if>
+		<if test="pagenum !=null and pagenum !=''">
+			limit #{pagenum},#{pagesize}
+		</if>
+	</select>
+
+	<select id="getAuthorizeRelationNum" resultType="int">
+		select count(1) from auth_perio_relation where 1=1
+		<if test="ar.authorizeId !=null and ar.authorizeId !=''">
+			and authorize_id =#{ar.authorizeId}
+		</if>
+		<if test="ar.institutionId !=null and ar.institutionId !=''">
+			and institution_id =#{ar.institutionId}
+		</if>
+		<if test="ar.providerId !=null and ar.providerId !=''">
+			and provider_id =#{ar.providerId}
+		</if>
+		<if test="ar.proResourceId !=null and ar.proResourceId !=''">
+			and pro_resource_id =#{ar.proResourceId}
+		</if>
+		<if test="ar.subjectId !=null and ar.subjectId !=''">
+			and subject_id =#{ar.subjectId}
+		</if>
+		<if test="ar.periodicalId !=null and ar.periodicalId !=''">
+			and periodical_id =#{ar.periodicalId}
+		</if>
+		<if test="onPerIds != null and onPerIds !='' ">
+			and periodical_id IN
+			<foreach collection="onPerIds" item="onPerId" index="index"
+				open="(" separator="," close=")">
+				#{onPerId}
+			</foreach>
+		</if>
+	</select>
+	<!-- 新增 -->
+	<insert id="addAuthorizeRelation" parameterType="com.wf.bean.AuthorizeRelation">
+		<selectKey resultType="int" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id     <!-- 获取自增ID -->
+		</selectKey>
+		insert into
+		auth_perio_relation(authorize_id,institution_id,provider_id,pro_resource_id,subject_id,periodical_id,details_url,download_url)
+		values(#{authorizeId},#{institutionId},#{providerId},#{proResourceId},#{subjectId},#{periodicalId},#{detailsURL},#{downloadURL})
+	</insert>
+	<!-- 删除 -->
+	<delete id="deleteAuthorizeRelation">
+		delete from auth_perio_relation where id = #{id}
+	</delete>
+	<!-- 修改 -->
+	<update id="updateAuthorizeRelation" parameterType="com.wf.bean.AuthorizeRelation">
+			update auth_perio_relation
+		<set>
+			<if test="ar.authorizeId != null and ar.authorizeId != '' ">
+				authorize_id = #{ar.authorizeId},
+			</if>
+			<if test="ar.institutionId !=null and ar.institutionId != '' ">
+				institution_id=#{ar.institutionId},
+			</if>
+			<if test="ar.providerId != null and ar.providerId != '' ">
+				provider_id=#{ar.providerId},
+			</if>
+			<if test="ar.proResourceId != null and ar.proResourceId != ''">
+				pro_resource_id = #{ar.proResourceId},
+			</if>
+			<if test="ar.subjectId !=null and ar.subjectId != '' ">
+				subject_id = #{ar.subjectId},
+			</if>
+			<if test="ar.periodicalId != null and ar.periodicalId != '' ">
+				periodical_id = #{ar.periodicalId},
+			</if>
+			<if test="ar.detailsURL != null and ar.detailsURL != '' ">
+				details_url = #{ar.detailsURL},
+			</if>
+			<if test="ar.downloadURL != null and ar.downloadURL != '' ">
+				download_url = #{ar.downloadURL}
+			</if>
+		</set>
+			where id = #{ar.id}
+	</update>
+
+
+</mapper>
