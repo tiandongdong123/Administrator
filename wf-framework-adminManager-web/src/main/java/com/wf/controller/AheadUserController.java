@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -554,7 +555,7 @@ public class AheadUserController {
 		}
 		if(resinfo>0){
 			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
-			int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks);
+			int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
 			System.out.println("注册接口执行结果："+com.getUserId()+"_"+msg);			
 			hashmap.put("flag", "success");
 		}else{
@@ -678,8 +679,9 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				//int msg = WebServiceUtil.submitOriginalDelivery(com, true);
-				//System.out.println("批量注册接口执行结果："+com.getUserId()+"_"+msg);
+				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+				int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
+				System.out.println("批量注册接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
 		}
@@ -847,8 +849,9 @@ public class AheadUserController {
 			}
 			}
 			if(resinfo>0){
-				//int msg = WebServiceUtil.submitOriginalDelivery(com, false);
-				//System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
+				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+				int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
+				System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
 		}
@@ -1132,8 +1135,9 @@ public class AheadUserController {
 			}
 		}
 		if(resinfo>0){
-			//int msg = WebServiceUtil.submitOriginalDelivery(com, false);
-			//System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
+			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
+			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
@@ -1144,7 +1148,7 @@ public class AheadUserController {
 	
 	//上传附件模块
 	private void uploadFile(MultipartFile file,List<ResourceDetailedDTO> list){
-		if (file.getSize()==0) {
+		if (file == null || file.getSize()==0) {
 			return;
 		}
 		List<String> lsList = aheadUserService.getExceluser(file);
@@ -1290,11 +1294,17 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addauthority")
 	@ResponseBody
-	public Map<Object,String> addauthority(Authority authority){
+	public Map<Object,String> addauthority(Authority authority) throws Exception{
 		Map<Object,String> map = new HashMap<Object,String>();
 		int a = aheadUserService.setAddauthority(authority);
 		if(a>0){
 			map.put("flag", "success");
+			CommonEntity com = new CommonEntity();
+			com.setUserId(authority.getUserId());
+			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
+			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
+			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);
+			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 		}else{
 			map.put("flag", "fail");
 		}

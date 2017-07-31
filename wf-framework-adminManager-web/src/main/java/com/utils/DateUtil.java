@@ -97,7 +97,6 @@ public class DateUtil {
             try {  
                 return format.parse(str);  
             } catch (ParseException e) {  
-                // TODO Auto-generated catch block  
                 e.printStackTrace();  
             }  
         }  

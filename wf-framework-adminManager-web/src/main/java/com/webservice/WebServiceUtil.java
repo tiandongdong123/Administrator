@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang3.StringUtils;
@@ -13,10 +16,12 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.utils.DateUtil;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.WfksAccountidMapping;
+import com.wf.bean.WfksUserSetting;
 import com.wf.service.AheadUserService;
 import com.wf.service.impl.AheadUserServiceImpl;
 
@@ -35,7 +40,7 @@ public class WebServiceUtil {
 	 *	参数二：true添加、false修改
 	 *	参数三：角色权限对象
 	 */
-	public static int submitOriginalDelivery(CommonEntity com,boolean b, WfksAccountidMapping wfks){
+	public static int submitOriginalDelivery(CommonEntity com,boolean b, WfksAccountidMapping wfks, WfksUserSetting setting) throws DatatypeConfigurationException{
 		//用户
 		WFUser user = new WFUser();
 		String lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
@@ -63,6 +68,8 @@ public class WebServiceUtil {
 		}
 		//购买项目权限
 		ArrayOfWFContract contracts = new ArrayOfWFContract();
+		//角色权限
+		ArrayOfAccountIdMapping arrayMapping = new ArrayOfAccountIdMapping();
 		List<WFContract> list = contracts.getWFContract();
 		if(com.getRdlist()!=null){
 			for(ResourceDetailedDTO dto : com.getRdlist()){
@@ -92,20 +99,38 @@ public class WebServiceUtil {
 							list.add(wfContract);
 						}
 					}
+					if(wfks!=null){
+						List<AccountIdMapping> list_mapping = arrayMapping.getAccountIdMapping();
+						AccountIdMapping accountIdMapping = new AccountIdMapping();
+						if(wfks.getBegintime()!=null){				
+							accountIdMapping.setBeginTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(DateUtil.dateToString(wfks.getBegintime())));
+						}
+						if(wfks.getEndtime()!=null){				
+							accountIdMapping.setEndTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(DateUtil.dateToString(wfks.getEndtime())));
+						}
+						AccountId accountId = new AccountId();
+						accountId.setKey(wfks.getIdKey());
+						accountId.setAccountType(wfks.getRelatedidAccounttype());
+						accountIdMapping.setId(accountId);
+						accountIdMapping.setMappingId(wfks.getMappingid());
+						if(setting!=null){
+							AccountId accountId2 = new AccountId();
+							accountId2.setKey(setting.getPropertyName());
+							accountId2.setAccountType(setting.getPropertyValue());
+							accountIdMapping.setRelatedId(accountId2);
+						}
+						list_mapping.add(accountIdMapping);
+					}
 				}
 			}
 		}
-		//ArrayOfAccountIdMapping array = new ArrayOfAccountIdMapping();
-		//List<AccountIdMapping> list_mapping = array.getAccountIdMapping();
-		
-		
 		UserManagerService ser = new UserManagerService();
 		UserManagerServiceSoap soap = ser.getUserManagerServiceSoap();
 		int msg = 0;
 		if(b){
-			msg = soap.addOrganizationUser(user, contracts, new ArrayOfAccountIdMapping());
+			msg = soap.addOrganizationUser(user, contracts, arrayMapping);
 		}else{
-			msg = soap.editOrganizationUser(user, contracts, new ArrayOfAccountIdMapping());
+			msg = soap.editOrganizationUser(user, contracts, arrayMapping);
 		}
 		System.out.println(msg);
 		return msg;

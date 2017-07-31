@@ -635,9 +635,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			pr.setProjectId(dto.getProjectid());
 			projectResourcesMapper.insert(pr);
 		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
 		if(dto.getProjectid().equals("HistoryCheck")){
 			if(dto.getRelatedIdAccountType().equals("ViewHistoryCheck")){
-				WfksAccountidMapping am = new WfksAccountidMapping();
 				am.setMappingid(GetUuid.getId());
 				am.setIdAccounttype(dto.getProjectid());
 				am.setIdKey(com.getUserId());
@@ -687,6 +687,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				am.setMappingid(GetUuid.getId());
 				am.setIdAccounttype("HistoryCheck");
 				am.setIdKey(com.getUserId());
+				am.setRelatedidKey(com.getUserId());
 				am.setRelatedidAccounttype(dto.getRelatedIdAccountType());
 				am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 				wfksAccountidMappingMapper.insert(am);
@@ -706,6 +707,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			p.setProjectId(dto.getProjectid());
 		}
 		projectResourcesMapper.deleteResources(p);
+		if(dto.getProjectid().equals("HistoryCheck")){			
+			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(),"ViewHistoryCheck");
+		}
 	}
 	
 	
