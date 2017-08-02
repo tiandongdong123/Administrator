@@ -55,6 +55,7 @@ import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
+import com.wanfangdata.model.UserAccount;
 import com.wf.bean.Authority;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
@@ -365,7 +366,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Override
 	public int deleteAccount(CommonEntity com,ResourceDetailedDTO dto,String adminId){
-		return 0;
+		int flag = 0;
+		boolean isSuccess;
+		UserAccount account = new UserAccount();
+		account.setUserId(com.getUserId());
+		account.setPayChannelId(dto.getProjectid());
+		account.setOrganName(com.getInstitution());
+		account.setBeginDateTime(DateUtil.stringToDate(dto.getValidityStarttime()));
+		account.setEndDateTime(DateUtil.stringToDate(dto.getValidityEndtime()));
+		try{
+			isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(), adminId);
+			if(isSuccess){
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
 	}
 	
 	

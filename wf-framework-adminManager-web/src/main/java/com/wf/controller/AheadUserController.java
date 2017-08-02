@@ -445,7 +445,7 @@ public class AheadUserController {
 		dto.setValidityStarttime(beginDateTime);
 		dto.setValidityEndtime(endDateTime);
 		dto.setProjectname(projectname);
-		if(type.equals("balance")){			
+		/*if(type.equals("balance")){			
 			com.setResetMoney("true");
 			dto.setTotalMoney(0.00);
 			i = aheadUserService.chargeProjectBalance(com, dto,adminId);
@@ -455,7 +455,8 @@ public class AheadUserController {
 			i = aheadUserService.chargeCountLimitUser(com, dto,adminId);
 		}else if(type.equals("time")){
 			i = 1;
-		}
+		}*/
+		i = aheadUserService.deleteAccount(com, dto, adminId);
 		if(i > 0){
 			aheadUserService.deleteResources(com,dto,false);
 			map.put("flag", "true");
@@ -1423,31 +1424,31 @@ public class AheadUserController {
 	/**
 	 *	奖励记录
 	 */
-	@RequestMapping("perAward")
+	@RequestMapping("charge_order")
 	public ModelAndView perAward(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/per_award");
+		view.setViewName("/page/usermanager/charge_order");
 		return view;
 	}
 	
 	
 	/**
-	 *	订单管理
+	 *	个人订单管理
 	 */
-	@RequestMapping("order")
+	@RequestMapping("pay_order")
 	public ModelAndView order(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/order_manager");
+		view.setViewName("/page/usermanager/pay_order");
 		return view;
 	}
 	
 	/**
-	 *	充值管理
+	 *	个人充值管理
 	 */
 	@RequestMapping("pay")
 	public ModelAndView pay(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/pay_manager");
+		view.setViewName("/page/usermanager/charge_order");
 		return view;
 	}
 	
