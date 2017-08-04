@@ -1,13 +1,440 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-<!-- <script type="text/javascript" src="../page/usermanager/js/per_manager.js"></script> -->
+<script type="text/javascript" src="../page/usermanager/js/per_manager.js"></script>
 
 <div class="content-wrapper">
 	<section class="content-header"><h1>个人用户信息管理</h1></section>
-	<div style="margin: 0 0px;">
+<!-- 	<div style="margin: 0 0px;">
 		<iframe style="border: thin;" src="http://admin.wanfangdata.com.cn/usermanager/person/index" width="100%" height="2000px"></iframe>
-	</div>
+	</div> -->
+		<section class="content">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="box box-primary">
+					<!-- 查询表单开始 -->
+					<form action="../auser/perManager.do" id="fromList" method="post">
+						<div class="box-body input_block">
+							<div class="form-group">
+								<label for="exampleInputEmail1" class="input_name">用户ID</label>
+								<?if(person!='null'){?>
+								 <input
+									type="email" id="userId" name="userId"
+									class="form-control input_width" value="${person.userId}">
+							<?}else{?>
+							<input type="email" id="userId" name="userId"
+									class="form-control input_width" >
+							<?}?>
+							</div>
+							<div class="form-group input_block" style="flaot:left;">
+								<label for="exampleInputEmail1" class="input_name">姓名</label> 
+								<?if(person!='null'){?>
+								<input
+									type="email" id="userRealname" name="userRealname"
+									class="form-control input_width" value="${person.userRealname}">
+							<?}else{?>
+							<input
+									type="email" id="userRealname" name="userRealname"
+									class="form-control input_width" >
+							<?}?>
+							</div>
+							<div class="form-group input_block">
+								<label for="exampleInputEmail1" class="input_name">手机号</label>
+								<?if(person!='null'){?>
+								 <input
+									type="email" id="mobilePhone" name="mobilePhone"
+									class="form-control input_width" value="${person.mobilePhone}">
+									<?}else{?>
+									<input
+									type="email" id="mobilePhone" name="mobilePhone"
+									class="form-control input_width" >
+							<?}?>
+							</div>
+							<div class="form-group input_block">
+								<label for="exampleInputEmail1" class="input_name">身份证号</label>
+								<?if(person!='null'){?>
+								<input type="email" id="idcardNumber" name="idcardNumber"
+									class="form-control input_width" value="${person.idcardNumber}">
+									<?}else{?>
+									<input type="email" id="idcardNumber" name="idcardNumber"
+									class="form-control input_width" >
+							<?}?>
+							</div>
+							<div class="form-group input_block">
+								<label for="exampleInputEmail1" class="input_name">邮箱</label>
+								<?if(person!='null'){?>
+								 <input
+									type="email" id="email" name="email"
+									class="form-control input_width" value="${person.email}">
+									<?}else{?>
+									<input
+									type="email" id="email" name="email"
+									class="form-control input_width" >
+							<?}?>
+							</div>
+							<div class="form-group input_block">
+								<label for="exampleInputEmail1" class="input_name">第三方绑定账号</label>
+								<?if(person!='null'){?>
+								<input type="email" id="thirdNum" name="thirdNum"
+									class="form-control input_width" value="${person.thirdNum}">
+									<?}else{?>
+									<input type="email" id="thirdNum" name="thirdNum"
+									class="form-control input_width" >
+									<?}?>
+							</div>
+							<div class="form-group input_block">
+								<label for="inputEmail3" class="input_name">角色</label> 
+								<label><input id="allUser" type="checkbox" name="allRoles" onclick="checkAll(this,'userRole');" value="0"<?if(roles1!=''){?>checked='checked'<?}?>> 全部 </label> 
+								<label><input id="commonUser" type="checkbox" name="userRole" onclick="checkAll(this,'userRole');" value="1" <?if(roles2!=''){?>checked='checked'<?}?>> 注册用户 </label> 
+								<label><input id="probateUser" type="checkbox" name="userRole" onclick="checkAll(this,'userRole');" value="2"<?if(roles3!=''){?>checked='checked'<?}?>> 认证用户 </label>
+								<input id="selectUser" type="hidden" name="userRoless" value="">
+							</div>
+						</div>
+						<?if(PageList!='null'){?>
+						<input type="hidden" id="pageNum" name="pageNum" value="${PageList.pageNum}"> 
+								<?}?>
+						<?if(PageList!='null'){?>
+						<input type="hidden" id="pageSize" name="pageSize" value="${PageList.pageSize}">
+								<?}?>
+						<?if(PageList!='null'){?>
+						<input type="hidden" id="totalRow" name="totalRow" value="${PageList.totalRow}">
+								<?}?> 
+						<div class="box-footer" style="text-align:center;">
+							<button type="button" onclick="findList()" class="btn btn-primary">查询</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			
+			<!-- 查询结果开始 -->
+			<?if(PageList!='null'){?>
+			<? i=0; for(pl in PageList.pageRow){  i++; ?>
+			<?if(i<=10){ ?> 
+			<div class="col-md-12" >
+				<div >
+					<div class="info_block">
+					<?if(i<=5){?>
+						<ul class="info_list" id="chart_${i}">
+						<?}else{?>
+						<ul class="info_list" id="chart_${i}" style="display: none;">
+						<?}?>
+							<div class="info_caption">
+								<div class="info_number">&nbsp;&nbsp;${(PageList.pageSize*(PageList.pageNum-1)+i)}</div>
+								<ul class="nav nav-tabs">
+									<li class="active" onclick="tab('tab','${i}',this)"><a href="javascript:void(0);" class="cur">用户基本信息</a></li>
+									<li onclick="tab('tabb','${i}',this)"><a href="javascript:void(0);">充值记录</a></li>
+									<li onclick="tab('tabbb','${i}',this)"><a href="javascript:void(0);" onclick="tab()">订单记录</a></li>
+									<div class="nav_icon">
+										<a href="javascript:void(0);" onclick="edit('${pl.userId}');" class="icon_lock icon_edit"></a>
+										<?if(pl.isFreeze==2){?>
+											<a href="javascript:void(0);" onclick="setfreeze(1,this,'${pl.userId}')" class="icon_lock icon_open"></a>
+										<?}else{?>
+											<a href="javascript:void(0);" onclick="setfreeze(2,this,'${pl.userId}')" class="icon_lock icon_close"></a>
+										<?}?>
+										<a href="javascript:void(0);" onclick="unfolded(1,this,'${i}');" class="icon_lock icon_top"></a>
+									</div>
+								</ul>
+								<div  class="tab-content "  id="tab_${i}">
+									<div  class="info_content tab-display row">
+										<div class="col-md-2">
+											<div class="info_img"><span></span>
+											<?if(pl.avatarUrl != null && pl.avatarUrl != ''){?>
+											<img src="${pl.avatarUrl}"/>
+											<?}else{?>
+											<img src="../images/userhead.jpg"/>
+											<?}?>
+											</div>
+										</div>
+										<div class="col-md-10">
+											<ul class="info_top">
+												<!-- <li><div>用户ID：<label for="">${pl.userId}</label></div></li> -->
+												<li><div>注册日期：<label for="">${pl.registrationTime}</label></div></li>
+												<li><div>用户角色：<label for="">${pl.userRoles!=null?(pl.userRoles==0?"注册用户":"认证用户"):""}</label></div></li>
+											</ul>
+										
+											<table width="100%" border="0" cellspacing="0" cellpadding="0" class=" inforform_tb">
+										            <tr>
+										              <th valign="top" scope="row">用户ID</th>
+										              <td valign="top"><label for="">${pl.userId}</label></td>
+										              <th valign="top" scope="row">密码</th>
+										              <td valign="top"><label for="">***********</label></td>
+										              <th valign="top" scope="row">绑定第三方账号</th>
+										              <td valign="top"> <label for="">
+										            ${(pl.status=="0"?"QQ":(pl.status=="1"?"微博":"微信"))}
+										            </label></td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">姓名</th>
+										              <td valign="top"> <label for="">${pl.userRealname}</label></td>
+										              <th valign="top" scope="row">学历</th>
+										              <td valign="top"> 
+										              <?if(pl.educationLevel != null && pl.educationLevel != ''){?>
+										              <label for="">
+										              <?if(pl.educationLevel == 0){?>
+										            	大专
+										              <?}else if(pl.educationLevel == 1){?>
+										                                        本科
+										              <?}else if(pl.educationLevel == 2){?>
+										                                        硕士
+										              <?}else if(pl.educationLevel == 3){?>
+										                                        博士
+										              <?}else if(pl.educationLevel == 4){?>
+										                                        其他
+										              <?}?>
+										            <a id="educationLevel_${i}" href="javascript:void(0);" onClick="details(this.id);"><img src="../img/u465.png" width="15px" height="15px"></a>
+										            </label>
+										            <div id="educationLevel_${i}_details" style="display:none;z-index: 99999;left: 641px; top: 160px;width: 250px;" class="prompt_box">
+														<p>学历信息</p>
+														<?if(pl.educations != null && pl.educations[0] !='null'){
+														for(education in pl.educations){?>
+														<ul style="border-bottom:1px dashed #DFDFDF;">
+															<li style="overflow: hidden;">
+																<label>学校：</label><span>${education.school}</span>
+															</li>
+															<li style="overflow: hidden;">
+																<label>学历：</label><span>
+																 <?if(education.level == '0'){?>
+													            	大专
+													             <?}else if(education.level == '1'){?>
+													                                        本科
+													             <?}else if(education.level == '2'){?>
+													                                        硕士
+													             <?}else if(education.level == '3'){?>
+													                                        博士
+													             <?}else if(education.level == '4'){?>
+													                                        其他
+													              <?}?>
+																</span>
+															</li>
+														</ul>
+														<?}}else{?>
+														<ul style="border-bottom:1px dashed #DFDFDF;">
+															<li>
+																<label>暂无学历信息</label>
+															</li>
+														</ul>
+														<?}?>
+													</div>
+													<?}?>
+										            <!-- <div id="subject_${i}_details" class="prompt_box" style="position:absolute;border:1px solid silver;display:none;background:white;width:auto; z-index:99;">提示1效果</div> --></td>
+										              <th valign="top" scope="row">账户余额</th>
+										              <td valign="top"><label for="">
+										              <?if(pl.balance!=null){?>
+										                ${pl.balance}
+										              <?}else{?>
+										              	0
+										              <?}?>
+										                                   元</label></td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">昵称</th>
+										              <td valign="top"><label for="">${pl.userNickname}</label></td>
+										              <th valign="top" scope="row">当前单位/院校</th>
+										              <td valign="top">
+										                <?if(pl.workUnit != null && pl.workUnit != ''){?>
+										                <label for="">${pl.workUnit}
+										                <?if(pl.awardList != null && pl.awardList != ''){?>
+										                <a id="workUnit_${i}" href="javascript:void(0);" onClick="details(this.id);"><img src="../img/u465.png" width="15px" height="15px"></a>
+										              	<?}?>
+										              	<div id="workUnit_${i}_details" style="display:none;z-index: 99999;left: 641px; top: 160px;width: 250px;" class="prompt_box">
+															<p>获奖情况</p>
+															<ul style="border-bottom:1px dashed #DFDFDF;">
+																<?if(null!=pl.awardList){?>
+																	 <?for(award in pl.awardList){?>
+																		<li style="overflow: hidden;">
+																			<span>${award}</span>
+																		</li>
+																	 <?}?>
+																<?}?>
+															</ul>
+														</div>
+										              	</label>
+														<?}?>
+													  </td>
+										              <th valign="top" scope="row">万方卡</th>
+										              <td valign="top"><label for="label">
+										              <?if(pl.cardValue!=null){?>
+										                ${pl.cardValue}
+										              <?}else{?>
+										              	0
+										              <?}?>元</label></td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">发文曾用名</th>
+										              <td valign="top"><label for="">${pl.usedName}</label></td>
+										              <th valign="top" scope="row">原工作单位/院校</th>
+										              <td valign="top">
+										              <?if(pl.old_work_unit != null && pl.old_work_unit != ''){?>
+										              <label for="">
+										              ${pl.old_work_unit == null?'':strutil.split(pl.old_work_unit,'%')[0]}
+										              <?if(pl.old_work_unit != null){
+														var arry=strutil.split(pl.old_work_unit,'%');
+														if(arry.~size >= 2){
+													  ?>
+										              <a id="oldWorkUnit_${i}" href="javascript:void(0);" onClick="details(this.id);"><img src="../img/u465.png" width="15px" height="15px"></a>
+										              <?}}?>
+										              <div id="oldWorkUnit_${i}_details" style="display:none;z-index: 99999;left: 641px; top: 160px;width: 250px;" class="prompt_box">
+														<p>原工作单位</p>
+														<ul style="border-bottom:1px dashed #DFDFDF;">
+														<?if(pl.old_work_unit != null){
+														var arr=strutil.split(pl.old_work_unit,'%');
+														for(var k=0;k<arr.~size;k++){
+														?>
+															<li style="overflow: hidden;">
+																<label>${k+1}、</label><span>${arr[k]}</span>
+															</li>
+														<?}}?>	
+														</ul>
+													  </div>
+													  </label>
+													  <?}?>
+													  </td>
+										              <th valign="top" scope="row">奖励</th>
+										              <td valign="top"><label for="label">0元</label></td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">性别</th>
+										              <td valign="top"><label for="">${pl.isMale==1?'男':'女'}</label></td>
+										              <th valign="top" scope="row">职称</th>
+										              <td valign="top"><label for="">
+										              <?if(pl.title == 0){?>
+										            	  初级
+										              <?}else if(pl.title == 1){?>
+										             	  中级
+										              <?}else if(pl.title == 2){?>
+										         	            副高级	
+										              <?}else if(pl.title == 3){?>
+										             	 正高级
+										              <?}else if(pl.title == 4){?>
+										              	其他
+										              <?}?>
+										              </label></td>
+										              <th valign="top" scope="row">&nbsp;</th>
+										              <td valign="top">&nbsp;</td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">出生日期</th>
+										              <td valign="top"> <label for="">${pl.dateBirth}</label></td>
+										              <th valign="top" scope="row">学科</th>
+										              <td valign="top">
+										                <?if(pl.subList != null && pl.subList.~size > 0){?>
+										                <label for="">${pl.subList[0]}
+										                <?if(pl.subList.~size > 1){?>
+										                <a id="subject_${i}" href="javascript:void(0);" onClick="details(this.id);"><img src="../img/u465.png" width="15px" height="15px"></a>
+										              	<?}?>
+										              	<div id="subject_${i}_details" style="display:none;z-index: 99999;left: 641px; top: 160px;width: 250px;" class="prompt_box">
+															<p>学科</p>
+															<ul style="border-bottom:1px dashed #DFDFDF;">
+															<? var num=1;for(sub in pl.subList){?>
+																<li style="overflow: hidden;">
+																	<label>${num}：</label><span>${sub}</span>
+																</li>
+															<?num++;}?>
+															</ul>
+													  </div>
+													  </label>
+													  <?}?>
+													  </td>
+										              <th valign="top" scope="row">&nbsp;</th>
+										              <td valign="top">&nbsp;</td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">身份证号</th>
+										              <td valign="top"> <label for="">${pl.idcardNumber}</label></td>
+										              <th valign="top" scope="row">感兴趣主题</th>
+										              <td valign="top">
+										              <?if(pl.topical != null && pl.topical != ''){?>
+										              <label for="">
+										              ${pl.topical == null?'':strutil.split(pl.topical,'%')[0]}
+										              <?if(pl.topical != null){
+															var arry=strutil.split(pl.topical,'%');
+															if(arry.~size > 1){
+													  ?>
+										              <a id="topical_${i}" href="javascript:void(0);"onclick="details(this.id);"><img src="../img/u465.png" width="15px" height="15px"></a>
+										              <?}}?>
+										              <div id="topical_${i}_details" style="display:none;z-index: 99999;left: 641px; top: 160px;width: 250px;" class="prompt_box">
+														<p>感兴趣的主题</p>
+														<ul style="border-bottom:1px dashed #DFDFDF;">
+															<?if(pl.topical != null){
+															var arr=strutil.split(pl.topical,'%');
+															for(var k=0;k<arr.~size;k++){
+															?>
+															<li style="overflow: hidden;">
+																<label>${k+1}、</label><span>${arr[k]}</span>
+															</li>
+														<?}}?>	
+														</ul>
+													  </div>
+													  </label>
+													  <?}?>
+													  </td>
+										              <th valign="top" scope="row">&nbsp;</th>
+										              <td valign="top">&nbsp;</td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">E-Mail</th>
+										              <td valign="top"><label for="">${pl.email}</label></td>
+										              <th valign="top" scope="row">发文单位</th>
+										              <td valign="top"><label for="">${pl.publish_unit}<lable></td>
+										              <th valign="top" scope="row">&nbsp;</th>
+										              <td valign="top">&nbsp;</td>
+										            </tr>
+										            <tr>
+										              <th valign="top" scope="row">手机号</th>
+										              <td valign="top"><label for="">${pl.mobilePhone}</label></td>
+										              <th valign="top" scope="row">毕业院校</th>
+										              <td valign="top"><label for="">${pl.graduated_school}</label></td>
+										              <th valign="top" scope="row">&nbsp;</th>
+										              <td valign="top">&nbsp;</td>
+										            </tr>
+										          </table>
+										</div>
+									</div>
+								</div>
+								<div id="tabb_${i}" style="display: none;" >
+								<iframe style="border: thin;"   src="http://my.wanfangdata.com.cn/user/admin/person_charge_order?user_id=${pl.userId}" width="100%" height="500px"></iframe> 
+								</div>
+								<div id="tabbb_${i}" style="display: none;">
+								<iframe  style="border: thin;" src="http://my.wanfangdata.com.cn/user/admin/person_pay_order?user_id=${pl.userId}"  width="100%" height="600px"></iframe> 
+								</div>
+							</div>
+						
+						
+
+						</ul>
+						<?if(i<=5){?>
+						<ul class="info_list" id="form_${i}" style="display:none;">
+						<?}else{?>
+						<ul class="info_list" id="form_${i}" >
+						<?}?>
+							<li class="info_list_con">
+								<div <?if(i%2==0){?>class="info_list_title"<?}?> 
+									style="display:black;">
+									<span class="number">&nbsp;&nbsp;${(PageList.pageSize*(PageList.pageNum-1)+i)}</span>
+									<span class="chinese">${pl.userId}</span>
+									<span class="chinese">${pl.userRealname}</span>
+									<span class="school">${pl.old_work_unit}</span>
+									<span class="major">${pl.topical}</span>
+									<span class="user">${pl.userRoles==0?'注册用户':(pl.userRoles==1?'认证用户':'学者用户')}</span>
+									<a href="javascript:void(0);" onclick="unfolded(2,this,'${i}');" class="icon_lock icon_tdown"></a>
+								</div>
+							</li>
+						
+						</ul>
+						
+						
+					</div>
+				</div>
+			</div>
+			<?}?>
+			
+			<?}?>
+		<?}?>
+		
+		</div>
+	<div id="page"></div>
+	</section>
 </div>
 <?}?>
 

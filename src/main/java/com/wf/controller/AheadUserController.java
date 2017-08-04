@@ -1422,7 +1422,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	奖励记录
+	 *	个人订单管理
 	 */
 	@RequestMapping("charge_order")
 	public ModelAndView perAward(){
@@ -1433,7 +1433,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	个人订单管理
+	 *	个人充值管理
 	 */
 	@RequestMapping("pay_order")
 	public ModelAndView order(){
@@ -1442,9 +1442,6 @@ public class AheadUserController {
 		return view;
 	}
 	
-	/**
-	 *	个人充值管理
-	 */
 	@RequestMapping("pay")
 	public ModelAndView pay(){
 		ModelAndView view = new ModelAndView();
