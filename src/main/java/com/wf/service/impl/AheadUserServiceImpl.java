@@ -1357,12 +1357,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> libdata = new HashMap<String, Object>();//组装条件Map
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
 			SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd");
+			//判断项目ID是存在
+			List<PayChannelModel> list_ = this.purchaseProject();
+			if(!list_.toString().contains(wfks.getPayChannelid())){
+				continue;
+			}
 			//已发表论文检测项目特殊处理
 			if(wfks.getPayChannelid().equals("HistoryCheck")){
 				WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
 				extraData.put("ViewHistoryCheck", mapping==null?"not":"is");
 			}
-			//根据“购买项目.用户名”获取账务信息，根据购买项目类型不同做强制类型转换,测试："GBalanceLimit","000278bccca9"
 			PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 			if(pay.getType().equals("balance")){
 				wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),wfks.getUserId()), new HashMap<String,String>());
