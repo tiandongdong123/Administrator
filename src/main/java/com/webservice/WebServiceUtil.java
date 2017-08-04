@@ -41,6 +41,7 @@ public class WebServiceUtil {
 	 *	参数三：角色权限对象
 	 */
 	public static int submitOriginalDelivery(CommonEntity com,boolean b, WfksAccountidMapping wfks, WfksUserSetting setting) throws DatatypeConfigurationException{
+		int msg = 0;
 		//用户
 		WFUser user = new WFUser();
 		String lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
@@ -70,6 +71,7 @@ public class WebServiceUtil {
 		ArrayOfWFContract contracts = new ArrayOfWFContract();
 		//角色权限
 		ArrayOfAccountIdMapping arrayMapping = new ArrayOfAccountIdMapping();
+		ArrayOfUserSetting arrayOfUserSetting = new ArrayOfUserSetting();
 		List<WFContract> list = contracts.getWFContract();
 		if(com.getRdlist()!=null){
 			for(ResourceDetailedDTO dto : com.getRdlist()){
@@ -118,6 +120,14 @@ public class WebServiceUtil {
 							accountId2.setKey(setting.getPropertyName());
 							accountId2.setAccountType(setting.getPropertyValue());
 							accountIdMapping.setRelatedId(accountId2);
+							//权限setting对象
+							List<UserSetting> list_setting = arrayOfUserSetting.getUserSetting();
+							UserSetting userSetting = new UserSetting();
+							userSetting.setUserId(setting.getUserId());
+							userSetting.setUserType(setting.getUserType());
+							userSetting.setPropertyName(setting.getPropertyName());
+							userSetting.setPropertyValue(setting.getPropertyValue());
+							list_setting.add(userSetting);
 						}
 						list_mapping.add(accountIdMapping);
 					}
@@ -126,13 +136,11 @@ public class WebServiceUtil {
 		}
 		UserManagerService ser = new UserManagerService();
 		UserManagerServiceSoap soap = ser.getUserManagerServiceSoap();
-		int msg = 0;
 		if(b){
-			msg = soap.addOrganizationUser(user, contracts, arrayMapping);
+			msg = soap.addOrganizationUser(user, contracts, arrayMapping, arrayOfUserSetting);
 		}else{
-			msg = soap.editOrganizationUser(user, contracts, arrayMapping);
+			msg = soap.editOrganizationUser(user, contracts, arrayMapping, arrayOfUserSetting);
 		}
-		System.out.println(msg);
 		return msg;
 	}
 	
@@ -142,90 +150,6 @@ public class WebServiceUtil {
 		array.add("234");
 		array.add("567");
 		System.out.println(StringUtils.strip(array.toString(),"[]"));
-	}
-	
-	public static String main1(CommonEntity com,String host,String SOAPAction){
-		HttpClient client = new HttpClient();
-		PostMethod postMethod = new PostMethod(host);
-		String msg = "";
-		try {
-			StringBuffer soap=new StringBuffer();
-			soap.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-			soap.append("<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'>");
-			soap.append("<soap:Body>");
-			soap.append("<"+SOAPAction+" xmlns='http://tempuri.org/'"+SOAPAction+"'>");
-			soap.append("<user>");
-			String lm = com.getLoginMode()=="1"?"10":(com.getLoginMode()=="0"?"20":"30");
-			soap.append("<LoginType>"+lm+"</LoginType>");
-			soap.append("<WFIPLimit>");
-				String [] str = com.getIpSegment().split("\n");
-				for(int i = 0; i < str.length; i++){		
-					String beginIp = str[i].substring(0, str[i].indexOf("-"));
-					String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-					soap.append("<WFIPLimit>");
-					soap.append("<ExtensionData xsi:nil='true'/>");
-					soap.append("<BeginIPAddress>"+beginIp+"</BeginIPAddress>");
-					soap.append("<EndIPAddress>"+endIp+"</EndIPAddress>");
-					//soap.append("<ID></ID>");
-					soap.append("<UserID>"+com.getUserId()+"</UserID>");
-					soap.append("</WFIPLimit>");
-				}
-			soap.append("</WFIPLimit>");
-			if(lm.equals("10") || lm.equals("30")){				
-				soap.append("<Password>"+com.getPassword()+"</Password>");
-			}
-			soap.append("<UserID>"+com.getUserId()+"</UserID>");
-			soap.append("</user>");
-			soap.append("<contract>");
-			soap.append("<TransferIn>string</TransferIn>");
-			soap.append("<TransferOut>string</TransferOut>");
-			soap.append("<ExtensionData/>");
-			soap.append("<Terms>");
-			for(ResourceDetailedDTO dto : com.getRdlist()){
-				if(dto.getProjectid()!=null){
-					for(ResourceLimitsDTO rldto : dto.getRldto()){
-						if(AheadUserServiceImpl.getField(rldto)!=null){							
-							JSONArray array = JSONObject.fromObject(AheadUserServiceImpl.getField(rldto)).getJSONArray("Terms");
-							for(Object obj : array){
-								JSONObject json = JSONObject.fromObject(obj);
-								soap.append("<ContractTerm>");
-								soap.append("<ExtensionData xsi:nil='true'/>");
-								soap.append("<Field>"+json.getString("Field")+"</Field>");
-								soap.append("<Value>"+json.getString("Value")+"</Value>");
-								soap.append("<ValueType>"+json.getString("ValueType")+"</ValueType>");
-								soap.append("<Verb>"+json.getString("Verb")+"</Verb>");
-								soap.append("</ContractTerm>");
-							}
-						}
-					}
-				}
-			}
-			soap.append("</Terms>");
-			soap.append("</contract>");
-			soap.append("</AddOrganizationUser>");
-			soap.append("</soap:Body>");
-			soap.append("</soap:Envelope>");
-			System.out.println(soap.toString());
-			postMethod.setRequestBody(soap.toString());
-			//设置头部
-			postMethod.setRequestHeader("POST","/UserManagerService.asmx HTTP/1.1");
-			postMethod.setRequestHeader("Host",host);
-			postMethod.setRequestHeader("Content-Type","text/xml; charset=utf-8");
-			postMethod.setRequestHeader("SOAPAction","http://tempuri.org/"+SOAPAction);
-			int code = client.executeMethod(postMethod);
-			String result = postMethod.getResponseBodyAsString();
-			if(code == 200 & result != null){
-				Document doc = DocumentHelper.parseText(result);
-				Element root = doc.getRootElement();
-				Element body = root.element("Body");
-				Element response = body.element("AddOrganizationUserResponse");
-				Element wf_result = response.element("AddOrganizationUserResult");
-				msg = wf_result.getText();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return msg;
 	}
 
 }

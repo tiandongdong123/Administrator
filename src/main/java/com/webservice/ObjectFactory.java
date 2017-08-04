@@ -61,6 +61,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ArrayOfUserSetting }
+     * 
+     */
+    public ArrayOfUserSetting createArrayOfUserSetting() {
+        return new ArrayOfUserSetting();
+    }
+
+    /**
      * Create an instance of {@link EditOrganizationUser }
      * 
      */
@@ -146,6 +154,14 @@ public class ObjectFactory {
      */
     public ContractTerm createContractTerm() {
         return new ContractTerm();
+    }
+
+    /**
+     * Create an instance of {@link UserSetting }
+     * 
+     */
+    public UserSetting createUserSetting() {
+        return new UserSetting();
     }
 
     /**

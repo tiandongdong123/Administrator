@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="user" type="{http://tempuri.org/}WFUser" minOccurs="0"/>
  *         &lt;element name="contracts" type="{http://tempuri.org/}ArrayOfWFContract" minOccurs="0"/>
  *         &lt;element name="manages" type="{http://tempuri.org/}ArrayOfAccountIdMapping" minOccurs="0"/>
+ *         &lt;element name="settings" type="{http://tempuri.org/}ArrayOfUserSetting" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -31,7 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "user",
     "contracts",
-    "manages"
+    "manages",
+    "settings"
 })
 @XmlRootElement(name = "EditOrganizationUser")
 public class EditOrganizationUser {
@@ -39,6 +41,7 @@ public class EditOrganizationUser {
     protected WFUser user;
     protected ArrayOfWFContract contracts;
     protected ArrayOfAccountIdMapping manages;
+    protected ArrayOfUserSetting settings;
 
     /**
      * ��ȡuser���Ե�ֵ��
@@ -110,6 +113,30 @@ public class EditOrganizationUser {
      */
     public void setManages(ArrayOfAccountIdMapping value) {
         this.manages = value;
+    }
+
+    /**
+     * ��ȡsettings���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     {@link ArrayOfUserSetting }
+     *     
+     */
+    public ArrayOfUserSetting getSettings() {
+        return settings;
+    }
+
+    /**
+     * ����settings���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ArrayOfUserSetting }
+     *     
+     */
+    public void setSettings(ArrayOfUserSetting value) {
+        this.settings = value;
     }
 
 }

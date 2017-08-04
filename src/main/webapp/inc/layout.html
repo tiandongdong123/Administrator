@@ -155,8 +155,6 @@
             	<a href="#"><i class="fa fa-circle-o"></i>个人用户管理<i class="fa fa-angle-left pull-right"></i></a>
             	<ul class="treeview-menu menu-open" style="display: block;">
 		        	<li <?if(!strutil.contain(session.purviews,"个人基本信息")){?>style="display:none"<?}?> <?if(session.menu_first=="perManagers.do"){ ?>class="active"<?}?>><a href="../auser/perManagers.do"><i class="fa fa-circle-o"></i>个人基本信息</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="charge_order.do"){ ?>class="active"<?}?>><a href="../auser/charge_order.do"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人充值记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../auser/pay_order.do"><i class="fa fa-circle-o"></i>个人充值记录</a></li>
           		</ul>
             </li>
           </ul>

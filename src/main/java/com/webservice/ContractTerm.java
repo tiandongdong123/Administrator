@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="ExtensionData" type="{http://tempuri.org/}ExtensionDataObject" minOccurs="0"/>
  *         &lt;element name="Field" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="Logic" type="{http://tempuri.org/}Logic"/>
  *         &lt;element name="Value" type="{http://www.w3.org/2001/XMLSchema}anyType" minOccurs="0"/>
  *         &lt;element name="ValueType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="Verb" type="{http://tempuri.org/}Verb"/>
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ContractTerm", propOrder = {
     "extensionData",
     "field",
+    "logic",
     "value",
     "valueType",
     "verb"
@@ -44,6 +46,9 @@ public class ContractTerm {
     protected ExtensionDataObject extensionData;
     @XmlElement(name = "Field")
     protected String field;
+    @XmlElement(name = "Logic", required = true)
+    @XmlSchemaType(name = "string")
+    protected Logic logic;
     @XmlElement(name = "Value")
     protected Object value;
     @XmlElement(name = "ValueType")
@@ -98,6 +103,30 @@ public class ContractTerm {
      */
     public void setField(String value) {
         this.field = value;
+    }
+
+    /**
+     * ��ȡlogic���Ե�ֵ��
+     * 
+     * @return
+     *     possible object is
+     *     {@link Logic }
+     *     
+     */
+    public Logic getLogic() {
+        return logic;
+    }
+
+    /**
+     * ����logic���Ե�ֵ��
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Logic }
+     *     
+     */
+    public void setLogic(Logic value) {
+        this.logic = value;
     }
 
     /**

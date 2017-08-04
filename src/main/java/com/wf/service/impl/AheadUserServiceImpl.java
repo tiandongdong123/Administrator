@@ -368,12 +368,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int deleteAccount(CommonEntity com,ResourceDetailedDTO dto,String adminId){
 		int flag = 0;
 		boolean isSuccess;
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		UserAccount account = new UserAccount();
 		account.setUserId(com.getUserId());
 		account.setPayChannelId(dto.getProjectid());
 		account.setOrganName(com.getInstitution());
-		account.setBeginDateTime(DateUtil.stringToDate(dto.getValidityStarttime()));
-		account.setEndDateTime(DateUtil.stringToDate(dto.getValidityEndtime()));
+		try{
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try{
 			isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(), adminId);
 			if(isSuccess){

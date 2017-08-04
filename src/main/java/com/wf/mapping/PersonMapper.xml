@@ -100,7 +100,7 @@
    and u.user_realname like CONCAT(#{person.userRealname})
    </if>
    <if test="person.mobilePhone != null and person.mobilePhone != ''">
-   and u.mobile_phone like CONCAT('%',#{person.mobilePhone},'%')
+   and u.mobile_phone=#{person.mobilePhone}
    </if>
    <if test="person.idcardNumber != null and person.idcardNumber != ''">
    and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
@@ -135,7 +135,7 @@
    and u.user_realname like CONCAT(#{person.userRealname})
    </if>
    <if test="person.mobilePhone != null and person.mobilePhone != ''">
-   and u.mobile_phone like CONCAT('%',#{person.mobilePhone},'%')
+   and u.mobile_phone=#{person.mobilePhone}
    </if>
    <if test="person.idcardNumber != null and person.idcardNumber != ''">
    and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
