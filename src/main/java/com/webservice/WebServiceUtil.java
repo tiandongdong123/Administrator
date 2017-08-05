@@ -41,10 +41,13 @@ public class WebServiceUtil {
 	 *	参数三：角色权限对象
 	 */
 	public static int submitOriginalDelivery(CommonEntity com,boolean b, WfksAccountidMapping wfks, WfksUserSetting setting) throws DatatypeConfigurationException{
+		String lm = "";
 		int msg = 0;
 		//用户
 		WFUser user = new WFUser();
-		String lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
+		if(com.getLoginMode()!=null){			
+			lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
+		}
 		user.setUserID(com.getUserId());
 		user.setLoginType(UserDisposeEnum.fromValue(lm));
 		user.setUserRealName(com.getInstitution());
