@@ -1487,7 +1487,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		int i = 0;
 		String type = authority.getRelatedIdAccountType();
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		wfksAccountidMappingMapper.deleteByUserId(authority.getUserId(),type);
+		i = wfksAccountidMappingMapper.deleteByUserId(authority.getUserId(),type);
 		if(authority.getAuthorityType().equals("is") && !type.equals("UserLogReport")){
 			WfksAccountidMapping am = new WfksAccountidMapping();
 			am.setMappingid(GetUuid.getId());
@@ -1527,7 +1527,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			us.setUserType("Group");
 			us.setPropertyName(type);
 			us.setPropertyValue(type.equals("UserLogReport")?"Authorization":authority.getPartyAdmin());
-			wfksUserSettingMapper.deleteByUserId(us);
+			i = wfksUserSettingMapper.deleteByUserId(us);
 			if(authority.getAuthorityType().equals("is")){				
 				i = wfksUserSettingMapper.insert(us);
 			}

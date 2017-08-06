@@ -1269,7 +1269,7 @@ public class AheadUserController {
 	 *	服务权限设置跳转
 	 */
 	@RequestMapping("showAuthority")
-	public ModelAndView showAuthority(String msg,String userId,String adminname) throws Exception {
+	public ModelAndView showAuthority(String msg,String userId,String institution) throws Exception {
 		ModelAndView view = new ModelAndView();
 		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
 		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
@@ -1280,6 +1280,7 @@ public class AheadUserController {
 				view.addObject("ps", ps);
 			}
 		}
+		view.addObject("institution", institution);
 		view.addObject("setting", setting);
 		view.addObject("wfks", wfks);
 		view.addObject("msg", msg);
@@ -1302,6 +1303,7 @@ public class AheadUserController {
 			map.put("flag", "success");
 			CommonEntity com = new CommonEntity();
 			com.setUserId(authority.getUserId());
+			com.setInstitution(authority.getInstitution());
 			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
 			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
 			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);

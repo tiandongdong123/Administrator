@@ -47,15 +47,15 @@ public class WebServiceUtil {
 		WFUser user = new WFUser();
 		if(com.getLoginMode()!=null){			
 			lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
+			user.setLoginType(UserDisposeEnum.fromValue(lm));
 		}
 		user.setUserID(com.getUserId());
-		user.setLoginType(UserDisposeEnum.fromValue(lm));
 		user.setUserRealName(com.getInstitution());
 		if(lm.equals("Pwd") || lm.equals("PwdAndIp")){			
 			user.setPassword(com.getPassword());
 		}
 		//IP
-		if(!lm.equals("Pwd")){			
+		if(StringUtils.isNotBlank(com.getIpSegment()) && !lm.equals("Pwd")){			
 			ArrayOfWFIPLimit arrayOfWFIPLimit  = new ArrayOfWFIPLimit();
 			List<WFIPLimit> lp = arrayOfWFIPLimit.getWFIPLimit();
 			String [] str = com.getIpSegment().split("\r\n");

@@ -1,8 +1,14 @@
 package com.wf.bean;
 
+/**
+ * @author Administrator
+ *
+ */
 public class Authority {
 	
 	private String userId;
+	
+	private String institution;
 	
 	private String authorityType;
 	
@@ -24,6 +30,14 @@ public class Authority {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
 	}
 
 	public String getAuthorityType() {
