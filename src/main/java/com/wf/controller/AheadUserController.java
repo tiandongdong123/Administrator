@@ -1273,7 +1273,7 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
 		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
-		if(msg.equals("PartyAdminTime")){			
+		if(setting!=null && msg.equals("PartyAdminTime")){			
 			Person ps = aheadUserService.queryPersonInfo(setting.getPropertyValue());
 			if(ps!=null){				
 				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
