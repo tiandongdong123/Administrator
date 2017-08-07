@@ -799,26 +799,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
-		String gazetteersLevel=dto.getGazetteersLevel();
-		if(StringUtils.isNotBlank(gazetteersLevel)){
-			addStringToTerms("gazetteers_level","Equal",dto.getGazetteersLevel(),Terms,"String");
-		}
-
-		String gazetteersId=dto.getGazetteersId();
-		if(StringUtils.isNotEmpty(gazetteersId)){
-			addStringToTerms("gazetteers_id","Equal",dto.getGazetteersId(),Terms,"String");
-		}else{
-			String gazetteersAlbum=dto.getGazetteersAlbum();
-			if(StringUtils.isNotEmpty(gazetteersAlbum)){
-				addStringToTerms("gazetteers_album","Equal",dto.getGazetteersAlbum(),Terms,"String");
+		
+		String gId=dto.getGazetteersId();
+		String gArea=dto.getGazetteersArea();
+		String gAlbum=dto.getGazetteersAlbum();
+		if(StringUtils.isNotEmpty(gId)||StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)){
+			if(StringUtils.isNotEmpty(gId)){
+				addStringToTerms("gazetteers_id","Equal",gId,Terms,"String");
+			}else{
+				if(StringUtils.isNotEmpty(gAlbum)){
+					addStringToTerms("gazetteers_album","Equal",gAlbum,Terms,"String");
+				}
+				if(StringUtils.isNotEmpty(gArea)){
+					addStringToTerms("gazetteers_area","Equal",gArea,Terms,"String");
+				}
+				String gType=dto.getGazetteersType();
+				if(StringUtils.isNotEmpty(gType)){
+					addStringToTerms("gazetteers_type","Equal",gType,Terms,"String");
+				}
 			}
-			String gazetteersArea=dto.getGazetteersArea();
-			if(StringUtils.isNotEmpty(gazetteersArea)){
-				addStringToTerms("gazetteers_area","Equal",dto.getGazetteersArea(),Terms,"String");
-			}
-			String gazetteersType=dto.getGazetteersType();
-			if(StringUtils.isNotEmpty(gazetteersType)){
-				addStringToTerms("gazetteers_type","Equal",dto.getGazetteersType(),Terms,"String");
+			String gLevel=dto.getGazetteersLevel();
+			if(StringUtils.isNotBlank(gLevel)){
+				addStringToTerms("gazetteers_level","Equal",gLevel,Terms,"String");
 			}
 		}
 	

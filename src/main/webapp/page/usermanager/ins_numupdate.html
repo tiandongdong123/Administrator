@@ -366,21 +366,21 @@
 						<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%">
 						<input type="radio" value="1" name="fzlx" onclick="getSxdr(1,${i},${j})" checked/>分类筛选</td><td style="border:1px solid #C6C6C6;width:85%">
 						<table align=center height="100%" width="100%" border="0"><tr><td align=right width="10%">资源分类</td><td style="align:left;width:90%;padding-left:20px;">
-						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_new" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
+						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="FZ_New" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="FZ_Old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
 						<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_${i}_${j}" onchange="findArea(this.value,1,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						市 <select id="shi_${i}_${j}" onchange="findArea(this.value,2,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						县 <select id="xian_${i}_${j}" onchange="saveArea(${i},${j})"><option value="">全部</option></select></td></tr>
 						<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;">
-						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="book" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="item" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
+						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="LocalChronicle" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input onclick="getDataType(this.value,${i},${j})" type="radio" value="LocalChronicleItem" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
 						<tr><td align=right width="10%"><span id="zjfl_${i}_${j}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
 						<a href="javascript:;" onclick="checkfzAll(this,${i},${j})" id="checkfz_${i}_${j}">全选</span></td></tr>
 						<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">
 						<div id="new_class_code_${i}_${j}"></div><div id="item_class_code_${i}_${j}" style="display:none"></div></td></tr></table></td></tr><tr height="40%">
 						<td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,${i},${j})"/>自定义导入</td><td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">
-						<input type="radio" value="book" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" value="item" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
+						<input type="radio" value="LocalChronicle" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" value="LocalChronicleItem" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
 						<textarea class="form-control" rows="4" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}" style="width:70%;" disabled>${gazetteers_id.Value!}</textarea>
 						<input type="file" name="file" id="file_${i}_${j}" disabled/></td></tr></table>
 						<input type="hidden" value="${gazetteers_level.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersLevel" id="gazetteersLevel_${i}_${j}"/>
@@ -585,24 +585,24 @@
 				<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%">
 				<input type="radio" value="1" name="fzlx" onclick="getSxdr(1,${i},${j})" checked/>分类筛选</td><td style="border:1px solid #C6C6C6;width:85%">
 				<table align=center height="100%" width="100%" border="0"><tr><td align=right width="10%">资源分类</td><td style="align:left;width:90%;padding-left:20px;">
-				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_new" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="gazetteer_old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
+				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="FZ_New" name="rdlist[${i}].rldto[${j}].gazetteersType" checked/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input onclick="gazetteerType(this.value,${i},${j})" type="radio" value="FZ_Old" name="rdlist[${i}].rldto[${j}].gazetteersType"/>旧方志</td></tr>
 				<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_${i}_${j}" onchange="findArea(this.value,1,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				市 <select id="shi_${i}_${j}" onchange="findArea(this.value,2,${i},${j})"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				县 <select id="xian_${i}_${j}" onchange="saveArea(${i},${j})"><option value="">全部</option></select></td></tr>
 				<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;">
-				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="book" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="item" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
+				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="LocalChronicle" name="rdlist[${i}].rldto[${j}].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input onclick="getDataType(this.value,${i},${j})" type="radio" value="LocalChronicleItem" name="rdlist[${i}].rldto[${j}].drtm1"/> 条目</td></tr>
 				<tr><td align=right width="10%"><span id="zjfl_${i}_${j}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
 				<a href="javascript:;" onclick="checkfzAll(this,${i},${j})" id="checkfz_${i}_${j}">全选</span></td></tr>
 				<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">
 				<div id="new_class_code_${i}_${j}"></div><div id="item_class_code_${i}_${j}" style="display:none"></div></td></tr></table></td></tr><tr height="40%">
 				<td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,${i},${j})"/>自定义导入</td><td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">
-				<input type="radio" value="book" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" checked disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="radio" value="item" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
+				<input type="radio" value="LocalChronicle" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" checked disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" value="LocalChronicleItem" onclick="getDataLevel(this.value,${i},${j})" name="rdlist[${i}].rldto[${j}].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>
 				<textarea class="form-control" rows="4" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}" style="width:70%;" disabled></textarea>
 				<input type="file" name="file" id="file_${i}_${j}" disabled/></td></tr></table>
-				<input type="hidden" value="book" name="rdlist[${i}].rldto[${j}].gazetteersLevel" id="gazetteersLevel_${i}_${j}"/>
+				<input type="hidden" value="LocalChronicle" name="rdlist[${i}].rldto[${j}].gazetteersLevel" id="gazetteersLevel_${i}_${j}"/>
 				<input type="hidden" name="rdlist[${i}].rldto[${j}].gazetteersArea" id="gazetteersArea_${i}_${j}"/>
 				<input type="hidden" name="rdlist[${i}].rldto[${j}].gazetteersAlbum" id="gazetteersAlbum_${i}_${j}"/>
 				</div>

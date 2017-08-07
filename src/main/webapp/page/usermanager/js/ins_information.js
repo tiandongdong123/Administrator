@@ -235,7 +235,7 @@ function showGazetteers(userId,payid,pscode){
 	}
 	var type=$("#gazetteers_type_"+temp).val();
 	if(type!=null){
-		if(type=="gazetteer_new"){
+		if(type=="FZ_New"){
 			$("#zjfl_"+temp).html("专辑分类");
 		}else{
 			$("#zjfl_"+temp).html("专题分类");
