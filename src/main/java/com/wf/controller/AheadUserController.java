@@ -1301,12 +1301,10 @@ public class AheadUserController {
 		if(a>0){
 			map.put("flag", "success");
 			Person ps = aheadUserService.queryPersonInfo(authority.getUserId());
-			if(ps.getLoginMode().equals("")){
-				
-			}
 			CommonEntity com = new CommonEntity();
 			com.setUserId(ps.getUserId());
 			com.setInstitution(ps.getInstitution());
+			com.setLoginMode(String.valueOf(ps.getLoginMode()));
 			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
 			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
 			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);
