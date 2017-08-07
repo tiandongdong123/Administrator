@@ -45,12 +45,12 @@ public class WebServiceUtil {
 		int msg = 0;
 		//用户
 		WFUser user = new WFUser();
+		user.setUserID(com.getUserId());
+		user.setUserRealName(com.getInstitution());
 		if(com.getLoginMode()!=null){			
 			lm = com.getLoginMode().equals("1")?"Pwd":(com.getLoginMode().equals("0")?"Ip":"PwdAndIp");
 			user.setLoginType(UserDisposeEnum.fromValue(lm));
 		}
-		user.setUserID(com.getUserId());
-		user.setUserRealName(com.getInstitution());
 		if(lm.equals("Pwd") || lm.equals("PwdAndIp")){			
 			user.setPassword(com.getPassword());
 		}

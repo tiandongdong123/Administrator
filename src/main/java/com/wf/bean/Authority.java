@@ -8,10 +8,6 @@ public class Authority {
 	
 	private String userId;
 	
-	private String institution;
-	
-	private String loginMode;
-	
 	private String authorityType;
 	
 	private String relatedIdAccountType;
@@ -32,22 +28,6 @@ public class Authority {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
-	}
-	
-	public String getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
-
-	public String getLoginMode() {
-		return loginMode;
-	}
-
-	public void setLoginMode(String loginMode) {
-		this.loginMode = loginMode;
 	}
 
 	public String getAuthorityType() {

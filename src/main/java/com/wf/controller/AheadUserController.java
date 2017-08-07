@@ -1269,7 +1269,7 @@ public class AheadUserController {
 	 *	服务权限设置跳转
 	 */
 	@RequestMapping("showAuthority")
-	public ModelAndView showAuthority(String msg,String userId,String institution) throws Exception {
+	public ModelAndView showAuthority(String msg,String userId) throws Exception {
 		ModelAndView view = new ModelAndView();
 		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
 		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
@@ -1280,7 +1280,6 @@ public class AheadUserController {
 				view.addObject("ps", ps);
 			}
 		}
-		view.addObject("institution", institution);
 		view.addObject("setting", setting);
 		view.addObject("wfks", wfks);
 		view.addObject("msg", msg);
@@ -1301,9 +1300,13 @@ public class AheadUserController {
 		int a = aheadUserService.setAddauthority(authority);
 		if(a>0){
 			map.put("flag", "success");
+			Person ps = aheadUserService.queryPersonInfo(authority.getUserId());
+			if(ps.getLoginMode().equals("")){
+				
+			}
 			CommonEntity com = new CommonEntity();
-			com.setUserId(authority.getUserId());
-			com.setInstitution(authority.getInstitution());
+			com.setUserId(ps.getUserId());
+			com.setInstitution(ps.getInstitution());
 			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
 			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
 			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);
@@ -1424,7 +1427,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	个人订单管理
+	 *	个人充值管理
 	 */
 	@RequestMapping("charge_order")
 	public ModelAndView perAward(){
@@ -1435,7 +1438,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	个人充值管理
+	 *	个人订单管理
 	 */
 	@RequestMapping("pay_order")
 	public ModelAndView order(){
@@ -1444,6 +1447,10 @@ public class AheadUserController {
 		return view;
 	}
 	
+	
+	/**
+	 *	充值管理
+	 */
 	@RequestMapping("pay")
 	public ModelAndView pay(){
 		ModelAndView view = new ModelAndView();

@@ -268,7 +268,7 @@ function btnBlack(obj,e){
 
 
 //服务权限设置弹窗
-function showAuthority(msg,userId,institution,loginMode,e){
+function showAuthority(msg,userId,e){
 	preventBubble(e);
 	var title = "";
 	if(msg=='PartyAdminTime'){
@@ -285,7 +285,7 @@ function showAuthority(msg,userId,institution,loginMode,e){
 	    area: ['750px', '520px'],
 	    title: title,
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: 'showAuthority.do?msg='+msg+'&userId='+userId+'&institution='+institution+'&loginMode='+loginMode
+	    content: 'showAuthority.do?msg='+msg+'&userId='+userId
 	}); 
 }
 
