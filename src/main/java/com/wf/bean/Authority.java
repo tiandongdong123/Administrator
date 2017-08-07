@@ -10,6 +10,8 @@ public class Authority {
 	
 	private String institution;
 	
+	private String loginMode;
+	
 	private String authorityType;
 	
 	private String relatedIdAccountType;
@@ -38,6 +40,14 @@ public class Authority {
 
 	public void setInstitution(String institution) {
 		this.institution = institution;
+	}
+
+	public String getLoginMode() {
+		return loginMode;
+	}
+
+	public void setLoginMode(String loginMode) {
+		this.loginMode = loginMode;
 	}
 
 	public String getAuthorityType() {
