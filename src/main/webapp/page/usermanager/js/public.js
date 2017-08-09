@@ -682,17 +682,17 @@ function findArea(value,index,count,num){
 //保存区域
 function saveArea(count,i){
 	var sheng=$("#sheng_"+count+"_"+i).find("option:selected").text();
-	if(sheng==null||sheng==""){
+	if(sheng==null||sheng==""||sheng=="全部"){
 		$("#gazetteersArea_"+count+"_"+i).val("");
 		return;
 	}
 	var shi=$("#shi_"+count+"_"+i).find("option:selected").text();;
-	if(shi==null||shi==""){
+	if(shi==null||shi==""||shi=="全部"){
 		$("#gazetteersArea_"+count+"_"+i).val(sheng);
 		return;
 	}
 	var xian=$("#xian_"+count+"_"+i).find("option:selected").text();;
-	if(xian==null||xian==""){
+	if(xian==null||xian==""||xian=="全部"){
 		$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi);
 		return;
 	}
