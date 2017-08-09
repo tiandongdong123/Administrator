@@ -8,6 +8,10 @@ import com.wanfangdata.model.UserAccount;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wfks.accounting.account.Account;
+import wfks.accounting.account.AccountDao;
+import wfks.accounting.setting.PayChannelModel;
+import wfks.accounting.setting.SettingPayChannels;
 import wfks.accounting.transaction.TransactionProcess;
 import wfks.accounting.transaction.TransactionRequest;
 import wfks.accounting.transaction.TransactionResponse;
@@ -15,6 +19,7 @@ import wfks.authentication.AccountId;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +32,9 @@ import java.util.Map;
 public class GroupAccountUtil {
     @Autowired
     private TransactionProcess accountingService;
+    @Autowired
+    private AccountDao accountDao;
+    
 
     /**
      * 生效时间
@@ -52,13 +60,17 @@ public class GroupAccountUtil {
      * 删除key
      */
     public static final String DELETE_KEY = "delete";
-
+    //注册购买项目
+    public static final String GROUPACCOUNT_BEHAVIOR_ADD = "修改机构购买项目(add)";
+    //修改购买项目
+    public static final String GROUPACCOUNT_BEHAVIOR_UPDATE = "修改机构购买项目(update)";
+    //删除购买项目
+    public static final String GROUPACCOUNT_BEHAVIOR_DELETE = "删除机构购买项目(delete)";
+    
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     private static ObjectMapper mapper = new ObjectMapper();
-
-
     private static Logger log = Logger.getLogger(GroupAccountUtil.class);
+    
 
     /**
      * 为机构充值准备的账号信息数据
@@ -68,7 +80,7 @@ public class GroupAccountUtil {
      * @param end       有效期结束时间
      * @return
      */
-    private static Map<String, String> createExtraData(String organName, Date begin, Date end) {
+    private Map<String, String> createExtraData(String organName, Date begin, Date end) {
         Map<String, String> extraData = new HashMap<String, String>();
         extraData.put(ORGANNAME_KEY, organName);
         //对生效时间和失效时间进行格式化"yyyy-MM-dd HH:mm:ss"
@@ -87,7 +99,7 @@ public class GroupAccountUtil {
      * @return
      * @throws IOException
      */
-    private static String createProductDetail(Long count, Date begin, Date end) throws IOException {
+    private String createProductDetail(Long count, Date begin, Date end) throws IOException {
         Map<String, Object> productDetail = new HashMap<String, Object>();
         String begin_date_time = format.format(begin);
         String end_date_time = format.format(end);
@@ -112,7 +124,7 @@ public class GroupAccountUtil {
      * @return 交易请求
      * @throws IOException
      */
-    public static TransactionRequest createTransactionRequest(UserAccount account, Long count,
+    public TransactionRequest createTransactionRequest(UserAccount account, Long count,
                                                               String userIP, String authToken, String updateKey) throws IOException {
         TransactionRequest request = new TransactionRequest();
         request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
@@ -129,7 +141,7 @@ public class GroupAccountUtil {
         request.setExtraData(extraData);
 
         request.setProductDetail(createProductDetail(count, account.getBeginDateTime(), account.getEndDateTime()));
-
+        setTransactionRequestProductTitle(request, updateKey, account.getPayChannelId(), account.getUserId());
         return request;
     }
 
@@ -224,7 +236,8 @@ public class GroupAccountUtil {
     public boolean deleteAccount(UserAccount account, String userIP, String authToken) throws Exception {
         //创建交易request
         TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY);
-        request.setTurnover(BigDecimal.ZERO);
+        BigDecimal turnover = getAccountCountOrBalance(account.getPayChannelId(), account.getUserId());
+        request.setTurnover(new BigDecimal(BigInteger.ZERO).subtract(turnover));
         return submitRequest(request, account.getPayChannelId(), DELETE_KEY);
     }
 
@@ -292,6 +305,53 @@ public class GroupAccountUtil {
                 throw new Exception("充值前账户信息与当前充值账户信息不符");
             }
         }
+    }
+    
+    public BigDecimal getAccountCountOrBalance(String payChannelId, String user_id) throws Exception {
+        try {
+            AccountId id = new AccountId(payChannelId, user_id);
+            Account account = accountDao.get(id, null);
 
+            PayChannelModel payChannel = SettingPayChannels.getPayChannel(payChannelId);
+            String payChannelType = payChannel.getType();
+
+            if (payChannelType.equals("balance")) {
+                return ((wfks.accounting.handler.entity.BalanceLimitAccount) account).getBalance();
+            } else if (payChannelType.equals("count")) {
+                long totalConsume = ((wfks.accounting.handler.entity.CountLimitAccount) account).getBalance();
+                return new BigDecimal(totalConsume);
+            } else if (payChannelType.equals("time")) {
+                return BigDecimal.ZERO;
+            }
+            return BigDecimal.ZERO;
+        } catch (Exception e) {
+            log.error("根据user_id获取机构账户失败", e);
+            throw e;
+        }
+    }
+    
+    public Account getAccount(String payChannelId, String user_id) {
+        try {
+            AccountId id = new AccountId(payChannelId, user_id);
+            Account account = accountDao.get(id, null);
+            return account;
+        } catch (Exception e) {
+            log.error("根据user_id获取机构账户失败", e);
+            throw e;
+        }
+
+    }
+    
+    public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id) {
+        Account account = getAccount(payChannelId, user_id);
+        if (UPDATE_KEY.equals(updateKey)) {
+            if (account == null) {
+                request.setProductTitle(GROUPACCOUNT_BEHAVIOR_ADD);
+            } else {
+                request.setProductTitle(GROUPACCOUNT_BEHAVIOR_UPDATE);
+            }
+        } else if (DELETE_KEY.equals(updateKey)) {
+            request.setProductTitle(GROUPACCOUNT_BEHAVIOR_DELETE);
+        }
     }
 }
