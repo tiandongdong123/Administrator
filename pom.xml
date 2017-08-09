@@ -595,12 +595,12 @@
         <dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>authentication-api</artifactId>
-			<version>1.2017.107</version>
+			<version>1.2017.211</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-api</artifactId>
-			<version>1.2017.116</version>
+			<version>1.2017.277</version>
 		</dependency>
 	 	<dependency>
 			<groupId>com.wanfangdata</groupId>
@@ -610,7 +610,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-dao-api</artifactId>
-			<version>1.2017.116</version>
+			<version>1.2017.277</version>
 		</dependency>
 		
 		<!-- POI包 -->
