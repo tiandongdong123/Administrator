@@ -1425,7 +1425,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	个人充值管理
+	 *	个人充值记录
 	 */
 	@RequestMapping("charge_order")
 	public ModelAndView perAward(){
@@ -1436,7 +1436,7 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	个人订单管理
+	 *	个人订单记录
 	 */
 	@RequestMapping("pay_order")
 	public ModelAndView order(){
@@ -1452,7 +1452,7 @@ public class AheadUserController {
 	@RequestMapping("pay")
 	public ModelAndView pay(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/charge_order");
+		view.setViewName("/page/usermanager/pay_manager");
 		return view;
 	}
 	
