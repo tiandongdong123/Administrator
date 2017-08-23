@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -444,7 +445,7 @@ public class AheadUserController {
 		dto.setValidityStarttime(beginDateTime);
 		dto.setValidityEndtime(endDateTime);
 		dto.setProjectname(projectname);
-		if(type.equals("balance")){			
+		/*if(type.equals("balance")){			
 			com.setResetMoney("true");
 			dto.setTotalMoney(0.00);
 			i = aheadUserService.chargeProjectBalance(com, dto,adminId);
@@ -454,7 +455,8 @@ public class AheadUserController {
 			i = aheadUserService.chargeCountLimitUser(com, dto,adminId);
 		}else if(type.equals("time")){
 			i = 1;
-		}
+		}*/
+		i = aheadUserService.deleteAccount(com, dto, adminId);
 		if(i > 0){
 			aheadUserService.deleteResources(com,dto,false);
 			map.put("flag", "true");
@@ -553,7 +555,8 @@ public class AheadUserController {
 			}
 		}
 		if(resinfo>0){
-			int msg = WebServiceUtil.submitOriginalDelivery(com, true);
+			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+			int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
 			System.out.println("注册接口执行结果："+com.getUserId()+"_"+msg);			
 			hashmap.put("flag", "success");
 		}else{
@@ -619,10 +622,10 @@ public class AheadUserController {
 					}
 				}
 				//预加载校验页面项目是否和Excel中一致
-				if(list.size()-1==lm.size()){
+				if(list.size()==lm.size()){
 					for(ResourceDetailedDTO dto : list){
 						if(dto.getProjectid()!=null){
-							if(map.get("projectList").toString().contains(dto.getProjectid())){
+							if(lm.toString().contains(dto.getProjectid())){
 								continue;
 							}else{							
 								hashmap.put("flag", "fail");
@@ -677,7 +680,8 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				int msg = WebServiceUtil.submitOriginalDelivery(com, true);
+				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+				int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
 				System.out.println("批量注册接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
@@ -762,23 +766,17 @@ public class AheadUserController {
 					}
 				}
 				if(list!=null){
-					if(list.size()-1==lm.size()){
-						//预加载校验页面项目是否和Excel中一致
-						for(ResourceDetailedDTO dto : list){
-							if(dto.getProjectid()!=null){
-								if(lm.toString().contains(dto.getProjectid())){
-									continue;
-								}else{							
-									hashmap.put("flag", "fail");
-									hashmap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
-									return hashmap;
-								}
+					//预加载校验页面项目是否和Excel中一致
+					for(ResourceDetailedDTO dto : list){
+						if(dto.getProjectid()!=null){
+							if(lm.toString().contains(dto.getProjectid())){
+								continue;
+							}else{							
+								hashmap.put("flag", "fail");
+								hashmap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
+								return hashmap;
 							}
 						}
-					}else{
-						hashmap.put("flag", "fail");
-						hashmap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
-						return hashmap;
 					}
 				}
 			}else{
@@ -852,7 +850,8 @@ public class AheadUserController {
 			}
 			}
 			if(resinfo>0){
-				int msg = WebServiceUtil.submitOriginalDelivery(com, false);
+				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+				int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
 				System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
@@ -1137,7 +1136,8 @@ public class AheadUserController {
 			}
 		}
 		if(resinfo>0){
-			int msg = WebServiceUtil.submitOriginalDelivery(com, false);
+			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
+			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
 			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 			hashmap.put("flag", "success");
 		}else{
@@ -1149,7 +1149,7 @@ public class AheadUserController {
 	
 	//上传附件模块
 	private void uploadFile(MultipartFile file,List<ResourceDetailedDTO> list){
-		if (file.getSize()==0) {
+		if (file == null || file.getSize()==0) {
 			return;
 		}
 		List<String> lsList = aheadUserService.getExceluser(file);
@@ -1269,10 +1269,17 @@ public class AheadUserController {
 	 *	服务权限设置跳转
 	 */
 	@RequestMapping("showAuthority")
-	public ModelAndView showAuthority(String msg,String userId,String adminname) throws Exception {
+	public ModelAndView showAuthority(String msg,String userId) throws Exception {
 		ModelAndView view = new ModelAndView();
 		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
 		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
+		if(setting!=null && msg.equals("PartyAdminTime")){			
+			Person ps = aheadUserService.queryPersonInfo(setting.getPropertyValue());
+			if(ps!=null){				
+				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
+				view.addObject("ps", ps);
+			}
+		}
 		view.addObject("setting", setting);
 		view.addObject("wfks", wfks);
 		view.addObject("msg", msg);
@@ -1288,11 +1295,20 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addauthority")
 	@ResponseBody
-	public Map<Object,String> addauthority(Authority authority){
+	public Map<Object,String> addauthority(Authority authority) throws Exception{
 		Map<Object,String> map = new HashMap<Object,String>();
 		int a = aheadUserService.setAddauthority(authority);
 		if(a>0){
 			map.put("flag", "success");
+			Person ps = aheadUserService.queryPersonInfo(authority.getUserId());
+			CommonEntity com = new CommonEntity();
+			com.setUserId(ps.getUserId());
+			com.setInstitution(ps.getInstitution());
+			com.setLoginMode(String.valueOf(ps.getLoginMode()));
+			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
+			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
+			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);
+			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
 		}else{
 			map.put("flag", "fail");
 		}
@@ -1409,23 +1425,23 @@ public class AheadUserController {
 	
 	
 	/**
-	 *	奖励记录
+	 *	个人充值记录
 	 */
-	@RequestMapping("perAward")
+	@RequestMapping("charge_order")
 	public ModelAndView perAward(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/per_award");
+		view.setViewName("/page/usermanager/charge_order");
 		return view;
 	}
 	
 	
 	/**
-	 *	订单管理
+	 *	个人订单记录
 	 */
-	@RequestMapping("order")
+	@RequestMapping("pay_order")
 	public ModelAndView order(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/order_manager");
+		view.setViewName("/page/usermanager/pay_order");
 		return view;
 	}
 	
@@ -1455,7 +1471,7 @@ public class AheadUserController {
 						op.setPerson(adminId);
 						op.setOpreation(flag=="2"?"更新":"删除");
 						if(com.getRdlist()!=null){
-							dto.setRldto(null);
+							//dto.setRldto(null);
 							op.setReason(JSONObject.fromObject(dto).toString());
 						}
 						opreationLogs.addOperationLogs(op);

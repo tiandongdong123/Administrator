@@ -58,6 +58,7 @@ public interface UserManagerServiceSoap {
     /**
      * ��ӻ����û���������Ϣ��IP�б���ԴȨ�ޣ���ɫ��Ϣ
      * 
+     * @param settings
      * @param manages
      * @param contracts
      * @param user
@@ -74,11 +75,14 @@ public interface UserManagerServiceSoap {
         @WebParam(name = "contracts", targetNamespace = "http://tempuri.org/")
         ArrayOfWFContract contracts,
         @WebParam(name = "manages", targetNamespace = "http://tempuri.org/")
-        ArrayOfAccountIdMapping manages);
+        ArrayOfAccountIdMapping manages,
+        @WebParam(name = "settings", targetNamespace = "http://tempuri.org/")
+        ArrayOfUserSetting settings);
 
     /**
      * ���»����û���������Ϣ��IP�б���ԴȨ�ޣ���ɫ��Ϣ
      * 
+     * @param settings
      * @param manages
      * @param contracts
      * @param user
@@ -95,6 +99,8 @@ public interface UserManagerServiceSoap {
         @WebParam(name = "contracts", targetNamespace = "http://tempuri.org/")
         ArrayOfWFContract contracts,
         @WebParam(name = "manages", targetNamespace = "http://tempuri.org/")
-        ArrayOfAccountIdMapping manages);
+        ArrayOfAccountIdMapping manages,
+        @WebParam(name = "settings", targetNamespace = "http://tempuri.org/")
+        ArrayOfUserSetting settings);
 
 }

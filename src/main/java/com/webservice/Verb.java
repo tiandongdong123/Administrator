@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="LessThanOrEqualTo"/>
  *     &lt;enumeration value="LargerThan"/>
  *     &lt;enumeration value="LargerThanOrEqualTo"/>
+ *     &lt;enumeration value="Not"/>
+ *     &lt;enumeration value="NotIn"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
@@ -42,7 +44,11 @@ public enum Verb {
     @XmlEnumValue("LargerThan")
     LARGER_THAN("LargerThan"),
     @XmlEnumValue("LargerThanOrEqualTo")
-    LARGER_THAN_OR_EQUAL_TO("LargerThanOrEqualTo");
+    LARGER_THAN_OR_EQUAL_TO("LargerThanOrEqualTo"),
+    @XmlEnumValue("Not")
+    NOT("Not"),
+    @XmlEnumValue("NotIn")
+    NOT_IN("NotIn");
     private final String value;
 
     Verb(String v) {

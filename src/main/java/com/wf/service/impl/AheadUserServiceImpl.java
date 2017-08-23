@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import scala.util.parsing.json.JSONFormat;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -54,6 +55,7 @@ import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
+import com.wanfangdata.model.UserAccount;
 import com.wf.bean.Authority;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
@@ -364,7 +366,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Override
 	public int deleteAccount(CommonEntity com,ResourceDetailedDTO dto,String adminId){
-		return 0;
+		int flag = 0;
+		boolean isSuccess;
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		UserAccount account = new UserAccount();
+		account.setUserId(com.getUserId());
+		account.setPayChannelId(dto.getProjectid());
+		account.setOrganName(com.getInstitution());
+		try{
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		try{
+			isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(), adminId);
+			if(isSuccess){
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
 	}
 	
 	
@@ -605,7 +630,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
     /**
      * 添加项目资源信息
-     * @return 
+     * @如后期无扩展此方法可以与updateProjectResources方法合并优化
      * */
 	@Override
 	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
@@ -634,11 +659,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 			pr.setProjectId(dto.getProjectid());
 			projectResourcesMapper.insert(pr);
 		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		if(dto.getProjectid().equals("HistoryCheck")){
+			if(dto.getRelatedIdAccountType().equals("ViewHistoryCheck")){
+				am.setMappingid(GetUuid.getId());
+				am.setIdAccounttype(dto.getProjectid());
+				am.setIdKey(com.getUserId());
+				am.setRelatedidKey(com.getUserId());
+				am.setRelatedidAccounttype(dto.getRelatedIdAccountType());
+				am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+				wfksAccountidMappingMapper.insert(am);
+			}
+		}
 	}
 
     /**
      * 更新项目资源信息
-     * @return 
+     * @如后期无扩展此方法可以与addProjectResources方法合并优化
      * */
 	@Override
 	public void updateProjectResources(CommonEntity com,ResourceDetailedDTO dto){
@@ -667,6 +704,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 			prs.setProjectId(dto.getProjectid());
 			projectResourcesMapper.insert(prs);
 		}
+		if(dto.getProjectid().equals("HistoryCheck")){
+			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(),"ViewHistoryCheck");
+			if(dto.getRelatedIdAccountType().equals("ViewHistoryCheck")){
+				WfksAccountidMapping am = new WfksAccountidMapping();
+				am.setMappingid(GetUuid.getId());
+				am.setIdAccounttype("HistoryCheck");
+				am.setIdKey(com.getUserId());
+				am.setRelatedidKey(com.getUserId());
+				am.setRelatedidAccounttype(dto.getRelatedIdAccountType());
+				am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+				wfksAccountidMappingMapper.insert(am);
+			}
+		}
 	}
 	
 	/**
@@ -681,6 +731,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			p.setProjectId(dto.getProjectid());
 		}
 		projectResourcesMapper.deleteResources(p);
+		if(dto.getProjectid().equals("HistoryCheck")){
+			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(),"ViewHistoryCheck");
+		}
 	}
 	
 	
@@ -746,26 +799,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
-		String gazetteersLevel=dto.getGazetteersLevel();
-		if(StringUtils.isNotBlank(gazetteersLevel)){
-			addStringToTerms("gazetteers_level","Equal",dto.getGazetteersLevel(),Terms,"String");
-		}
-
-		String gazetteersId=dto.getGazetteersId();
-		if(StringUtils.isNotEmpty(gazetteersId)){
-			addStringToTerms("gazetteers_id","Equal",dto.getGazetteersId(),Terms,"String");
-		}else{
-			String gazetteersAlbum=dto.getGazetteersAlbum();
-			if(StringUtils.isNotEmpty(gazetteersAlbum)){
-				addStringToTerms("gazetteers_album","Equal",dto.getGazetteersAlbum(),Terms,"String");
+		
+		String gId=dto.getGazetteersId();
+		String gArea=dto.getGazetteersArea();
+		String gAlbum=dto.getGazetteersAlbum();
+		if(StringUtils.isNotEmpty(gId)||StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)){
+			if(StringUtils.isNotEmpty(gId)){
+				addStringToTerms("gazetteers_id","Equal",gId,Terms,"String");
+			}else{
+				if(StringUtils.isNotEmpty(gAlbum)){
+					addStringToTerms("gazetteers_album","Equal",gAlbum,Terms,"String");
+				}
+				if(StringUtils.isNotEmpty(gArea)){
+					addStringToTerms("gazetteers_area","Equal",gArea,Terms,"String");
+				}
+				String gType=dto.getGazetteersType();
+				if(StringUtils.isNotEmpty(gType)){
+					addStringToTerms("gazetteers_type","Equal",gType,Terms,"String");
+				}
 			}
-			String gazetteersArea=dto.getGazetteersArea();
-			if(StringUtils.isNotEmpty(gazetteersArea)){
-				addStringToTerms("gazetteers_area","Equal",dto.getGazetteersArea(),Terms,"String");
-			}
-			String gazetteersType=dto.getGazetteersType();
-			if(StringUtils.isNotEmpty(gazetteersType)){
-				addStringToTerms("gazetteers_type","Equal",dto.getGazetteersType(),Terms,"String");
+			String gLevel=dto.getGazetteersLevel();
+			if(StringUtils.isNotBlank(gLevel)){
+				addStringToTerms("gazetteers_level","Equal",gLevel,Terms,"String");
 			}
 		}
 	
@@ -1061,7 +1116,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(map.get("ipSegment")!=null&&!map.get("ipSegment").equals("")){			
 			map.put("ipSegment", IPConvertHelper.IPToNumber(map.get("ipSegment").toString()));
 		}
-		Date d1 = new Date(); 
 		List<Object> list = personMapper.findListInfo(map);
 		for(Object object : list){
 			//将Object转换成 Map
@@ -1098,17 +1152,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(!list_.toString().contains(wfks.getPayChannelid())){
 					continue;
 				}
+				if(wfks.getPayChannelid().equals("HistoryCheck")){
+					WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
+				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 				if(pay.getType().equals("balance")){
 					wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),wfks.getUserId()), new HashMap<String,String>());
 					if(account!=null){
-						extraData.put("sourceType", "zy");
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 						extraData.put("totalConsume", account.getTotalConsume());
+						extraData.put("payChannelid", account.getPayChannelId());
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
@@ -1120,7 +1178,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
-						extraData.put("sourceType", "zy");
+						extraData.put("payChannelid", account.getPayChannelId());
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
@@ -1128,13 +1186,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}else if(pay.getType().equals("count")){
 					wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),wfks.getUserId()), new HashMap<String,String>());
 					if(account!=null){
-						extraData.put("sourceType", "zy");
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 						extraData.put("totalConsume", account.getTotalConsume());
+						extraData.put("payChannelid", account.getPayChannelId());
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
@@ -1171,8 +1229,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		System.out.println(list.toString());
 		int i = personMapper.findListCount(map);
-		Date d2 = new Date();
-		System.out.println(d2.getTime() - d1.getTime());
 		PageList pageList = new PageList();
 		pageList.setPageRow(list);
 		pageList.setTotalRow(i);
@@ -1308,18 +1364,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> libdata = new HashMap<String, Object>();//组装条件Map
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
 			SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd");
-			//根据“购买项目.用户名”获取账务信息，根据购买项目类型不同做强制类型转换,测试："GBalanceLimit","000278bccca9"
+			//判断项目ID是存在
+			List<PayChannelModel> list_ = this.purchaseProject();
+			if(!list_.toString().contains(wfks.getPayChannelid())){
+				continue;
+			}
+			//已发表论文检测项目特殊处理
+			if(wfks.getPayChannelid().equals("HistoryCheck")){
+				WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+				extraData.put("ViewHistoryCheck", mapping==null?"not":"is");
+			}
 			PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 			if(pay.getType().equals("balance")){
 				wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),wfks.getUserId()), new HashMap<String,String>());
 				if(account!=null){
-					extraData.put("sourceType", "zy");
 					extraData.put("name", pay.getName());
 					extraData.put("payChannelid", account.getPayChannelId());
 					extraData.put("type", pay.getType());
 					extraData.put("balance", account.getBalance());
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
+					extraData.put("payChannelid", account.getPayChannelId());
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1332,7 +1397,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("payChannelid", account.getPayChannelId());
 					extraData.put("name", pay.getName());
 					extraData.put("type", pay.getType());
-					extraData.put("sourceType", "zy");
+					extraData.put("payChannelid", account.getPayChannelId());
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1340,7 +1405,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}else if(pay.getType().equals("count")){
 				wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),wfks.getUserId()), new HashMap<String,String>());
 				if(account!=null){
-					extraData.put("sourceType", "zy");
 					extraData.put("name", pay.getName());
 					extraData.put("payChannelid", account.getPayChannelId());
 					extraData.put("type", pay.getType());
@@ -1348,6 +1412,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("totalConsume", account.getTotalConsume());
+					extraData.put("payChannelid", account.getPayChannelId());
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1440,6 +1505,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 				e.printStackTrace();
 			}
 			i = wfksAccountidMappingMapper.insert(am);
+			String partyadmin = authority.getPartyAdmin();
+			String password = authority.getPassword();
+			if(StringUtils.isNoneBlank(partyadmin) && StringUtils.isNoneBlank(password)){
+				personMapper.deleteUser(partyadmin);
+				Person per = new Person();
+				per.setUserId(partyadmin);
+				try {
+					per.setPassword(PasswordHelper.encryptPassword(password));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				per.setLoginMode(1);
+				per.setUsertype(4);
+				per.setIsFreeze(2);
+				per.setRegistrationTime(DateUtil.getStringDate());
+				i = personMapper.addRegisterAdmin(per);
+			}
 		}
 		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){
 			WfksUserSetting us = new WfksUserSetting();

@@ -55,7 +55,9 @@
         <div class="col-md-6">
           <div class="box box-primary">
           <form id="fromList" method="post">
-          <input type="hidden" name="relatedIdAccountType" value="${msg}"/>
+          <input type="hidden" name="institution" value="${institution!}"/>
+          <input type="hidden" name="relatedIdAccountType" value="${msg!}"/>
+          <input type="hidden" name="loginMode" value="${loginMode!}"/>
             <div class="form-group input_block">
                  <label class="input_name">机构账号:</label>
                  <input type="text" class="form-control input_width" name="userId" id="userId" readonly="readonly" value="${userId!}">
@@ -73,11 +75,11 @@
 		        </div>
                 <div class="form-group input_block">
                 	<label class="input_name">用户ID</label>
-                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${setting.propertyValue!}">
+                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${ps.userId!}">
                 </div>
                 <div class="form-group input_block">
                  	<label class="input_name">密码</label>
-                 	<input type="text" class="form-control input_width" name="password" id="password" value="">
+                 	<input type="text" class="form-control input_width" name="password" id="password" value="${ps.password!}">
                 </div>
 	        </div>
 			<div id="date" <?if(!isEmpty(wfks)&&msg!='UserLogReport'){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>

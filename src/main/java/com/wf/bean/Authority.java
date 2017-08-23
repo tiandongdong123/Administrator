@@ -1,5 +1,10 @@
 package com.wf.bean;
 
+/**
+ * @author Administrator
+ *
+ */
+
 public class Authority {
 	
 	private String userId;

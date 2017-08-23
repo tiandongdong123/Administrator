@@ -19,6 +19,8 @@ public class ResourceDetailedDTO {
 	
 	private Double totalMoney;
 	
+	private String relatedIdAccountType;;
+	
 	private Integer purchaseNumber;
 	
 	private List<ResourceLimitsDTO> rldto;
@@ -77,6 +79,14 @@ public class ResourceDetailedDTO {
 
 	public void setTotalMoney(Double totalMoney) {
 		this.totalMoney = totalMoney;
+	}
+
+	public String getRelatedIdAccountType() {
+		return relatedIdAccountType;
+	}
+
+	public void setRelatedIdAccountType(String relatedIdAccountType) {
+		this.relatedIdAccountType = relatedIdAccountType;
 	}
 
 	public Integer getPurchaseNumber() {

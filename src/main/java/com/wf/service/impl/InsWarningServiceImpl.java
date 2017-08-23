@@ -57,9 +57,9 @@ public class InsWarningServiceImpl implements InsWarningService {
 			List<Object> list = personMapper.findListIns();
 			System.out.println("返回的list结果数:"+list.size());
 			for(Object object : list) {
-				Map<String, Object> userMap = (Map<String,Object>) object;
-				String userId = userMap.get("userId").toString();
-				String userName = userMap.get("institution").toString();
+				Map<String, Object> userMap = (Map<String, Object>) object;
+				String userId = userMap.get("userId") == null ? "" : userMap.get("userId").toString();
+				String userName = userMap.get("institution") == null ? "": userMap.get("institution").toString();
 				//通过userId查询详情限定列表
 				List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 				for(WfksPayChannelResources wfks : listWfks) {
