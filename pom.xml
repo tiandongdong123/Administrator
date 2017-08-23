@@ -600,17 +600,17 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-api</artifactId>
-			<version>1.2017.277</version>
+			<version>1.2017.346</version>
 		</dependency>
 	 	<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-setting</artifactId>
-			<version>1.2017.291</version>
+			<version>1.2017.346</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-dao-api</artifactId>
-			<version>1.2017.277</version>
+			<version>1.2017.346</version>
 		</dependency>
 		
 		<!-- POI包 -->
