@@ -1445,7 +1445,6 @@ public class AheadUserController {
 		return view;
 	}
 	
-	
 	/**
 	 *	充值管理
 	 */

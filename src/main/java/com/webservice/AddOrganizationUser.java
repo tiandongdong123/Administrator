@@ -138,5 +138,4 @@ public class AddOrganizationUser {
     public void setSettings(ArrayOfUserSetting value) {
         this.settings = value;
     }
-
 }

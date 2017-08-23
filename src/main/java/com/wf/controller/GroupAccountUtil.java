@@ -34,7 +34,6 @@ public class GroupAccountUtil {
     private TransactionProcess accountingService;
     @Autowired
     private AccountDao accountDao;
-    
 
     /**
      * 生效时间

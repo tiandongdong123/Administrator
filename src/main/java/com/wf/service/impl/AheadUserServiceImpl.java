@@ -731,7 +731,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			p.setProjectId(dto.getProjectid());
 		}
 		projectResourcesMapper.deleteResources(p);
-		if(dto.getProjectid().equals("HistoryCheck")){			
+		if(dto.getProjectid().equals("HistoryCheck")){
 			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(),"ViewHistoryCheck");
 		}
 	}
