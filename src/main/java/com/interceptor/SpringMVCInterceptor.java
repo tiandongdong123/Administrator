@@ -37,6 +37,9 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 			//}
 			
 		}
+		//过滤跨站脚本和sql注入攻击
+		//HttpRequestWrapper req = XSSFilterUtils.checkXss(request);
+		XSSFilterUtils.checkXss(request);
 		return true;
 	}
 

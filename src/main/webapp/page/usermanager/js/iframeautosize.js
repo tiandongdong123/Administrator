@@ -41,7 +41,7 @@ $(function(){
     $.each($('.frameinfo'), function (n) {
         $(this).load(function () {
             var innerDoc = $(this.contentWindow.document);
-            $(this).height(innerDoc.height()).width(innerDoc.width());
+            $(this).height(innerDoc.height());
             setTimeout(setheight, 1000);
         });
     });
