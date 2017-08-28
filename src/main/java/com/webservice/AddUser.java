@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>anonymous complex type�� Java �ࡣ
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -26,36 +28,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "user"
-})
+@XmlType(name = "", propOrder = { "user" })
 @XmlRootElement(name = "AddUser")
 public class AddUser {
 
-    protected WFUser user;
+	protected WFUser user;
 
-    /**
-     * ��ȡuser���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link WFUser }
-     *     
-     */
-    public WFUser getUser() {
-        return user;
-    }
+	/**
+	 * Gets the value of the user property.
+	 * 
+	 * @return possible object is {@link WFUser }
+	 * 
+	 */
+	public WFUser getUser() {
+		return user;
+	}
 
-    /**
-     * ����user���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link WFUser }
-     *     
-     */
-    public void setUser(WFUser value) {
-        this.user = value;
-    }
+	/**
+	 * Sets the value of the user property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link WFUser }
+	 * 
+	 */
+	public void setUser(WFUser value) {
+		this.user = value;
+	}
 
 }

@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>WFContract complex type�� Java �ࡣ
+ * <p>
+ * Java class for WFContract complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="WFContract">
@@ -29,117 +31,100 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WFContract", propOrder = {
-    "transferIn",
-    "transferOut",
-    "extensionData",
-    "terms"
-})
+@XmlType(name = "WFContract", propOrder = { "transferIn", "transferOut", "extensionData", "terms" })
 public class WFContract {
 
-    @XmlElement(name = "TransferIn")
-    protected String transferIn;
-    @XmlElement(name = "TransferOut")
-    protected String transferOut;
-    @XmlElement(name = "ExtensionData")
-    protected ExtensionDataObject extensionData;
-    @XmlElement(name = "Terms")
-    protected ArrayOfContractTerm terms;
+	@XmlElement(name = "TransferIn")
+	protected String transferIn;
+	@XmlElement(name = "TransferOut")
+	protected String transferOut;
+	@XmlElement(name = "ExtensionData")
+	protected ExtensionDataObject extensionData;
+	@XmlElement(name = "Terms")
+	protected ArrayOfContractTerm terms;
 
-    /**
-     * ��ȡtransferIn���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTransferIn() {
-        return transferIn;
-    }
+	/**
+	 * Gets the value of the transferIn property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTransferIn() {
+		return transferIn;
+	}
 
-    /**
-     * ����transferIn���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTransferIn(String value) {
-        this.transferIn = value;
-    }
+	/**
+	 * Sets the value of the transferIn property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTransferIn(String value) {
+		this.transferIn = value;
+	}
 
-    /**
-     * ��ȡtransferOut���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTransferOut() {
-        return transferOut;
-    }
+	/**
+	 * Gets the value of the transferOut property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getTransferOut() {
+		return transferOut;
+	}
 
-    /**
-     * ����transferOut���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTransferOut(String value) {
-        this.transferOut = value;
-    }
+	/**
+	 * Sets the value of the transferOut property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setTransferOut(String value) {
+		this.transferOut = value;
+	}
 
-    /**
-     * ��ȡextensionData���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public ExtensionDataObject getExtensionData() {
-        return extensionData;
-    }
+	/**
+	 * Gets the value of the extensionData property.
+	 * 
+	 * @return possible object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public ExtensionDataObject getExtensionData() {
+		return extensionData;
+	}
 
-    /**
-     * ����extensionData���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public void setExtensionData(ExtensionDataObject value) {
-        this.extensionData = value;
-    }
+	/**
+	 * Sets the value of the extensionData property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public void setExtensionData(ExtensionDataObject value) {
+		this.extensionData = value;
+	}
 
-    /**
-     * ��ȡterms���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfContractTerm }
-     *     
-     */
-    public ArrayOfContractTerm getTerms() {
-        return terms;
-    }
+	/**
+	 * Gets the value of the terms property.
+	 * 
+	 * @return possible object is {@link ArrayOfContractTerm }
+	 * 
+	 */
+	public ArrayOfContractTerm getTerms() {
+		return terms;
+	}
 
-    /**
-     * ����terms���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfContractTerm }
-     *     
-     */
-    public void setTerms(ArrayOfContractTerm value) {
-        this.terms = value;
-    }
+	/**
+	 * Sets the value of the terms property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ArrayOfContractTerm }
+	 * 
+	 */
+	public void setTerms(ArrayOfContractTerm value) {
+		this.terms = value;
+	}
 
 }

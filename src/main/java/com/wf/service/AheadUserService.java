@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import wfks.accounting.setting.PayChannelModel;
 
 import com.wf.bean.Authority;
+import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -172,11 +173,19 @@ public interface AheadUserService {
 	String validateOldUser(String userName);
 
 	/** 设置服务权限 */
-	int setAddauthority(Authority authority);
+	int setAddauthority(Authority authority,Person person);
 
 	/** 查询服务权限信息 */
 	WfksAccountidMapping getAddauthority(String userId, String msg);
 
 	WfksUserSetting getUserSetting(String userId, String msg);
+
+	WfksAccountidMapping[] getAddauthorityByUserId(String userId);
+
+	WfksUserSetting[] getUserSettingByUserId(String userId);
 	
+	/**根据用户id数组查询用户信息*/
+	List<Person> queryPersonInId(List<String> userIds);
+	/**获取权限列表*/
+	List<AuthoritySetting> getAuthoritySettingList();
 }

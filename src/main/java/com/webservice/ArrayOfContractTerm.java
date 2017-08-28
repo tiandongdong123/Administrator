@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>ArrayOfContractTerm complex type�� Java �ࡣ
+ * <p>
+ * Java class for ArrayOfContractTerm complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ArrayOfContractTerm">
@@ -28,41 +30,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfContractTerm", propOrder = {
-    "contractTerm"
-})
+@XmlType(name = "ArrayOfContractTerm", propOrder = { "contractTerm" })
 public class ArrayOfContractTerm {
 
-    @XmlElement(name = "ContractTerm", nillable = true)
-    protected List<ContractTerm> contractTerm;
+	@XmlElement(name = "ContractTerm", nillable = true)
+	protected List<ContractTerm> contractTerm;
 
-    /**
-     * Gets the value of the contractTerm property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the contractTerm property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContractTerm().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ContractTerm }
-     * 
-     * 
-     */
-    public List<ContractTerm> getContractTerm() {
-        if (contractTerm == null) {
-            contractTerm = new ArrayList<ContractTerm>();
-        }
-        return this.contractTerm;
-    }
+	/**
+	 * Gets the value of the contractTerm property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the contractTerm property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getContractTerm().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link ContractTerm }
+	 * 
+	 * 
+	 */
+	public List<ContractTerm> getContractTerm() {
+		if (contractTerm == null) {
+			contractTerm = new ArrayList<ContractTerm>();
+		}
+		return this.contractTerm;
+	}
 
 }

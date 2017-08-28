@@ -4,7 +4,6 @@ package com.wf.bean;
  * @author Administrator
  *
  */
-
 public class Authority {
 	
 	private String userId;
@@ -16,6 +15,8 @@ public class Authority {
 	private String trial;
 	
 	private String partyAdmin;
+	
+	private String oldPartyAdmin;
 	
 	private String password;
 	
@@ -61,6 +62,14 @@ public class Authority {
 
 	public void setPartyAdmin(String partyAdmin) {
 		this.partyAdmin = partyAdmin;
+	}
+
+	public String getOldPartyAdmin() {
+		return oldPartyAdmin;
+	}
+
+	public void setOldPartyAdmin(String oldPartyAdmin) {
+		this.oldPartyAdmin = oldPartyAdmin;
 	}
 
 	public String getPassword() {

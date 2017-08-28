@@ -9,18 +9,18 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>
- * Java class for ArrayOfWFIPLimit complex type.
+ * Java class for ArrayOfWFUser complex type.
  * 
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfWFIPLimit">
+ * &lt;complexType name="ArrayOfWFUser">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="WFIPLimit" type="{http://tempuri.org/}WFIPLimit" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="WFUser" type="{http://tempuri.org/}WFUser" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,40 +30,39 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfWFIPLimit", propOrder = { "wfipLimit" })
-public class ArrayOfWFIPLimit {
+@XmlType(name = "ArrayOfWFUser", propOrder = { "wfUser" })
+public class ArrayOfWFUser {
 
-	@XmlElement(name = "WFIPLimit", nillable = true)
-	protected List<WFIPLimit> wfipLimit;
+	@XmlElement(name = "WFUser", nillable = true)
+	protected List<WFUser> wfUser;
 
 	/**
-	 * Gets the value of the wfipLimit property.
+	 * Gets the value of the wfUser property.
 	 * 
 	 * <p>
 	 * This accessor method returns a reference to the live list, not a
 	 * snapshot. Therefore any modification you make to the returned list will
 	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the wfipLimit property.
+	 * <CODE>set</CODE> method for the wfUser property.
 	 * 
 	 * <p>
 	 * For example, to add a new item, do as follows:
 	 * 
 	 * <pre>
-	 * getWFIPLimit().add(newItem);
+	 * getWFUser().add(newItem);
 	 * </pre>
 	 * 
 	 * 
 	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link WFIPLimit }
+	 * Objects of the following type(s) are allowed in the list {@link WFUser }
 	 * 
 	 * 
 	 */
-	public List<WFIPLimit> getWFIPLimit() {
-		if (wfipLimit == null) {
-			wfipLimit = new ArrayList<WFIPLimit>();
+	public List<WFUser> getWFUser() {
+		if (wfUser == null) {
+			wfUser = new ArrayList<WFUser>();
 		}
-		return this.wfipLimit;
+		return this.wfUser;
 	}
 
 }

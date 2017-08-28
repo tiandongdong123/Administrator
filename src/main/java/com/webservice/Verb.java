@@ -4,12 +4,15 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Verb�� Java �ࡣ
- * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
  * <p>
+ * Java class for Verb.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="Verb">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -31,41 +34,33 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum Verb {
 
-    @XmlEnumValue("Equal")
-    EQUAL("Equal"),
-    @XmlEnumValue("In")
-    IN("In"),
-    @XmlEnumValue("WithIn")
-    WITH_IN("WithIn"),
-    @XmlEnumValue("LessThan")
-    LESS_THAN("LessThan"),
-    @XmlEnumValue("LessThanOrEqualTo")
-    LESS_THAN_OR_EQUAL_TO("LessThanOrEqualTo"),
-    @XmlEnumValue("LargerThan")
-    LARGER_THAN("LargerThan"),
-    @XmlEnumValue("LargerThanOrEqualTo")
-    LARGER_THAN_OR_EQUAL_TO("LargerThanOrEqualTo"),
-    @XmlEnumValue("Not")
-    NOT("Not"),
-    @XmlEnumValue("NotIn")
-    NOT_IN("NotIn");
-    private final String value;
+	@XmlEnumValue("Equal")
+	EQUAL("Equal"), @XmlEnumValue("In")
+	IN("In"), @XmlEnumValue("WithIn")
+	WITH_IN("WithIn"), @XmlEnumValue("LessThan")
+	LESS_THAN("LessThan"), @XmlEnumValue("LessThanOrEqualTo")
+	LESS_THAN_OR_EQUAL_TO("LessThanOrEqualTo"), @XmlEnumValue("LargerThan")
+	LARGER_THAN("LargerThan"), @XmlEnumValue("LargerThanOrEqualTo")
+	LARGER_THAN_OR_EQUAL_TO("LargerThanOrEqualTo"), @XmlEnumValue("Not")
+	NOT("Not"), @XmlEnumValue("NotIn")
+	NOT_IN("NotIn");
+	private final String value;
 
-    Verb(String v) {
-        value = v;
-    }
+	Verb(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static Verb fromValue(String v) {
-        for (Verb c: Verb.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static Verb fromValue(String v) {
+		for (Verb c : Verb.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

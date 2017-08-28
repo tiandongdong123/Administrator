@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>ArrayOfWFContract complex type�� Java �ࡣ
+ * <p>
+ * Java class for ArrayOfWFContract complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ArrayOfWFContract">
@@ -28,41 +30,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfWFContract", propOrder = {
-    "wfContract"
-})
+@XmlType(name = "ArrayOfWFContract", propOrder = { "wfContract" })
 public class ArrayOfWFContract {
 
-    @XmlElement(name = "WFContract", nillable = true)
-    protected List<WFContract> wfContract;
+	@XmlElement(name = "WFContract", nillable = true)
+	protected List<WFContract> wfContract;
 
-    /**
-     * Gets the value of the wfContract property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the wfContract property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getWFContract().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link WFContract }
-     * 
-     * 
-     */
-    public List<WFContract> getWFContract() {
-        if (wfContract == null) {
-            wfContract = new ArrayList<WFContract>();
-        }
-        return this.wfContract;
-    }
+	/**
+	 * Gets the value of the wfContract property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the wfContract property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getWFContract().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link WFContract }
+	 * 
+	 * 
+	 */
+	public List<WFContract> getWFContract() {
+		if (wfContract == null) {
+			wfContract = new ArrayList<WFContract>();
+		}
+		return this.wfContract;
+	}
 
 }

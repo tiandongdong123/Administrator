@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>AccountId complex type�� Java �ࡣ
+ * <p>
+ * Java class for AccountId complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="AccountId">
@@ -27,63 +29,54 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AccountId", propOrder = {
-    "accountType",
-    "key"
-})
+@XmlType(name = "AccountId", propOrder = { "accountType", "key" })
 public class AccountId {
 
-    @XmlElement(name = "AccountType")
-    protected String accountType;
-    @XmlElement(name = "Key")
-    protected String key;
+	@XmlElement(name = "AccountType")
+	protected String accountType;
+	@XmlElement(name = "Key")
+	protected String key;
 
-    /**
-     * ��ȡaccountType���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAccountType() {
-        return accountType;
-    }
+	/**
+	 * Gets the value of the accountType property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getAccountType() {
+		return accountType;
+	}
 
-    /**
-     * ����accountType���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAccountType(String value) {
-        this.accountType = value;
-    }
+	/**
+	 * Sets the value of the accountType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setAccountType(String value) {
+		this.accountType = value;
+	}
 
-    /**
-     * ��ȡkey���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getKey() {
-        return key;
-    }
+	/**
+	 * Gets the value of the key property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getKey() {
+		return key;
+	}
 
-    /**
-     * ����key���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setKey(String value) {
-        this.key = value;
-    }
+	/**
+	 * Sets the value of the key property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setKey(String value) {
+		this.key = value;
+	}
 
 }

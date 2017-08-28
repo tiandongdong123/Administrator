@@ -6,11 +6,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>anonymous complex type�� Java �ࡣ
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -27,29 +29,27 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "addOrganizationUserResult"
-})
+@XmlType(name = "", propOrder = { "addOrganizationUserResult" })
 @XmlRootElement(name = "AddOrganizationUserResponse")
 public class AddOrganizationUserResponse {
 
-    @XmlElement(name = "AddOrganizationUserResult")
-    protected int addOrganizationUserResult;
+	@XmlElement(name = "AddOrganizationUserResult")
+	protected int addOrganizationUserResult;
 
-    /**
-     * ��ȡaddOrganizationUserResult���Ե�ֵ��
-     * 
-     */
-    public int getAddOrganizationUserResult() {
-        return addOrganizationUserResult;
-    }
+	/**
+	 * Gets the value of the addOrganizationUserResult property.
+	 * 
+	 */
+	public int getAddOrganizationUserResult() {
+		return addOrganizationUserResult;
+	}
 
-    /**
-     * ����addOrganizationUserResult���Ե�ֵ��
-     * 
-     */
-    public void setAddOrganizationUserResult(int value) {
-        this.addOrganizationUserResult = value;
-    }
+	/**
+	 * Sets the value of the addOrganizationUserResult property.
+	 * 
+	 */
+	public void setAddOrganizationUserResult(int value) {
+		this.addOrganizationUserResult = value;
+	}
 
 }

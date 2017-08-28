@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>WFIPLimit complex type�� Java �ࡣ
+ * <p>
+ * Java class for WFIPLimit complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="WFIPLimit">
@@ -30,136 +32,119 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WFIPLimit", propOrder = {
-    "extensionData",
-    "beginIPAddress",
-    "endIPAddress",
-    "id",
-    "userID"
-})
+@XmlType(name = "WFIPLimit", propOrder = { "extensionData", "beginIPAddress", "endIPAddress", "id",
+		"userID" })
 public class WFIPLimit {
 
-    @XmlElement(name = "ExtensionData")
-    protected ExtensionDataObject extensionData;
-    @XmlElement(name = "BeginIPAddress")
-    protected String beginIPAddress;
-    @XmlElement(name = "EndIPAddress")
-    protected String endIPAddress;
-    @XmlElement(name = "ID")
-    protected long id;
-    @XmlElement(name = "UserID")
-    protected String userID;
+	@XmlElement(name = "ExtensionData")
+	protected ExtensionDataObject extensionData;
+	@XmlElement(name = "BeginIPAddress")
+	protected String beginIPAddress;
+	@XmlElement(name = "EndIPAddress")
+	protected String endIPAddress;
+	@XmlElement(name = "ID")
+	protected long id;
+	@XmlElement(name = "UserID")
+	protected String userID;
 
-    /**
-     * ��ȡextensionData���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public ExtensionDataObject getExtensionData() {
-        return extensionData;
-    }
+	/**
+	 * Gets the value of the extensionData property.
+	 * 
+	 * @return possible object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public ExtensionDataObject getExtensionData() {
+		return extensionData;
+	}
 
-    /**
-     * ����extensionData���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public void setExtensionData(ExtensionDataObject value) {
-        this.extensionData = value;
-    }
+	/**
+	 * Sets the value of the extensionData property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public void setExtensionData(ExtensionDataObject value) {
+		this.extensionData = value;
+	}
 
-    /**
-     * ��ȡbeginIPAddress���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBeginIPAddress() {
-        return beginIPAddress;
-    }
+	/**
+	 * Gets the value of the beginIPAddress property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getBeginIPAddress() {
+		return beginIPAddress;
+	}
 
-    /**
-     * ����beginIPAddress���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBeginIPAddress(String value) {
-        this.beginIPAddress = value;
-    }
+	/**
+	 * Sets the value of the beginIPAddress property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setBeginIPAddress(String value) {
+		this.beginIPAddress = value;
+	}
 
-    /**
-     * ��ȡendIPAddress���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEndIPAddress() {
-        return endIPAddress;
-    }
+	/**
+	 * Gets the value of the endIPAddress property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getEndIPAddress() {
+		return endIPAddress;
+	}
 
-    /**
-     * ����endIPAddress���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEndIPAddress(String value) {
-        this.endIPAddress = value;
-    }
+	/**
+	 * Sets the value of the endIPAddress property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setEndIPAddress(String value) {
+		this.endIPAddress = value;
+	}
 
-    /**
-     * ��ȡid���Ե�ֵ��
-     * 
-     */
-    public long getID() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 */
+	public long getID() {
+		return id;
+	}
 
-    /**
-     * ����id���Ե�ֵ��
-     * 
-     */
-    public void setID(long value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 */
+	public void setID(long value) {
+		this.id = value;
+	}
 
-    /**
-     * ��ȡuserID���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserID() {
-        return userID;
-    }
+	/**
+	 * Gets the value of the userID property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserID() {
+		return userID;
+	}
 
-    /**
-     * ����userID���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserID(String value) {
-        this.userID = value;
-    }
+	/**
+	 * Sets the value of the userID property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserID(String value) {
+		this.userID = value;
+	}
 
 }

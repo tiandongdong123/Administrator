@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>ArrayOfUserSetting complex type�� Java �ࡣ
+ * <p>
+ * Java class for ArrayOfUserSetting complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="ArrayOfUserSetting">
@@ -28,41 +30,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfUserSetting", propOrder = {
-    "userSetting"
-})
+@XmlType(name = "ArrayOfUserSetting", propOrder = { "userSetting" })
 public class ArrayOfUserSetting {
 
-    @XmlElement(name = "UserSetting", nillable = true)
-    protected List<UserSetting> userSetting;
+	@XmlElement(name = "UserSetting", nillable = true)
+	protected List<UserSetting> userSetting;
 
-    /**
-     * Gets the value of the userSetting property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the userSetting property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getUserSetting().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link UserSetting }
-     * 
-     * 
-     */
-    public List<UserSetting> getUserSetting() {
-        if (userSetting == null) {
-            userSetting = new ArrayList<UserSetting>();
-        }
-        return this.userSetting;
-    }
+	/**
+	 * Gets the value of the userSetting property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a
+	 * snapshot. Therefore any modification you make to the returned list will
+	 * be present inside the JAXB object. This is why there is not a
+	 * <CODE>set</CODE> method for the userSetting property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getUserSetting().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link UserSetting }
+	 * 
+	 * 
+	 */
+	public List<UserSetting> getUserSetting() {
+		if (userSetting == null) {
+			userSetting = new ArrayList<UserSetting>();
+		}
+		return this.userSetting;
+	}
 
 }

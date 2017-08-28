@@ -2,6 +2,7 @@ package com.webservice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -18,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://tempuri.org/}WFUser" minOccurs="0"/>
+ *         &lt;element name="EditAccountIdMappingResult" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,31 +29,27 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "user" })
-@XmlRootElement(name = "EditUser")
-public class EditUser {
+@XmlType(name = "", propOrder = { "editAccountIdMappingResult" })
+@XmlRootElement(name = "EditAccountIdMappingResponse")
+public class EditAccountIdMappingResponse {
 
-	protected WFUser user;
+	@XmlElement(name = "EditAccountIdMappingResult")
+	protected int editAccountIdMappingResult;
 
 	/**
-	 * Gets the value of the user property.
-	 * 
-	 * @return possible object is {@link WFUser }
+	 * Gets the value of the editAccountIdMappingResult property.
 	 * 
 	 */
-	public WFUser getUser() {
-		return user;
+	public int getEditAccountIdMappingResult() {
+		return editAccountIdMappingResult;
 	}
 
 	/**
-	 * Sets the value of the user property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link WFUser }
+	 * Sets the value of the editAccountIdMappingResult property.
 	 * 
 	 */
-	public void setUser(WFUser value) {
-		this.user = value;
+	public void setEditAccountIdMappingResult(int value) {
+		this.editAccountIdMappingResult = value;
 	}
 
 }

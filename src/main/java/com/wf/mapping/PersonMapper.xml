@@ -217,8 +217,8 @@
   
   <!-- 机构管理员账号注册 -->
   <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
-	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode)
-     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode})
+	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend)
+     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend})
   </insert>
   
   <delete id="deleteUser" parameterType="java.lang.String">
@@ -356,6 +356,14 @@
   
   <select id="countUser" resultType="java.lang.Integer">
   	select count(1) from user
+  </select>
+  
+	<!-- 通过多个主键ID查询用户信息 -->
+  <select id="queryPersonInId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select user_id,user_realname,`password`,is_freeze,login_mode,userType,extend from user where user_id in
+   		<foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">  
+            #{userId}   
+    	</foreach>
   </select>
   
 </mapper>

@@ -14,14 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import scala.util.parsing.json.JSONFormat;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -34,7 +32,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.fusesource.hawtbuf.Buffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +54,7 @@ import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
 import com.wf.bean.Authority;
+import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -73,6 +71,7 @@ import com.wf.bean.WfksUserSetting;
 import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
+import com.wf.dao.AuthoritySettingMapper;
 import com.wf.dao.DatamanagerMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ProjectBalanceMapper;
@@ -128,6 +127,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Autowired
 	private WfksUserSettingMapper wfksUserSettingMapper;
 	
+	@Autowired
+	private AuthoritySettingMapper authoritySettingMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -667,6 +668,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				am.setIdKey(com.getUserId());
 				am.setRelatedidKey(com.getUserId());
 				am.setRelatedidAccounttype(dto.getRelatedIdAccountType());
+				am.setBegintime(DateUtil.stringToDate1(dto.getValidityStarttime()));
+				am.setEndtime(DateUtil.stringToDate1(dto.getValidityEndtime()));
 				am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 				wfksAccountidMappingMapper.insert(am);
 			}
@@ -713,6 +716,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				am.setIdKey(com.getUserId());
 				am.setRelatedidKey(com.getUserId());
 				am.setRelatedidAccounttype(dto.getRelatedIdAccountType());
+				am.setBegintime(DateUtil.stringToDate1(dto.getValidityStarttime()));
+				am.setEndtime(DateUtil.stringToDate1(dto.getValidityEndtime()));
 				am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 				wfksAccountidMappingMapper.insert(am);
 			}
@@ -1474,6 +1479,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public WfksAccountidMapping getAddauthority(String userId,String msg){
 		return wfksAccountidMappingMapper.selectByUserId(userId,msg);
 	}
+
+	@Override
+	public WfksAccountidMapping[] getAddauthorityByUserId(String userId) {
+		return wfksAccountidMappingMapper.selectAllByUserId(userId);
+	}
 	
 	@Override
 	public WfksUserSetting getUserSetting(String userId,String msg){
@@ -1483,21 +1493,48 @@ public class AheadUserServiceImpl implements AheadUserService{
 		key.setPropertyName(msg);
 		return wfksUserSettingMapper.selectByPrimaryKey(key);
 	}
+
+	@Override
+	public WfksUserSetting[] getUserSettingByUserId(String userId) {
+		WfksUserSettingKey key = new WfksUserSettingKey();
+		key.setUserType("Group");
+		key.setUserId(userId);
+		return wfksUserSettingMapper.selectByUserId(key);
+	}
 	
 	@Override
-	public int setAddauthority(Authority authority){
-		int i = 0;
+	public int setAddauthority(Authority authority,Person person){
 		String type = authority.getRelatedIdAccountType();
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		i = wfksAccountidMappingMapper.deleteByUserId(authority.getUserId(),type);
-		if(authority.getAuthorityType().equals("is") && !type.equals("UserLogReport")){
+		String userId=authority.getUserId();
+		String partyAdmin=authority.getPartyAdmin();
+		String password = authority.getPassword();
+		String authorityType=authority.getAuthorityType();
+		
+		int i = 0;
+		WfksAccountidMapping mapping=wfksAccountidMappingMapper.selectByUserId(userId, type);
+		if(mapping!=null){
+			if (person != null) {
+				if (!StringUtils.equals(person.getUserId(), mapping.getRelatedidKey())) {
+					return -1; // 修改的用户id已存在user表
+				}
+			}
+			personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
+		}else{
+			if (person != null) {
+				return -1; //新建的用户id已存在user表
+			}
+		}
+		
+		i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
+		if("is".equals(authorityType) && !type.equals("UserLogReport")){
 			WfksAccountidMapping am = new WfksAccountidMapping();
 			am.setMappingid(GetUuid.getId());
 			am.setIdAccounttype("Group");
-			am.setIdKey(authority.getUserId());
+			am.setIdKey(userId);
 			am.setRelatedidAccounttype(type);
-			//am.setRelatedidKey(authority.getUserId());
+			am.setRelatedidKey(partyAdmin);
 			try{
+				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 				am.setBegintime(sd.parse(authority.getBegintime()));
 				am.setEndtime(sd.parse(authority.getEndtime()));
 				am.setLastUpdatetime(sd.parse(sd.format(new Date())));
@@ -1505,35 +1542,52 @@ public class AheadUserServiceImpl implements AheadUserService{
 				e.printStackTrace();
 			}
 			i = wfksAccountidMappingMapper.insert(am);
-			String partyadmin = authority.getPartyAdmin();
-			String password = authority.getPassword();
-			if(StringUtils.isNoneBlank(partyadmin) && StringUtils.isNoneBlank(password)){
-				personMapper.deleteUser(partyadmin);
+			if(StringUtils.isNoneBlank(partyAdmin) && StringUtils.isNoneBlank(password)){
 				Person per = new Person();
-				per.setUserId(partyadmin);
+				per.setUserId(partyAdmin);
 				try {
 					per.setPassword(PasswordHelper.encryptPassword(password));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				per.setLoginMode(1);
-				per.setUsertype(4);
-				per.setIsFreeze(2);
+				per.setLoginMode(1);	//密码登录
+				per.setUsertype(4);	//服务权限用户
+				per.setIsFreeze(2);	//解冻
 				per.setRegistrationTime(DateUtil.getStringDate());
+				JSONObject json = new JSONObject();
+				json.put("RelatedGroupId", userId);
+				if("isTrial".equals(authority.getTrial())){//是否试用
+					json.put("IsTrialPartyAdminTime", true);
+				}else{
+					json.put("IsTrialPartyAdminTime", false);
+				}
+				per.setExtend(json.toString());
 				i = personMapper.addRegisterAdmin(per);
 			}
 		}
 		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){
 			WfksUserSetting us = new WfksUserSetting();
-			us.setUserId(authority.getUserId());
+			us.setUserId(userId);
 			us.setUserType("Group");
 			us.setPropertyName(type);
-			us.setPropertyValue(type.equals("UserLogReport")?"Authorization":authority.getPartyAdmin());
+			us.setPropertyValue(type.equals("UserLogReport")?"Authorization":partyAdmin);
 			i = wfksUserSettingMapper.deleteByUserId(us);
-			if(authority.getAuthorityType().equals("is")){				
+			if("is".equals(authorityType)){
 				i = wfksUserSettingMapper.insert(us);
 			}
 		}
 		return i;
+	}
+
+
+	@Override
+	public List<Person> queryPersonInId(List<String> userIds) {
+		return personMapper.queryPersonInId(userIds);
+	}
+
+
+	@Override
+	public List<AuthoritySetting> getAuthoritySettingList() {
+		return authoritySettingMapper.getAuthoritySettingList();
 	}
 }

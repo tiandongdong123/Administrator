@@ -13,7 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,8 +32,12 @@ import com.redis.RedisUtil;
 import com.utils.DateUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
+import com.webservice.ArrayOfWFUser;
+import com.webservice.UserDisposeEnum;
+import com.webservice.WFUser;
 import com.webservice.WebServiceUtil;
 import com.wf.bean.Authority;
+import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
@@ -555,9 +558,11 @@ public class AheadUserController {
 			}
 		}
 		if(resinfo>0){
-			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
-			int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
-			System.out.println("注册接口执行结果："+com.getUserId()+"_"+msg);			
+			String msg = WebServiceUtil.submitOriginalDelivery(com, true);
+			System.out.println("注册接口执行结果："+com.getUserId()+"_"+msg);
+			//同步已发表论文检测权限
+			msg=this.getAhthorityWebService(com.getUserId());
+			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
@@ -680,9 +685,11 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
-				int msg = WebServiceUtil.submitOriginalDelivery(com, true, wfks, null);
+				String msg = WebServiceUtil.submitOriginalDelivery(com, true);
 				System.out.println("批量注册接口执行结果："+com.getUserId()+"_"+msg);
+				//同步已发表论文检测权限
+				msg=this.getAhthorityWebService(com.getUserId());
+				System.out.println("批量更新权限接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
 		}
@@ -850,9 +857,11 @@ public class AheadUserController {
 			}
 			}
 			if(resinfo>0){
-				WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
-				int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
+				String msg = WebServiceUtil.submitOriginalDelivery(com, false);
 				System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
+				//同步已发表论文检测权限
+				msg=this.getAhthorityWebService(com.getUserId());
+				System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
 		}
@@ -1040,8 +1049,11 @@ public class AheadUserController {
 			map.put("ipSegment", ipSegment);
 		}
 		map.put("pageList", pageList);
+		//获取权限列表
+		List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
+		view.addObject("settingList",settingList);
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
@@ -1080,6 +1092,27 @@ public class AheadUserController {
 	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpSession session,HttpServletRequest req,HttpServletResponse res) throws Exception{
 		String adminId = this.checkLogin(req,res);
 		Map<String,String> hashmap = new HashMap<String, String>();
+		List<ResourceDetailedDTO> list = com.getRdlist();
+		for(ResourceDetailedDTO dto : list){
+			if(dto.getProjectid()!=null){
+				if(StringUtils.isBlank(dto.getValidityEndtime())){
+					hashmap.put("flag", "fail");
+					return hashmap;
+				}else{
+					if(dto.getProjectType().equals("balance")){
+						if(dto.getTotalMoney()==null){
+							hashmap.put("flag", "fail");
+							return hashmap;
+						}
+					}else if(dto.getProjectType().equals("count")){
+						if(dto.getPurchaseNumber()==null){
+							hashmap.put("flag", "fail");
+							return hashmap;
+						}
+					}
+				}
+			}
+		}
 		//更新条件Map
 		Map<String, Object> map = new HashMap<String, Object>();
 		int resinfo = 0;	
@@ -1110,7 +1143,6 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getChecks())){			
 			aheadUserService.updateAccountRestriction(com);		
 		}
-		List<ResourceDetailedDTO> list = com.getRdlist();
 		//上传附件
 		this.uploadFile(file,list);
 		for(ResourceDetailedDTO dto : list){
@@ -1136,9 +1168,11 @@ public class AheadUserController {
 			}
 		}
 		if(resinfo>0){
-			WfksAccountidMapping wfks = aheadUserService.getAddauthority(com.getUserId(),"ViewHistoryCheck");
-			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, null);
+			String msg = WebServiceUtil.submitOriginalDelivery(com, false);
 			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
+			//同步已发表论文检测权限
+			msg=this.getAhthorityWebService(com.getUserId());
+			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
@@ -1297,24 +1331,76 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<Object,String> addauthority(Authority authority) throws Exception{
 		Map<Object,String> map = new HashMap<Object,String>();
-		int a = aheadUserService.setAddauthority(authority);
-		if(a>0){
+		String partyId=authority.getPartyAdmin();
+		String oldPartyId=authority.getOldPartyAdmin();
+		Person person=null;
+		if(!StringUtils.isEmpty(partyId)){
+			person=aheadUserService.queryPersonInfo(partyId);
+			if (person != null && 4!=person.getUsertype()) {
+				map.put("flag", "fail");
+				map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
+			}
+		}
+		if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
+			String msg = aheadUserService.validateOldUser(partyId);
+			if("false".equals(msg)){
+				map.put("flag", "fail");
+				map.put("msg","旧平台存在该用户ID");
+				return map;
+			}
+		}
+		int result = aheadUserService.setAddauthority(authority,person);
+		if(result>0){
 			map.put("flag", "success");
-			Person ps = aheadUserService.queryPersonInfo(authority.getUserId());
-			CommonEntity com = new CommonEntity();
-			com.setUserId(ps.getUserId());
-			com.setInstitution(ps.getInstitution());
-			com.setLoginMode(String.valueOf(ps.getLoginMode()));
-			WfksAccountidMapping wfks = aheadUserService.getAddauthority(authority.getUserId(),authority.getRelatedIdAccountType());
-			WfksUserSetting setting =  aheadUserService.getUserSetting(authority.getUserId(), authority.getRelatedIdAccountType());
-			int msg = WebServiceUtil.submitOriginalDelivery(com, false, wfks, setting);
-			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
+			String msg = this.getAhthorityWebService(authority.getUserId());
+			System.out.println("更新接口执行结果："+authority.getUserId()+"_"+msg);
 		}else{
 			map.put("flag", "fail");
+			if(result==-1){//已存在其它类型的用户
+				map.put("msg", "该用户ID已被使用");
+			}
 		}
 		return map;
 	}
 	
+	/**
+	 * 权限webservice接口调用
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	private String getAhthorityWebService(String userId) throws Exception{
+		WfksUserSetting[] setting =  aheadUserService.getUserSettingByUserId(userId);
+		WfksAccountidMapping[] wfks = aheadUserService.getAddauthorityByUserId(userId);
+		List<String> userIds=new ArrayList<String>();
+		if(wfks!=null){
+			for(WfksAccountidMapping mapping:wfks){
+				String id=mapping.getRelatedidKey();
+				if(!StringUtils.isEmpty(id)){
+					userIds.add(id);
+				}
+			}
+		}
+		
+		ArrayOfWFUser wfuser=new ArrayOfWFUser();
+		if(userIds.size()>0){
+			List<Person> plist=aheadUserService.queryPersonInId(userIds);
+			if(plist!=null){
+				for(Person p:plist){
+					WFUser user=new WFUser();
+					if(p.getUserId().equals(userId)){
+						continue;
+					}
+					user.setUserID(p.getUserId());
+					user.setPassword(PasswordHelper.decryptPassword(p.getPassword()));
+					user.setLoginType(UserDisposeEnum.fromValue("Pwd"));
+					user.setComment(p.getExtend());
+					wfuser.getWFUser().add(user);
+				}
+			}
+		}
+		return WebServiceUtil.submitService(wfks, setting,wfuser,userId);
+	}
 	
 	
 	@RequestMapping("perManagers")
@@ -1445,6 +1531,7 @@ public class AheadUserController {
 		return view;
 	}
 	
+	
 	/**
 	 *	充值管理
 	 */
@@ -1471,7 +1558,6 @@ public class AheadUserController {
 						op.setPerson(adminId);
 						op.setOpreation(flag=="2"?"更新":"删除");
 						if(com.getRdlist()!=null){
-							//dto.setRldto(null);
 							op.setReason(JSONObject.fromObject(dto).toString());
 						}
 						opreationLogs.addOperationLogs(op);
