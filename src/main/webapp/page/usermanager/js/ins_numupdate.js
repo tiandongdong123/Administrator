@@ -110,41 +110,29 @@ function findSubjectEcho(num){
 					},
 					callback: {
 						onCheck: function(){
-							var text1 = new Array();
 							var pz = $.fn.zTree.getZTreeObj("perioZtree_"+data.number);
 							if(pz!=null){
-								var notes1 = pz.getCheckedNodes(true);
-								for(var i = 0;i<notes1.length;i++){
-									text1.push(notes1[i].value);
-								}
-								$("#journalClc_"+data.number).val(text1.length>0?"["+text1+"]":"");
+								var text = new Array();
+								text=getCheckNode(pz);
+								$("#journalClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text2 = new Array();
 							var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+data.number);
 							if(dz!=null){
-								var notes2 = dz.getCheckedNodes(true);
-								for(var i = 0;i<notes2.length;i++){
-									text2.push(notes2[i].value);
-								}
-								$("#degreeClc_"+data.number).val(text2.length>0?"["+text2+"]":"");
+								var text = new Array();
+								text=getCheckNode(dz);
+								$("#degreeClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text3 = new Array();
 							var cz = $.fn.zTree.getZTreeObj("confZtree_"+data.number);
 							if(cz!=null){
-								var notes3 = cz.getCheckedNodes(true);
-								for(var i = 0;i<notes3.length;i++){
-									text3.push(notes3[i].value);
-								}
-								$("#conferenceClc_"+data.number).val(text3.length>0?"["+text3+"]":"");
+								var text = new Array();
+								text=getCheckNode(cz);
+								$("#conferenceClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text4 = new Array();
 							var bz = $.fn.zTree.getZTreeObj("bookZtree_"+data.number);
 							if(bz!=null){
-								var notes4 = bz.getCheckedNodes(true);
-								for(var i = 0;i<notes4.length;i++){
-									text4.push(notes4[i].value);
-								}
-								$("#booksClc_"+data.number).val(text4.length>0?"["+text4+"]":"");
+								var text = new Array();
+								text=getCheckNode(bz);
+								$("#booksClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
 						}
 					}
@@ -236,12 +224,10 @@ function findPatentEcho(num){
 					},
 					callback: {
 						onCheck: function(){
-							var text = new Array();
-							var checknotes = $.fn.zTree.getZTreeObj("patentZtree_"+data.number).getCheckedNodes(true);
-							if(checknotes!=""){		
-								for(var i = 0;i<checknotes.length;i++){
-									text.push(checknotes[i].value);
-								}
+							var pa=$.fn.zTree.getZTreeObj("patentZtree_"+data.number);
+							if(pa!=null){
+								var text = new Array();
+								text=getCheckNode(pa);
 								$("#patentIpc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}else{
 								$("#patentIpc_"+data.number).val("");

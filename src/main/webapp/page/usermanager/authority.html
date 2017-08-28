@@ -14,6 +14,7 @@
 <script type="text/javascript">
 
 	function addOrUpateAuthority(){
+		$("#submit").attr("disabled","disabled"); 
 		var data = new FormData($('#fromList')[0]);
 	    $.ajax({  
 	        url: '../auser/addauthority.do',  
@@ -26,8 +27,13 @@
 	    	if(data.flag=="success"){
 	    		layer.msg("设置成功",{icon: 1});
 	    	}else{
-	    		layer.msg("设置失败",{icon: 2});
+	    		if(data.msg!=""){
+	    			layer.msg(data.msg,{icon: 2});
+	    		}else{
+	    			layer.msg("设置失败",{icon: 2});
+	    		}
 	    	}
+	    	$("#submit").removeAttr("disabled");
 	    	setTimeout(function(){ 
 		    	parent.layer.closeAll();
 	        }, 1000);
@@ -41,7 +47,7 @@
 			if(msg=='PartyAdminTime'){
 				$("#info").show();
 				$("#date").show();
-			}else if(msg=='NBSPRCTime' || msg=='GEOTimeLimit'){
+			}else if(msg!='UserLogReport'){
 				$("#date").show();
 			}
 		}else{
@@ -76,6 +82,7 @@
                 <div class="form-group input_block">
                 	<label class="input_name">用户ID</label>
                 	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${ps.userId!}">
+                	<input type="hidden" name="oldPartyAdmin" id="oldPartyAdmin" value="${ps.userId!}">
                 </div>
                 <div class="form-group input_block">
                  	<label class="input_name">密码</label>
