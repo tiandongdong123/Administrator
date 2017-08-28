@@ -12,15 +12,22 @@
 	<description>The project of accounting demo</description>
 
  	<repositories>
-		<repository>
-			<id>WF-repository</id>
-			<url>http://10.10.185.210:8081/nexus/content/groups/public</url>
-		</repository>
-		<repository>
-			<id>ninemax-repository</id>
-			<url>http://10.10.184.100:8081/nexus/content/groups/public</url>
-		</repository>
+        <repository>
+            <id>WF-repository</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
+        </repository>
 	</repositories>
+	<!-- 上传至nexus服务器 -->
+    <distributionManagement>
+        <repository>
+            <id>local_nexus_releases</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>local_nexus_snapshots</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 	<properties>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -118,12 +125,6 @@
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<!-- <exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions> -->
 		</dependency> 
 		<!-- 文辑推优 -->
 		<dependency>
@@ -136,19 +137,11 @@
 			<artifactId>xmemcached</artifactId>
 			<version>${xmemcached_version}</version>
 		</dependency>
-	<!-- 	<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version>
-		</dependency> -->
-
-
 		<!-- alibaba jar 依赖 start -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>dubbo</artifactId>
 			<version>2.8.4</version>
-			<!-- <scope>system</scope> <systemPath>${basedir}/../lib/dubbo-2.8.4.jar</systemPath> -->
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -160,7 +153,6 @@
 			<artifactId>citrus-webx-all</artifactId>
 			<version>${webx_version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>hessian-lite</artifactId>
@@ -173,7 +165,6 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${commons-lang3.version}</version>
 		</dependency>
-
 		<!-- log start -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -759,26 +750,29 @@
 		
 	</dependencies>
 	<build>
-	           <resources>
-	             <resource>
-			  	    <directory>src/main/java</directory>
-			  	    <includes>
-			  	        <include>**/*.properties</include>  
-			                <include>**/*.xml</include>  
-			  	    </includes>
-			  	    <filtering>false</filtering>
-			  	</resource>
-  				<resource>  
-		            <directory>src/main/resources</directory>  
-		            <includes>  
-		                <include>**/*.properties</include>  
-		                <include>**/*.xml</include>  
-		            </includes>  
-		            <filtering>false</filtering>  
-		        </resource> 
-		        </resources>	
+	
+	<resources>
+		<resource>
+			<directory>src/main/java</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+		<resource>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+	</resources>
+	
     <finalName>wf-framework-adminManager-web</finalName>
 	<directory>../workspace/output/wf-framework-adminManager-web</directory>
+	
   	<pluginManagement>
 	<plugins>  
       <plugin>  
