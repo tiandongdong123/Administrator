@@ -2,24 +2,7 @@
 <projectDescription>
 	<name>wf-framework-adminManager-web</name>
 	<comment></comment>
-	<projects>
-		<project>wf-framework-web-UIAS-API</project>
-		<project>wf-framework-store-neo4j-v2</project>
-		<project>wf-framework-common-api</project>
-		<project>wf-framework-public-externally</project>
-		<project>wf-framework-search-api</project>
-	</projects>
 	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-			<triggers>full,incremental,</triggers>
-			<arguments>
-				<dictionary>
-					<key>LaunchConfigHandle</key>
-					<value>&lt;project&gt;/.externalToolBuilders/org.eclipse.wst.jsdt.core.javascriptValidator.launch</value>
-				</dictionary>
-			</arguments>
-		</buildCommand>
 		<buildCommand>
 			<name>com.genuitec.eclipse.j2eedt.core.WebClasspathBuilder</name>
 			<arguments>
