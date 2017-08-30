@@ -81,49 +81,44 @@ function serachdata(data){
 	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
 	"<td class='mailbox-star'>序号</td>" +
 	"<td class=\"mailbox-name\">栏目</td>"+
-    "<td class=\"mailbox-attachment\">标题</td>"+
+    "<td class=\"mailbox-attachment\" style='width:40%'>标题</td>"+
     "<td class=\"mailbox-name\">原文链接</td>"+
     "<td class=\"mailbox-name\">添加人</td>"+
     "<td class=\"mailbox-date\">添加日期</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
-	for(var i = 0;i<pageRow.length;i++){
-		var index = 1+i;
-		var rows = pageRow[i];
-		var issue = rows.issueState;
-		var issueNum = 1;
-		if(issue == 1){
-			issue = "发布";
-			issueNum = 2;
-		}if(issue == 2){
-			issue = "下撤";
-			issueNum = 3;
-		}if(issue == 3){
-			issue = "再发布";
-			issueNum = 2;
-		}
-		resHtml+=" <tr style='text-align: center;'>" +
-				"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
-				"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
-				//if(issue == "下撤"){
-					resHtml+="<td><div style='text-align: left;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
-				/*}else{
-					resHtml+="<td><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis; title='"+rows.title+"'>"+rows.title+"</div></td>";
-				}*/
-				resHtml+="<td class='mailbox-name'><div style='width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
-                "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-                "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
-				"<td class='mailbox-name' style='width:300px;'>";
-				if(rows.colums=='基金会议'){
-					resHtml+="<div class='col-md-3'><button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>置顶</button></div>&nbsp;";
-				}
-					resHtml+="<div class='col-md-3'><button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button></div>" +
-					"<div class='col-md-3'><button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:60px;'>修改</button></div></td>" +
-//					"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"removee('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"+
-	          "</tr>";
+		for(var i = 0;i<pageRow.length;i++){
+			var index = 1+i;
+			var rows = pageRow[i];
+			var issue = rows.issueState;
+			var issueNum = 1;
+			if(issue == 1){
+				issue = "发布";
+				issueNum = 2;
+			}if(issue == 2){
+				issue = "下撤";
+				issueNum = 3;
+			}if(issue == 3){
+				issue = "再发布";
+				issueNum = 2;
 			}
+			resHtml+=" <tr style='text-align: center;'>" +
+			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
+			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
+			resHtml+="<td class='mailbox-name'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
+            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
+			"<td class='mailbox-name' style='width:300px;'>";
+			if(rows.colums=='基金会议'){
+				resHtml+="<div class='col-md-3'><button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>置顶</button></div>&nbsp;";
+			}
+			resHtml+="<div class='col-md-3'><button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button></div>" +
+			"<div class='col-md-3'><button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:60px;'>修改</button></div></td>" +
+          "</tr>";
+		}
 	}
 	resHtml+="</tbody>";
 	$(".table-striped").html(resHtml);

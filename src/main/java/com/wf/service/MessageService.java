@@ -1,7 +1,5 @@
 package com.wf.service;
 
-import javax.servlet.http.HttpSession;
-
 import com.wf.bean.Message;
 import com.wf.bean.PageList;
 public interface MessageService {
@@ -20,7 +18,7 @@ public interface MessageService {
 	 * @param message
 	 * @return
 	 */
-	Boolean insertMessage(Message message,HttpSession session);
+	Boolean insertMessage(Message message);
 	/**
 	 * 删除资讯
 	 * @param ids 删除的ID集合

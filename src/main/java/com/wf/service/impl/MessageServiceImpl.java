@@ -6,9 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -66,22 +63,8 @@ public class MessageServiceImpl implements MessageService {
 		return message;
 	}
 	@Override
-	public Boolean insertMessage(Message message,HttpSession session) {
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
-		message.setHuman(admin.getUser_realname());
-		message.setBranch(admin.getDept().getDeptName());
-		message.setIssueState(1);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		message.setCreateTime(sdf.format(new Date()));
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		message.setStick(sdf1.format(new Date()));
-		//boolean bol =dao.findMessageParam(message.getTitle())==null?true:false;
-		boolean n=false;
-		//if(bol==true){
-			n=dao.insertMessage(message)>0?true:false;
-		//}
-		//boolean b=bol && n;
-		return n;
+	public Boolean insertMessage(Message message) {
+		return dao.insertMessage(message)>0?true:false;
 	}
 	
 	@Override
