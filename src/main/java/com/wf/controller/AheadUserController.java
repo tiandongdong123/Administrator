@@ -74,6 +74,8 @@ public class AheadUserController {
 	@Autowired
 	private OpreationLogsService opreationLogs;
 	
+	private RedisUtil redis = new RedisUtil();
+	
 	/**
 	 *	判断ip段是否重复
 	 */
@@ -186,8 +188,14 @@ public class AheadUserController {
 	@RequestMapping("setfreeze")
 	@ResponseBody
 	public String setFreeze(String aid,String flag){
-		int uuf = aheadUserService.updateUserFreeze(aid,flag);
-		if(uuf>0){
+		int uuf = aheadUserService.updateUserFreeze(aid, flag);
+		if (uuf > 0) {
+			if ("1".equals(flag)) { //冻结
+				redis.set(aid, "true", 12);
+				redis.expire(aid, 3600 * 24, 12); //设置超时时间
+			} else if ("2".equals(flag)) { //解冻
+				redis.del(12, aid);
+			}
 			return "true";
 		}
 		return "false";
@@ -260,7 +268,6 @@ public class AheadUserController {
 	@RequestMapping("findpatent")
 	@ResponseBody
 	public Map<String,Object> findPatent(String num){
-		RedisUtil redis = new RedisUtil();
 		String str = redis.get("PatentIPC",0);
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
@@ -287,7 +294,6 @@ public class AheadUserController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		String gazetter = "";
-		RedisUtil redis = new RedisUtil();
 		if ("0".equals(pid)) {
 			gazetter = redis.get("gazetteerTypeDIC", 13);// 专辑分类
 			map.put("arrayGazetter", JSONArray.fromObject(gazetter));
@@ -335,7 +341,6 @@ public class AheadUserController {
 			pid = "0";
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
-		RedisUtil redis = new RedisUtil();
 		JSONArray arrayArea = new JSONArray();
 		String area = redis.get("Region", 13);// 省级区域
 		JSONArray region = JSONArray.fromObject(area);
@@ -355,7 +360,6 @@ public class AheadUserController {
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
-		RedisUtil redis = new RedisUtil();
 		String str = redis.get("CLCDic",0);
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
@@ -934,6 +938,12 @@ public class AheadUserController {
 			if(person!=null){				
 				int i = aheadUserService.updateUserFreeze(str,radio);
 				if(i>0){
+					if ("1".equals(radio)) { //冻结
+						redis.set(str, "true", 12);
+						redis.expire(str, 3600 * 24, 12); //设置超时时间
+					} else if ("2".equals(radio)) { //解冻
+						redis.del(12, str);
+					}
 					in+=1;
 				}
 			}else{

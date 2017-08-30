@@ -152,6 +152,29 @@ public class RedisUtil {
 	}
 	
 	/**
+	 * 设置key的有效时间(可选择db)
+	 * @param key
+	 * @param second
+	 * @param num
+	 * @return 成功返回value 失败返回null
+	 */
+	public Long expire(String key, int second,int num){
+		Jedis jedis = null;
+		Long value = null;
+		try {
+			jedis = pool.getResource();
+			jedis.select(num);
+			value = jedis.expire(key,second);
+		} catch (Exception e) {
+			pool.returnBrokenResource(jedis);
+			e.printStackTrace();
+		} finally {
+			returnResource(pool, jedis);
+		}
+		return value;
+	}
+	
+	/**
 	 * <p>向redis存入key和value,并释放连接资源</p>
 	 * <p>如果key已经存在 则覆盖</p>
 	 * @param key
@@ -205,6 +228,26 @@ public class RedisUtil {
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
+			return jedis.del(keys);
+		} catch (Exception e) {
+			pool.returnBrokenResource(jedis);
+			e.printStackTrace();
+			return 0L;
+		} finally {
+			returnResource(pool, jedis);
+		}
+	}
+	
+	/**
+	 * <p>删除指定db的key,也可以传入一个包含key的数组</p>
+	 * @param keys 一个key  也可以使 string 数组
+	 * @return 返回删除成功的个数 
+	 */
+	public Long del(int num,String...keys){
+		Jedis jedis = null;
+		try {
+			jedis = pool.getResource();
+			jedis.select(num);
 			return jedis.del(keys);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
