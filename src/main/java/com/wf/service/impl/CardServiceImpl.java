@@ -120,7 +120,6 @@ public class CardServiceImpl implements CardService{
 	 */
 	@Override
 	public boolean updateInvokeState(String id,String invokeState) {
-		//TODO 从session中获取用户名和激活ip
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("id", id);
 		map.put("invokeState", 2);
