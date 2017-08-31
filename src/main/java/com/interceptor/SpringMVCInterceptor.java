@@ -28,14 +28,7 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 		String url = request.getRequestURI();
 		if (url.endsWith(".do")){
 			String menu_url = url.split("/")[url.split("/").length - 1];
-			//String[] menu_urlAttay = menu_url.split("-");
-			//if (menu_urlAttay.length > 2) {
-				//request.getSession().setAttribute("menu_first", menu_urlAttay[0]);
-				//request.getSession().setAttribute("menu_second", menu_url);
-			//} else {
-				request.getSession().setAttribute("menu_first", menu_url);
-			//}
-			
+			request.getSession().setAttribute("menu_first", menu_url);
 		}
 		//过滤跨站脚本和sql注入攻击
 		//HttpRequestWrapper req = XSSFilterUtils.checkXss(request);
@@ -59,7 +52,6 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -72,7 +64,6 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
