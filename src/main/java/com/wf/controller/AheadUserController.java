@@ -1317,13 +1317,21 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
 		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
+		String trial="notTrial";
 		if(setting!=null && msg.equals("PartyAdminTime")){			
 			Person ps = aheadUserService.queryPersonInfo(setting.getPropertyValue());
 			if(ps!=null){				
 				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 				view.addObject("ps", ps);
+				String jsonStr = ps.getExtend();
+				JSONObject json = JSONObject.fromObject(jsonStr);
+				boolean flag = (boolean) json.get("IsTrialPartyAdminTime");
+				if (flag) {
+					trial = "isTrial";
+				}
 			}
 		}
+		view.addObject("trial",trial);
 		view.addObject("setting", setting);
 		view.addObject("wfks", wfks);
 		view.addObject("msg", msg);
