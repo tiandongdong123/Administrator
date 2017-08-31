@@ -41,10 +41,6 @@ public class UserInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {  
 		HttpSession session = req.getSession(true);
         Object obj = session.getAttribute("wfAdmin");
-        String url =req.getRequestURI();
-        String menu_url=url.split("/")[url.split("/").length - 1];
-        Object urls=session.getAttribute("urls");
-
         //检查cookie
 		String castgc = null;
 		Cookie[] cookies = req.getCookies();
