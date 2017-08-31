@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.servlet.http.HttpSession;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -182,8 +180,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 	 * 修改审核状态
 	 */
 	@Override
-	public boolean updateCheckState(HttpSession session,String batchId) {
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public boolean updateCheckState(Wfadmin admin,String batchId) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("batchId", batchId);
 		map.put("checkDepartment", "运维部门");

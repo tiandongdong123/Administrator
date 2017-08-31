@@ -3,8 +3,6 @@ package com.wf.service;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import com.wf.bean.PageList;
 
 public interface CardService {
@@ -56,5 +54,5 @@ public interface CardService {
 	 * @param id
 	 * @return
 	 */
-	boolean updateInvokeState(HttpSession session,String id,String invokeState);
+	boolean updateInvokeState(String id,String invokeState);
 }
