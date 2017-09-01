@@ -9,7 +9,6 @@ import com.wf.bean.Volume;
 public interface VolumeService {
 	/**
 	 * 添加文辑
-	 * @param session
 	 * @param volume
 	 * @param volumeState  文辑内容
 	 * @return

@@ -4,12 +4,15 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>UserDisposeEnum�� Java �ࡣ
- * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
  * <p>
+ * Java class for UserDisposeEnum.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="UserDisposeEnum">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -25,29 +28,27 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum UserDisposeEnum {
 
-    @XmlEnumValue("Pwd")
-    PWD("Pwd"),
-    @XmlEnumValue("Ip")
-    IP("Ip"),
-    @XmlEnumValue("PwdAndIp")
-    PWD_AND_IP("PwdAndIp");
-    private final String value;
+	@XmlEnumValue("Pwd")
+	PWD("Pwd"), @XmlEnumValue("Ip")
+	IP("Ip"), @XmlEnumValue("PwdAndIp")
+	PWD_AND_IP("PwdAndIp");
+	private final String value;
 
-    UserDisposeEnum(String v) {
-        value = v;
-    }
+	UserDisposeEnum(String v) {
+		value = v;
+	}
 
-    public String value() {
-        return value;
-    }
+	public String value() {
+		return value;
+	}
 
-    public static UserDisposeEnum fromValue(String v) {
-        for (UserDisposeEnum c: UserDisposeEnum.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
+	public static UserDisposeEnum fromValue(String v) {
+		for (UserDisposeEnum c : UserDisposeEnum.values()) {
+			if (c.value.equals(v)) {
+				return c;
+			}
+		}
+		throw new IllegalArgumentException(v);
+	}
 
 }

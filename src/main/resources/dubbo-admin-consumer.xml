@@ -4,18 +4,19 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 	<!-- 正式服务开启 -->
+	<!-- 正式服务开启 -->
 	<dubbo:application name="adminmanager" />
 	<!-- <dubbo:registry address="zookeeper://10.10.184.100:2190" check="false" /> -->
 	<dubbo:registry address="zookeeper://10.10.184.180:2181?backup=10.10.184.181:2181,10.10.184.182:2181" group="wfks_develop" check="false"/>
 	
 	<dubbo:registry address="zookeeper://10.10.184.100:2187?backup=10.10.184.100:2188,10.10.184.100:2189" check="false"/>
 	<!-- 	高级检索/专业检索 -->
-    <dubbo:reference id="searchAllResult" interface="org.bigdata.framework.search.iservice.ISearchCoreResultService"/>
+    <dubbo:reference id="searchAllResult" interface="org.bigdata.framework.search.iservice.ISearchCoreResultService" check="false"/>
     <!-- 文辑推优 -->
-    <dubbo:reference id="iVolume" interface="org.bigdata.framework.common.api.volume.IVolumeService"/>
-	<dubbo:reference protocol="dubbo" check="false" id="accountingService" interface="wfks.accounting.transaction.TransactionProcess" />
+    <dubbo:reference id="iVolume" interface="org.bigdata.framework.common.api.volume.IVolumeService"  check="false"/>
+	<dubbo:reference protocol="dubbo" id="accountingService" interface="wfks.accounting.transaction.TransactionProcess" check="false"/>
 	
-	<dubbo:reference id="accountDaoService"  protocol="dubbo" check="false" interface="wfks.accounting.account.AccountDao" />
+	<dubbo:reference id="accountDaoService"  protocol="dubbo" interface="wfks.accounting.account.AccountDao" check="false"/>
 
 	<bean id="setting" class="wfks.accounting.WebAccountingSetting">
 		<constructor-arg name="transactionPublicKey"

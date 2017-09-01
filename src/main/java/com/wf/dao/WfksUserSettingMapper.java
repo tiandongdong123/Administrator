@@ -12,6 +12,8 @@ public interface WfksUserSettingMapper {
 
     WfksUserSetting selectByPrimaryKey(WfksUserSettingKey key);
 
+    WfksUserSetting[] selectByUserId(WfksUserSettingKey key);
+
     int updateByPrimaryKeySelective(WfksUserSetting record);
 
     int updateByPrimaryKeyWithBLOBs(WfksUserSetting record);

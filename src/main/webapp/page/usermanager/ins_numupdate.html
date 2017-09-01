@@ -59,7 +59,7 @@
               <label class="input_name">购买项目</label>
               <select class="form-control input_width" id="resourcePurchaseType" name="resourcePurchaseType" onchange="selectProject(this,'1','checked');">
 				<option value="1">-添加项目-</option>
-				<?for(pro in project){?>					
+				<?for(pro in project){?>
 				<option proid="${pro.productDetail}" type="${pro.resourceType}" value="${pro.type}" id="${pro.id}">${pro.name}</option>
 				<?}?>
               </select>
@@ -157,8 +157,8 @@
             			<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
             		</div>
             	<?}?>
-            	<?if(pro.payChannelid=='HistoryCheck'){?>              	
-            		<div class="time_input time_money">
+            	<?if(pro.payChannelid=='HistoryCheck'){?>
+            		<p><div class="time_input time_money"><span><b>*</b>查看交易信息</span> 
             			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='is'){?>checked="checked"<?}?> type="radio" value="ViewHistoryCheck"/>可以
             			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='not'){?>checked="checked"<?}?> type="radio" value="not"/>不可以
             		</div>
@@ -172,12 +172,12 @@
    	</div>
     <ul class="checkbox_list">
      <? var j = 0; for(var m=0;m<pro.plList.~size;m++){ var data = pro.plList[m]; var da = data.productSourceCode; var rt = data.resType;?>
-       	<li><input type="checkbox" class="rdlist[${i}].tableName" name="rdlist[${i}].rldto[${j}].resourceid" value="${da}" <?if(!isEmpty(data.checked)){?>checked="checked"<?}?>>
+       	<li><input type="checkbox" onclick="checkRes(${i},${j})" id="resourceid_${i}_${j}" class="rdlist[${i}].tableName" name="rdlist[${i}].rldto[${j}].resourceid" value="${da}" <?if(!isEmpty(data.checked)){?>checked="checked"<?}?>>
 		<? if(!isEmpty(data.rp)){ ?>
        	<i onclick="showProduct(this,1)" class="icon_minus"></i>
 		<ul style="display: none;" class="checkbox_list subset_list">
 		 	<? for(pd in data.rp){ ?>   	
-				<li><input type="checkbox" <?if(!isEmpty(data.product_id)&&strutil.contain(data.product_id,pd.rid)){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
+				<li><input type="checkbox" class="rdlist[${i}].tableName" <?if(!isEmpty(data.product_id)&&strutil.contain(data.product_id,pd.rid)){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
 		 	<?}?>
 		</ul>
 		<?}?>
@@ -264,7 +264,7 @@
 		              <?if(strutil.contain(rt,"local chronicles")){?><li><a href="#localchronicles_${i}_${j}" data-toggle="tab">地方志限定</a></li><?}?>
 		            </ul>
 			         <div class="tab-content">
-			           <?if(strutil.contain(rt,"perio")){?>	    
+			           <?if(strutil.contain(rt,"perio")){?>
 				          <!-- 期刊 -->
 			              <div class="tab-pane" id="perio_${i}_${j}">
 			              		<!-- 中图分类隐藏域 -->
@@ -279,7 +279,7 @@
 		               	   	<div class="time_block">
 		               	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
 		               	   		<option value="">-请选择-</option>
-		               	   		<? for(sh in timelimit.startHtml){ ?>		               	   			
+		               	   		<? for(sh in timelimit.startHtml){ ?>
 									<?if(!isEmpty(journal_time.Value) && (journal_time.Verb=="LargerThanOrEqualTo" || journal_time.Verb=="WithIn")){?>
 				               	   		<option <?if(journal_time.Value[0]==sh){?>selected="selected"<?}?> value="${sh}">${sh}</option>
 					          		<?}else{?>
@@ -290,7 +290,7 @@
 		                		年——
 		                		<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}">
 		                		<option value="">-请选择-</option>
-		                		<? for(eh in timelimit.endYearHtml){ ?>		                			
+		                		<? for(eh in timelimit.endYearHtml){ ?>
 									<?if(!isEmpty(journal_time.Value) && journal_time.Verb=="LessThanOrEqualTo"){?>
 				                		<option <?if(journal_time.Value[0]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
 					          		<?}else if(!isEmpty(journal_time.Value) && journal_time.Verb=="WithIn"){?>
@@ -322,7 +322,7 @@
                 	   	 <div class="time_block">
 	               	   		<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}">
 	               	   		<option value="">-请选择-</option>
-	               	   		<?for(sh in timelimit.startHtml){?>	               	   			
+	               	   		<?for(sh in timelimit.startHtml){?>
 								<?if(!isEmpty(degree_time.Value) && (degree_time.Verb=="LargerThanOrEqualTo" || degree_time.Verb=="WithIn")){?>
 			               	   		<option <?if(degree_time.Value[0]==sh){?>selected="selected"<?}?> value="${sh}">${sh}</option>
 				          		<?}else{?>
@@ -333,7 +333,7 @@
                  		 	年——
                  		 	<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}">
 	               	   		<option value="">-请选择-</option>
-	               	   		<?for(eh in timelimit.endYearHtml){?>		               	   			
+	               	   		<?for(eh in timelimit.endYearHtml){?>
 								<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LessThanOrEqualTo"){?>
 			               	   		<option <?if(degree_time.Value[0]==eh){?>selected="selected"<?}?> value="${eh}">${eh}</option>
 				          		<?}else if(!isEmpty(degree_time.Value) && degree_time.Verb=="WithIn"){?>
@@ -347,7 +347,7 @@
                  		 </div>
 			          </div>
 			        <?}?>
-			        <?if(strutil.contain(rt,"conf")){?>			        
+			        <?if(strutil.contain(rt,"conf")){?>
 			         <!--  会议 -->
 		             <div class="tab-pane" id="conf_${i}_${j}">
 		             <label>中图分类法</label>
@@ -359,7 +359,7 @@
                 	   	  </div>
 		             </div>
 			        <?}?>
-			        <?if(strutil.contain(rt,"local chronicles")){?>			        
+			        <?if(strutil.contain(rt,"local chronicles")){?>
 					<!-- 地方志 -->
 					<div class="tab-pane" id="localchronicles_${i}_${j}">
 						<div style="height:400px;border:1px solid #C6C6C6;">
@@ -667,11 +667,12 @@
 <? j++; }?>
 </ul>
 	</div>
-  <?}?>		        
+  <?}?>
 </div>
 <? i++;}} ?>
 <!-- 详情 -->
 </div>
+<div id="detail_0"></div>
 </form>
 <input type="hidden" id="count" value="${i}">
        <div class="box-footer block_left">

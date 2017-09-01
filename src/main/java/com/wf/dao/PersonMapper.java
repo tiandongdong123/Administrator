@@ -101,4 +101,11 @@ public interface PersonMapper {
 	 */
 	Integer countUser();
 	
+	/**
+	 * 根据用户id集合查询用户信息
+	 * @param userIds
+	 * @return
+	 */
+    List<Person> queryPersonInId(@Param("userIds")List<String> userIds);
+	
 }

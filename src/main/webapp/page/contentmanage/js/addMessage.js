@@ -25,24 +25,27 @@ function reset(){
 }
 
 function uploadImage(statu){
-        var options = {
-        	url:"../content/uploadImg.do",
-        	dataType: 'json',
-            type : 'POST',
-            success : function(data) {
-            	$("#fileDiv").text("上传成功！");
-            	var imageURL=data.url;
-            	imageURL=imageURL.replace("\/","\\");
-            	$("#imageUrl").val(imageURL);
-            	$("#filetext").attr("src",imageURL);
-            	imageShow(statu);
-            },
-            error: function(XmlHttpRequest, textStatus, errorThrown){  
-               layer.msg("照片上传失败！请检查是否添加照片！或照片是否符合规格！"); 
-            }
-        };
-        $('#addGoodsForm').ajaxSubmit(options);
-        return false;
+	if(!checkImgType()){
+		return false;
+	}
+    var options = {
+    	url:"../content/uploadImg.do",
+    	dataType: 'json',
+        type : 'POST',
+        success : function(data) {
+        	$("#fileDiv").text("上传成功！");
+        	var imageURL=data.url;
+        	imageURL=imageURL.replace("\/","\\");
+        	$("#imageUrl").val(imageURL);
+        	$("#filetext").attr("src",imageURL);
+        	imageShow(statu);
+        },
+        error: function(XmlHttpRequest, textStatus, errorThrown){
+           layer.msg("照片上传失败！请检查是否添加照片！或照片是否符合规格！");
+        }
+    };
+    $('#addGoodsForm').ajaxSubmit(options);
+    return false;
 }
 
 function resetfile(statu){
@@ -88,6 +91,10 @@ function addMessage(){
 	var title=$("#title").val();
 	var abstracts=document.getElementById("abstracts").value;
 	var content= ues.getContent();
+	if(content.length>16000){
+		layer.msg("最大允许输入16000字符",{icon: 2});
+		return false;
+	}
 	var imageUrl=$("#imageUrl").val();
 	var linkAddress=$("#linkAddress").val();
 	var author=$("#author").val();
@@ -140,6 +147,10 @@ function updateMessage(){
 	var title=$("#title").val();
 	var abstracts=document.getElementById("abstracts").value;
 	var content= ues.getContent();
+	if(content.length>16000){
+		layer.msg("最大允许输入16000字符",{icon: 2});
+		return false;
+	}
 	var imageUrl=$("#imageUrl").val();
 	var linkAddress=$("#linkAddress").val();
 	var author=$("#author").val();
@@ -238,32 +249,20 @@ function IsURL(str_url){
  *          type="file"的javascript对象 
  * @return true-符合要求,false-不符合 
  */ 
-function checkImgType(ths){  
-	ths=$("#ths").val();
-    if (ths.value == "") {
+function checkImgType(){
+	var file=$("#uploadFile").val();
+    if (file == "" || file == null) {
     	layer.msg("请上传图片!",{icon: 2});
-        return false;  
-    } else {  
-        if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(ths.value)) {
+        return false;
+    } else {
+        if (!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file)) {
         	layer.msg("图片类型必须是.gif,jpeg,jpg,png中的一种!",{icon: 2});
-            ths.value = "";  
-            return false;  
-        }else{
-        	var img=new Image(); 
-        	img.src=filepath;   
-        	while(true){ 
-        		if(img.fileSize>0){ 
-                if(img.fileSize>10*1024){
-                layer.msg("图片不大于10M!",{icon: 2});
-                    return false; 
-                }
-                break; 
-        		}
-        	}
+        	$("#uploadFile").val("");
+            return false;
         }
-    }  
-    return true;  
-}  
+    }
+    return true;
+}
  
 /* 
  * 判断图片大小 
@@ -276,21 +275,19 @@ function checkImgType(ths){
  *          需要符合的高 
  * @return true-符合要求,false-不符合 
  */ 
-function checkImgPX(ths, width, height) {  
-    var img = null;  
-    img = document.createElement("img");  
-    document.body.insertAdjacentElement("beforeEnd", img); // firefox不行  
-    img.style.visibility = "hidden";   
-    img.src = ths.value;  
-    var imgwidth = img.offsetWidth;  
-    var imgheight = img.offsetHeight;  
-       
-    
-       
-    if(imgwidth != width || imgheight != height) { 
-        alert("图的尺寸应该是" + width + "x"+ height);  
-        ths.value = "";  
-        return false;  
-    }  
-    return true;  
-} 
+
+function checkImgPX(ths, width, height) {
+	var img = null;
+	img = document.createElement("img");
+	document.body.insertAdjacentElement("beforeEnd", img); // firefox不行
+	img.style.visibility = "hidden";
+	img.src = ths.value;
+	var imgwidth = img.offsetWidth;
+	var imgheight = img.offsetHeight;
+	if (imgwidth != width || imgheight != height) {
+		alert("图的尺寸应该是" + width + "x" + height);
+		ths.value = "";
+		return false;
+	}
+	return true;
+}

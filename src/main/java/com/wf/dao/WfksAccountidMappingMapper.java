@@ -13,7 +13,11 @@ public interface WfksAccountidMappingMapper {
 
     WfksAccountidMapping selectByUserId(@Param("idKey")String idKey, @Param("relatedidAccounttype")String msg);
 
+    WfksAccountidMapping[] selectAllByUserId(@Param("idKey")String idKey);
+
     int updateByPrimaryKeySelective(WfksAccountidMapping record);
 
     int updateByPrimaryKey(WfksAccountidMapping record);
+    
+    WfksAccountidMapping[] selectByRelateIdKey(@Param("relatedidKey")String relatedidKey);
 }

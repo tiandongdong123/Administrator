@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>UserSetting complex type�� Java �ࡣ
+ * <p>
+ * Java class for UserSetting complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="UserSetting">
@@ -29,117 +31,100 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UserSetting", propOrder = {
-    "userType",
-    "userId",
-    "propertyName",
-    "propertyValue"
-})
+@XmlType(name = "UserSetting", propOrder = { "userType", "userId", "propertyName", "propertyValue" })
 public class UserSetting {
 
-    @XmlElement(name = "UserType")
-    protected String userType;
-    @XmlElement(name = "UserId")
-    protected String userId;
-    @XmlElement(name = "PropertyName")
-    protected String propertyName;
-    @XmlElement(name = "PropertyValue")
-    protected String propertyValue;
+	@XmlElement(name = "UserType")
+	protected String userType;
+	@XmlElement(name = "UserId")
+	protected String userId;
+	@XmlElement(name = "PropertyName")
+	protected String propertyName;
+	@XmlElement(name = "PropertyValue")
+	protected String propertyValue;
 
-    /**
-     * ��ȡuserType���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserType() {
-        return userType;
-    }
+	/**
+	 * Gets the value of the userType property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserType() {
+		return userType;
+	}
 
-    /**
-     * ����userType���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserType(String value) {
-        this.userType = value;
-    }
+	/**
+	 * Sets the value of the userType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserType(String value) {
+		this.userType = value;
+	}
 
-    /**
-     * ��ȡuserId���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserId() {
-        return userId;
-    }
+	/**
+	 * Gets the value of the userId property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserId() {
+		return userId;
+	}
 
-    /**
-     * ����userId���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserId(String value) {
-        this.userId = value;
-    }
+	/**
+	 * Sets the value of the userId property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserId(String value) {
+		this.userId = value;
+	}
 
-    /**
-     * ��ȡpropertyName���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPropertyName() {
-        return propertyName;
-    }
+	/**
+	 * Gets the value of the propertyName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPropertyName() {
+		return propertyName;
+	}
 
-    /**
-     * ����propertyName���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPropertyName(String value) {
-        this.propertyName = value;
-    }
+	/**
+	 * Sets the value of the propertyName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPropertyName(String value) {
+		this.propertyName = value;
+	}
 
-    /**
-     * ��ȡpropertyValue���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPropertyValue() {
-        return propertyValue;
-    }
+	/**
+	 * Gets the value of the propertyValue property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPropertyValue() {
+		return propertyValue;
+	}
 
-    /**
-     * ����propertyValue���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPropertyValue(String value) {
-        this.propertyValue = value;
-    }
+	/**
+	 * Sets the value of the propertyValue property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPropertyValue(String value) {
+		this.propertyValue = value;
+	}
 
 }

@@ -70,7 +70,7 @@
   </select>
   	<!-- 根据类型查询 -->
   	<select id="selectBycolums" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select * from message where colums=#{colums} and issue_state=2 ORDER BY create_time ASC 
+    select * from message where colums=#{colums} and issue_state=2 ORDER BY stick desc 
   </select>
   	<delete id="deleteMessage" parameterType="java.lang.String">
            delete from message where 
@@ -101,6 +101,6 @@
    		update message SET stick=#{stick} where id=#{id}
    </update>
    <update id="updateIssue" parameterType="java.util.Map">
-   		update message SET issue_state=#{issueState} where id=#{id}
+   		update message SET issue_state=#{issueState},stick=#{stick} where id=#{id}
    </update>
 </mapper>

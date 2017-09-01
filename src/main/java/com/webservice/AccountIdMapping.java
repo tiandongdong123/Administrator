@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * <p>AccountIdMapping complex type�� Java �ࡣ
+ * <p>
+ * Java class for AccountIdMapping complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="AccountIdMapping">
@@ -32,146 +34,126 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AccountIdMapping", propOrder = {
-    "mappingId",
-    "id",
-    "relatedId",
-    "beginTime",
-    "endTime"
-})
+@XmlType(name = "AccountIdMapping", propOrder = { "mappingId", "id", "relatedId", "beginTime",
+		"endTime" })
 public class AccountIdMapping {
 
-    @XmlElement(name = "MappingId", required = true)
-    protected String mappingId;
-    @XmlElement(name = "Id")
-    protected AccountId id;
-    @XmlElement(name = "RelatedId")
-    protected AccountId relatedId;
-    @XmlElement(name = "BeginTime", required = true, nillable = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar beginTime;
-    @XmlElement(name = "EndTime", required = true, nillable = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar endTime;
+	@XmlElement(name = "MappingId", required = true)
+	protected String mappingId;
+	@XmlElement(name = "Id")
+	protected AccountId id;
+	@XmlElement(name = "RelatedId")
+	protected AccountId relatedId;
+	@XmlElement(name = "BeginTime", required = true, nillable = true)
+	@XmlSchemaType(name = "dateTime")
+	protected XMLGregorianCalendar beginTime;
+	@XmlElement(name = "EndTime", required = true, nillable = true)
+	@XmlSchemaType(name = "dateTime")
+	protected XMLGregorianCalendar endTime;
 
-    /**
-     * ��ȡmappingId���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMappingId() {
-        return mappingId;
-    }
+	/**
+	 * Gets the value of the mappingId property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMappingId() {
+		return mappingId;
+	}
 
-    /**
-     * ����mappingId���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMappingId(String value) {
-        this.mappingId = value;
-    }
+	/**
+	 * Sets the value of the mappingId property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMappingId(String value) {
+		this.mappingId = value;
+	}
 
-    /**
-     * ��ȡid���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link AccountId }
-     *     
-     */
-    public AccountId getId() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return possible object is {@link AccountId }
+	 * 
+	 */
+	public AccountId getId() {
+		return id;
+	}
 
-    /**
-     * ����id���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AccountId }
-     *     
-     */
-    public void setId(AccountId value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link AccountId }
+	 * 
+	 */
+	public void setId(AccountId value) {
+		this.id = value;
+	}
 
-    /**
-     * ��ȡrelatedId���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link AccountId }
-     *     
-     */
-    public AccountId getRelatedId() {
-        return relatedId;
-    }
+	/**
+	 * Gets the value of the relatedId property.
+	 * 
+	 * @return possible object is {@link AccountId }
+	 * 
+	 */
+	public AccountId getRelatedId() {
+		return relatedId;
+	}
 
-    /**
-     * ����relatedId���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AccountId }
-     *     
-     */
-    public void setRelatedId(AccountId value) {
-        this.relatedId = value;
-    }
+	/**
+	 * Sets the value of the relatedId property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link AccountId }
+	 * 
+	 */
+	public void setRelatedId(AccountId value) {
+		this.relatedId = value;
+	}
 
-    /**
-     * ��ȡbeginTime���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getBeginTime() {
-        return beginTime;
-    }
+	/**
+	 * Gets the value of the beginTime property.
+	 * 
+	 * @return possible object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public XMLGregorianCalendar getBeginTime() {
+		return beginTime;
+	}
 
-    /**
-     * ����beginTime���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setBeginTime(XMLGregorianCalendar value) {
-        this.beginTime = value;
-    }
+	/**
+	 * Sets the value of the beginTime property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public void setBeginTime(XMLGregorianCalendar value) {
+		this.beginTime = value;
+	}
 
-    /**
-     * ��ȡendTime���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getEndTime() {
-        return endTime;
-    }
+	/**
+	 * Gets the value of the endTime property.
+	 * 
+	 * @return possible object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public XMLGregorianCalendar getEndTime() {
+		return endTime;
+	}
 
-    /**
-     * ����endTime���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setEndTime(XMLGregorianCalendar value) {
-        this.endTime = value;
-    }
+	/**
+	 * Sets the value of the endTime property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public void setEndTime(XMLGregorianCalendar value) {
+		this.endTime = value;
+	}
 
 }

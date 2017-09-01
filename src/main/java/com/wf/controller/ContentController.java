@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +25,8 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.test.JSONAssert;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.xhtml.sub;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
@@ -47,10 +44,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import sun.security.x509.EDIPartyName;
-
-import com.alibaba.citrus.service.resource.loader.FileResourceLoader.SearchPath;
-import com.alibaba.druid.support.json.JSONUtils;
 import com.exportExcel.ExportExcel;
 import com.redis.RedisUtil;
 import com.utils.DateTools;
@@ -251,46 +244,19 @@ public class ContentController{
 	
 	@RequestMapping("/addMessageJson")
 	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
+		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
 		message.setId(GetUuid.getId());
-		boolean b =messageService.insertMessage(message,session);
+		message.setHuman(admin.getUser_realname());
+		message.setBranch(admin.getDept().getDeptName());
+		message.setIssueState(1);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		message.setCreateTime(sdf.format(new Date()));
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		message.setStick(sdf1.format(new Date()));
+		boolean b =messageService.insertMessage(message);
 		JsonUtil.toJsonHtml(response, b);
 	}
 	
-	/**
-	 * 保存下载
-	 * @param model
-	 * @param response
-	 * @param request
-	 */
-/*	@RequestMapping("/download")
-	public void ImageUrl(Model model,HttpServletResponse response,HttpServletRequest request) {
-        // 下载本地文件
-		String fileName = request.getParameter("titel"); // 文件的默认保存名
-		InputStream inStream = null;
-		try{
-			fileName = URLDecoder.decode(fileName, "UTF-8") + ".xlsx";
-			inStream = new FileInputStream(request.getRealPath("/") + "Text/"+ fileName);
-			// 设置输出的格式
-			response.reset();
-			response.setContentType("bin");
-			response.setCharacterEncoding("UTF-8");
-			fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
-			response.addHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
-			// 循环取出流中的数据
-			byte[] b = new byte[100];
-			int len;
-			while ((len = inStream.read(b)) > 0) {
-				response.getOutputStream().write(b, 0, len);
-			}
-			inStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-	
-	public static void main(String[] args) {
-		System.out.println(UUID.randomUUID());
-	}
 	/**
 	 * 资讯查询
 	 * @param request
@@ -340,9 +306,6 @@ public class ContentController{
 			HttpServletResponse response,HttpServletRequest request) throws IOException{
 		int pageSize=10;
 		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime);
-		/*JSONObject json=JSONObject.fromObject(messageList);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());*/
 		return  messageList;
 	}
 	
@@ -412,7 +375,9 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/updateMessageJson")
-	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
+	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
+		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+		message.setHuman(admin.getUser_realname());
 		boolean b =messageService.updateMessage(message);
 		JsonUtil.toJsonHtml(response, b);
 	}

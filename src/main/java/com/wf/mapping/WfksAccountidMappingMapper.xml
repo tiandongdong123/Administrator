@@ -19,7 +19,15 @@
     select 
     <include refid="Base_Column_List" />
     from wfks_accountid_mapping
-    where id_key = #{idKey,jdbcType=VARCHAR} and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+    where id_key = #{idKey,jdbcType=VARCHAR}
+    and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping
+    where id_key = #{idKey,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteByUserId" parameterType="java.lang.String" >
@@ -131,4 +139,11 @@
       last_updatetime = #{lastUpdatetime,jdbcType=TIMESTAMP}
     where mappingid = #{mappingid,jdbcType=VARCHAR}
   </update>
+  
+    <select id="selectByRelateIdKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping
+    where relatedid_key = #{relatedidKey,jdbcType=VARCHAR}
+  </select>
 </mapper>

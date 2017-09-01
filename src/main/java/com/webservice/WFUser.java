@@ -7,11 +7,13 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * <p>WFUser complex type�� Java �ࡣ
+ * <p>
+ * Java class for WFUser complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="WFUser">
@@ -56,731 +58,681 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WFUser", propOrder = {
-    "loginType",
-    "wfipLimit",
-    "authPhone",
-    "extensionData",
-    "address",
-    "birthday",
-    "comment",
-    "commentSave",
-    "company",
-    "companyType",
-    "countryCode",
-    "creationDateTime",
-    "educationLevel",
-    "email",
-    "idCardNumber",
-    "incomeLevel",
-    "isLocked",
-    "isMale",
-    "mobilePhone",
-    "password",
-    "passwordAnswer",
-    "passwordQuestion",
-    "phone",
-    "postCode",
-    "region",
-    "userGroup",
-    "userID",
-    "userRealName",
-    "vocationType"
-})
+@XmlType(name = "WFUser", propOrder = { "loginType", "wfipLimit", "authPhone", "extensionData",
+		"address", "birthday", "comment", "commentSave", "company", "companyType", "countryCode",
+		"creationDateTime", "educationLevel", "email", "idCardNumber", "incomeLevel", "isLocked",
+		"isMale", "mobilePhone", "password", "passwordAnswer", "passwordQuestion", "phone",
+		"postCode", "region", "userGroup", "userID", "userRealName", "vocationType" })
 public class WFUser {
 
-    @XmlElement(name = "LoginType", required = true)
-    @XmlSchemaType(name = "string")
-    protected UserDisposeEnum loginType;
-    @XmlElement(name = "WFIPLimit")
-    protected ArrayOfWFIPLimit wfipLimit;
-    @XmlElement(name = "AuthPhone")
-    protected long authPhone;
-    @XmlElement(name = "ExtensionData")
-    protected ExtensionDataObject extensionData;
-    @XmlElement(name = "Address")
-    protected String address;
-    @XmlElement(name = "Birthday", required = true, nillable = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar birthday;
-    @XmlElement(name = "Comment")
-    protected String comment;
-    @XmlElement(name = "CommentSave")
-    protected String commentSave;
-    @XmlElement(name = "Company")
-    protected String company;
-    @XmlElement(name = "CompanyType")
-    protected int companyType;
-    @XmlElement(name = "CountryCode")
-    protected int countryCode;
-    @XmlElement(name = "CreationDateTime", required = true, nillable = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar creationDateTime;
-    @XmlElement(name = "EducationLevel")
-    protected int educationLevel;
-    @XmlElement(name = "Email")
-    protected String email;
-    @XmlElement(name = "IDCardNumber")
-    protected String idCardNumber;
-    @XmlElement(name = "IncomeLevel")
-    protected int incomeLevel;
-    @XmlElement(name = "IsLocked")
-    protected boolean isLocked;
-    @XmlElement(name = "IsMale")
-    protected boolean isMale;
-    @XmlElement(name = "MobilePhone")
-    protected String mobilePhone;
-    @XmlElement(name = "Password")
-    protected String password;
-    @XmlElement(name = "PasswordAnswer")
-    protected String passwordAnswer;
-    @XmlElement(name = "PasswordQuestion")
-    protected String passwordQuestion;
-    @XmlElement(name = "Phone")
-    protected String phone;
-    @XmlElement(name = "PostCode")
-    protected String postCode;
-    @XmlElement(name = "Region")
-    protected String region;
-    @XmlElement(name = "UserGroup")
-    protected String userGroup;
-    @XmlElement(name = "UserID")
-    protected String userID;
-    @XmlElement(name = "UserRealName")
-    protected String userRealName;
-    @XmlElement(name = "VocationType")
-    protected int vocationType;
+	@XmlElement(name = "LoginType", required = true, nillable = true)
+	protected UserDisposeEnum loginType;
+	@XmlElement(name = "WFIPLimit")
+	protected ArrayOfWFIPLimit wfipLimit;
+	@XmlElement(name = "AuthPhone", required = true, type = Long.class, nillable = true)
+	protected Long authPhone;
+	@XmlElement(name = "ExtensionData")
+	protected ExtensionDataObject extensionData;
+	@XmlElement(name = "Address")
+	protected String address;
+	@XmlElement(name = "Birthday", required = true, nillable = true)
+	@XmlSchemaType(name = "dateTime")
+	protected XMLGregorianCalendar birthday;
+	@XmlElement(name = "Comment")
+	protected String comment;
+	@XmlElement(name = "CommentSave")
+	protected String commentSave;
+	@XmlElement(name = "Company")
+	protected String company;
+	@XmlElement(name = "CompanyType", required = true, type = Integer.class, nillable = true)
+	protected Integer companyType;
+	@XmlElement(name = "CountryCode", required = true, type = Integer.class, nillable = true)
+	protected Integer countryCode;
+	@XmlElement(name = "CreationDateTime", required = true, nillable = true)
+	@XmlSchemaType(name = "dateTime")
+	protected XMLGregorianCalendar creationDateTime;
+	@XmlElement(name = "EducationLevel", required = true, type = Integer.class, nillable = true)
+	protected Integer educationLevel;
+	@XmlElement(name = "Email")
+	protected String email;
+	@XmlElement(name = "IDCardNumber")
+	protected String idCardNumber;
+	@XmlElement(name = "IncomeLevel", required = true, type = Integer.class, nillable = true)
+	protected Integer incomeLevel;
+	@XmlElement(name = "IsLocked", required = true, type = Boolean.class, nillable = true)
+	protected Boolean isLocked;
+	@XmlElement(name = "IsMale", required = true, type = Boolean.class, nillable = true)
+	protected Boolean isMale;
+	@XmlElement(name = "MobilePhone")
+	protected String mobilePhone;
+	@XmlElement(name = "Password")
+	protected String password;
+	@XmlElement(name = "PasswordAnswer")
+	protected String passwordAnswer;
+	@XmlElement(name = "PasswordQuestion")
+	protected String passwordQuestion;
+	@XmlElement(name = "Phone")
+	protected String phone;
+	@XmlElement(name = "PostCode")
+	protected String postCode;
+	@XmlElement(name = "Region")
+	protected String region;
+	@XmlElement(name = "UserGroup")
+	protected String userGroup;
+	@XmlElement(name = "UserID")
+	protected String userID;
+	@XmlElement(name = "UserRealName")
+	protected String userRealName;
+	@XmlElement(name = "VocationType", required = true, type = Integer.class, nillable = true)
+	protected Integer vocationType;
 
-    /**
-     * ��ȡloginType���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link UserDisposeEnum }
-     *     
-     */
-    public UserDisposeEnum getLoginType() {
-        return loginType;
-    }
+	/**
+	 * Gets the value of the loginType property.
+	 * 
+	 * @return possible object is {@link UserDisposeEnum }
+	 * 
+	 */
+	public UserDisposeEnum getLoginType() {
+		return loginType;
+	}
 
-    /**
-     * ����loginType���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link UserDisposeEnum }
-     *     
-     */
-    public void setLoginType(UserDisposeEnum value) {
-        this.loginType = value;
-    }
+	/**
+	 * Sets the value of the loginType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link UserDisposeEnum }
+	 * 
+	 */
+	public void setLoginType(UserDisposeEnum value) {
+		this.loginType = value;
+	}
 
-    /**
-     * ��ȡwfipLimit���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfWFIPLimit }
-     *     
-     */
-    public ArrayOfWFIPLimit getWFIPLimit() {
-        return wfipLimit;
-    }
+	/**
+	 * Gets the value of the wfipLimit property.
+	 * 
+	 * @return possible object is {@link ArrayOfWFIPLimit }
+	 * 
+	 */
+	public ArrayOfWFIPLimit getWFIPLimit() {
+		return wfipLimit;
+	}
 
-    /**
-     * ����wfipLimit���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfWFIPLimit }
-     *     
-     */
-    public void setWFIPLimit(ArrayOfWFIPLimit value) {
-        this.wfipLimit = value;
-    }
+	/**
+	 * Sets the value of the wfipLimit property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ArrayOfWFIPLimit }
+	 * 
+	 */
+	public void setWFIPLimit(ArrayOfWFIPLimit value) {
+		this.wfipLimit = value;
+	}
 
-    /**
-     * ��ȡauthPhone���Ե�ֵ��
-     * 
-     */
-    public long getAuthPhone() {
-        return authPhone;
-    }
+	/**
+	 * Gets the value of the authPhone property.
+	 * 
+	 * @return possible object is {@link Long }
+	 * 
+	 */
+	public Long getAuthPhone() {
+		return authPhone;
+	}
 
-    /**
-     * ����authPhone���Ե�ֵ��
-     * 
-     */
-    public void setAuthPhone(long value) {
-        this.authPhone = value;
-    }
+	/**
+	 * Sets the value of the authPhone property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Long }
+	 * 
+	 */
+	public void setAuthPhone(Long value) {
+		this.authPhone = value;
+	}
 
-    /**
-     * ��ȡextensionData���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public ExtensionDataObject getExtensionData() {
-        return extensionData;
-    }
+	/**
+	 * Gets the value of the extensionData property.
+	 * 
+	 * @return possible object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public ExtensionDataObject getExtensionData() {
+		return extensionData;
+	}
 
-    /**
-     * ����extensionData���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtensionDataObject }
-     *     
-     */
-    public void setExtensionData(ExtensionDataObject value) {
-        this.extensionData = value;
-    }
+	/**
+	 * Sets the value of the extensionData property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ExtensionDataObject }
+	 * 
+	 */
+	public void setExtensionData(ExtensionDataObject value) {
+		this.extensionData = value;
+	}
 
-    /**
-     * ��ȡaddress���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAddress() {
-        return address;
-    }
+	/**
+	 * Gets the value of the address property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getAddress() {
+		return address;
+	}
 
-    /**
-     * ����address���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAddress(String value) {
-        this.address = value;
-    }
+	/**
+	 * Sets the value of the address property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setAddress(String value) {
+		this.address = value;
+	}
 
-    /**
-     * ��ȡbirthday���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getBirthday() {
-        return birthday;
-    }
+	/**
+	 * Gets the value of the birthday property.
+	 * 
+	 * @return possible object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public XMLGregorianCalendar getBirthday() {
+		return birthday;
+	}
 
-    /**
-     * ����birthday���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setBirthday(XMLGregorianCalendar value) {
-        this.birthday = value;
-    }
+	/**
+	 * Sets the value of the birthday property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public void setBirthday(XMLGregorianCalendar value) {
+		this.birthday = value;
+	}
 
-    /**
-     * ��ȡcomment���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComment() {
-        return comment;
-    }
+	/**
+	 * Gets the value of the comment property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getComment() {
+		return comment;
+	}
 
-    /**
-     * ����comment���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComment(String value) {
-        this.comment = value;
-    }
+	/**
+	 * Sets the value of the comment property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setComment(String value) {
+		this.comment = value;
+	}
 
-    /**
-     * ��ȡcommentSave���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCommentSave() {
-        return commentSave;
-    }
+	/**
+	 * Gets the value of the commentSave property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getCommentSave() {
+		return commentSave;
+	}
 
-    /**
-     * ����commentSave���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCommentSave(String value) {
-        this.commentSave = value;
-    }
+	/**
+	 * Sets the value of the commentSave property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setCommentSave(String value) {
+		this.commentSave = value;
+	}
 
-    /**
-     * ��ȡcompany���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCompany() {
-        return company;
-    }
+	/**
+	 * Gets the value of the company property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getCompany() {
+		return company;
+	}
 
-    /**
-     * ����company���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCompany(String value) {
-        this.company = value;
-    }
+	/**
+	 * Sets the value of the company property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setCompany(String value) {
+		this.company = value;
+	}
 
-    /**
-     * ��ȡcompanyType���Ե�ֵ��
-     * 
-     */
-    public int getCompanyType() {
-        return companyType;
-    }
+	/**
+	 * Gets the value of the companyType property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getCompanyType() {
+		return companyType;
+	}
 
-    /**
-     * ����companyType���Ե�ֵ��
-     * 
-     */
-    public void setCompanyType(int value) {
-        this.companyType = value;
-    }
+	/**
+	 * Sets the value of the companyType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setCompanyType(Integer value) {
+		this.companyType = value;
+	}
 
-    /**
-     * ��ȡcountryCode���Ե�ֵ��
-     * 
-     */
-    public int getCountryCode() {
-        return countryCode;
-    }
+	/**
+	 * Gets the value of the countryCode property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getCountryCode() {
+		return countryCode;
+	}
 
-    /**
-     * ����countryCode���Ե�ֵ��
-     * 
-     */
-    public void setCountryCode(int value) {
-        this.countryCode = value;
-    }
+	/**
+	 * Sets the value of the countryCode property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setCountryCode(Integer value) {
+		this.countryCode = value;
+	}
 
-    /**
-     * ��ȡcreationDateTime���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getCreationDateTime() {
-        return creationDateTime;
-    }
+	/**
+	 * Gets the value of the creationDateTime property.
+	 * 
+	 * @return possible object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public XMLGregorianCalendar getCreationDateTime() {
+		return creationDateTime;
+	}
 
-    /**
-     * ����creationDateTime���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setCreationDateTime(XMLGregorianCalendar value) {
-        this.creationDateTime = value;
-    }
+	/**
+	 * Sets the value of the creationDateTime property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XMLGregorianCalendar }
+	 * 
+	 */
+	public void setCreationDateTime(XMLGregorianCalendar value) {
+		this.creationDateTime = value;
+	}
 
-    /**
-     * ��ȡeducationLevel���Ե�ֵ��
-     * 
-     */
-    public int getEducationLevel() {
-        return educationLevel;
-    }
+	/**
+	 * Gets the value of the educationLevel property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getEducationLevel() {
+		return educationLevel;
+	}
 
-    /**
-     * ����educationLevel���Ե�ֵ��
-     * 
-     */
-    public void setEducationLevel(int value) {
-        this.educationLevel = value;
-    }
+	/**
+	 * Sets the value of the educationLevel property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setEducationLevel(Integer value) {
+		this.educationLevel = value;
+	}
 
-    /**
-     * ��ȡemail���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEmail() {
-        return email;
-    }
+	/**
+	 * Gets the value of the email property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getEmail() {
+		return email;
+	}
 
-    /**
-     * ����email���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEmail(String value) {
-        this.email = value;
-    }
+	/**
+	 * Sets the value of the email property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setEmail(String value) {
+		this.email = value;
+	}
 
-    /**
-     * ��ȡidCardNumber���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIDCardNumber() {
-        return idCardNumber;
-    }
+	/**
+	 * Gets the value of the idCardNumber property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getIDCardNumber() {
+		return idCardNumber;
+	}
 
-    /**
-     * ����idCardNumber���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIDCardNumber(String value) {
-        this.idCardNumber = value;
-    }
+	/**
+	 * Sets the value of the idCardNumber property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setIDCardNumber(String value) {
+		this.idCardNumber = value;
+	}
 
-    /**
-     * ��ȡincomeLevel���Ե�ֵ��
-     * 
-     */
-    public int getIncomeLevel() {
-        return incomeLevel;
-    }
+	/**
+	 * Gets the value of the incomeLevel property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getIncomeLevel() {
+		return incomeLevel;
+	}
 
-    /**
-     * ����incomeLevel���Ե�ֵ��
-     * 
-     */
-    public void setIncomeLevel(int value) {
-        this.incomeLevel = value;
-    }
+	/**
+	 * Sets the value of the incomeLevel property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setIncomeLevel(Integer value) {
+		this.incomeLevel = value;
+	}
 
-    /**
-     * ��ȡisLocked���Ե�ֵ��
-     * 
-     */
-    public boolean isIsLocked() {
-        return isLocked;
-    }
+	/**
+	 * Gets the value of the isLocked property.
+	 * 
+	 * @return possible object is {@link Boolean }
+	 * 
+	 */
+	public Boolean isIsLocked() {
+		return isLocked;
+	}
 
-    /**
-     * ����isLocked���Ե�ֵ��
-     * 
-     */
-    public void setIsLocked(boolean value) {
-        this.isLocked = value;
-    }
+	/**
+	 * Sets the value of the isLocked property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Boolean }
+	 * 
+	 */
+	public void setIsLocked(Boolean value) {
+		this.isLocked = value;
+	}
 
-    /**
-     * ��ȡisMale���Ե�ֵ��
-     * 
-     */
-    public boolean isIsMale() {
-        return isMale;
-    }
+	/**
+	 * Gets the value of the isMale property.
+	 * 
+	 * @return possible object is {@link Boolean }
+	 * 
+	 */
+	public Boolean isIsMale() {
+		return isMale;
+	}
 
-    /**
-     * ����isMale���Ե�ֵ��
-     * 
-     */
-    public void setIsMale(boolean value) {
-        this.isMale = value;
-    }
+	/**
+	 * Sets the value of the isMale property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Boolean }
+	 * 
+	 */
+	public void setIsMale(Boolean value) {
+		this.isMale = value;
+	}
 
-    /**
-     * ��ȡmobilePhone���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMobilePhone() {
-        return mobilePhone;
-    }
+	/**
+	 * Gets the value of the mobilePhone property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
 
-    /**
-     * ����mobilePhone���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMobilePhone(String value) {
-        this.mobilePhone = value;
-    }
+	/**
+	 * Sets the value of the mobilePhone property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setMobilePhone(String value) {
+		this.mobilePhone = value;
+	}
 
-    /**
-     * ��ȡpassword���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPassword() {
-        return password;
-    }
+	/**
+	 * Gets the value of the password property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPassword() {
+		return password;
+	}
 
-    /**
-     * ����password���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPassword(String value) {
-        this.password = value;
-    }
+	/**
+	 * Sets the value of the password property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPassword(String value) {
+		this.password = value;
+	}
 
-    /**
-     * ��ȡpasswordAnswer���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPasswordAnswer() {
-        return passwordAnswer;
-    }
+	/**
+	 * Gets the value of the passwordAnswer property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPasswordAnswer() {
+		return passwordAnswer;
+	}
 
-    /**
-     * ����passwordAnswer���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPasswordAnswer(String value) {
-        this.passwordAnswer = value;
-    }
+	/**
+	 * Sets the value of the passwordAnswer property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPasswordAnswer(String value) {
+		this.passwordAnswer = value;
+	}
 
-    /**
-     * ��ȡpasswordQuestion���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPasswordQuestion() {
-        return passwordQuestion;
-    }
+	/**
+	 * Gets the value of the passwordQuestion property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPasswordQuestion() {
+		return passwordQuestion;
+	}
 
-    /**
-     * ����passwordQuestion���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPasswordQuestion(String value) {
-        this.passwordQuestion = value;
-    }
+	/**
+	 * Sets the value of the passwordQuestion property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPasswordQuestion(String value) {
+		this.passwordQuestion = value;
+	}
 
-    /**
-     * ��ȡphone���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPhone() {
-        return phone;
-    }
+	/**
+	 * Gets the value of the phone property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPhone() {
+		return phone;
+	}
 
-    /**
-     * ����phone���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPhone(String value) {
-        this.phone = value;
-    }
+	/**
+	 * Sets the value of the phone property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPhone(String value) {
+		this.phone = value;
+	}
 
-    /**
-     * ��ȡpostCode���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPostCode() {
-        return postCode;
-    }
+	/**
+	 * Gets the value of the postCode property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getPostCode() {
+		return postCode;
+	}
 
-    /**
-     * ����postCode���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPostCode(String value) {
-        this.postCode = value;
-    }
+	/**
+	 * Sets the value of the postCode property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setPostCode(String value) {
+		this.postCode = value;
+	}
 
-    /**
-     * ��ȡregion���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRegion() {
-        return region;
-    }
+	/**
+	 * Gets the value of the region property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getRegion() {
+		return region;
+	}
 
-    /**
-     * ����region���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRegion(String value) {
-        this.region = value;
-    }
+	/**
+	 * Sets the value of the region property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setRegion(String value) {
+		this.region = value;
+	}
 
-    /**
-     * ��ȡuserGroup���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserGroup() {
-        return userGroup;
-    }
+	/**
+	 * Gets the value of the userGroup property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserGroup() {
+		return userGroup;
+	}
 
-    /**
-     * ����userGroup���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserGroup(String value) {
-        this.userGroup = value;
-    }
+	/**
+	 * Sets the value of the userGroup property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserGroup(String value) {
+		this.userGroup = value;
+	}
 
-    /**
-     * ��ȡuserID���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserID() {
-        return userID;
-    }
+	/**
+	 * Gets the value of the userID property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserID() {
+		return userID;
+	}
 
-    /**
-     * ����userID���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserID(String value) {
-        this.userID = value;
-    }
+	/**
+	 * Sets the value of the userID property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserID(String value) {
+		this.userID = value;
+	}
 
-    /**
-     * ��ȡuserRealName���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUserRealName() {
-        return userRealName;
-    }
+	/**
+	 * Gets the value of the userRealName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getUserRealName() {
+		return userRealName;
+	}
 
-    /**
-     * ����userRealName���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUserRealName(String value) {
-        this.userRealName = value;
-    }
+	/**
+	 * Sets the value of the userRealName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setUserRealName(String value) {
+		this.userRealName = value;
+	}
 
-    /**
-     * ��ȡvocationType���Ե�ֵ��
-     * 
-     */
-    public int getVocationType() {
-        return vocationType;
-    }
+	/**
+	 * Gets the value of the vocationType property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public Integer getVocationType() {
+		return vocationType;
+	}
 
-    /**
-     * ����vocationType���Ե�ֵ��
-     * 
-     */
-    public void setVocationType(int value) {
-        this.vocationType = value;
-    }
+	/**
+	 * Sets the value of the vocationType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setVocationType(Integer value) {
+		this.vocationType = value;
+	}
 
 }

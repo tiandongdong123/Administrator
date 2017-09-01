@@ -72,10 +72,9 @@
         <div class="btn-group">
 			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">服务权限设置<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="javascript:void(0);" onclick="showAuthority('PartyAdminTime','${list.userId}');">党建管理员权限</a></li>
-				<li><a href="javascript:void(0);" onclick="showAuthority('UserLogReport','${list.userId}');">统计数据导出权限</a></li>
-				<li><a href="javascript:void(0);" onclick="showAuthority('NBSPRCTime','${list.userId}');">国家经济统计数据库权限</a></li>
-				<li><a href="javascript:void(0);" onclick="showAuthority('GEOTimeLimit','${list.userId}');">GEO数据库权限</a></li>
+			<?if(!isEmpty(settingList)){ for(setting in settingList){?>
+			<li><a href="javascript:void(0);" onclick="showAuthority('${setting.authorityCode}','${setting.authorityName}','${list.userId}');">${setting.authorityName}</a></li>
+			<?}}?>
 			</ul>
 		</div>
 		<a href="javascript:void(0);">

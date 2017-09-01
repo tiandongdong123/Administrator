@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -121,9 +119,7 @@ public class CardServiceImpl implements CardService{
 	 * @return
 	 */
 	@Override
-	public boolean updateInvokeState(HttpSession session, String id,
-			String invokeState) {
-		//TODO 从session中获取用户名和激活ip
+	public boolean updateInvokeState(String id,String invokeState) {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("id", id);
 		map.put("invokeState", 2);

@@ -5,11 +5,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>anonymous complex type�� Java �ࡣ
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -17,9 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="user" type="{http://tempuri.org/}WFUser" minOccurs="0"/>
- *         &lt;element name="contracts" type="{http://tempuri.org/}ArrayOfWFContract" minOccurs="0"/>
- *         &lt;element name="manages" type="{http://tempuri.org/}ArrayOfAccountIdMapping" minOccurs="0"/>
- *         &lt;element name="settings" type="{http://tempuri.org/}ArrayOfUserSetting" minOccurs="0"/>
+ *         &lt;element name="hasPerson" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,114 +29,48 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "user",
-    "contracts",
-    "manages",
-    "settings"
-})
+@XmlType(name = "", propOrder = { "user", "hasPerson" })
 @XmlRootElement(name = "EditOrganizationUser")
 public class EditOrganizationUser {
 
-    protected WFUser user;
-    protected ArrayOfWFContract contracts;
-    protected ArrayOfAccountIdMapping manages;
-    protected ArrayOfUserSetting settings;
+	protected WFUser user;
+	protected boolean hasPerson;
 
-    /**
-     * ��ȡuser���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link WFUser }
-     *     
-     */
-    public WFUser getUser() {
-        return user;
-    }
+	/**
+	 * Gets the value of the user property.
+	 * 
+	 * @return possible object is {@link WFUser }
+	 * 
+	 */
+	public WFUser getUser() {
+		return user;
+	}
 
-    /**
-     * ����user���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link WFUser }
-     *     
-     */
-    public void setUser(WFUser value) {
-        this.user = value;
-    }
+	/**
+	 * Sets the value of the user property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link WFUser }
+	 * 
+	 */
+	public void setUser(WFUser value) {
+		this.user = value;
+	}
 
-    /**
-     * ��ȡcontracts���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfWFContract }
-     *     
-     */
-    public ArrayOfWFContract getContracts() {
-        return contracts;
-    }
+	/**
+	 * Gets the value of the hasPerson property.
+	 * 
+	 */
+	public boolean isHasPerson() {
+		return hasPerson;
+	}
 
-    /**
-     * ����contracts���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfWFContract }
-     *     
-     */
-    public void setContracts(ArrayOfWFContract value) {
-        this.contracts = value;
-    }
-
-    /**
-     * ��ȡmanages���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfAccountIdMapping }
-     *     
-     */
-    public ArrayOfAccountIdMapping getManages() {
-        return manages;
-    }
-
-    /**
-     * ����manages���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfAccountIdMapping }
-     *     
-     */
-    public void setManages(ArrayOfAccountIdMapping value) {
-        this.manages = value;
-    }
-
-    /**
-     * ��ȡsettings���Ե�ֵ��
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfUserSetting }
-     *     
-     */
-    public ArrayOfUserSetting getSettings() {
-        return settings;
-    }
-
-    /**
-     * ����settings���Ե�ֵ��
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfUserSetting }
-     *     
-     */
-    public void setSettings(ArrayOfUserSetting value) {
-        this.settings = value;
-    }
+	/**
+	 * Sets the value of the hasPerson property.
+	 * 
+	 */
+	public void setHasPerson(boolean value) {
+		this.hasPerson = value;
+	}
 
 }

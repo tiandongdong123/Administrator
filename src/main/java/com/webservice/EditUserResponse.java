@@ -6,11 +6,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>anonymous complex type�� Java �ࡣ
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -27,29 +29,27 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "editUserResult"
-})
+@XmlType(name = "", propOrder = { "editUserResult" })
 @XmlRootElement(name = "EditUserResponse")
 public class EditUserResponse {
 
-    @XmlElement(name = "EditUserResult")
-    protected int editUserResult;
+	@XmlElement(name = "EditUserResult")
+	protected int editUserResult;
 
-    /**
-     * ��ȡeditUserResult���Ե�ֵ��
-     * 
-     */
-    public int getEditUserResult() {
-        return editUserResult;
-    }
+	/**
+	 * Gets the value of the editUserResult property.
+	 * 
+	 */
+	public int getEditUserResult() {
+		return editUserResult;
+	}
 
-    /**
-     * ����editUserResult���Ե�ֵ��
-     * 
-     */
-    public void setEditUserResult(int value) {
-        this.editUserResult = value;
-    }
+	/**
+	 * Sets the value of the editUserResult property.
+	 * 
+	 */
+	public void setEditUserResult(int value) {
+		this.editUserResult = value;
+	}
 
 }

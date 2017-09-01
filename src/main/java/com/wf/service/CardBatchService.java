@@ -3,9 +3,8 @@ package com.wf.service;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import com.wf.bean.PageList;
+import com.wf.bean.Wfadmin;
 
 
 public interface CardBatchService {
@@ -39,7 +38,7 @@ public interface CardBatchService {
 	/**
 	 * 修改审核状态
 	 */
-	boolean updateCheckState(HttpSession session,String batchId);
+	boolean updateCheckState(Wfadmin admin,String batchId);
 	/**
 	 * 修改批次状态
 	 */

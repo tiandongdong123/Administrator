@@ -27,6 +27,7 @@ import com.utils.FileUploadUtil;
 import com.wf.bean.CardType;
 import com.wf.bean.PageList;
 import com.wf.bean.Remind;
+import com.wf.bean.Wfadmin;
 import com.wf.service.CardBatchService;
 import com.wf.service.CardService;
 import com.wf.service.CardTypeService;
@@ -294,7 +295,8 @@ public class CardController {
 	@ResponseBody
 	public boolean updateCheckState(HttpSession session,String batchId){
 		boolean flag = false;
-		boolean flag1 = cardBatchService.updateCheckState(session, batchId);//审核状态改变
+		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+		boolean flag1 = cardBatchService.updateCheckState(admin, batchId);//审核状态改变
 		boolean flag2 = cardBatchService.updateBatchState(batchId, "1", "", "");//批次状态改变
 		if(flag1 && flag2){
 			flag = true;
@@ -320,9 +322,9 @@ public class CardController {
 	 */
 	@RequestMapping("updateInvokeState")
 	@ResponseBody
-	public void updateInvokeState(HttpSession session){
+	public void updateInvokeState(){
 		//TODO 具体的激活流程
-		cardService.updateInvokeState(session, "00fd2ff5c9f6483dbde743586de36e28", "1");
+		cardService.updateInvokeState("00fd2ff5c9f6483dbde743586de36e28", "1");
 	}
 	@RequestMapping("/remind")
 	@ResponseBody

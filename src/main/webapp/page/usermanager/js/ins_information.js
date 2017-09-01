@@ -268,18 +268,8 @@ function btnBlack(obj,e){
 
 
 //服务权限设置弹窗
-function showAuthority(msg,userId,e){
+function showAuthority(msg,title,userId,e){
 	preventBubble(e);
-	var title = "";
-	if(msg=='PartyAdminTime'){
-		title = '党建管理员权限';
-	}else if(msg=='UserLogReport'){
-		title = '统计数据导出权限';
-	}else if(msg=='NBSPRCTime'){
-		title = '国家经济统计数据库权限';
-	}else{
-		title = 'GEO数据库权限';
-	}
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['750px', '520px'],

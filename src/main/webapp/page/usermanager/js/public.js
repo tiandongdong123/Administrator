@@ -145,7 +145,7 @@ function selectProject(obj,flag,checked){
 				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber"></div>';
 			}
 			if(projectid=='HistoryCheck'){
-				text += '<div class="time_input">';
+				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
 				text += '<input type="radio" name="rdlist['+count+'].relatedIdAccountType" checked="checked" value="ViewHistoryCheck"/>可以<input type="radio" name="rdlist['+count+'].relatedIdAccountType" value="not"/>不可以</div>';
 			}
 			text += '</div>';
@@ -170,29 +170,29 @@ function selectProject(obj,flag,checked){
 						var code = data[i].productSourceCode;
 						var rp = data[i].rp;
 						if(type.indexOf("perio")>-1||type.indexOf("degree")>-1||type.indexOf("conf")>-1||type.indexOf("patent")>-1||type.indexOf("books")>-1||type.indexOf("standard")>-1||type.indexOf("local chronicles")>-1){						
-							text += '<li><input type="checkbox" '+checked+' value="'+code+'" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName">';
-							if(rp.length > 0){									
+							text += '<li><input type="checkbox" '+checked+' value="'+code+'" onclick="checkRes('+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName" id="resourceid_'+count+'_'+i+'">';
+							if(rp.length > 0){
 								text += '<i onclick="showProduct(this,1)" class="icon_minus"></i>';
 							}
 							text += name;
 							text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
 							for(var n in rp){									
-								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'"/>'+rp[n].name+'</li>';
+								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
 							if($(obj).val()=="time"||$(obj).val()=="balance"){
 								createDetail(count,i,code,type);
 							}
-						}else{						
-							text += '<li><input type="checkbox" '+checked+' value="'+code+'" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName">';
+						}else{
+							text += '<li><input type="checkbox" '+checked+' value="'+code+'" onclick="checkRes('+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName" id="resourceid_'+count+'_'+i+'">';
 							if(rp.length > 0){									
 								text += '<i onclick="showProduct(this,2)" class="icon_minus"></i>';
 							}
 							text += name;
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
 							for(var n in rp){									
-								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'"/>'+rp[n].name+'</li>';
+								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
 						}
@@ -208,6 +208,19 @@ function selectProject(obj,flag,checked){
 		}
 		$("#count").val(count);
 		$("#multplediv").prepend(text);
+	}
+}
+
+//选中产品的时候也要选中产品对应的id
+function checkRes(count,i){
+	if($('#resourceid_'+count+'_'+i).is(':checked')){
+		$("input[name='rdlist["+count+"].rldto["+i+"].productid']").each(function(){
+			$(this).prop("checked", "true");
+		});
+	}else{
+		$("input[name='rdlist["+count+"].rldto["+i+"].productid']").each(function(){
+			$(this).removeAttr("checked");
+		});
 	}
 }
 
@@ -430,7 +443,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'">';
 		text += '<input type="hidden" value="LocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/></div></div>';
 	}
-	text += '</div>';
+	text += '</div></div>';
 	$("#detail_0").append(text);
 	findSubject(count,i);
 	findPatent(count,i);
@@ -682,17 +695,17 @@ function findArea(value,index,count,num){
 //保存区域
 function saveArea(count,i){
 	var sheng=$("#sheng_"+count+"_"+i).find("option:selected").text();
-	if(sheng==null||sheng==""||sheng=="全部"){
+	if(sheng==null||sheng==""){
 		$("#gazetteersArea_"+count+"_"+i).val("");
 		return;
 	}
 	var shi=$("#shi_"+count+"_"+i).find("option:selected").text();;
-	if(shi==null||shi==""||shi=="全部"){
+	if(shi==null||shi==""){
 		$("#gazetteersArea_"+count+"_"+i).val(sheng);
 		return;
 	}
 	var xian=$("#xian_"+count+"_"+i).find("option:selected").text();;
-	if(xian==null||xian==""||xian=="全部"){
+	if(xian==null||xian==""){
 		$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi);
 		return;
 	}
@@ -801,41 +814,29 @@ function findSubject(count,i){
 					},
 					callback: {
 						onCheck: function(){
-							var text1 = new Array();
 							var pz = $.fn.zTree.getZTreeObj("perioZtree_"+data.number);
 							if(pz!=null){
-								var notes1 = pz.getCheckedNodes(true);
-								for(var i = 0;i<notes1.length;i++){
-									text1.push(notes1[i].value);
-								}
-								$("#journalClc_"+data.number).val(text1.length>0?"["+text1+"]":"");
+								var text = new Array();
+								text=getCheckNode(pz);
+								$("#journalClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text2 = new Array();
 							var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+data.number);
 							if(dz!=null){
-								var notes2 = dz.getCheckedNodes(true);
-								for(var i = 0;i<notes2.length;i++){
-									text2.push(notes2[i].value);
-								}
-								$("#degreeClc_"+data.number).val(text2.length>0?"["+text2+"]":"");
+								var text = new Array();
+								text=getCheckNode(dz);
+								$("#degreeClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text3 = new Array();
 							var cz = $.fn.zTree.getZTreeObj("confZtree_"+data.number);
 							if(cz!=null){
-								var notes3 = cz.getCheckedNodes(true);
-								for(var i = 0;i<notes3.length;i++){
-									text3.push(notes3[i].value);
-								}
-								$("#conferenceClc_"+data.number).val(text3.length>0?"["+text3+"]":"");
+								var text = new Array();
+								text=getCheckNode(cz);
+								$("#conferenceClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
-							var text4 = new Array();
 							var bz = $.fn.zTree.getZTreeObj("bookZtree_"+data.number);
 							if(bz!=null){
-								var notes4 = bz.getCheckedNodes(true);
-								for(var i = 0;i<notes4.length;i++){
-									text4.push(notes4[i].value);
-								}
-								$("#booksClc_"+data.number).val(text4.length>0?"["+text4+"]":"");
+								var text = new Array();
+								text=getCheckNode(bz);
+								$("#booksClc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}
 						}
 					}
@@ -882,12 +883,10 @@ function findPatent(count,i){
 					},
 					callback: {
 						onCheck: function(){
-							var text = new Array();
-							var checknotes = $.fn.zTree.getZTreeObj("patentZtree_"+data.number).getCheckedNodes(true);
-							if(checknotes!=""){		
-								for(var i = 0;i<checknotes.length;i++){
-									text.push(checknotes[i].value);
-								}
+							var pa = $.fn.zTree.getZTreeObj("patentZtree_"+data.number);
+							if(pa!=null){
+								var text = new Array();
+								text=getCheckNode(pa);
 								$("#patentIpc_"+data.number).val(text.length>0?"["+text+"]":"");
 							}else{
 								$("#patentIpc_"+data.number).val("");
@@ -1035,4 +1034,68 @@ function radioClick(addOrUpdate,isBatch){
 	}
 }
 
+/**
+ * 获取被选中的学科分类号
+ * @param treeObj
+ * @returns
+ */
+function getCheckNode(treeObj){
+	var nodes = treeObj.getNodes();
+	var text = new Array();
+	for(var i=0;i<nodes.length;i++){
+		var node=nodes[i];
+		if(node.checked){
+			Array.prototype.push.apply(text,getListNode(node));
+		}
+	}
+	return text;
+}
 
+/**
+ * 获取节点下的学科分类号
+ * @param treeObj
+ * @returns
+ */
+function getListNode(treeObj){
+	var text = new Array();
+	var flag=true;
+	var temp = new Array();
+	var childNodes = treeObj.children;
+	if(childNodes){
+		for(var i=0;i<childNodes.length;i++){
+			var childNode=childNodes[i];
+			if(childNode.checked){
+				if(childNode.isParent){
+					var child=childNode.children;
+					if(child){
+						var flag1=true;
+						var temp1 = new Array();
+						for(var j=0;j<child.length;j++){
+							if(child[j].checked){
+								temp1.push(child[j].value);
+							}else{
+								flag1=false;
+							}
+						}
+						if(flag1){
+							temp.push(childNode.value);
+						}else{
+							Array.prototype.push.apply(temp,temp1);
+							flag=false;
+						}
+					}
+				}else{
+					temp.push(childNode.value);
+				}
+			}else{
+				flag=false;
+			}
+		}
+	}
+	if(flag){
+		text.push(treeObj.value);
+	}else{
+		Array.prototype.push.apply(text,temp);
+	}
+	return text;
+}
