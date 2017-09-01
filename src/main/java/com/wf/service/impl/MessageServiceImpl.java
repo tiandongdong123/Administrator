@@ -155,6 +155,7 @@ public class MessageServiceImpl implements MessageService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("id", id);
 		map.put("issueState", issue);
+		map.put("stick", new Date());
 		int num = dao.updateIssue(map);
 		if(num > 0){
 			flag = true;
