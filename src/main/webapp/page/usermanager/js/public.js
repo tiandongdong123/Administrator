@@ -266,8 +266,8 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 	    btn: ['确定'],
 	    yes: function(){
 	    	if(flag!='1'){
-	    		if($("div[name='full_div']").length < 2){
-	    			layer.msg('购买项目不可全部删除', {icon: 2});
+	    		if($("div[name='full_div_pro']").length < 2){
+	    			layer.msg('已购买项目不可全部删除', {icon: 2});
 	    		}else{	    			
 	    			$.ajax({
 	    				type : "post",
