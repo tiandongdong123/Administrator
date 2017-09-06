@@ -14,7 +14,7 @@
  	<repositories>
         <repository>
             <id>WF-repository</id>
-            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
+            <url>https://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
         </repository>
 	</repositories>
 	<!-- 上传至nexus服务器 -->
