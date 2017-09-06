@@ -11,21 +11,21 @@
 	<name>${project.artifactId}</name>
 	<description>The project of accounting demo</description>
 
- 	<repositories>
+	<repositories>
         <repository>
             <id>WF-repository</id>
-            <url>https://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public/</url>
         </repository>
-	</repositories>
-	<!-- 上传至nexus服务器 -->
+    </repositories>
+    <!-- 上传至nexus服务器 -->
     <distributionManagement>
         <repository>
             <id>local_nexus_releases</id>
-            <url>https://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>local_nexus_snapshots</id>
-            <url>https://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 	<properties>
