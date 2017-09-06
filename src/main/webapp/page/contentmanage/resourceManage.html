@@ -10,13 +10,7 @@
    <section class="content-header">
       <h1>
           资源类型管理
-        <small>13 new messages</small>
       </h1>
-      <!--  <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 内容管理</a></li>
-        <li><a href="#">知识组织管理 </a></li>
-        <li class="active"> 资源类型管理</li>
-      </ol>-->
     </section> 
 	<input type="hidden" id="pageNum" value="${pageList.pageNum}">
   	<input type="hidden" id="pageTotal" value="${pageList.pageTotal}">
@@ -30,8 +24,6 @@
         <div class="col-md-12">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Inbox</h3>
-
               <div class="box-tools pull-right">
                 <div class="has-feedback" style="display: none">
                   <input type="text" class="form-control input-sm" placeholder="Search Mail">
@@ -48,9 +40,9 @@
                 </div>
                 <!-- /.btn-group -->
                 <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addResour()">添加资源类型</button>
-                 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
-                 <button type="button" style="float: right;margin-right: 5px;" onclick="exportResource();" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
-                  <button type="button" style="float: right;margin-right: 5px;"   onclick="pushData();" class="btn btn-default btn-sm"><a href="javascript:void(0);" >发布</a></button>
+                <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
+                <button type="button" style="float: right;margin-right: 5px;" onclick="exportResource();" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+						
               </div>
               
               <div class="table-responsive mailbox-messages">

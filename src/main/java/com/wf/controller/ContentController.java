@@ -502,6 +502,10 @@ public class ContentController{
 	public void updateResourceJson(ResourceType resourceType,HttpServletResponse response,HttpServletRequest request) throws Exception{
 		boolean b =resourceTypeService.updateResourceType(resourceType);
 		JsonUtil.toJsonHtml(response, b);
+		//更新REDIS资源类型状态
+		JSONArray list=	resourceTypeService.getAll1();
+		redis.del("sourcetype");
+		redis.set("sourcetype", list.toString(), 6);								  
 	}
 	/**
 	 * 删除资源信息
@@ -516,6 +520,10 @@ public class ContentController{
 		if(StringUtils.isEmpty(ids))ids=null;
 		Boolean b=resourceTypeService.deleteResourceType(ids);
 		JsonUtil.toJsonHtml(response, b);
+		//更新REDIS资源类型状态
+		JSONArray list=	resourceTypeService.getAll1();
+		redis.del("sourcetype");
+		redis.set("sourcetype", list.toString(), 6);								  
 	}
 	/**
 	 * 图片上传
@@ -1325,11 +1333,16 @@ public class ContentController{
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public void pushData() {
-		
-		JSONArray list=	resourceTypeService.getAll1();
-		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);
+	public boolean pushData(int state,String id) {
+		int num = resourceTypeService.updateResourceTypeState(state,id);
+		if(num > 0){
+			JSONArray list=	resourceTypeService.getAll1();
+			redis.del("sourcetype");
+			redis.set("sourcetype", list.toString(), 6);
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	/**
