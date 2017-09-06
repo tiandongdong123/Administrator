@@ -124,13 +124,13 @@
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
-			<version>${search-api}</version>
+			<version>1.2017.94-20170905.081636-1</version>
 		</dependency> 
 		<!-- 文辑推优 -->
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-common-api</artifactId>
-			<version>${common-api}</version>
+			<version>1.2017.40-20170905.060136-1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.xmemcached</groupId>
