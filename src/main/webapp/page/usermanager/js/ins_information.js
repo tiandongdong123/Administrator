@@ -241,6 +241,7 @@ function showGazetteers(userId,payid,pscode){
 			$("#zjfl_"+temp).html("专题分类");
 		}
 	}
+	
 	var album=$("#gazetteers_album_"+temp).val();
 	if(album!=null&&album!=""){
 		var albums=album.split(";");
