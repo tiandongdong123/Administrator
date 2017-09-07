@@ -124,13 +124,13 @@
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
-			<version>1.2017.94-20170905.081636-1</version>
+			<version>1.2017.94-SNAPSHOT</version>
 		</dependency> 
 		<!-- 文辑推优 -->
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-common-api</artifactId>
-			<version>1.2017.40-20170905.060136-1</version>
+			<version>1.2017.40-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.xmemcached</groupId>
@@ -153,11 +153,7 @@
 			<artifactId>citrus-webx-all</artifactId>
 			<version>${webx_version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>hessian-lite</artifactId>
-			<version>${hessian_lite_version}</version>
-		</dependency>
+
 		<!-- 阿里jar 依赖 end -->
 		<!-- commons -->
 		<dependency>
@@ -580,13 +576,13 @@
         <dependency>
            <groupId>com.wanfangdata</groupId>
              <artifactId>wf-cas-api</artifactId>
-             <version>1.2017.192</version>
+             <version>1.2017.262</version>
         </dependency>
         <!-- 购买项目（充值） -->
         <dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>authentication-api</artifactId>
-			<version>1.2017.211</version>
+			<version>1.2017.262</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
