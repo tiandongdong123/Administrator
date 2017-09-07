@@ -359,16 +359,12 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/updateMessage")
-	public String updateMessage(
-			@RequestParam(value="id",required=false) String id,
+	public String updateMessage(@RequestParam(value="id",required=false) String id,
 			HttpServletRequest request,Model model){
-		
-		String realPath1 = "http://"+ request.getServerName()+ ":"+ request.getServerPort()+"/";
 		
 		Message message=messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("addupdate", "update");
-		model.addAttribute("url", realPath1);
 		return "/page/contentmanage/addMessage";
 	}
 	

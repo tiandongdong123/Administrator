@@ -583,7 +583,7 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
-		String path = request.getRealPath("/") + "page/usermanager/" + "excel";
+		String path = request.getServletContext().getRealPath("/") + "page/usermanager/" + "excel";
 		view.addObject("path",path);
 		view.setViewName("/page/usermanager/ins_batchregister");
 		return view;
@@ -881,7 +881,6 @@ public class AheadUserController {
 		String fileName = request.getParameter("title"); // 文件的默认保存名
 		InputStream inStream = null;
 		try{
-			
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			String TextName="";
 			if(fileName.equals("机构账号批量模板（更新）")){
@@ -894,8 +893,7 @@ public class AheadUserController {
 				TextName="ZC.xlsx";
 				fileName=fileName+".xlsx";
 			}
-			fileName=fileName;
-			inStream = new FileInputStream(request.getRealPath("/") + "page/usermanager/excel/"+TextName);
+			inStream = new FileInputStream(request.getServletContext().getRealPath("/") + "page/usermanager/excel/"+TextName);
 			// 设置输出的格式
 			response.reset();
 			response.setContentType("bin");
