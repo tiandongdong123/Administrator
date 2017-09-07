@@ -1,9 +1,7 @@
 package com.wf.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -872,62 +870,7 @@ public class ContentController{
 		}
 		return mav;
 	}
-//	/**
-//	 * 文辑导出
-//	 * @param request
-//	 * @return
-//	 */
-//	@RequestMapping("export")
-//	@ResponseBody
-//	public String  export(HttpServletRequest request) {
-//		
-//		String data=request.getParameter("source");
-//		List<String> namelist=new ArrayList<String>();
-//		namelist.add("文辑编号");
-//		namelist.add("文辑名称");
-//		namelist.add("关键词");
-//		namelist.add("文辑状态");
-//		namelist.add("发布用户名");
-//		namelist.add("发布日期");
-//		namelist.add("文辑文献数量");
-//		String realspath=request.getRealPath("/") + "Text/";
-//		JSONArray json=JSONArray.fromObject(data);
-//		ExportExcel ex=new ExportExcel();
-//		String url=ex.exportExcel(json, realspath, namelist);
-//		return url;
-//	}
 	
-	/**
-	 * 保存下载
-	 * @param model
-	 * @param response
-	 * @param request
-	 */
-	@RequestMapping("/download")
-	public void ouyang(Model model,HttpServletResponse response,HttpServletRequest request) {
-        // 下载本地文件
-		String fileName = request.getParameter("titel"); // 文件的默认保存名
-		InputStream inStream = null;
-		try{
-			fileName = URLDecoder.decode(fileName, "UTF-8") + ".xlsx";
-			inStream = new FileInputStream(request.getRealPath("/") + "Text/"+ fileName);
-			// 设置输出的格式
-			response.reset();
-			response.setContentType("bin");
-			response.setCharacterEncoding("UTF-8");
-			fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
-			response.addHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
-			// 循环取出流中的数据
-			byte[] b = new byte[100];
-			int len;
-			while ((len = inStream.read(b)) > 0) {
-				response.getOutputStream().write(b, 0, len);
-			}
-			inStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	/**
 	 * 文辑发布/下撤/再发布
 	 * @param id
