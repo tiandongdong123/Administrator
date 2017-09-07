@@ -246,6 +246,9 @@ function showGazetteers(userId,payid,pscode){
 		var albums=album.split(";");
 		var text="";
 		for(var i=0;i<albums.length;i++){
+			if(albums[i]==null || albums[i]==''){
+				continue;
+			}
 			text +='<input type="checkbox" value="'+name+'" name="classCode2_'+temp+'" checked/> '+albums[i]+' &nbsp;';
 			if(i>0&&i%4==0&&albums.length!=i+1){
 				text +='<br/>'
