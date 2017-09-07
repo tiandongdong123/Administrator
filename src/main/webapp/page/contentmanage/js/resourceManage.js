@@ -61,28 +61,36 @@ function serachdata(data){
 	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
 	$("#tbody").remove();
-	var resHtml = "<tbody id='tbody'><tr style='text-align: center;'>" +
-	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
-	"<td class='mailbox-star'>序号</td>" +
-	"<td class='mailbox-name'>资源类型名称</td>"+
-	"<td class='mailbox-subject'>资源类型描述</td>" +
-	"<td class='mailbox-subject'>资源类型code</td>" +
-	"<td class='mailbox-date'>操作</td></tr>";
-if(pageRow.length>0){
-for(var i = 0;i<pageRow.length;i++){
-	var index = 1+i;
-	var rows = pageRow[i];
-	resHtml+=" <tr style='text-align: center;'>" +
-			"<td><input type='checkbox' name='commonid' value='"+rows.id+"'></td>" +
-			"<td class='mailbox-star'>"+index+"</td>" +
-			"<td class='mailbox-name'>"+rows.typeName+"</td>" +
-			"<td class='mailbox-attachment' style='text-align: left;'>"+rows.typedescri+"</td>" +
-			"<td class='mailbox-attachment' style='text-align: left;'>"+rows.typeCode+"</td>" +
-			"<td class='mailbox-date'>" +
-				"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"updateResour('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>" +
-				"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"+
-				/*"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"publish('"+rows.id+"')\">发布</a></div>"+*/
-          "</tr>";
+	var resHtml = "";
+	resHtml += "<tbody id='tbody'><tr style='text-align: center;'>";
+	resHtml += "<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>";
+	resHtml += "<td style='white-space:nowrap;'>序号</td>";
+	resHtml += "<td style='white-space:nowrap;'>资源类型名称</td>";
+	resHtml += "<td style='white-space:nowrap;'>资源类型描述</td>";
+	resHtml += "<td style='white-space:nowrap;'>资源类型code</td>";
+	resHtml += "<td style='white-space:nowrap;'>操作</td></tr>";
+	if(pageRow.length>0){
+		for(var i = 0;i<pageRow.length;i++){
+			var index = 1+i;
+			var rows = pageRow[i];
+			resHtml += "<tr style='text-align: center;'>";
+			resHtml += "<td style='vertical-align:middle;' ><input type='checkbox' name='commonid' value='"+rows.id+"'></td>";
+			resHtml += "<td style='vertical-align:middle;' class='mailbox-star'>"+index+"</td>";
+			resHtml += "<td style='vertical-align:middle;' class='mailbox-name'>"+rows.typeName+"</td>";
+			resHtml += "<td class='mailbox-attachment' style='text-align: left;'>"+rows.typedescri+"</td>";
+			resHtml += "<td style='vertical-align:middle;' class='mailbox-attachment' style='text-align: left;'>"+rows.typeCode+"</td>";
+			resHtml += "<td style='vertical-align:middle;white-space:nowrap;'>";
+			resHtml += "<div class='col-md-3 col-sm-4'><a href='#' onclick=\"updateResour('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>";
+			resHtml += "<div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div>";
+			resHtml += "<div class='col-md-3 col-sm-4'>";
+			if(rows.typeState == 0){
+				resHtml += "<a href='#' onclick=\"pushData(1,'"+rows.id+"')\">发布</a>";
+			}else if(rows.typeState == 1){
+				resHtml += "<a href='#' onclick=\"pushData(0,'"+rows.id+"')\">下撤</a>";
+			}
+			resHtml += "</div>";
+			resHtml += "</td>";
+			resHtml += "</tr>";
 		}
 	}
 	resHtml+="</tbody>";
@@ -99,16 +107,16 @@ function addResour(){
 
 //单条删除
 function remove(id){
-			$.ajax({
-				type : "post",
-				data : {ids: id},
-				url :  "../content/deleteResourceType.do",
-				dataType : "json",
-				beforeSend : function(XMLHttpRequest) {},
-				success : deleteCallback,
-				complete : function(XMLHttpRequest, textStatus) {},
-				error : function(data) {alert(data);}
-			});
+	$.ajax({
+		type : "post",
+		data : {ids: id},
+		url :  "../content/deleteResourceType.do",
+		dataType : "json",
+		beforeSend : function(XMLHttpRequest) {},
+		success : deleteCallback,
+		complete : function(XMLHttpRequest, textStatus) {},
+		error : function(data) {alert(data);}
+	});
 }
 // 多条删除
 function deleteMore(){
@@ -191,10 +199,26 @@ function publish(obj,colums,issueState){
 	  });
 }
 
-function pushData(){
-	$.post("../content/pushdata.do",function(){});
+//资源发布
+function pushData(state,id){
+	$.ajax({
+		type : "post",  
+		url : "../content/pushdata.do",
+		data :{ 
+			"state":state,
+			"id" : id
+		},
+		dataType : "json",
+		success : function(data){
+			if(data){
+				refresh();
+			}else{
+				layer.alert("发布失败!");
+			}
+		}
+	});
+/*	$.post("../content/pushdata.do",function(){});*/
 }
-
 //导出资源
 function exportResource(){
 	window.location.href="../content/exportResource.do?resouceType="+typeName;

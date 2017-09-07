@@ -105,6 +105,11 @@ public class ResourceTypeImple implements ResourceTypeService {
 	}
 	
 	@Override
+	public int updateResourceTypeState(int typeState,String id){
+		return dao.updateResourceTypeState(typeState, id);
+	}
+	
+	@Override
 	public List<Object> exportResource(String typeName) {
 		
 		List<Object> list=new ArrayList<Object>();

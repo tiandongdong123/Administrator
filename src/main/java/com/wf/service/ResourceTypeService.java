@@ -54,6 +54,13 @@ public interface ResourceTypeService {
 	
 	JSONArray getAll1();
 	
+	/**
+	 * 更新资源类型的状态
+	 * @param typeState
+	 * @param id
+	 * @return
+	 */
+	int updateResourceTypeState(int typeState,String id);
 	List<Object> exportResource(String typeName);
 	
 	String checkRsTypeCode(String rsTypeCode);

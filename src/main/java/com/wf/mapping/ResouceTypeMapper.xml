@@ -7,6 +7,7 @@
     <result column="resource_type_descri" property="typedescri" jdbcType="VARCHAR" />
     <result column="resource_type_code" property="typeCode" jdbcType="VARCHAR" />
     <result column="add_time" property="addTime" jdbcType="VARCHAR" />
+	<result column="resource_type_state" property="typeState" jdbcType="INTEGER" />																				
   </resultMap>
  
  <!-- 查询所有资源分类信息 -->
@@ -62,6 +63,9 @@
           
    </delete>
    
+   <update id="updateResourceTypeState">
+   		update resource_type SET resource_type_state=#{typeState} where id=#{id}
+   </update>
    <update id="updateResourceType" parameterType="com.wf.bean.ResourceType">
    		update resource_type SET resource_type_name=#{typeName},resource_type_descri=#{typedescri},resource_type_code=#{typeCode} where id=#{id}
    </update>
@@ -80,7 +84,7 @@
   select * from resource_type
   </select>
    <select id="getAll1"  resultMap="BaseResultMap">
-  select * from resource_type
+  select * from resource_type where resource_type_state = 1
   </select>
   
   <select id="checkRsTypeCode" parameterType="java.lang.String" resultType="java.lang.String">

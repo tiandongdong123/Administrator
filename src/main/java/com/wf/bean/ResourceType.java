@@ -6,6 +6,7 @@ public class ResourceType {
 	private String typedescri;
 	private String typeCode;
 	private String addTime;
+	private String typeState;
 	
 	public String getAddTime() {
 		return addTime;
@@ -36,6 +37,12 @@ public class ResourceType {
 	}
 	public void setTypedescri(String typedescri) {
 		this.typedescri = typedescri;
+	}
+	public String getTypeState() {
+		return typeState;
+	}
+	public void setTypeState(String typeState) {
+		this.typeState = typeState;
 	}
 	
 }

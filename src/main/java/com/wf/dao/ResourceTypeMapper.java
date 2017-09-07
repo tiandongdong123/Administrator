@@ -46,6 +46,13 @@ public interface ResourceTypeMapper {
 	 * @return
 	 */
 	public int updateResourceType(ResourceType resourceType);
+	/**
+	 * 更新资源类型状态 
+	 * @param typeState
+	 * @param id
+	 * @return
+	 */
+	public int updateResourceTypeState(@Param("typeState") int typeState,@Param("id") String id);																					  
 	
 	public ResourceType findResourceTypeParam(Map<String , Object> map);
 	
