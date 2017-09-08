@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bigdata.framework</groupId>
 	<artifactId>wf-framework-adminManager-web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
 	<description>The project of accounting demo</description>
