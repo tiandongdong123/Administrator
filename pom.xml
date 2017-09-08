@@ -11,13 +11,13 @@
 	<name>${project.artifactId}</name>
 	<description>The project of accounting demo</description>
 
-	<repositories>
+ 	<repositories>
         <repository>
             <id>WF-repository</id>
-            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public/</url>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
         </repository>
-    </repositories>
-    <!-- 上传至nexus服务器 -->
+	</repositories>
+	<!-- 上传至nexus服务器 -->
     <distributionManagement>
         <repository>
             <id>local_nexus_releases</id>
@@ -124,13 +124,13 @@
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
-			<version>1.2017.94-SNAPSHOT</version>
+			<version>1.2017.94-20170905.081636-1</version>
 		</dependency> 
 		<!-- 文辑推优 -->
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-common-api</artifactId>
-			<version>1.2017.40-SNAPSHOT</version>
+			<version>1.2017.40-20170905.060136-1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.xmemcached</groupId>
