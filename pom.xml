@@ -85,7 +85,6 @@
 		<!-- jdom解析 -->
 		<jdom.version>2.0.5</jdom.version>
 		<dom4j.version>1.6.1</dom4j.version>
-		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<codehausJackson.version>1.9.12</codehausJackson.version>
 		<resteasy.version>3.0.7.Final</resteasy.version>
 		<!-- 上传 -->
@@ -99,20 +98,14 @@
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<qq-connect.version>1.00</qq-connect.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
+		<wanfang.version>1.2017.346</wanfang.version>
 	</properties>
-
-	<!-- 声明parent的jar依赖，不被所有子项目继承，若子项目需继承jar，只需声明groupId和artifactId即可 -->
-	<dependencyManagement>
-		<dependencies>
-
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 	  		<groupId>com.wanfangdata</groupId>
 	  		<artifactId>encrypt</artifactId>
-	  		<version>1.2017.20</version>
+	  		<version>1.2017.266</version>
 		</dependency>
 		<!-- db mysql -->
 		<dependency>
@@ -548,17 +541,12 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>zookeepertools</artifactId>
-			<version>1.2016.5</version>
+			<version>1.2017.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>setting</artifactId>
-			<version>1.2016.8</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>${commons-httpclient.version}</version>
+			<version>1.2017.3</version>
 		</dependency>
 		<dependency>
    			<groupId>org.apache.commons</groupId>
@@ -580,28 +568,28 @@
         <dependency>
            <groupId>com.wanfangdata</groupId>
              <artifactId>wf-cas-api</artifactId>
-             <version>1.2017.192</version>
+             <version>${wanfang.version}</version>
         </dependency>
         <!-- 购买项目（充值） -->
         <dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>authentication-api</artifactId>
-			<version>1.2017.211</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-api</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 	 	<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-setting</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-dao-api</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		
 		<!-- POI包 -->
