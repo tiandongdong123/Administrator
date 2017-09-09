@@ -758,9 +758,8 @@
 		</resource>
 	</resources>
 	
-    <finalName>wf-framework-adminManager-web</finalName>
-	<directory>../output/wf-framework-adminManager-web</directory>
-	
+   	<finalName>${project.artifactId}</finalName>
+	<directory>../output/${project.artifactId}</directory>
   	<pluginManagement>
 	<plugins>  
       <plugin>  
