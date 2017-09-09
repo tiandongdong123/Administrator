@@ -1277,7 +1277,7 @@ public class AheadUserController {
 				mm.put("projectname", json.get("projectname"));
 			}
 		}
-		List<Map<String,String>> project=aheadUserService.getReourceMappingByUserId(userId);
+		List<Map<String,String>> project=opreationLogs.getProjectByUserId(userId);
 		view.addObject("project", project);//获取用户购买项目
 		view.setViewName("/page/usermanager/ins_oprationrecord");
 		return view;
@@ -1571,6 +1571,7 @@ public class AheadUserController {
 							op.setReason(json.toString());
 						}
 						op.setProjectId(dto.getProjectid());
+						op.setProjectName(dto.getProjectname());
 						opreationLogs.addOperationLogs(op);
 					}
 				}

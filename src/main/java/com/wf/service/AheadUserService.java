@@ -188,6 +188,4 @@ public interface AheadUserService {
 	List<Person> queryPersonInId(List<String> userIds);
 	/**获取权限列表*/
 	List<AuthoritySetting> getAuthoritySettingList();
-	/** 根据userId获取项目列表  **/
-	List<Map<String,String>> getReourceMappingByUserId(String userId);
 }

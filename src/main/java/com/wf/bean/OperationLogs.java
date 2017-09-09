@@ -10,6 +10,7 @@ public class OperationLogs {
 	private String person;
 	private String reason;// 简述
 	private String projectId;// 项目Id
+	private String projectName;//项目名称
 	
 	public Integer getId() {
 		return id;
@@ -52,5 +53,11 @@ public class OperationLogs {
 	}
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
+	}
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 }

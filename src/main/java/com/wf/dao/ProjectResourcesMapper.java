@@ -1,7 +1,6 @@
 package com.wf.dao;
 
 
-import java.util.List;
 import java.util.Map;
 
 import com.wf.bean.ProjectResources;
@@ -17,6 +16,4 @@ public interface ProjectResourcesMapper {
     Map<String,Object> selectProjectResourcesById(Map<String, Object> m);
 
     int update(ProjectResources pr);
-
-	List<Map<String, String>> getReourceMappingByUserId(String userId);
 }
