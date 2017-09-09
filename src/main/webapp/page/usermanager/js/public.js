@@ -429,20 +429,20 @@ function createDetail(count,i,resourceid,type){
 		text += '<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+')"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		text += '市 <select id="shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+')"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		text += '县 <select id="xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+')"><option value="">全部</option></select></td></tr>';
-		text += '<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;"><input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="LocalChronicle" name="rdlist['+count+'].rldto['+i+'].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '<input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="LocalChronicleItem" name="rdlist['+count+'].rldto['+i+'].drtm1"/> 条目</td></tr>';
+		text += '<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;"><input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].drtm1" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		text += '<input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicleItem" name="rdlist['+count+'].rldto['+i+'].drtm1"/> 条目</td></tr>';
 		text += '<tr><td align=right width="10%"><span id="zjfl_'+count+'_'+i+'">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;"><a href="javascript:;" onclick="checkfzAll(this,'+count+','+i+')" id="checkfz_'+count+'_'+i+'">全选</span></td></tr>';
 		text += '<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">';
 		text += '<div id="new_class_code_'+count+'_'+i+'"></div><div id="item_class_code_'+count+'_'+i+'" style="display:none"></div></td></tr></table></td>';
 		text += '</tr><tr height="40%"><td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,'+count+','+i+')"/>自定义导入</td>';
 		text += '<td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">';
-		text += '<input type="radio" value="LocalChronicle" onclick="getDataLevel(this.value,'+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].drtm" checked disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '<input type="radio" value="LocalChronicleItem" onclick="getDataLevel(this.value,'+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>';
+		text += '<input type="radio" value="WFLocalChronicle" onclick="getDataLevel(this.value,'+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].drtm" checked disabled/> 整本 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		text += '<input type="radio" value="WFLocalChronicleItem" onclick="getDataLevel(this.value,'+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].drtm" disabled/> 条目 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（以;作为分隔符）<br/>';
 		text += '<textarea class="form-control" rows="4" name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteersId_'+count+'_'+i+'" style="width:70%;" disabled></textarea>';
 		text += '<input type="file" name="file" id="file_'+count+'_'+i+'" disabled/></td></tr></table>';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersArea" id="gazetteersArea_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'">';
-		text += '<input type="hidden" value="LocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/></div></div>';
+		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/></div></div>';
 	}
 	text += '</div></div>';
 	$("#detail_0").append(text);
@@ -603,11 +603,11 @@ function setGazetteers(count,index){
 		var album=$("#gazetteersAlbum_"+count+"_"+index).val();
 		var albums=album.split(";");
 		var class_code="";
-		if(gazetteersLevel=="LocalChronicle"){
+		if(gazetteersLevel=="WFLocalChronicle"){
 			class_code="input[name='classCode_"+count+"_"+index+"']";
 			$("#new_class_code_"+count+"_"+index).show();
 			$("#item_class_code_"+count+"_"+index).hide();
-		}else if(gazetteersLevel=="LocalChronicleItem"){
+		}else if(gazetteersLevel=="WFLocalChronicleItem"){
 			class_code="input[name='classCode2_"+count+"_"+index+"']";
 			$("#new_class_code_"+count+"_"+index).hide();
 			$("#item_class_code_"+count+"_"+index).show();
@@ -745,7 +745,7 @@ function checkfzAll(obj,count,i){
 	}
 	var text=$(obj).text();
 	var type="";
-	if($("input[name='rdlist["+count+"].rldto["+i+"].drtm1']:checked").val()=="LocalChronicle"){
+	if($("input[name='rdlist["+count+"].rldto["+i+"].drtm1']:checked").val()=="WFLocalChronicle"){
 		type="input[name='classCode_"+count+"_"+i+"']";
 	}else{
 		type="input[name='classCode2_"+count+"_"+i+"']";
@@ -770,11 +770,11 @@ function checkfzAll(obj,count,i){
 //选择数据类型
 function getDataType(val,count,i){
 	$("#checkfz_"+count+"_"+i).html("全选");
-	if(val=="LocalChronicle"){//志书
+	if(val=="WFLocalChronicle"){//志书
 		$("#zjfl_"+count+"_"+i).html("专辑分类");
 		$("#new_class_code_"+count+"_"+i).show();
 		$("#item_class_code_"+count+"_"+i).hide();
-	}else if(val=="LocalChronicleItem"){//条目
+	}else if(val=="WFLocalChronicleItem"){//条目
 		$("#zjfl_"+count+"_"+i).html("专题分类");
 		$("#new_class_code_"+count+"_"+i).hide();
 		$("#item_class_code_"+count+"_"+i).show();
