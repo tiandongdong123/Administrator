@@ -33,5 +33,10 @@ public class OpreationLogsServiceImp implements OpreationLogsService{
 		pageList.setPageSize((int)map.get("pageSize"));
 		return pageList;
 	}
+	
+	@Override
+	public List<Map<String,String>> getProjectByUserId(String userId){
+		return operation.getProjectByUserId(userId);
+	}
 
 }

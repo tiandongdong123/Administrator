@@ -1,5 +1,6 @@
 package com.wf.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.wf.bean.OperationLogs;
@@ -20,5 +21,12 @@ public interface OpreationLogsService {
 	 * @return
 	 */
 	PageList selectOperationLogs(Map<String, Object> map);
+	
+	/**
+	 * 根据userId获取项目列表
+	 * @param userId
+	 * @return
+	 */
+	List<Map<String,String>> getProjectByUserId(String userId);
 
 }

@@ -110,30 +110,6 @@ public class CardController {
 		return cardtype.getlist();
 	}
 	
-//	@RequestMapping("export")
-//	@ResponseBody
-//	public Object exoprtWord(HttpServletRequest request,HttpServletResponse response) {
-//		
-//		String data=request.getParameter("data");
-//		JSONArray json=JSONArray.fromObject(data);
-//		List<String> namelist=new ArrayList<String>();
-//		namelist.add("批次");
-//		namelist.add("充值卡类型");
-//		namelist.add("卡号");
-//		namelist.add("密码");
-//		namelist.add("面值");		
-//		namelist.add("有效期");
-//		namelist.add("申请日期");
-//		namelist.add("激活状态");		
-//		namelist.add("激活日期");
-//		namelist.add("激活用户");
-//		namelist.add("激活ip");
-//		String realspath=request.getRealPath("/") + "Word/";
-//		ExportExcel exc=new ExportExcel();
-//		String str=exc.exportExccel1(response,json, namelist);
-//		return str;
-//	}
-	
 	/**
 	 * 保存下载
 	 * @param model
@@ -141,13 +117,13 @@ public class CardController {
 	 * @param request
 	 */
 	@RequestMapping("download")
-	public void ouyang(Model model,HttpServletResponse response,HttpServletRequest request) {
+	public void download(Model model,HttpServletResponse response,HttpServletRequest request) {
         // 下载本地文件
 		String fileName = request.getParameter("titel"); // 文件的默认保存名
 		InputStream inStream = null;
 		try{
 			fileName = URLDecoder.decode(fileName, "UTF-8") + ".xlsx";
-			inStream = new FileInputStream(request.getRealPath("/") + "Word/"+ fileName);
+			inStream = new FileInputStream(request.getServletContext().getRealPath("/") + "Word/"+ fileName);
 			// 设置输出的格式
 			response.reset();
 			response.setContentType("bin");
@@ -229,7 +205,7 @@ public class CardController {
 	 */
 	@RequestMapping("download1")
 	public void downResourse(HttpServletRequest request,HttpServletResponse response,String url){
-		url = request.getSession().getServletContext().getRealPath("/") + url;
+		url = request.getServletContext().getRealPath("/") + url;
 		String fileName = url;
 		String type = fileName.substring(fileName.lastIndexOf("."));
 		String name = fileName.substring(fileName.lastIndexOf("/")+1, fileName.lastIndexOf("."));

@@ -1,7 +1,3 @@
-$(function(){
-	
-});
-
 //提交事件
 function submitForm(){
 	$("#submit").attr({disabled: "disabled"});
@@ -26,8 +22,8 @@ function submitForm(){
 				layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 			}
 		});
+		$("#submit").removeAttr("disabled");
 	}
-	$("#submit").removeAttr("disabled");
 }
 
 function download1(title){

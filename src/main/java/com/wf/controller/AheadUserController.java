@@ -85,48 +85,24 @@ public class AheadUserController {
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
-		String [] str = ip.split("\n");
-		//校验<文本框内>是否存在IP重复
-/*		for(int i = 0; i < str.length; i++){		
-			for(int j = 0; j < str.length; j++){
-				if(i!=j && StringUtils.isNoneBlank(str[i]) && StringUtils.isNoneBlank(str[j])){					
-					String beginIp = str[i].substring(0, str[i].indexOf("-"));
-					String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-					//比较起始IP
-					boolean bool = IPConvertHelper.ipExistsInRange(beginIp, str[j]);
-					//比较结束IP
-					boolean bo = IPConvertHelper.ipExistsInRange(endIp, str[j]);
-					if(bool || bo){
-						set.add(str[i]+"</br>"+str[j]+"</br>");
-					}
+		String [] str = ip.split("\n");	
+		//校验<数据库>是否存在IP重复
+		for(int i = 0; i < str.length; i++){		
+			String beginIp = str[i].substring(0, str[i].indexOf("-"));
+			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
+			List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
+			if(bool.size()>0){
+				map.put("flag", "true");
+				map.put("userId", "用户ID："+userId);
+				sbf.append(str[i]+"</br>");
+				map.put("errorIP", sbf.toString());
+				for(UserIp userIp : bool){
+					sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
+					+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
 				}
+				map.put("tableIP", sb.toString());
 			}
 		}
-		if(set.size()>0){
-			map.put("flag", "true");
-			map.put("userId", "用户ID："+userId);
-			map.put("errorIP", set.toString().replace("[", "").replace("]", ""));
-			map.put("tableIP", "");
-			return map;
-		}else{*/		
-			//校验<数据库>是否存在IP重复
-			for(int i = 0; i < str.length; i++){		
-				String beginIp = str[i].substring(0, str[i].indexOf("-"));
-				String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-				List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
-				if(bool.size()>0){
-					map.put("flag", "true");
-					map.put("userId", "用户ID："+userId);
-					sbf.append(str[i]+"</br>");
-					map.put("errorIP", sbf.toString());
-					for(UserIp userIp : bool){
-						sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
-						+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
-					}
-					map.put("tableIP", sb.toString());
-				}
-			}
-		//}
 		if(map.size()<=0){
 			map.put("flag", "false");
 		}
@@ -440,7 +416,7 @@ public class AheadUserController {
 	@RequestMapping("removeproject")
 	@ResponseBody
 	public Map<String,String> removeproject(String payChannelid,String type,String beginDateTime,String endDateTime,String institution,
-			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname) throws Exception{
+			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname,Double balance) throws Exception{
 		int i = 0;
 		Map<String,String> map = new HashMap<>();
 		String adminId = this.checkLogin(req,res);
@@ -452,17 +428,12 @@ public class AheadUserController {
 		dto.setValidityStarttime(beginDateTime);
 		dto.setValidityEndtime(endDateTime);
 		dto.setProjectname(projectname);
-		/*if(type.equals("balance")){			
-			com.setResetMoney("true");
-			dto.setTotalMoney(0.00);
-			i = aheadUserService.chargeProjectBalance(com, dto,adminId);
-		}else if(type.equals("count")){
-			com.setResetCount("true");
-			dto.setPurchaseNumber(0);
-			i = aheadUserService.chargeCountLimitUser(com, dto,adminId);
-		}else if(type.equals("time")){
-			i = 1;
-		}*/
+		dto.setProjectType(type);
+		if("balance".equals(type)){
+			dto.setTotalMoney(balance);
+		}else if("count".equals(type)){
+			dto.setPurchaseNumber(balance.intValue());
+		}
 		i = aheadUserService.deleteAccount(com, dto, adminId);
 		if(i > 0){
 			aheadUserService.deleteResources(com,dto,false);
@@ -583,7 +554,7 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
-		String path = request.getRealPath("/") + "page/usermanager/" + "excel";
+		String path = request.getServletContext().getRealPath("/") + "page/usermanager/" + "excel";
 		view.addObject("path",path);
 		view.setViewName("/page/usermanager/ins_batchregister");
 		return view;
@@ -832,33 +803,32 @@ public class AheadUserController {
 			List<ResourceDetailedDTO> list = com.getRdlist();
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
-			for(ResourceDetailedDTO dto : list){
-				for(Map<String, Object> pro : lm) {						
-					if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-						dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
-						if(dto.getProjectType().equals("balance")){
-							if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
-							}
-						}else if(dto.getProjectType().equals("time")){
-							//增加限时信息
-							if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
-							}
-						}else if(dto.getProjectType().equals("count")){
-							dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
-							//增加次数信息
-							if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
+				for(ResourceDetailedDTO dto : list){
+					for(Map<String, Object> pro : lm) {
+						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
+							dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+							if(dto.getProjectType().equals("balance")){
+								if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
+							}else if(dto.getProjectType().equals("time")){
+								//增加限时信息
+								if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
+							}else if(dto.getProjectType().equals("count")){
+								dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+								//增加次数信息
+								if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
 							}
 						}
-						this.saveOperationLogs(com,"2", session);
 					}
 				}
-			}
 			}
 			if(resinfo>0){
 				String msg = WebServiceUtil.submitOriginalDelivery(com, false);
@@ -868,6 +838,7 @@ public class AheadUserController {
 				System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
+			this.saveOperationLogs(com,"2", session);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
@@ -881,7 +852,6 @@ public class AheadUserController {
 		String fileName = request.getParameter("title"); // 文件的默认保存名
 		InputStream inStream = null;
 		try{
-			
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			String TextName="";
 			if(fileName.equals("机构账号批量模板（更新）")){
@@ -894,8 +864,7 @@ public class AheadUserController {
 				TextName="ZC.xlsx";
 				fileName=fileName+".xlsx";
 			}
-			fileName=fileName;
-			inStream = new FileInputStream(request.getRealPath("/") + "page/usermanager/excel/"+TextName);
+			inStream = new FileInputStream(request.getServletContext().getRealPath("/") + "page/usermanager/excel/"+TextName);
 			// 设置输出的格式
 			response.reset();
 			response.setContentType("bin");
@@ -1262,7 +1231,8 @@ public class AheadUserController {
 	 *	操作记录
 	 */
 	@RequestMapping("opration")
-	public ModelAndView opration(String pageNum,String pageSize,String startTime,String endTime,String userId,String person,HttpSession session){
+	public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
+			String userId, String person, String projectId, HttpSession session) {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1278,6 +1248,9 @@ public class AheadUserController {
 		}
 		if(!StringUtils.isEmpty(userId)){
 			map.put("userId", userId);	
+		}
+		if(!StringUtils.isEmpty(projectId)){
+			map.put("projectId", projectId);
 		}
 		PageList pageList = opreationLogs.selectOperationLogs(map);
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
@@ -1295,7 +1268,7 @@ public class AheadUserController {
 					mm.put("totalMoney", json.get("totalMoney"));
 				}else if(type.equals("count")){
 					mm.put("projectType", "次数");
-					mm.put("purchaseNumber", json.get("totalMoney"));
+					mm.put("purchaseNumber", json.get("purchaseNumber"));
 				}else if(type.equals("time")){
 					mm.put("projectType", "限时");
 				}
@@ -1304,6 +1277,8 @@ public class AheadUserController {
 				mm.put("projectname", json.get("projectname"));
 			}
 		}
+		List<Map<String,String>> project=opreationLogs.getProjectByUserId(userId);
+		view.addObject("project", project);//获取用户购买项目
 		view.setViewName("/page/usermanager/ins_oprationrecord");
 		return view;
 	}
@@ -1566,28 +1541,42 @@ public class AheadUserController {
 	 */
 	private void saveOperationLogs(CommonEntity com,String flag,HttpSession session){
 		if(com!=null){
-			String adminId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
+			Wfadmin admin = ((Wfadmin)session.getAttribute("wfAdmin"));
 			List<ResourceDetailedDTO> list = com.getRdlist();
 			if(list!=null &&list.size()>0){
 				for(ResourceDetailedDTO dto:list){
-					if(dto.getProjectid()!=null){						
-						OperationLogs op=new OperationLogs();
-						op.setUserId(com.getUserId());
-						op.setPerson(adminId);
-						op.setOpreation(flag=="2"?"更新":"删除");
-						if(com.getRdlist()!=null){
-							op.setReason(JSONObject.fromObject(dto).toString());
+					if(dto.getProjectid()!=null){
+						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("count")
+								&& dto.getPurchaseNumber() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("time")) {
+							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
+								continue;
+							}
 						}
+						OperationLogs op = new OperationLogs();
+						op.setUserId(com.getUserId());
+						String name = admin.getUser_realname();
+						if (StringUtils.isEmpty(name)) {
+							name = admin.getWangfang_admin_id();
+						}
+						op.setPerson(name);
+						op.setOpreation(flag == "2" ? "更新" : "删除");
+						if (com.getRdlist() != null) {
+							JSONObject json=JSONObject.fromObject(dto);
+							json.remove("rldto");
+							op.setReason(json.toString());
+						}
+						op.setProjectId(dto.getProjectid());
+						op.setProjectName(dto.getProjectname());
 						opreationLogs.addOperationLogs(op);
 					}
 				}
 			}
 		}
-	}
-	
-	public static void main(String[] args){
-		String str = "[\"a\",\"b\",\"c\"]";
-		System.out.println(JSONArray.fromObject(str));
 	}
 	
 	/**
