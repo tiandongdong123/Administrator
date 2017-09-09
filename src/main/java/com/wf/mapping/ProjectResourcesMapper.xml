@@ -18,6 +18,10 @@
     select pr.contract,pr.resource_id,pr.pay_channelId from wfks_pay_channel_resources pr where user_id = #{userId} and pay_channelId = #{projectId}
   </select>
   
+  <select id="getReourceMappingByUserId" resultMap="BaseResultMap2">
+    select pr.resource_id,pr.pay_channelId,pr.product_id from wfks_pay_channel_resources pr where pr.user_id = #{userId}
+  </select>
+  
   <delete id="deleteResources" parameterType="com.wf.bean.ProjectResources" >
     delete from wfks_pay_channel_resources where 1=1 
     <if test="userId != null and userId != ''" >

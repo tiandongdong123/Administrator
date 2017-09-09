@@ -5,19 +5,23 @@
     <result column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="crate_time" property="crateTime" jdbcType="VARCHAR" />
+    <result column="person" property="person" jdbcType="VARCHAR" />
     <result column="opreation"  property="opreation" jdbcType="VARCHAR" />
     <result column="reason" property="reason" jdbcType="VARCHAR" />
-    <result column="person" property="person" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
   </resultMap>
   
   <insert id="addOperationLogs" parameterType="com.wf.bean.OperationLogs">
-   insert into operation_logs (user_id,crate_time,opreation,reason,person) values  (#{userId},now(),#{opreation},#{reason},#{person})
+   insert into operation_logs (user_id,crate_time,opreation,reason,person,project_id) values  (#{userId},now(),#{opreation},#{reason},#{person},#{projectId})
   </insert>
   
   <select id="selectOperationLogs" resultMap="BaseResultMap" parameterType="java.util.Map"> 
-  select id,user_id,crate_time,person,opreation,reason from operation_logs where 1=1
+  select id,user_id,crate_time,person,opreation,reason,project_id from operation_logs where 1=1
   <if test="userId!=null and userId!=''">
   	and user_id = #{userId}
+  </if>
+  <if test="projectId!=null and projectId!=''">
+  	and project_id = #{projectId}
   </if>
    <if test="person!=null and person!=''">
   	and person = #{person}

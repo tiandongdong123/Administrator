@@ -1590,4 +1590,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public List<AuthoritySetting> getAuthoritySettingList() {
 		return authoritySettingMapper.getAuthoritySettingList();
 	}
+	
+	@Override
+	public List<Map<String,String>> getReourceMappingByUserId(String userId){
+		List<Map<String,String>> list=projectResourcesMapper.getReourceMappingByUserId(userId);
+		for(Map<String,String> map:list){
+			PayChannelModel pay = SettingPayChannels.getPayChannel(map.get("projectId"));
+			map.put("projectName", pay.getName());
+		}
+		return list;
+	} 
 }

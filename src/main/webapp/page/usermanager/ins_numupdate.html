@@ -138,7 +138,7 @@
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
            		<button type="button" class="btn btn-primary" style="margin-left:1000px;" 
-           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}');">删除</button>
+           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
            	</div>
            	<div class="time_block">
             	<div class="time_input">
@@ -147,6 +147,10 @@
             		<span class="to">至</span>
             		<input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime" id="${pro.payChannelid}_et" onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
             	</div>
+            	<?if(pro.type=='time'){?>
+            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime}">
+            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime}">
+            	<?}?>
            		<?if(pro.type!='time'&&pro.type!='count'){?>	              	
             		<div class="time_input time_money">
             			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>

@@ -259,7 +259,7 @@ function showProduct(obj,falg){
 }
 
 //删除项目
-function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname){
+function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname,balance){
 	layer.alert('确定删除该项目吗？',{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -280,6 +280,7 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 	    					"endDateTime":endDateTime,
 	    					"institution":institution,
 	    					"userId":userId,
+	    					"balance":balance,
 	    					"projectname":projectname
 	    				},
 	    				dataType : "json",

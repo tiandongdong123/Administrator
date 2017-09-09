@@ -416,7 +416,7 @@ public class AheadUserController {
 	@RequestMapping("removeproject")
 	@ResponseBody
 	public Map<String,String> removeproject(String payChannelid,String type,String beginDateTime,String endDateTime,String institution,
-			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname) throws Exception{
+			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname,Double balance) throws Exception{
 		int i = 0;
 		Map<String,String> map = new HashMap<>();
 		String adminId = this.checkLogin(req,res);
@@ -428,6 +428,12 @@ public class AheadUserController {
 		dto.setValidityStarttime(beginDateTime);
 		dto.setValidityEndtime(endDateTime);
 		dto.setProjectname(projectname);
+		dto.setProjectType(type);
+		if("balance".equals(type)){
+			dto.setTotalMoney(balance);
+		}else if("count".equals(type)){
+			dto.setPurchaseNumber(balance.intValue());
+		}
 		i = aheadUserService.deleteAccount(com, dto, adminId);
 		if(i > 0){
 			aheadUserService.deleteResources(com,dto,false);
@@ -1225,7 +1231,8 @@ public class AheadUserController {
 	 *	操作记录
 	 */
 	@RequestMapping("opration")
-	public ModelAndView opration(String pageNum,String pageSize,String startTime,String endTime,String userId,String person,HttpSession session){
+	public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
+			String userId, String person, String projectId, HttpSession session) {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1241,6 +1248,9 @@ public class AheadUserController {
 		}
 		if(!StringUtils.isEmpty(userId)){
 			map.put("userId", userId);	
+		}
+		if(!StringUtils.isEmpty(projectId)){
+			map.put("projectId", projectId);
 		}
 		PageList pageList = opreationLogs.selectOperationLogs(map);
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
@@ -1267,6 +1277,8 @@ public class AheadUserController {
 				mm.put("projectname", json.get("projectname"));
 			}
 		}
+		List<Map<String,String>> project=aheadUserService.getReourceMappingByUserId(userId);
+		view.addObject("project", project);//获取用户购买项目
 		view.setViewName("/page/usermanager/ins_oprationrecord");
 		return view;
 	}
@@ -1540,7 +1552,10 @@ public class AheadUserController {
 								&& dto.getPurchaseNumber() == 0) {
 							continue;
 						} else if (dto.getProjectType().equals("time")) {
-
+							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
+								continue;
+							}
 						}
 						OperationLogs op = new OperationLogs();
 						op.setUserId(com.getUserId());
@@ -1555,6 +1570,7 @@ public class AheadUserController {
 							json.remove("rldto");
 							op.setReason(json.toString());
 						}
+						op.setProjectId(dto.getProjectid());
 						opreationLogs.addOperationLogs(op);
 					}
 				}

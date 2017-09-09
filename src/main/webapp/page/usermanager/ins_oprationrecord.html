@@ -14,8 +14,16 @@
         <div class="box-body">
          <form action="../auser/opration.do" method="post" id="fromList">
                <div class="form-group input_block">
-                  <label >操作人：</label><input type="text" id="person" name="person" value="${map.person}" style="width: 150px;">
+                  <label>操作人：</label><input type="text" id="person" name="person" value="${map.person}" style="width: 150px;">
                   <input type="hidden" id="userId" name="userId" value="${map.userId}">
+               </div>
+               <div class="form-group input_block">
+                  <label>购买项目：</label><select style="width: 350px;" name="projectId" id="projectId">
+					<option value="">-选择项目-</option>
+					<?for(pro in project){?>
+						<option value="${pro.projectId}" <?if(pro.projectId==map.projectId){?>selected="selected"<?}?>>${pro.projectName}</option>
+					<?}?>
+	              </select>
                </div>
                 <div id="example1_filter" class="dataTables_filter">
                 	<label>操作时间：</label><input type="text" style="width: 185px;" id="startTime" name="startTime"  onclick="WdatePicker()" value="${map.startTime}">
