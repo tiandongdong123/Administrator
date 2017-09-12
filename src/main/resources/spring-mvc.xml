@@ -53,7 +53,6 @@
 			<!--  需排除拦截的地址 -->
 			<mvc:exclude-mapping path="/user/toLogin.do"/>
 			<mvc:exclude-mapping path="/user/userLogin.do"/>
-			<mvc:exclude-mapping path="/user/toIndex.do"/>
 			<mvc:exclude-mapping path="/js/**"/>
 			<mvc:exclude-mapping path="/inc/**"/>  
 			<mvc:exclude-mapping path="/page/**"/>
