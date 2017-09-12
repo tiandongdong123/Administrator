@@ -141,7 +141,7 @@ public class UserController {
 	 */
 	public void removeCookieRedis(HttpServletRequest req,HttpServletResponse res) {
 		String token = CookieUtil.getCookie(req);
-		if (token != null) {
+		if (token == null) {
 			return;
 		}
 		Wfadmin admin = CookieUtil.getWfadmin(req);
@@ -177,9 +177,18 @@ public class UserController {
 				menus.add(purview);
 			}
 		}
-		session.setAttribute("purviews", StringUtils.join(menus, ","));
-		session.setAttribute("userName", admin.getWangfang_admin_id());
+		String purviews=StringUtils.join(menus, ",");
+		String userId=admin.getWangfang_admin_id();
+		session.setAttribute("purviews", purviews);
+		session.setAttribute("userName", userId);
 		session.setAttribute("department", deptName);
+		//放入redis
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("purviews", purviews);
+		map.put("userName", userId);
+		map.put("department", deptName);
+		redis.set(CookieUtil.LAYOUT+userId,map.toString(), 12);
+		redis.expire(CookieUtil.LAYOUT+userId, 3600, 12); //设置超时时间
 		view.setViewName("/page/index");
 		return view;
 	}
