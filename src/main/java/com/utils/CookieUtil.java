@@ -6,12 +6,24 @@ import java.net.URLEncoder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.sf.json.JSONObject;
+
+import com.redis.RedisUtil;
 import com.wf.bean.Wfadmin;
 
 public class CookieUtil {
 	
+	public static RedisUtil redis = new RedisUtil();
+	
 	public static final String LOGIN_URL = "/user/toLogin.do";
+	public static final String REMIND="/user/getRemind.do";
+	public static final String INDEX="/user/toIndex.do";
+	public static final String LAYOUT="layout.";
+	
+	public static String getCache(String key){
+		return redis.get(key, 12);
+	}
 	
 	/**
 	 * 检验cookie
