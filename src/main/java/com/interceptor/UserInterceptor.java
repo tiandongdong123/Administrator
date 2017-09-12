@@ -31,7 +31,7 @@ public class UserInterceptor implements HandlerInterceptor {
 	//预处理
 	@Override
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {  
-		if (CookieUtil.isLogin(req)) {
+		if (!CookieUtil.isLogin(req)) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
