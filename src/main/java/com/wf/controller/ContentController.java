@@ -67,6 +67,7 @@ import com.wf.service.ShareTemplateNamesService;
 import com.wf.service.ShareTemplateService;
 import com.wf.service.SubjectService;
 import com.wf.service.VolumeService;
+import com.xxl.conf.core.XxlConfClient;
 
 @Controller
 @RequestMapping("/content")   
@@ -845,7 +846,8 @@ public class ContentController{
 	public void geturl(HttpServletResponse response,HttpServletRequest request){
 		response.setCharacterEncoding("UTF-8");
 		JSONObject json = new JSONObject();
-		json.put("search", Getproperties.getPros("httpurl.properties").getProperty("menu.index.wf_fw_zsfx"));
+		/*json.put("search", Getproperties.getPros("httpurl.properties").getProperty("menu.index.wf_fw_zsfx"));*/
+		json.put("search", XxlConfClient.get("wf-search.wf.fw.zsfx", null));
 		PrintWriter out  = null;
 		try {
 			out = response.getWriter();

@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 
+
+import com.xxl.conf.core.XxlConfClient;
+
 import redis.clients.jedis.BinaryClient.LIST_POSITION;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -21,9 +24,12 @@ import redis.clients.jedis.Pipeline;
 public class RedisUtil {
 	
 	private JedisPool pool = null;
-	private static String ip = SettingUtil.getPros("redis.properties").getProperty("redis.host");//SettingUtil.getPros().getProperty("db.redis.host");
-	private static int prot = Integer.parseInt(SettingUtil.getPros("redis.properties").getProperty("redis.port"));//Integer.parseInt(SettingUtil.getPros().getProperty("db.redis.prot"));
+//	private static String ip = SettingUtil.getPros("redis.properties").getProperty("redis.host");//SettingUtil.getPros().getProperty("db.redis.host");
+//	private static int prot = Integer.parseInt(SettingUtil.getPros("redis.properties").getProperty("redis.port"));//Integer.parseInt(SettingUtil.getPros().getProperty("db.redis.prot"));
 	
+	private static String ip = XxlConfClient.get("wf-public.redis.host", null);
+	private static int prot = Integer.parseInt(XxlConfClient.get("wf-public.redis.port", null));
+//	private static String pass = XxlConfClient.get("wf-public.redis.pass", null);
 	
 	/**
 	 * <p>传入ip和端口号构建redis 连接池</p>

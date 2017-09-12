@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.redis.RedisUtil;
 import com.redis.SettingUtil;
 import com.utils.SolrService;
+import com.xxl.conf.core.XxlConfClient;
 
 
 /**
@@ -52,7 +53,8 @@ public class SolrManagerController {
 	private static final String TBOOKS="tbooks";//工具书
 	
 	private static final String front="stringIS_";
-	private static final String solrUrl=SettingUtil.getPros("solr.properties").getProperty("solr.host");
+	/*private static final String solrUrl=SettingUtil.getPros("solr.properties").getProperty("solr.host");*/
+	private static final String solrUrl=XxlConfClient.get("wf-public.solr.url", null);
 	private RedisUtil redis = new RedisUtil();
 	/**
 	 * 跳转到下撤界面

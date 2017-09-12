@@ -6,10 +6,12 @@
 	<!-- 正式服务开启 -->
 	<!-- 正式服务开启 -->
 	<dubbo:application name="adminmanager" />
-	<!-- <dubbo:registry address="zookeeper://10.10.184.100:2190" check="false" /> -->
-	<dubbo:registry address="zookeeper://10.10.184.180:2181?backup=10.10.184.181:2181,10.10.184.182:2181" group="wfks_develop" check="false"/>
 	
-	<dubbo:registry address="zookeeper://10.10.184.100:2187?backup=10.10.184.100:2188,10.10.184.100:2189" check="false"/>
+	<dubbo:registry address="${wf-public.dubbox.zk.url}" check="false" />
+	<!-- <dubbo:registry address="zookeeper://10.10.184.100:2190" check="false" /> -->
+	<!-- <dubbo:registry address="zookeeper://10.10.184.180:2181?backup=10.10.184.181:2181,10.10.184.182:2181" group="wfks_develop" check="false"/> -->
+	
+	<!-- <dubbo:registry address="zookeeper://10.10.184.100:2187?backup=10.10.184.100:2188,10.10.184.100:2189" check="false"/> -->
 	<!-- 	高级检索/专业检索 -->
     <dubbo:reference id="searchAllResult" interface="org.bigdata.framework.search.iservice.ISearchCoreResultService" check="false"/>
     <!-- 文辑推优 -->
