@@ -553,6 +553,13 @@ public class AheadUserController {
 		}
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		for (int i = 0; i < listmap.size(); i++) {
+			Map<String, Object> map = listmap.get(i);
+			if ("".equals(map.get("userId")) && "".equals(map.get("institution"))) {
+				listmap.remove(i);
+				i--;
+			}
+		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
 			if(!map.get("userId").equals("") && !map.get("institution").equals("")){
@@ -685,6 +692,13 @@ public class AheadUserController {
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		for (int i = 0; i < listmap.size(); i++) {
+			Map<String, Object> map = listmap.get(i);
+			if ("".equals(map.get("userId")) && "".equals(map.get("institution"))) {
+				listmap.remove(i);
+				i--;
+			}
+		}
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
 		if(StringUtils.isNotBlank(com.getAdminOldName())){			
@@ -692,7 +706,7 @@ public class AheadUserController {
 		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
-			if(!map.get("userId").equals("")){
+			if(!map.get("userId").equals("") && !map.get("institution").equals("")){
 				//用户是否存在
 				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
 				if(ps==null){

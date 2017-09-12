@@ -177,7 +177,7 @@ public class UserController {
 				menus.add(purview);
 			}
 		}
-		String purviews=StringUtils.join(menus, ",");
+		String purviews=StringUtils.join(menus, "|");
 		String userId=admin.getWangfang_admin_id();
 		session.setAttribute("purviews", purviews);
 		session.setAttribute("userName", userId);
@@ -187,7 +187,7 @@ public class UserController {
 		map.put("purviews", purviews);
 		map.put("userName", userId);
 		map.put("department", deptName);
-		redis.set(CookieUtil.LAYOUT+userId,map.toString(), 12);
+		redis.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(), 12);
 		redis.expire(CookieUtil.LAYOUT+userId, 3600, 12); //设置超时时间
 		view.setViewName("/page/index");
 		return view;
