@@ -9,10 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -29,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import wfks.accounting.setting.PayChannelModel;
 
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.utils.DateUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
@@ -62,8 +61,6 @@ import com.wf.service.PersonService;
 @Controller
 @RequestMapping("auser")
 public class AheadUserController {
-	
-	private static final String LOGIN_URL = "/user/toLogin.do";
 
 	@Autowired
 	private AheadUserService aheadUserService;
@@ -215,7 +212,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addadmin")
 	@ResponseBody
-	public String addadmin(CommonEntity com,HttpSession session){
+	public String addadmin(CommonEntity com){
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
 			if(com.getManagerType().equals("new")){				
@@ -416,10 +413,10 @@ public class AheadUserController {
 	@RequestMapping("removeproject")
 	@ResponseBody
 	public Map<String,String> removeproject(String payChannelid,String type,String beginDateTime,String endDateTime,String institution,
-			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname,Double balance) throws Exception{
+			HttpServletRequest req,HttpServletResponse res,String userId,String projectname,Double balance) throws Exception{
 		int i = 0;
 		Map<String,String> map = new HashMap<>();
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		CommonEntity com = new CommonEntity();
 		com.setUserId(userId);
 		com.setInstitution(institution);
@@ -445,27 +442,8 @@ public class AheadUserController {
 		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
 		rdlist.add(dto);
 		com.setRdlist(rdlist);
-		this.saveOperationLogs(com, "3", session);
+		this.saveOperationLogs(com, "3", req);
 		return map;
-	}
-	
-	
-	private String checkLogin(HttpServletRequest req,HttpServletResponse res) throws Exception{
-        //检查cookie
-		String castgc = null;
-		Cookie[] cookies = req.getCookies();
-		if(cookies!=null && cookies.length>0){
-			for(Cookie ck : cookies){
-				if(ck.getName().equals("CASTGC")){							
-					castgc = ck.getValue();
-					break;
-				}
-			}
-		}
-		if(StringUtils.isBlank(castgc)){
-			res.sendRedirect(req.getContextPath()+LOGIN_URL);
-		}
-		return castgc;
 	}
 	
 	/**
@@ -475,7 +453,7 @@ public class AheadUserController {
 	@RequestMapping("registerInfo")
 	@ResponseBody
 	public Map<String,String> registerInfo(MultipartFile file,CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
 		for(ResourceDetailedDTO dto : list){
@@ -565,9 +543,9 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,HttpSession session,ModelAndView view,
+	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
 		if(StringUtils.isNotBlank(com.getAdminOldName())){			
@@ -702,9 +680,9 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,HttpSession session,ModelAndView view,
+	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
@@ -838,7 +816,7 @@ public class AheadUserController {
 				System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
-			this.saveOperationLogs(com,"2", session);
+			this.saveOperationLogs(com,"2", req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
@@ -1068,8 +1046,8 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpSession session,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		String adminId = this.checkLogin(req,res);
+	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpServletRequest req,HttpServletResponse res) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
 		for(ResourceDetailedDTO dto : list){
@@ -1156,7 +1134,7 @@ public class AheadUserController {
 		}else{
 			hashmap.put("flag", "fail");
 		}
-		this.saveOperationLogs(com,"2", session);
+		this.saveOperationLogs(com,"2", req);
 		return hashmap;
 	}
 	
@@ -1232,7 +1210,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("opration")
 	public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
-			String userId, String person, String projectId, HttpSession session) {
+			String userId, String person, String projectId) {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1492,7 +1470,7 @@ public class AheadUserController {
 	@RequestMapping("doUpdatePerson")
     public Map<String,Object> personCharge(String userId, String turnover, String reason, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Map<String,Object> m = new HashMap<String,Object>();
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		int i = aheadUserService.personCharge(userId, turnover, reason, adminId, res);
 		if(i>0){
 			m.put("flag", "success");
@@ -1539,9 +1517,9 @@ public class AheadUserController {
 	 * 添加操作日志信息
 	 * @return
 	 */
-	private void saveOperationLogs(CommonEntity com,String flag,HttpSession session){
+	private void saveOperationLogs(CommonEntity com,String flag,HttpServletRequest req){
 		if(com!=null){
-			Wfadmin admin = ((Wfadmin)session.getAttribute("wfAdmin"));
+			Wfadmin admin =CookieUtil.getWfadmin(req);
 			List<ResourceDetailedDTO> list = com.getRdlist();
 			if(list!=null &&list.size()>0){
 				for(ResourceDetailedDTO dto:list){
@@ -1559,11 +1537,7 @@ public class AheadUserController {
 						}
 						OperationLogs op = new OperationLogs();
 						op.setUserId(com.getUserId());
-						String name = admin.getUser_realname();
-						if (StringUtils.isEmpty(name)) {
-							name = admin.getWangfang_admin_id();
-						}
-						op.setPerson(name);
+						op.setPerson(admin.getWangfang_admin_id());
 						op.setOpreation(flag == "2" ? "更新" : "删除");
 						if (com.getRdlist() != null) {
 							JSONObject json=JSONObject.fromObject(dto);
