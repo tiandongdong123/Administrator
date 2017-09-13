@@ -125,28 +125,4 @@ public class CookieUtil {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * 检验用户是否登录
-	 * @param req
-	 * @return
-	 */
-	public static boolean isLogin(HttpServletRequest req) {
-		Cookie[] cookies = req.getCookies();
-		boolean castgc = false;
-		boolean admin = false;
-		if (cookies != null && cookies.length > 0) {
-			for (Cookie ck : cookies) {
-				if (ck.getName().equals("CASTGC"))
-					if (ck.getValue() != null)
-						castgc = true;
-				if (ck.getName().equals("Wfadmin"))
-					if (ck.getValue() != null)
-						admin = true;
-				if (castgc && admin)
-					break;
-			}
-		}
-		return castgc && admin;
-	}
 }

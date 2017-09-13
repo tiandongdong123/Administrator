@@ -119,6 +119,8 @@ public class UserController {
 				json.put("registration_time", formatter.format(m.get("registration_time")));
 				redis.hset(token, "Admin."+user.getWangfang_admin_id(), json.toString());
 				redis.expire(token, 3600);
+				redis.set(req.getSession().getId(),user.getWangfang_admin_id(), 12);
+				redis.expire(req.getSession().getId(), 3600, 12); //设置超时时间
 				map.put("flag", "true");
 			}
 		}else{
@@ -150,6 +152,7 @@ public class UserController {
 		}
 		// 去除redis
 		redis.hdel(token, "Admin." + admin.getWangfang_admin_id());
+		redis.del(12, req.getSession().getId());
 		//去除wfcookie
 		CookieUtil.removeWfadmin(req,res);
 	}
