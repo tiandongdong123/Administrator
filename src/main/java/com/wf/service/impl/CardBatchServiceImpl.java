@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.utils.GetUuid;
+import com.utils.StringUtil;
 import com.wf.bean.Card;
 import com.wf.bean.CardBatch;
 import com.wf.bean.PageList;
@@ -36,79 +37,69 @@ public class CardBatchServiceImpl implements CardBatchService{
 			String applyPerson,String applyDate,String adjunct) {
 		applyDepartment = applyDepartment.trim();
 		applyPerson = applyPerson.trim();
-		//----------------生成批次--------------
 		CardBatch cardBatch = new CardBatch();
 		String batchId = GetUuid.getId();
-		cardBatch.setBatchId(batchId);//批次ID
+		cardBatch.setBatchId(batchId);// 批次ID
 		Date date = new Date();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
-		String batch = sdf1.format(date);//现在的日期
-		String max = cbm.queryBatchName();//获取最大的批次
-		if(max!=null){
+		String batch = sdf1.format(date);// 现在的日期
+		String max = cbm.queryBatchName();// 获取最大的批次
+		if (max != null) {
 			String maxDate = max.substring(0, 8);
-			if(batch.equals(maxDate)){//当前日期已经生成过批次
-				batch = Long.valueOf(max)+1+"";//批次号
-			}else{//当前日期没有生成过批次号
-				batch = Long.valueOf(batch)+"001";//批次号
+			if (batch.equals(maxDate)) {// 当前日期已经生成过批次
+				batch = Long.valueOf(max) + 1 + "";// 批次号
+			} else {// 当前日期没有生成过批次号
+				batch = Long.valueOf(batch) + "001";// 批次号
 			}
-		}else{
-			batch = Long.valueOf(batch)+"001";//批次号
+		} else {
+			batch = Long.valueOf(batch) + "001";// 批次号
 		}
-		cardBatch.setBatchName(batch);//批次号
-		cardBatch.setType(type);//充值卡类型
-		cardBatch.setValueNumber(valueNumber);//面值/数量
+		cardBatch.setBatchName(batch);// 批次号
+		cardBatch.setType(type);// 充值卡类型
+		cardBatch.setValueNumber(valueNumber);// 面值/数量
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		cardBatch.setValidStart(validStart);//有效期开始
-		cardBatch.setValidEnd(validEnd);//有效期结束s
-		cardBatch.setApplyDate(applyDate);//申请日期
-		cardBatch.setCreateDate(sdf.format(new Date()));//生成日期
-		JSONArray json = JSONArray.fromObject(valueNumber);
-		int amount = 0;
+		cardBatch.setValidStart(validStart);// 有效期开始
+		cardBatch.setValidEnd(validEnd);// 有效期结束s
+		cardBatch.setApplyDate(applyDate);// 申请日期
+		cardBatch.setCreateDate(sdf.format(new Date()));// 生成日期
+		JSONArray array = JSONArray.fromObject(valueNumber);
+		Format f1 = new DecimalFormat("0000");
 		List<Card> cardList = new ArrayList<Card>();
-		for(int i = 0;i < json.size();i++){
-			int value = Integer.valueOf(JSONObject.fromObject(json.getJSONObject(i)).get("value").toString());
-			int number = Integer.valueOf(JSONObject.fromObject(json.getJSONObject(i)).get("number").toString());
-			amount += value*number;
-			//------------生成充值卡--------------------
-			for(int j = 0;j < number;j++){
+		int amount = 0;
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject obj = (JSONObject) array.get(i);
+			int value = Integer.valueOf(obj.get("value").toString());
+			int number = Integer.valueOf(obj.get("number").toString());
+			amount += value * number;
+			String money = f1.format(value);
+			int index=1;
+			String ser=cbm.querySameMoney(sdf1.format(date)+money);
+			if(!StringUtil.isEmpty(ser)&&ser.length()>12){
+				index=Integer.parseInt(ser.substring(12))+1;
+			}
+			// 生成充值卡
+			for (int j = 0; j < number; j++) {
 				Card card = new Card();
-				card.setId(GetUuid.getId());//充值卡id
-				card.setBatchId(batchId);//充值卡批次id
-				Format f1 = new DecimalFormat("0000");
-				String money = f1.format(value);
-				String cardNum = sdf1.format(date) + money ;//现在的日期
-				String maxCard = cardMapper.queryCardNum();//获取最大的批次
-				/*if(maxCard!=null){
-					String maxCardDate = maxCard.substring(0, 8);
-					if(batch.equals(maxCardDate)){//当前日期已经生成过批次
-						Format f = new DecimalFormat("00000");
-						cardNum = sdf1.format(date) + money + f.format(1) +"";//卡号
-					}else{//当前日期没有生成过批次号
-						cardNum = sdf1.format(date) + money + listNum.size() + "";//卡号
-					}
-				}else{
-					cardNum = sdf1.format(date) + money + listNum.size() + "";//卡号
-				}*/
-				SimpleDateFormat serial = new SimpleDateFormat("ssSSS");
-				String ser = serial.format(new Date());//现在的日期
-				cardNum = sdf1.format(date) + money + ser;//卡号
-				card.setCardNum(cardNum);//卡号
-				card.setPassword(String.valueOf(new Random().nextInt(999999999)+100000000));//密码
-				card.setValue(value);//面值
-				card.setInvokeState(1);//初始激活状态
+				card.setId(GetUuid.getId());// 充值卡id
+				card.setBatchId(batchId);// 充值卡批次id
+				String cardNum = sdf1.format(date) + money + (index++);// 卡号
+				card.setCardNum(cardNum);// 卡号
+				card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
+				card.setValue(value);// 面值
+				card.setInvokeState(1);// 初始激活状态
 				cardList.add(card);
 			}
 		}
-		cardBatch.setAmount(amount);//总金额
-		cardBatch.setApplyDepartment(applyDepartment);//申请部门
-		cardBatch.setApplyPerson(applyPerson);//申请人
-		cardBatch.setCheckState(1);//审核初始状态
-		cardBatch.setBatchState(1);//批次初始状态
+		cardBatch.setAmount(amount);// 总金额
+		cardBatch.setApplyDepartment(applyDepartment);// 申请部门
+		cardBatch.setApplyPerson(applyPerson);// 申请人
+		cardBatch.setCheckState(1);// 审核初始状态
+		cardBatch.setBatchState(1);// 批次初始状态
 		cardBatch.setAdjunct(adjunct);
 		int cb = cbm.insertCardBatch(cardBatch);
 		int c = cardMapper.insertCards(cardList);
 		boolean flag = false;
-		if(cb > 0 && c > 0){
+		if (cb > 0 && c > 0) {
 			flag = true;
 		}
 		return flag;
@@ -148,7 +139,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cbm.queryCheck(map);
-		//-------------查询一共有多少条-----------------------------
+
 		Map<String,Object> map1 = new HashMap<String,Object>();
 		map1.put("batchName", batchName);
 		map1.put("applyDepartment", applyDepartment);

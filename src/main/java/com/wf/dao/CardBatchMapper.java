@@ -16,6 +16,10 @@ public interface CardBatchMapper {
 	 */
 	String queryBatchName();
 	/**
+	 * 查询当日同种金额卡号的序列号
+	 */
+	String querySameMoney(String card);
+	/**
 	 * 查询当前条件下所有批次
 	 */
 	List<Object> queryAllBatch(Map<String,Object> map);
