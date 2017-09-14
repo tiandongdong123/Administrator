@@ -408,45 +408,6 @@ public class AheadUserController {
 	}
 	
 	/**
-	 *	删除购买项目 
-	 */
-	@RequestMapping("removeproject")
-	@ResponseBody
-	public Map<String,String> removeproject(String payChannelid,String type,String beginDateTime,String endDateTime,String institution,
-			HttpServletRequest req,HttpServletResponse res,String userId,String projectname,Double balance) throws Exception{
-		int i = 0;
-		Map<String,String> map = new HashMap<>();
-		String adminId = CookieUtil.getCookie(req);
-		CommonEntity com = new CommonEntity();
-		com.setUserId(userId);
-		com.setInstitution(institution);
-		ResourceDetailedDTO dto = new ResourceDetailedDTO();
-		dto.setProjectid(payChannelid);
-		dto.setValidityStarttime(beginDateTime);
-		dto.setValidityEndtime(endDateTime);
-		dto.setProjectname(projectname);
-		dto.setProjectType(type);
-		if("balance".equals(type)){
-			dto.setTotalMoney(balance);
-		}else if("count".equals(type)){
-			dto.setPurchaseNumber(balance.intValue());
-		}
-		i = aheadUserService.deleteAccount(com, dto, adminId);
-		if(i > 0){
-			aheadUserService.deleteResources(com,dto,false);
-			map.put("flag", "true");
-		}else{
-			map.put("flag", "false");
-		}
-		//记录日志
-		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
-		rdlist.add(dto);
-		com.setRdlist(rdlist);
-		this.saveOperationLogs(com, "3", req);
-		return map;
-	}
-	
-	/**
 	 *	机构用户注册
 	 * @throws ParseException
 	 */
@@ -839,7 +800,7 @@ public class AheadUserController {
 	
 	
 	@RequestMapping("/worddownload")
-	public void wordouyang(Model model,HttpServletResponse response,HttpServletRequest request) {
+	public void worddownload(Model model,HttpServletResponse response,HttpServletRequest request) {
         // 下载本地文件
 		String fileName = request.getParameter("title"); // 文件的默认保存名
 		InputStream inStream = null;
@@ -1054,6 +1015,48 @@ public class AheadUserController {
 		return view;
 	}
 	
+	/**
+	 *	删除购买项目 
+	 */
+	private void removeproject(HttpServletRequest req,List<String> list) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		CommonEntity com = new CommonEntity();
+		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
+		for (String json : list) {
+			JSONObject obj = JSONObject.fromObject(json);
+			String userId = obj.getString("userId");
+			String institution = obj.getString("institution");
+			String payChannelid = obj.getString("payChannelid");
+			String beginDateTime = obj.getString("beginDateTime");
+			String endDateTime = obj.getString("endDateTime");
+			String projectname = obj.getString("projectname");
+			String type = obj.getString("type");
+			Double balance = 0.0D;
+			if(!StringUtils.isEmpty(obj.getString("balance"))){
+				Double.parseDouble(obj.getString("balance"));
+			}
+			com.setUserId(userId);
+			com.setInstitution(institution);
+			ResourceDetailedDTO dto = new ResourceDetailedDTO();
+			dto.setProjectid(payChannelid);
+			dto.setValidityStarttime(beginDateTime);
+			dto.setValidityEndtime(endDateTime);
+			dto.setProjectname(projectname);
+			dto.setProjectType(type);
+			if ("balance".equals(type)) {
+				dto.setTotalMoney(balance);
+			} else if ("count".equals(type)) {
+				dto.setPurchaseNumber(balance.intValue());
+			}
+			int i = aheadUserService.deleteAccount(com, dto, adminId);
+			if (i > 0) {
+				aheadUserService.deleteResources(com, dto, false);
+			}
+			rdlist.add(dto);
+		}
+		com.setRdlist(rdlist);
+		this.saveOperationLogs(com, "3", req);
+	}
 	
 	/**
 	 *	账号修改
@@ -1063,27 +1066,39 @@ public class AheadUserController {
 	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpServletRequest req,HttpServletResponse res) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
-		List<ResourceDetailedDTO> list = com.getRdlist();
-		for(ResourceDetailedDTO dto : list){
-			if(dto.getProjectid()!=null){
-				if(StringUtils.isBlank(dto.getValidityEndtime())){
+		List<ResourceDetailedDTO> tempList = com.getRdlist();
+		List<String> delList=new ArrayList<String>();
+		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
+		for (ResourceDetailedDTO dto : tempList) {
+			if (dto.getProjectid() != null) {
+				if (StringUtils.isEmpty(dto.getProjectname())) {
+					delList.add(dto.getProjectid());
+					continue;
+				}
+				if (StringUtils.isBlank(dto.getValidityEndtime())) {
 					hashmap.put("flag", "fail");
 					return hashmap;
-				}else{
-					if(dto.getProjectType().equals("balance")){
-						if(dto.getTotalMoney()==null){
+				} else {
+					if (dto.getProjectType().equals("balance")) {
+						if (dto.getTotalMoney() == null) {
 							hashmap.put("flag", "fail");
 							return hashmap;
 						}
-					}else if(dto.getProjectType().equals("count")){
-						if(dto.getPurchaseNumber()==null){
+					} else if (dto.getProjectType().equals("count")) {
+						if (dto.getPurchaseNumber() == null) {
 							hashmap.put("flag", "fail");
 							return hashmap;
 						}
 					}
 				}
+				list.add(dto);
 			}
 		}
+		//删除项目
+		if(delList.size()>0){
+			this.removeproject(req,delList);
+		}
+		com.setRdlist(list);
 		//更新条件Map
 		Map<String, Object> map = new HashMap<String, Object>();
 		int resinfo = 0;	
@@ -1116,6 +1131,7 @@ public class AheadUserController {
 		}
 		//上传附件
 		this.uploadFile(file,list);
+		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){

@@ -266,37 +266,18 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 	    btn: ['确定'],
 	    yes: function(){
 	    	if(flag!='1'){
-	    		if($("div[name='full_div_pro']").length < 2){
-	    			layer.msg('已购买项目不可全部删除', {icon: 2});
-	    		}else{	    			
-	    			$.ajax({
-	    				type : "post",
-	    				async:false,
-	    				url : "../auser/removeproject.do",
-	    				data:{
-	    					"payChannelid":payChannelid,
-	    					"type":type,
-	    					"beginDateTime":beginDateTime,
-	    					"endDateTime":endDateTime,
-	    					"institution":institution,
-	    					"userId":userId,
-	    					"balance":balance,
-	    					"projectname":projectname
-	    				},
-	    				dataType : "json",
-	    				success: function(data){
-	    					if(data.flag=="true"){
-	    						$(obj).parents(".balance_block").remove();
-	    						$("div[name='tabs_"+count+"']").remove();
-	    						layer.msg("删除成功",{icon: 1});
-	    					}else{
-	    						layer.msg("删除失败",{icon: 2});
-	    					}
-	    				}
-	    			});
+	    		if($("#multplediv div[name='full_div']").length < 2){
+	    			layer.msg('购买项目不可全部删除', {icon: 2});
+	    		}else{
+					var json="{'payChannelid':'"+payChannelid+"','type':'"+type+"','beginDateTime':'"+beginDateTime;
+		    		json+="','endDateTime':'"+endDateTime+"','institution':'"+institution;
+		    		json+="','userId':'"+userId+"','balance':'"+balance+"','projectname':'"+projectname+"'}";
+		    		$(obj).parents(".balance_block").remove();
+		    		$("div[name='tabs_"+count+"']").remove();
+		    		$("#multplediv").append('<input type="hidden" name="rdlist['+count+'].projectid" value="'+json+'">');
 	    			layer.closeAll();
 	    		}
-	    	}else{		
+	    	}else{
 	    		$(obj).parents(".balance_block").remove();
 	    		$("div[name='tabs_"+count+"']").remove();
 	    		layer.closeAll();
