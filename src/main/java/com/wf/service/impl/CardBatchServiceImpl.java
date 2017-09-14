@@ -64,6 +64,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		cardBatch.setCreateDate(sdf.format(new Date()));// 生成日期
 		JSONArray array = JSONArray.fromObject(valueNumber);
 		Format f1 = new DecimalFormat("0000");
+		Format f2 = new DecimalFormat("00000");
 		List<Card> cardList = new ArrayList<Card>();
 		int amount = 0;
 		for (int i = 0; i < array.size(); i++) {
@@ -82,7 +83,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 				Card card = new Card();
 				card.setId(GetUuid.getId());// 充值卡id
 				card.setBatchId(batchId);// 充值卡批次id
-				String cardNum = sdf1.format(date) + money + (index++);// 卡号
+				String cardNum = sdf1.format(date) + money + f2.format(index++);// 卡号
 				card.setCardNum(cardNum);// 卡号
 				card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
 				card.setValue(value);// 面值
@@ -97,12 +98,34 @@ public class CardBatchServiceImpl implements CardBatchService{
 		cardBatch.setBatchState(1);// 批次初始状态
 		cardBatch.setAdjunct(adjunct);
 		int cb = cbm.insertCardBatch(cardBatch);
-		int c = cardMapper.insertCards(cardList);
+		int c = 0;
+		if (cardList.size() > 0) {
+			// 一批一万
+			List<List<Card>> tempList = this.createList(cardList, 10000);
+			for (List<Card> cardls : tempList) {
+				c = cardMapper.insertCards(cardls);
+			}
+		}
 		boolean flag = false;
 		if (cb > 0 && c > 0) {
 			flag = true;
 		}
 		return flag;
+	}
+	
+	private <T> List<List<T>> createList(List<T> targe, int size) {
+		List<List<T>> listArr = new ArrayList<List<T>>();
+		int arrSize = targe.size() % size == 0 ? targe.size() / size : targe.size() / size + 1;
+		for (int i = 0; i < arrSize; i++) {
+			List<T> sub = new ArrayList<T>();
+			for (int j = i * size; j <= size * (i + 1) - 1; j++) {
+				if (j <= targe.size() - 1) {
+					sub.add(targe.get(j));
+				}
+			}
+			listArr.add(sub);
+		}
+		return listArr;
 	}
 	/**
 	 * 充值卡审核
