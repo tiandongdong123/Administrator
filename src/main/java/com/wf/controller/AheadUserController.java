@@ -1033,7 +1033,7 @@ public class AheadUserController {
 			String type = obj.getString("type");
 			Double balance = 0.0D;
 			if(!StringUtils.isEmpty(obj.getString("balance"))){
-				Double.parseDouble(obj.getString("balance"));
+				balance=Double.parseDouble(obj.getString("balance"));
 			}
 			com.setUserId(userId);
 			com.setInstitution(institution);
