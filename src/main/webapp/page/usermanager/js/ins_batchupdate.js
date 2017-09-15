@@ -11,7 +11,7 @@ function submitForm(){
         contentType: false  
     }).done(function(data){
     	if(data.flag=="success"){
-    		layer.msg(data.success,{icon: 1});
+    		layer.msg(data.success,{icon: 2});
     	}else if(data.flag=="fail"){
     		layer.msg(data.fail,{icon: 2});
     	}else{

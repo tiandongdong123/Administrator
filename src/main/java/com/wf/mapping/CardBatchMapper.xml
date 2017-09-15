@@ -53,6 +53,10 @@
   <select id="queryBatchName" resultType="java.lang.String">
   	select max(batch_name) from wfks_accounting.rech_card_batch 
   </select>
+  <!-- 查询当日同种金额卡号的序列号 -->
+  <select id="querySameMoney" resultType="java.lang.String">
+  	select max(card_num) from wfks_accounting.rech_card where card_num like CONCAT(#{card},'%')
+  </select>
   <!-- 查询充值批次当前条件下所有记录 -->
   <select id="queryAllBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t

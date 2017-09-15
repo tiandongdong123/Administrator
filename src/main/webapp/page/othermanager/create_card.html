@@ -5,17 +5,7 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-   <section class="content-header">
-      <h1>
-       	生成充值卡
-      </h1>
-     <!--   <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
-        <li><a href="#">其他管理</a></li>
-        <li class="active">生成充值卡</li>
-      </ol>-->
-    </section> 
-
+   <section class="content-header"><h1>生成充值卡</h1></section>
     <!-- Main content -->
     <section class="content">
       <div class="row">
@@ -28,11 +18,7 @@
               <div class="box-body">
               	<div class="form-group input_block ">
                   <label  class="input_name">* 充值卡类型</label>
-                  <select id="cardType" class="form-control input_width" name="select">
-					<!-- <option value="1">万方充值卡</option>
-					<option value="2">医药会员卡</option>
-					<option value="3">医药检索卡</option> -->
-                  </select>
+                  <select id="cardType" class="form-control input_width" name="select"></select>
                    <button type="button" class="btn btn-primary" onclick="addCardType();" >充值卡类型管理</button>
                 </div>
                 <div class="form-group input_block ">
@@ -42,14 +28,7 @@
                   <input id="number" type="text" class="form-control input_time">
                   <button type="button" class="btn btn-primary" onclick="showMore()">添加</button>
                 </div>
-                <!-- <div id="add_more" class="form-group input_block " style="display:none;">
-                 	  <textarea class="form-control  input_width" rows="3" placeholder="100（元）×80（张）"></textarea>
-                </div> -->
-                <div class="FilterList2">
-				    <!--   <div class="FilerItem condition" style="padding-left: 20px" >限定条件：</div>
-				      <div class="FilerItem"><a href="javascript:void(0);" onclick="del_all();" class="Reset">重置</a></div> -->
-				      
-			  	</div>
+                <div class="FilterList2"></div>
                 <div class="form-group input_block ">
                   <label class="input_name">*  有效期</label>
                   <?var date = date();?>
@@ -80,7 +59,7 @@
                 </div>
               </div>
               <div class="box-footer" style="text-align:center;">
-                <button type="button" class="btn btn-primary" onclick="put()">提交</button>
+                <button type="button" class="btn btn-primary" onclick="put()" id="submit">提交</button>
                 <button type="button" onclick="reback();" class="btn btn-primary">重置</button>
               </div>
             </form>

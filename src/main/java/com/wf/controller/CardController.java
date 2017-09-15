@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.exportExcel.ExportExcel;
+import com.utils.CookieUtil;
 import com.utils.FileUploadUtil;
 import com.wf.bean.CardType;
 import com.wf.bean.PageList;
@@ -269,11 +269,12 @@ public class CardController {
 	 */
 	@RequestMapping("updateCheckState")
 	@ResponseBody
-	public boolean updateCheckState(HttpSession session,String batchId){
-		boolean flag = false;
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public boolean updateCheckState(HttpServletRequest request,String batchId){
+		
+		Wfadmin admin=CookieUtil.getWfadmin(request);
 		boolean flag1 = cardBatchService.updateCheckState(admin, batchId);//审核状态改变
 		boolean flag2 = cardBatchService.updateBatchState(batchId, "1", "", "");//批次状态改变
+		boolean flag = false;
 		if(flag1 && flag2){
 			flag = true;
 		}
@@ -284,7 +285,7 @@ public class CardController {
 	 */
 	@RequestMapping("batchUpdate")
 	public ModelAndView batchUpdate(String batchId,String batchState,String pullDepartment,String pullPerson){
-		boolean flag = cardBatchService.updateBatchState(batchId,batchState, pullDepartment, pullPerson);
+		cardBatchService.updateBatchState(batchId,batchState, pullDepartment, pullPerson);
 		Map<String,Object> object = cardBatchService.queryOneByBatchId(batchId);
 		List<Map<String,Object>> valueNumber = JSONArray.fromObject(object.get("valueNumber"));
 		ModelAndView mav = new ModelAndView();

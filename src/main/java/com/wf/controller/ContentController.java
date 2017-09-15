@@ -19,7 +19,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -44,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.exportExcel.ExportExcel;
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.utils.DateTools;
 import com.utils.GetUuid;
 import com.utils.Getproperties;
@@ -241,8 +241,8 @@ public class ContentController{
 	
 	
 	@RequestMapping("/addMessageJson")
-	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setId(GetUuid.getId());
 		message.setHuman(admin.getUser_realname());
 		message.setBranch(admin.getDept().getDeptName());
@@ -369,8 +369,8 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/updateMessageJson")
-	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setHuman(admin.getUser_realname());
 		boolean b =messageService.updateMessage(message);
 		JsonUtil.toJsonHtml(response, b);
@@ -787,7 +787,7 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/volumeDocu")
-	public ModelAndView volumeDocu(HttpSession session){
+	public ModelAndView volumeDocu(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/contentmanage/volume/volume_docu");
 		return mav;
@@ -850,7 +850,6 @@ public class ContentController{
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		out.print(json);
@@ -916,9 +915,9 @@ public class ContentController{
 		 * @return
 		 */
 		@RequestMapping("/stepOne")
-		public ModelAndView stepOne(HttpSession session,@ModelAttribute Volume volume){
-			String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-			String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+		public ModelAndView stepOne(HttpServletRequest request,@ModelAttribute Volume volume){
+			Wfadmin admin=CookieUtil.getWfadmin(request);
+			String publishPerson = admin.getUser_realname();
 			ModelAndView mav = new ModelAndView();
 			mav.addObject("volume", volume);
 			mav.addObject("publishPerson", publishPerson);
@@ -986,7 +985,7 @@ public class ContentController{
 		 * @return
 		 */
 		@RequestMapping("/stepFourChapter")
-		public ModelAndView stepFourChapter(HttpSession session,@ModelAttribute Volume volume,String listContent){
+		public ModelAndView stepFourChapter(@ModelAttribute Volume volume,String listContent){
 			List<Map<String,Object>> list = JSONArray.fromObject(listContent);
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("volume", volume);//文辑
@@ -1013,16 +1012,18 @@ public class ContentController{
 			mav.setViewName("/page/contentmanage/volume/step_four_noChapter");
 			return mav;
 		}
+		
 		/**
 		 * 保存文辑
 		 * @return
 		 */
 		@RequestMapping("/commit")
 		@ResponseBody
-		public boolean commit(HttpSession session,@ModelAttribute Volume volume,String listContent){
+		public boolean commit(HttpServletRequest request,@ModelAttribute Volume volume,String listContent){
 			if(StringUtils.isEmpty(volume.getId())){//创建文辑
-				String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-				String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+				Wfadmin admin=CookieUtil.getWfadmin(request);
+				String userId = admin.getWangfang_admin_id();
+				String publishPerson = admin.getUser_realname();
 				volume.setUserId(userId);
 				Map<String,Object>  map1 = volumeService.insert(publishPerson, volume, "2", listContent);//后台生成的都是优选文辑
 				return (Boolean) map1.get("flag");
@@ -1035,24 +1036,21 @@ public class ContentController{
 					iVolume.deleteVolumeList(ids);
 					//--------------------存到solr里-----------------
 					iVolume.sendSolrByVolumeId(volume.getId());//存到solr里
-					
 				}
 				return flag;
 			}
-//				
 		}
-		//----------------------------------------修改文辑-----------------------------------
+
 		/**
 		 * 修改文辑第一步
 		 * @return
 		 */
 		@RequestMapping("/updateOne")
-		public ModelAndView updateOne(HttpSession session,@ModelAttribute Volume volume,String id){
-			String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-			String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+		public ModelAndView updateOne(HttpServletRequest request,@ModelAttribute Volume volume,String id){
+			Wfadmin admin=CookieUtil.getWfadmin(request);
+			String publishPerson = admin.getUser_realname();
 			Map<String,Object> map = volumeService.queryDetails(id);
 			if(volume.getVolumeName() == null){//第一次跳进修改
-				
 				volume = (Volume) map.get("volume");
 			}
 			ModelAndView mav = new ModelAndView();
@@ -1272,16 +1270,10 @@ public class ContentController{
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public boolean pushData(int state,String id) {
-		int num = resourceTypeService.updateResourceTypeState(state,id);
-		if(num > 0){
-			JSONArray list=	resourceTypeService.getAll1();
-			redis.del("sourcetype");
-			redis.set("sourcetype", list.toString(), 6);
-			return true;
-		}else{
-			return false;
-		}
+	public void pushData() {
+		JSONArray list = resourceTypeService.getAll1();
+		redis.del("sourcetype");
+		redis.set("sourcetype", list.toString(), 6);
 	}
 	
 	/**
