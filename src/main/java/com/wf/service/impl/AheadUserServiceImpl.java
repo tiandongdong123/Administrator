@@ -27,7 +27,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -152,26 +152,27 @@ public class AheadUserServiceImpl implements AheadUserService{
      * 调用接口验证老平台用户是否存在 
      */
     @Override
-    public String validateOldUser(String userName){
-    	StringBuffer buffer = new StringBuffer();
-		HttpClient httpclient = new DefaultHttpClient();  
-        HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");  
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();  
-        nvps.add(new BasicNameValuePair("userName", userName));
-        try{
+	public String validateOldUser(String userName) {
+		StringBuffer buffer = new StringBuffer();
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");
+		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		nvps.add(new BasicNameValuePair("userName", userName));
+		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-			HttpResponse response = httpclient.execute(httpPost);  
+			HttpResponse response = httpclient.execute(httpPost);
 			InputStream is = response.getEntity().getContent();
-            int i;
-            while((i = is.read()) != -1){
-            	buffer.append((char) i);
-            } 
-		}catch(Exception e){
+			int i;
+			while ((i = is.read()) != -1) {
+				buffer.append((char) i);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-		}  
-        httpclient.getConnectionManager().shutdown();
-        return buffer.toString();
-    }
+		} finally {
+			httpPost.releaseConnection();
+		}
+		return buffer.toString();
+	}
     
     
     /** 
