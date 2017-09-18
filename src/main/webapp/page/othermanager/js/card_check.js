@@ -19,7 +19,7 @@ function Page(curr){
 	applyPerson = $("#person").val().trim();//申请人
 	startTime = $("#startTime").val();//开始时间
 	endTime = $("#endTime").val();//结束时间
-	//--------------充值卡类型-----------------
+	//--------------万方卡类型-----------------
 	if($("#allCheck").prop("checked") == false){//不全选
 		cardType = "";
 		$("input[name=cardType]").each(function(){
@@ -205,7 +205,7 @@ function dateChange(date){
 //----------------------------审核-------------------------------
 function check(obj){
 	layer.alert('确定审核通过？', {
-		title: '万方充值卡审核',
+		title: '万方卡审核',
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定'], //按钮

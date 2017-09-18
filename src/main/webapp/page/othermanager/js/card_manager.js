@@ -8,7 +8,7 @@ function query(){
 		$("#result2").show();//卡号为空，显示列表2  批次表
 	}else{
 		$("#result2").hide();
-		$("#result").show();//卡号不为空，显示列表1 充值卡表
+		$("#result").show();//卡号不为空，显示列表1 万方卡表
 	}
 	
 	Page(1);
@@ -39,9 +39,9 @@ function Page(curr){
 	if((numStart == '' || numStart == null) && (numEnd == '' || numEnd == null)){
 		num = 2;//卡号为空，显示列表2  批次表
 	}else{
-		num = 1;//卡号不为空，显示列表1 充值卡表
+		num = 1;//卡号不为空，显示列表1 万方卡表
 	}
-	//--------------充值卡类型-----------------
+	//--------------万方卡类型-----------------
 	if($("#all_type").prop("checked") == false){//不全选
 		cardType = "";
 		$("input[name=cardType]").each(function(){
@@ -59,7 +59,7 @@ function Page(curr){
 			}
 		})
 	}
-	//-------------充值卡状态-----------------
+	//-------------万方卡状态-----------------
 	if($("#activate").is(":visible") && $("#card_state").prop("checked") == false){//不全选
 		invokeState = "";
 		$("input[name=invokeState]").each(function(){
@@ -68,7 +68,7 @@ function Page(curr){
 			}
 		})
 	}
-	if(num == 1){//卡号不为空，显示列表1 充值卡表
+	if(num == 1){//卡号不为空，显示列表1 万方卡表
 	$.ajax({
 		type : "post",  
 		url : "../card/queryCard.do",
@@ -294,7 +294,7 @@ function dateChange(date){
 		return "";
 	}
 }
-//-----------------------------------充值卡类型------------------------------------------------
+//-----------------------------------万方卡类型------------------------------------------------
 Code_list="";
 
 $(function(){
