@@ -1,13 +1,13 @@
 package com.wf.bean;
 
 public class Card {
-    private String id;//充值卡ID
+    private String id;//万方卡ID
 
     private String batchId;//批次ID
 
-    private String cardNum;//充值卡号
+    private String cardNum;//万方卡号
 
-    private String password;//充值卡密码
+    private String password;//万方卡密码
 
     private Integer value;//面值
 

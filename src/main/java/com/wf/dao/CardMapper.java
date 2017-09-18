@@ -8,11 +8,11 @@ import com.wf.bean.Card;
 
 public interface CardMapper {
 	/**
-	 * 生成充值卡
+	 * 生成万方卡
 	 */
 	int insertCards(List<Card> list);
 	/**
-	 * 充值卡卡号排序计算卡号
+	 * 万方卡卡号排序计算卡号
 	 */
 	String queryCardNum();
 	/**
@@ -25,29 +25,29 @@ public interface CardMapper {
 	 */
 	List<Map<String,Object>> queryAllCard();
 	/**
-	 * 查询充值卡列表
+	 * 查询万方卡列表
 	 */
 	List<Object> queryCard(Map<String,Object> map);
 	/**
-	 * 单张充值卡详情页
+	 * 单张万方卡详情页
 	 * @param id
 	 * @return
 	 */
 	Map<String,Object> queryOneById(String id);
 	/**
-	 * 根据batchId  查询所有充值卡
+	 * 根据batchId  查询所有万方卡
 	 * @param batchId
 	 * @return
 	 */
 	List<Map<String,Object>> queryAllBybatchId(String batchId);
 	/**
-	 * 根据batchId  分页充值卡列表
+	 * 根据batchId  分页万方卡列表
 	 * @param batchId
 	 * @return
 	 */
 	List<Object> queryCardBybatchId(Map<String,Object> map);
 	/**
-	 * 修改充值卡激活状态
+	 * 修改万方卡激活状态
 	 * @param id
 	 * @return
 	 */

@@ -1,6 +1,5 @@
 package com.exportExcel;
 
-
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -8,26 +7,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONArray;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.dubbo.common.json.JSON;
-
-	public class ExportExcel {
+public class ExportExcel {
 		/**
 		 * 这是一个通用的方法，利用了JAVA的反射机制，可以将放置在JAVA集合中并且符号一定条件的数据以EXCEL 的形式输出到指定IO设备上
 		 * 
@@ -45,57 +36,56 @@ import com.alibaba.dubbo.common.json.JSON;
 		 */
 
 		/**
-		 * 充值卡批次已审核未领取导出
+		 * 万方卡批次已审核未领取导出
 		 * @param title  文本名称
 		 * @param type	类型
 		 * @param data	保存数据  list<map>
 		 * @param realspath 真实路径
 		 * @return
 		 */
-			@SuppressWarnings("unchecked")
-			public String exportExccel1(HttpServletResponse response,JSONArray data,List<String> namelist) {
-				
-				SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-				String date=sdf.format(new Date());
-				String newpate = date+".xlsx";
-				try {
-					// 工作区
-					XSSFWorkbook wb = new XSSFWorkbook();
-					XSSFSheet sheet = wb.createSheet("审核未领取");
-					XSSFRow row = sheet.createRow(0);
-					for(int i=0;i<namelist.size();i++)
-					{
-						row.createCell(i).setCellValue(namelist.get(i));
-					}
-					for (int i =0; i<data.size(); i++) {
-						// 创建第一个sheet
-						// 生成第一行
-						row = sheet.createRow(i+1);
-						// 给这一行的第一列赋值
-						row.createCell(0).setCellValue(String.valueOf(data.getJSONObject(i).get("cardTypeName")));
-						row.createCell(1).setCellValue(String.valueOf(data.getJSONObject(i).get("cardNum")));
-						row.createCell(2).setCellValue(String.valueOf(data.getJSONObject(i).get("password")));
-						row.createCell(3).setCellValue(String.valueOf(data.getJSONObject(i).get("value")));
-						row.createCell(4).setCellValue(String.valueOf(data.getJSONObject(i).get("validStart")) + "--" + String.valueOf(data.getJSONObject(i).get("validEnd")));
-					}
-					//设置Content-Disposition  
-			        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 
-			        OutputStream out = response.getOutputStream();
-					// 写文件
-					wb.write(out);  
-					// 关闭输出流
-					out.close();
-				
-					return date;
-				} catch (Exception e) {
-					e.printStackTrace();
+		public String exportExccel1(HttpServletResponse response,JSONArray data,List<String> namelist) {
+			
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
+			String date=sdf.format(new Date());
+			String newpate = date+".xlsx";
+			try {
+				// 工作区
+				XSSFWorkbook wb = new XSSFWorkbook();
+				XSSFSheet sheet = wb.createSheet("审核未领取");
+				XSSFRow row = sheet.createRow(0);
+				for(int i=0;i<namelist.size();i++)
+				{
+					row.createCell(i).setCellValue(namelist.get(i));
 				}
+				for (int i =0; i<data.size(); i++) {
+					// 创建第一个sheet
+					// 生成第一行
+					row = sheet.createRow(i+1);
+					// 给这一行的第一列赋值
+					row.createCell(0).setCellValue(String.valueOf(data.getJSONObject(i).get("cardTypeName")));
+					row.createCell(1).setCellValue(String.valueOf(data.getJSONObject(i).get("cardNum")));
+					row.createCell(2).setCellValue(String.valueOf(data.getJSONObject(i).get("password")));
+					row.createCell(3).setCellValue(String.valueOf(data.getJSONObject(i).get("value")));
+					row.createCell(4).setCellValue(String.valueOf(data.getJSONObject(i).get("validStart")) + "--" + String.valueOf(data.getJSONObject(i).get("validEnd")));
+				}
+				//设置Content-Disposition  
+		        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 
+		        OutputStream out = response.getOutputStream();
+				// 写文件
+				wb.write(out);  
+				// 关闭输出流
+				out.close();
+			
 				return date;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+			return date;
+		}
 			
 		
 		/**
-		 * 充值卡批次已领取导出
+		 * 万方卡批次已领取导出
 		 * @param title 文本名称
 		 * @param data 保存数据  list<map>
 		 * @param realspath 真实路径 
@@ -201,10 +191,8 @@ import com.alibaba.dubbo.common.json.JSON;
 			return date;
 		}
 		
-		
-		
 		/**
-		 * 充值卡详情页导出
+		 * 万方卡详情页导出
 		 * @param title  文本名称
 		 * @param type	类型
 		 * @param data	保存数据  list<map>

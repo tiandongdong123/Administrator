@@ -55,7 +55,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 			batch = Long.valueOf(batch) + "001";// 批次号
 		}
 		cardBatch.setBatchName(batch);// 批次号
-		cardBatch.setType(type);// 充值卡类型
+		cardBatch.setType(type);// 万方卡类型
 		cardBatch.setValueNumber(valueNumber);// 面值/数量
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		cardBatch.setValidStart(validStart);// 有效期开始
@@ -78,11 +78,11 @@ public class CardBatchServiceImpl implements CardBatchService{
 			if(!StringUtil.isEmpty(ser)&&ser.length()>12){
 				index=Integer.parseInt(ser.substring(12))+1;
 			}
-			// 生成充值卡
+			// 生成万方卡
 			for (int j = 0; j < number; j++) {
 				Card card = new Card();
-				card.setId(GetUuid.getId());// 充值卡id
-				card.setBatchId(batchId);// 充值卡批次id
+				card.setId(GetUuid.getId());// 万方卡id
+				card.setBatchId(batchId);// 万方卡批次id
 				String cardNum = sdf1.format(date) + money + f2.format(index++);// 卡号
 				card.setCardNum(cardNum);// 卡号
 				card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
@@ -128,7 +128,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		return listArr;
 	}
 	/**
-	 * 充值卡审核
+	 * 万方卡审核
 	 * @param batchName 批次
 	 * @param applyDepartment 申请部门
 	 * @param applyPerson 申请人
@@ -181,7 +181,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		return pl;
 	}
 	/**
-	 * 根据batchId  充值卡批次详情页
+	 * 根据batchId  万方卡批次详情页
 	 * @param batchId
 	 * @return
 	 */

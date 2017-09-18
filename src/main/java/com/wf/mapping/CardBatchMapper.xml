@@ -30,7 +30,7 @@
     check_department, check_person, check_date, pull_department, pull_person, pull_date, 
     batch_state
   </sql>
-  <!-- 生成充值卡批次 -->
+  <!-- 生成万方卡批次 -->
   <insert id="insertCardBatch" parameterType="com.wf.bean.CardBatch">
   	insert into wfks_accounting.rech_card_batch(batch_id, batch_name, type, 
       value_number, valid_start, 
@@ -49,7 +49,7 @@
       #{pullPerson}, #{pullDate}, #{batchState}
       )
   </insert>
-  <!-- 查询充值卡批次号最大值 -->
+  <!-- 查询万方卡批次号最大值 -->
   <select id="queryBatchName" resultType="java.lang.String">
   	select max(batch_name) from wfks_accounting.rech_card_batch 
   </select>
@@ -129,7 +129,7 @@
   	ORDER BY create_date DESC
   	limit #{pageNum},#{pageSize}
   </select>
-  <!-- 根据batchId  充值卡批次详情页 -->
+  <!-- 根据batchId  万方卡批次详情页 -->
   <select id="queryOneByBatchId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
  	where b.type=t.card_code 

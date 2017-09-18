@@ -9,12 +9,12 @@ import com.wf.bean.Wfadmin;
 
 public interface CardBatchService {
 	/**
-	 * 添加充值卡批次
+	 * 添加万方卡批次
 	 */
 	boolean insertCardBatch(String type,String valueNumber,String validStart,String validEnd,String applyDepartment,
 			String applyPerson,String applyDate,String adjunct);
 	/**
-	 * 充值卡审核
+	 * 万方卡审核
 	 * @param batchName 批次
 	 * @param applyDepartment 申请部门
 	 * @param applyPerson 申请人
@@ -25,7 +25,7 @@ public interface CardBatchService {
 	 */
 	PageList queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,String endTime,String cardType,String batchState,int pageNum,int pageSize);
 	/**
-	 * 根据batchId  充值卡批次详情页
+	 * 根据batchId  万方卡批次详情页
 	 * @param batchId
 	 * @return
 	 */

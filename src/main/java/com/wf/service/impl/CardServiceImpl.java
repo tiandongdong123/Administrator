@@ -22,7 +22,6 @@ public class CardServiceImpl implements CardService{
 	@Autowired
 	private CardTypeService cardtype;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public PageList queryCard(String batchName, String numStart, String numEnd,
 			String applyDepartment, String applyPerson, String startTime,
@@ -81,7 +80,7 @@ public class CardServiceImpl implements CardService{
 		return pl;
 	}
 	/**
-	 * 单张充值卡详情页
+	 * 单张万方卡详情页
 	 * @param id
 	 * @return
 	 */
@@ -92,7 +91,7 @@ public class CardServiceImpl implements CardService{
 	}
 
 	/**
-	 * 根据batchId  充值卡列表
+	 * 根据batchId  万方卡列表
 	 * @param batchId
 	 * @return
 	 */
@@ -114,7 +113,7 @@ public class CardServiceImpl implements CardService{
 		return p;
 	}
 	/**
-	 * 修改充值卡激活状态
+	 * 修改万方卡激活状态
 	 * @param id
 	 * @return
 	 */
@@ -136,7 +135,7 @@ public class CardServiceImpl implements CardService{
 	}
 	
 	/**
-	 * 根据batchId  充值卡列表
+	 * 根据batchId  万方卡列表
 	 * @param batchId
 	 * @return
 	 */

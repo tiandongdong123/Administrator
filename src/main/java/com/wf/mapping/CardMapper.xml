@@ -48,11 +48,11 @@
     check_department, check_person, check_date, pull_department, pull_person, pull_date, 
     batch_state
   </sql>
-  <!--充值卡卡号排序计算卡号-->
+  <!--万方卡卡号排序计算卡号-->
   <select id="queryCardNum" resultType="java.lang.String">
   	select max(card_num) from wfks_accounting.rech_card
   </select>
-  <!-- 生成充值卡 -->
+  <!-- 生成万方卡 -->
   <insert id="insertCards" parameterType="java.util.List">
   	insert into wfks_accounting.rech_card(id, batch_id, card_num, password, value, invoke_state, invoke_date, invoke_user,invoke_ip)
     values 
@@ -105,13 +105,13 @@
 		</foreach>
     </if>
   </select>
-  <!-- 查询所有已审核的充值卡 -->
+  <!-- 查询所有已审核的万方卡 -->
   <select id="queryAllCard" resultMap="BaseResultMap2" parameterType="java.util.Map">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
   	where c.batch_id = b.batch_id and b.type=t.card_code and b.check_state=2
   	ORDER BY b.batch_name,c.card_num ASC
   </select>
-  <!-- 查询充值卡列表 -->
+  <!-- 查询万方卡列表 -->
   <select id="queryCard" resultMap="BaseResultMap2" parameterType="java.util.Map">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
   	where c.batch_id = b.batch_id and b.type=t.card_code
@@ -156,7 +156,7 @@
     </if>
     limit #{pageNum},#{pageSize}
   </select>
-  <!-- 根据id单张充值卡详情页 -->
+  <!-- 根据id单张万方卡详情页 -->
   <select id="queryOneById" resultMap="BaseResultMap2" parameterType="java.lang.String">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
   	where c.batch_id = b.batch_id 
@@ -170,7 +170,7 @@
   	and b.type=t.card_code
   	and c.batch_id = #{batchId}
   </select>
-  <!-- 根据batchId  分页充值卡列表 -->
+  <!-- 根据batchId  分页万方卡列表 -->
   <select id="queryCardBybatchId" resultMap="BaseResultMap2" parameterType="java.util.Map">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
   	where c.batch_id = b.batch_id 
@@ -178,7 +178,7 @@
   	and c.batch_id = #{batchId}
   	limit #{pageNum},#{pageSize}
   </select>
-  <!-- 修改充值卡激活状态 -->
+  <!-- 修改万方卡激活状态 -->
   <update id="updateInvokeState" parameterType="java.util.Map">
   	update wfks_accounting.rech_card 
   	set id=#{id},invoke_state=#{invokeState},invoke_user=#{invokeUser},invoke_ip=#{invokeIp},invoke_date=#{invokeDate}

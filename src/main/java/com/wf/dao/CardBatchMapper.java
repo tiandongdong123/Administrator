@@ -8,11 +8,11 @@ import com.wf.bean.CardBatch;
 
 public interface CardBatchMapper {
    /**
-    * 生成充值卡批次
+    * 生成万方卡批次
     */
 	int insertCardBatch(CardBatch cardBatch);
 	/**
-	 * 充值卡批次排序计算批次号
+	 * 万方卡批次排序计算批次号
 	 */
 	String queryBatchName();
 	/**
@@ -28,13 +28,13 @@ public interface CardBatchMapper {
 	 */
 	List<Map<String,Object>> queryAll();
 	/**
-	 * 充值卡审核
+	 * 万方卡审核
 	 * @param map
 	 * @return
 	 */
 	List<Object> queryCheck(Map<String,Object> map);
 	/**
-	 * 根据batchId  充值卡批次详情页
+	 * 根据batchId  万方卡批次详情页
 	 * @param batchId
 	 * @return
 	 */

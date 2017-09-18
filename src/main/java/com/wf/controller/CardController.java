@@ -48,7 +48,7 @@ public class CardController {
 	@Autowired
 	RemindService remindService;//消息提醒接口
 	/**
-	 * 生成充值卡
+	 * 生成万方卡
 	 * @return
 	 */
 	@RequestMapping("createCard")
@@ -60,7 +60,7 @@ public class CardController {
 	}
 	
 	/**
-	 * 添加充值卡类型
+	 * 添加万方卡类型
 	 * @return
 	 */
 	@RequestMapping("createCardType")
@@ -72,7 +72,7 @@ public class CardController {
 	
 	
 	/**
-	 * 检测充值卡类型是否重复
+	 * 检测万方卡类型是否重复
 	 * @param request
 	 * @return
 	 */
@@ -87,7 +87,7 @@ public class CardController {
 		return i;
 	}
 	/**
-	 * 添加充值卡
+	 * 添加万方卡
 	 * @param request
 	 * @return
 	 */
@@ -101,7 +101,7 @@ public class CardController {
 		return i;
 	}
 	/**
-	 * 获取充值卡类型表
+	 * 获取万方卡类型表
 	 * @return
 	 */
 	@RequestMapping("codelist")
@@ -151,7 +151,7 @@ public class CardController {
 		return flag;
 	}
 	/**
-	 * 充值卡审核
+	 * 万方卡审核
 	 * @return
 	 */
 	@RequestMapping("cardCheck")
@@ -168,7 +168,7 @@ public class CardController {
 		return p;
 	}
 	/**
-	 * 充值卡管理
+	 * 万方卡管理
 	 * @return
 	 */
 	@RequestMapping("cardManager")
@@ -186,7 +186,7 @@ public class CardController {
 		return p;
 	}
 	/**
-	 * 单张充值卡详情
+	 * 单张万方卡详情
 	 * @return
 	 */
 	@RequestMapping("details")
@@ -295,7 +295,7 @@ public class CardController {
 		return mav;
 	}
 	/**
-	 * 修改充值卡激活状态
+	 * 修改万方卡激活状态
 	 */
 	@RequestMapping("updateInvokeState")
 	@ResponseBody
@@ -316,35 +316,29 @@ public class CardController {
 		return flag;
 	}
 	/**
-	 * 充值卡导出
+	 * 万方卡导出
 	 * @param request
 	 * @param response
-	 * @param batchId 充值卡批次id
-	 * @param type (1-充值卡批次已审核未领取导出；2-充值卡批次已领取导出；3-充值卡详情页导出)
+	 * @param batchId 万方卡批次id
+	 * @param type (1-万方卡批次已审核未领取导出；2-万方卡批次已领取导出；3-万方卡详情页导出)
 	 * @return
 	 */
 	@RequestMapping("exportCard")
 	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) {
 		ExportExcel exc= new ExportExcel();
-		if(type == 1){//充值卡批次已审核未领取导出
+		if(type == 1){//万方卡批次已审核未领取导出
 			
 			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
 			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
 			
-			namelist.add("充值卡类型");
+			namelist.add("万方卡类型");
 			namelist.add("卡号");
 			namelist.add("密码");
 			namelist.add("面值");		
 			namelist.add("有效期");
-//		namelist.add("有效期");
-//		namelist.add("申请日期");
-//		namelist.add("激活状态");		
-//		namelist.add("激活日期");
-//		namelist.add("激活用户");
-//		namelist.add("激活ip");
 			exc.exportExccel1(response,json,namelist);
-		}else if(type == 2){//充值卡批次已领取导出
+		}else if(type == 2){//万方卡批次已领取导出
 			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
 			if(StringUtils.isNotBlank(batchId)){//单个批次导出
@@ -367,7 +361,7 @@ public class CardController {
 			List<String> batchNamelist=new ArrayList<String>();
 			
 			batchNamelist.add("批次");
-			batchNamelist.add("充值卡类型");
+			batchNamelist.add("万方卡类型");
 			batchNamelist.add("面值/数值");
 			batchNamelist.add("总金额");		
 			batchNamelist.add("有效期");
@@ -398,7 +392,7 @@ public class CardController {
 			cardNamelist.add("激活ip");
 			
 			exc.exportExcel2(response,batchJson,batchNamelist,cardJson,cardNamelist);
-		}else if(type == 3){//充值卡批次整体导出
+		}else if(type == 3){//万方卡批次整体导出
 			
 			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 			Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
@@ -407,7 +401,7 @@ public class CardController {
 			List<String> namelist=new ArrayList<String>();
 			
 			namelist.add("批次");
-			namelist.add("充值卡类型");
+			namelist.add("万方卡类型");
 			namelist.add("面值/数值");
 			namelist.add("总金额");		
 			namelist.add("有效期");
