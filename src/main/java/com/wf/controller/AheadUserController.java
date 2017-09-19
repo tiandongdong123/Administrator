@@ -29,6 +29,7 @@ import wfks.accounting.setting.PayChannelModel;
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
 import com.utils.DateUtil;
+import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.webservice.ArrayOfWFUser;
@@ -611,6 +612,10 @@ public class AheadUserController {
 				//同步已发表论文检测权限
 				msg=this.getAhthorityWebService(com.getUserId());
 				System.out.println("批量更新权限接口执行结果："+com.getUserId()+"_"+msg);
+				//更新前台用户信息
+				if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+					HttpClientUtil.updateUserData(com.getUserId(), false);
+				}
 				in+=1;
 			}
 		}
@@ -1121,7 +1126,7 @@ public class AheadUserController {
 			map.put("pid", "");
 			aheadUserService.updatePid(map);
 		}
-		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){			
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
 			aheadUserService.updateUserIp(com);
 		}else{
 			aheadUserService.deleteUserIp(com.getUserId());
@@ -1160,6 +1165,10 @@ public class AheadUserController {
 			//同步已发表论文检测权限
 			msg=this.getAhthorityWebService(com.getUserId());
 			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
+			//更新前台用户信息
+			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+				HttpClientUtil.updateUserData(com.getUserId(), false);
+			}
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
