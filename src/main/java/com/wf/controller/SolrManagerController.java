@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.redis.RedisUtil;
-import com.redis.SettingUtil;
 import com.utils.SolrService;
 import com.xxl.conf.core.XxlConfClient;
 
@@ -111,7 +110,11 @@ public class SolrManagerController {
 				list.add(idBuff.toString().trim());
 			}
 			// 开始查询solr
-			SolrService.getInstance(solrUrl + core);
+			if(!solrUrl.endsWith("/")){
+				SolrService.getInstance(solrUrl +"/"+ core);
+			}else{
+				SolrService.getInstance(solrUrl + core);
+			}
 			long allNum=0L;
 			for(String id:list){
 				String query = "";
