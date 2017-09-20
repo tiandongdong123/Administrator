@@ -1,20 +1,14 @@
 package com.redis;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-
-
-import com.xxl.conf.core.XxlConfClient;
-
 import redis.clients.jedis.BinaryClient.LIST_POSITION;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Pipeline;
-
+import com.xxl.conf.core.XxlConfClient;
 
 /**
  * <p>redis通用工具类</p>
@@ -24,12 +18,8 @@ import redis.clients.jedis.Pipeline;
 public class RedisUtil {
 	
 	private JedisPool pool = null;
-//	private static String ip = SettingUtil.getPros("redis.properties").getProperty("redis.host");//SettingUtil.getPros().getProperty("db.redis.host");
-//	private static int prot = Integer.parseInt(SettingUtil.getPros("redis.properties").getProperty("redis.port"));//Integer.parseInt(SettingUtil.getPros().getProperty("db.redis.prot"));
-	
 	private static String ip = XxlConfClient.get("wf-public.redis.host", null);
 	private static int prot = Integer.parseInt(XxlConfClient.get("wf-public.redis.port", null));
-//	private static String pass = XxlConfClient.get("wf-public.redis.pass", null);
 	
 	/**
 	 * <p>传入ip和端口号构建redis 连接池</p>
@@ -1720,11 +1710,14 @@ public class RedisUtil {
 	 * @param pattern
 	 * @return
 	 */
-	public Set<String> keys(String pattern){
+	public Set<String> keys(String pattern,int... num){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
 			jedis = pool.getResource();
+			if(num.length>0){
+				jedis.select(num[0]);
+			}
 			res = jedis.keys(pattern);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
