@@ -32,15 +32,18 @@ function Page(curr){
 					if(data.pageRow[i].invokeState == 3){
 						invokeState = "已过期";
 					}
+					var invokeDate=data.pageRow[i].invokeDate==null?"":data.pageRow[i].invokeDate;
+					var invokeUser=data.pageRow[i].invokeUser==null?"":data.pageRow[i].invokeUser;
+					var invokeIp=data.pageRow[i].invokeIp==null?"":data.pageRow[i].invokeIp;
 					var html ='<tr>'
 	                  +'<td>'+(serial+i)+'</td>'
 	                  +'<td>'+data.pageRow[i].cardNum+'</td>'
 	                  +'<td>'+data.pageRow[i].password+'</td>'
 	                  +'<td>'+data.pageRow[i].value+'</td>'
 	                  +'<td>'+invokeState+'</td>'
-	                  +'<td>'+data.pageRow[i].invokeDate+'</td>'
-	                  +'<td>'+data.pageRow[i].invokeUser+'</td>'
-	                  +'<td>'+data.pageRow[i].invokeIp+'</td>'
+	                  +'<td>'+invokeDate+'</td>'
+	                  +'<td>'+invokeUser+'</td>'
+	                  +'<td>'+invokeIp+'</td>'
 	                  +'</tr>';
 					
 					$("#list").append(html);
@@ -67,12 +70,3 @@ function Page(curr){
 		}
 	})
 }
-/*//-----------------------日期处理------------------------------
-function dateChange(date){
-	var time = new Date(date);
-	var year = time.getFullYear();
-	var month = time.getMonth()+1 < 10 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
-	var currentDate = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
-	time = year+"-"+month+"-"+currentDate;
-	return time;
-}*/

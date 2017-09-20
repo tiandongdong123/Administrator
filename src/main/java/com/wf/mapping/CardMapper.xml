@@ -176,6 +176,7 @@
   	where c.batch_id = b.batch_id 
   	and b.type=t.card_code
   	and c.batch_id = #{batchId}
+	order by c.card_num
   	limit #{pageNum},#{pageSize}
   </select>
   <!-- 修改万方卡激活状态 -->
