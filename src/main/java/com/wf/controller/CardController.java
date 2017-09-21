@@ -47,6 +47,7 @@ public class CardController {
 	
 	@Autowired
 	RemindService remindService;//消息提醒接口
+	
 	/**
 	 * 生成万方卡
 	 * @return
@@ -68,8 +69,7 @@ public class CardController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/create_card_type");
 		return mav;
-	}
-	
+	}	
 	
 	/**
 	 * 检测万方卡类型是否重复
@@ -86,6 +86,7 @@ public class CardController {
 		int i=cardtype.checkcode(card);
 		return i;
 	}
+	
 	/**
 	 * 添加万方卡
 	 * @param request
@@ -100,6 +101,7 @@ public class CardController {
 		int i=cardtype.addcode(card);
 		return i;
 	}
+	
 	/**
 	 * 获取万方卡类型表
 	 * @return
@@ -150,6 +152,7 @@ public class CardController {
 		Boolean flag = cardBatchService.insertCardBatch(type, valueNumber, validStart, validEnd, applyDepartment, applyPerson, applyDate,adjunct);
 		return flag;
 	}
+	
 	/**
 	 * 万方卡审核
 	 * @return
@@ -157,9 +160,11 @@ public class CardController {
 	@RequestMapping("cardCheck")
 	public ModelAndView cardCheck(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/card_check");
 		return mav;
 	}
+	
 	@RequestMapping("queryCheck")
 	@ResponseBody
 	public PageList  queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,
@@ -167,6 +172,7 @@ public class CardController {
 		PageList p = cardBatchService.queryCheck(batchName, applyDepartment, applyPerson, startTime, endTime, cardType,batchState, pageNum, pageSize);
 		return p;
 	}
+	
 	/**
 	 * 万方卡管理
 	 * @return
@@ -174,9 +180,11 @@ public class CardController {
 	@RequestMapping("cardManager")
 	public ModelAndView cardManager(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/card_manager");
 		return mav;
 	}
+	
 	@RequestMapping("queryCard")
 	@ResponseBody
 	public PageList  queryCard(String batchName,String numStart,String numEnd,
@@ -185,6 +193,7 @@ public class CardController {
 		PageList p = cardService.queryCard(batchName, numStart, numEnd, applyDepartment, applyPerson, startTime, endTime, cardType, batchState,invokeState, pageNum, pageSize);
 		return p;
 	}
+	
 	/**
 	 * 单张万方卡详情
 	 * @return
@@ -197,6 +206,7 @@ public class CardController {
 		mav.setViewName("/page/othermanager/details");
 		return mav;
 	}
+	
 	/**
 	 * 附件下载
 	 * @param request
@@ -214,16 +224,13 @@ public class CardController {
 	        response.setHeader("Content-Disposition", "attachment;filename="+java.net.URLEncoder.encode(name, "UTF-8")+type);  
 			InputStream in = new FileInputStream(fileName);
 			OutputStream out = response.getOutputStream();
-			int b;  
-	        while((b=in.read())!= -1)  
-	        {  
-	            out.write(b);  
-	        }  
-	          
-	        in.close();  
-	        out.close(); 
+			int b;
+			while ((b = in.read()) != -1) {
+				out.write(b);
+			}
+			in.close();
+			out.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -242,12 +249,14 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_get");
 		return mav;
 	}
+	
 	@RequestMapping("queryCardByBatchId")
 	@ResponseBody
 	public PageList  queryCardByBatchId(String batchId, int pageNum,int pageSize){
 		PageList p = cardService.queryCardBybatchId(batchId, pageNum, pageSize);
 		return p;
 	}
+	
 	/**
 	 * 批次详情页未领取
 	 * @param type(0--不能领取；1--能领取)
@@ -264,6 +273,7 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_unget");
 		return mav;
 	}
+	
 	/**
 	 * 修改审核状态
 	 */
@@ -280,6 +290,7 @@ public class CardController {
 		}
 		return flag;
 	}
+	
 	/**
 	 * 修改批次状态(领取)
 	 */
@@ -294,6 +305,7 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_get");
 		return mav;
 	}
+	
 	/**
 	 * 修改万方卡激活状态
 	 */
@@ -303,6 +315,7 @@ public class CardController {
 		//TODO 具体的激活流程
 		cardService.updateInvokeState("00fd2ff5c9f6483dbde743586de36e28", "1");
 	}
+	
 	@RequestMapping("/remind")
 	@ResponseBody
 	public boolean remind(String batchName,String type,String applyDepartment,String applyPerson,String applyDate){
@@ -315,6 +328,7 @@ public class CardController {
 		boolean flag = remindService.insert(remind);
 		return flag;
 	}
+	
 	/**
 	 * 万方卡导出
 	 * @param request
