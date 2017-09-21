@@ -170,6 +170,9 @@
   	and b.type=t.card_code
   	and c.batch_id = #{batchId}
   </select>
+  <select id="querySzieBybatchId" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(1) from wfks_accounting.rech_card c where c.batch_id = #{batchId}
+  </select>
   <!-- 根据batchId  分页万方卡列表 -->
   <select id="queryCardBybatchId" resultMap="BaseResultMap2" parameterType="java.util.Map">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t

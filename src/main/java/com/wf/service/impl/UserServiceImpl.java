@@ -1,7 +1,6 @@
 package com.wf.service.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,6 @@ import com.wf.bean.Wfadmin;
 import com.wf.dao.SystemMenuMapper;
 import com.wf.dao.UserMapper;
 import com.wf.service.UserService;
-
-import net.sf.json.JSONObject;
 
 @Service
 public class UserServiceImpl implements UserService {

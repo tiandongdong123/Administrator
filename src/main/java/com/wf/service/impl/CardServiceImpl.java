@@ -104,14 +104,15 @@ public class CardServiceImpl implements CardService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cardMapper.queryCardBybatchId(map);
-		List<Map<String,Object>> allList = cardMapper.queryAllBybatchId(batchId);
+		int size= cardMapper.querySzieBybatchId(batchId);
 		PageList p = new PageList();
-		p.setTotalRow(allList.size());
+		p.setTotalRow(size);
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(list);
 		return p;
 	}
+	
 	/**
 	 * 修改万方卡激活状态
 	 * @param id

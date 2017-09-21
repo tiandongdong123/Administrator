@@ -40,6 +40,14 @@ public interface CardMapper {
 	 * @return
 	 */
 	List<Map<String,Object>> queryAllBybatchId(String batchId);
+	
+	/**
+	 * 根据batchId  查询所有万方卡的数量
+	 * @param batchId
+	 * @return
+	 */
+	int querySzieBybatchId(String batchId);
+	
 	/**
 	 * 根据batchId  分页万方卡列表
 	 * @param batchId
