@@ -19,15 +19,7 @@ function Page(curr){
 	applyPerson = $("#person").val().trim();//申请人
 	startTime = $("#startTime").val();//开始时间
 	endTime = $("#endTime").val();//结束时间
-	//--------------万方卡类型-----------------
-	if($("#allCheck").prop("checked") == false){//不全选
-		cardType = "";
-		$("input[name=cardType]").each(function(){
-			if($(this).prop("checked") == true){
-				cardType += $(this).val() + ",";
-			}
-		})
-	}
+	cardType = $("input[name='cardType']:checked").val();
 	$.ajax({
 		type : "post",  
 		url : "../card/queryCheck.do",

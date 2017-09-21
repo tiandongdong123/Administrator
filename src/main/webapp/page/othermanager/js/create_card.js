@@ -10,15 +10,6 @@ var applyDate = "";
 var file = $("#adjunct").val();
 
 $(function(){
-	$.post("../card/codelist.do",function(data){
-		if(data.length>0){
-			for(var i=0;i<data.length;i++){
-				var html="<option value="+data[i].cardTypeCode+">"+data[i].cardTypeName+"</option>";
-				$("#cardType").append(html);
-			}
-			
-		}
-	});
 	$('#file').change(function(){
 		var filepath = $('#file').val();
 		var extStart = filepath.lastIndexOf('\\');

@@ -41,33 +41,12 @@ function Page(curr){
 	}else{
 		num = 1;//卡号不为空，显示列表1 万方卡表
 	}
-	//--------------万方卡类型-----------------
-	if($("#all_type").prop("checked") == false){//不全选
-		cardType = "";
-		$("input[name=cardType]").each(function(){
-			if($(this).prop("checked") == true){
-				cardType += $(this).val() + ",";
-			}
-		})
-	}
-	//--------------批次状态-----------------
-	if($("#all_state").prop("checked") == false){//不全选
-		batchState = "";
-		$("input[name=checkState]").each(function(){
-			if($(this).prop("checked") == true){
-				batchState += $(this).val() + ",";
-			}
-		})
-	}
-	//-------------万方卡状态-----------------
-	if($("#activate").is(":visible") && $("#card_state").prop("checked") == false){//不全选
-		invokeState = "";
-		$("input[name=invokeState]").each(function(){
-			if($(this).prop("checked") == true){
-				invokeState += $(this).val() + ",";
-			}
-		})
-	}
+	//万方卡类型
+	cardType = $("input[name='cardType']:checked").val();
+	//批次状态
+	batchState = $("input[name='checkState']:checked").val();
+	//万方卡状态
+	invokeState = $("input[name='invokeState']:checked").val();
 	if(num == 1){//卡号不为空，显示列表1 万方卡表
 	$.ajax({
 		type : "post",  
@@ -92,12 +71,6 @@ function Page(curr){
 			var value="[";
 			if(data.pageRow[0] != null){
 				$.each(data.pageRow,function (i) {
-//					type="";
-//					for(var j=0;j<Code_list.length;j++){
-//						if(data.pageRow[i].type==Code_list[j].cardTypeCode){
-//							type=Code_list[j].cardTypeName;
-//						}
-//					}
 					var invokeState = "";
 					if(data.pageRow[i].invokeState == 1){
 						invokeState = "未激活";
@@ -295,19 +268,7 @@ function dateChange(date){
 	}
 }
 //-----------------------------------万方卡类型------------------------------------------------
-Code_list="";
-
 $(function(){
-	$.post("../card/codelist.do",function(data){
-		if(data.length>0){
-			for(var i=0;i<data.length;i++){
-				
-				var html="<input type=\"checkbox\" name=\"cardType\" value="+data[i].cardTypeCode+">"+data[i].cardTypeName;
-				$("#type_list").append(html);
-			}
-			Code_list=data;	 
-		}
-	});
 	$('#numStart').blur(function(){
 		if($('#numStart').val().trim() != '' || $('#numEnd').val().trim() != ''){
 			$('#activate').show();
