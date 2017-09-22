@@ -75,12 +75,11 @@ function Page(curr){
 							}else{
 								valueNumber=valueNumber+","+param.value+"/"+param.number;	
 							}							
-							}
+						}
 						sumnum++;
 						maxsum=maxsum*1+data.pageRow[i].amount*1;
 						var html ='<tr>'
 							+'<td>'+x+'</td>'
-		                  /*+'<td>'+(serial+i)+'</td>'*/
 		                  +'<td>'+data.pageRow[i].batchName+'</td>'
 		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
 		                  +'<td>'+valueNumber+'</td>'
@@ -91,14 +90,11 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
 		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
-//		                  +'<td>'+batchState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
-						
 						$("#list").append(html);
 						x++;
-						}	
-					
+					}
 					sum=x;
 				});
 				//后显示已审核的
@@ -153,7 +149,6 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
 		                  +'<td><a href="../card/download.do?url=${request.contextPath}'+data.pageRow[i].adjunct+'">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
-//		                  +'<td>'+batchState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
 						
@@ -161,39 +156,26 @@ function Page(curr){
 						sum++;
 						}					
 				});
-//				var total="这段时间内累计充值"+sumnum+"次，共计"+maxsum+"元";
-//				$("#total").append(total);
 			}else{
 				$("#list").append("暂无数据");
 			}
-			laypage(
-		            {
-		                cont: 'divPager',
-		                pages: Math.ceil(data.totalRow / pageSize),	//总页数
-		                curr: curr || 1,
-		                skip: true,
-		                skin: 'molv',
-		                jump: function (obj, first) {
-		                    if(!first){
-		                        Page(obj.curr);
-		                    }
-		                }
-		            });
+			laypage({
+                cont: 'divPager',
+                pages: Math.ceil(data.totalRow / pageSize),	//总页数
+                curr: curr || 1,
+                skip: true,
+                skin: 'molv',
+                jump: function (obj, first) {
+                    if(!first){
+                        Page(obj.curr);
+                    }
+                }
+            });
 		},
-		error : function(data){
-			
-		}
+		error : function(data){}
 	})
 }
-/*//-----------------------日期处理------------------------------
-function dateChange(date){
-	var time = new Date(date);
-	var year = time.getFullYear();
-	var month = time.getMonth()+1 < 10 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
-	var currentDate = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
-	time = year+"-"+month+"-"+currentDate;
-	return time;
-}*/
+
 //----------------------------审核-------------------------------
 function check(obj){
 	layer.alert('确定审核通过？', {

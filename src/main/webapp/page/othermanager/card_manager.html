@@ -20,45 +20,45 @@
             <!-- form start -->
             <form role="form">
               <div class="box-body">
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name"> 批次:</label>
                   <input type="text" id="batchName" class="form-control input_width">批
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">卡号:</label>
                   <input type="text" id="numStart" class="form-control input_time">
                   <label>至</label>
                   <input type="text" id="numEnd" class="form-control input_time">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">申请部门:</label>
                   <input type="text" id="department" class="form-control input_width">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">申请人:</label>
                   <input type="text" id="person" class="form-control input_width">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name"> 申请时间:</label>
                   <input id="startTime" type="text" class="form-control input_time" onclick="WdatePicker()">
                   <label>——</label>
                   <input id="endTime" type="text" class="form-control input_time" onclick="WdatePicker()">
                 </div>
-                <div class="form-group input_block " id="type_list"> 
+                <div class="form-group input_block" id="type_list"> 
                   <label class="input_name">万方卡类型：</label>
                   <input type="radio" name="cardType" value="">全选
                   <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
 					<input type="radio" name="cardType" value="${card.cardTypeCode}">${card.cardTypeName}
                   <?}}?>
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">批次状态：</label>
                   <input type="radio" name="checkState" value="">全选
                   <input type="radio" name="checkState" value="1">未审核
                   <input type="radio" name="checkState" value="2">已审核未领取
                   <input type="radio" name="checkState" value="3">已领取
                 </div>
-                <div class="form-group input_block" id="activate">
+                <div class="form-group input_block">
                   <label class="input_name">万方卡状态：</label>
                   <input type="radio" name="invokeState" value="">全选
                   <input type="radio" name="invokeState" value="1">未激活

@@ -18,7 +18,11 @@
               <div class="box-body">
               	<div class="form-group input_block ">
                   <label  class="input_name">* 万方卡类型</label>
-                  <select id="cardType" class="form-control input_width" name="select"></select>
+                  <select id="cardType" class="form-control input_width" name="select">
+                  <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
+					<option value ="${card.cardTypeCode}">${card.cardTypeName}</option>
+                  <?}}?>
+                  </select>
                    <button type="button" class="btn btn-primary" onclick="addCardType();" >万方卡类型管理</button>
                 </div>
                 <div class="form-group input_block ">

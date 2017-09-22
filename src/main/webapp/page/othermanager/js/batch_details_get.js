@@ -51,19 +51,18 @@ function Page(curr){
 			}else{
 				$("#list").append("暂无数据");
 			}
-			laypage(
-		            {
-		                cont: 'divPager',
-		                pages: Math.ceil(data.totalRow / pageSize),	//总页数
-		                curr: curr || 1,
-		                skip: true,
-		                skin: 'molv',
-		                jump: function (obj, first) {
-		                    if(!first){
-		                        Page(obj.curr);
-		                    }
-		                }
-		            });
+			laypage({
+                cont: 'divPager',
+                pages: Math.ceil(data.totalRow / pageSize),	//总页数
+                curr: curr || 1,
+                skip: true,
+                skin: 'molv',
+                jump: function (obj, first) {
+                    if(!first){
+                        Page(obj.curr);
+                    }
+                }
+            });
 		},
 		error : function(data){
 			
