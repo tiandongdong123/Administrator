@@ -128,38 +128,20 @@ public class RedisUtil {
 	}
 	
 	/**
-	 * <p>设置key的有效时间</p>
-	 * @param key
-	 * @return 成功返回value 失败返回null
-	 */
-	public Long expire(String key, int second){
-		Jedis jedis = null;
-		Long value = null;
-		try {
-			jedis = pool.getResource();
-			value = jedis.expire(key,second);
-		} catch (Exception e) {
-			pool.returnBrokenResource(jedis);
-			e.printStackTrace();
-		} finally {
-			returnResource(pool, jedis);
-		}
-		return value;
-	}
-	
-	/**
 	 * 设置key的有效时间(可选择db)
 	 * @param key
 	 * @param second
 	 * @param num
 	 * @return 成功返回value 失败返回null
 	 */
-	public Long expire(String key, int second,int num){
+	public Long expire(String key, int second,int... num){
 		Jedis jedis = null;
 		Long value = null;
 		try {
 			jedis = pool.getResource();
-			jedis.select(num);
+			if(num.length>0){
+				jedis.select(num[0]);
+			}
 			value = jedis.expire(key,second);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
@@ -177,33 +159,13 @@ public class RedisUtil {
 	 * @param value
 	 * @return 成功 返回OK 失败返回 0
 	 */
-	public String set(String key,String value,int num){
+	public String set(String key,String value,int... num){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
-			jedis.select(num);
-			String result = jedis.set(key, value);
-			return result;
-		} catch (Exception e) {
-			pool.returnBrokenResource(jedis);
-			e.printStackTrace();
-			return "0";
-		} finally {
-			returnResource(pool, jedis);
-		}
-	}
-	
-	/**
-	 * <p>向redis存入key和value,并释放连接资源</p>
-	 * <p>如果key已经存在 则覆盖</p>
-	 * @param key
-	 * @param value
-	 * @return 成功 返回OK 失败返回 0
-	 */
-	public String set(byte[] key,byte[] value){
-		Jedis jedis = null;
-		try {
-			jedis = pool.getResource();
+			if(num.length>0){
+				jedis.select(num[0]);
+			}
 			String result = jedis.set(key, value);
 			return result;
 		} catch (Exception e) {
@@ -282,10 +244,13 @@ public class RedisUtil {
 	 * @param key
 	 * @return true OR false
 	 */
-	public Boolean exists(String key){
+	public Boolean exists(String key,int...num){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
+			if(num.length>0){
+				jedis.select(num[0]);
+			}
 			return jedis.exists(key);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
@@ -603,11 +568,14 @@ public class RedisUtil {
 	 * @param value
 	 * @return 如果存在返回0 异常返回null
 	 */
-	public Long hset(String key,String field,String value) {
+	public Long hset(String key,String field,String value,int... num) {
 		Jedis jedis = null;
 		Long res = null;
 		try {
 			jedis = pool.getResource();
+			if (num.length > 0) {
+				jedis.select(num[0]);
+			}
 			res = jedis.hset(key, field, value);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
@@ -773,11 +741,12 @@ public class RedisUtil {
 	 * @param fields 可以是 一个 field 也可以是 一个数组
 	 * @return
 	 */
-	public Long hdel(String key ,String...fields){
+	public Long hdel(int num,String key ,String...fields){
 		Jedis jedis = null;
 		Long res = null;
 		try {
 			jedis = pool.getResource();
+			jedis.select(num);
 			res = jedis.hdel(key, fields);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);

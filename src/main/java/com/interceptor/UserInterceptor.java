@@ -39,8 +39,9 @@ public class UserInterceptor implements HandlerInterceptor {
 		if (url.endsWith(CookieUtil.LOGIN_URL) || url.endsWith(CookieUtil.REMIND)) {
 			return true;
 		}
+		//2、校验redis
 		HttpSession session = req.getSession(true);
-		String id = CookieUtil.getCache((String) session.getId());
+		String id=CookieUtil.getCache(session.getId());
 		if (id == null) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;

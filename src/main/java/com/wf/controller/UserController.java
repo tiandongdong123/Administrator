@@ -117,10 +117,10 @@ public class UserController {
 				JSONObject json = JSONObject.fromObject(p);
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				json.put("registration_time", formatter.format(m.get("registration_time")));
-				redis.hset(token, "Admin."+user.getWangfang_admin_id(), json.toString());
-				redis.expire(token, 3600);
-				redis.set(req.getSession().getId(),user.getWangfang_admin_id(), 12);
-				redis.expire(req.getSession().getId(), 3600, 12); //设置超时时间
+				redis.hset(token, "Admin." + user.getWangfang_admin_id(), json.toString(),0);
+				redis.expire(token, 3600,0);
+				redis.set(req.getSession().getId(), user.getWangfang_admin_id(),0);
+				redis.expire(req.getSession().getId(), 3600,0);
 				map.put("flag", "true");
 			}
 		}else{
@@ -141,7 +141,7 @@ public class UserController {
 	/**
 	 *	清除cookie、redis信息
 	 */
-	public void removeCookieRedis(HttpServletRequest req,HttpServletResponse res) {
+	public void removeCookieRedis(HttpServletRequest req, HttpServletResponse res) {
 		String token = CookieUtil.getCookie(req);
 		if (token == null) {
 			return;
@@ -151,10 +151,10 @@ public class UserController {
 			return;
 		}
 		// 去除redis
-		redis.hdel(token, "Admin." + admin.getWangfang_admin_id());
-		redis.del(12, req.getSession().getId());
-		//去除wfcookie
-		CookieUtil.removeWfadmin(req,res);
+		redis.hdel(0, token, "Admin." + admin.getWangfang_admin_id());
+		redis.del(0, req.getSession().getId());
+		// 去除wfcookie
+		CookieUtil.removeWfadmin(req, res);
 	}
 	
 	
@@ -190,8 +190,8 @@ public class UserController {
 		map.put("purviews", purviews);
 		map.put("userName", userId);
 		map.put("department", deptName);
-		redis.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(), 12);
-		redis.expire(CookieUtil.LAYOUT+userId, 3600, 12); //设置超时时间
+		redis.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(),0);
+		redis.expire(CookieUtil.LAYOUT+userId, 3600,0); //设置超时时间
 		view.setViewName("/page/index");
 		return view;
 	}
