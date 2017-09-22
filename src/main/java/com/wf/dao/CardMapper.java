@@ -18,7 +18,7 @@ public interface CardMapper {
 	/**
 	 * 查询当前条件下所有
 	 */
-	List<Object> queryAll(Map<String,Object> map);
+	int querySize(Map<String,Object> map);
 	/**
 	 * 查询所有
 	 * @return

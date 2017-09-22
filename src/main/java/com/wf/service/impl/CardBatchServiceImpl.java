@@ -162,20 +162,10 @@ public class CardBatchServiceImpl implements CardBatchService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cbm.queryCheck(map);
-
-		Map<String,Object> map1 = new HashMap<String,Object>();
-		map1.put("batchName", batchName);
-		map1.put("applyDepartment", applyDepartment);
-		map1.put("applyPerson", applyPerson);
-		map1.put("startTime", startTime);
-		map1.put("endTime", endTime);
-		map1.put("cardType", cardType);
-		map.put("batchState", batchState);
-		List<Object> all = cbm.queryAllBatch(map1);
-		
+		int size = cbm.queryCheckSize(map);
 		PageList pl = new PageList();
 		pl.setPageRow(list);//查询结果列表
-		pl.setTotalRow(all.size());//总条数
+		pl.setTotalRow(size);//总条数
 		pl.setPageNum(pageNum);//当前页
 		pl.setPageSize(pageSize);//每页显示的数量
 		return pl;

@@ -57,39 +57,6 @@
   <select id="querySameMoney" resultType="java.lang.String">
   	select max(card_num) from wfks_accounting.rech_card where card_num like CONCAT(#{card},'%')
   </select>
-  <!-- 查询充值批次当前条件下所有记录 -->
-  <select id="queryAllBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
-  	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
-  	where b.type=t.card_code
-  	<if test="batchName!=null">
-  		and b.batch_name=#{batchName}
-  	</if>
-  	<if test="applyDepartment!=null">
-  		and b.apply_department=#{applyDepartment}
-  	</if>
-  	<if test="applyPerson!=null">
-  		and b.apply_person=#{applyPerson}
-  	</if>
-  	<if test="startTime!=null">
-  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null">
-  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  	<if test="cardType!=null">
-       	and b.type in
-        <foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">  
-			#{item}
-		</foreach>
-    </if>
-    <if test="batchState !=null">
-  		and b.batch_state in
-	  	<foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
-  	</if>
-  	ORDER BY create_date DESC
-  </select>
   <!-- 查询所有批次 -->
   <select id="queryAll" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
@@ -115,19 +82,39 @@
   		and b.apply_date <![CDATA[ <= ]]> #{endTime}
   	</if>
   	<if test="cardType !=null">
-  		and b.type in
-	  	<foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
+  		and b.type=#{cardType}
   	</if>
   	<if test="batchState !=null">
-  		and b.batch_state in
-	  	<foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
+  		and b.batch_state=#{batchState}
   	</if>
   	ORDER BY create_date DESC
   	limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 查询充值批次当前条件下所有记录 -->
+  <select id="queryCheckSize" resultType="java.lang.Integer" parameterType="java.util.Map">
+  	select count(1) from wfks_accounting.rech_card_batch b
+  	where 1=1
+  	<if test="batchName!=null">
+  		and b.batch_name=#{batchName}
+  	</if>
+  	<if test="applyDepartment!=null">
+  		and b.apply_department=#{applyDepartment}
+  	</if>
+  	<if test="applyPerson!=null">
+  		and b.apply_person=#{applyPerson}
+  	</if>
+  	<if test="startTime!=null">
+  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
+  	</if>
+  	<if test="endTime!=null">
+  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
+  	</if>
+  	<if test="cardType!=null">
+       	and b.type=#{cardType}
+    </if>
+    <if test="batchState !=null">
+  		and b.batch_state=#{batchState}
+  	</if>
   </select>
   <!-- 根据batchId  万方卡批次详情页 -->
   <select id="queryOneByBatchId" resultMap="BaseResultMap" parameterType="java.lang.String">

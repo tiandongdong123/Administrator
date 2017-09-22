@@ -20,10 +20,6 @@ public interface CardBatchMapper {
 	 */
 	String querySameMoney(String card);
 	/**
-	 * 查询当前条件下所有批次
-	 */
-	List<Object> queryAllBatch(Map<String,Object> map);
-	/**
 	 * 查询所有批次
 	 */
 	List<Map<String,Object>> queryAll();
@@ -33,6 +29,10 @@ public interface CardBatchMapper {
 	 * @return
 	 */
 	List<Object> queryCheck(Map<String,Object> map);
+	/**
+	 * 查询当前条件下数量
+	 */
+	int queryCheckSize(Map<String,Object> map);
 	/**
 	 * 根据batchId  万方卡批次详情页
 	 * @param batchId

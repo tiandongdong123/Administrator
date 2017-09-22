@@ -59,22 +59,10 @@ public class CardServiceImpl implements CardService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cardMapper.queryCard(map);
-		//-------------查询一共有多少条-----------------------------
-		Map<String,Object> map1 = new HashMap<String,Object>();
-		map1.put("batchName", batchName);
-		map1.put("numStart", numStart);
-		map1.put("numEnd", numEnd);
-		map1.put("applyDepartment", applyDepartment);
-		map1.put("applyPerson", applyPerson);
-		map1.put("startTime", startTime);
-		map1.put("endTime", endTime);
-		map1.put("cardType", cardType);
-		map1.put("batchState", batchState);
-		map.put("invokeState", invokeState);
-		List<Object> all = cardMapper.queryAll(map1);
+		int size = cardMapper.querySize(map);
 		PageList pl = new PageList();
 		pl.setPageRow(list);//查询结果列表
-		pl.setTotalRow(all.size());//总条数
+		pl.setTotalRow(size);//总条数
 		pl.setPageNum(pageNum);//当前页
 		pl.setPageSize(pageSize);//每页显示的数量
 		return pl;

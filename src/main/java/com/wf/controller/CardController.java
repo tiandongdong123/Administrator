@@ -55,6 +55,7 @@ public class CardController {
 	@RequestMapping("createCard")
 	public ModelAndView createCard(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/create_card");
 		
 		return mav;
@@ -167,7 +168,7 @@ public class CardController {
 	
 	@RequestMapping("queryCheck")
 	@ResponseBody
-	public PageList  queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,
+	public PageList queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,
 			String endTime,String cardType,String batchState,int pageNum,int pageSize){
 		PageList p = cardBatchService.queryCheck(batchName, applyDepartment, applyPerson, startTime, endTime, cardType,batchState, pageNum, pageSize);
 		return p;
