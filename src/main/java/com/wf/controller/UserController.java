@@ -79,8 +79,6 @@ public class UserController {
 	@RequestMapping("userLogin")
 	@ResponseBody
 	public Map<String,String> login(String userName,String passWord,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		//清除cookie和redis
-		this.removeCookieRedis(req,res);
 		Map<String,String> map = new HashMap<String, String>();
 		Wfadmin user = service.getuser(userName, passWord);
 		if (user != null) {
@@ -134,29 +132,12 @@ public class UserController {
 	 */
 	@RequestMapping("logout")
 	public ModelAndView logout(HttpServletRequest req,HttpServletResponse res){
-		this.removeCookieRedis(req,res);
+		String id = req.getSession().getId();
+		if (id != null) {
+			redis.del(0, id);
+		}
 		return new ModelAndView("redirect:/user/toLogin.do");
 	}
-	
-	/**
-	 *	清除cookie、redis信息
-	 */
-	public void removeCookieRedis(HttpServletRequest req, HttpServletResponse res) {
-		String token = CookieUtil.getCookie(req);
-		if (token == null) {
-			return;
-		}
-		Wfadmin admin = CookieUtil.getWfadmin(req);
-		if (admin == null) {
-			return;
-		}
-		// 去除redis
-		redis.hdel(0, token, "Admin." + admin.getWangfang_admin_id());
-		redis.del(0, req.getSession().getId());
-		// 去除wfcookie
-		CookieUtil.removeWfadmin(req, res);
-	}
-	
 	
 	/**
 	 *	后台登录主页面跳转 

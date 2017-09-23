@@ -802,11 +802,14 @@ public class RedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Map<String, String> hgetall(String key){
+	public Map<String, String> hgetall(String key,int... num){
 		Jedis jedis = null;
 		Map<String, String> res = null;
 		try {
 			jedis = pool.getResource();
+			if (num.length > 0) {
+				jedis.select(num[0]);
+			}
 			res = jedis.hgetAll(key);
 		} catch (Exception e) {
 			pool.returnBrokenResource(jedis);
