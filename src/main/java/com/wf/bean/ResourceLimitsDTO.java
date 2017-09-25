@@ -60,6 +60,7 @@ public class ResourceLimitsDTO {
 	private String gazetteersLevel;
 	private String gazetteersArea;
 	private String gazetteersAlbum;
+	private String itemId;
 
 	public String getResourceid() {
 		return resourceid;
@@ -300,5 +301,12 @@ public class ResourceLimitsDTO {
 	public void setGazetteersAlbum(String gazetteersAlbum) {
 		this.gazetteersAlbum = gazetteersAlbum;
 	}
-	
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
 }

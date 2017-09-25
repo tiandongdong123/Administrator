@@ -806,27 +806,35 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 		}
 		
-		String gId=dto.getGazetteersId();
-		String gArea=dto.getGazetteersArea();
-		String gAlbum=dto.getGazetteersAlbum();
-		if(StringUtils.isNotEmpty(gId)||StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)){
-			if(StringUtils.isNotEmpty(gId)){
-				addStringToTerms("gazetteers_id","Equal",gId,Terms,"String");
-			}else{
-				if(StringUtils.isNotEmpty(gAlbum)){
-					addStringToTerms("gazetteers_album","Equal",gAlbum,Terms,"String");
+		String gId = dto.getGazetteersId();
+		String itemId = dto.getItemId();
+		String gArea = dto.getGazetteersArea();
+		String gAlbum = dto.getGazetteersAlbum();
+		String gLevel = dto.getGazetteersLevel();
+		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
+				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
+				|| StringUtils.isNotEmpty(gLevel)) {
+			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
+				if (StringUtils.isNotEmpty(gId)) {
+					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
 				}
-				if(StringUtils.isNotEmpty(gArea)){
-					addStringToTerms("gazetteers_area","Equal",gArea,Terms,"String");
+				if (StringUtils.isNotEmpty(itemId)) {
+					addStringToTerms("item_id", "Equal", itemId, Terms, "String");
 				}
-				String gType=dto.getGazetteersType();
-				if(StringUtils.isNotEmpty(gType)){
-					addStringToTerms("gazetteers_type","Equal",gType,Terms,"String");
+			} else {
+				if (StringUtils.isNotEmpty(gAlbum)) {
+					addStringToTerms("gazetteers_album", "Equal", gAlbum, Terms, "String");
 				}
-			}
-			String gLevel=dto.getGazetteersLevel();
-			if(StringUtils.isNotBlank(gLevel)){
-				addStringToTerms("gazetteers_level","Equal",gLevel,Terms,"String");
+				if (StringUtils.isNotEmpty(gArea)) {
+					addStringToTerms("gazetteers_area", "Equal", gArea, Terms, "String");
+				}
+				String gType = dto.getGazetteersType();
+				if (StringUtils.isNotEmpty(gType)) {
+					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
+				}
+				if (StringUtils.isNotBlank(gLevel)) {
+					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
+				}
 			}
 		}
 	
