@@ -50,10 +50,12 @@ public class SolrManagerController {
 	private static final String UNIT="unit";//机构
 	private static final String BLOB="blob";//博文
 	private static final String TBOOKS="tbooks";//工具书
+	//旧平台的方志
+	private static final String WFLocalChronicle_FZ="WFLocalChronicle_FZ";//志书
+	private static final String WFLocalChronicleItem_FZ="WFLocalChronicleItem_FZ";//条目
 	
 	private static final String front="stringIS_";
-	/*private static final String solrUrl=SettingUtil.getPros("solr.properties").getProperty("solr.host");*/
-	private static final String solrUrl=XxlConfClient.get("wf-public.solr.url", null);
+	
 	private RedisUtil redis = new RedisUtil();
 	/**
 	 * 跳转到下撤界面
@@ -109,11 +111,18 @@ public class SolrManagerController {
 			if(idBuff.length()>0){
 				list.add(idBuff.toString().trim());
 			}
+			String url = "";
+			// 旧平台的solr地址和新平台的solr地址不一致
+			if (WFLocalChronicle_FZ.equals(model) || WFLocalChronicleItem_FZ.equals(model)) {
+				url = XxlConfClient.get("wf-public.oldsolr.url", null);
+			} else {
+				url = XxlConfClient.get("wf-public.solr.url", null);
+			}
 			// 开始查询solr
-			if(!solrUrl.endsWith("/")){
-				SolrService.getInstance(solrUrl +"/"+ core);
+			if(!url.endsWith("/")){
+				SolrService.getInstance(url +"/"+ core);
 			}else{
-				SolrService.getInstance(solrUrl + core);
+				SolrService.getInstance(url + core);
 			}
 			long allNum=0L;
 			for(String id:list){
@@ -170,6 +179,12 @@ public class SolrManagerController {
 					case TBOOKS: //工具书
 						query=this.tbooks(id);
 						break;
+					case WFLocalChronicle_FZ: //旧平台志书
+						query=this.localChronicle(id);
+						break;
+					case WFLocalChronicleItem_FZ: //旧平台条目
+						query=this.localChronicle(id);
+						break;
 					default:
 						log.info("未找到正确的类型："+model);
 				}
@@ -205,6 +220,11 @@ public class SolrManagerController {
 		return map;
 	}
 	
+	//旧平台方志
+	private String localChronicle(String id) {
+		return "Id:(" + id + ")";
+	}
+
 	//期刊
 	private String perio(String param,String id) {
 		if (!StringUtils.isEmpty(id)) {
