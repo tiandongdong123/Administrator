@@ -222,7 +222,7 @@ public class SolrManagerController {
 	
 	//旧平台方志
 	private String localChronicle(String id) {
-		return "Id:(" + id + ")";
+		return "Id:[" + id + "]";
 	}
 
 	//期刊
