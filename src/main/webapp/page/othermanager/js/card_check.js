@@ -159,18 +159,24 @@ function Page(curr){
 			}else{
 				$("#list").append("暂无数据");
 			}
-			laypage({
-                cont: 'divPager',
-                pages: Math.ceil(data.totalRow / pageSize),	//总页数
-                curr: curr || 1,
-                skip: true,
-                skin: 'molv',
-                jump: function (obj, first) {
-                    if(!first){
-                        Page(obj.curr);
-                    }
-                }
-            });
+			layui.use(['laypage', 'layer'], function(){
+				var laypage = layui.laypage,layer = layui.layer;
+				laypage.render({
+					elem: 'divPager',
+					count: data.totalRow,
+					first: '首页',
+					last: '尾页',
+					curr: curr || 1,
+					page: Math.ceil(data.totalRow / pageSize),	//总页数
+					limit: pageSize,
+					layout: ['count', 'prev', 'page', 'next', 'skip'],
+					jump: function (obj, first) {
+			            if(!first){
+			                Page(obj.curr);
+			            }
+					}
+				});
+			});
 		},
 		error : function(data){}
 	})
