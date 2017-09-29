@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.wf.Setting.DatabaseConfigureSetting;
+import com.wf.Setting.ResourceTypeSetting;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	private DB_SourceMapper db;
 	@Autowired
 	private CustomMapper custom;
-	@Override
+
+	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
+
+/*	@Override
 	public PageList getData(String dataname,Integer pagenum,Integer pagesize) {
 		List<Object>  r = new ArrayList<Object>();
 		PageList p = new PageList();
@@ -126,6 +131,125 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		return p;
 
+	}*/
+	@Override
+	public PageList getData(Integer pageNum,Integer pageSize) {
+		List<Object>  r = new ArrayList<Object>();
+		PageList p = new PageList();
+		try {
+			r = dbConfig.getDatabase();
+			int pageN=(pageNum-1)*pageSize;
+			ArrayList<Object> pageRow = new ArrayList<>();
+			if((r.size()-pageN)>=10){
+				for(int i = 0 ; i< pageSize ; i++){
+					pageRow.add(r.get(i+pageN));
+				}
+			}else{
+				for(int i = 0 ; i<(r.size()-pageN);i++){
+					pageRow.add(r.get(i+pageN));
+				}
+			}
+
+			if(pageRow.size()>0){
+				for(int i=0;i<pageRow.size();i++)
+				{
+					String word=((Datamanager)pageRow.get(i)).getSourceDb();
+					String newword=null;
+					if(word!=null&&word!=""){
+						String[] str=word.split(",");
+						List<String> list = Arrays.asList(str);
+
+						for(int j=0;j<list.size();j++){
+							if(list.get(j)!=""&&list.get(j)!=null){
+								DB_Source dbs = db.getOneSource(list.get(j));
+								if(j==0){
+
+									if(dbs!=null){
+										newword = dbs.getDbSourceName();
+									}
+								}
+								else{
+									if(dbs!=null){
+										newword = newword+","+dbs.getDbSourceName();
+									}
+								}
+							}
+						}
+					}
+					String launage=((Datamanager)r.get(i)).getLanguage();
+					String langude="";
+					if(launage!=null&&launage!=""){
+						List<String> listlan = Arrays.asList(launage.split(","));
+
+						if(listlan.size()>0){
+							for(int j=0;j<listlan.size();j++){
+								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
+									Language lan=this.language.getOne(listlan.get(j));
+									if(j==0){
+										langude=lan.getLanguageName();
+									}else{
+										langude=langude+","+lan.getLanguageName();
+									}
+								}
+							}
+						}
+					}
+					String resource_type=((Datamanager)pageRow.get(i)).getResType();
+					String sources="";
+					if(resource_type!=null&&resource_type!=""){
+						List<String> listtyp = Arrays.asList(resource_type.split(","));
+						if(listtyp.size()>0){
+							for(int j=0;j<listtyp.size();j++){
+								if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
+									ResourceType reso=this.type.getOne(listtyp.get(j));
+									if(j==0){
+										sources=reso.getTypeName();
+									}else{
+										sources=sources+","+reso.getTypeName();
+									}
+								}
+							}
+						}
+					}
+					((Datamanager)pageRow.get(i)).setLanguage(langude);
+					((Datamanager)pageRow.get(i)).setResType(sources);
+					((Datamanager)pageRow.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
+				}
+			}
+			int pageTotal=r.size()!=0 && r.size()%pageSize !=0?r.size()/pageSize+1:r.size()/pageSize;
+			p.setPageRow(pageRow);
+			p.setPageNum(pageNum);
+			p.setPageTotal(pageTotal);
+			p.setPageSize(pageSize);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return p;
+	}
+	@Override
+	public PageList findDatabaseByName(String dataName){
+		PageList p = new PageList();
+		Map<String,Datamanager> mp = dbConfig.findDatabaseByName(dataName);
+		ArrayList<Object> list = new ArrayList<Object>();
+		for (String key : mp.keySet()) {
+			list.add(mp.get(key));
+		}
+		p.setPageNum(1);
+		p.setPageSize(10);
+		p.setPageRow(list);
+		p.setPageTotal(1);
+		return p;
+	}
+	@Override
+	public  Boolean moveUpDatabase(String id){
+		boolean b = dbConfig.moveUpDatabase(id);
+		return b;
+	}
+	@Override
+	public  Boolean moveDownDatabase(String id){
+		boolean b = dbConfig.moveDownDatabase(id);
+		return b;
 	}
 	@Override
 	public boolean deleteData(String id) {
@@ -133,12 +257,15 @@ public class DataManagerServiceImpl implements DataManagerService {
 		int rtnum = 0;
 		int cos = 0;
 		try {
+			//在数据库中删除
 			rtnum  = this.data.deleteData(id);
+			//在zookeeper中删除数据库配置
+			dbConfig.deleteDatabase(id);
 			cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(rtnum>0&&cos>0){
+		if(rtnum>0){
 			rt = true;
 		}
 		return rt;
@@ -147,8 +274,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public boolean closeData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
+		int typeState = 0 ;
 		try {
 			rtnum  = this.data.closeData(id);
+			dbConfig.updateDatabaseState(typeState,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,8 +291,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public boolean openData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
+		int typeState = 1 ;
 		try {
 			rtnum  = this.data.openData(id);
+			dbConfig.updateDatabaseState(typeState,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -175,9 +306,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public Map<String, Object> getResource() {
+		ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
 		Map<String, Object> map = new HashMap<String,Object>();
 		try {
-			List<ResourceType> listr= this.type.getRtypeName();
+			List<ResourceType> listr= resourceTypeSetting.getAll();
 			List<Language> lastr = this.language.getAllLanguage();
 			List<DB_Source> dbstr = this.db.getAllDB();
 			map.put("resourcetype", listr);
@@ -277,6 +409,8 @@ public class DataManagerServiceImpl implements DataManagerService {
 		List<Object> li = new ArrayList<Object>();
 		try {
 			li= this.data.checkDname(name);
+			/*//在zookeeper中判断
+			boolean result = dbConfig.checkName(name);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -308,6 +442,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
+
+			//在zookeeper中添加数据库配置
+			dbConfig.addDatabase(data);
+			//在数据库中添加
 			dus = this.data.doAddData(data);
 			cus = this.custom.doAddCustom(cs);
 		} catch (Exception e) {
@@ -378,6 +516,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
+
+			//在zookeeper中修改数据库配置
+			dbConfig.updateDatabase(data);
+			//在数据库中修改
 			dus = this.data.doUpdateData(data);
 			del = this.custom.doDeleteCustom(data.getId());
 			cus = this.custom.doAddCustom(cs);

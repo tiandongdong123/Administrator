@@ -1,16 +1,22 @@
 package com.wf.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.JsonUtil;
 import net.sf.json.JSONArray;
 
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,10 +40,36 @@ public class DataManagerController {
 	 */
 	@RequestMapping("getdata")
 	@ResponseBody
-	public PageList getData(String dataname,Integer pagenum,Integer pagesize){
-		PageList pl = this.data.getData(dataname,pagenum,pagesize);
-		return pl;
+	public PageList getData(Integer pagenum,Integer pagesize,String dataname) throws IOException {
+		if(dataname==null){
+			PageList p = this.data.getData(pagenum,pagesize);
+			return p;
+		}else{
+			PageList p = this.data.findDatabaseByName(dataname);
+			return p;
+		}
+
 	}
+
+	/**
+	 * 资源类型上移
+	 */
+	@RequestMapping("/moveUpDatabase")
+	public void moveUpDatabase(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=this.data.moveUpDatabase(id);
+		JsonUtil.toJsonHtml(response, b);
+	}
+	/**
+	 * 资源类型下移
+	 */
+	@RequestMapping("/moveDownDatabase")
+	public void moveDownDatabase(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=this.data.moveDownDatabase(id);
+		JsonUtil.toJsonHtml(response, b);
+	}
+
 	/**
 	 * 删除数据库
 	 * @param id

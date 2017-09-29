@@ -21,13 +21,17 @@ public interface ResourceTypeService {
 	 * @param typeName
 	 * @return
 	 */
-	PageList getResourceType(int pageNum,int pageSize,String typeName);
+	PageList getResourceType(int pageNum, int pageSize);
 	/**
 	 * ID查询
 	 * @param id
 	 * @return
 	 */
 	ResourceType findResourceType(String id);
+	/**
+	 * name查询
+	 */
+	PageList getResourceTypeByName(int pageNum, int pageSize, String typeName);
 	/**
 	 * 删除资源类型
 	 * @param ids
@@ -40,6 +44,18 @@ public interface ResourceTypeService {
 	 * @return
 	 */
 	Boolean updateResourceType(ResourceType resourceType);
+
+	/**
+	 * 资源类型上移
+	 */
+
+	 Boolean moveUpResource(String id);
+
+	/**
+	 * 资源类型下移
+	 */
+
+	Boolean moveDownResource(String id);
 	
 	/**
 	* @Title: resourcePublish
@@ -60,11 +76,11 @@ public interface ResourceTypeService {
 	 * @param id
 	 * @return
 	 */
-	int updateResourceTypeState(int typeState,String id);
+	int updateResourceTypeState(int typeState, String id);
 	List<Object> exportResource(String typeName);
 	
-	String checkRsTypeCode(String rsTypeCode);
+	Boolean checkRsTypeCode(String rsTypeCode);
 	
-	String checkRsTypeName(String rsTypeName);
+	Boolean checkRsTypeName(String rsTypeName);
 	
 }

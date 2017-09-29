@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wf.Setting.ResourceTypeSetting;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -100,6 +101,7 @@ public class ContentController{
 	
 	@Autowired
 	ShareTemplateNamesFiledsService filedsService;
+
 	
 	RedisUtil redis = new RedisUtil();
 	/**
@@ -395,28 +397,33 @@ public class ContentController{
 	 */
 	@RequestMapping("/resourceManage")
 	public String getResourceManage(
-			@RequestParam(value="typeName",required=false) String typeName,
 			HttpServletRequest request,Model model){
 		int pageNum=1;
 		int pageSize=10;
-		String typeName1="";
-		try {
-			if(typeName!=null&&typeName!=""){
-				typeName=URLDecoder.decode(typeName,"UTF-8");
-			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(typeName!=null&&typeName!=""){
-			typeName1="%"+typeName+"%";
-		}
-		PageList p=resourceTypeService.getResourceType(pageNum, pageSize, typeName1);
+		PageList p=resourceTypeService.getResourceType(pageNum, pageSize);
 		model.addAttribute("pageList",p);
-		model.addAttribute("typeName", typeName);
 		return "/page/contentmanage/resourceManage";
 	}
+
+	/**
+	 * 根据name查找资源类型
+	 */
+
+	@RequestMapping("/findResourseByName")
+	public void findResourseByName(
+			@RequestParam(value="typeName",required=false) String typeName,
+            HttpServletResponse response,HttpServletRequest request,Model model) throws IOException {
+		int pageNum=1;
+		int pageSize=10;
+		PageList p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
+		model.addAttribute("pageList",p);
+        JSONObject json=JSONObject.fromObject(p);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json.toString());
+	}
+
+
+
 	/**
 	 * 资源类型管理分页
 	 * @param response
@@ -425,24 +432,11 @@ public class ContentController{
 	 */
 	@RequestMapping("/resourceManageJson")
 	public void getJsonResourceManage(
-			@RequestParam(value="typeName",required=false) String typeName,
-			@RequestParam(value="page",required=false) int pageNum,
+			@RequestParam(value="page",required=false) int pageNum,String typeName,
 			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		String typeName1="";
-		try {
-			if(typeName!=null&&typeName!=""){
-				typeName=URLDecoder.decode(typeName,"UTF-8");
-			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(typeName!=null&&typeName!=""){
-			typeName1="%"+typeName+"%";
-		}
+
 		int pageSize=10;
-		PageList p=resourceTypeService.getResourceType(pageNum, pageSize, typeName1);
+		PageList p=resourceTypeService.getResourceType(pageNum, pageSize);
 		JSONObject json=JSONObject.fromObject(p);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
@@ -470,6 +464,26 @@ public class ContentController{
 		boolean b=resourceTypeService.addResourceType(resourceType);
 		JsonUtil.toJsonHtml(response, b);
 	}
+
+	/**
+	 * 资源类型上移
+	 */
+	@RequestMapping("/moveUpResource")
+	public void moveUpResource(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=resourceTypeService.moveUpResource(id);
+		JsonUtil.toJsonHtml(response, b);
+	}
+	/**
+	 * 资源类型下移
+	 */
+	@RequestMapping("/moveDownResource")
+	public void moveDownResource(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=resourceTypeService.moveDownResource(id);
+		JsonUtil.toJsonHtml(response, b);
+	}
+
 	/**
 	 * 修改学科分类信息跳转
 	 * @param request
@@ -480,7 +494,9 @@ public class ContentController{
 	public String updateResource(
 			@RequestParam(value="idRes",required=false) String id,
 			HttpServletRequest request,Model model){
-		ResourceType  resourceType=resourceTypeService.findResourceType(id);
+		//ResourceType  resourceType=resourceTypeService.findResourceType(id);
+		ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
+		ResourceType  resourceType= resourceTypeSetting.findResourceTypeById(id);
 		model.addAttribute("addupdate", "update");
 		model.addAttribute("resourceType", resourceType);
 		return "/page/contentmanage/addResource";
@@ -497,9 +513,9 @@ public class ContentController{
 		boolean b =resourceTypeService.updateResourceType(resourceType);
 		JsonUtil.toJsonHtml(response, b);
 		//更新REDIS资源类型状态
-		JSONArray list=	resourceTypeService.getAll1();
+/*		JSONArray list=	resourceTypeService.getAll1();
 		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);								  
+		redis.set("sourcetype", list.toString(), 6);	*/
 	}
 	/**
 	 * 删除资源信息
@@ -514,10 +530,10 @@ public class ContentController{
 		if(StringUtils.isEmpty(ids))ids=null;
 		Boolean b=resourceTypeService.deleteResourceType(ids);
 		JsonUtil.toJsonHtml(response, b);
-		//更新REDIS资源类型状态
+		/*//更新REDIS资源类型状态
 		JSONArray list=	resourceTypeService.getAll1();
 		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);								  
+		redis.set("sourcetype", list.toString(), 6);*/
 	}
 	/**
 	 * 图片上传
@@ -1270,10 +1286,16 @@ public class ContentController{
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public void pushData() {
+	public boolean pushData(int state,String id) {
+		int result = resourceTypeService.updateResourceTypeState(state, id);
 		JSONArray list = resourceTypeService.getAll1();
-		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);
+		boolean b = false;
+		if (result>0){
+			redis.del("sourcetype");
+			redis.set("sourcetype", list.toString(), 6);
+			b = true;
+		}
+		return b;
 	}
 	
 	/**
@@ -1423,7 +1445,7 @@ public class ContentController{
 	 */
 	@RequestMapping("checkRsTypeCode")
 	public void checkRsTypeCode(HttpServletResponse response,String typeCode) throws Exception{
-		Boolean isExist=resourceTypeService.checkRsTypeCode(typeCode)==null?true:false;
+		Boolean isExist=resourceTypeService.checkRsTypeCode(typeCode);
 		JsonUtil.toJsonHtml(response,isExist);
 	} 
 	
@@ -1435,7 +1457,7 @@ public class ContentController{
 	 */
 	@RequestMapping("checkRsTypeName")
 	public void checkRsTypeName(HttpServletResponse response,String typeName) throws Exception{
-		Boolean isExist=resourceTypeService.checkRsTypeName(typeName)==null?true:false;
+		Boolean isExist=resourceTypeService.checkRsTypeName(typeName);
 		JsonUtil.toJsonHtml(response,isExist);
 	}
 	
