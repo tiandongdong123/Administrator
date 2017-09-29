@@ -55,9 +55,9 @@ public class DatabaseConfigureSetting {
     /**
      * 通过name查找数据库配置
      */
-    public Map<String,Datamanager> findDatabaseByName(String dataName){
+    public List findDatabaseByName(String dataName){
         String xml = Setting.get(path);
-        Map<String, Datamanager> database = new LinkedHashMap<>();
+        List<Datamanager> database = new ArrayList<>();
         try{
             Document document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
@@ -74,7 +74,7 @@ public class DatabaseConfigureSetting {
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
                     db.setStatus(Integer.valueOf(element.elementText("state")));
-                    database.put(db.getId(),db);
+                    database.add(db);
                     break;
                 }
 

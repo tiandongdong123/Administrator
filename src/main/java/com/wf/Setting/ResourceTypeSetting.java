@@ -52,7 +52,7 @@ public class ResourceTypeSetting {
 
     public JSONArray getResources1(){
         String xml = Setting.get(path);
-        Map<String, ResourceType> resources = new LinkedHashMap<>();
+        List<ResourceType> resources = new ArrayList<>();
         try {
             //解析商品配置
             Document document = DocumentHelper.parseText(xml);
@@ -68,7 +68,7 @@ public class ResourceTypeSetting {
                     rt.setTypedescri(element.elementText("describe"));
                     rt.setTypeCode(element.elementText("code"));
                     rt.setTypeState(element.elementText("state"));
-                    resources.put(rt.getId(),rt);
+                    resources.add(rt);
                 }
             }
             JSONArray jsonArray =JSONArray.fromObject(resources);
