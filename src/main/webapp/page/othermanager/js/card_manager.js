@@ -67,17 +67,17 @@ function Page(curr){
 							batchState = "未审核";
 							html1 = '<a href="javascript:void(0)" onclick="remind(\''
 								+ data.pageRow[i].batchName+'\',\''+data.pageRow[i].cardTypeName+'\',\''
-								+data.pageRow[i].applyDepartment+'\',\''+data.pageRow[i].applyPerson+'\',\''+data.pageRow[i].applyDate+'\');">提醒</a>';
+								+data.pageRow[i].applyDepartment+'\',\''+data.pageRow[i].applyPerson+'\',\''+data.pageRow[i].applyDate+'\');" style="text-decoration:underline;">提醒</a>';
 						}
 						if(data.pageRow[i].batchState == 2){
 							batchState = "已审核未领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=1">导出</a>&nbsp;&nbsp;&nbsp;'
-								+'<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=1">领取</a>';
+							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+								+'<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">领取</a>';
 						}
 						if(data.pageRow[i].batchState == 3){
 							batchState = "已领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=2">导出</a>&nbsp;&nbsp;&nbsp;'
-								+'<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'">详情</a>';
+							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=2" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+								+'<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>';
 						}
 						var valueNumber="";
 						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
@@ -194,8 +194,8 @@ function Page(curr){
 		                  +'<td>'+invokeDate+'</td>'
 		                  +'<td>'+invokeUser+'</td>'
 		                  +'<td>'+invokeIp+'</td>'
-		                  +'<td><a href="../card/details.do?id='+data.pageRow[i].id+'">详情</a>&nbsp;&nbsp;&nbsp;'
-		                  +'<a href="javascript:void(0);">冻结</a></td>'
+		                  +'<td><a href="../card/details.do?id='+data.pageRow[i].id+'" style="text-decoration:underline;">详情</a>&nbsp;&nbsp;&nbsp;'
+		                  +'<a href="javascript:void(0);" style="text-decoration:underline;">冻结</a></td>'
 		                  +'</tr>';
 						value=value+"{data1:'"+data.pageRow[i].batchName+"',data2:'"+data.pageRow[i].cardTypeName+"',data3:'"+data.pageRow[i].cardNum+"',"
 						+"data4:'"+data.pageRow[i].password+"',data5:'"+data.pageRow[i].value+"',data6:'"+dateChange(data.pageRow[i].validStart)+'~'+dateChange(data.pageRow[i].validEnd)+"',"

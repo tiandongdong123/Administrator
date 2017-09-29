@@ -45,21 +45,21 @@
                 </div>
                 <div class="form-group input_block" id="type_list"> 
                   <label class="input_name">万方卡类型：</label>
-                  <input type="radio" name="cardType" value="">全选
+                  <input type="radio" name="cardType" value="" checked>全选
                   <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
 					<input type="radio" name="cardType" value="${card.cardTypeCode}">${card.cardTypeName}
                   <?}}?>
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name">批次状态：</label>
-                  <input type="radio" name="checkState" value="">全选
+                  <input type="radio" name="checkState" value="" checked>全选
                   <input type="radio" name="checkState" value="1">未审核
                   <input type="radio" name="checkState" value="2">已审核未领取
                   <input type="radio" name="checkState" value="3">已领取
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name">万方卡状态：</label>
-                  <input type="radio" name="invokeState" value="">全选
+                  <input type="radio" name="invokeState" value="" checked>全选
                   <input type="radio" name="invokeState" value="1">未激活
                   <input type="radio" name="invokeState" value="2">已激活
                   <input type="radio" name="invokeState" value="3">已过期

@@ -63,33 +63,12 @@ public class CardBatchServiceImpl implements CardBatchService{
 		cardBatch.setApplyDate(applyDate);// 申请日期
 		cardBatch.setCreateDate(sdf.format(new Date()));// 生成日期
 		JSONArray array = JSONArray.fromObject(valueNumber);
-		Format f1 = new DecimalFormat("0000");
-		Format f2 = new DecimalFormat("00000");
-		List<Card> cardList = new ArrayList<Card>();
 		int amount = 0;
 		for (int i = 0; i < array.size(); i++) {
 			JSONObject obj = (JSONObject) array.get(i);
 			int value = Integer.valueOf(obj.get("value").toString());
 			int number = Integer.valueOf(obj.get("number").toString());
 			amount += value * number;
-			String money = f1.format(value);
-			int index=1;
-			String ser=cbm.querySameMoney(sdf1.format(date)+money);
-			if(!StringUtil.isEmpty(ser)&&ser.length()>12){
-				index=Integer.parseInt(ser.substring(12))+1;
-			}
-			// 生成万方卡
-			for (int j = 0; j < number; j++) {
-				Card card = new Card();
-				card.setId(GetUuid.getId());// 万方卡id
-				card.setBatchId(batchId);// 万方卡批次id
-				String cardNum = sdf1.format(date) + money + f2.format(index++);// 卡号
-				card.setCardNum(cardNum);// 卡号
-				card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
-				card.setValue(value);// 面值
-				card.setInvokeState(1);// 初始激活状态
-				cardList.add(card);
-			}
 		}
 		cardBatch.setAmount(amount);// 总金额
 		cardBatch.setApplyDepartment(applyDepartment);// 申请部门
@@ -97,17 +76,9 @@ public class CardBatchServiceImpl implements CardBatchService{
 		cardBatch.setCheckState(1);// 审核初始状态
 		cardBatch.setBatchState(1);// 批次初始状态
 		cardBatch.setAdjunct(adjunct);
-		int cb = cbm.insertCardBatch(cardBatch);
-		int c = 0;
-		if (cardList.size() > 0) {
-			// 一批一万
-			List<List<Card>> tempList = this.createList(cardList, 10000);
-			for (List<Card> cardls : tempList) {
-				c = cardMapper.insertCards(cardls);
-			}
-		}
 		boolean flag = false;
-		if (cb > 0 && c > 0) {
+		int cb = cbm.insertCardBatch(cardBatch);
+		if (cb > 0) {
 			flag = true;
 		}
 		return flag;
@@ -139,7 +110,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 	 */
 	@Override
 	public PageList queryCheck(String batchName, String applyDepartment,
-			String applyPerson, String startTime, String endTime, String cardType,String batchState,int pageNum,int pageSize) {
+			String applyPerson, String startTime, String endTime, String cardType,String checkState,String batchState,int pageNum,int pageSize) {
 		batchName = batchName.trim();
 		applyDepartment = applyDepartment.trim();
 		applyPerson = applyPerson.trim();
@@ -149,6 +120,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		if(StringUtils.isEmpty(startTime)) startTime = null;
 		if(StringUtils.isEmpty(endTime)) endTime = null;
 		if(StringUtils.isEmpty(cardType)) cardType = null;
+		if(StringUtils.isEmpty(checkState)) checkState =null;
 		if(StringUtils.isEmpty(batchState)) batchState = null;
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("batchName", batchName);
@@ -157,6 +129,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 		map.put("startTime", startTime);
 		map.put("endTime", endTime);
 		map.put("cardType", cardType);
+		map.put("checkState", checkState);
 		map.put("batchState", batchState);
 		int pageStart = (pageNum-1)*pageSize;//当前页的第一条
 		map.put("pageNum", pageStart);
@@ -185,16 +158,64 @@ public class CardBatchServiceImpl implements CardBatchService{
 	 */
 	@Override
 	public boolean updateCheckState(Wfadmin admin,String batchId) {
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("batchId", batchId);
-		map.put("checkDepartment", "运维部门");
-		map.put("checkPerson", admin.getUser_realname());
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		map.put("checkDate", sdf.format(new Date()));
 		boolean flag = false;
-		int i = cbm.updateCheckState(map);
-		if(i > 0){
-			flag = true;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
+			Map<String,Object> map = new HashMap<String, Object>();
+			map.put("batchId", batchId);
+			map.put("checkDepartment", "运维部门");
+			map.put("checkPerson", admin.getUser_realname());
+			map.put("checkDate", sdf.format(new Date()));
+			map.put("checkState", "2");//审核通过
+			map.put("batchState", "2");//批次审批通过
+			//修改批量表
+			int batchCard = cbm.updateCheckState(map);
+			//查询批量表
+			Map<String,Object> batchMap=cbm.queryOneByBatchId(batchId);
+			//批量生成卡号表
+			String valueNumber=String.valueOf(batchMap.get("valueNumber"));
+			Date date = sdf.parse(batchMap.get("createDate").toString());
+			JSONArray array = JSONArray.fromObject(valueNumber);
+			Format f1 = new DecimalFormat("0000");
+			Format f2 = new DecimalFormat("00000");
+			List<Card> cardList = new ArrayList<Card>();
+			for (int i = 0; i < array.size(); i++) {
+				JSONObject obj = (JSONObject) array.get(i);
+				int value = Integer.valueOf(obj.get("value").toString());
+				int number = Integer.valueOf(obj.get("number").toString());
+				String money = f1.format(value);
+				int index=1;
+				String ser=cbm.querySameMoney(sdf1.format(date)+money);
+				if(!StringUtil.isEmpty(ser)&&ser.length()>12){
+					index=Integer.parseInt(ser.substring(12))+1;
+				}
+				// 生成万方卡
+				for (int j = 0; j < number; j++) {
+					Card card = new Card();
+					card.setId(GetUuid.getId());// 万方卡id
+					card.setBatchId(batchId);// 万方卡批次id
+					String cardNum = sdf1.format(date) + money + f2.format(index++);// 卡号
+					card.setCardNum(cardNum);// 卡号
+					card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
+					card.setValue(value);// 面值
+					card.setInvokeState(1);// 初始激活状态
+					cardList.add(card);
+				}
+			}
+			int cardNum = 0;
+			if (cardList.size() > 0) {
+				// 一批一万
+				List<List<Card>> tempList = this.createList(cardList, 10000);
+				for (List<Card> cardls : tempList) {
+					cardNum += cardMapper.insertCards(cardls);
+				}
+			}
+			if (batchCard > 0 && cardNum > 0) {
+				flag = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return flag;
 	}

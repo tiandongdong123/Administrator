@@ -23,7 +23,7 @@ public interface CardBatchService {
 	 * @param CardType 卡类型
 	 * @return
 	 */
-	PageList queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,String endTime,String cardType,String batchState,int pageNum,int pageSize);
+	PageList queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,String endTime,String cardType,String checkState,String batchState,int pageNum,int pageSize);
 	/**
 	 * 根据batchId  万方卡批次详情页
 	 * @param batchId

@@ -168,10 +168,11 @@ public class CardController {
 	
 	@RequestMapping("queryCheck")
 	@ResponseBody
-	public PageList queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,
-			String endTime,String cardType,String batchState,int pageNum,int pageSize){
-		PageList p = cardBatchService.queryCheck(batchName, applyDepartment, applyPerson, startTime, endTime, cardType,batchState, pageNum, pageSize);
-		return p;
+	public PageList queryCheck(String batchName, String applyDepartment, String applyPerson,
+			String startTime, String endTime, String cardType, String checkState,
+			String batchState, int pageNum, int pageSize) {
+		return cardBatchService.queryCheck(batchName, applyDepartment, applyPerson,
+				startTime, endTime, cardType, checkState, batchState, pageNum, pageSize);
 	}
 	
 	/**
@@ -281,15 +282,8 @@ public class CardController {
 	@RequestMapping("updateCheckState")
 	@ResponseBody
 	public boolean updateCheckState(HttpServletRequest request,String batchId){
-		
 		Wfadmin admin=CookieUtil.getWfadmin(request);
-		boolean flag1 = cardBatchService.updateCheckState(admin, batchId);//审核状态改变
-		boolean flag2 = cardBatchService.updateBatchState(batchId, "1", "", "");//批次状态改变
-		boolean flag = false;
-		if(flag1 && flag2){
-			flag = true;
-		}
-		return flag;
+		return cardBatchService.updateCheckState(admin, batchId);//审核状态改变
 	}
 	
 	/**
@@ -342,39 +336,33 @@ public class CardController {
 	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) {
 		ExportExcel exc= new ExportExcel();
 		if(type == 1){//万方卡批次已审核未领取导出
-			
 			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
 			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
-			
 			namelist.add("万方卡类型");
 			namelist.add("卡号");
 			namelist.add("密码");
-			namelist.add("面值");		
+			namelist.add("面值");
 			namelist.add("有效期");
 			exc.exportExccel1(response,json,namelist);
 		}else if(type == 2){//万方卡批次已领取导出
 			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
 			if(StringUtils.isNotBlank(batchId)){//单个批次导出
-				
 				//批次详情list
 				Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
 				batchList.add(map);
 				//卡详情list
 				cardList = cardService.queryAllCardBybatchId(batchId);
 			}else{//导出全部批次
-				
 				//批次详情list(已审核)
 				batchList = cardBatchService.queryAllBatch();
 				//卡详情list(所有已审核的card)
 				cardList = cardService.queryAllCard();
 			}
-			
 			//批次详情
 			JSONArray batchJson=JSONArray.fromObject(batchList);
 			List<String> batchNamelist=new ArrayList<String>();
-			
 			batchNamelist.add("批次");
 			batchNamelist.add("万方卡类型");
 			batchNamelist.add("面值/数值");
@@ -391,12 +379,9 @@ public class CardController {
 			batchNamelist.add("领取部门");
 			batchNamelist.add("领取人");
 			batchNamelist.add("领取日期");
-			
-			
 			//卡详情
 			JSONArray cardJson=JSONArray.fromObject(cardList);
 			List<String> cardNamelist = new ArrayList<String>();
-			
 			cardNamelist.add("批次");
 			cardNamelist.add("卡号");
 			cardNamelist.add("密码");
@@ -405,16 +390,13 @@ public class CardController {
 			cardNamelist.add("激活日期");
 			cardNamelist.add("激活用户");
 			cardNamelist.add("激活ip");
-			
 			exc.exportExcel2(response,batchJson,batchNamelist,cardJson,cardNamelist);
 		}else if(type == 3){//万方卡批次整体导出
-			
 			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 			Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
 			list.add(map);
 			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
-			
 			namelist.add("批次");
 			namelist.add("万方卡类型");
 			namelist.add("面值/数值");

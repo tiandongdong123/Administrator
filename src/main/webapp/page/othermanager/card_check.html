@@ -39,10 +39,16 @@
                 </div>
                 <div class="form-group input_block "> 
                   <label class="input_name">万方卡类型</label>
-                  <input type="radio" name="cardType" value="">全选
+                  <input type="radio" name="cardType" value="" checked>全选
                   <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
 					<input type="radio" name="cardType" value="${card.cardTypeCode}">${card.cardTypeName}
                   <?}}?>
+                </div>
+                <div class="form-group input_block "> 
+                  <label class="input_name">审核状态</label>
+                  <input type="radio" name="checkState" value="" checked>全选
+                  <input type="radio" name="checkState" value="1">未审核
+                  <input type="radio" name="checkState" value="2">已审核
                 </div>
               </div>
               <div class="box-footer" style="text-align:center;">

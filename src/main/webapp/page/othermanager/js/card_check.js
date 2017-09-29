@@ -9,6 +9,7 @@ var applyPerson = "";
 var startTime = "";
 var endTime = "";
 var cardType = "";
+var checkState = "";
 var pageNum;
 var pageSize = 8;
 function Page(curr){
@@ -20,6 +21,7 @@ function Page(curr){
 	startTime = $("#startTime").val();//开始时间
 	endTime = $("#endTime").val();//结束时间
 	cardType = $("input[name='cardType']:checked").val();
+	checkState = $("input[name='checkState']:checked").val();
 	$.ajax({
 		type : "post",  
 		url : "../card/queryCheck.do",
@@ -30,6 +32,7 @@ function Page(curr){
 			"startTime" : startTime,
 			"endTime" : endTime,
 			"cardType" : cardType,
+			"checkState" : checkState,
 			"pageNum" : curr || 1,
 			"pageSize" : pageSize,
 		},
@@ -45,28 +48,16 @@ function Page(curr){
 				$.each(data.pageRow,function (i) {
 					if(data.pageRow[i].checkState==1){
 						var checkState = "";
+						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].checkState == 1){
 							checkState = "未审核";
+							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')" style="text-decoration:underline;">审核通过</a>';
 						}
 						if(data.pageRow[i].checkState == 2){
 							checkState = "已审核";
-						}
-						var batchState = "";
-						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
-						if(data.pageRow[i].batchState == 1){
-							batchState = "未审核";
-							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')">审核通过</a>';
-						}
-						if(data.pageRow[i].batchState == 2){
-							batchState = "已审核未领取";
-							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0">查看详情</a>';
-						}
-						if(data.pageRow[i].batchState == 3){
-							batchState = "已领取";
-							html1 = '<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'">查看详情</a>';
+							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
 						var valueNumber="";
-						
 						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
 							var numb=eval(data.pageRow[i].valueNumber);
 							var param=numb[j];
@@ -88,7 +79,7 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
 		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'">点击下载</a></td>'
+		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
@@ -104,25 +95,14 @@ function Page(curr){
 						var valueNumber = data.pageRow[i].valueNumber;
 						valueNumber = valueNumber.replace("[", "").replace("]", "").replace(/\"/g, "");
 						var checkState = "";
+						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].checkState == 1){
 							checkState = "未审核";
+							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')" style="text-decoration:underline;">审核通过</a>';
 						}
 						if(data.pageRow[i].checkState == 2){
 							checkState = "已审核";
-						}
-						var batchState = "";
-						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
-						if(data.pageRow[i].batchState == 1){
-							batchState = "未审核";
-							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')">审核通过</a>';
-						}
-						if(data.pageRow[i].batchState == 2){
-							batchState = "已审核未领取";
-							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0">查看详情</a>';
-						}
-						if(data.pageRow[i].batchState == 3){
-							batchState = "已领取";
-							html1 = '<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'">查看详情</a>';
+							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
 						var valueNumber="";
 						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
@@ -137,8 +117,7 @@ function Page(curr){
 						sumnum++;
 						maxsum=maxsum*1+data.pageRow[i].amount*1;
 						var html ='<tr>'
-							 +'<td>'+sum+'</td>'
-		                  /*+'<td>'+(serial+i)+'</td>'*/
+						  +'<td>'+sum+'</td>'
 		                  +'<td>'+data.pageRow[i].batchName+'</td>'
 		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
 		                  +'<td>'+valueNumber+'</td>'
@@ -147,7 +126,7 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
 		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download.do?url=${request.contextPath}'+data.pageRow[i].adjunct+'">点击下载</a></td>'
+		                  +'<td><a href="../card/download.do?url=${request.contextPath}'+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
@@ -209,5 +188,3 @@ function check(obj){
 	    }
 	  });
 }
-
-

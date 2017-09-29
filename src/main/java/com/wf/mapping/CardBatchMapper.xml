@@ -84,6 +84,9 @@
   	<if test="cardType !=null">
   		and b.type=#{cardType}
   	</if>
+  	<if test="checkState !=null">
+  		and b.check_state=#{checkState}
+  	</if>
   	<if test="batchState !=null">
   		and b.batch_state=#{batchState}
   	</if>
@@ -112,6 +115,9 @@
   	<if test="cardType!=null">
        	and b.type=#{cardType}
     </if>
+  	<if test="checkState !=null">
+  		and b.check_state=#{checkState}
+  	</if>
     <if test="batchState !=null">
   		and b.batch_state=#{batchState}
   	</if>
@@ -125,7 +131,7 @@
   <!-- 修改审核状态 -->
   <update id="updateCheckState" parameterType="java.util.Map">
   	update wfks_accounting.rech_card_batch 
-  	set check_state=2,check_department=#{checkDepartment},check_person=#{checkPerson},check_date=#{checkDate}
+  	set check_state=#{checkState},check_department=#{checkDepartment},check_person=#{checkPerson},check_date=#{checkDate},batch_state=#{batchState}
   	where batch_id=#{batchId}
   </update>
   <!-- 修改批次状态 -->
