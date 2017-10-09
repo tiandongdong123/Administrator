@@ -337,14 +337,13 @@ public class CardController {
 		ExportExcel exc= new ExportExcel();
 		if(type == 1){//万方卡批次已审核未领取导出
 			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
-			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
 			namelist.add("万方卡类型");
 			namelist.add("卡号");
 			namelist.add("密码");
 			namelist.add("面值");
 			namelist.add("有效期");
-			exc.exportExccel1(response,json,namelist);
+			exc.exportExccel1(response,list,namelist);
 		}else if(type == 2){//万方卡批次已领取导出
 			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
@@ -361,7 +360,6 @@ public class CardController {
 				cardList = cardService.queryAllCard();
 			}
 			//批次详情
-			JSONArray batchJson=JSONArray.fromObject(batchList);
 			List<String> batchNamelist=new ArrayList<String>();
 			batchNamelist.add("批次");
 			batchNamelist.add("万方卡类型");
@@ -380,7 +378,6 @@ public class CardController {
 			batchNamelist.add("领取人");
 			batchNamelist.add("领取日期");
 			//卡详情
-			JSONArray cardJson=JSONArray.fromObject(cardList);
 			List<String> cardNamelist = new ArrayList<String>();
 			cardNamelist.add("批次");
 			cardNamelist.add("卡号");
@@ -390,12 +387,11 @@ public class CardController {
 			cardNamelist.add("激活日期");
 			cardNamelist.add("激活用户");
 			cardNamelist.add("激活ip");
-			exc.exportExcel2(response,batchJson,batchNamelist,cardJson,cardNamelist);
+			exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist);
 		}else if(type == 3){//万方卡批次整体导出
 			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 			Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
 			list.add(map);
-			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
 			namelist.add("批次");
 			namelist.add("万方卡类型");
@@ -413,7 +409,7 @@ public class CardController {
 			namelist.add("领取部门");
 			namelist.add("领取人");
 			namelist.add("领取日期");
-			exc.exportExccel3(response,json,namelist);
+			exc.exportExccel3(response,list,namelist);
 		}
 	}
 }
