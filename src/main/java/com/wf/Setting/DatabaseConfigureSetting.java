@@ -4,6 +4,7 @@ package com.wf.Setting;
 
 import com.wanfangdata.setting.Setting;
 import com.wf.bean.Datamanager;
+import net.sf.json.JSONArray;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
@@ -362,12 +363,67 @@ public class DatabaseConfigureSetting {
             Document document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
             String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
-            Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
-            resourceTypeEmlem.element("state").setText(String.valueOf(typeState));
+            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
+            databaseEmlem.element("state").setText(String.valueOf(typeState));
             Setting.set(path, document.asXML());
         }catch (Exception e){
             log.error("加载setting配置出错，path:" + path, e);
             throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+        }
+    }
+
+    public JSONArray selectSitateFoOne(){
+        String xml = Setting.get(path);
+        List<Datamanager> database = new ArrayList<>();
+        try{
+            //解析商品配置
+            Document document = DocumentHelper.parseText(xml);
+            //获取根
+            Element root = document.getRootElement();
+            List<Element> list = root.elements();
+            //遍历节点
+            for(Element element : list){
+                if(element.elementText("state").equals("1")){
+                    Datamanager db = new Datamanager();
+                    db.setId(element.attributeValue("id"));
+                    db.setTableName(element.elementText("name"));
+                    db.setTableDescribe(element.elementText("describe"));
+                    db.setDbtype(element.elementText("dbType"));
+                    db.setSourceDb(element.elementText("dbSource"));
+                    db.setResType(element.elementText("resourceType"));
+                    db.setLanguage(element.elementText("language"));
+                    db.setCustomPolicy(element.elementText("customPolicy"));
+                    db.setStatus(Integer.valueOf(element.elementText("state")));
+                    database.add(db);
+                }
+            }
+            JSONArray jsonArray =JSONArray.fromObject(database);
+            return jsonArray;
+        }catch (DocumentException e) {
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
+        }
+    }
+
+    /**
+     * 判断资源类型是否已发布
+     */
+    public boolean checkResourceForOne(String id){
+        String xml = Setting.get(path);
+        try{
+            Document  document = DocumentHelper.parseText(xml);
+            Element root = document.getRootElement();
+            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
+            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
+            if ("1".equals(databaseEmlem.elementText("state"))){
+                return false;
+            }else {
+                return true;
+            }
+
+        }catch (Exception e){
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
 

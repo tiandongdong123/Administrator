@@ -82,5 +82,10 @@ public interface ResourceTypeService {
 	Boolean checkRsTypeCode(String rsTypeCode);
 	
 	Boolean checkRsTypeName(String rsTypeName);
+
+	/**
+	 * 判断资源类型是否发布
+	 */
+	Boolean checkResourceForOne(String id);
 	
 }

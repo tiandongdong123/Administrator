@@ -75,7 +75,7 @@ public class ResourceTypeSetting {
 
             return jsonArray;
 
-        }catch (Exception e){
+        }catch (DocumentException  e){
             log.error("解析商品配置出错, xml:" + xml, e);
             throw new IllegalArgumentException("解析商品配置出错");
         }
@@ -108,8 +108,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
 
     }
@@ -129,8 +129,8 @@ public class ResourceTypeSetting {
             }
             Setting.set(path, document.asXML());
         } catch (Exception e){
-        log.error("加载setting配置出错，path:" + path, e);
-        throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
     }
 
 
@@ -155,8 +155,8 @@ public class ResourceTypeSetting {
             codeElem.setText(resourceType.getTypeCode());
             Setting.set(path, document.asXML());
         } catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
     /**
@@ -183,8 +183,8 @@ public class ResourceTypeSetting {
             return resourceType;
 
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
     /**
@@ -212,8 +212,8 @@ public class ResourceTypeSetting {
            }
             return resource;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
     /**
@@ -263,8 +263,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
 
@@ -315,8 +315,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
 
@@ -337,8 +337,8 @@ public class ResourceTypeSetting {
             }
             return true;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
 
@@ -358,8 +358,8 @@ public class ResourceTypeSetting {
             }
             return true;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
 
     }
@@ -384,8 +384,8 @@ public class ResourceTypeSetting {
             }
             return resourceType;
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
 
@@ -403,8 +403,32 @@ public class ResourceTypeSetting {
             resourceTypeEmlem.element("state").setText(String.valueOf(typeState));
             Setting.set(path, document.asXML());
         }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
         }
     }
+    /**
+     * 判断资源类型是否已发布
+    */
+    public boolean checkResourceForOne(String id){
+        String xml = Setting.get(path);
+        String[] ids = id.split(",");
+        try{
+            Document  document = DocumentHelper.parseText(xml);
+            Element root = document.getRootElement();
+            for (int i = 0;i<ids.length;i++){
+                String xpath = "/ResourceTypes/ResourceType[@id='" +ids[i]+ "']";
+                Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
+                if ("1".equals(resourceTypeEmlem.elementText("state"))){
+                    return false;
+                }
+            }
+            return true;
+
+        }catch (Exception e){
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
+        }
+    }
+
 }

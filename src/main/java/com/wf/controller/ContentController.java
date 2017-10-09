@@ -461,8 +461,8 @@ public class ContentController{
 	@ResponseBody
 	public void addResourceJson(ResourceType resourceType,HttpServletResponse response,HttpServletRequest request) throws Exception{
 		resourceType.setId(GetUuid.getId());
-		boolean b=resourceTypeService.addResourceType(resourceType);
-		JsonUtil.toJsonHtml(response, b);
+		boolean result=resourceTypeService.addResourceType(resourceType);
+		JsonUtil.toJsonHtml(response, result);
 	}
 
 	/**
@@ -471,8 +471,12 @@ public class ContentController{
 	@RequestMapping("/moveUpResource")
 	public void moveUpResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		boolean b=resourceTypeService.moveUpResource(id);
-		JsonUtil.toJsonHtml(response, b);
+		boolean result=resourceTypeService.moveUpResource(id);
+		Thread.sleep(100);
+		JSONArray list = resourceTypeService.getAll1();
+		redis.del("sourcetype");
+		redis.set("sourcetype", list.toString(), 6);
+		JsonUtil.toJsonHtml(response, result);
 	}
 	/**
 	 * 资源类型下移
@@ -480,9 +484,22 @@ public class ContentController{
 	@RequestMapping("/moveDownResource")
 	public void moveDownResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		boolean b=resourceTypeService.moveDownResource(id);
-		JsonUtil.toJsonHtml(response, b);
+		boolean result=resourceTypeService.moveDownResource(id);
+		Thread.sleep(100);
+		JSONArray list = resourceTypeService.getAll1();
+			redis.del("sourcetype");
+			redis.set("sourcetype", list.toString(), 6);
+		JsonUtil.toJsonHtml(response, result);
 	}
+	/**
+	 *判断资源类型是否发布
+	 */
+	@RequestMapping("/checkResourceForOne")
+	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean result = resourceTypeService.checkResourceForOne(id);
+		JsonUtil.toJsonHtml(response, result);
+	}
+
 
 	/**
 	 * 修改学科分类信息跳转
@@ -1286,11 +1303,12 @@ public class ContentController{
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public boolean pushData(int state,String id) {
+	public boolean pushData(int state,String id) throws InterruptedException {
 		int result = resourceTypeService.updateResourceTypeState(state, id);
+		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
-		boolean b = false;
-		if (result>0){
+				boolean b = false;
+				if (result>0){
 			redis.del("sourcetype");
 			redis.set("sourcetype", list.toString(), 6);
 			b = true;

@@ -315,14 +315,19 @@ public class DataManagerServiceImpl implements DataManagerService {
 		return p;
 	}
 	@Override
-	public  Boolean moveUpDatabase(String id){
+	public  boolean moveUpDatabase(String id){
 		boolean b = dbConfig.moveUpDatabase(id);
 		return b;
 	}
 	@Override
-	public  Boolean moveDownDatabase(String id){
+	public  boolean moveDownDatabase(String id){
 		boolean b = dbConfig.moveDownDatabase(id);
 		return b;
+	}
+	@Override
+	public boolean checkResourceForOne(String id){
+		boolean result = dbConfig.checkResourceForOne(id);
+		return result;
 	}
 	@Override
 	public boolean deleteData(String id) {
@@ -621,10 +626,8 @@ public class DataManagerServiceImpl implements DataManagerService {
 	@Override
 	public void selectZY() {
 		// TODO Auto-generated method stub
-		JSONArray list =this.data.selectZY();
-
+		JSONArray list = dbConfig.selectSitateFoOne();
 		RedisUtil redis= new RedisUtil();
-
 		redis.del("datamanager");
 		redis.set("datamanager", list.toString(), 6);
 	}

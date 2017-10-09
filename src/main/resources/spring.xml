@@ -41,9 +41,9 @@
 		init-method="init" destroy-method="close">
 		<!-- 基本属性 url、user、password -->
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="${wf-public.jdbc.adminManager.url}" />
-		<property name="username" value="${wf-public.jdbc.username}" />
-		<property name="password" value="${wf-public.jdbc.password}" />
+		<property name="url" value="jdbc:mysql://10.10.184.25:3306/admin_manager" />
+		<property name="username" value="root" />
+		<property name="password" value="wftest@231" />
 		<!-- 配置初始化大小、最小、最大 -->
 <!-- 		<property name="initialSize" value="${druid.initialSize}" />
 		<property name="minIdle" value="${druid.minIdle}" />

@@ -124,23 +124,51 @@ function serachdata(data){
 }
 
 function updateResour(id){
-	window.location.href="../content/updateResource.do?idRes="+id;
+	$.ajax({
+		type : "post",
+		async:false,
+		url:"../content/checkResourceForOne.do",
+		dataType:"json",
+		data:{"id":id},
+		success:function(data){
+			if(data.flag=="true"){
+				window.location.href="../content/updateResource.do?idRes="+id;
+			}else{
+				alert("请先下撤再修改！");
+			}
+		}
+	});
 }
 function addResour(){
 	window.location.href="../content/addResource.do";
 }
 
+
 //单条删除
 function deleteOne(id){
+
 	$.ajax({
 		type : "post",
-		data : {ids: id},
-		url :"../content/deleteResourceType.do",
-		dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success : deleteCallback,
-		complete : function(XMLHttpRequest, textStatus) {},
-		error : function(data) {alert(data);}
+		async:false,
+		url:"../content/checkResourceForOne.do",
+		dataType:"json",
+		data:{"id":id},
+		success:function(data){
+			if(data.flag=="true"){
+				$.ajax({
+					type : "post",
+					data : {ids: id},
+					url :"../content/deleteResourceType.do",
+					dataType : "json",
+					beforeSend : function(XMLHttpRequest) {},
+					success : deleteCallback,
+					complete : function(XMLHttpRequest, textStatus) {},
+					error : function(data) {alert(data);}
+				});
+			}else{
+				alert("请先下撤再删除！");
+			}
+		}
 	});
 }
 
@@ -155,15 +183,29 @@ function deleteMore(){
 		});
 		if (ids != "")
 			ids = ids.substring(1);
+
 		$.ajax({
 			type : "post",
-			data : {ids: ids},
-			url :"../content/deleteResourceType.do",
-			dataType : "json",
-			beforeSend : function(XMLHttpRequest) {},
-			success : deleteCallback,
-			complete : function(XMLHttpRequest, textStatus) {},
-			error : function(data) {alert(data);}
+			async:false,
+			url:"../content/checkResourceForOne.do",
+			dataType:"json",
+			data:{"id":ids},
+			success:function(data){
+				if(data.flag=="true"){
+					$.ajax({
+						type : "post",
+						data : {ids: ids},
+						url :"../content/deleteResourceType.do",
+						dataType : "json",
+						beforeSend : function(XMLHttpRequest) {},
+						success : deleteCallback,
+						complete : function(XMLHttpRequest, textStatus) {},
+						error : function(data) {alert(data);}
+					});
+				}else{
+					alert("请先将所有选中的资源全部下撤后再删除！");
+				}
+			}
 		});
 	}
 }
@@ -173,7 +215,7 @@ function deleteCallback(data) {
 		alert("删除成功!");
 		window.location.href="../content/resourceManage.do";
 	}else{
-		alert("删除失败!");
+		alert("删除失败");
 	}
 }
 
@@ -298,7 +340,7 @@ function pushData(state,id){
 			if(data){
 				refresh();
 			}else{
-				layer.alert("发布失败!");
+				layer.alert("修改失败!");
 			}
 		}
 	});

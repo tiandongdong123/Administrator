@@ -15,13 +15,15 @@ public interface DataManagerService {
 	 * 资源类型上移
 	 */
 
-	Boolean moveUpDatabase(String id);
+	boolean moveUpDatabase(String id);
 
 	/**
 	 * 资源类型下移
 	 */
 
-	Boolean moveDownDatabase(String id);
+	boolean moveDownDatabase(String id);
+
+	boolean checkResourceForOne(String id);
 
 
 	boolean deleteData(String id);

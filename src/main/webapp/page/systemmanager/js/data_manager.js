@@ -26,7 +26,7 @@ function paging(curr){
 	$.ajax({
 		type : "post",
 		async:false,
-		url : "../data/getdata.do",
+			url : "../data/getdata.do",
 		dataType : "json",
 		data : {
 			pagenum: curr,
@@ -139,25 +139,52 @@ function adddata(){
 }
 
 function doupdatedata(id){
-	window.location.href="../data/updatedata.do?id="+id;
-}
-function deletedata(id){
-	$.ajax( {
-		type : "POST",
-		url : "../data/deletedata.do",
-		data : {
-			"id" : id
-		},
-		dataType : "json",
-		success : function(data) {
-			if(data){
-				layer.msg("删除成功");
-				window.location.href="../system/dataManager.do";
+	$.ajax({
+		type : "post",
+		async:false,
+		url:"../data/checkResourceForOne.do",
+		dataType:"json",
+		data:{"id":id},
+		success:function(data){
+			if(data.flag=="true"){
+				window.location.href="../data/updatedata.do?id="+id;
 			}else{
-				layer.msg("删除失败");
+				alert("请先下撤再修改！");
 			}
 		}
 	});
+}
+function deletedata(id){
+	$.ajax({
+		type : "post",
+		async:false,
+		url:"../data/checkResourceForOne.do",
+		dataType:"json",
+		data:{"id":id},
+		success:function(data){
+			if(data.flag=="true"){
+				$.ajax( {
+					type : "POST",
+					url : "../data/deletedata.do",
+					data : {
+						"id" : id
+					},
+					dataType : "json",
+					success : function(data) {
+						if(data){
+							layer.msg("删除成功");
+							window.location.href="../system/dataManager.do";
+						}else{
+							layer.msg("删除失败");
+						}
+					}
+				});
+			}else{
+				alert("请先下撤再删除！");
+			}
+		}
+	});
+
 }
 /*全选与全不选*/
 function checkAll(){

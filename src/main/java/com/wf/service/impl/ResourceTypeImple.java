@@ -157,8 +157,8 @@ public class ResourceTypeImple implements ResourceTypeService {
 	@Override
 	public JSONArray getAll1() {
 		// TODO Auto-generated method stub
-		//return resourceTypeSetting.getResources1();
-		return dao.getAll1();
+		return resourceTypeSetting.getResources1();
+		//return dao.getAll1();
 	}
 
 	@Override
@@ -198,5 +198,10 @@ public class ResourceTypeImple implements ResourceTypeService {
 		String result = dao.checkRsTypeName(rsTypeName);
 		boolean b = bol && result==null?true:false;
 		return b;
+	}
+	@Override
+	public Boolean checkResourceForOne(String id){
+		boolean result = resourceTypeSetting.checkResourceForOne(id);
+		return result;
 	}
 }

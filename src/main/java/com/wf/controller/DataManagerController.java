@@ -10,7 +10,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.redis.RedisUtil;
 import com.utils.JsonUtil;
+import com.wf.Setting.DatabaseConfigureSetting;
 import net.sf.json.JSONArray;
 
 import net.sf.json.JSONObject;
@@ -33,6 +35,8 @@ public class DataManagerController {
 
 	@Autowired
 	private DataManagerService data;
+
+	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
 	/**
 	 * 获取数据库
 	 * @param dataname
@@ -58,6 +62,11 @@ public class DataManagerController {
 	public void moveUpDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveUpDatabase(id);
+		Thread.sleep(100);
+		JSONArray list = dbConfig.selectSitateFoOne();
+		RedisUtil redis= new RedisUtil();
+		redis.del("datamanager");
+		redis.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
 	}
 	/**
@@ -67,6 +76,11 @@ public class DataManagerController {
 	public void moveDownDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveDownDatabase(id);
+		Thread.sleep(100);
+		JSONArray list = dbConfig.selectSitateFoOne();
+		RedisUtil redis= new RedisUtil();
+		redis.del("datamanager");
+		redis.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
 	}
 
@@ -82,15 +96,25 @@ public class DataManagerController {
 		return a;
 	}
 	/**
+	 *判断资源类型是否发布
+	 */
+	@RequestMapping("/checkResourceForOne")
+	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean result = this.data.checkResourceForOne(id);
+		JsonUtil.toJsonHtml(response, result);
+	}
+	/**
 	 * 解冻数据库
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping("opendata")
 	@ResponseBody
-	public boolean openData(String id){
-		boolean a = this.data.openData(id);
-		return a;
+	public boolean openData(String id) throws InterruptedException {
+		boolean result = this.data.openData(id);
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
 	}
 	/**
 	 * 冻结数据库
@@ -99,9 +123,11 @@ public class DataManagerController {
 	 */
 	@RequestMapping("closedata")
 	@ResponseBody
-	public boolean closeData(String id){
-		boolean a = this.data.closeData(id);
-		return a;
+	public boolean closeData(String id) throws InterruptedException {
+		boolean result = this.data.closeData(id);
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
 	}
 	
 	
@@ -242,9 +268,10 @@ public class DataManagerController {
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public void pushdata() {
-		
+	public void pushdata() throws Exception {
+
 		this.data.selectZY();
+
 	}
 	
 	/**
