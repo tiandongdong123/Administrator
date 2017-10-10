@@ -75,7 +75,7 @@ function datapage(res){
 				status +
 				"<td><button type='button' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button>" +
 				"<button type='button' class='btn btn-primary' onclick=\"deletedata('"+res.pageRow[i].id+"')\">删除</button>" +
-				"<button type='button' class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button>";
+				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button>";
 		}
 		document.getElementById('databody').innerHTML = html;
 		var groups;
