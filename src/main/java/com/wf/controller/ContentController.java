@@ -472,6 +472,7 @@ public class ContentController{
 	public void moveUpResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean result=resourceTypeService.moveUpResource(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
 		redis.del("sourcetype");
@@ -485,6 +486,7 @@ public class ContentController{
 	public void moveDownResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean result=resourceTypeService.moveDownResource(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
 			redis.del("sourcetype");
@@ -1305,6 +1307,7 @@ public class ContentController{
 	@ResponseBody
 	public boolean pushData(int state,String id) throws InterruptedException {
 		int result = resourceTypeService.updateResourceTypeState(state, id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
 				boolean b = false;

@@ -88,13 +88,15 @@ function serachdata(data){
 			resHtml += "<td class='mailbox-attachment' style='text-align: left;'>"+rows.typedescri+"</td>";
 			resHtml += "<td style='vertical-align:middle;' class='mailbox-attachment' style='text-align: left;'>"+rows.typeCode+"</td>";
 			resHtml += "<td style='vertical-align:middle;white-space:nowrap;'>";
-			resHtml += "<div class='col-md-3 col-sm-4'><a href='#' onclick=\"updateResour('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>";
-			resHtml += "<div class='col-md-3 col-sm-4'><a href='#' onclick=\"deleteOne('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div>";
+			resHtml += "<button type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button>";
+			resHtml += "<div></div><button type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">修改</button></div>";
 			resHtml += "<div class='col-md-3 col-sm-4'>";
-			if(rows.typeState == 0){
-				resHtml += "<a href='#' onclick=\"pushData(1,'"+rows.id+"')\">发布</a>";
+			if(rows.typeState == ""){
+				resHtml += "<button type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button>";
 			}else if(rows.typeState == 1){
-				resHtml += "<a href='#' onclick=\"pushData(0,'"+rows.id+"')\">下撤</a>";
+				resHtml += "<button type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button>";
+			}else {
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button>";
 			}
 			resHtml += "</div>";
 			resHtml += "</td>";
@@ -213,7 +215,7 @@ function deleteMore(){
 function deleteCallback(data) {
 	if (data.flag=="true") {
 		alert("删除成功!");
-		window.location.href="../content/resourceManage.do";
+		paging($(".laypage_curr").text());
 	}else{
 		alert("删除失败");
 	}
@@ -238,7 +240,7 @@ function moveUp() {
 				data:{"id":id},
 				success:function(data){
 					if(data.flag=="true"){
-						window.location.href="../content/resourceManage.do";
+						paging($(".laypage_curr").text());
 					}else{
 						alert("上移失败！");
 					}
@@ -267,7 +269,7 @@ function moveDown() {
 				data:{"id":id},
 				success:function(data){
 					if(data.flag=="true"){
-						window.location.href="../content/resourceManage.do";
+						paging($(".laypage_curr").text());
 					}else{
 						alert("下移失败！");
 					}
@@ -338,7 +340,7 @@ function pushData(state,id){
 		dataType : "json",
 		success : function(data){
 			if(data){
-				refresh();
+				paging($(".laypage_curr").text());
 			}else{
 				layer.alert("修改失败!");
 			}

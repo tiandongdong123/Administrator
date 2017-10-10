@@ -62,6 +62,7 @@ public class DataManagerController {
 	public void moveUpDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveUpDatabase(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
 		RedisUtil redis= new RedisUtil();
@@ -76,6 +77,7 @@ public class DataManagerController {
 	public void moveDownDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveDownDatabase(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
 		RedisUtil redis= new RedisUtil();
@@ -112,6 +114,7 @@ public class DataManagerController {
 	@ResponseBody
 	public boolean openData(String id) throws InterruptedException {
 		boolean result = this.data.openData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		this.data.selectZY();
 		return result;
@@ -125,6 +128,7 @@ public class DataManagerController {
 	@ResponseBody
 	public boolean closeData(String id) throws InterruptedException {
 		boolean result = this.data.closeData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		this.data.selectZY();
 		return result;

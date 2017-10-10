@@ -102,7 +102,6 @@ public class ResourceTypeSetting {
             nameElem.setText(resourceType.getTypeName());
             descriElem.setText(resourceType.getTypedescri());
             codeElem.setText(resourceType.getTypeCode());
-            stateElem.setText("0");
 
             //指定文件输出的位置
             Setting.set(path, document.asXML());

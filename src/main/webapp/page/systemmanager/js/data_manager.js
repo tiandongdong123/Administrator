@@ -48,11 +48,11 @@ function datapage(res){
 			if(res.pageRow[i].status==1){
 				status="<td>已发布</td>";
 				buttonname="下撤";
-			}else if(res.pageRow[i].status==0){
-				status="<td>未发布</td>";
+			}else if(res.pageRow[i].status==null){
+				status="<td>下撤</td>";
 				buttonname="发布";
 			}else{
-				status="<td>下撤</td>";
+				status="<td>未发布</td>";
 				buttonname="再发布";
 			}
 			id = 10*(pageNum-1)+i+1;
@@ -173,7 +173,7 @@ function deletedata(id){
 					success : function(data) {
 						if(data){
 							layer.msg("删除成功");
-							window.location.href="../system/dataManager.do";
+							paging($(".laypage_curr").text());
 						}else{
 							layer.msg("删除失败");
 						}
@@ -219,7 +219,7 @@ function moveUp() {
 				data:{"id":id},
 				success:function(data){
 					if(data.flag=="true"){
-						window.location.href="../system/dataManager.do";
+						paging($(".laypage_curr").text());
 					}else{
 						alert("上移失败！");
 					}
@@ -248,7 +248,7 @@ function moveDown() {
 				data:{"id":id},
 				success:function(data){
 					if(data.flag=="true"){
-						window.location.href="../system/dataManager.do";
+						paging($(".laypage_curr").text());
 					}else{
 						alert("下移失败！");
 					}

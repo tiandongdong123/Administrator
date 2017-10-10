@@ -43,7 +43,11 @@ public class DatabaseConfigureSetting {
                 db.setResType(element.elementText("resourceType"));
                 db.setLanguage(element.elementText("language"));
                 db.setCustomPolicy(element.elementText("customPolicy"));
-                db.setStatus(Integer.valueOf(element.elementText("state")));
+                if(element.elementText("state").equals("")){
+                    db.setStatus(null);
+                }else {
+                    db.setStatus(Integer.valueOf(element.elementText("state")));
+                }
                 database.add(db);
             }
             return database;
@@ -74,7 +78,11 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setStatus(Integer.valueOf(element.elementText("state")));
+                    if(element.elementText("state").equals("")){
+                        db.setStatus(null);
+                    }else {
+                        db.setStatus(Integer.valueOf(element.elementText("state")));
+                    }
                     database.add(db);
                     break;
                 }
@@ -120,7 +128,6 @@ public class DatabaseConfigureSetting {
             resourceTypeElem.setText(data.getResType());
             languageElem.setText(data.getLanguage());
             codeElem.setText(data.getProductSourceCode());
-            stateElem.setText("0");
             //指定文件输出的位置
             Setting.set(path, document.asXML());
 
@@ -393,7 +400,11 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setStatus(Integer.valueOf(element.elementText("state")));
+                    if(element.elementText("state").equals("")){
+                        db.setStatus(null);
+                    }else {
+                        db.setStatus(Integer.valueOf(element.elementText("state")));
+                    }
                     database.add(db);
                 }
             }
