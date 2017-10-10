@@ -73,9 +73,9 @@ function datapage(res){
 				"<td>"+res.pageRow[i].language+"</td>"+
 				"<td>"+(res.pageRow[i].customPolicy==null?"":res.pageRow[i].customPolicy)+"</td>"+
 				status +
-				"<td><button type='button' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button>" +
-				"<button type='button' class='btn btn-primary' onclick=\"deletedata('"+res.pageRow[i].id+"')\">删除</button>" +
-				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button>";
+				"<td><button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button></br>" +
+				"<button type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"deletedata('"+res.pageRow[i].id+"')\">删除</button></br>" +
+				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></br>";
 		}
 		document.getElementById('databody').innerHTML = html;
 		var groups;

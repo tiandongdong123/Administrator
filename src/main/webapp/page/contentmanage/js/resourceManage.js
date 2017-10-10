@@ -87,16 +87,16 @@ function serachdata(data){
 			resHtml += "<td style='vertical-align:middle;' class='mailbox-name'>"+rows.typeName+"</td>";
 			resHtml += "<td class='mailbox-attachment' style='text-align: left;'>"+rows.typedescri+"</td>";
 			resHtml += "<td style='vertical-align:middle;' class='mailbox-attachment' style='text-align: left;'>"+rows.typeCode+"</td>";
-			resHtml += "<td style='vertical-align:middle;white-space:nowrap;'>";
-			resHtml += "<button  type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button>";
-			resHtml += "<div></div><button type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">删除</button></div>";
-			resHtml += "<div class='col-md-3 col-sm-4'>";
+			resHtml += "<td >";
+			resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button></br>";
+			resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">删除</button></br>";
+
 			if(rows.typeState == ""){
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button>";
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button></br>";
 			}else if(rows.typeState == 1){
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button>";
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button></br>";
 			}else {
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button>";
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button></br>";
 			}
 			resHtml += "</div>";
 			resHtml += "</td>";
