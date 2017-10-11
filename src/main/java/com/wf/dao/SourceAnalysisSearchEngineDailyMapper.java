@@ -4,6 +4,7 @@ package com.wf.dao;
  *	搜索引擎---liuYong
  */
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -115,6 +116,23 @@ public interface SourceAnalysisSearchEngineDailyMapper {
 	* @date 15 Dis 2016 4:18:29 PM
 	 */
 	List<String> getLine(@Param("engine_name")String engine_name,@Param("type")String type,@Param("startTime")String startTime,@Param("endTime")String endTime);
+	
+	
+	
+	/**
+	* @Title: getLine
+	* @Description: TODO(搜索引擎当前条件下统计信息，用于折线图数据) 
+	* @param engine_name
+	* @param type
+	* @param startTime
+	* @param endTime
+	* @return List<String> 返回类型 
+	* @author LiuYong 
+	* @date 15 Dis 2016 4:18:29 PM
+	 */
+	List<Map<String,Object>> getLine1(@Param("engine_name")String engine_name,@Param("type")String type,@Param("startTime")String startTime,@Param("endTime")String endTime);
+	
+	
 
 
 }

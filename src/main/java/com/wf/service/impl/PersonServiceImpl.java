@@ -155,5 +155,11 @@ public class PersonServiceImpl implements PersonService {
 		
 		return persondao.getAllInstitutional(institution);
 	}
-
+	
+	@Override
+	public List<String> getAllInstitution(String institution) {
+		return persondao.getAllInstitution(institution);
+	}
+	
+	
 }

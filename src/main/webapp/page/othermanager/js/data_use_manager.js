@@ -2,6 +2,12 @@ $(function(){
 	
 	tabulation(1);
 	moreOrSimple();
+	keyword();
+	
+	$(document).click(function(){
+	    $("#searchsug").hide();
+	});
+	
 })
 
 var date="";
@@ -9,6 +15,8 @@ var startTime;
 var endTime;
 var institution_name;
 var user_id;
+var restype;
+var dbname;
 var pagenum;
 /**查询执行方法*/
 function query(){
@@ -25,7 +33,8 @@ function tabulation(curr){
 	getTime();
 	institution_name=$("#institution_name").val();
 	user_id=$("#user_id").val();
-	
+	restype=$("#restype").val();
+	dbname=$("#database").val();
 	$.ajax({
 		type : "POST",
 		url : "../databaseAnalysis/getPage.do",
@@ -33,11 +42,12 @@ function tabulation(curr){
 			'institution_name' : institution_name,
 			'user_id' : user_id,
 			'date' : date,
+			'source_db':restype,
+			'product_source_code':dbname,
 			'startTime' : startTime,
 			'endTime' : endTime,
 			'pagenum' : curr,//向服务端传的参数
 	        'pagesize' : 10
-			
 		},
 		dataType : "json",
 		success : function(datas) {
@@ -47,7 +57,7 @@ function tabulation(curr){
 			var id;
 			for(var i=0;i<data.length;i++){
 				id=10*(curr-1)+i+1;
-				html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].database_name+"'></td>" +
+				html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
 						"<td>"+id+"</td>" +
 						"<td>"+data[i].database_name+"</td>" +
 						"<td>"+data[i].sum1+"</td>" +
@@ -105,6 +115,8 @@ function tabulation(curr){
 function line(urlType,database_name,datas){
 	institution_name=$("#institution_name").val();
 	user_id=$("#user_id").val();
+	restype=$("#restype").val();
+	dbname=$("#database").val();
 	getTime();
 	
 	$.ajax({
@@ -114,6 +126,8 @@ function line(urlType,database_name,datas){
 			'institution_name' : institution_name,
 			'user_id' : user_id,
 			'date' : date,
+			'source_db':restype,
+			'product_source_code':dbname,
 			'startTime' : startTime,
 			'endTime' : endTime,
 			'urlType':urlType,
@@ -208,6 +222,8 @@ function exportDatabase(){
 		getTime();
 		window.location.href="../databaseAnalysis/exportDatabase.do?" +
 				"institution_name="+institution_name+"&user_id="+user_id+
+				"&source_db="+restype+
+				"&product_source_code="+dbname+
 				"&date="+date+"&startTime="+startTime+"&endTime="+endTime;
 	}else{
 		layer.msg("请选择前后统计时间!",{icon: 2});
@@ -299,6 +315,68 @@ function checkitem_more(){
 	
 	line(urlType,database_name,datas);
 }
+
+
+function getDatabaseBySourceCode(code){
+	
+	$("#database").empty();
+	$("#database").append("<option value=''>--请选择数据库名称--</option>");
+	
+	if(""!=code && null!=code && undefined!=code){
+		$.ajax({
+			type : "POST",
+			url : "../databaseAnalysis/getDatabaseBySourceCode.do",
+			data : {"code":code},
+			dataType : "json",
+			success : function(data) {
+				$(data).each(function(index,item) {
+					$("#database").append("<option value='"+item.productSourceCode+"'>"+item.tableName+"</option>");
+				});
+			}
+		});
+	}
+	
+}
+
+
+function keyword(){
+	$("#institution_name").focus(function(){	
+		$("#searchsug").show();
+		$("#institution_name").keyup(function(event){
+			$("#searchsug").show();
+			var keywords=$("#institution_name").val();						
+			$("#searchsug li").remove();			
+			$.post("../databaseAnalysis/getAllInstitution.do",{"institution":keywords},function(data){
+				  $("#searchsug ul li").remove();
+				var list=eval(data);
+				for(var i=0;i<list.length;i++){
+					var li="<li data-key=\""+list[i]+"\" style=\"line-height: 14px;text-align:left;\" onclick=\"text_show(this);\" ><span>"+list[i]+"</span></li>";
+					$("#searchsug ul").append(li);			
+					$("#searchsug ul li").mouseover(function(){
+						$("#searchsug ul li").removeAttr("class");
+						$(this).attr("class","bdsug-s"); 
+								});	
+						}
+					});
+				});
+			});
+}
+
+function text_show(data){
+	$("#institution_name").val($(data).text());
+	$("#searchsug").css("display","none");
+	
+	$.post("../databaseAnalysis/getDB_SourceByInstitution.do",
+			{"institution":$("#institution_name").val()},
+			function(data){
+				$("#restype").empty();
+				$("#restype").append("<option value=''>--请选择数据来源--</option>");
+				$(data).each(function(index,item) {
+					$("#restype").append("<option value='"+item.dbSourceCode+"'>"+item.dbSourceName+"</option>");
+				});
+			});
+}
+
 
 
 

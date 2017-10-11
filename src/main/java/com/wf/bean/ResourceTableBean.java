@@ -5,6 +5,7 @@ public class ResourceTableBean {
 	private Integer urlType;
 	private String sourceTypeName;
 	private String sourceName;
+	private String title;
 	private Integer browseNum;
 	private Integer downloadNum;
 	private Integer searchNum;
@@ -32,6 +33,14 @@ public class ResourceTableBean {
 	public void setSourceName(String sourceName) {
 		this.sourceName = sourceName;
 	}
+	
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
 	public Integer getBrowseNum() {
 		return browseNum;
 	}

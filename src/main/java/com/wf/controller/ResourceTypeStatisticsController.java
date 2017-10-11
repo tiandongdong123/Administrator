@@ -25,6 +25,7 @@ import com.exportExcel.ExportExcel;
 import com.wf.bean.PageList;
 import com.wf.bean.ResourceStatistics;
 import com.wf.bean.ResourceType;
+import com.wf.service.DataManagerService;
 import com.wf.service.ResourceTypeStatisticsService;
 
 @Controller
@@ -34,13 +35,16 @@ public class ResourceTypeStatisticsController {
 	@Autowired
 	private ResourceTypeStatisticsService resource;
 
+	@Autowired
+	private DataManagerService dataManagerService;
+	
 	@RequestMapping("resourceTypeStatistics")
 	public String resourceTypeStatistics(Map<String,Object> map){
 		List<ResourceType> li = this.resource.getResourceType();
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,   -1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
-		
+		map.put("allData",dataManagerService.selectAll());
 		map.put("yesterday", yesterday);
 		map.put("resourcetype", li);
 		return "/page/othermanager/res_use_manager";
@@ -48,7 +52,7 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("getline")
 	@ResponseBody
-	public Map<String,Object> getLine(String starttime,String endtime,@ModelAttribute ResourceStatistics res,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore){
+	public Map<String,Object> getLine(Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore){
 		Map<String,Object> map = new HashMap<String, Object>();
 		map =this.resource.getAllLine(starttime,endtime,res,urls,singmore);
 		return map;
@@ -61,7 +65,7 @@ public class ResourceTypeStatisticsController {
 		return pl;
 	}
 	
-	@RequestMapping("exportresourceType")
+	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
 	public void exportresourceType(HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
 		List<Object> list=new ArrayList<Object>();
 		list= this.resource.exportresourceType(num,starttime,endtime, res);

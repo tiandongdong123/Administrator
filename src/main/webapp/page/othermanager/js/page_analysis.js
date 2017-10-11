@@ -846,8 +846,27 @@ $(function() {
 					+"<td>"+json[5].value+"</td>"
 					+"<td>"+json[6].value+"</td>"
 					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript：void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript：void(0);\">查看链接点击图</a></td>"
+					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
+					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
+					+"</tr>";
+					$("#tabulation tbody").append(tr);
+			}
+			else if(list[i].type=="7")
+			{
+				var json=eval(list[i].value);
+				var tr="<tr>"
+					+"<td>其他</td>"
+					+"<td>"+pagename+"</td>"
+					+"<td>"+json[0].value+"</td>"
+					+"<td>"+json[1].value+"</td>"
+					+"<td>"+json[2].value+"</td>"
+					+"<td>"+json[3].value+"</td>"
+					+"<td>"+json[4].value+"</td>"
+					+"<td>"+json[5].value+"</td>"
+					+"<td>"+json[6].value+"</td>"
+					+"<td>"+json[7].value+"%</td>"	
+					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
+					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
 					+"</tr>";
 					$("#tabulation tbody").append(tr);
 			}

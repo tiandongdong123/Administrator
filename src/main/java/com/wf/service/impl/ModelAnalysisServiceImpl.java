@@ -89,7 +89,11 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 				if(a.length==2){
 					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
 				}else{
-					agestr=agestr+"(age>=60) or";
+					if(ages[i].equals("60")){
+						agestr=agestr+"(age>=60) or";
+					}else{
+						agestr=agestr+"(age is null) or";
+					}
 				}
 			}
 			agestr = " and ("+agestr;
@@ -190,8 +194,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'end "
-								+ "as label,h,count(user_id) as numbers "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ "end as label,h,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
 								+ "group by case "
@@ -200,7 +205,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,h";							
 						reserch_domain = "select distinct reserch_domain from kylin_analysis where d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr;
 						list=kylin.findToListMap(sqlpv);
@@ -212,8 +218,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' end "
-								+ "as label,h,count(user_id) as numbers "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ "end as label,h,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1  and d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
 								+ "group by case "
@@ -222,7 +229,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ " end,h";
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr;
 						list=kylin.findToListMap(sqlvv);
@@ -234,7 +242,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end as label,h,count(distinct user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1  and d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -244,7 +253,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,h";			
 						
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d='"+yesterday+"'"+titlestr+exlevelstr+agestr+modelstr;
@@ -510,7 +520,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'end "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' "
+							+ "end "
 							+ "as label,d,count(user_id) as numbers "
 							+ "from kylin_analysis "
 							+ "where d  in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -520,7 +532,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'"
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' "
 							+ "end,d";							
 					reserch_domain = "select distinct reserch_domain from kylin_analysis where d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr;
 					list=kylin.findToListMap(sqlpv);
@@ -532,7 +545,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上' end "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' "
+							+ "end "
 							+ "as label,d,count(user_id) as numbers "
 							+ "from kylin_analysis "
 							+ "where  is_online=1  and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -542,7 +557,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'"
+							+ "when age>=60 then '60岁以上' "
+							+ " else '其他' "
 							+ " end,d";
 					reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr;
 					list=kylin.findToListMap(sqlvv);
@@ -554,7 +570,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上' "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' "
 							+ "end as label,d,count(distinct user_id) as numbers "
 							+ "from kylin_analysis "
 							+ "where  is_online=1  and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -564,7 +581,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上' "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' "
 							+ "end,d";			
 					
 					reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr;
@@ -812,7 +830,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'end "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ " end"
 								+ "as label,h,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -822,7 +842,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,h";							
 						reserch_domain = "select distinct reserch_domain from kylin_analysis where d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr;
 						list=kylin.findToListMap(sqlpv);
@@ -834,7 +855,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' end "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ "end "
 								+ "as label,h,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1 and  d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -844,7 +867,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,h";
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr;
 						list=kylin.findToListMap(sqlvv);
@@ -856,7 +880,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end as label,h,count(distinct user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1  and d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -866,7 +891,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,h";			
 						
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d='"+endtime+"'"+titlestr+exlevelstr+agestr+modelstr;
@@ -1123,7 +1149,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' end "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ " end "
 								+ "as label,d,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where d  in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1132,8 +1160,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=20 and age<=29 then '20-29岁' "
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
-								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,d";							
 						reserch_domain = "select distinct reserch_domain from kylin_analysis where d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr;
 						list=kylin.findToListMap(sqlpv);
@@ -1144,8 +1172,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=20 and age<=29 then '20-29岁' "
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
-								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' end "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
+								+ "end "
 								+ "as label,d,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1  and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1155,7 +1184,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'"
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ " end,d";
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr;
 						list=kylin.findToListMap(sqlvv);
@@ -1167,7 +1197,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'  "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end as label,d,count(distinct user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where  is_online=1  and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1177,7 +1208,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上' "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' "
 								+ "end,d";			
 						
 						reserch_domain="select distinct reserch_domain from kylin_analysis where is_online=1 and d in ("+days+") "+titlestr+exlevelstr+agestr+modelstr;
@@ -1411,7 +1443,11 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 				if(a.length==2){
 					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
 				}else{
-					agestr=agestr+"(age>=60) or";
+					if(ages[i].equals("60")){
+						agestr=agestr+"(age>=60) or";
+					}else{
+						agestr=agestr+"(age is null) or";
+					}
 				}
 			}
 			agestr = " and ("+agestr;
@@ -1529,7 +1565,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end as label,count(user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1539,7 +1576,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end";
 			sqlvv="select case "
 					+ "when age>=0 and age<=19 then '0-19岁' "
@@ -1547,7 +1585,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end as label,count(user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1557,7 +1596,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end";
 			sqluv="select case "
 					+ "when age>=0 and age<=19 then '0-19岁' "
@@ -1565,7 +1605,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end as label,count(distinct user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
@@ -1575,7 +1616,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上' "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' "
 					+ "end";
 			break;
 		case 3:

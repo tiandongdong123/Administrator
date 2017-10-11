@@ -107,5 +107,14 @@ public interface PersonMapper {
 	 * @return
 	 */
     List<Person> queryPersonInId(@Param("userIds")List<String> userIds);
+    
+    
+    /**
+	 * 获取所有机构名称
+	 * @param institution 机构名称
+	 * @return
+	 */
+	List<String> getAllInstitution(@Param("institution")String institution);
+    
 	
 }

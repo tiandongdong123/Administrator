@@ -366,4 +366,11 @@
     	</foreach>
   </select>
   
+   <select id="getAllInstitution" resultType="java.lang.String">
+  	select DISTINCT TRIM(institution) from user  where institution <![CDATA[ <> ]]> ''
+  	and institution like CONCAT('%',#{institution},'%') and userType=2
+  	limit 0,10
+  </select>
+  
+  
 </mapper>

@@ -27,9 +27,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utils.DataUtil;
 import com.utils.DateUtil;
+import com.wf.bean.DB_Source;
 import com.wf.bean.DatabaseUseDaily;
+import com.wf.bean.Datamanager;
 import com.wf.bean.PageList;
+import com.wf.service.DB_SourceService;
+import com.wf.service.DataManagerService;
 import com.wf.service.DatabaseAnalysisService;
+import com.wf.service.PersonService;
 
 @Controller
 @RequestMapping("databaseAnalysis")
@@ -38,6 +43,14 @@ public class DatabaseAnalysisController {
 	@Autowired
 	private DatabaseAnalysisService databaseAnalysisService;
 	
+	@Autowired
+	private DB_SourceService db_SourceService;
+	
+	@Autowired
+	private DataManagerService dataManagerService;
+	
+	@Autowired
+	private PersonService personService;
 	
 	/**
 	* @Title: databaseAnalysis
@@ -49,11 +62,19 @@ public class DatabaseAnalysisController {
 	@RequestMapping("databaseAnalysis")
 	public String databaseAnalysis(Map<String,Object> map){
 		Calendar   cal   =   Calendar.getInstance();
-		cal.add(Calendar.DATE,   -1);
+		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		map.put("yesterday", yesterday);
+		map.put("allData",dataManagerService.selectAll());
 		return "/page/othermanager/data_use_manager";
 	}
+	
+	@ResponseBody
+	@RequestMapping("getDatabaseBySourceCode")
+	public List<Datamanager> getDatabaseBySourceCode(String code){
+		return  dataManagerService.getDatabaseByCode(code);
+	}
+	
 	
 	/**
 	* @Title: getPage
@@ -264,6 +285,23 @@ public class DatabaseAnalysisController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 获取所有机构名称
+	 * @param institution 机构名称
+	 * @return
+	 */
+	@RequestMapping("/getAllInstitution")
+	@ResponseBody
+	public List<String> getAllInstitution(String institution){ 
+		return personService.getAllInstitution(institution);
+	}
+	
+	@RequestMapping("/getDB_SourceByInstitution")
+	@ResponseBody
+	public List<DB_Source> getDB_SourceByInstitution(String institution){
+		return db_SourceService.getInstitutionDB_Source(institution);
 	}
 	
 }

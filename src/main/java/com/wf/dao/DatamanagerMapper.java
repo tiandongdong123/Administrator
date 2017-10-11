@@ -16,6 +16,8 @@ public interface DatamanagerMapper {
     
     Map<String, Object> selectDataByPsc(@Param("productSourceCode") String productSourceCode);
     
+    List<Datamanager> getDatabaseByCode(@Param("productSourceCode") String productSourceCode);
+    
     List<Object> getData(@Param("dataname") String dataname,@Param("dataname1") String dataname1,@Param("pagenum") Integer pagenum,@Param("pagesize") Integer pagesize);
     
     int getDataNum(@Param("dataname") String dataname);

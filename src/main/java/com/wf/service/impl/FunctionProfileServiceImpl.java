@@ -71,7 +71,11 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 				if(a.length==2){
 					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
 				}else{
-					agestr=agestr+"(age>=60) or";
+					if(ages[i].equals("60")){
+						agestr=agestr+"(age>=60) or";
+					}else{
+						agestr=agestr+"(age is null) or";
+					}
 				}
 			}
 			agestr = " and ("+agestr;
@@ -139,7 +143,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end "
 						+ "as label,h,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where url_type "+typestr+" and d='"+yesterday+"' "+agestr
@@ -149,7 +154,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,h";
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end,h";
 				domainsql="select distinct reserch_domain from kylin_analysis where url_type "+typestr+" and d='"+yesterday+"' "+agestr;
 					break;
 				case 3:sql ="select case "
@@ -304,7 +310,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他'end "
 					+ "as label,d,count(user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where url_type "+typestr+" and  d in("+days+") "+agestr
@@ -314,7 +321,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end,d";
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' end,d";
 			
 			domainsql="select distinct reserch_domain from kylin_analysis where url_type "+typestr+" and  d in("+days+") "+agestr;
 				break;
@@ -457,7 +465,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end "
 						+ "as label,h,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where url_type "+typestr+" and d='"+endtime+"' "+agestr
@@ -467,7 +476,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,h;";
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end,h;";
 				
 				domainsql="select distinct reserch_domain from kylin_analysis where url_type "+typestr+" and d='"+endtime+"' "+agestr;
 					break;
@@ -614,7 +624,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'end "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' end "
 							+ "as label,d,count(user_id) as numbers "
 							+ "from kylin_analysis "
 							+ "where url_type "+typestr+" and  d in("+days+") "+agestr
@@ -624,7 +635,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'end,d;";
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他' end,d;";
 					
 					domainsql="select distinct reserch_domain from kylin_analysis where url_type "+typestr+" and  d in("+days+") "+agestr;
 						break;
@@ -776,7 +788,11 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 				if(a.length==2){
 					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
 				}else{
-					agestr=agestr+"(age>=60) or";
+					if(ages[i].equals("60")){
+						agestr=agestr+"(age>=60) or";
+					}else{
+						agestr=agestr+"(age is null) or";
+					}
 				}
 			}
 			agestr = " and ("+agestr;
@@ -840,7 +856,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end "
 						+ "as label,url_type,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where  d='"+yesterday+"' "+agestr
@@ -850,7 +867,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,url_type;";
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end,url_type;";
 					break;
 				case 3:sql ="select case "
 						+ "when title=4 then '其他' "
@@ -1068,7 +1086,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' end "
 					+ "as label,url_type,count(user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where   d in("+days+") "+agestr
@@ -1078,7 +1097,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end,url_type";
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' end,url_type";
 				break;
 			case 3:sql ="select case "
 					+ "when title=4 then '其他' "
@@ -1252,7 +1272,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=60 then '50-59岁' "
+						+ "else '其他'end "
 						+ "as label,url_type,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where  d='"+endtime+"' "+agestr
@@ -1262,7 +1283,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,url_type;";
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他'end,url_type;";
 					break;
 				case 3:sql ="select case "
 						+ "when title=4 then '其他' "
@@ -1444,7 +1466,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'end "
+							+ "when age>=60 then '60岁以上' "
+							+ "else '其他'end "
 							+ "as label,url_type,count(user_id) as numbers "
 							+ "from kylin_analysis "
 							+ "where  d in("+days+") "+agestr
@@ -1454,7 +1477,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 							+ "when age>=30 and age<=39 then '30-39岁' "
 							+ "when age>=40 and age<=49 then '40-49岁' "
 							+ "when age>=50 and age<=59 then '50-59岁' "
-							+ "else '60岁以上'end,url_type;";
+							+ "when age>=60  then '60岁以上' "
+							+ "else '其他'end,url_type;";
 						break;
 					case 3:sql ="select case "
 							+ "when title=4 then '其他' "
@@ -1648,7 +1672,11 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 				if(a.length==2){
 					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
 				}else{
-					agestr=agestr+"(age>=60) or";
+					if(ages[i].equals("60")){
+						agestr=agestr+"(age>=60) or";
+					}else{
+						agestr=agestr+"(age is null) or";
+					}
 				}
 			}
 			agestr = " and ("+agestr;
@@ -1794,7 +1822,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=50  then '60岁以上' "
+						+ "else '其他 'end "
 						+ "as label,h,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where url_type in ( "+type+" ) and d='"+yesterday+"' "+agestr
@@ -1804,7 +1833,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,h";
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他'end,h";
 				domainsql="select distinct reserch_domain from kylin_analysis where url_type in ("+type+") and d='"+yesterday+"' "+agestr;
 					break;
 				case 3:sql ="select case "
@@ -2043,7 +2073,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end "
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他'end "
 					+ "as label,d,count(user_id) as numbers "
 					+ "from kylin_analysis "
 					+ "where url_type  in ("+type+") and  d in("+days+") "+agestr
@@ -2053,7 +2084,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					+ "when age>=30 and age<=39 then '30-39岁' "
 					+ "when age>=40 and age<=49 then '40-49岁' "
 					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "else '60岁以上'end,d";
+					+ "when age>=60 then '60岁以上' "
+					+ "else '其他' end,d";
 			
 			domainsql="select distinct reserch_domain from kylin_analysis where url_type in ("+type+") and  d in("+days+") "+agestr;
 				break;
@@ -2279,7 +2311,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end "
+						+ "when age>=60 then '60岁以上' "
+						+ "else '其他' end "
 						+ "as label,h,count(user_id) as numbers "
 						+ "from kylin_analysis "
 						+ "where url_type in ("+type+" ) and d='"+endtime+"' "+agestr
@@ -2289,7 +2322,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 						+ "when age>=30 and age<=39 then '30-39岁' "
 						+ "when age>=40 and age<=49 then '40-49岁' "
 						+ "when age>=50 and age<=59 then '50-59岁' "
-						+ "else '60岁以上'end,h;";
+						+ "when age>=50 then '60岁以上' "
+						+ "else '其他' end,h;";
 				
 				domainsql="select distinct reserch_domain from kylin_analysis where url_type in ("+type+" ) and d='"+endtime+"' "+agestr;
 					break;
@@ -2520,7 +2554,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'end "
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他' end "
 								+ "as label,d,count(user_id) as numbers "
 								+ "from kylin_analysis "
 								+ "where url_type  in ("+type+") and  d in("+days+") "+agestr
@@ -2530,7 +2565,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 								+ "when age>=30 and age<=39 then '30-39岁' "
 								+ "when age>=40 and age<=49 then '40-49岁' "
 								+ "when age>=50 and age<=59 then '50-59岁' "
-								+ "else '60岁以上'end,d";
+								+ "when age>=60 then '60岁以上' "
+								+ "else '其他'end,d";
 						
 						domainsql="select distinct reserch_domain from kylin_analysis where url_type in ("+type+") and  d in("+days+") "+agestr;
 							break;

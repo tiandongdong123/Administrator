@@ -332,7 +332,7 @@ function pie(data){
 	    ]
 	};
 	myChart.setOption(option);
-	}else if(indexType=="4"||indexType=="6"||indexType=="8"){
+	}else if(indexType=="4"||indexType=="6"){
 		option = {
 			   
 			    tooltip : {
@@ -367,8 +367,47 @@ function pie(data){
 			};
 		
 		myChart.setOption(option);
-			                    
+	}else if(indexType=="8"){
+		option = {   
+			    tooltip : {
+			        trigger: 'axis'
+			    },
+			   
+			    calculable : true,
+			    xAxis : [
+			        {
+			            type : 'category',
+			            data : eval(data.groupArr)
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value',
+			            axisLabel:{
+			            	formatter:function(value){
+			            		var sub_title=eval(value)+'%';
+			            		return sub_title;
+			            	}
+			            }
+			        }
+			    ],
+			    series : [
+			        {	 
+			        	tooltip:{
+			        		show:true,
+			        		formatter:function(value){
+			        			var sub_title=value[0].name+"<br/> "+value[0].seriesName+" ： "+value[0].value+"%";
+			        			return sub_title;
+			            	}
+			        	},
+			            name:'值',
+			            type:'bar',
+			            data: eval(data.dataList),
+			        }
+			    ]
+			};
 		
+		myChart.setOption(option);
 		
 	}
 	
@@ -379,42 +418,89 @@ function pie(data){
 /**
  * 加载折线图数据--liuYong
  */
-function line(data){	
+function line(data){
+	
     var myChart = echarts.init(document.getElementById('line')); 
-    option = {
-	    tooltip : {
-	        trigger: 'axis'
-	    },
-	    legend: {
-	        data:eval(data.groupArr)
-	    },
-//	    toolbox: {
-//	        show : true,
-//	        feature : {
-//	            mark : {show: true},
-//	            dataView : {show: true, readOnly: false},
-//	            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-//	            restore : {show: true},
-//	            saveAsImage : {show: true}
-//	        }
-//	    },
-	    calculable : true,
-	    xAxis : [
-	        {
-	            type : 'category',
-	            boundaryGap : false,
-	            data : eval(data.dateArr)
-	        }
-	    ],
-	    yAxis : [
-	        {
-	            type : 'value',
-	            name : '值（单位：—）',
-	            splitNumber:10
-	        }
-	    ],
-	    series : eval(data.seriesArr)
-	};
+    
+    if(indexType=="8"){
+    	
+ 	   option = {
+ 			    tooltip : {
+ 			        trigger: 'axis',
+ 			        formatter:function(data){
+ 			        	var sun_title=data[0].name+"<br/>";
+ 			        	for(var i=0;i<data.length;i++){
+ 			        		sun_title=sun_title+data[i].seriesName+" ："+data[i].value+"%<br/>";
+ 			        	}
+ 			        	return sun_title;
+ 			        }
+ 			    },
+ 			    legend: {
+ 			        data:eval(data.groupArr)
+ 			    },
+ 			    calculable : true,
+ 			    xAxis : [
+ 			        {
+ 			            type : 'category',
+ 			            boundaryGap : false,
+ 			            data : eval(data.dateArr)
+ 			        }
+ 			    ],
+ 			    yAxis : [
+ 			        {
+ 			            type : 'value',
+ 			            name : '值（单位：—）',
+ 			            splitNumber:10, 
+ 			            axisLabel:{
+			            	formatter:function(value){
+			            		var sub_title=eval(value)+'%';
+			            		return sub_title;
+			            	}
+			            }
+ 			        }
+ 			    ],
+ 			    series : eval(data.seriesArr),
+ 			};
+    	
+    	
+    }else{
+    	
+ 	   option = {
+  			    tooltip : {
+  			        trigger: 'axis'
+  			    },
+  			    legend: {
+  			        data:eval(data.groupArr)
+  			    },
+//  			    toolbox: {
+//  			        show : true,
+//  			        feature : {
+//  			            mark : {show: true},
+//  			            dataView : {show: true, readOnly: false},
+//  			            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+//  			            restore : {show: true},
+//  			            saveAsImage : {show: true}
+//  			        }
+//  			    },
+  			    calculable : true,
+  			    xAxis : [
+  			        {
+  			            type : 'category',
+  			            boundaryGap : false,
+  			            data : eval(data.dateArr)
+  			        }
+  			    ],
+  			    yAxis : [
+  			        {
+  			            type : 'value',
+  			            name : '值（单位：—）',
+  			            splitNumber:10
+  			        }
+  			    ],
+  			    series : eval(data.seriesArr),
+  			};
+    }
+    
 	myChart.setOption(option);
 }
 
@@ -445,16 +531,3 @@ function dateConversion(time){
 		endTime=GetDateStr(0);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

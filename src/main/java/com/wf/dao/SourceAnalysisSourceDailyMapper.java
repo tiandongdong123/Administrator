@@ -115,4 +115,21 @@ public interface SourceAnalysisSourceDailyMapper {
 	 */
 	List<String> getLine(@Param("access_type")String access_type,@Param("type")String type,@Param("startTime")String startTime,@Param("endTime")String endTime);
 	
+	
+	
+	
+	/**
+	* @Title: getLine
+	* @Description: TODO(全部来源当前条件下统计信息，用于折线图数据) 
+	* @param access_type
+	* @param type
+	* @param startTime
+	* @param endTime
+	* @return List<String> 返回类型 
+	* @author LiuYong 
+	* @date 15 Dis 2016 4:18:29 PM
+	 */
+	List<SourceAnalysisSourceDaily> getLineAsJump(@Param("access_type")String access_type,@Param("type")String type,@Param("startTime")String startTime,@Param("endTime")String endTime);
+	
+	
 }

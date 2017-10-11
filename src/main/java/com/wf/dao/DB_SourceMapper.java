@@ -15,4 +15,6 @@ public interface DB_SourceMapper {
     int doAddSName(DB_Source db);
     
     DB_Source getOneSource(@Param("code") String code);
+    
+    List<DB_Source> getInstitutionDB_Source(@Param("institution")String institution);
 }

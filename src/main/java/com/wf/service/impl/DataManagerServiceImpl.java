@@ -486,5 +486,11 @@ public class DataManagerServiceImpl implements DataManagerService {
 		
 		return r;
 	}
+	
+	@Override
+	public List<Datamanager> getDatabaseByCode(String code) {
+		return data.getDatabaseByCode(code);
+	}
+	
 
 }

@@ -728,16 +728,19 @@ function tree(data){
 		if(data.length>0){
 			for(var i=0;i<data.length;i++){
 				if(i == 0){
-					name = "'"+(data[i].group_name==undefined?'':data[i].group_name) +"'";
-					percent = (data[i].percent==0||data[i].percent==undefined?0:(data[i].percent*100).toFixed(2));
+					name += "'"+(data[i].group_name==undefined?'':data[i].group_name) +"'";
+					percent += (data[i].percent==0||data[i].percent==undefined?0:(data[i].percent*100).toFixed(2));
 				}else{
 					name += ",'"+(data[i].group_name==undefined?'':data[i].group_name)+"'";
 					percent += "," + (data[i].percent==0||data[i].percent==undefined?0:(data[i].percent*100).toFixed(2));
 				}
 			}
 		}
-		name = eval(name + "]");
-		percent = eval(percent + "]");
+		name+="]";
+		percent+="]";
+		
+		name = eval(name);
+		percent = eval(percent);
 		var myChart = echarts.init(document.getElementById('ganxingqu'));
 		
 		option = {

@@ -1,5 +1,4 @@
 var pageIndex;
-var restype;
 var singmore;
 var restype;
 var urltype;
@@ -7,12 +6,19 @@ var starttime;
 var endtime;
 var username;
 var unitname;
+var product_source_code;
+var source_db;
 
 $(function(){
 	getline(1);
 	gettable(1);
 	$("#single").show();
 	$("#more").hide();
+	keyword();
+	$(document).click(function(){
+	    $("#searchsug").hide();
+	});
+
 })
 
 function changeres(){
@@ -40,7 +46,9 @@ function gettable(curr){
 	starttime = $("#starttime").val();
 	endtime=$("#endtime").val();
 	username=$("#username").val();
-	unitname=$("#unitname").val();
+	unitname=$("#institution_name").val();
+	source_db=$("#source_db").val();
+	product_source_code=$("#database").find("option:selected").val();
 	num = "";
 	if(restype=='期刊'||restype=='会议'||restype=='学位'){
 		num=1;
@@ -52,12 +60,14 @@ function gettable(curr){
 		$.post("../resourceTypeStatistics/gettable.do", {
 	        pagenum: curr,//向服务端传的参数
 	        pagesize :10,
+	        institutionName : unitname,
+	        userId:username,
+	        source_db:source_db,
+	        product_source_code:product_source_code,
+	        sourceTypeName:restype,
 	        starttime : starttime,
 			endtime:endtime,
-			userId:username,
-			urlType:urltype,
-			sourceName : unitname,
-			sourceTypeName:restype,
+			operate_type:urltype,
 			num:num,
 	    }, function(res){
 	    	var html="";
@@ -86,7 +96,7 @@ function gettable(curr){
 		    for(var i =0;res.pageRow[i];i++){
 		    	id = 10*(curr-1)+i+1;
 		    	if(restype=='期刊'||restype=='会议'||restype=='学位'){
-		    		htmlbody="<td>"+res.pageRow[i].sourceName+"</td>";
+		    		htmlbody="<td>"+res.pageRow[i].title+"</td>";
 		    	}
 		    	html+="<tr>" +
 		    			"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
@@ -144,12 +154,14 @@ function gettable(curr){
 			$.post("../resourceTypeStatistics/gettable.do", {
 		        pagenum: curr,//向服务端传的参数
 		        pagesize :10,
+		        institutionName:unitname,
+		        userId:username,
+		        source_db:source_db,
+		        product_source_code:product_source_code,
+		        sourceTypeName:restype,
 		        starttime : starttime,
 				endtime:endtime,
-				userId:username,
-				urlType:urltype,
-				institutionName:unitname,
-				sourceTypeName:restype,
+				operate_type:urltype,				
 				num:num,
 		    }, function(res){
 		    	var html="";
@@ -179,14 +191,14 @@ function gettable(curr){
 			    	id = 10*(curr-1)+i+1;
 			    	if(restype=='期刊'||restype=='会议'||restype=='学位'){
 			    		
-			    		var institution_name;
-			    		if(res.pageRow[i].institution_name==null){
-			    			institution_name="";
+			    		var title;
+			    		if(res.pageRow[i].title==null){
+			    			title="";
 			    		}else{
-			    			institution_name=res.pageRow[i].institution_name;
+			    			title=res.pageRow[i].title;
 			    		}
 			    		
-			    		htmlbody="<td>"+institution_name+"</td>";
+			    		htmlbody="<td>"+title+"</td>";
 			    	}
 			    	html+="<tr>" +
 			    			"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
@@ -260,8 +272,14 @@ function getline(initial){
 	var starttime = $("#starttime").val();
 	var endtime=$("#endtime").val();
 	var username=$("#username").val();
-	var unitname=$("#unitname").val();
+	var unitname=$("#institution_name").val();
+	var source_db=$("#source_db").val();
+	var product_source_code=$("#database").val();
 	
+	var num=0;
+	if(restype=='期刊'||restype=='会议'||restype=='学位'){
+		num=1;
+	}
 	if(restype=='--请选择资源类型--' && initial==2){
 		getLineByCheckMore(checkbox);
 	}else{
@@ -271,14 +289,17 @@ function getline(initial){
 			type : "POST",  
 			url : "../resourceTypeStatistics/getline.do",
 			data : {
+				'institutionName':unitname,
 				'starttime' : starttime,
 				'endtime':endtime,
 				'userId':username,
-				'urlType':urltype,
-				'sourceName':unitname,
+				'operate_type':urltype,
+				'source_db':source_db,
 				'sourceTypeName':restype,
+				'product_source_code':product_source_code,
 				'urls':urls,
 				'singmore':singmore,
+				'num':num,
 			},
 			dataType : "json",
 			success : function(data) {
@@ -286,27 +307,30 @@ function getline(initial){
 				pie(data);
 			}
 			});
-		}
-	else{
-		$.ajax( {  
-			type : "POST",  
-			url : "../resourceTypeStatistics/getline.do",
-			data : {
-				'starttime' : starttime,
-				'endtime':endtime,
-				'userId':username,
-				'urlType':urltype,
-				'institutionName':unitname,
-				'sourceTypeName':restype,
-				'urls':urls,
-				'singmore':singmore
-			},
-			dataType : "json",
-			success : function(data) {
-				tree(data);
-				pie(data);
-			}
-			});
+		
+		}else{
+			$.ajax( {  
+				type : "POST",  
+				url : "../resourceTypeStatistics/getline.do",
+				data : {
+					'userId':username,
+					'source_db':source_db,
+					'starttime' : starttime,
+					'endtime':endtime,
+					'operate_type':urltype,
+					'product_source_code':product_source_code,
+					'institutionName':unitname,
+					'sourceTypeName':restype,
+					'urls':urls,
+					'singmore':singmore,
+					'num':num,
+				},
+				dataType : "json",
+				success : function(data) {
+					tree(data);
+					pie(data);
+				}
+				});
 	}
 		
 	}
@@ -415,16 +439,10 @@ function checkitem(){
 
 //导出
 function exportresource(){
-	
-	if(restype=='学位'){
-		window.location.href="../resourceTypeStatistics/exportresourceType.do?" +
-				"starttime="+starttime+"&endtime="+endtime+"&userId="+username+"&urlType="+urltype+
-				"&sourceName="+unitname+"&sourceTypeName="+restype+"&num="+num;
-	}else{	
-		window.location.href="../resourceTypeStatistics/exportresourceType.do?" +
-				"starttime="+starttime+"&endtime="+endtime+"&userId="+username+"&urlType="+urltype+
-				"&institutionName="+unitname+"&sourceTypeName="+restype+"&num="+num;
-	}
+	window.location.href="../resourceTypeStatistics/exportresourceType.do?" +
+				"starttime="+starttime+"&endtime="+endtime+"&userId="+username+"&operate_type="+urltype+
+				"&institutionName="+unitname+"&sourceTypeName="+restype+"&num="+num+"&source_db="+source_db+
+				"&product_source_code="+product_source_code;
 }
 
 //checkbox联动
@@ -479,8 +497,9 @@ function getLineByCheckMore(checkbox){
 	var starttime = $("#starttime").val();
 	var endtime=$("#endtime").val();
 	var username=$("#username").val();
-	var unitname=$("#unitname").val();
-	
+	var unitname=$("#institution_name").val();
+	var source_db=$("#source_db").val();
+	var product_source_code=$("#database").val();
 	if(rstnames.length>0){
 		if(rstnames.length==1 && rstnames[0]=='学位')
 		{
@@ -491,8 +510,10 @@ function getLineByCheckMore(checkbox){
 				'starttime' : starttime,
 				'endtime':endtime,
 				'userId':username,
-				'urlType':urltype,
-				'sourceName':unitname,
+				'operate_type':urltype,
+				'institution_name':unitname,
+				'source_db':source_db,
+				'product_source_code':product_source_code,
 				'rstnames':rstnames,
 				'urls':urls,
 				'singmore':singmore
@@ -512,8 +533,10 @@ function getLineByCheckMore(checkbox){
 				'starttime' : starttime,
 				'endtime':endtime,
 				'userId':username,
-				'urlType':urltype,
+				'operate_type':urltype,
 				'institutionName':unitname,
+				'source_db':source_db,
+				'product_source_code':product_source_code,
 				'rstnames':rstnames,
 				'urls':urls,
 				'singmore':singmore
@@ -535,5 +558,69 @@ function getLineByCheckMore(checkbox){
 		getline(1);
 }
 }
+
+
+function getDatabaseBySourceCode(code){
+	
+	$("#database").empty();
+	$("#database").append("<option value=''>--请选择数据库名称--</option>");
+	
+	if(""!=code && null!=code && undefined!=code){
+		$.ajax({
+			type : "POST",
+			url : "../databaseAnalysis/getDatabaseBySourceCode.do",
+			data : {"code":code},
+			dataType : "json",
+			success : function(data) {
+				$(data).each(function(index,item) {
+					$("#database").append("<option value='"+item.productSourceCode+"'>"+item.tableName+"</option>");
+				});
+			}
+		});
+	}
+	
+}
+
+
+function keyword(){
+	$("#institution_name").focus(function(){	
+		$("#searchsug").show();
+		$("#institution_name").keyup(function(event){
+			$("#searchsug").show();
+			var keywords=$("#institution_name").val();						
+			$("#searchsug li").remove();			
+			$.post("../databaseAnalysis/getAllInstitution.do",{"institution":keywords},function(data){
+				  $("#searchsug ul li").remove();
+				var list=eval(data);
+				for(var i=0;i<list.length;i++){
+					var li="<li data-key=\""+list[i]+"\" style=\"line-height: 14px;text-align:left;\" onclick=\"text_show(this);\" ><span>"+list[i]+"</span></li>";
+					$("#searchsug ul").append(li);			
+					$("#searchsug ul li").mouseover(function(){
+						$("#searchsug ul li").removeAttr("class");
+						$(this).attr("class","bdsug-s"); 
+								});	
+						}
+					});
+				});
+			});
+}
+
+function text_show(data){
+	$("#institution_name").val($(data).text());
+	$("#searchsug").css("display","none");
+	
+	$.post("../databaseAnalysis/getDB_SourceByInstitution.do",
+			{"institution":$("#institution_name").val()},
+			function(data){
+				$("#source_db").empty();
+				$("#source_db").append("<option value=''>--请选择数据来源--</option>");
+				$(data).each(function(index,item) {
+					$("#source_db").append("<option value='"+item.dbSourceCode+"'>"+item.dbSourceName+"</option>");
+				});
+			});
+}
+
+
+
 
 

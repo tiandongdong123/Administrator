@@ -28,4 +28,13 @@
   <select id="getOneSource" resultMap="BaseResultMap">
   select * from db_source where  db_source_code= #{code}
   </select>
+  
+  <select id="getInstitutionDB_Source" resultMap="BaseResultMap">
+  	select db_source_name,db_source_code from db_source where db_source_code in (
+		select DISTINCT(d.source_db) from datamanager as d where product_source_code in (
+			select DISTINCT(resource_id) from wfks_pay_channel_resources where user_id in (
+			select user_id from user where institution=#{institution} )))
+  </select>
+  
+  
 </mapper>
