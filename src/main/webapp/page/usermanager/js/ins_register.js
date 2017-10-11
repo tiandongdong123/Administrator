@@ -1,24 +1,27 @@
-$(function(){
-	
-});
-
-//else if(adminIP!="" && validateIp(adminIP,adminname,'#adminIP')){return false;}
 //提交事件
 function submitForm(){
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
-	
+	$("#submit").attr({disabled: "disabled"});
 	if(!validateFrom()){
+		$("#submit").removeAttr("disabled");
 		return false;
 	}else if(!validateUserId()){
 		layer.msg("该机构ID已存在",{icon: 2});
+		$("#submit").removeAttr("disabled");
+		return false;
 	}else if(ip!="" && !IpFormat(ip)){
 		layer.msg("机构账号IP段格式有误",{icon: 2});
+		$("#submit").removeAttr("disabled");
+		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
 		layer.msg("管理员IP段格式有误",{icon: 2});
+		$("#submit").removeAttr("disabled");
+		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
+		$("#submit").removeAttr("disabled");
 		return false;
 	}else{
 	   var data = new FormData($('#fromList')[0]);
@@ -35,6 +38,7 @@ function submitForm(){
 	    	}else{
 	    		layer.msg("注册失败",{icon: 2});
 	    	}
+	    	$("#submit").removeAttr("disabled");
 	    });
 	}
 }

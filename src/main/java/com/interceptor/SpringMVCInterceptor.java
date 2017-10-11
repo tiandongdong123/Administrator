@@ -25,11 +25,6 @@ public class SpringMVCInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		String url = request.getRequestURI();
-		if (url.endsWith(".do")){
-			String menu_url = url.split("/")[url.split("/").length - 1];
-			request.getSession().setAttribute("menu_first", menu_url);
-		}
 		//过滤跨站脚本和sql注入攻击
 		//HttpRequestWrapper req = XSSFilterUtils.checkXss(request);
 		XSSFilterUtils.checkXss(request);

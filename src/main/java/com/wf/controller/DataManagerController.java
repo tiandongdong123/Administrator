@@ -1,6 +1,5 @@
 package com.wf.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.exportExcel.ExportExcel;
-import com.redis.RedisUtil;
 import com.wf.bean.Datamanager;
 import com.wf.bean.PageList;
 import com.wf.service.DataManagerService;

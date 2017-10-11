@@ -23,6 +23,10 @@ public class ResourceDetailedDTO {
 	
 	private Integer purchaseNumber;
 	
+	private String validityStarttime2;
+	
+	private String validityEndtime2;
+	
 	private List<ResourceLimitsDTO> rldto;
 	
 	public String getProjectid() {
@@ -67,6 +71,22 @@ public class ResourceDetailedDTO {
 
 	public String getValidityEndtime() {
 		return validityEndtime;
+	}
+
+	public String getValidityStarttime2() {
+		return validityStarttime2;
+	}
+
+	public void setValidityStarttime2(String validityStarttime2) {
+		this.validityStarttime2 = validityStarttime2;
+	}
+
+	public String getValidityEndtime2() {
+		return validityEndtime2;
+	}
+
+	public void setValidityEndtime2(String validityEndtime2) {
+		this.validityEndtime2 = validityEndtime2;
 	}
 
 	public void setValidityEndtime(String validityEndtime) {

@@ -110,13 +110,13 @@ function serachdata(data){
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
 			resHtml+="<td class='mailbox-name'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
-			"<td class='mailbox-name' style='width:300px;'>";
+            "<td class='mailbox-date'><div title='"+rows.createTime+"' style='width:70px;'>"+rows.createTime+"</td>"+
+			"<td class='mailbox-name' style='width:350px;'><div>";
 			if(rows.colums=='基金会议'){
-				resHtml+="<div class='col-md-3'><button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>置顶</button></div>&nbsp;";
+				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:50px;'>置顶</button>&nbsp;";
 			}
-			resHtml+="<div class='col-md-3'><button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button></div>" +
-			"<div class='col-md-3'><button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:60px;'>修改</button></div></td>" +
+			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button>&nbsp;" +
+			"<button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:50px;'>修改</button></div></td>" +
           "</tr>";
 		}
 	}

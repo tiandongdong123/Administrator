@@ -25,4 +25,11 @@ public interface OperationLogsMapper {
 	 * @return
 	 */
 	int selectOperationLogsNum(Map<String,Object> map);
+	
+	/**
+	 * 根据userId统计项目数量
+	 * @param userId
+	 * @return
+	 */
+	List<Map<String,String>> getProjectByUserId(String userId);
 }

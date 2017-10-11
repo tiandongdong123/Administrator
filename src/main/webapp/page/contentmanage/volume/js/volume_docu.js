@@ -522,13 +522,7 @@ function updatePrice(obj,volumeId){
 		}
 	})
 }
-//---------------------------------------导出-------------------------------------------------------
-function exportword(){
-	var data=$("#source_data").val();
-	$.post("../content/export.do",{source:data},function(data){
-		window.location.href='../content/download.do?titel='+encodeURI(encodeURI(data));
-	});
-}
+
 //---------------------------点击空白消失------------------------------------------------
 $(document).click(function(e){
 	var target  = $(e.target);
@@ -537,10 +531,6 @@ $(document).click(function(e){
 	       $(".update_div").show();
 	}
 });
-
-
-
-
 
 function play_level(txt,i_num){
 	$(txt).find("a").css({"background":"#F5F5F5"});

@@ -55,9 +55,7 @@ function put(){
 	 });
 	 valueNumber=valueNumber+"]";
 	 valueNumber=valueNumber.replace(",]", "]");
-//	 alert(valueNumber);
 	 valueNumber=eval(valueNumber);
-//	 alert(valueNumber);
 	var formData = new FormData();
 	formData.append('type', type);
 	formData.append('valueNumber', JSON.stringify(valueNumber));
@@ -97,6 +95,7 @@ function put(){
 		layer.msg("上传的附件只能是图片或是PDF文件",{icon: 2});
 		return false;
 	}
+	$("#submit").attr({disabled: "disabled"});
 	$.ajax({
 		type : "post",  
 		url : "../card/addCardBatch.do",
@@ -109,11 +108,12 @@ function put(){
 				layer.msg('提交成功', {icon: 1});
 				reback();
 			}
+			$("#submit").removeAttr("disabled");
 		},
 		error : function(data){
 			layer.msg("提交失败！");
+			$("#submit").removeAttr("disabled");
 		}
-		
 	});
 }
 
@@ -138,13 +138,11 @@ function showarea()
 	}
 }
 
-function del_click(data)
-{
+function del_click(data){
 	$("#"+data).remove();
 }
 
-function reback()
-{
+function reback(){
 	$("input").val("");
 	$(".FilerItem").remove();
 }

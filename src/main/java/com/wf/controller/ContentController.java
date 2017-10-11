@@ -1,9 +1,7 @@
 package com.wf.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -21,7 +19,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -46,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.exportExcel.ExportExcel;
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.utils.DateTools;
 import com.utils.GetUuid;
 import com.utils.Getproperties;
@@ -243,8 +241,8 @@ public class ContentController{
 	
 	
 	@RequestMapping("/addMessageJson")
-	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setId(GetUuid.getId());
 		message.setHuman(admin.getUser_realname());
 		message.setBranch(admin.getDept().getDeptName());
@@ -361,22 +359,18 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/updateMessage")
-	public String updateMessage(
-			@RequestParam(value="id",required=false) String id,
+	public String updateMessage(@RequestParam(value="id",required=false) String id,
 			HttpServletRequest request,Model model){
-		
-		String realPath1 = "http://"+ request.getServerName()+ ":"+ request.getServerPort()+"/";
 		
 		Message message=messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("addupdate", "update");
-		model.addAttribute("url", realPath1);
 		return "/page/contentmanage/addMessage";
 	}
 	
 	@RequestMapping("/updateMessageJson")
-	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
-		Wfadmin admin = (Wfadmin)session.getAttribute("wfAdmin");
+	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setHuman(admin.getUser_realname());
 		boolean b =messageService.updateMessage(message);
 		JsonUtil.toJsonHtml(response, b);
@@ -793,7 +787,7 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/volumeDocu")
-	public ModelAndView volumeDocu(HttpSession session){
+	public ModelAndView volumeDocu(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/contentmanage/volume/volume_docu");
 		return mav;
@@ -856,7 +850,6 @@ public class ContentController{
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		out.print(json);
@@ -880,62 +873,7 @@ public class ContentController{
 		}
 		return mav;
 	}
-//	/**
-//	 * 文辑导出
-//	 * @param request
-//	 * @return
-//	 */
-//	@RequestMapping("export")
-//	@ResponseBody
-//	public String  export(HttpServletRequest request) {
-//		
-//		String data=request.getParameter("source");
-//		List<String> namelist=new ArrayList<String>();
-//		namelist.add("文辑编号");
-//		namelist.add("文辑名称");
-//		namelist.add("关键词");
-//		namelist.add("文辑状态");
-//		namelist.add("发布用户名");
-//		namelist.add("发布日期");
-//		namelist.add("文辑文献数量");
-//		String realspath=request.getRealPath("/") + "Text/";
-//		JSONArray json=JSONArray.fromObject(data);
-//		ExportExcel ex=new ExportExcel();
-//		String url=ex.exportExcel(json, realspath, namelist);
-//		return url;
-//	}
 	
-	/**
-	 * 保存下载
-	 * @param model
-	 * @param response
-	 * @param request
-	 */
-	@RequestMapping("/download")
-	public void ouyang(Model model,HttpServletResponse response,HttpServletRequest request) {
-        // 下载本地文件
-		String fileName = request.getParameter("titel"); // 文件的默认保存名
-		InputStream inStream = null;
-		try{
-			fileName = URLDecoder.decode(fileName, "UTF-8") + ".xlsx";
-			inStream = new FileInputStream(request.getRealPath("/") + "Text/"+ fileName);
-			// 设置输出的格式
-			response.reset();
-			response.setContentType("bin");
-			response.setCharacterEncoding("UTF-8");
-			fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
-			response.addHeader("Content-Disposition", "attachment; filename=\""+ fileName + "\"");
-			// 循环取出流中的数据
-			byte[] b = new byte[100];
-			int len;
-			while ((len = inStream.read(b)) > 0) {
-				response.getOutputStream().write(b, 0, len);
-			}
-			inStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	/**
 	 * 文辑发布/下撤/再发布
 	 * @param id
@@ -977,9 +915,9 @@ public class ContentController{
 		 * @return
 		 */
 		@RequestMapping("/stepOne")
-		public ModelAndView stepOne(HttpSession session,@ModelAttribute Volume volume){
-			String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-			String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+		public ModelAndView stepOne(HttpServletRequest request,@ModelAttribute Volume volume){
+			Wfadmin admin=CookieUtil.getWfadmin(request);
+			String publishPerson = admin.getUser_realname();
 			ModelAndView mav = new ModelAndView();
 			mav.addObject("volume", volume);
 			mav.addObject("publishPerson", publishPerson);
@@ -1047,7 +985,7 @@ public class ContentController{
 		 * @return
 		 */
 		@RequestMapping("/stepFourChapter")
-		public ModelAndView stepFourChapter(HttpSession session,@ModelAttribute Volume volume,String listContent){
+		public ModelAndView stepFourChapter(@ModelAttribute Volume volume,String listContent){
 			List<Map<String,Object>> list = JSONArray.fromObject(listContent);
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("volume", volume);//文辑
@@ -1074,16 +1012,18 @@ public class ContentController{
 			mav.setViewName("/page/contentmanage/volume/step_four_noChapter");
 			return mav;
 		}
+		
 		/**
 		 * 保存文辑
 		 * @return
 		 */
 		@RequestMapping("/commit")
 		@ResponseBody
-		public boolean commit(HttpSession session,@ModelAttribute Volume volume,String listContent){
+		public boolean commit(HttpServletRequest request,@ModelAttribute Volume volume,String listContent){
 			if(StringUtils.isEmpty(volume.getId())){//创建文辑
-				String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-				String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+				Wfadmin admin=CookieUtil.getWfadmin(request);
+				String userId = admin.getWangfang_admin_id();
+				String publishPerson = admin.getUser_realname();
 				volume.setUserId(userId);
 				Map<String,Object>  map1 = volumeService.insert(publishPerson, volume, "2", listContent);//后台生成的都是优选文辑
 				return (Boolean) map1.get("flag");
@@ -1096,24 +1036,21 @@ public class ContentController{
 					iVolume.deleteVolumeList(ids);
 					//--------------------存到solr里-----------------
 					iVolume.sendSolrByVolumeId(volume.getId());//存到solr里
-					
 				}
 				return flag;
 			}
-//				
 		}
-		//----------------------------------------修改文辑-----------------------------------
+
 		/**
 		 * 修改文辑第一步
 		 * @return
 		 */
 		@RequestMapping("/updateOne")
-		public ModelAndView updateOne(HttpSession session,@ModelAttribute Volume volume,String id){
-			String userId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
-			String publishPerson = ((Wfadmin)session.getAttribute("wfAdmin")).getUser_realname();
+		public ModelAndView updateOne(HttpServletRequest request,@ModelAttribute Volume volume,String id){
+			Wfadmin admin=CookieUtil.getWfadmin(request);
+			String publishPerson = admin.getUser_realname();
 			Map<String,Object> map = volumeService.queryDetails(id);
 			if(volume.getVolumeName() == null){//第一次跳进修改
-				
 				volume = (Volume) map.get("volume");
 			}
 			ModelAndView mav = new ModelAndView();
@@ -1333,16 +1270,10 @@ public class ContentController{
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public boolean pushData(int state,String id) {
-		int num = resourceTypeService.updateResourceTypeState(state,id);
-		if(num > 0){
-			JSONArray list=	resourceTypeService.getAll1();
-			redis.del("sourcetype");
-			redis.set("sourcetype", list.toString(), 6);
-			return true;
-		}else{
-			return false;
-		}
+	public void pushData() {
+		JSONArray list = resourceTypeService.getAll1();
+		redis.del("sourcetype");
+		redis.set("sourcetype", list.toString(), 6);
 	}
 	
 	/**

@@ -1,12 +1,15 @@
 package com.interceptor;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;  
-import javax.servlet.http.HttpServletResponse;  
-import javax.servlet.http.HttpSession;  
-  
-import org.springframework.web.servlet.HandlerInterceptor;  
-import org.springframework.web.servlet.ModelAndView;  
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.utils.CookieUtil;
 
 /**
  * 拦截器
@@ -16,48 +19,48 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class UserInterceptor implements HandlerInterceptor {
 
-	private static final String LOGIN_URL = "/user/toLogin.do";
-	private static final String HOMEPAGE_URL = "/user/toIndex.do";
 	
 	//完成后
 	@Override
 	public void afterCompletion(HttpServletRequest arg0,
 			HttpServletResponse arg1, Object arg2, Exception arg3)
-			throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+			throws Exception {}
 
 	//后处理
 	@Override
 	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1,
-			Object arg2, ModelAndView arg3) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
+			Object arg2, ModelAndView arg3) throws Exception {}
 
 	//预处理
 	@Override
-	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {  
-		HttpSession session = req.getSession(true);
-        Object obj = session.getAttribute("wfAdmin");
-        //检查cookie
-		String castgc = null;
-		Cookie[] cookies = req.getCookies();
-		if(cookies!=null && cookies.length>0){
-			for(Cookie ck : cookies){
-				if(ck.getName().equals("CASTGC")){							
-					castgc = ck.getValue();
-					break;
-				}
-			}
+	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) throws Exception {
+		String url = req.getRequestURI();
+		//1、登录请求不验证、提醒不验证
+		if (url.endsWith(CookieUtil.LOGIN_URL) || url.endsWith(CookieUtil.REMIND)) {
+			return true;
 		}
-        
-        if(obj == null || "".equals(obj.toString()) || castgc == null){
-        	res.sendRedirect(req.getContextPath()+LOGIN_URL);
-        	return false;
-        }  
-        return true;
+		HttpSession session = req.getSession(true);
+		String id = CookieUtil.getCache((String) session.getId());
+		if (id == null) {
+			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+			return false;
+		}
+		//3、已经登录的每次请求都往session放入参数
+		String userName=(String) session.getAttribute("userName");
+		if (!url.endsWith(CookieUtil.INDEX) && userName == null) {
+			String json = CookieUtil.getCache(CookieUtil.LAYOUT + id);
+			if(json==null){
+				res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+				return false;
+			}
+			JSONObject obj = JSONObject.fromObject(json);
+			session.setAttribute("purviews", obj.get("purviews"));
+			session.setAttribute("userName", obj.get("userName"));
+			session.setAttribute("department", obj.get("department"));
+		}
+		String menu_url = url.split("/")[url.split("/").length - 1];
+		session.setAttribute("menu_first", menu_url);
+		return true;
 	}
 	
 } 

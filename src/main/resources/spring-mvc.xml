@@ -11,6 +11,9 @@
                         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
     <!-- 开启注解模式 -->
     <mvc:annotation-driven />
+    
+    <bean id="xxlConfPropertyPlaceholderConfigurer" class="com.xxl.conf.core.spring.XxlConfPropertyPlaceholderConfigurer" />
+    
 	<!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
 	<context:component-scan base-package="com.wf.controller" />
 
@@ -50,7 +53,6 @@
 			<!--  需排除拦截的地址 -->
 			<mvc:exclude-mapping path="/user/toLogin.do"/>
 			<mvc:exclude-mapping path="/user/userLogin.do"/>
-			<mvc:exclude-mapping path="/user/toIndex.do"/>
 			<mvc:exclude-mapping path="/js/**"/>
 			<mvc:exclude-mapping path="/inc/**"/>  
 			<mvc:exclude-mapping path="/page/**"/>

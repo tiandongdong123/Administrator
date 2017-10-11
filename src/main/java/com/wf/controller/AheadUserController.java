@@ -9,10 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -29,7 +27,9 @@ import org.springframework.web.servlet.ModelAndView;
 import wfks.accounting.setting.PayChannelModel;
 
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.utils.DateUtil;
+import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.webservice.ArrayOfWFUser;
@@ -62,8 +62,6 @@ import com.wf.service.PersonService;
 @Controller
 @RequestMapping("auser")
 public class AheadUserController {
-	
-	private static final String LOGIN_URL = "/user/toLogin.do";
 
 	@Autowired
 	private AheadUserService aheadUserService;
@@ -85,48 +83,24 @@ public class AheadUserController {
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
-		String [] str = ip.split("\n");
-		//校验<文本框内>是否存在IP重复
-/*		for(int i = 0; i < str.length; i++){		
-			for(int j = 0; j < str.length; j++){
-				if(i!=j && StringUtils.isNoneBlank(str[i]) && StringUtils.isNoneBlank(str[j])){					
-					String beginIp = str[i].substring(0, str[i].indexOf("-"));
-					String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-					//比较起始IP
-					boolean bool = IPConvertHelper.ipExistsInRange(beginIp, str[j]);
-					//比较结束IP
-					boolean bo = IPConvertHelper.ipExistsInRange(endIp, str[j]);
-					if(bool || bo){
-						set.add(str[i]+"</br>"+str[j]+"</br>");
-					}
+		String [] str = ip.split("\n");	
+		//校验<数据库>是否存在IP重复
+		for(int i = 0; i < str.length; i++){		
+			String beginIp = str[i].substring(0, str[i].indexOf("-"));
+			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
+			List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
+			if(bool.size()>0){
+				map.put("flag", "true");
+				map.put("userId", "用户ID："+userId);
+				sbf.append(str[i]+"</br>");
+				map.put("errorIP", sbf.toString());
+				for(UserIp userIp : bool){
+					sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
+					+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
 				}
+				map.put("tableIP", sb.toString());
 			}
 		}
-		if(set.size()>0){
-			map.put("flag", "true");
-			map.put("userId", "用户ID："+userId);
-			map.put("errorIP", set.toString().replace("[", "").replace("]", ""));
-			map.put("tableIP", "");
-			return map;
-		}else{*/		
-			//校验<数据库>是否存在IP重复
-			for(int i = 0; i < str.length; i++){		
-				String beginIp = str[i].substring(0, str[i].indexOf("-"));
-				String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-				List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
-				if(bool.size()>0){
-					map.put("flag", "true");
-					map.put("userId", "用户ID："+userId);
-					sbf.append(str[i]+"</br>");
-					map.put("errorIP", sbf.toString());
-					for(UserIp userIp : bool){
-						sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
-						+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
-					}
-					map.put("tableIP", sb.toString());
-				}
-			}
-		//}
 		if(map.size()<=0){
 			map.put("flag", "false");
 		}
@@ -239,7 +213,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addadmin")
 	@ResponseBody
-	public String addadmin(CommonEntity com,HttpSession session){
+	public String addadmin(CommonEntity com){
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
 			if(com.getManagerType().equals("new")){				
@@ -435,76 +409,13 @@ public class AheadUserController {
 	}
 	
 	/**
-	 *	删除购买项目 
-	 */
-	@RequestMapping("removeproject")
-	@ResponseBody
-	public Map<String,String> removeproject(String payChannelid,String type,String beginDateTime,String endDateTime,String institution,
-			HttpServletRequest req,HttpServletResponse res,HttpSession session,String userId,String projectname) throws Exception{
-		int i = 0;
-		Map<String,String> map = new HashMap<>();
-		String adminId = this.checkLogin(req,res);
-		CommonEntity com = new CommonEntity();
-		com.setUserId(userId);
-		com.setInstitution(institution);
-		ResourceDetailedDTO dto = new ResourceDetailedDTO();
-		dto.setProjectid(payChannelid);
-		dto.setValidityStarttime(beginDateTime);
-		dto.setValidityEndtime(endDateTime);
-		dto.setProjectname(projectname);
-		/*if(type.equals("balance")){			
-			com.setResetMoney("true");
-			dto.setTotalMoney(0.00);
-			i = aheadUserService.chargeProjectBalance(com, dto,adminId);
-		}else if(type.equals("count")){
-			com.setResetCount("true");
-			dto.setPurchaseNumber(0);
-			i = aheadUserService.chargeCountLimitUser(com, dto,adminId);
-		}else if(type.equals("time")){
-			i = 1;
-		}*/
-		i = aheadUserService.deleteAccount(com, dto, adminId);
-		if(i > 0){
-			aheadUserService.deleteResources(com,dto,false);
-			map.put("flag", "true");
-		}else{
-			map.put("flag", "false");
-		}
-		//记录日志
-		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
-		rdlist.add(dto);
-		com.setRdlist(rdlist);
-		this.saveOperationLogs(com, "3", session);
-		return map;
-	}
-	
-	
-	private String checkLogin(HttpServletRequest req,HttpServletResponse res) throws Exception{
-        //检查cookie
-		String castgc = null;
-		Cookie[] cookies = req.getCookies();
-		if(cookies!=null && cookies.length>0){
-			for(Cookie ck : cookies){
-				if(ck.getName().equals("CASTGC")){							
-					castgc = ck.getValue();
-					break;
-				}
-			}
-		}
-		if(StringUtils.isBlank(castgc)){
-			res.sendRedirect(req.getContextPath()+LOGIN_URL);
-		}
-		return castgc;
-	}
-	
-	/**
 	 *	机构用户注册
 	 * @throws ParseException
 	 */
 	@RequestMapping("registerInfo")
 	@ResponseBody
 	public Map<String,String> registerInfo(MultipartFile file,CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
 		for(ResourceDetailedDTO dto : list){
@@ -567,6 +478,10 @@ public class AheadUserController {
 			//同步已发表论文检测权限
 			msg=this.getAhthorityWebService(com.getUserId());
 			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
+			//更新前台用户信息
+			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+				HttpClientUtil.updateUserData(com.getUserId(), false);
+			}
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
@@ -583,7 +498,7 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
-		String path = request.getRealPath("/") + "page/usermanager/" + "excel";
+		String path = request.getServletContext().getRealPath("/") + "page/usermanager/" + "excel";
 		view.addObject("path",path);
 		view.setViewName("/page/usermanager/ins_batchregister");
 		return view;
@@ -594,9 +509,9 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,HttpSession session,ModelAndView view,
+	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
 		if(StringUtils.isNotBlank(com.getAdminOldName())){			
@@ -604,6 +519,13 @@ public class AheadUserController {
 		}
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		for (int i = 0; i < listmap.size(); i++) {
+			Map<String, Object> map = listmap.get(i);
+			if ("".equals(map.get("userId")) && "".equals(map.get("institution"))) {
+				listmap.remove(i);
+				i--;
+			}
+		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
 			if(!map.get("userId").equals("") && !map.get("institution").equals("")){
@@ -731,11 +653,18 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,HttpSession session,ModelAndView view,
+	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		for (int i = 0; i < listmap.size(); i++) {
+			Map<String, Object> map = listmap.get(i);
+			if ("".equals(map.get("userId")) && "".equals(map.get("institution"))) {
+				listmap.remove(i);
+				i--;
+			}
+		}
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
 		if(StringUtils.isNotBlank(com.getAdminOldName())){			
@@ -743,7 +672,7 @@ public class AheadUserController {
 		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
-			if(!map.get("userId").equals("")){
+			if(!map.get("userId").equals("") && !map.get("institution").equals("")){
 				//用户是否存在
 				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
 				if(ps==null){
@@ -832,33 +761,32 @@ public class AheadUserController {
 			List<ResourceDetailedDTO> list = com.getRdlist();
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
-			for(ResourceDetailedDTO dto : list){
-				for(Map<String, Object> pro : lm) {						
-					if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-						dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
-						if(dto.getProjectType().equals("balance")){
-							if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
-							}
-						}else if(dto.getProjectType().equals("time")){
-							//增加限时信息
-							if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
-							}
-						}else if(dto.getProjectType().equals("count")){
-							dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
-							//增加次数信息
-							if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
-								aheadUserService.deleteResources(com,dto,false);
-								aheadUserService.updateProjectResources(com, dto);
+				for(ResourceDetailedDTO dto : list){
+					for(Map<String, Object> pro : lm) {
+						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
+							dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+							if(dto.getProjectType().equals("balance")){
+								if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
+							}else if(dto.getProjectType().equals("time")){
+								//增加限时信息
+								if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
+							}else if(dto.getProjectType().equals("count")){
+								dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+								//增加次数信息
+								if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
+									aheadUserService.deleteResources(com,dto,false);
+									aheadUserService.updateProjectResources(com, dto);
+								}
 							}
 						}
-						this.saveOperationLogs(com,"2", session);
 					}
 				}
-			}
 			}
 			if(resinfo>0){
 				String msg = WebServiceUtil.submitOriginalDelivery(com, false);
@@ -868,6 +796,7 @@ public class AheadUserController {
 				System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
 				in+=1;
 			}
+			this.saveOperationLogs(com,"2", req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
@@ -876,12 +805,11 @@ public class AheadUserController {
 	
 	
 	@RequestMapping("/worddownload")
-	public void wordouyang(Model model,HttpServletResponse response,HttpServletRequest request) {
+	public void worddownload(Model model,HttpServletResponse response,HttpServletRequest request) {
         // 下载本地文件
 		String fileName = request.getParameter("title"); // 文件的默认保存名
 		InputStream inStream = null;
 		try{
-			
 			fileName = URLDecoder.decode(fileName, "UTF-8");
 			String TextName="";
 			if(fileName.equals("机构账号批量模板（更新）")){
@@ -894,8 +822,7 @@ public class AheadUserController {
 				TextName="ZC.xlsx";
 				fileName=fileName+".xlsx";
 			}
-			fileName=fileName;
-			inStream = new FileInputStream(request.getRealPath("/") + "page/usermanager/excel/"+TextName);
+			inStream = new FileInputStream(request.getServletContext().getRealPath("/") + "page/usermanager/excel/"+TextName);
 			// 设置输出的格式
 			response.reset();
 			response.setContentType("bin");
@@ -1093,36 +1020,90 @@ public class AheadUserController {
 		return view;
 	}
 	
+	/**
+	 *	删除购买项目 
+	 */
+	private void removeproject(HttpServletRequest req,List<String> list) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		CommonEntity com = new CommonEntity();
+		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
+		for (String json : list) {
+			JSONObject obj = JSONObject.fromObject(json);
+			String userId = obj.getString("userId");
+			String institution = obj.getString("institution");
+			String payChannelid = obj.getString("payChannelid");
+			String beginDateTime = obj.getString("beginDateTime");
+			String endDateTime = obj.getString("endDateTime");
+			String projectname = obj.getString("projectname");
+			String type = obj.getString("type");
+			Double balance = 0.0D;
+			if(!StringUtils.isEmpty(obj.getString("balance"))){
+				balance=Double.parseDouble(obj.getString("balance"));
+			}
+			com.setUserId(userId);
+			com.setInstitution(institution);
+			ResourceDetailedDTO dto = new ResourceDetailedDTO();
+			dto.setProjectid(payChannelid);
+			dto.setValidityStarttime(beginDateTime);
+			dto.setValidityEndtime(endDateTime);
+			dto.setProjectname(projectname);
+			dto.setProjectType(type);
+			if ("balance".equals(type)) {
+				dto.setTotalMoney(balance);
+			} else if ("count".equals(type)) {
+				dto.setPurchaseNumber(balance.intValue());
+			}
+			int i = aheadUserService.deleteAccount(com, dto, adminId);
+			if (i > 0) {
+				aheadUserService.deleteResources(com, dto, false);
+			}
+			rdlist.add(dto);
+		}
+		com.setRdlist(rdlist);
+		this.saveOperationLogs(com, "3", req);
+	}
 	
 	/**
 	 *	账号修改
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpSession session,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		String adminId = this.checkLogin(req,res);
+	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpServletRequest req,HttpServletResponse res) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
-		List<ResourceDetailedDTO> list = com.getRdlist();
-		for(ResourceDetailedDTO dto : list){
-			if(dto.getProjectid()!=null){
-				if(StringUtils.isBlank(dto.getValidityEndtime())){
+		List<ResourceDetailedDTO> tempList = com.getRdlist();
+		List<String> delList=new ArrayList<String>();
+		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
+		for (ResourceDetailedDTO dto : tempList) {
+			if (dto.getProjectid() != null) {
+				if (StringUtils.isEmpty(dto.getProjectname())) {
+					delList.add(dto.getProjectid());
+					continue;
+				}
+				if (StringUtils.isBlank(dto.getValidityEndtime())) {
 					hashmap.put("flag", "fail");
 					return hashmap;
-				}else{
-					if(dto.getProjectType().equals("balance")){
-						if(dto.getTotalMoney()==null){
+				} else {
+					if (dto.getProjectType().equals("balance")) {
+						if (dto.getTotalMoney() == null) {
 							hashmap.put("flag", "fail");
 							return hashmap;
 						}
-					}else if(dto.getProjectType().equals("count")){
-						if(dto.getPurchaseNumber()==null){
+					} else if (dto.getProjectType().equals("count")) {
+						if (dto.getPurchaseNumber() == null) {
 							hashmap.put("flag", "fail");
 							return hashmap;
 						}
 					}
 				}
+				list.add(dto);
 			}
 		}
+		//删除项目
+		if(delList.size()>0){
+			this.removeproject(req,delList);
+		}
+		com.setRdlist(list);
 		//更新条件Map
 		Map<String, Object> map = new HashMap<String, Object>();
 		int resinfo = 0;	
@@ -1145,7 +1126,7 @@ public class AheadUserController {
 			map.put("pid", "");
 			aheadUserService.updatePid(map);
 		}
-		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){			
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){		
 			aheadUserService.updateUserIp(com);
 		}else{
 			aheadUserService.deleteUserIp(com.getUserId());
@@ -1155,6 +1136,7 @@ public class AheadUserController {
 		}
 		//上传附件
 		this.uploadFile(file,list);
+		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
@@ -1183,11 +1165,15 @@ public class AheadUserController {
 			//同步已发表论文检测权限
 			msg=this.getAhthorityWebService(com.getUserId());
 			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
+			//更新前台用户信息
+			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+				HttpClientUtil.updateUserData(com.getUserId(), false);
+			}
 			hashmap.put("flag", "success");
 		}else{
 			hashmap.put("flag", "fail");
 		}
-		this.saveOperationLogs(com,"2", session);
+		this.saveOperationLogs(com,"2", req);
 		return hashmap;
 	}
 	
@@ -1262,7 +1248,8 @@ public class AheadUserController {
 	 *	操作记录
 	 */
 	@RequestMapping("opration")
-	public ModelAndView opration(String pageNum,String pageSize,String startTime,String endTime,String userId,String person,HttpSession session){
+	public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
+			String userId, String person, String projectId) {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1278,6 +1265,9 @@ public class AheadUserController {
 		}
 		if(!StringUtils.isEmpty(userId)){
 			map.put("userId", userId);	
+		}
+		if(!StringUtils.isEmpty(projectId)){
+			map.put("projectId", projectId);
 		}
 		PageList pageList = opreationLogs.selectOperationLogs(map);
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
@@ -1295,7 +1285,7 @@ public class AheadUserController {
 					mm.put("totalMoney", json.get("totalMoney"));
 				}else if(type.equals("count")){
 					mm.put("projectType", "次数");
-					mm.put("purchaseNumber", json.get("totalMoney"));
+					mm.put("purchaseNumber", json.get("purchaseNumber"));
 				}else if(type.equals("time")){
 					mm.put("projectType", "限时");
 				}
@@ -1304,6 +1294,8 @@ public class AheadUserController {
 				mm.put("projectname", json.get("projectname"));
 			}
 		}
+		List<Map<String,String>> project=opreationLogs.getProjectByUserId(userId);
+		view.addObject("project", project);//获取用户购买项目
 		view.setViewName("/page/usermanager/ins_oprationrecord");
 		return view;
 	}
@@ -1517,7 +1509,7 @@ public class AheadUserController {
 	@RequestMapping("doUpdatePerson")
     public Map<String,Object> personCharge(String userId, String turnover, String reason, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Map<String,Object> m = new HashMap<String,Object>();
-		String adminId = this.checkLogin(req,res);
+		String adminId = CookieUtil.getCookie(req);
 		int i = aheadUserService.personCharge(userId, turnover, reason, adminId, res);
 		if(i>0){
 			m.put("flag", "success");
@@ -1564,30 +1556,40 @@ public class AheadUserController {
 	 * 添加操作日志信息
 	 * @return
 	 */
-	private void saveOperationLogs(CommonEntity com,String flag,HttpSession session){
+	private void saveOperationLogs(CommonEntity com,String flag,HttpServletRequest req){
 		if(com!=null){
-			String adminId = ((Wfadmin)session.getAttribute("wfAdmin")).getWangfang_admin_id();
+			Wfadmin admin =CookieUtil.getWfadmin(req);
 			List<ResourceDetailedDTO> list = com.getRdlist();
 			if(list!=null &&list.size()>0){
 				for(ResourceDetailedDTO dto:list){
-					if(dto.getProjectid()!=null){						
-						OperationLogs op=new OperationLogs();
-						op.setUserId(com.getUserId());
-						op.setPerson(adminId);
-						op.setOpreation(flag=="2"?"更新":"删除");
-						if(com.getRdlist()!=null){
-							op.setReason(JSONObject.fromObject(dto).toString());
+					if(dto.getProjectid()!=null){
+						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("count")
+								&& dto.getPurchaseNumber() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("time")) {
+							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
+								continue;
+							}
 						}
+						OperationLogs op = new OperationLogs();
+						op.setUserId(com.getUserId());
+						op.setPerson(admin.getWangfang_admin_id());
+						op.setOpreation(flag == "2" ? "更新" : "删除");
+						if (com.getRdlist() != null) {
+							JSONObject json=JSONObject.fromObject(dto);
+							json.remove("rldto");
+							op.setReason(json.toString());
+						}
+						op.setProjectId(dto.getProjectid());
+						op.setProjectName(dto.getProjectname());
 						opreationLogs.addOperationLogs(op);
 					}
 				}
 			}
 		}
-	}
-	
-	public static void main(String[] args){
-		String str = "[\"a\",\"b\",\"c\"]";
-		System.out.println(JSONArray.fromObject(str));
 	}
 	
 	/**
