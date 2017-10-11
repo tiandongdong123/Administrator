@@ -126,7 +126,7 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
 		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download.do?url=${request.contextPath}'+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
+		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
