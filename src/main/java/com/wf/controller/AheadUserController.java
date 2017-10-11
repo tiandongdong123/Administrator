@@ -16,6 +16,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,10 +33,6 @@ import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
-import com.webservice.ArrayOfWFUser;
-import com.webservice.UserDisposeEnum;
-import com.webservice.WFUser;
-import com.webservice.WebServiceUtil;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
@@ -73,6 +70,7 @@ public class AheadUserController {
 	private OpreationLogsService opreationLogs;
 	
 	private RedisUtil redis = new RedisUtil();
+	private static Logger log = Logger.getLogger(AheadUserController.class);
 	
 	/**
 	 *	判断ip段是否重复
@@ -107,7 +105,6 @@ public class AheadUserController {
 		return map;
 	}
 	
-	
 	/**
 	 *	查询机构管理员信息
 	 */
@@ -125,7 +122,6 @@ public class AheadUserController {
 	@ResponseBody
 	public List<String> getAdminName(String value){
 		return null;
-		//return aheadUserService.queryAdminName(value);
 	}
 	
 	/**
@@ -134,10 +130,8 @@ public class AheadUserController {
 	@RequestMapping("getkeywords")
 	@ResponseBody
 	public List<String> getkeywords(String value){
-		//return null;
 		return aheadUserService.queryInstitution(value);
 	}
-	
 	
 	/**
 	 *	验证机构用户名是否存在
@@ -415,6 +409,7 @@ public class AheadUserController {
 	@RequestMapping("registerInfo")
 	@ResponseBody
 	public Map<String,String> registerInfo(MultipartFile file,CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
+		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
@@ -472,15 +467,16 @@ public class AheadUserController {
 				}
 			}
 		}
-		if(resinfo>0){
-			String msg = WebServiceUtil.submitOriginalDelivery(com, true);
-			System.out.println("注册接口执行结果："+com.getUserId()+"_"+msg);
-			//同步已发表论文检测权限
-			msg=this.getAhthorityWebService(com.getUserId());
-			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
+		if (resinfo > 0) {
+			//更新前台用户信息
+			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+				HttpClientUtil.updateUserData(com.getUserId(), false);
+			}
 			hashmap.put("flag", "success");
-		}else{
+			log.info("机构用户["+com.getUserId()+"]注册成功，耗时:"+(System.currentTimeMillis()-time)+"ms");
+		} else {
 			hashmap.put("flag", "fail");
+			log.info("机构用户["+com.getUserId()+"]注册失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		return hashmap;
 	}
@@ -507,6 +503,7 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
+		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
@@ -576,7 +573,7 @@ public class AheadUserController {
 			//Excel表格中部分账号信息
 			com.setInstitution(map.get("institution").toString());
 			com.setUserId(map.get("userId").toString());
-			com.setPassword(map.get("password").toString());
+			com.setPassword(String.valueOf(map.get("password")).replaceAll(".0", "").replaceAll(" ", ""));
 			int resinfo = aheadUserService.addRegisterInfo(com);
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
@@ -606,17 +603,13 @@ public class AheadUserController {
 					}
 				}
 			}
-			if(resinfo>0){
-				String msg = WebServiceUtil.submitOriginalDelivery(com, true);
-				System.out.println("批量注册接口执行结果："+com.getUserId()+"_"+msg);
-				//同步已发表论文检测权限
-				msg=this.getAhthorityWebService(com.getUserId());
-				System.out.println("批量更新权限接口执行结果："+com.getUserId()+"_"+msg);
-				//更新前台用户信息
-				if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+			if (resinfo > 0) {
+				// 更新前台用户信息
+				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
 					HttpClientUtil.updateUserData(com.getUserId(), false);
 				}
-				in+=1;
+				in += 1;
+				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
 		}
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
@@ -632,6 +625,7 @@ public class AheadUserController {
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功导入："+in+"条");
+		log.info("批量注册成功："+in+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		return hashmap;
 	}
 	
@@ -655,6 +649,7 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
+		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
@@ -734,7 +729,7 @@ public class AheadUserController {
 				com.setInstitution(ps.getInstitution());
 			}
 			if(map.get("password")!=null && map.get("password")!=""){				
-				com.setPassword(map.get("password").toString());
+				com.setPassword(String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", ""));
 			}else{
 				com.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 			}
@@ -789,17 +784,18 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				String msg = WebServiceUtil.submitOriginalDelivery(com, false);
-				System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
-				//同步已发表论文检测权限
-				msg=this.getAhthorityWebService(com.getUserId());
-				System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
+				// 更新前台用户信息
+				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+					HttpClientUtil.updateUserData(com.getUserId(), false);
+				}
 				in+=1;
+				log.info("机构用户["+com.getUserId()+"]修改成功");
 			}
 			this.saveOperationLogs(com,"2", req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
+		log.info("批量修改成功："+in+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		return hashmap;
 	}
 	
@@ -1069,6 +1065,7 @@ public class AheadUserController {
 	@RequestMapping("updateinfo")
 	@ResponseBody
 	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpServletRequest req,HttpServletResponse res) throws Exception{
+		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> tempList = com.getRdlist();
@@ -1159,19 +1156,16 @@ public class AheadUserController {
 				}
 			}
 		}
-		if(resinfo>0){
-			String msg = WebServiceUtil.submitOriginalDelivery(com, false);
-			System.out.println("更新接口执行结果："+com.getUserId()+"_"+msg);
-			//同步已发表论文检测权限
-			msg=this.getAhthorityWebService(com.getUserId());
-			System.out.println("更新权限接口执行结果："+com.getUserId()+"_"+msg);
-			//更新前台用户信息
-			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+		if (resinfo > 0) {
+			// 更新前台用户信息
+			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
 				HttpClientUtil.updateUserData(com.getUserId(), false);
 			}
 			hashmap.put("flag", "success");
-		}else{
+			log.info("机构用户["+com.getUserId()+"]更新成功，耗时:"+(System.currentTimeMillis()-time)+"ms");
+		} else {
 			hashmap.put("flag", "fail");
+			log.info("机构用户["+com.getUserId()+"]更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		this.saveOperationLogs(com,"2", req);
 		return hashmap;
@@ -1360,58 +1354,16 @@ public class AheadUserController {
 			}
 		}
 		int result = aheadUserService.setAddauthority(authority,person);
-		if(result>0){
+		if (result > 0) {
 			map.put("flag", "success");
-			String msg = this.getAhthorityWebService(authority.getUserId());
-			System.out.println("更新接口执行结果："+authority.getUserId()+"_"+msg);
-		}else{
+		} else {
 			map.put("flag", "fail");
-			if(result==-1){//已存在其它类型的用户
+			if (result == -1) {// 已存在其它类型的用户
 				map.put("msg", "该用户ID已被使用");
 			}
 		}
 		return map;
 	}
-	
-	/**
-	 * 权限webservice接口调用
-	 * @param userId
-	 * @return
-	 * @throws Exception
-	 */
-	private String getAhthorityWebService(String userId) throws Exception{
-		WfksUserSetting[] setting =  aheadUserService.getUserSettingByUserId(userId);
-		WfksAccountidMapping[] wfks = aheadUserService.getAddauthorityByUserId(userId);
-		List<String> userIds=new ArrayList<String>();
-		if(wfks!=null){
-			for(WfksAccountidMapping mapping:wfks){
-				String id=mapping.getRelatedidKey();
-				if(!StringUtils.isEmpty(id)){
-					userIds.add(id);
-				}
-			}
-		}
-		
-		ArrayOfWFUser wfuser=new ArrayOfWFUser();
-		if(userIds.size()>0){
-			List<Person> plist=aheadUserService.queryPersonInId(userIds);
-			if(plist!=null){
-				for(Person p:plist){
-					WFUser user=new WFUser();
-					if(p.getUserId().equals(userId)){
-						continue;
-					}
-					user.setUserID(p.getUserId());
-					user.setPassword(PasswordHelper.decryptPassword(p.getPassword()));
-					user.setLoginType(UserDisposeEnum.fromValue("Pwd"));
-					user.setComment(p.getExtend());
-					wfuser.getWFUser().add(user);
-				}
-			}
-		}
-		return WebServiceUtil.submitService(wfks, setting,wfuser,userId);
-	}
-	
 	
 	@RequestMapping("perManagers")
 	public ModelAndView perManagers() {
@@ -1424,7 +1376,6 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/per_manager");
 		return view;
 	}
-	
 	
 	/**
 	 *	个人用户管理管理 
