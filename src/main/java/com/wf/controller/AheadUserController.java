@@ -40,7 +40,6 @@ import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
-import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.Wfadmin;
@@ -408,7 +407,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("registerInfo")
 	@ResponseBody
-	public Map<String,String> registerInfo(MultipartFile file,CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
+	public Map<String,String> registerInfo(CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -433,8 +432,6 @@ public class AheadUserController {
 				}
 			}
 		}
-		//上传附件
-		this.uploadFile(file, list);
 		
 		int resinfo = aheadUserService.addRegisterInfo(com);
 		if(!com.getLoginMode().equals("1")){
@@ -1131,8 +1128,6 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getChecks())){			
 			aheadUserService.updateAccountRestriction(com);		
 		}
-		//上传附件
-		this.uploadFile(file,list);
 		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){
@@ -1171,39 +1166,6 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
-	//上传附件模块
-	private void uploadFile(MultipartFile file,List<ResourceDetailedDTO> list){
-		if (file == null || file.getSize()==0) {
-			return;
-		}
-		List<String> lsList = aheadUserService.getExceluser(file);
-		if(lsList.size()==0){
-			return;
-		}
-		StringBuffer idBuff = new StringBuffer("");
-		for (int i = 0; i < lsList.size(); i++) {
-			if (i == 0) {
-				idBuff.append(lsList.get(i));
-			} else {
-				idBuff.append(";").append(lsList.get(i));
-			}
-		}
-		for (ResourceDetailedDTO dto : list) {
-			if (dto.getProjectid() != null) {
-				List<ResourceLimitsDTO> limitList = dto.getRldto();
-				for (ResourceLimitsDTO limit : limitList) {
-					if (limit.getGazetteersLevel() != null) {
-						String gazetteersId = limit.getGazetteersId();
-						if (gazetteersId != null && !"".equals(gazetteersId)) {
-							idBuff.append(";").append(gazetteersId);
-						}
-						limit.setGazetteersId(idBuff.toString());
-					}
-				}
-			}
-		}
-	
-	}
 	/**
 	 *	机构用户订单跳转
 	 */
