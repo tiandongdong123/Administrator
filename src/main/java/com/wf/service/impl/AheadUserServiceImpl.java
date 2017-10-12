@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -806,8 +808,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 		}
 		
-		String gId = dto.getGazetteersId();
-		String itemId = dto.getItemId();
+		String gId = formatId(dto.getGazetteersId());
+		String itemId = formatId(dto.getItemId());
 		String gArea = dto.getGazetteersArea();
 		String gAlbum = dto.getGazetteersAlbum();
 		String gLevel = dto.getGazetteersLevel();
@@ -832,7 +834,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gType)) {
 					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
 				}
-				if (StringUtils.isNotBlank(gLevel)) {
+				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gType))) {
 					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
 				}
 			}
@@ -845,6 +847,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return null;
 	}
 
+	private static String formatId(String ids){
+		if (ids == null || "".equals(ids)) {
+			return null;
+		}
+		// 正则去除特殊字符
+		Pattern p = Pattern.compile("[^0-9a-zA-Z]");
+		Matcher m = p.matcher(ids);
+		ids = m.replaceAll(" ").trim();
+		ids = ids.replaceAll(" +"," ").replaceAll(" ", ";");
+		return ids;
+	}
 	
     private static void addStringToTerms(String Field,String Verb,String value,JSONArray Terms,String ValueType){
     	JSONObject clcm = new JSONObject();
