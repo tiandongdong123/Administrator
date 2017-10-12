@@ -19,8 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exportExcel.ExportExcel;
 import com.utils.CookieUtil;
 import com.utils.FileUploadUtil;
@@ -152,6 +154,23 @@ public class CardController {
 		String adjunct = FileUploadUtil.upload(request, "/imgs/te/");
 		Boolean flag = cardBatchService.insertCardBatch(type, valueNumber, validStart, validEnd, applyDepartment, applyPerson, applyDate,adjunct);
 		return flag;
+	}
+	
+	/**
+	 * 修改附件(未审核)
+	 * @param batchId
+	 * @param adjunct
+	 * @return
+	 */
+	@RequestMapping("updateAttachment")
+	@ResponseBody
+	public JSONObject updateAttachment(MultipartFile file, HttpServletRequest request,String batchId) {
+		String adjunct = FileUploadUtil.upload(request, "/imgs/te/");
+		boolean msg = cardBatchService.updateAttachment(batchId, adjunct);
+		JSONObject obj = new JSONObject();
+		obj.put("adjunct", adjunct);
+		obj.put("msg", msg);
+		return obj;
 	}
 	
 	/**

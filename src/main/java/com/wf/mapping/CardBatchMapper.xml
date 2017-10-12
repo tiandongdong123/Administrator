@@ -140,4 +140,8 @@
   	set batch_state=#{batchState},pull_department=#{pullDepartment},pull_person=#{pullPerson},pull_date=#{pullDate}
   	where batch_id=#{batchId}
   </update>
+  <!-- 修改附件(未审核) -->
+  <update id="updateAttachment" parameterType="java.lang.String">
+  	update wfks_accounting.rech_card_batch set adjunct=#{adjunct} where batch_id=#{batchId}
+  </update>
 </mapper>

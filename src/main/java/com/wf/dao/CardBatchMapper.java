@@ -3,6 +3,8 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.wf.bean.CardBatch;
 
 
@@ -47,4 +49,12 @@ public interface CardBatchMapper {
 	 * 修改批次状态
 	 */
 	int updateBatchState(Map<String,Object> map);
+	
+	/**
+	 * 修改附件(未审核)
+	 * @param batchId
+	 * @param adjunct
+	 * @return
+	 */
+	int updateAttachment(@Param("batchId") String batchId, @Param("adjunct") String adjunct);
 }

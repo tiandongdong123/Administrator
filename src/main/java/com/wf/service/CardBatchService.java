@@ -43,4 +43,12 @@ public interface CardBatchService {
 	 * 修改批次状态
 	 */
 	boolean updateBatchState(String batchId,String batchState,String pullDepartment,String pullPerson);
+	
+	/**
+	 * 修改附件(未审核)
+	 * @param batchId
+	 * @param adjunct
+	 * @return
+	 */
+	boolean updateAttachment(String batchId, String adjunct);
 }

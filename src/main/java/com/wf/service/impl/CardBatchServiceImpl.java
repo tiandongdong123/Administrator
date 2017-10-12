@@ -251,4 +251,13 @@ public class CardBatchServiceImpl implements CardBatchService{
 		List<Map<String, Object>> list = cbm.queryAll();
 		return list;
 	}
+
+	/**
+	 * 修改附件(未审核)
+	 */
+	@Override
+	public boolean updateAttachment(String batchId, String adjunct) {
+		int i = cbm.updateAttachment(batchId, adjunct);
+		return i > 0 ? true : false;
+	}
 }
