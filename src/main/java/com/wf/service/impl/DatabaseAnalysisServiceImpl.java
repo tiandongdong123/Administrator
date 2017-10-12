@@ -34,7 +34,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		
 		PageList pl=new PageList();
 		
-		
+
 		if(!"".equals(databaseUseDaily.getDate())&&databaseUseDaily.getDate()!=null){
 			pl=databaseUseHourly(databaseUseDaily,startTime,endTime,pageNum,pageSize);
 		}else{

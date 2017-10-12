@@ -28,20 +28,21 @@
               <div class="box-body">
                 <div class="form-group">
  					数据库名称：<input type="text"  id="dataname" placeholder="">&nbsp;&nbsp;&nbsp;
-                  <button type="button" class="btn btn-primary" onclick="datapage(1)">查询</button>
+                  <button type="button" class="btn btn-primary" onclick="findone()">查询</button>
                 </div>
             </form>
             <div >
             	 <button type="button" class="btn btn-primary" onclick="adddata()">添加数据库</button>
+                 <button type="button" onclick="moveDown()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-down"></i></button>
+                 <button type="button" onclick="moveUp()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-up"></i></button>
             	 <div style="margin-left: 800px;">
-	            	 <button type="button" class="btn btn-primary" onclick="exportData();">导出</button>
-	            	 <button type="button" class="btn btn-primary" onclick="datapage(1)">刷新</button>
-	            	 <button type="button" class="btn btn-primary" onclick="PushData();">发布</button>
+	            	 <button style="float: right;margin-right: 5px;"  type="button" class="btn btn-primary" onclick="exportData();">导出</button>
             	 </div>
             </div>
             <table   style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
+                  <td style="width: 40px;"><input onclick="checkAll()" class='allId' type='checkbox'></td>
                   <th style="width: 40px;">序号</th>
                   <td style="width: 60px;">数据库名称</td>
                   <td style="width: 100px;">数据库描述</td>
