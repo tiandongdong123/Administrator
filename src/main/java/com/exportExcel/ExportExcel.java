@@ -1,6 +1,5 @@
 package com.exportExcel;
 
-
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -13,21 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.alibaba.dubbo.common.json.JSON;
-
-	public class ExportExcel {
+public class ExportExcel {
 		/**
 		 * 这是一个通用的方法，利用了JAVA的反射机制，可以将放置在JAVA集合中并且符号一定条件的数据以EXCEL 的形式输出到指定IO设备上
 		 * 
@@ -45,166 +39,164 @@ import com.alibaba.dubbo.common.json.JSON;
 		 */
 
 		/**
-		 * 充值卡批次已审核未领取导出
+		 * 万方卡批次已审核未领取导出
 		 * @param title  文本名称
 		 * @param type	类型
 		 * @param data	保存数据  list<map>
 		 * @param realspath 真实路径
 		 * @return
 		 */
-			@SuppressWarnings("unchecked")
-			public String exportExccel1(HttpServletResponse response,JSONArray data,List<String> namelist) {
-				
-				SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-				String date=sdf.format(new Date());
-				String newpate = date+".xlsx";
-				try {
-					// 工作区
-					XSSFWorkbook wb = new XSSFWorkbook();
-					XSSFSheet sheet = wb.createSheet("审核未领取");
-					XSSFRow row = sheet.createRow(0);
-					for(int i=0;i<namelist.size();i++)
-					{
-						row.createCell(i).setCellValue(namelist.get(i));
-					}
-					for (int i =0; i<data.size(); i++) {
-						// 创建第一个sheet
-						// 生成第一行
-						row = sheet.createRow(i+1);
-						// 给这一行的第一列赋值
-						row.createCell(0).setCellValue(String.valueOf(data.getJSONObject(i).get("cardTypeName")));
-						row.createCell(1).setCellValue(String.valueOf(data.getJSONObject(i).get("cardNum")));
-						row.createCell(2).setCellValue(String.valueOf(data.getJSONObject(i).get("password")));
-						row.createCell(3).setCellValue(String.valueOf(data.getJSONObject(i).get("value")));
-						row.createCell(4).setCellValue(String.valueOf(data.getJSONObject(i).get("validStart")) + "--" + String.valueOf(data.getJSONObject(i).get("validEnd")));
-					}
-					//设置Content-Disposition  
-			        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 
-			        OutputStream out = response.getOutputStream();
-					// 写文件
-					wb.write(out);  
-					// 关闭输出流
-					out.close();
-				
-					return date;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return date;
-			}
-			
-		
-		/**
-		 * 充值卡批次已领取导出
-		 * @param title 文本名称
-		 * @param data 保存数据  list<map>
-		 * @param realspath 真实路径 
-		 * @return
-		 */
-		@SuppressWarnings("unchecked")
-		public String exportExcel2(HttpServletResponse response,JSONArray batchJson,List<String> batchNamelist,
-				JSONArray cardJson,List<String> cardNamelist)  {	
-			
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-			String date=sdf.format(new Date());
-			String newpate=date+".xlsx";
-			try {
-				// 工作区
-				XSSFWorkbook wb = new XSSFWorkbook();
-				// 创建第一个sheet
-				XSSFSheet sheet1 = wb.createSheet("批次详情");
-				
-				XSSFRow row1 = sheet1.createRow(0);
-				for(int i=0;i<batchNamelist.size();i++){
-					row1.createCell(i).setCellValue(batchNamelist.get(i));
-				}
-				for (int i = 0; i<batchJson.size(); i++) {
-					// 生成第一行
-					row1 = sheet1.createRow(i+1);
-					//处理面值数量
-					String valueAndNumber = "";
-					List<Map<String,Object>> valueNumber = JSONArray.fromObject(batchJson.getJSONObject(i).get("valueNumber"));
-					for(int j = 0;j < valueNumber.size();j++){
-						Map<String,Object> map = valueNumber.get(j);
-						valueAndNumber += map.get("value") + "/" + map.get("number") + ",";
-					}
-					//处理批次状态
-					String batchState = String.valueOf(batchJson.getJSONObject(i).get("batchState"));
-					if("1".equals(batchState)){
-						batchState = "未审核";
-					}else if("2".equals(batchState)){
-						batchState = "已审核未领取";
-					}else if("3".equals(batchState)){
-						batchState = "已领取";
-					}
-					// 生成第一行
-					row1 = sheet1.createRow(i+1);
-					// 给这一行的第一列赋值
-					row1.createCell(0).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("batchName")));
-					row1.createCell(1).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("cardTypeName")));
-					row1.createCell(2).setCellValue(valueAndNumber.substring(0, valueAndNumber.length()-1));
-					row1.createCell(3).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("amount")));
-					row1.createCell(4).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("validStart")) + "--" + String.valueOf(batchJson.getJSONObject(i).get("validEnd")));
-					row1.createCell(5).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("createDate")));
-					row1.createCell(6).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("applyDepartment")));
-					row1.createCell(7).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("applyPerson")));
-					row1.createCell(8).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("applyDate")));
-					row1.createCell(9).setCellValue(batchState);
-					row1.createCell(10).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("checkDepartment")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("checkDepartment")));
-					row1.createCell(11).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("checkPerson")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("checkPerson")));
-					row1.createCell(12).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("checkDate")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("checkDate")));
-					row1.createCell(13).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("pullDepartment")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("pullDepartment")));
-					row1.createCell(14).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("pullPerson")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("pullPerson")));
-					row1.createCell(15).setCellValue(String.valueOf(batchJson.getJSONObject(i).get("pullDate")).equals("null")?"":String.valueOf(batchJson.getJSONObject(i).get("pullDate")));
-					
-				}
-				// 创建第二个sheet
-				XSSFSheet sheet2 = wb.createSheet("卡详情");
-				XSSFRow row2 = sheet2.createRow(0);
-				for(int i=0;i<cardNamelist.size();i++){
-					row2.createCell(i).setCellValue(cardNamelist.get(i));
-				}
-				for (int i =0; i<cardJson.size(); i++) {
-					//处理激活状态
-					String invokeState = String.valueOf(cardJson.getJSONObject(i).get("invokeState"));
-					if("1".equals(invokeState)){
-						invokeState = "未激活";
-					}else if("2".equals(invokeState)){
-						invokeState = "已激活";
-					}else if("3".equals(invokeState)){
-						invokeState = "已过期";
-					}
-					// 生成第一行
-					row2 = sheet2.createRow(i+1);
-					// 给这一行的第一列赋值
-					row2.createCell(0).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("batchName")));
-					row2.createCell(1).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("cardNum")));
-					row2.createCell(2).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("password")));
-					row2.createCell(3).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("value")));
-					row2.createCell(4).setCellValue(invokeState);
-					row2.createCell(5).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("invokeDate")).equals("null")?"":String.valueOf(cardJson.getJSONObject(i).get("invokeDate")));
-					row2.createCell(6).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("invokeUser")).equals("null")?"":String.valueOf(cardJson.getJSONObject(i).get("invokeUser")));
-					row2.createCell(7).setCellValue(String.valueOf(cardJson.getJSONObject(i).get("invokeIp")).equals("null")?"":String.valueOf(cardJson.getJSONObject(i).get("invokeIp")));
-				}
-				//设置Content-Disposition  
-		        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 
-		        OutputStream out = response.getOutputStream();
-				// 写文件
-				wb.write(out);  
-				// 关闭输出流
-				out.close();
+	public String exportExccel1(HttpServletResponse response, List<Map<String, Object>> list,
+			List<String> namelist) {
 
-				return date;
-			} catch (Exception e) {
-				e.printStackTrace();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = sdf.format(new Date());
+		String newpate = date + ".xlsx";
+		try {
+			// 工作区
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet("审核未领取");
+			XSSFRow row = sheet.createRow(0);
+			for (int i = 0; i < namelist.size(); i++) {
+				row.createCell(i).setCellValue(namelist.get(i));
 			}
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, Object> map=list.get(i);
+				// 创建第一个sheet
+				// 生成第一行
+				row = sheet.createRow(i + 1);
+				// 给这一行的第一列赋值
+				row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
+				row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+				row.createCell(2).setCellValue(String.valueOf(map.get("password")));
+				row.createCell(3).setCellValue(String.valueOf(map.get("value")));
+				row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+			}
+			// 设置Content-Disposition
+			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
+			OutputStream out = response.getOutputStream();
+			// 写文件
+			wb.write(out);
+			// 关闭输出流
+			out.close();
 			return date;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return date;
+	}
+			
 		
-		
+	/**
+	 * 万方卡批次已领取导出
+	 * @param title 文本名称
+	 * @param data 保存数据 list<map>
+	 * @param realspath 真实路径
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public String exportExcel2(HttpServletResponse response, List<Map<String, Object>> batchList,
+			List<String> batchNamelist, List<Map<String, Object>> cardList,List<String> cardNamelist) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = sdf.format(new Date());
+		String newpate = date + ".xlsx";
+		try {
+			// 工作区
+			XSSFWorkbook wb = new XSSFWorkbook();
+			// 创建第一个sheet
+			XSSFSheet sheet1 = wb.createSheet("批次详情");
+
+			XSSFRow row1 = sheet1.createRow(0);
+			for (int i = 0; i < batchNamelist.size(); i++) {
+				row1.createCell(i).setCellValue(batchNamelist.get(i));
+			}
+			for (int i = 0; i<batchList.size(); i++) {
+				Map<String, Object> batchMap=batchList.get(i);
+				// 生成第一行
+				row1 = sheet1.createRow(i+1);
+				//处理面值数量
+				String valueAndNumber = "";
+				List<Map<String,Object>> valueNumber = JSONArray.fromObject(batchMap.get("valueNumber"));
+				for(int j = 0;j < valueNumber.size();j++){
+					Map<String,Object> map = valueNumber.get(j);
+					valueAndNumber += map.get("value") + "/" + map.get("number") + ",";
+				}
+				//处理批次状态
+				String batchState = String.valueOf(batchMap.get("batchState"));
+				if("1".equals(batchState)){
+					batchState = "未审核";
+				}else if("2".equals(batchState)){
+					batchState = "已审核未领取";
+				}else if("3".equals(batchState)){
+					batchState = "已领取";
+				}
+				// 生成第一行
+				row1 = sheet1.createRow(i+1);
+				// 给这一行的第一列赋值
+				row1.createCell(0).setCellValue(String.valueOf(batchMap.get("batchName")));
+				row1.createCell(1).setCellValue(String.valueOf(batchMap.get("cardTypeName")));
+				row1.createCell(2).setCellValue(valueAndNumber.substring(0, valueAndNumber.length()-1));
+				row1.createCell(3).setCellValue(String.valueOf(batchMap.get("amount")));
+				row1.createCell(4).setCellValue(String.valueOf(batchMap.get("validStart")) + "--" + String.valueOf(batchMap.get("validEnd")));
+				row1.createCell(5).setCellValue(String.valueOf(batchMap.get("createDate")));
+				row1.createCell(6).setCellValue(String.valueOf(batchMap.get("applyDepartment")));
+				row1.createCell(7).setCellValue(String.valueOf(batchMap.get("applyPerson")));
+				row1.createCell(8).setCellValue(String.valueOf(batchMap.get("applyDate")));
+				row1.createCell(9).setCellValue(batchState);
+				row1.createCell(10).setCellValue(String.valueOf(batchMap.get("checkDepartment")).equals("null")?"":String.valueOf(batchMap.get("checkDepartment")));
+				row1.createCell(11).setCellValue(String.valueOf(batchMap.get("checkPerson")).equals("null")?"":String.valueOf(batchMap.get("checkPerson")));
+				row1.createCell(12).setCellValue(String.valueOf(batchMap.get("checkDate")).equals("null")?"":String.valueOf(batchMap.get("checkDate")));
+				row1.createCell(13).setCellValue(String.valueOf(batchMap.get("pullDepartment")).equals("null")?"":String.valueOf(batchMap.get("pullDepartment")));
+				row1.createCell(14).setCellValue(String.valueOf(batchMap.get("pullPerson")).equals("null")?"":String.valueOf(batchMap.get("pullPerson")));
+				row1.createCell(15).setCellValue(String.valueOf(batchMap.get("pullDate")).equals("null")?"":String.valueOf(batchMap.get("pullDate")));
+				
+			}
+			// 创建第二个sheet
+			XSSFSheet sheet2 = wb.createSheet("卡详情");
+			XSSFRow row2 = sheet2.createRow(0);
+			for(int i=0;i<cardNamelist.size();i++){
+				row2.createCell(i).setCellValue(cardNamelist.get(i));
+			}
+			for (int i =0; i<cardList.size(); i++) {
+				Map<String,Object> map=cardList.get(i);
+				//处理激活状态
+				String invokeState = String.valueOf(map.get("invokeState"));
+				if("1".equals(invokeState)){
+					invokeState = "未激活";
+				}else if("2".equals(invokeState)){
+					invokeState = "已激活";
+				}else if("3".equals(invokeState)){
+					invokeState = "已过期";
+				}
+				// 生成第一行
+				row2 = sheet2.createRow(i+1);
+				// 给这一行的第一列赋值
+				row2.createCell(0).setCellValue(String.valueOf(map.get("batchName")));
+				row2.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+				row2.createCell(2).setCellValue(String.valueOf(map.get("password")));
+				row2.createCell(3).setCellValue(String.valueOf(map.get("value")));
+				row2.createCell(4).setCellValue(invokeState);
+				row2.createCell(5).setCellValue(String.valueOf(map.get("invokeDate")).equals("null")?"":String.valueOf(map.get("invokeDate")));
+				row2.createCell(6).setCellValue(String.valueOf(map.get("invokeUser")).equals("null")?"":String.valueOf(map.get("invokeUser")));
+				row2.createCell(7).setCellValue(String.valueOf(map.get("invokeIp")).equals("null")?"":String.valueOf(map.get("invokeIp")));
+			}
+			// 设置Content-Disposition
+			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
+			OutputStream out = response.getOutputStream();
+			// 写文件
+			wb.write(out);
+			// 关闭输出流
+			out.close();
+			return date;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 		
 		/**
-		 * 充值卡详情页导出
+		 * 万方卡详情页导出
 		 * @param title  文本名称
 		 * @param type	类型
 		 * @param data	保存数据  list<map>
@@ -212,7 +204,7 @@ import com.alibaba.dubbo.common.json.JSON;
 		 * @return
 		 */
 			@SuppressWarnings("unchecked")
-			public String exportExccel3(HttpServletResponse response,JSONArray data,List<String> namelist) {
+			public String exportExccel3(HttpServletResponse response,List<Map<String,Object>> list,List<String> namelist) {
 				
 				SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
 				String date=sdf.format(new Date());
@@ -226,16 +218,17 @@ import com.alibaba.dubbo.common.json.JSON;
 					for(int i=0;i<namelist.size();i++){
 						row.createCell(i).setCellValue(namelist.get(i));
 					}
-					for (int i =0; i<data.size(); i++) {
+					for (int i =0; i<list.size(); i++) {
+						Map<String,Object> mapLs=list.get(i);
 						//处理面值数量
 						String valueAndNumber = "";
-						List<Map<String,Object>> valueNumber = JSONArray.fromObject(data.getJSONObject(i).get("valueNumber"));
+						List<Map<String,Object>> valueNumber = JSONArray.fromObject(mapLs.get("valueNumber"));
 						for(int j = 0;j < valueNumber.size();j++){
 							Map<String,Object> map = valueNumber.get(j);
 							valueAndNumber += map.get("value") + "/" + map.get("number") + ",";
 						}
 						//处理批次状态
-						String batchState = String.valueOf(data.getJSONObject(i).get("batchState"));
+						String batchState = String.valueOf(mapLs.get("batchState"));
 						if("1".equals(batchState)){
 							batchState = "未审核";
 						}else if("2".equals(batchState)){
@@ -246,22 +239,22 @@ import com.alibaba.dubbo.common.json.JSON;
 						// 生成第一行
 						row = sheet.createRow(i+1);
 						// 给这一行的第一列赋值
-						row.createCell(0).setCellValue(String.valueOf(data.getJSONObject(i).get("batchName")));
-						row.createCell(1).setCellValue(String.valueOf(data.getJSONObject(i).get("cardTypeName")));
+						row.createCell(0).setCellValue(String.valueOf(mapLs.get("batchName")));
+						row.createCell(1).setCellValue(String.valueOf(mapLs.get("cardTypeName")));
 						row.createCell(2).setCellValue(valueAndNumber.substring(0, valueAndNumber.length()-1));
-						row.createCell(3).setCellValue(String.valueOf(data.getJSONObject(i).get("amount")));
-						row.createCell(4).setCellValue(String.valueOf(data.getJSONObject(i).get("validStart")) + "--" + String.valueOf(data.getJSONObject(i).get("validEnd")));
-						row.createCell(5).setCellValue(String.valueOf(data.getJSONObject(i).get("createDate")));
-						row.createCell(6).setCellValue(String.valueOf(data.getJSONObject(i).get("applyDepartment")));
-						row.createCell(7).setCellValue(String.valueOf(data.getJSONObject(i).get("applyPerson")));
-						row.createCell(8).setCellValue(String.valueOf(data.getJSONObject(i).get("applyDate")));
+						row.createCell(3).setCellValue(String.valueOf(mapLs.get("amount")));
+						row.createCell(4).setCellValue(String.valueOf(mapLs.get("validStart")) + "--" + String.valueOf(mapLs.get("validEnd")));
+						row.createCell(5).setCellValue(String.valueOf(mapLs.get("createDate")));
+						row.createCell(6).setCellValue(String.valueOf(mapLs.get("applyDepartment")));
+						row.createCell(7).setCellValue(String.valueOf(mapLs.get("applyPerson")));
+						row.createCell(8).setCellValue(String.valueOf(mapLs.get("applyDate")));
 						row.createCell(9).setCellValue(batchState);
-						row.createCell(10).setCellValue(String.valueOf(data.getJSONObject(i).get("checkDepartment")));
-						row.createCell(11).setCellValue(String.valueOf(data.getJSONObject(i).get("checkPerson")));
-						row.createCell(12).setCellValue(String.valueOf(data.getJSONObject(i).get("checkDate")));
-						row.createCell(13).setCellValue(String.valueOf(data.getJSONObject(i).get("pullDepartment")));
-						row.createCell(14).setCellValue(String.valueOf(data.getJSONObject(i).get("pullPerson")));
-						row.createCell(15).setCellValue(String.valueOf(data.getJSONObject(i).get("pullDate")));
+						row.createCell(10).setCellValue(String.valueOf(mapLs.get("checkDepartment")));
+						row.createCell(11).setCellValue(String.valueOf(mapLs.get("checkPerson")));
+						row.createCell(12).setCellValue(String.valueOf(mapLs.get("checkDate")));
+						row.createCell(13).setCellValue(String.valueOf(mapLs.get("pullDepartment")));
+						row.createCell(14).setCellValue(String.valueOf(mapLs.get("pullPerson")));
+						row.createCell(15).setCellValue(String.valueOf(mapLs.get("pullDate")));
 					}
 					//设置Content-Disposition  
 			        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 

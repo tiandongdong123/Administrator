@@ -71,16 +71,11 @@
         		<tr>
 	        		<td class="tdl">标题图片</td>
 	        		<td class="tdr">
-	        		<?
-	        		var imageU;
-	        		if(!(isEmpty(message)) && !(isEmpty(message.imageUrl))){
-						imageU=url+message.imageUrl;
-					}?>
 						<div>
 							<form id="addGoodsForm" method="post" enctype="multipart/form-data">
 								<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
 							</form>
-							<img style="display: none" src="${imageU!}" id="filetext" height="100" width="100"/>
+							<img style="display: none" src="${message.imageUrl!}" id="filetext" height="100" width="100"/>
 							<input type="hidden" id="imageUrl" value="${message.imageUrl!}">
 							<input id="refile" style="display: none" type="button" onclick="return resetfile('reupload');" value="重新上传"/>
 							<span style="display: none" id="fileDiv"></span>

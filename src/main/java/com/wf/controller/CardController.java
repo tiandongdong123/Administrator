@@ -19,8 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.exportExcel.ExportExcel;
 import com.utils.CookieUtil;
 import com.utils.FileUploadUtil;
@@ -47,20 +49,22 @@ public class CardController {
 	
 	@Autowired
 	RemindService remindService;//消息提醒接口
+	
 	/**
-	 * 生成充值卡
+	 * 生成万方卡
 	 * @return
 	 */
 	@RequestMapping("createCard")
 	public ModelAndView createCard(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/create_card");
 		
 		return mav;
 	}
 	
 	/**
-	 * 添加充值卡类型
+	 * 添加万方卡类型
 	 * @return
 	 */
 	@RequestMapping("createCardType")
@@ -68,11 +72,10 @@ public class CardController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/create_card_type");
 		return mav;
-	}
-	
+	}	
 	
 	/**
-	 * 检测充值卡类型是否重复
+	 * 检测万方卡类型是否重复
 	 * @param request
 	 * @return
 	 */
@@ -86,8 +89,9 @@ public class CardController {
 		int i=cardtype.checkcode(card);
 		return i;
 	}
+	
 	/**
-	 * 添加充值卡
+	 * 添加万方卡
 	 * @param request
 	 * @return
 	 */
@@ -100,8 +104,9 @@ public class CardController {
 		int i=cardtype.addcode(card);
 		return i;
 	}
+	
 	/**
-	 * 获取充值卡类型表
+	 * 获取万方卡类型表
 	 * @return
 	 */
 	@RequestMapping("codelist")
@@ -150,33 +155,57 @@ public class CardController {
 		Boolean flag = cardBatchService.insertCardBatch(type, valueNumber, validStart, validEnd, applyDepartment, applyPerson, applyDate,adjunct);
 		return flag;
 	}
+	
 	/**
-	 * 充值卡审核
+	 * 修改附件(未审核)
+	 * @param batchId
+	 * @param adjunct
+	 * @return
+	 */
+	@RequestMapping("updateAttachment")
+	@ResponseBody
+	public JSONObject updateAttachment(MultipartFile file, HttpServletRequest request,String batchId) {
+		String adjunct = FileUploadUtil.upload(request, "/imgs/te/");
+		boolean msg = cardBatchService.updateAttachment(batchId, adjunct);
+		JSONObject obj = new JSONObject();
+		obj.put("adjunct", adjunct);
+		obj.put("msg", msg);
+		return obj;
+	}
+	
+	/**
+	 * 万方卡审核
 	 * @return
 	 */
 	@RequestMapping("cardCheck")
 	public ModelAndView cardCheck(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/card_check");
 		return mav;
 	}
+	
 	@RequestMapping("queryCheck")
 	@ResponseBody
-	public PageList  queryCheck(String batchName,String applyDepartment,String applyPerson,String startTime,
-			String endTime,String cardType,String batchState,int pageNum,int pageSize){
-		PageList p = cardBatchService.queryCheck(batchName, applyDepartment, applyPerson, startTime, endTime, cardType,batchState, pageNum, pageSize);
-		return p;
+	public PageList queryCheck(String batchName, String applyDepartment, String applyPerson,
+			String startTime, String endTime, String cardType, String checkState,
+			String batchState, int pageNum, int pageSize) {
+		return cardBatchService.queryCheck(batchName, applyDepartment, applyPerson,
+				startTime, endTime, cardType, checkState, batchState, pageNum, pageSize);
 	}
+	
 	/**
-	 * 充值卡管理
+	 * 万方卡管理
 	 * @return
 	 */
 	@RequestMapping("cardManager")
 	public ModelAndView cardManager(){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("cardList", cardtype.getlist());
 		mav.setViewName("/page/othermanager/card_manager");
 		return mav;
 	}
+	
 	@RequestMapping("queryCard")
 	@ResponseBody
 	public PageList  queryCard(String batchName,String numStart,String numEnd,
@@ -185,8 +214,9 @@ public class CardController {
 		PageList p = cardService.queryCard(batchName, numStart, numEnd, applyDepartment, applyPerson, startTime, endTime, cardType, batchState,invokeState, pageNum, pageSize);
 		return p;
 	}
+	
 	/**
-	 * 单张充值卡详情
+	 * 单张万方卡详情
 	 * @return
 	 */
 	@RequestMapping("details")
@@ -197,6 +227,7 @@ public class CardController {
 		mav.setViewName("/page/othermanager/details");
 		return mav;
 	}
+	
 	/**
 	 * 附件下载
 	 * @param request
@@ -214,16 +245,13 @@ public class CardController {
 	        response.setHeader("Content-Disposition", "attachment;filename="+java.net.URLEncoder.encode(name, "UTF-8")+type);  
 			InputStream in = new FileInputStream(fileName);
 			OutputStream out = response.getOutputStream();
-			int b;  
-	        while((b=in.read())!= -1)  
-	        {  
-	            out.write(b);  
-	        }  
-	          
-	        in.close();  
-	        out.close(); 
+			int b;
+			while ((b = in.read()) != -1) {
+				out.write(b);
+			}
+			in.close();
+			out.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -242,12 +270,14 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_get");
 		return mav;
 	}
+	
 	@RequestMapping("queryCardByBatchId")
 	@ResponseBody
 	public PageList  queryCardByBatchId(String batchId, int pageNum,int pageSize){
 		PageList p = cardService.queryCardBybatchId(batchId, pageNum, pageSize);
 		return p;
 	}
+	
 	/**
 	 * 批次详情页未领取
 	 * @param type(0--不能领取；1--能领取)
@@ -264,22 +294,17 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_unget");
 		return mav;
 	}
+	
 	/**
 	 * 修改审核状态
 	 */
 	@RequestMapping("updateCheckState")
 	@ResponseBody
 	public boolean updateCheckState(HttpServletRequest request,String batchId){
-		
 		Wfadmin admin=CookieUtil.getWfadmin(request);
-		boolean flag1 = cardBatchService.updateCheckState(admin, batchId);//审核状态改变
-		boolean flag2 = cardBatchService.updateBatchState(batchId, "1", "", "");//批次状态改变
-		boolean flag = false;
-		if(flag1 && flag2){
-			flag = true;
-		}
-		return flag;
+		return cardBatchService.updateCheckState(admin, batchId);//审核状态改变
 	}
+	
 	/**
 	 * 修改批次状态(领取)
 	 */
@@ -294,8 +319,9 @@ public class CardController {
 		mav.setViewName("/page/othermanager/batch_details_get");
 		return mav;
 	}
+	
 	/**
-	 * 修改充值卡激活状态
+	 * 修改万方卡激活状态
 	 */
 	@RequestMapping("updateInvokeState")
 	@ResponseBody
@@ -303,6 +329,7 @@ public class CardController {
 		//TODO 具体的激活流程
 		cardService.updateInvokeState("00fd2ff5c9f6483dbde743586de36e28", "1");
 	}
+	
 	@RequestMapping("/remind")
 	@ResponseBody
 	public boolean remind(String batchName,String type,String applyDepartment,String applyPerson,String applyDate){
@@ -315,59 +342,46 @@ public class CardController {
 		boolean flag = remindService.insert(remind);
 		return flag;
 	}
+	
 	/**
-	 * 充值卡导出
+	 * 万方卡导出
 	 * @param request
 	 * @param response
-	 * @param batchId 充值卡批次id
-	 * @param type (1-充值卡批次已审核未领取导出；2-充值卡批次已领取导出；3-充值卡详情页导出)
+	 * @param batchId 万方卡批次id
+	 * @param type (1-万方卡批次已审核未领取导出；2-万方卡批次已领取导出；3-万方卡详情页导出)
 	 * @return
 	 */
 	@RequestMapping("exportCard")
 	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) {
 		ExportExcel exc= new ExportExcel();
-		if(type == 1){//充值卡批次已审核未领取导出
-			
+		if(type == 1){//万方卡批次已审核未领取导出
 			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
-			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
-			
-			namelist.add("充值卡类型");
+			namelist.add("万方卡类型");
 			namelist.add("卡号");
 			namelist.add("密码");
-			namelist.add("面值");		
+			namelist.add("面值");
 			namelist.add("有效期");
-//		namelist.add("有效期");
-//		namelist.add("申请日期");
-//		namelist.add("激活状态");		
-//		namelist.add("激活日期");
-//		namelist.add("激活用户");
-//		namelist.add("激活ip");
-			exc.exportExccel1(response,json,namelist);
-		}else if(type == 2){//充值卡批次已领取导出
+			exc.exportExccel1(response,list,namelist);
+		}else if(type == 2){//万方卡批次已领取导出
 			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
 			if(StringUtils.isNotBlank(batchId)){//单个批次导出
-				
 				//批次详情list
 				Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
 				batchList.add(map);
 				//卡详情list
 				cardList = cardService.queryAllCardBybatchId(batchId);
 			}else{//导出全部批次
-				
 				//批次详情list(已审核)
 				batchList = cardBatchService.queryAllBatch();
 				//卡详情list(所有已审核的card)
 				cardList = cardService.queryAllCard();
 			}
-			
 			//批次详情
-			JSONArray batchJson=JSONArray.fromObject(batchList);
 			List<String> batchNamelist=new ArrayList<String>();
-			
 			batchNamelist.add("批次");
-			batchNamelist.add("充值卡类型");
+			batchNamelist.add("万方卡类型");
 			batchNamelist.add("面值/数值");
 			batchNamelist.add("总金额");		
 			batchNamelist.add("有效期");
@@ -382,12 +396,8 @@ public class CardController {
 			batchNamelist.add("领取部门");
 			batchNamelist.add("领取人");
 			batchNamelist.add("领取日期");
-			
-			
 			//卡详情
-			JSONArray cardJson=JSONArray.fromObject(cardList);
 			List<String> cardNamelist = new ArrayList<String>();
-			
 			cardNamelist.add("批次");
 			cardNamelist.add("卡号");
 			cardNamelist.add("密码");
@@ -396,18 +406,14 @@ public class CardController {
 			cardNamelist.add("激活日期");
 			cardNamelist.add("激活用户");
 			cardNamelist.add("激活ip");
-			
-			exc.exportExcel2(response,batchJson,batchNamelist,cardJson,cardNamelist);
-		}else if(type == 3){//充值卡批次整体导出
-			
+			exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist);
+		}else if(type == 3){//万方卡批次整体导出
 			List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
 			Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
 			list.add(map);
-			JSONArray json=JSONArray.fromObject(list);
 			List<String> namelist=new ArrayList<String>();
-			
 			namelist.add("批次");
-			namelist.add("充值卡类型");
+			namelist.add("万方卡类型");
 			namelist.add("面值/数值");
 			namelist.add("总金额");		
 			namelist.add("有效期");
@@ -422,7 +428,7 @@ public class CardController {
 			namelist.add("领取部门");
 			namelist.add("领取人");
 			namelist.add("领取日期");
-			exc.exportExccel3(response,json,namelist);
+			exc.exportExccel3(response,list,namelist);
 		}
 	}
 }

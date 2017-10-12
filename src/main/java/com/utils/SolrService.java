@@ -88,7 +88,7 @@ public class SolrService {
 			SolrQuery st = new SolrQuery();
 			st.set("collection", core);
 			st.setQuery(query);
-			st.set("fl", "id");
+			st.set("fl", "_version_");
 			st.setRows(0);
 			QueryResponse response = server.query(st, METHOD.POST);
 			counts=response.getResults().getNumFound();

@@ -38,7 +38,7 @@
 			               html  += ' <li>'
 			                 + ' <a href="javascript:void(0);">'
 			                 + '   <i class="fa fa-warning text-yellow"></i>'
-			                 + data.list[i].batchName+'该充值卡批次需要审核'
+			                 + data.list[i].batchName+'该万方卡批次需要审核'
 			                 + ' </a>'
 			                 + '</li>';
 	                 });
@@ -220,12 +220,12 @@
         <li class="treeview" <?if(!strutil.contain(session.purviews,"其他管理")){?>style="display:none"<?}?>>
           <a href="#"><i class="fa fa-pie-chart"></i> <span>其他管理</span><i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu menu-open" style="display: block;">
-            <li <?if(!strutil.contain(session.purviews,"充值卡管理")){?>style="display:none"<?}?>>
-	           	<a href="#"><i class="fa fa-circle-o"></i>充值卡管理<i class="fa fa-angle-left pull-right"></i></a>
+            <li <?if(!strutil.contain(session.purviews,"万方卡管理")){?>style="display:none"<?}?>>
+	           	<a href="#"><i class="fa fa-circle-o"></i>万方卡管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-            		<li <?if(!strutil.contain(session.purviews,"生成充值卡")){?>style="display:none"<?}?> <? if(session.menu_first=="createCard.do"){ ?>class="active"<?}?>><a href="../card/createCard.do"><i class="fa fa-circle-o"></i> 生成充值卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"审核充值卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardCheck.do"){ ?>class="active"<?}?>><a href="../card/cardCheck.do"><i class="fa fa-circle-o"></i> 审核充值卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"充值卡管理")){?>style="display:none"<?}?> <? if(session.menu_first=="cardManager.do"){ ?>class="active"<?}?>><a href="../card/cardManager.do"><i class="fa fa-circle-o"></i> 充值卡管理</a>
+            		<li <?if(!strutil.contain(session.purviews,"生成万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="createCard.do"){ ?>class="active"<?}?>><a href="../card/createCard.do"><i class="fa fa-circle-o"></i> 生成万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"审核万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardCheck.do"){ ?>class="active"<?}?>><a href="../card/cardCheck.do"><i class="fa fa-circle-o"></i> 审核万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"管理万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardManager.do"){ ?>class="active"<?}?>><a href="../card/cardManager.do"><i class="fa fa-circle-o"></i> 管理万方卡</a>
             		</li>
 	         	</ul>
             </li>

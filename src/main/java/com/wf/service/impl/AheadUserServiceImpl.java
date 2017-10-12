@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +29,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -152,26 +154,27 @@ public class AheadUserServiceImpl implements AheadUserService{
      * 调用接口验证老平台用户是否存在 
      */
     @Override
-    public String validateOldUser(String userName){
-    	StringBuffer buffer = new StringBuffer();
-		HttpClient httpclient = new DefaultHttpClient();  
-        HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");  
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();  
-        nvps.add(new BasicNameValuePair("userName", userName));
-        try{
+	public String validateOldUser(String userName) {
+		StringBuffer buffer = new StringBuffer();
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");
+		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		nvps.add(new BasicNameValuePair("userName", userName));
+		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-			HttpResponse response = httpclient.execute(httpPost);  
+			HttpResponse response = httpclient.execute(httpPost);
 			InputStream is = response.getEntity().getContent();
-            int i;
-            while((i = is.read()) != -1){
-            	buffer.append((char) i);
-            } 
-		}catch(Exception e){
+			int i;
+			while ((i = is.read()) != -1) {
+				buffer.append((char) i);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-		}  
-        httpclient.getConnectionManager().shutdown();
-        return buffer.toString();
-    }
+		} finally {
+			httpPost.releaseConnection();
+		}
+		return buffer.toString();
+	}
     
     
     /** 
@@ -805,27 +808,35 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 		}
 		
-		String gId=dto.getGazetteersId();
-		String gArea=dto.getGazetteersArea();
-		String gAlbum=dto.getGazetteersAlbum();
-		if(StringUtils.isNotEmpty(gId)||StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)){
-			if(StringUtils.isNotEmpty(gId)){
-				addStringToTerms("gazetteers_id","Equal",gId,Terms,"String");
-			}else{
-				if(StringUtils.isNotEmpty(gAlbum)){
-					addStringToTerms("gazetteers_album","Equal",gAlbum,Terms,"String");
+		String gId = formatId(dto.getGazetteersId());
+		String itemId = formatId(dto.getItemId());
+		String gArea = dto.getGazetteersArea();
+		String gAlbum = dto.getGazetteersAlbum();
+		String gLevel = dto.getGazetteersLevel();
+		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
+				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
+				|| StringUtils.isNotEmpty(gLevel)) {
+			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
+				if (StringUtils.isNotEmpty(gId)) {
+					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
 				}
-				if(StringUtils.isNotEmpty(gArea)){
-					addStringToTerms("gazetteers_area","Equal",gArea,Terms,"String");
+				if (StringUtils.isNotEmpty(itemId)) {
+					addStringToTerms("item_id", "Equal", itemId, Terms, "String");
 				}
-				String gType=dto.getGazetteersType();
-				if(StringUtils.isNotEmpty(gType)){
-					addStringToTerms("gazetteers_type","Equal",gType,Terms,"String");
+			} else {
+				if (StringUtils.isNotEmpty(gAlbum)) {
+					addStringToTerms("gazetteers_album", "Equal", gAlbum, Terms, "String");
 				}
-			}
-			String gLevel=dto.getGazetteersLevel();
-			if(StringUtils.isNotBlank(gLevel)){
-				addStringToTerms("gazetteers_level","Equal",gLevel,Terms,"String");
+				if (StringUtils.isNotEmpty(gArea)) {
+					addStringToTerms("gazetteers_area", "Equal", gArea, Terms, "String");
+				}
+				String gType = dto.getGazetteersType();
+				if (StringUtils.isNotEmpty(gType)) {
+					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gType))) {
+					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
+				}
 			}
 		}
 	
@@ -836,6 +847,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return null;
 	}
 
+	private static String formatId(String ids){
+		if (ids == null || "".equals(ids)) {
+			return null;
+		}
+		// 正则去除特殊字符
+		Pattern p = Pattern.compile("[^0-9a-zA-Z]");
+		Matcher m = p.matcher(ids);
+		ids = m.replaceAll(" ").trim();
+		ids = ids.replaceAll(" +"," ").replaceAll(" ", ";");
+		return ids;
+	}
 	
     private static void addStringToTerms(String Field,String Verb,String value,JSONArray Terms,String ValueType){
     	JSONObject clcm = new JSONObject();

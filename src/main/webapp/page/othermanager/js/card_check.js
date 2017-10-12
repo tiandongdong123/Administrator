@@ -9,6 +9,7 @@ var applyPerson = "";
 var startTime = "";
 var endTime = "";
 var cardType = "";
+var checkState = "";
 var pageNum;
 var pageSize = 8;
 function Page(curr){
@@ -19,15 +20,8 @@ function Page(curr){
 	applyPerson = $("#person").val().trim();//申请人
 	startTime = $("#startTime").val();//开始时间
 	endTime = $("#endTime").val();//结束时间
-	//--------------充值卡类型-----------------
-	if($("#allCheck").prop("checked") == false){//不全选
-		cardType = "";
-		$("input[name=cardType]").each(function(){
-			if($(this).prop("checked") == true){
-				cardType += $(this).val() + ",";
-			}
-		})
-	}
+	cardType = $("input[name='cardType']:checked").val();
+	checkState = $("input[name='checkState']:checked").val();
 	$.ajax({
 		type : "post",  
 		url : "../card/queryCheck.do",
@@ -38,6 +32,7 @@ function Page(curr){
 			"startTime" : startTime,
 			"endTime" : endTime,
 			"cardType" : cardType,
+			"checkState" : checkState,
 			"pageNum" : curr || 1,
 			"pageSize" : pageSize,
 		},
@@ -53,28 +48,16 @@ function Page(curr){
 				$.each(data.pageRow,function (i) {
 					if(data.pageRow[i].checkState==1){
 						var checkState = "";
+						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].checkState == 1){
 							checkState = "未审核";
+							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')" style="text-decoration:underline;">审核通过</a>';
 						}
 						if(data.pageRow[i].checkState == 2){
 							checkState = "已审核";
-						}
-						var batchState = "";
-						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
-						if(data.pageRow[i].batchState == 1){
-							batchState = "未审核";
-							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')">审核通过</a>';
-						}
-						if(data.pageRow[i].batchState == 2){
-							batchState = "已审核未领取";
-							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0">查看详情</a>';
-						}
-						if(data.pageRow[i].batchState == 3){
-							batchState = "已领取";
-							html1 = '<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'">查看详情</a>';
+							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
 						var valueNumber="";
-						
 						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
 							var numb=eval(data.pageRow[i].valueNumber);
 							var param=numb[j];
@@ -83,12 +66,11 @@ function Page(curr){
 							}else{
 								valueNumber=valueNumber+","+param.value+"/"+param.number;	
 							}							
-							}
+						}
 						sumnum++;
 						maxsum=maxsum*1+data.pageRow[i].amount*1;
 						var html ='<tr>'
 							+'<td>'+x+'</td>'
-		                  /*+'<td>'+(serial+i)+'</td>'*/
 		                  +'<td>'+data.pageRow[i].batchName+'</td>'
 		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
 		                  +'<td>'+valueNumber+'</td>'
@@ -97,16 +79,13 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
 		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'">点击下载</a></td>'
+		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
-//		                  +'<td>'+batchState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
-						
 						$("#list").append(html);
 						x++;
-						}	
-					
+					}
 					sum=x;
 				});
 				//后显示已审核的
@@ -116,25 +95,14 @@ function Page(curr){
 						var valueNumber = data.pageRow[i].valueNumber;
 						valueNumber = valueNumber.replace("[", "").replace("]", "").replace(/\"/g, "");
 						var checkState = "";
+						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].checkState == 1){
 							checkState = "未审核";
+							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')" style="text-decoration:underline;">审核通过</a>';
 						}
 						if(data.pageRow[i].checkState == 2){
 							checkState = "已审核";
-						}
-						var batchState = "";
-						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
-						if(data.pageRow[i].batchState == 1){
-							batchState = "未审核";
-							html1 = '<a href="javascript:void(0)" onclick="check(\''+data.pageRow[i].batchId+'\')">审核通过</a>';
-						}
-						if(data.pageRow[i].batchState == 2){
-							batchState = "已审核未领取";
-							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0">查看详情</a>';
-						}
-						if(data.pageRow[i].batchState == 3){
-							batchState = "已领取";
-							html1 = '<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'">查看详情</a>';
+							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
 						var valueNumber="";
 						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
@@ -149,8 +117,7 @@ function Page(curr){
 						sumnum++;
 						maxsum=maxsum*1+data.pageRow[i].amount*1;
 						var html ='<tr>'
-							 +'<td>'+sum+'</td>'
-		                  /*+'<td>'+(serial+i)+'</td>'*/
+						  +'<td>'+sum+'</td>'
 		                  +'<td>'+data.pageRow[i].batchName+'</td>'
 		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
 		                  +'<td>'+valueNumber+'</td>'
@@ -159,9 +126,8 @@ function Page(curr){
 		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
 		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
 		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download.do?url=${request.contextPath}'+data.pageRow[i].adjunct+'">点击下载</a></td>'
+		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
 		                  +'<td>'+checkState+'</td>'
-//		                  +'<td>'+batchState+'</td>'
 		                  +'<td>'+html1+'</td>'
 		                  +'</tr>';
 						
@@ -169,43 +135,36 @@ function Page(curr){
 						sum++;
 						}					
 				});
-//				var total="这段时间内累计充值"+sumnum+"次，共计"+maxsum+"元";
-//				$("#total").append(total);
 			}else{
 				$("#list").append("暂无数据");
 			}
-			laypage(
-		            {
-		                cont: 'divPager',
-		                pages: Math.ceil(data.totalRow / pageSize),	//总页数
-		                curr: curr || 1,
-		                skip: true,
-		                skin: 'molv',
-		                jump: function (obj, first) {
-		                    if(!first){
-		                        Page(obj.curr);
-		                    }
-		                }
-		            });
+			layui.use(['laypage', 'layer'], function(){
+				var laypage = layui.laypage,layer = layui.layer;
+				laypage.render({
+					elem: 'divPager',
+					count: data.totalRow,
+					first: '首页',
+					last: '尾页',
+					curr: curr || 1,
+					page: Math.ceil(data.totalRow / pageSize),	//总页数
+					limit: pageSize,
+					layout: ['count', 'prev', 'page', 'next', 'skip'],
+					jump: function (obj, first) {
+			            if(!first){
+			                Page(obj.curr);
+			            }
+					}
+				});
+			});
 		},
-		error : function(data){
-			
-		}
+		error : function(data){}
 	})
 }
-/*//-----------------------日期处理------------------------------
-function dateChange(date){
-	var time = new Date(date);
-	var year = time.getFullYear();
-	var month = time.getMonth()+1 < 10 ? "0" + (time.getMonth() + 1) : time.getMonth() + 1;
-	var currentDate = time.getDate() < 10 ? "0" + time.getDate() : time.getDate();
-	time = year+"-"+month+"-"+currentDate;
-	return time;
-}*/
+
 //----------------------------审核-------------------------------
 function check(obj){
 	layer.alert('确定审核通过？', {
-		title: '万方充值卡审核',
+		title: '万方卡审核',
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定'], //按钮
@@ -229,5 +188,3 @@ function check(obj){
 	    }
 	  });
 }
-
-

@@ -1,21 +1,13 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
    <section class="content-header">
       <h1>
-       	单张充值卡详情页
+       	单张万方卡详情页
       </h1>
-       <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
-        <li><a href="#">其他管理</a></li>
-        <li class="active">单张充值卡详情页</li>
-      </ol>-->
     </section>
- 
     <!-- Main content -->
     <section class="content">
     <div class="row">
@@ -29,12 +21,12 @@
                 <table class="table">
                     <tbody>
      				<tr>
-     					<td align="right">充值卡批次</td>
+     					<td align="right">万方卡批次</td>
      					<td width="20px"></td>
      					<td align="left">${map.batchName}</td>
      				</tr>
      				<tr>
-     					<td align="right">充值卡类型</td>
+     					<td align="right">万方卡类型</td>
      					<td width="20px"></td>
      					<?  var type;
 							if(map.type == 1){
@@ -92,7 +84,7 @@
      				<tr>
      					<td align="right">附件</td>
      					<td width="20px"></td>
-     					<td align="left"><a href="../card/download1.do?url=${map.adjunct}">点击下载</a></td>
+     					<td align="left"><a href="../card/download1.do?url=${map.adjunct}" style="text-decoration:underline;">点击下载</a></td>
      				</tr>
      				<tr>
      					<td align="right">审核部门</td>

@@ -5,7 +5,7 @@ public class Remind {
 
     private String batchName;//批次
 
-    private String type;//充值卡类型
+    private String type;//万方卡类型
 
     private String applyDepartment;//申请部门
 

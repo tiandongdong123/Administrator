@@ -2,20 +2,14 @@
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <script type="text/javascript" src="../page/othermanager/js/batch_details_get.js"></script>
-<script src="../js/laypage-v1.3/laypage/laypage.js"></script>
-  <!-- Content Wrapper. Contains page content -->
+
   <div class="content-wrapper">
   <input id="batchId" type="hidden" value="${object.batchId}"/>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-       	充值卡批次详情
+       	万方卡批次详情
       </h1>
-     <!--  <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
-        <li><a href="#">其他管理</a></li>
-        <li class="active">充值卡批次详情</li>
-      </ol>-->
     </section> 
 
     <!-- Main content -->
@@ -31,12 +25,12 @@
                 <table class="table">
                  <tbody>
      				<tr>
-     					<td align="right">充值卡批次</td>
+     					<td align="right">万方卡批次</td>
      					<td width="20px"></td>
      					<td align="left">${object.batchName}</td>
      				</tr>
      				<tr>
-     					<td align="right">充值卡类型</td>
+     					<td align="right">万方卡类型</td>
      					<td width="20px"></td>
      					<td align="left">${object.cardTypeName}</td>
      				</tr>
@@ -82,8 +76,15 @@
      				<tr>
      					<td align="right">附件</td>
      					<td width="20px"></td>
-     					<td align="left"><a href="../card/download1.do?url=${object.adjunct}">点击下载</a></td>
+     					<td align="left"><a href="../card/download1.do?url=${object.adjunct}" style="text-decoration:underline;" id="download">点击下载</a><?if(object.checkState == 1){?>&nbsp;&nbsp;
+     					<a href="javascript:;" style="text-decoration:underline;" onclick="updateFile()">修改</a><?}?></td>
      				</tr>
+     				<tr id="adjunct" style="display:none;">
+     				    <td align="right">附件</td>
+     					<td width="20px"></td>
+     					<td><div class="btn btn-default btn-file"><i class="fa fa-paperclip"></i> 添加附件<input type="file" name="attachment" id="file"></div>
+                  		<span id="file_name" style="margin-left: 10px;"></span></td>
+					</tr>
      				<tr>
      					<td align="right">审核状态</td>
      					<td width="20px"></td>

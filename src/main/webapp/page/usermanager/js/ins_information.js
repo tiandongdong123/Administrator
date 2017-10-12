@@ -250,10 +250,10 @@ function showGazetteers(userId,payid,pscode){
 			if(albums[i]==null || albums[i]==''){
 				continue;
 			}
-			text +='<input type="checkbox" value="'+name+'" name="classCode2_'+temp+'" checked/> '+albums[i]+' &nbsp;';
-			if(i>0&&i%4==0&&albums.length!=i+1){
+			if(i>0&&i%5==0&&albums.length!=i+1){
 				text +='<br/>'
 			}
+			text +='<input type="checkbox" value="'+name+'" name="classCode2_'+temp+'" checked/> '+albums[i]+' &nbsp;';
 		}
 		$("#new_class_code_"+temp).html(text);
 	}

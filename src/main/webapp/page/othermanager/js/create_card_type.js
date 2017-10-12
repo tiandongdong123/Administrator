@@ -11,7 +11,7 @@ function put(){
 				addtype(code,name);
 			}
 			else{
-				layer.msg("此充值卡类型Code已存在！请重新输入！");
+				layer.msg("此万方卡类型Code已存在！请重新输入！");
 			}
 		});
 	}else{
