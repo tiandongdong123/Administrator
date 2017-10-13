@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<project
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bigdata.framework</groupId>
@@ -11,23 +11,23 @@
 	<name>${project.artifactId}</name>
 	<description>The project of accounting demo</description>
 
-	<repositories>
-		<repository>
-			<id>WF-repository</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
-		</repository>
+ 	<repositories>
+        <repository>
+            <id>WF-repository</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
+        </repository>
 	</repositories>
 	<!-- 上传至nexus服务器 -->
-	<distributionManagement>
-		<repository>
-			<id>local_nexus_releases</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>local_nexus_snapshots</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>local_nexus_releases</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>local_nexus_snapshots</id>
+            <url>http://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 	<properties>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,10 +85,8 @@
 		<!-- jdom解析 -->
 		<jdom.version>2.0.5</jdom.version>
 		<dom4j.version>1.6.1</dom4j.version>
-		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<codehausJackson.version>1.9.12</codehausJackson.version>
 		<resteasy.version>3.0.7.Final</resteasy.version>
-		<jaxen.version>1.1</jaxen.version>
 		<!-- 上传 -->
 		<commons-fileupload.version>1.3.1</commons-fileupload.version>
 		<commons-io.version>2.4</commons-io.version>
@@ -103,18 +101,11 @@
 		<wanfang.version>1.2017.346</wanfang.version>
 	</properties>
 
-	<!-- 声明parent的jar依赖，不被所有子项目继承，若子项目需继承jar，只需声明groupId和artifactId即可 -->
-	<dependencyManagement>
-		<dependencies>
-
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
-			<groupId>com.wanfangdata</groupId>
-			<artifactId>encrypt</artifactId>
-			<version>1.2017.266</version>
+	  		<groupId>com.wanfangdata</groupId>
+	  		<artifactId>encrypt</artifactId>
+	  		<version>1.2017.266</version>
 		</dependency>
 		<dependency>
 			<groupId>com.xuxueli</groupId>
@@ -127,7 +118,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysqlconnectorj_version}</version>
 		</dependency>
-		<!-- 知识发现jar包-->
+ 		<!-- 知识发现jar包-->
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
@@ -235,9 +226,9 @@
 			<version>${thrift_version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.beetl</groupId>
-			<artifactId>beetl-core</artifactId>
-			<version>2.2.3</version>
+		    <groupId>org.beetl</groupId>
+		    <artifactId>beetl-core</artifactId>
+		    <version>2.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -300,11 +291,11 @@
 		<!-- test end -->
 
 		<!-- 动态代理包cglib 在程序运行时，运用反射机制动态创建而成 -->
-		<dependency>
+		 <dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>${cglib_version}</version>
-		</dependency>
+		</dependency> 
 		<!-- 对象池引用 -->
 		<dependency>
 			<groupId>commons-pool</groupId>
@@ -378,7 +369,7 @@
 			<artifactId>curator-recipes</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-
+ 
 		<!-- 图标 jfree -->
 		<dependency>
 			<groupId>jfree</groupId>
@@ -415,7 +406,7 @@
 			<artifactId>cache-api</artifactId>
 			<version>${jcache_version}</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.apache.tuscany.sca</groupId>
 			<artifactId>tuscany-sca-api</artifactId>
@@ -520,12 +511,6 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>${commons-httpclient.version}</version>
 		</dependency>
-		<!-- XPath  依赖-->
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>${jaxen.version}</version>
-		</dependency>
 		<!-- 上传 -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
@@ -565,10 +550,10 @@
 			<version>1.2017.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-email</artifactId>
-			<version>1.4</version>
-		</dependency>
+   			<groupId>org.apache.commons</groupId>
+   			<artifactId>commons-email</artifactId>
+   			<version>1.4</version>
+ 		</dependency>
 
 		<dependency>
 			<groupId>com.qq</groupId>
@@ -595,19 +580,19 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-api</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
-		<dependency>
+	 	<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-setting</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-dao-api</artifactId>
-			<version>1.2017.346</version>
+			<version>${wanfang.version}</version>
 		</dependency>
-
+		
 		<!-- POI包 -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -720,7 +705,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
+		</dependency> 
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -751,133 +736,132 @@
 			<artifactId>kylin-jdbc</artifactId>
 			<version>1.5.3</version>
 		</dependency>
-
+		
 	</dependencies>
 	<build>
-
-		<resources>
-			<resource>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**/*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-				<filtering>false</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>**/*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-				<filtering>false</filtering>
-			</resource>
-		</resources>
-
-		<finalName>wf-framework-adminManager-web</finalName>
-		<directory>../workspace/output/wf-framework-adminManager-web</directory>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>create-structure</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>unpack</goal>
-							</goals>
-							<configuration>
-								<artifactItems>
-									<artifactItem>
-										<groupId>GROUPID</groupId>
-										<artifactId>template</artifactId>
-									</artifactItem>
-								</artifactItems>
-								<outputDirectory>
-									${project.build.directory}/${assembly.name}.war
-								</outputDirectory>
-							</configuration>
-						</execution>
-						<execution>
-							<id>copy-libs</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>copy</goal>
-							</goals>
-							<configuration>
-								<artifactItems>
-									<artifactItem>
-										<groupId>jdom</groupId>
-										<artifactId>jdom</artifactId>
-									</artifactItem>
-									......
-								</artifactItems>
-
-								<outputDirectory>${project.build.directory}/${assembly.name}.war/WEB-INF/lib</outputDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.3</version>
-					<executions>
-						<execution>
-							<id>copy-config</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-									<copy todir="${project.build.directory}/${assembly.name}.war">
-										<fileset dir="src/main/resources" />
-									</copy>
-									<zip destfile="${project.build.directory}/${assembly.name}-${project.version}-war.zip">
-										<zipfileset dir="${project.build.directory}/${assembly.name}.war" includes="**\*.*"  excludes="*.zip" />
-									</zip>
-									<copy file="${project.build.directory}/${assembly.name}-${project.version}-war.zip"
-										  tofile="${project.build.directory}/${assembly.name}-${project.version}.war" />
-								</tasks>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.4</version>
-					<executions>
-						<execution>
-							<id>attach-artifacts</id>
-							<phase>package</phase>
-							<goals>
-								<goal>attach-artifact</goal>
-							</goals>
-							<configuration>
-								<artifacts>
-									<artifact>
-										<file>${project.build.directory}/${assembly.name}-${project.version}.war</file>
-										<type>war</type>
-									</artifact>
-								</artifacts>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+	
+	<resources>
+		<resource>
+			<directory>src/main/java</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+		<resource>
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>**/*.properties</include>
+				<include>**/*.xml</include>
+			</includes>
+			<filtering>false</filtering>
+		</resource>
+	</resources>
+	
+   	<finalName>${project.artifactId}</finalName>
+	<directory>../workspace/output/${project.artifactId}</directory>
+  	<pluginManagement>
+	<plugins>  
+      <plugin>  
+        <groupId>org.apache.maven.plugins</groupId>  
+        <artifactId>maven-dependency-plugin</artifactId>  
+        <executions>  
+           <execution>  
+              <id>create-structure</id>  
+              <phase>process-resources</phase>  
+               <goals>  
+                   <goal>unpack</goal>  
+                </goals>  
+                <configuration>  
+                    <artifactItems>  
+                       <artifactItem>  
+                          <groupId>GROUPID</groupId>  
+                           <artifactId>template</artifactId>  
+                       </artifactItem>  
+                 </artifactItems>  
+                 <outputDirectory>  
+                     ${project.build.directory}/${assembly.name}.war  
+                  </outputDirectory>  
+                </configuration>  
+             </execution>  
+             <execution>  
+                 <id>copy-libs</id>  
+                  <phase>process-resources</phase>  
+                   <goals>  
+                      <goal>copy</goal>  
+                   </goals>  
+                   <configuration>  
+                      <artifactItems>  
+                         <artifactItem>  
+                             <groupId>jdom</groupId>  
+                              <artifactId>jdom</artifactId>  
+                          </artifactItem>  
+                                ......  
+                       </artifactItems>  
+  
+                        <outputDirectory>${project.build.directory}/${assembly.name}.war/WEB-INF/lib</outputDirectory>  
+                    </configuration>  
+                 </execution>  
+            </executions>  
+       </plugin>  
+        <plugin>  
+            <groupId>org.apache.maven.plugins</groupId>  
+            <artifactId>maven-antrun-plugin</artifactId>  
+            <version>1.3</version>  
+            <executions>  
+               <execution>  
+                  <id>copy-config</id>  
+                  <phase>process-resources</phase>  
+                  <goals>  
+                      <goal>run</goal>  
+                   </goals>  
+                   <configuration>  
+                   <tasks>  
+                       <copy todir="${project.build.directory}/${assembly.name}.war">  
+                           <fileset dir="src/main/resources" />  
+                       </copy>  
+                       <zip destfile="${project.build.directory}/${assembly.name}-${project.version}-war.zip">  
+                            <zipfileset dir="${project.build.directory}/${assembly.name}.war" includes="**\*.*"  excludes="*.zip" />  
+                       </zip>  
+                       <copy file="${project.build.directory}/${assembly.name}-${project.version}-war.zip"  
+                                    tofile="${project.build.directory}/${assembly.name}-${project.version}.war" />  
+                     </tasks>  
+                     </configuration>  
+                </execution>  
+            </executions>  
+       </plugin>  
+       <plugin>  
+           <groupId>org.codehaus.mojo</groupId>  
+           <artifactId>build-helper-maven-plugin</artifactId>  
+           <version>3.0.0</version>  
+           <executions>  
+              <execution>  
+              <id>attach-artifacts</id>  
+              <phase>package</phase>  
+                 <goals>  
+                     <goal>attach-artifact</goal>  
+                 </goals>  
+                 <configuration>  
+                      <artifacts>  
+                         <artifact>  
+                             <file>${project.build.directory}/${assembly.name}-${project.version}.war</file>  
+                              <type>war</type>  
+                          </artifact>  
+                       </artifacts>  
+                  </configuration>  
+               </execution>  
+            </executions>  
+         </plugin>  
+		 <plugin>  
+            <groupId>org.apache.maven.plugins</groupId>  
+            <artifactId>maven-compiler-plugin</artifactId>  
+            <configuration>  
+                <source>1.7</source>  
+                <target>1.7</target>  
+            </configuration>  
+        </plugin>
+    </plugins>  
+    </pluginManagement>
 	</build>
 </project>
