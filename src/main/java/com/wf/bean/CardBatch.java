@@ -6,7 +6,7 @@ public class CardBatch {
 
     private String batchName;//批次号
 
-    private String  type;//充值卡类型
+    private String  type;//万方卡类型
 
     private String valueNumber;//面值/数量
 

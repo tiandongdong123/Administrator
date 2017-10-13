@@ -2,19 +2,11 @@
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <script type="text/javascript" src="../page/othermanager/js/card_check.js"></script>
-<script src="../js/laypage-v1.3/laypage/laypage.js"></script>
-  <!-- Content Wrapper. Contains page content -->
+
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
      <section class="content-header">
-      <h1>
-       	充值卡审核
-      </h1>
-     <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
-        <li><a href="#">其他管理</a></li>
-        <li class="active">充值卡审核</li>
-      </ol>-->
+      <h1>万方卡审核</h1>
     </section> 
 
     <!-- Main content -->
@@ -46,11 +38,17 @@
                   <input id="endTime" type="text"   class="form-control input_time" onclick="WdatePicker()">
                 </div>
                 <div class="form-group input_block "> 
-                  <label class="input_name">充值卡类型</label>
-                  <input id = "allCheck" type="checkbox" name="cardType" value="">全选
-                  <input type="checkbox" name="cardType" value="1">万方充值卡
-                  <input type="checkbox" name="cardType" value="2">医药会员卡
-                  <input type="checkbox" name="cardType" value="3">医药检索卡
+                  <label class="input_name">万方卡类型</label>
+                  <input type="radio" name="cardType" value="" checked>全选
+                  <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
+					<input type="radio" name="cardType" value="${card.cardTypeCode}">${card.cardTypeName}
+                  <?}}?>
+                </div>
+                <div class="form-group input_block "> 
+                  <label class="input_name">审核状态</label>
+                  <input type="radio" name="checkState" value="" checked>全选
+                  <input type="radio" name="checkState" value="1">未审核
+                  <input type="radio" name="checkState" value="2">已审核
                 </div>
               </div>
               <div class="box-footer" style="text-align:center;">
@@ -67,7 +65,7 @@
                 <tr>
                   <th>序号</th>
                   <th>批次</th>
-                  <th>充值卡类型</th>
+                  <th>万方卡类型</th>
                   <th>面值/数量</th>
                   <th>总金额</th>
                   <th>有效期</th>

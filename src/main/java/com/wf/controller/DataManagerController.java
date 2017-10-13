@@ -1,14 +1,18 @@
 package com.wf.controller;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.redis.RedisUtil;
+import com.utils.JsonUtil;
+import com.wf.Setting.DatabaseConfigureSetting;
 import net.sf.json.JSONArray;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,6 +31,8 @@ public class DataManagerController {
 
 	@Autowired
 	private DataManagerService data;
+
+	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
 	/**
 	 * 获取数据库
 	 * @param dataname
@@ -34,10 +40,48 @@ public class DataManagerController {
 	 */
 	@RequestMapping("getdata")
 	@ResponseBody
-	public PageList getData(String dataname,Integer pagenum,Integer pagesize){
-		PageList pl = this.data.getData(dataname,pagenum,pagesize);
-		return pl;
+	public PageList getData(Integer pagenum,Integer pagesize,String dataname) throws IOException {
+		if(dataname==null){
+			PageList p = this.data.getData(pagenum,pagesize);
+			return p;
+		}else{
+			PageList p = this.data.findDatabaseByName(dataname);
+			return p;
+		}
+
 	}
+
+	/**
+	 * 资源类型上移
+	 */
+	@RequestMapping("/moveUpDatabase")
+	public void moveUpDatabase(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=this.data.moveUpDatabase(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		JSONArray list = dbConfig.selectSitateFoOne();
+		RedisUtil redis= new RedisUtil();
+		redis.del("datamanager");
+		redis.set("datamanager", list.toString(), 6);
+		JsonUtil.toJsonHtml(response, b);
+	}
+	/**
+	 * 资源类型下移
+	 */
+	@RequestMapping("/moveDownDatabase")
+	public void moveDownDatabase(
+			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean b=this.data.moveDownDatabase(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		JSONArray list = dbConfig.selectSitateFoOne();
+		RedisUtil redis= new RedisUtil();
+		redis.del("datamanager");
+		redis.set("datamanager", list.toString(), 6);
+		JsonUtil.toJsonHtml(response, b);
+	}
+
 	/**
 	 * 删除数据库
 	 * @param id
@@ -50,15 +94,26 @@ public class DataManagerController {
 		return a;
 	}
 	/**
+	 *判断资源类型是否发布
+	 */
+	@RequestMapping("/checkResourceForOne")
+	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean result = this.data.checkResourceForOne(id);
+		JsonUtil.toJsonHtml(response, result);
+	}
+	/**
 	 * 解冻数据库
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping("opendata")
 	@ResponseBody
-	public boolean openData(String id){
-		boolean a = this.data.openData(id);
-		return a;
+	public boolean openData(String id) throws InterruptedException {
+		boolean result = this.data.openData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
 	}
 	/**
 	 * 冻结数据库
@@ -67,9 +122,12 @@ public class DataManagerController {
 	 */
 	@RequestMapping("closedata")
 	@ResponseBody
-	public boolean closeData(String id){
-		boolean a = this.data.closeData(id);
-		return a;
+	public boolean closeData(String id) throws InterruptedException {
+		boolean result = this.data.closeData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
 	}
 	
 	
@@ -210,9 +268,10 @@ public class DataManagerController {
 	
 	@RequestMapping("pushdata")
 	@ResponseBody
-	public void pushdata() {
-		
+	public void pushdata() throws Exception {
+
 		this.data.selectZY();
+
 	}
 	
 	/**

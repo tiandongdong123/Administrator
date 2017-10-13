@@ -8,8 +8,24 @@ import com.wf.bean.PageList;
 
 public interface DataManagerService {
 
-	PageList getData(String dataname,Integer pagenum,Integer pagesize);
-	
+	PageList getData(Integer pagenum, Integer pagesize);
+
+	PageList findDatabaseByName(String dataName);
+	/**
+	 * 资源类型上移
+	 */
+
+	boolean moveUpDatabase(String id);
+
+	/**
+	 * 资源类型下移
+	 */
+
+	boolean moveDownDatabase(String id);
+
+	boolean checkResourceForOne(String id);
+
+
 	boolean deleteData(String id);
 	
 	boolean closeData(String id);
@@ -20,23 +36,23 @@ public interface DataManagerService {
 	
 	Map<String,Object> getSubject();
 	
-	boolean checkLName(String name,String code);
+	boolean checkLName(String name, String code);
 	
-	boolean doAddLName(String name,String code);
+	boolean doAddLName(String name, String code);
 	
-	boolean checkSName(String name,String code);
+	boolean checkSName(String name, String code);
 	
-	boolean doAddSName(String name,String code);
+	boolean doAddSName(String name, String code);
 	
 	boolean checkDname(String name);
 	
-	boolean doAddData(String[] customs,Datamanager data);
+	boolean doAddData(String[] customs, Datamanager data);
 	
 	Map<String,Object> getCheck(String id);
 	
 	List<String> getCheckids(String id);
 	
-	boolean doUpdateData(String[] customs,Datamanager data);
+	boolean doUpdateData(String[] customs, Datamanager data);
 	
 	List<Datamanager> selectAll();
 	

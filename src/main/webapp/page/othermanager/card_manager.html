@@ -2,19 +2,11 @@
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <script type="text/javascript" src="../page/othermanager/js/card_manager.js"></script>
-<script src="../js/laypage-v1.3/laypage/laypage.js"></script>
-  <!-- Content Wrapper. Contains page content -->
+
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
    <section class="content-header">
-      <h1>
-       	充值卡管理
-      </h1>
-     <!--   <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i>首页</a></li>
-        <li><a href="#">其他管理</a></li>
-        <li class="active">充值卡管理</li>
-      </ol>-->
+      <h1>管理万方卡</h1>
     </section> 
 <input type="text" style="display: none;" id="data_source">
     <!-- Main content -->
@@ -27,47 +19,50 @@
             <!-- form start -->
             <form role="form">
               <div class="box-body">
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name"> 批次:</label>
                   <input type="text" id="batchName" class="form-control input_width">批
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">卡号:</label>
                   <input type="text" id="numStart" class="form-control input_time">
                   <label>至</label>
                   <input type="text" id="numEnd" class="form-control input_time">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">申请部门:</label>
                   <input type="text" id="department" class="form-control input_width">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">申请人:</label>
                   <input type="text" id="person" class="form-control input_width">
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name"> 申请时间:</label>
-                  <input id="startTime" type="text"   class="form-control input_time" onclick="WdatePicker()">
+                  <input id="startTime" type="text" class="form-control input_time" onclick="WdatePicker()">
                   <label>——</label>
-                  <input id="endTime" type="text"   class="form-control input_time" onclick="WdatePicker()">
+                  <input id="endTime" type="text" class="form-control input_time" onclick="WdatePicker()">
                 </div>
-                <div class="form-group input_block " id="type_list"> 
-                  <label class="input_name">充值卡类型：</label>
-                  <input id="all_type" type="checkbox" name="cardType" value="">全选
+                <div class="form-group input_block" id="type_list"> 
+                  <label class="input_name">万方卡类型：</label>
+                  <input type="radio" name="cardType" value="" checked>全选
+                  <?if(!isEmpty(cardList)){ for(card in cardList){ ?>
+					<input type="radio" name="cardType" value="${card.cardTypeCode}">${card.cardTypeName}
+                  <?}}?>
                 </div>
-                <div class="form-group input_block ">
+                <div class="form-group input_block">
                   <label class="input_name">批次状态：</label>
-                  <input id="all_state" type="checkbox" name="checkState" value="">全选
-                  <input type="checkbox" name="checkState" value="1">未审核
-                  <input type="checkbox" name="checkState" value="2">已审核未领取
-                  <input type="checkbox" name="checkState" value="3">已领取
+                  <input type="radio" name="checkState" value="" checked>全选
+                  <input type="radio" name="checkState" value="1">未审核
+                  <input type="radio" name="checkState" value="2">已审核未领取
+                  <input type="radio" name="checkState" value="3">已领取
                 </div>
-                <div class="form-group input_block " style="display:none;" id="activate">
-                  <label class="input_name">充值卡状态：</label>
-                  <input id="card_state" type="checkbox" name="invokeState" value="">全选
-                  <input type="checkbox" name="invokeState" value="1">未激活
-                  <input type="checkbox" name="invokeState" value="2">已激活
-                  <input type="checkbox" name="invokeState" value="3">已过期
+                <div class="form-group input_block">
+                  <label class="input_name">万方卡状态：</label>
+                  <input type="radio" name="invokeState" value="" checked>全选
+                  <input type="radio" name="invokeState" value="1">未激活
+                  <input type="radio" name="invokeState" value="2">已激活
+                  <input type="radio" name="invokeState" value="3">已过期
                 </div>
               </div>
               <div class="box-footer" style="text-align:center;">
@@ -84,7 +79,7 @@
                 <tr>
                   <th>序号</th>
                   <th>批次</th>
-                  <th>充值卡类型</th>
+                  <th>万方卡类型</th>
                   <th>卡号</th>
                   <th>密码</th>
                   <th>面值</th>
@@ -119,7 +114,7 @@
                 <tr>
                   <th>序号</th>
                   <th>批次</th>
-                  <th>充值卡类型</th>
+                  <th>万方卡类型</th>
                   <th>面值/数量</th>
                   <th>总金额</th>
                   <th>有效期</th>

@@ -1,8 +1,6 @@
 package com.utils;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -16,7 +14,7 @@ import com.xxl.conf.core.XxlConfClient;
  */
 public class HttpClientUtil {
 	
-	private static String INIT = XxlConfClient.get("wf-public.user.init", null);
+	//private static String INIT = XxlConfClient.get("wf-public.user.init", null);
 	private static String UPDATE = XxlConfClient.get("wf-public.user.update", null);
 	
     /** 
@@ -25,7 +23,6 @@ public class HttpClientUtil {
 	public static void updateUserData(String user_id,boolean isInit) {
 		HttpPost httpPost = null;
 		try {
-			System.out.println("=="+UPDATE);
 			String[] urls = UPDATE.split(";");
 			for (String url : urls) {
 				HttpClient httpclient = HttpClients.createDefault();
@@ -45,9 +42,5 @@ public class HttpClientUtil {
 				httpPost.releaseConnection();
 			}
 		}
-	}
-	
-	public static void test(){
-		System.out.println(INIT);
 	}
 }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.wf.Setting.DatabaseConfigureSetting;
+import com.wf.Setting.ResourceTypeSetting;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,90 +44,290 @@ public class DataManagerServiceImpl implements DataManagerService {
 	private DB_SourceMapper db;
 	@Autowired
 	private CustomMapper custom;
+
+	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
+
+	/*	@Override
+        public PageList getData(String dataname,Integer pagenum,Integer pagesize) {
+            List<Object>  r = new ArrayList<Object>();
+            PageList p = new PageList();
+            try {
+                int startnum = (pagenum-1)*pagesize;
+                r = this.data.getData("%"+dataname+"%",dataname,startnum,pagesize);
+                if(r.size()>0){
+                for(int i=0;i<r.size();i++)
+                {
+                    String word=((Datamanager)r.get(i)).getSourceDb();
+                    String newword=null;
+                    if(word!=null&&word!=""){
+                    String[] str=word.split(",");
+                    List<String> list = Arrays.asList(str);
+
+                    for(int j=0;j<list.size();j++){
+                        if(list.get(j)!=""&&list.get(j)!=null){
+                            DB_Source dbs = db.getOneSource(list.get(j).toString());
+                            if(j==0){
+
+                                if(dbs!=null){
+                                    newword = dbs.getDbSourceName();
+                                }
+                            }
+                            else{
+                                if(dbs!=null){
+                                    newword = newword+","+dbs.getDbSourceName();
+                                }
+                            }
+                        }
+                    }
+                    }
+                    String launage=((Datamanager)r.get(i)).getLanguage();
+                    String langude="";
+                    if(launage!=null&&launage!=""){
+                    List<String> listlan = Arrays.asList(launage.split(","));
+
+                    if(listlan.size()>0){
+                        for(int j=0;j<listlan.size();j++){
+                        if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
+                            Language lan=this.language.getOne(listlan.get(j));
+                            if(j==0){
+                                langude=lan.getLanguageName();
+                            }else{
+                                langude=langude+","+lan.getLanguageName();
+                            }
+                            }
+                        }
+                    }
+                    }
+                    String resource_type=((Datamanager)r.get(i)).getResType();
+                    String sources="";
+                    if(resource_type!=null&&resource_type!=""){
+                    List<String> listtyp = Arrays.asList(resource_type.split(","));
+                    if(listtyp.size()>0){
+                        for(int j=0;j<listtyp.size();j++){
+                            if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
+                                ResourceType reso=this.type.getOne(listtyp.get(j));
+                                 if(j==0){
+                                     sources=reso.getTypeName();
+                                 }else{
+                                     sources=sources+","+reso.getTypeName();
+                                 }
+                                }
+                            }
+                    }
+                    }
+                    ((Datamanager)r.get(i)).setLanguage(langude);
+                    ((Datamanager)r.get(i)).setResType(sources);
+                    ((Datamanager)r.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
+                }
+                }
+                int num = this.data.getDataNum(dataname);
+                p.setPageRow(r);
+                p.setPageNum(pagenum);
+                p.setPageTotal(num);
+                p.setPageSize(pagesize);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return p;
+
+        }*/
 	@Override
-	public PageList getData(String dataname,Integer pagenum,Integer pagesize) {
+	public PageList getData(Integer pageNum,Integer pageSize) {
 		List<Object>  r = new ArrayList<Object>();
 		PageList p = new PageList();
 		try {
-			int startnum = (pagenum-1)*pagesize;
-			r = this.data.getData("%"+dataname+"%",dataname,startnum,pagesize);
-			if(r.size()>0){
-			for(int i=0;i<r.size();i++)
-			{	
-				String word=((Datamanager)r.get(i)).getSourceDb();
-				String newword=null;
-				if(word!=null&&word!=""){
-				String[] str=word.split(",");
-				List<String> list = Arrays.asList(str);
-				
-				for(int j=0;j<list.size();j++){
-					if(list.get(j)!=""&&list.get(j)!=null){
-						DB_Source dbs = db.getOneSource(list.get(j).toString());
-						if(j==0){
-							
-							if(dbs!=null){							
-								newword = dbs.getDbSourceName();
-							}
-						}
-						else{
-							if(dbs!=null){							
-								newword = newword+","+dbs.getDbSourceName();
-							}
-						}	
-					}
+			r = dbConfig.getDatabase();
+			int pageN=(pageNum-1)*pageSize;
+			ArrayList<Object> pageRow = new ArrayList<>();
+			if((r.size()-pageN)>=10){
+				for(int i = 0 ; i< pageSize ; i++){
+					pageRow.add(r.get(i+pageN));
 				}
+			}else{
+				for(int i = 0 ; i<(r.size()-pageN);i++){
+					pageRow.add(r.get(i+pageN));
 				}
-				String launage=((Datamanager)r.get(i)).getLanguage();
-				String langude="";
-				if(launage!=null&&launage!=""){
-				List<String> listlan = Arrays.asList(launage.split(","));
-				
-				if(listlan.size()>0){
-					for(int j=0;j<listlan.size();j++){
-					if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
-						Language lan=this.language.getOne(listlan.get(j));
-						if(j==0){
-							langude=lan.getLanguageName();
-						}else{
-							langude=langude+","+lan.getLanguageName();
-						}
+			}
+
+			if(pageRow.size()>0){
+				for(int i=0;i<pageRow.size();i++)
+				{
+					String word=((Datamanager)pageRow.get(i)).getSourceDb();
+					String newword=null;
+					if(word!=null&&word!=""){
+						String[] str=word.split(",");
+						List<String> list = Arrays.asList(str);
+
+						for(int j=0;j<list.size();j++){
+							if(list.get(j)!=""&&list.get(j)!=null){
+								DB_Source dbs = db.getOneSource(list.get(j));
+								if(j==0){
+
+									if(dbs!=null){
+										newword = dbs.getDbSourceName();
+									}
+								}
+								else{
+									if(dbs!=null){
+										newword = newword+","+dbs.getDbSourceName();
+									}
+								}
+							}
 						}
 					}
-				}
-				}
-				String resource_type=((Datamanager)r.get(i)).getResType();
-				String sources="";
-				if(resource_type!=null&&resource_type!=""){
-				List<String> listtyp = Arrays.asList(resource_type.split(","));
-				if(listtyp.size()>0){
-					for(int j=0;j<listtyp.size();j++){
-						if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
-							ResourceType reso=this.type.getOne(listtyp.get(j));
-							 if(j==0){
-								 sources=reso.getTypeName();
-							 }else{
-								 sources=sources+","+reso.getTypeName();
-							 }
+					String launage=((Datamanager)r.get(i)).getLanguage();
+					String langude="";
+					if(launage!=null&&launage!=""){
+						List<String> listlan = Arrays.asList(launage.split(","));
+
+						if(listlan.size()>0){
+							for(int j=0;j<listlan.size();j++){
+								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
+									Language lan=this.language.getOne(listlan.get(j));
+									if(j==0){
+										langude=lan.getLanguageName();
+									}else{
+										langude=langude+","+lan.getLanguageName();
+									}
+								}
 							}
 						}
+					}
+					String resource_type=((Datamanager)pageRow.get(i)).getResType();
+					String sources="";
+					if(resource_type!=null&&resource_type!=""){
+						List<String> listtyp = Arrays.asList(resource_type.split(","));
+						if(listtyp.size()>0){
+							for(int j=0;j<listtyp.size();j++){
+								if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
+									ResourceType reso=this.type.getOne(listtyp.get(j));
+									if(j==0){
+										sources=reso.getTypeName();
+									}else{
+										sources=sources+","+reso.getTypeName();
+									}
+								}
+							}
+						}
+					}
+					((Datamanager)pageRow.get(i)).setLanguage(langude);
+					((Datamanager)pageRow.get(i)).setResType(sources);
+					((Datamanager)pageRow.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
 				}
-				}
-				((Datamanager)r.get(i)).setLanguage(langude);
-				((Datamanager)r.get(i)).setResType(sources);
-				((Datamanager)r.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
 			}
-			}
-			int num = this.data.getDataNum(dataname);
-			p.setPageRow(r);
-			p.setPageNum(pagenum);
-			p.setPageTotal(num);
-			p.setPageSize(pagesize);
-			
+			int pageTotal=r.size()!=0 && r.size()%pageSize !=0?r.size()/pageSize+1:r.size()/pageSize;
+			p.setPageRow(pageRow);
+			p.setPageNum(pageNum);
+			p.setPageTotal(pageTotal);
+			p.setPageSize(pageSize);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return p;
+	}
+	@Override
+	public PageList findDatabaseByName(String dataName){
+		List<Object>  r = new ArrayList<Object>();
+		PageList p = new PageList();
+		try {
+			r = dbConfig.findDatabaseByName(dataName);
+			ArrayList<Object> pageRow = new ArrayList<>();
 
+				for(int i = 0 ; i<r.size();i++){
+					pageRow.add(r.get(i));
+				}
+			if(pageRow.size()>0){
+				for(int i=0;i<pageRow.size();i++)
+				{
+					String word=((Datamanager)pageRow.get(i)).getSourceDb();
+					String newword=null;
+					if(word!=null&&word!=""){
+						String[] str=word.split(",");
+						List<String> list = Arrays.asList(str);
+
+						for(int j=0;j<list.size();j++){
+							if(list.get(j)!=""&&list.get(j)!=null){
+								DB_Source dbs = db.getOneSource(list.get(j));
+								if(j==0){
+
+									if(dbs!=null){
+										newword = dbs.getDbSourceName();
+									}
+								}
+								else{
+									if(dbs!=null){
+										newword = newword+","+dbs.getDbSourceName();
+									}
+								}
+							}
+						}
+					}
+					String launage=((Datamanager)r.get(i)).getLanguage();
+					String langude="";
+					if(launage!=null&&launage!=""){
+						List<String> listlan = Arrays.asList(launage.split(","));
+
+						if(listlan.size()>0){
+							for(int j=0;j<listlan.size();j++){
+								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
+									Language lan=this.language.getOne(listlan.get(j));
+									if(j==0){
+										langude=lan.getLanguageName();
+									}else{
+										langude=langude+","+lan.getLanguageName();
+									}
+								}
+							}
+						}
+					}
+					String resource_type=((Datamanager)pageRow.get(i)).getResType();
+					String sources="";
+					if(resource_type!=null&&resource_type!=""){
+						List<String> listtyp = Arrays.asList(resource_type.split(","));
+						if(listtyp.size()>0){
+							for(int j=0;j<listtyp.size();j++){
+								if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
+									ResourceType reso=this.type.getOne(listtyp.get(j));
+									if(j==0){
+										sources=reso.getTypeName();
+									}else{
+										sources=sources+","+reso.getTypeName();
+									}
+								}
+							}
+						}
+					}
+					((Datamanager)pageRow.get(i)).setLanguage(langude);
+					((Datamanager)pageRow.get(i)).setResType(sources);
+					((Datamanager)pageRow.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
+				}
+			}
+			p.setPageRow(pageRow);
+			p.setPageNum(1);
+			p.setPageTotal(1);
+			p.setPageSize(10);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return p;
+	}
+	@Override
+	public  boolean moveUpDatabase(String id){
+		boolean b = dbConfig.moveUpDatabase(id);
+		return b;
+	}
+	@Override
+	public  boolean moveDownDatabase(String id){
+		boolean b = dbConfig.moveDownDatabase(id);
+		return b;
+	}
+	@Override
+	public boolean checkResourceForOne(String id){
+		boolean result = dbConfig.checkResourceForOne(id);
+		return result;
 	}
 	@Override
 	public boolean deleteData(String id) {
@@ -133,12 +335,15 @@ public class DataManagerServiceImpl implements DataManagerService {
 		int rtnum = 0;
 		int cos = 0;
 		try {
+			//在数据库中删除
 			rtnum  = this.data.deleteData(id);
+			//在zookeeper中删除数据库配置
+			dbConfig.deleteDatabase(id);
 			cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(rtnum>0&&cos>0){
+		if(rtnum>0){
 			rt = true;
 		}
 		return rt;
@@ -147,8 +352,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public boolean closeData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
+		int typeState = 0 ;
 		try {
 			rtnum  = this.data.closeData(id);
+			dbConfig.updateDatabaseState(typeState,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,8 +369,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public boolean openData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
+		int typeState = 1 ;
 		try {
 			rtnum  = this.data.openData(id);
+			dbConfig.updateDatabaseState(typeState,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -175,9 +384,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public Map<String, Object> getResource() {
+		ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
 		Map<String, Object> map = new HashMap<String,Object>();
 		try {
-			List<ResourceType> listr= this.type.getRtypeName();
+			List<ResourceType> listr= resourceTypeSetting.getAll();
 			List<Language> lastr = this.language.getAllLanguage();
 			List<DB_Source> dbstr = this.db.getAllDB();
 			map.put("resourcetype", listr);
@@ -229,7 +439,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		int result = 0;
 		boolean re = false;
 		try {
-			 result = this.language.doAddLName(la);
+			result = this.language.doAddLName(la);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -238,7 +448,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		return re;
 	}
-	
+
 	@Override
 	public boolean checkSName(String name,String code) {
 		boolean rt = false;
@@ -255,14 +465,14 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public boolean doAddSName(String name,String code) {
-	    DB_Source la = new DB_Source();
+		DB_Source la = new DB_Source();
 		la.setDbSourceId(UUID.randomUUID().toString());
 		la.setDbSourceName(name);
 		la.setDbSourceCode(code);
 		int result = 0;
 		boolean re = false;
 		try {
-			 result = this.db.doAddSName(la);
+			result = this.db.doAddSName(la);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -277,6 +487,8 @@ public class DataManagerServiceImpl implements DataManagerService {
 		List<Object> li = new ArrayList<Object>();
 		try {
 			li= this.data.checkDname(name);
+			/*//在zookeeper中判断
+			boolean result = dbConfig.checkName(name);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -308,6 +520,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
+
+			//在zookeeper中添加数据库配置
+			dbConfig.addDatabase(data);
+			//在数据库中添加
 			dus = this.data.doAddData(data);
 			cus = this.custom.doAddCustom(cs);
 		} catch (Exception e) {
@@ -378,6 +594,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
+
+			//在zookeeper中修改数据库配置
+			dbConfig.updateDatabase(data);
+			//在数据库中修改
 			dus = this.data.doUpdateData(data);
 			del = this.custom.doDeleteCustom(data.getId());
 			cus = this.custom.doAddCustom(cs);
@@ -389,7 +609,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		return rt;
 	}
-	
+
 	@Override
 	public List<Datamanager> selectAll() {
 		// TODO Auto-generated method stub
@@ -399,91 +619,89 @@ public class DataManagerServiceImpl implements DataManagerService {
 	@Override
 	public Datamanager getDataManagerBySourceCode(String productSourceCode) {
 		// TODO Auto-generated method stub
-		
+
 		Datamanager data1=this.data.getDataManagerBySourceCode(productSourceCode);
 		return data1;
 	}
 	@Override
 	public void selectZY() {
 		// TODO Auto-generated method stub
-		JSONArray list =this.data.selectZY();
-		
-			RedisUtil redis= new RedisUtil();
-				
-			redis.del("datamanager");
-			redis.set("datamanager", list.toString(), 6);
+		JSONArray list = dbConfig.selectSitateFoOne();
+		RedisUtil redis= new RedisUtil();
+		redis.del("datamanager");
+		redis.set("datamanager", list.toString(), 6);
 	}
 	@Override
 	public List<Object> exportData(String dataname) {
 		List<Object> r=data.exportData("%"+dataname+"%", dataname);
-		
+
 		if(r.size()>0){
 			for(int i=0;i<r.size();i++)
-			{	
+			{
 				String word=((Datamanager)r.get(i)).getSourceDb();
 				String newword=null;
 				if(word!=null&&word!=""){
-				String[] str=word.split(",");
-				List<String> list = Arrays.asList(str);
-				
-				for(int j=0;j<list.size();j++){
-					if(list.get(j)!=""&&list.get(j)!=null){
-						DB_Source dbs = db.getOneSource(list.get(j).toString());
-						if(j==0){
-							
-							if(dbs!=null){							
-								newword = dbs.getDbSourceName();
+					String[] str=word.split(",");
+					List<String> list = Arrays.asList(str);
+
+					for(int j=0;j<list.size();j++){
+						if(list.get(j)!=""&&list.get(j)!=null){
+							DB_Source dbs = db.getOneSource(list.get(j).toString());
+							if(j==0){
+
+								if(dbs!=null){
+									newword = dbs.getDbSourceName();
+								}
+							}
+							else{
+								if(dbs!=null){
+									newword = newword+","+dbs.getDbSourceName();
+								}
 							}
 						}
-						else{
-							if(dbs!=null){							
-								newword = newword+","+dbs.getDbSourceName();
-							}
-						}	
 					}
-				}
 				}
 				String launage=((Datamanager)r.get(i)).getLanguage();
 				String langude="";
 				if(launage!=null&&launage!=""){
-				List<String> listlan = Arrays.asList(launage.split(","));
-				
-				if(listlan.size()>0){
-					for(int j=0;j<listlan.size();j++){
-					if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
-						Language lan=this.language.getOne(listlan.get(j));
-						if(j==0){
-							langude=lan.getLanguageName();
-						}else{
-							langude=langude+","+lan.getLanguageName();
-						}
+					List<String> listlan = Arrays.asList(launage.split(","));
+
+					if(listlan.size()>0){
+						for(int j=0;j<listlan.size();j++){
+							if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
+								Language lan=this.language.getOne(listlan.get(j));
+								if(j==0){
+									langude=lan.getLanguageName();
+								}else{
+									langude=langude+","+lan.getLanguageName();
+								}
+							}
 						}
 					}
-				}
 				}
 				String resource_type=((Datamanager)r.get(i)).getResType();
 				String sources="";
 				if(resource_type!=null&&resource_type!=""){
-				List<String> listtyp = Arrays.asList(resource_type.split(","));
-				if(listtyp.size()>0){
-					for(int j=0;j<listtyp.size();j++){
-						if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
-							ResourceType reso=this.type.getOne(listtyp.get(j));
-							 if(j==0){
-								 sources=reso.getTypeName();
-							 }else{
-								 sources=sources+","+reso.getTypeName();
-							 }
+					List<String> listtyp = Arrays.asList(resource_type.split(","));
+					if(listtyp.size()>0){
+						for(int j=0;j<listtyp.size();j++){
+							if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
+								ResourceType reso=this.type.getOne(listtyp.get(j));
+								if(j==0){
+									sources=reso.getTypeName();
+								}else{
+									sources=sources+","+reso.getTypeName();
+								}
 							}
 						}
-				}
+					}
 				}
 				((Datamanager)r.get(i)).setLanguage(langude);
 				((Datamanager)r.get(i)).setResType(sources);
 				((Datamanager)r.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
 			}
 		}
-		
+
 		return r;
 	}
 	

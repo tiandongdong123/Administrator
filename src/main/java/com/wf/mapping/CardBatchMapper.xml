@@ -30,7 +30,7 @@
     check_department, check_person, check_date, pull_department, pull_person, pull_date, 
     batch_state
   </sql>
-  <!-- 生成充值卡批次 -->
+  <!-- 生成万方卡批次 -->
   <insert id="insertCardBatch" parameterType="com.wf.bean.CardBatch">
   	insert into wfks_accounting.rech_card_batch(batch_id, batch_name, type, 
       value_number, valid_start, 
@@ -49,46 +49,13 @@
       #{pullPerson}, #{pullDate}, #{batchState}
       )
   </insert>
-  <!-- 查询充值卡批次号最大值 -->
+  <!-- 查询万方卡批次号最大值 -->
   <select id="queryBatchName" resultType="java.lang.String">
   	select max(batch_name) from wfks_accounting.rech_card_batch 
   </select>
   <!-- 查询当日同种金额卡号的序列号 -->
   <select id="querySameMoney" resultType="java.lang.String">
   	select max(card_num) from wfks_accounting.rech_card where card_num like CONCAT(#{card},'%')
-  </select>
-  <!-- 查询充值批次当前条件下所有记录 -->
-  <select id="queryAllBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
-  	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
-  	where b.type=t.card_code
-  	<if test="batchName!=null">
-  		and b.batch_name=#{batchName}
-  	</if>
-  	<if test="applyDepartment!=null">
-  		and b.apply_department=#{applyDepartment}
-  	</if>
-  	<if test="applyPerson!=null">
-  		and b.apply_person=#{applyPerson}
-  	</if>
-  	<if test="startTime!=null">
-  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null">
-  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  	<if test="cardType!=null">
-       	and b.type in
-        <foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">  
-			#{item}
-		</foreach>
-    </if>
-    <if test="batchState !=null">
-  		and b.batch_state in
-	  	<foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
-  	</if>
-  	ORDER BY create_date DESC
   </select>
   <!-- 查询所有批次 -->
   <select id="queryAll" resultMap="BaseResultMap" parameterType="java.util.Map">
@@ -115,21 +82,47 @@
   		and b.apply_date <![CDATA[ <= ]]> #{endTime}
   	</if>
   	<if test="cardType !=null">
-  		and b.type in
-	  	<foreach collection="cardType.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
+  		and b.type=#{cardType}
+  	</if>
+  	<if test="checkState !=null">
+  		and b.check_state=#{checkState}
   	</if>
   	<if test="batchState !=null">
-  		and b.batch_state in
-	  	<foreach collection="batchState.split(',')"  open="(" close=")" separator="," item="item">
-	  		#{item}
-	  	</foreach>
+  		and b.batch_state=#{batchState}
   	</if>
   	ORDER BY create_date DESC
   	limit #{pageNum},#{pageSize}
   </select>
-  <!-- 根据batchId  充值卡批次详情页 -->
+  <!-- 查询充值批次当前条件下所有记录 -->
+  <select id="queryCheckSize" resultType="java.lang.Integer" parameterType="java.util.Map">
+  	select count(1) from wfks_accounting.rech_card_batch b
+  	where 1=1
+  	<if test="batchName!=null">
+  		and b.batch_name=#{batchName}
+  	</if>
+  	<if test="applyDepartment!=null">
+  		and b.apply_department=#{applyDepartment}
+  	</if>
+  	<if test="applyPerson!=null">
+  		and b.apply_person=#{applyPerson}
+  	</if>
+  	<if test="startTime!=null">
+  		and b.apply_date <![CDATA[ >= ]]> #{startTime}
+  	</if>
+  	<if test="endTime!=null">
+  		and b.apply_date <![CDATA[ <= ]]> #{endTime}
+  	</if>
+  	<if test="cardType!=null">
+       	and b.type=#{cardType}
+    </if>
+  	<if test="checkState !=null">
+  		and b.check_state=#{checkState}
+  	</if>
+    <if test="batchState !=null">
+  		and b.batch_state=#{batchState}
+  	</if>
+  </select>
+  <!-- 根据batchId  万方卡批次详情页 -->
   <select id="queryOneByBatchId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	select b.*,t.* from wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
  	where b.type=t.card_code 
@@ -138,7 +131,7 @@
   <!-- 修改审核状态 -->
   <update id="updateCheckState" parameterType="java.util.Map">
   	update wfks_accounting.rech_card_batch 
-  	set check_state=2,check_department=#{checkDepartment},check_person=#{checkPerson},check_date=#{checkDate}
+  	set check_state=#{checkState},check_department=#{checkDepartment},check_person=#{checkPerson},check_date=#{checkDate},batch_state=#{batchState}
   	where batch_id=#{batchId}
   </update>
   <!-- 修改批次状态 -->
@@ -146,5 +139,9 @@
   	update wfks_accounting.rech_card_batch 
   	set batch_state=#{batchState},pull_department=#{pullDepartment},pull_person=#{pullPerson},pull_date=#{pullDate}
   	where batch_id=#{batchId}
+  </update>
+  <!-- 修改附件(未审核) -->
+  <update id="updateAttachment" parameterType="java.lang.String">
+  	update wfks_accounting.rech_card_batch set adjunct=#{adjunct} where batch_id=#{batchId}
   </update>
 </mapper>

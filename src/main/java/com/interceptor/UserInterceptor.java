@@ -39,13 +39,19 @@ public class UserInterceptor implements HandlerInterceptor {
 		if (url.endsWith(CookieUtil.LOGIN_URL) || url.endsWith(CookieUtil.REMIND)) {
 			return true;
 		}
+		//2、校验cookie
+		if(CookieUtil.getCookie(req)==null){
+			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+			return false;
+		}
+		//3、校验redis
 		HttpSession session = req.getSession(true);
-		String id = CookieUtil.getCache((String) session.getId());
+		String id=CookieUtil.getCache(session.getId());
 		if (id == null) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		//3、已经登录的每次请求都往session放入参数
+		//4、已经登录的每次请求都往session放入参数
 		String userName=(String) session.getAttribute("userName");
 		if (!url.endsWith(CookieUtil.INDEX) && userName == null) {
 			String json = CookieUtil.getCache(CookieUtil.LAYOUT + id);

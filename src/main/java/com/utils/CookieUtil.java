@@ -20,11 +20,11 @@ public class CookieUtil {
 	public static final String REMIND="/user/getRemind.do";
 	public static final String INDEX="/user/toIndex.do";
 	public static final String LAYOUT="layout.";
-	
-	public static String getCache(String key){
-		return redis.get(key, 12);
+
+	public static String getCache(String key) {
+		return redis.get(key, 0);
 	}
-	
+
 	/**
 	 * 检验cookie
 	 * @param req

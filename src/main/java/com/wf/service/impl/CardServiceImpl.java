@@ -22,7 +22,6 @@ public class CardServiceImpl implements CardService{
 	@Autowired
 	private CardTypeService cardtype;
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public PageList queryCard(String batchName, String numStart, String numEnd,
 			String applyDepartment, String applyPerson, String startTime,
@@ -60,28 +59,16 @@ public class CardServiceImpl implements CardService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cardMapper.queryCard(map);
-		//-------------查询一共有多少条-----------------------------
-		Map<String,Object> map1 = new HashMap<String,Object>();
-		map1.put("batchName", batchName);
-		map1.put("numStart", numStart);
-		map1.put("numEnd", numEnd);
-		map1.put("applyDepartment", applyDepartment);
-		map1.put("applyPerson", applyPerson);
-		map1.put("startTime", startTime);
-		map1.put("endTime", endTime);
-		map1.put("cardType", cardType);
-		map1.put("batchState", batchState);
-		map.put("invokeState", invokeState);
-		List<Object> all = cardMapper.queryAll(map1);
+		int size = cardMapper.querySize(map);
 		PageList pl = new PageList();
 		pl.setPageRow(list);//查询结果列表
-		pl.setTotalRow(all.size());//总条数
+		pl.setTotalRow(size);//总条数
 		pl.setPageNum(pageNum);//当前页
 		pl.setPageSize(pageSize);//每页显示的数量
 		return pl;
 	}
 	/**
-	 * 单张充值卡详情页
+	 * 单张万方卡详情页
 	 * @param id
 	 * @return
 	 */
@@ -92,7 +79,7 @@ public class CardServiceImpl implements CardService{
 	}
 
 	/**
-	 * 根据batchId  充值卡列表
+	 * 根据batchId  万方卡列表
 	 * @param batchId
 	 * @return
 	 */
@@ -105,16 +92,17 @@ public class CardServiceImpl implements CardService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cardMapper.queryCardBybatchId(map);
-		List<Map<String,Object>> allList = cardMapper.queryAllBybatchId(batchId);
+		int size= cardMapper.querySzieBybatchId(batchId);
 		PageList p = new PageList();
-		p.setTotalRow(allList.size());
+		p.setTotalRow(size);
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(list);
 		return p;
 	}
+	
 	/**
-	 * 修改充值卡激活状态
+	 * 修改万方卡激活状态
 	 * @param id
 	 * @return
 	 */
@@ -136,7 +124,7 @@ public class CardServiceImpl implements CardService{
 	}
 	
 	/**
-	 * 根据batchId  充值卡列表
+	 * 根据batchId  万方卡列表
 	 * @param batchId
 	 * @return
 	 */

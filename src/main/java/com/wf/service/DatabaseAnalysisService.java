@@ -21,7 +21,7 @@ public interface DatabaseAnalysisService {
 	* @author LiuYong 
 	* @date 13 Dis 2016 2:53:14 PM
 	 */
-	PageList getDatabaseAnalysisList(DatabaseUseDaily databaseAnalysis,String startTime,String endTime,Integer pagenum,Integer pagesize);
+	PageList 	getDatabaseAnalysisList(DatabaseUseDaily databaseAnalysis,String startTime,String endTime,Integer pagenum,Integer pagesize);
 
 	/**
 	* @Title: DatabaseAnalysisStatistics

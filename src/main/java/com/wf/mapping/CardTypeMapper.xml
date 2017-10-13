@@ -13,11 +13,11 @@
   </select>
   
   <insert id="addCode" parameterType="com.wf.bean.CardType" >
-  insert into wfks_accounting.card_type  (card_code,card_name) values (#{cardTypeCode},#{cardTypeName})
+  insert into wfks_accounting.card_type  (card_code,card_name,add_time) values (#{cardTypeCode},#{cardTypeName},now())
   </insert>
     
    <select id="getlist" resultMap="BaseResultMap">
-   select * from wfks_accounting.card_type
+   select * from wfks_accounting.card_type order by add_time;
    </select>
    
    <select id="getOne" resultMap="BaseResultMap">
