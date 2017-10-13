@@ -159,7 +159,7 @@ public class AheadUserServiceImpl implements AheadUserService{
     @Override
 	public String validateOldUser(String userName) {
 		if (!"true".equals(isOpen)) {
-			return "false";
+			return "true";
 		}
 		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
