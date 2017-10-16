@@ -1,0 +1,109 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/othermanager/js/batch_details.js"></script>
+
+  <div class="content-wrapper">
+  <input id="batchId" type="hidden" value="${object.batchId}"/>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+	<?  var checkState;
+		if(object.checkState == 1){
+			checkState = "未审核";	
+		}
+		if(object.checkState == 2){
+			checkState = "已审核";	
+		}
+	?>
+      <h1>
+		${checkState!}万方卡批次详情
+      </h1>
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+     <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+         <div class="box box-primary">
+     	  <div style="">
+     		<div>
+              <div style="width:700px; margin:0 auto;background-color:#f9f9f9;border-top: solid 5px #56B699;">
+                <div style=" text-align:center; font-size:16px; line-height:40px"> <i class="fa fa-circle-o text-red"></i>基本信息 </div>
+                <table class="table">
+                 <tbody>
+     				<tr>
+     					<td align="right">万方卡批次</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.batchName}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">万方卡类型</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.cardTypeName}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">面值/数量</td>
+     					<td width="20px"></td>
+     					<td align="left">
+     					<?for(valuenum in valueNumber){?>
+     					 ${valuenum.value}(元) × ${valuenum.number}(张),
+     					<?}?>
+     					</td>
+     				</tr>
+     				<tr>
+     					<td align="right">总金额</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.amount}元</td>
+     				</tr>
+     				<tr>
+     					<td align="right">有效期</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.validStart}~${object.validEnd}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">生成日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.createDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请部门</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.applyDepartment}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请人</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.applyPerson}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">申请日期</td>
+     					<td width="20px"></td>
+     					<td align="left">${object.applyDate}</td>
+     				</tr>
+     				<tr>
+     					<td align="right">附件</td>
+     					<td width="20px"></td>
+     					<td align="left"><a href="../card/download1.do?url=${object.adjunct}" style="text-decoration:underline;" id="download">点击下载</a>
+     					&nbsp;&nbsp;<a href="javascript:;" style="text-decoration:underline;" onclick="updateFile()">修改</a>
+     					&nbsp;&nbsp;<div class="btn btn-default btn-file" id="adjunct" style="display:none;"><i class="fa fa-paperclip"></i>修改附件<input type="file" name="attachment" id="file"></div>
+                  		<span id="file_name" style="margin-left: 10px;"></span></td>
+     				</tr>
+     				<tr>
+     					<td align="right">审核状态</td>
+     					<td width="20px"></td>
+     					<td align="left"><font color="red">${checkState}</font></td>
+     				</tr>
+     				</tbody>
+     			</table>
+     		</div>
+     	 </div>
+     	</div>
+     	</div>
+     	</div>
+		</div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>
