@@ -220,9 +220,17 @@ public class SolrManagerController {
 		return map;
 	}
 	
-	//旧平台方志
+	// 旧平台方志
 	private String localChronicle(String id) {
-		return "Id:[" + id + "]";
+		String[] ids = id.split(" ");
+		StringBuffer sb = new StringBuffer("");
+		for (int i = 0; i < ids.length; i++) {
+			if (i == 0) {
+				sb.append("Id:" + ids[i]);
+			}
+			sb.append(" OR Id:" + ids[i]);
+		}
+		return sb.toString();
 	}
 
 	//期刊
