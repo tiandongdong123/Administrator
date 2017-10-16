@@ -49,4 +49,13 @@ public interface PersonService {
 	 * @return
 	 */
 	List<Map<String, Object>> getAllInstitutional(String institution);
+	
+	
+	/**
+	 * 获取所有机构名称
+	 * @param institution 机构名称
+	 * @return
+	 */
+	List<String> getAllInstitution(String institution);
+	
 }

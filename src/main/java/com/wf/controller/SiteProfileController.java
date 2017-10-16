@@ -22,7 +22,10 @@ public class SiteProfileController {
 	@Autowired
 	private WebSiteAttributeService attributeService;
 
-	/** 网站概况页面 */
+	/**
+	 *  网站概况页面 
+	 * @return
+	 */
 	@RequestMapping("othermanager-siteProfile")
 	public ModelAndView qikanaddMatrixLiterature() {
 		ModelAndView view = new ModelAndView();
@@ -30,7 +33,12 @@ public class SiteProfileController {
 		return view;
 	}
 
-	/** 昨天访问浏览量 天表 */
+	/**
+	 * 天表 E-char图 
+	 * @param type
+	 * @param dateType
+	 * @return
+	 */
 	@RequestMapping("findPageView")
 	@ResponseBody
 	public HashMap<String, Object> findPageView(Integer type, String dateType) {
@@ -41,8 +49,12 @@ public class SiteProfileController {
 		return map;
 	}
 
-	/** 昨天访问量 小时表 E-char图 */
-
+	/**
+	 * 小时表 E-char图 
+	 * @param type
+	 * @param dateType
+	 * @return
+	 */
 	@RequestMapping("findPageViewHourly")
 	@ResponseBody
 	public Object findPageViewHourly(Integer type, String dateType) {
@@ -50,7 +62,13 @@ public class SiteProfileController {
 		return webSiteHourlyService.findPageViewHourly(type, dateType);
 	}
 
-	// 对比折线图 小时表 contrastPageViewHourly
+	/**
+	 * 对比折线图 小时表 contrastPageViewHourly
+	 * @param type
+	 * @param dateType
+	 * @param contrastDate
+	 * @return
+	 */
 	@RequestMapping("contrastPageViewHourly")
 	@ResponseBody
 	public Object contrastPageViewHourly(Integer type, String dateType,
@@ -60,15 +78,29 @@ public class SiteProfileController {
 				contrastDate, type);
 	}
 
-	// 查询统计列表总量
-	@RequestMapping("selectSumNumbers")
+	/**
+	 * 对比时间折线图 天表 contrastPageView
+	 * @param dateType
+	 * @param contrastDate
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping("contrastPageView")
 	@ResponseBody
-	public Object selectSumNumbers(String dateType) {
+	public HashMap<String, Object> contrastPageView(String dateType,
+			String contrastDate, Integer type) {
 
-		return webSiteDailyService.selectSumNumbers(dateType);
+		return webSiteDailyService.contrastPageView(dateType, contrastDate,
+				type);
 	}
 
-	// 基础指标查询 天表
+	/**
+	 * 基础指标查询 天表
+	 * @param dateType
+	 * @param pagenum
+	 * @param pagesize
+	 * @return
+	 */
 	@RequestMapping("basicIndexNum")
 	@ResponseBody
 	public PageList basicIndexNum(String dateType, Integer pagenum,
@@ -77,7 +109,13 @@ public class SiteProfileController {
 		return webSiteDailyService.basicIndexNum(dateType, pagenum, pagesize);
 	}
 
-	// 基础查询 时表
+	/**
+	 * 基础查询 时表
+	 * @param dateType
+	 * @param pagenum
+	 * @param pagesize
+	 * @return
+	 */
 	@RequestMapping("basicIndexNumHourly")
 	@ResponseBody
 	public PageList basicIndexNumHourly(String dateType, Integer pagenum,
@@ -87,7 +125,23 @@ public class SiteProfileController {
 				pagesize);
 	}
 
-	// 根据时间查询客户属性
+	/**
+	 * 查询统计列表总量--头部
+	 * @param dateType
+	 * @return
+	 */
+	@RequestMapping("selectSumNumbers")
+	@ResponseBody
+	public Object selectSumNumbers(String dateType) {
+
+		return webSiteDailyService.selectSumNumbers(dateType);
+	}
+
+	/**
+	 * 根据时间查询底部访客属性
+	 * @param dateType
+	 * @return
+	 */
 	@RequestMapping("findWebsiteAttribute")
 	@ResponseBody
 	public HashMap<String, Object> findWebsiteAttribute(String dateType) {
@@ -95,13 +149,4 @@ public class SiteProfileController {
 		return attributeService.findWebsiteAttribute(dateType);
 	}
 
-	// 对比时间折线图 contrastPageView
-	@RequestMapping("contrastPageView")
-	@ResponseBody
-	public HashMap<String, Object> contrastPageView(String dateType,
-			String contrastDate, Integer type) {
-
-		return webSiteDailyService.contrastPageView(dateType, contrastDate,
-				type);
-	}
 }

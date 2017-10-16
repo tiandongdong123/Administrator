@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.xhtml.map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,20 +33,20 @@ import com.wf.service.SourceAnalysisService;
 public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 
 
-	@Autowired
-	private SourceAnalysisSourceDailyMapper sourceAnalysisSourceDailyMapper;
+	//@Autowired
+	//private SourceAnalysisSourceDailyMapper sourceAnalysisSourceDailyMapper;
 	@Autowired
 	private SourceAnalysisSourceHourlyMapper sourceAnalysisSourceHourlyMapper;
-	@Autowired
-	private SourceAnalysisSearchEngineDailyMapper sourceAnalysisSearchEngineDailyMapper;
+	//@Autowired
+	//private SourceAnalysisSearchEngineDailyMapper sourceAnalysisSearchEngineDailyMapper;
 	@Autowired
 	private SourceAnalysisSearchEngineHourlyMapper sourceAnalysisSearchEngineHourlyMapper;
-	@Autowired
-	private SourceAnalysisSearchWordDailyMapper sourceAnalysisSearchWordDailyMapper;
+	//@Autowired
+	//private SourceAnalysisSearchWordDailyMapper sourceAnalysisSearchWordDailyMapper;
 	@Autowired
 	private SourceAnalysisSearchWordHourlyMapper sourceAnalysisSearchWordHourlyMapper;
-	@Autowired
-	private SourceAnalysisLinkHostDailyMapper sourceAnalysisLinkHostDailyMapper;
+	//@Autowired
+	//private SourceAnalysisLinkHostDailyMapper sourceAnalysisLinkHostDailyMapper;
 	@Autowired
 	private SourceAnalysisLinkHostHourlyMapper sourceAnalysisLinkHostHourlyMapper;
 	
@@ -171,11 +172,11 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		/**页面底部列表其他行数据*/
 		int startNum = (pageNum-1)*pageSize;
-		List<SourceAnalysisSourceDaily> list=sourceAnalysisSourceDailyMapper.getPage(startTime, endTime, startNum, pageSize);
+		List<SourceAnalysisSourceHourly> list=sourceAnalysisSourceHourlyMapper.getPage_day(startTime, endTime, startNum, pageSize);
 		List<Object> list1=new ArrayList();
 		
 		for(int i=0;i<list.size();i++){
-			SourceAnalysisSourceDaily sasd=list.get(i);
+			SourceAnalysisSourceHourly sasd=list.get(i);
 			
 			str1+=Double.valueOf(sasd.getSum1());
 			str2+=Double.valueOf(sasd.getSum2());
@@ -203,8 +204,8 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSourceDaily sasd1=new SourceAnalysisSourceDaily();
-		sasd1.setAccess_type(str);
+		SourceAnalysisSourceHourly sasd1=new SourceAnalysisSourceHourly();
+		sasd1.setAccess_type(str); 
 		sasd1.setSum1(""+str1.intValue());
 		sasd1.setSum2(""+str2.intValue());
 		sasd1.setSum3(""+str3.intValue());
@@ -225,9 +226,9 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str7=0.0;
 		str8=0.0;
 		/**当前条件所有数据汇总,即页面中间列表数据*/
-		List<SourceAnalysisSourceDaily> lists=sourceAnalysisSourceDailyMapper.getPages(startTime, endTime);
+		List<SourceAnalysisSourceHourly> lists=sourceAnalysisSourceHourlyMapper.getPages_day(startTime, endTime);
 		for(int i=0;i<lists.size();i++){
-			SourceAnalysisSourceDaily sasd=lists.get(i);
+			SourceAnalysisSourceHourly sasd=lists.get(i);
 			str1+=Double.valueOf(sasd.getSum1());
 			str2+=Double.valueOf(sasd.getSum2());
 			str3+=Double.valueOf(sasd.getSum3());
@@ -237,7 +238,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSourceDaily sasdSummary=new SourceAnalysisSourceDaily();
+		SourceAnalysisSourceHourly sasdSummary=new SourceAnalysisSourceHourly();
 		sasdSummary.setSum1(""+str1.intValue());
 		sasdSummary.setSum2(""+str2.intValue());
 		sasdSummary.setSum3(""+str3.intValue());
@@ -276,7 +277,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 	 */
 	public Map<String, Object> SourceAnalysisSourceStatistics(
 			String flag, String type, String startTime, String endTime) {
-		List<SourceAnalysisSourceDaily> list=new ArrayList();
+		List<SourceAnalysisSourceHourly> list=new ArrayList();
 		List<String> groupList=new ArrayList();
 		Map<String,Object> map=new HashMap();
 		List<String> dataList=new ArrayList();
@@ -284,7 +285,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		/**饼图组织数据，手动拼写json字符串*/
 		if("1".equals(type)||"2".equals(type)){/**组织饼图数据*/
-		list=sourceAnalysisSourceDailyMapper.getChart(type,startTime, endTime);
+		list=sourceAnalysisSourceHourlyMapper.getChart_day(type,startTime, endTime);
 		StringBuffer sb=new StringBuffer();
 		int count=0;
 		sb.append("[");
@@ -313,7 +314,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		sb.append("]");
 		map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -324,8 +325,8 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			}else if("8".equals(type)){
 				type1="7";
 			}
-			String average=sourceAnalysisSourceDailyMapper.average(type1,type2,startTime,endTime);
-			list=sourceAnalysisSourceDailyMapper.indexAverageList(type1, type2, startTime, endTime);
+			String average=sourceAnalysisSourceHourlyMapper.average_day(type1,type2,startTime,endTime);
+			list=sourceAnalysisSourceHourlyMapper.indexAverageList_day(type1, type2, startTime, endTime);
 			for(int i=0;i<list.size();i++){
 				dataList.add(""+Math.ceil(Double.valueOf(list.get(i).getSum())));
 				groupList.add(""+list.get(i).getAccess_type());
@@ -342,10 +343,18 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average", null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", accessType);
+		}else if("8".equals(type)){
+			List<SourceAnalysisSourceHourly> lists=sourceAnalysisSourceHourlyMapper.getPage_day(startTime, endTime, 0, 10);
+			for(int i=0;i<lists.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(lists.get(i).getSum7())*100/(Double.valueOf(lists.get(i).getSum2()))));
+				groupList.add(""+lists.get(i).getAccess_type());
+			}
+			
+			map.put("dataList",dataList);
 		}
 		
 		/**折线图组织数据*/
-		List<String> dateList=sourceAnalysisSourceDailyMapper.getDateList(type,startTime, endTime);
+		List<String> dateList=sourceAnalysisSourceHourlyMapper.getDateList_day(type,startTime, endTime);
 		StringBuffer seriesStr=new StringBuffer();
 		int count1=0;
 		seriesStr.append("[");
@@ -356,24 +365,52 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		for(int j=0;j< groupList.size();j++){
 //			groupList.set(j,"\""+groupList.get(j)+"\"");
-			List<String> numbersList=sourceAnalysisSourceDailyMapper.getLine(groupList.get(j),type,startTime, endTime);
+			List<String> numbersList=new ArrayList();
 			List<String> numbersList1=new ArrayList();
+			
+			if("8".equals(type)){
+				List<SourceAnalysisSourceHourly> temp=new ArrayList<SourceAnalysisSourceHourly>();
+				SourceAnalysisSourceHourly analysisSourceDaily=null;
+				for (int i = 0; i < dateList.size(); i++) {
+					analysisSourceDaily=new SourceAnalysisSourceHourly();
+					analysisSourceDaily.setDate(dateList.get(i));
+					analysisSourceDaily.setNumbers("0%");
+					temp.add(analysisSourceDaily);
+				}
+				
+				List<Map<String, Object>> tempList=new ArrayList<Map<String, Object>>();
+				tempList=sourceAnalysisSourceHourlyMapper.getLine1_day(groupList.get(j), type, startTime, endTime);
+				
+				for (int i = 0; i < temp.size(); i++) {
+					for (int k = 0; k < tempList.size(); k++) {
+						 if(temp.get(i).getDate().equals(tempList.get(k).get("date").toString())){
+							 temp.get(i).setNumbers(tempList.get(k).get("numbers").toString());
+							 break;
+						 }
+					}
+				}
+				
+				for (SourceAnalysisSourceHourly sourceAnalysisSourceDaily : temp) {
+					numbersList.add(sourceAnalysisSourceDaily.getNumbers());
+				}
+				
+				
+				for(String str:numbersList){
+					numbersList1.add((""+Math.ceil(Double.valueOf(str.replace("%", "")))).split("\\.")[0]);
+				}
+			}else{	
+				numbersList=sourceAnalysisSourceHourlyMapper.getLine_day(groupList.get(j),type,startTime, endTime);
+				for(String str:numbersList){
+					numbersList1.add((""+Math.ceil(Double.valueOf(str))).split("\\.")[0]);
+				}
+			}
+			
 			if("0".equals(groupList.get(j))){
 				groupList.set(j,"\"直接访问\"");
 			}else if("1".equals(groupList.get(j))){
 				groupList.set(j,"\"搜索引擎\"");
 			}else if("2".equals(groupList.get(j))){
 				groupList.set(j,"\"外部链接\"");
-			}
-			
-			if("8".equals(type)){
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str.replace("%", "")))).split("\\.")[0]);
-				}
-			}else{
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str))).split("\\.")[0]);
-				}
 			}
 			
 			seriesStr.append("itemStyle:{ normal: {label : {show: false}}},name:"+groupList.get(j)+",type:\"line\",data:"+numbersList1);
@@ -564,7 +601,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		sb.append("]");
 		map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -595,6 +632,15 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average",null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", accessType);
+		}else if("8".equals(type)){
+			
+			list=sourceAnalysisSourceHourlyMapper.getPage(date,startTime, endTime,0,10);
+			for(int i=0;i<list.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(list.get(i).getSum7())*100/(Double.valueOf(list.get(i).getSum2()))));
+				groupList.add(""+list.get(i).getAccess_type());
+			}
+			map.put("dataList",dataList);
+			
 		}
 		
 		/**折线图组织数据*/
@@ -611,22 +657,46 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 //			groupList.set(j,"\""+groupList.get(j)+"\"");
 			List<String> numbersList=sourceAnalysisSourceHourlyMapper.getLine(groupList.get(j),type,date,startTime, endTime);
 			List<String> numbersList1=new ArrayList();
+			if("8".equals(type)){
+				
+				List<Map<String, Object>> temp=new ArrayList<Map<String, Object>>();
+				Map<String, Object> tempmap=null;
+				for (int i = 0; i < dateList.size(); i++) {
+					tempmap=new HashMap<String, Object>();
+					tempmap.put("date", dateList.get(i));
+					tempmap.put("numbers","0%");
+					temp.add(tempmap);
+				}
+				
+				List<Map<String, Object>> tempList=new ArrayList<Map<String, Object>>();
+				tempList=sourceAnalysisSourceHourlyMapper.getLine1(groupList.get(j),type,date,startTime, endTime);
+				
+				for (int i = 0; i < temp.size(); i++) {
+					for (int k = 0; k < tempList.size(); k++) {
+						 if(temp.get(i).get("date").equals(tempList.get(k).get("date")+"")){
+							 temp.get(i).put("numbers",tempList.get(k).get("numbers"));
+							 break;
+						 }
+					}
+				}
+				
+				for (Map<String, Object> item : temp) {
+					numbersList1.add((""+Math.ceil(Double.valueOf(item.get("numbers").toString().replace("%", "")))).split("\\.")[0]);
+				}
+				
+			}else{
+				for(String str:numbersList){
+					numbersList1.add((""+Math.ceil(Double.valueOf(str))).split("\\.")[0]);
+				}
+			}
+			
+			
 			if("0".equals(groupList.get(j))){
 				groupList.set(j,"\"直接访问\"");
 			}else if("1".equals(groupList.get(j))){
 				groupList.set(j,"\"搜索引擎\"");
 			}else if("2".equals(groupList.get(j))){
 				groupList.set(j,"\"外部链接\"");
-			}
-			
-			if("8".equals(type)){
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str.replace("%", "")))).split("\\.")[0]);
-				}
-			}else{
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str))).split("\\.")[0]);
-				}
 			}
 			
 			seriesStr.append("itemStyle:{ normal: {label : {show: false}}},name:"+groupList.get(j)+",type:\"line\",data:"+numbersList1);
@@ -674,10 +744,10 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		/**页面底部列表其他行数据*/
 		int startNum = (pageNum-1)*pageSize;
-		List<SourceAnalysisSearchEngineDaily> list=sourceAnalysisSearchEngineDailyMapper.getPage(startTime, endTime, startNum, pageSize);
+		List<SourceAnalysisSearchEngineHourly> list=sourceAnalysisSearchEngineHourlyMapper.getPage_day(startTime, endTime, startNum, pageSize);
 		List<Object> list1=new ArrayList();
 		for(int i=0;i<list.size();i++){
-			SourceAnalysisSearchEngineDaily sase=list.get(i);
+			SourceAnalysisSearchEngineHourly sase=list.get(i);
 
 			str1+=Double.valueOf(sase.getSum1());
 			str2+=Double.valueOf(sase.getSum2());
@@ -705,7 +775,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSearchEngineDaily sase1=new SourceAnalysisSearchEngineDaily();
+		SourceAnalysisSearchEngineHourly sase1=new SourceAnalysisSearchEngineHourly();
 		sase1.setEngine_name(""+str);
 		sase1.setSum1(""+str1.intValue());
 		sase1.setSum2(""+str2.intValue());
@@ -727,9 +797,9 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str7=0.0;
 		str8=0.0;
 		/**当前条件所有数据汇总,即页面中间列表数据*/
-		List<SourceAnalysisSearchEngineDaily> lists=sourceAnalysisSearchEngineDailyMapper.getPages(startTime, endTime);
+		List<SourceAnalysisSearchEngineHourly> lists=sourceAnalysisSearchEngineHourlyMapper.getPages_day(startTime, endTime);
 		for(int i=0;i<lists.size();i++){
-			SourceAnalysisSearchEngineDaily sase=lists.get(i);
+			SourceAnalysisSearchEngineHourly sase=lists.get(i);
 			str1+=Double.valueOf(sase.getSum1());
 			str2+=Double.valueOf(sase.getSum2());
 			str3+=Double.valueOf(sase.getSum3());
@@ -739,7 +809,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSearchEngineDaily saseSummary=new SourceAnalysisSearchEngineDaily();
+		SourceAnalysisSearchEngineHourly saseSummary=new SourceAnalysisSearchEngineHourly();
 		saseSummary.setSum1(""+str1.intValue());
 		saseSummary.setSum2(""+str2.intValue());
 		saseSummary.setSum3(""+str3.intValue());
@@ -777,13 +847,13 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 	public Map<String, Object> SourceAnalysisEngineStatistics(
 			String flag, String type,String date, String startTime, String endTime) {
 		
-		List<SourceAnalysisSearchEngineDaily> list=new ArrayList();
+		List<SourceAnalysisSearchEngineHourly> list=new ArrayList();
 		List<String> groupList=new ArrayList();
 		Map<String,Object> map=new HashMap();
 		List<String> dataList=new ArrayList();
 		
 		if("1".equals(type)||"2".equals(type)){/**组织饼图数据*/
-			list=sourceAnalysisSearchEngineDailyMapper.getChart(type,startTime, endTime);
+			list=sourceAnalysisSearchEngineHourlyMapper.getChart_day(type,startTime, endTime);
 			Map<String,Object> map1=new HashMap();
 			map1.put("list", list);
 			map1=pieData(flag,map1);
@@ -792,7 +862,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -803,8 +873,8 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			}else if("8".equals(type)){
 				type1="7";
 			}
-			String average=sourceAnalysisSearchEngineDailyMapper.average(type1,type2,startTime,endTime);
-			list=sourceAnalysisSearchEngineDailyMapper.indexAverageList(type1, type2, startTime, endTime);
+			String average=sourceAnalysisSearchEngineHourlyMapper.average_day(type1,type2,startTime,endTime);
+			list=sourceAnalysisSearchEngineHourlyMapper.indexAverageList_day(type1, type2, startTime, endTime);
 			for(int i=0;i<list.size();i++){
 				dataList.add((""+Math.ceil(Double.valueOf(list.get(i).getSum()))).split("\\.")[0]);
 				groupList.add(list.get(i).getEngine_name());
@@ -813,10 +883,19 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average",null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			List<SourceAnalysisSearchEngineHourly> lists=sourceAnalysisSearchEngineHourlyMapper.getPage_day(startTime, endTime, 0, 10);
+			for(int i=0;i<lists.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(lists.get(i).getSum7())*100/(Double.valueOf(lists.get(i).getSum2()))));
+				groupList.add(""+lists.get(i).getEngine_name());
+			}
+			
+			map.put("dataList",dataList);
+			
 		}
 		/**折线图组织数据*/
-		List<String> dateList=sourceAnalysisSearchEngineDailyMapper.getDateList(type,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime,endTime);
+		List<String> dateList=sourceAnalysisSearchEngineHourlyMapper.getDateList_day(type,startTime, endTime);
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime,endTime);
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -975,7 +1054,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			groupList=(List<String>)map1.get("groupList");
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -996,11 +1075,20 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average",null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			
+			list=sourceAnalysisSearchEngineHourlyMapper.getPage(date,startTime, endTime,0,10);
+			for(int i=0;i<list.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(list.get(i).getSum7())*100/(Double.valueOf(list.get(i).getSum2()))));
+				groupList.add(""+list.get(i).getEngine_name());
+			}
+			map.put("dataList",dataList);
+			
 		}
 		
 		/**折线图组织数据*/
 		List<String> dateList=sourceAnalysisSearchEngineHourlyMapper.getDateList(type,date,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime.toString(),endTime.toString());
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime.toString(),endTime.toString());
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -1038,10 +1126,10 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		/**页面底部列表其他行数据*/
 		int startNum = (pageNum-1)*pageSize;
-		List<SourceAnalysisSearchWordDaily> list=sourceAnalysisSearchWordDailyMapper.getPage(startTime, endTime, startNum, pageSize);
+		List<SourceAnalysisSearchWordHourly> list=sourceAnalysisSearchWordHourlyMapper.getPage_day(startTime, endTime, startNum, pageSize);
 		List<Object> list1=new ArrayList();
 		for(int i=0;i<list.size();i++){
-			SourceAnalysisSearchWordDaily sasw=list.get(i);
+			SourceAnalysisSearchWordHourly sasw=list.get(i);
 			
 			str1+=Double.valueOf(sasw.getSum1());
 			str2+=Double.valueOf(sasw.getSum2());
@@ -1069,7 +1157,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSearchWordDaily sasw1=new SourceAnalysisSearchWordDaily();
+		SourceAnalysisSearchWordHourly sasw1=new SourceAnalysisSearchWordHourly();
 		sasw1.setKeyWord(str);
 		sasw1.setSum1(""+str1.intValue());
 		sasw1.setSum2(""+str2.intValue());
@@ -1091,9 +1179,9 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str7=0.0;
 		str8=0.0;
 		/**当前条件所有数据汇总,即页面中间列表数据*/
-		List<SourceAnalysisSearchWordDaily> lists=sourceAnalysisSearchWordDailyMapper.getPages(startTime, endTime);
+		List<SourceAnalysisSearchWordHourly> lists=sourceAnalysisSearchWordHourlyMapper.getPages_day(startTime, endTime);
 		for(int i=0;i<lists.size();i++){
-			SourceAnalysisSearchWordDaily sasw=lists.get(i);
+			SourceAnalysisSearchWordHourly sasw=lists.get(i);
 			str1+=Double.valueOf(sasw.getSum1());
 			str2+=Double.valueOf(sasw.getSum2());
 			str3+=Double.valueOf(sasw.getSum3());
@@ -1103,7 +1191,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisSourceDaily saswSummary=new SourceAnalysisSourceDaily();
+		SourceAnalysisSearchWordHourly saswSummary=new SourceAnalysisSearchWordHourly();
 		saswSummary.setSum1(""+str1.intValue());
 		saswSummary.setSum2(""+str2.intValue());
 		saswSummary.setSum3(""+str3.intValue());
@@ -1140,13 +1228,13 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 	 */
 	public Map<String, Object> SourceAnalysisWordStatistics(
 			String flag, String type,String date, String startTime, String endTime) {
-		List<SourceAnalysisSearchWordDaily> list=new ArrayList();
+		List<SourceAnalysisSearchWordHourly> list=new ArrayList();
 		List<String> groupList=new ArrayList();
 		Map<String,Object> map=new HashMap();
 		List<String> dataList=new ArrayList();
 		
 		if("1".equals(type)||"2".equals(type)){/**组织饼图数据*/
-			list=sourceAnalysisSearchWordDailyMapper.getChart(type,startTime, endTime);
+			list=sourceAnalysisSearchWordHourlyMapper.getChart_day(type,startTime, endTime);
 			Map<String,Object> map1=new HashMap();
 			map1.put("list", list);
 			map1=pieData(flag,map1);
@@ -1155,7 +1243,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -1166,8 +1254,8 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			}else if("8".equals(type)){
 				type1="7";
 			}
-			String average=sourceAnalysisSearchWordDailyMapper.average(type1,type2,startTime,endTime);
-			list=sourceAnalysisSearchWordDailyMapper.indexAverageList(type1, type2, startTime, endTime);
+			String average=sourceAnalysisSearchWordHourlyMapper.average_day(type1,type2,startTime,endTime);
+			list=sourceAnalysisSearchWordHourlyMapper.indexAverageList_day(type1, type2, startTime, endTime);
 			for(int i=0;i<list.size();i++){
 				dataList.add(""+Math.ceil(Double.valueOf(list.get(i).getSum())));
 				groupList.add(list.get(i).getKeyWord());
@@ -1176,11 +1264,19 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average",null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			List<SourceAnalysisSearchWordHourly> lists=sourceAnalysisSearchWordHourlyMapper.getPage_day(startTime, endTime, 0, 10);
+			for(int i=0;i<lists.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(lists.get(i).getSum7())*100/(Double.valueOf(lists.get(i).getSum2()))));
+				groupList.add(""+lists.get(i).getKeyWord());
+			}
+			
+			map.put("dataList",dataList);
 		}
 		
 		/**折线图组织数据*/
-		List<String> dateList=sourceAnalysisSearchWordDailyMapper.getDateList(type,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime,endTime);
+		List<String> dateList=sourceAnalysisSearchWordHourlyMapper.getDateList_day(type,startTime, endTime);
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime,endTime);
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -1337,7 +1433,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			groupList=(List<String>)map1.get("groupList");
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -1358,11 +1454,19 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average", null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			list=sourceAnalysisSearchWordHourlyMapper.getPage(date, startTime, endTime, 0, 10);
+			
+			for (int i = 0; i < list.size(); i++) {
+				dataList.add(""+""+(int)(Double.valueOf(list.get(i).getSum7())*100/(Double.valueOf(list.get(i).getSum2()))));
+				groupList.add(""+list.get(i).getKeyWord());
+
+			}
 		}
 		
 		/**折线图组织数据*/
 		List<String> dateList=sourceAnalysisSearchWordHourlyMapper.getDateList(type,date,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime.toString(),endTime.toString());
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime.toString(),endTime.toString());
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -1399,10 +1503,10 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		
 		/**页面底部列表其他行数据*/
 		int startNum = (pageNum-1)*pageSize;
-		List<SourceAnalysisLinkHostDaily> list=sourceAnalysisLinkHostDailyMapper.getPage(startTime, endTime, startNum, pageSize);
+		List<SourceAnalysisLinkHostHourly> list=sourceAnalysisLinkHostHourlyMapper.getPage_day(startTime, endTime, startNum, pageSize);
 		List<Object> list1=new ArrayList();
 		for(int i=0;i<list.size();i++){
-			SourceAnalysisLinkHostDaily salh=list.get(i);
+			SourceAnalysisLinkHostHourly salh=list.get(i);
 			str1+=Double.valueOf(salh.getSum1());
 			str2+=Double.valueOf(salh.getSum2());
 			str3+=Double.valueOf(salh.getSum3());
@@ -1430,7 +1534,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisLinkHostDaily salh1=new SourceAnalysisLinkHostDaily();
+		SourceAnalysisLinkHostHourly salh1=new SourceAnalysisLinkHostHourly();
 		salh1.setLink_host(str);
 		salh1.setSum1(""+str1.intValue());
 		salh1.setSum2(""+str2.intValue());
@@ -1452,9 +1556,9 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str7=0.0;
 		str8=0.0;
 		/**当前条件所有数据汇总,即页面中间列表数据*/
-		List<SourceAnalysisLinkHostDaily> lists=sourceAnalysisLinkHostDailyMapper.getPages(startTime, endTime);
+		List<SourceAnalysisLinkHostHourly> lists=sourceAnalysisLinkHostHourlyMapper.getPages_day(startTime, endTime);
 		for(int i=0;i<lists.size();i++){
-			SourceAnalysisLinkHostDaily sasw=lists.get(i);
+			SourceAnalysisLinkHostHourly sasw=lists.get(i);
 			str1+=Double.valueOf(sasw.getSum1());
 			str2+=Double.valueOf(sasw.getSum2());
 			str3+=Double.valueOf(sasw.getSum3());
@@ -1464,7 +1568,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		str4=str1/str2;
 		str6=str5*10000/str2;
 		str8=str7*100/str2;
-		SourceAnalysisLinkHostDaily salhSummary=new SourceAnalysisLinkHostDaily();
+		SourceAnalysisLinkHostHourly salhSummary=new SourceAnalysisLinkHostHourly();
 		salhSummary.setSum1(""+str1.intValue());
 		salhSummary.setSum2(""+str2.intValue());
 		salhSummary.setSum3(""+str3.intValue());
@@ -1503,13 +1607,13 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 	public Map<String, Object> SourceAnalysisLinkStatistics(
 			String flag, String type,String date,String startTime, String endTime) {
 		
-		List<SourceAnalysisLinkHostDaily> list=new ArrayList();
+		List<SourceAnalysisLinkHostHourly> list=new ArrayList();
 		List<String> groupList=new ArrayList();
 		Map<String,Object> map=new HashMap();
 		List<String> dataList=new ArrayList();
 		
 		if("1".equals(type)||"2".equals(type)){/**组织饼图数据*/
-			list=sourceAnalysisLinkHostDailyMapper.getChart(type,startTime, endTime);
+			list=sourceAnalysisLinkHostHourlyMapper.getChart_day(type,startTime, endTime);
 			Map<String,Object> map1=new HashMap();
 			map1.put("list", list);
 			map1=pieData(flag,map1);
@@ -1518,7 +1622,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -1529,8 +1633,8 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			}else if("8".equals(type)){
 				type1="7";
 			}
-			String average=sourceAnalysisLinkHostDailyMapper.average(type1,type2,startTime,endTime);
-			list=sourceAnalysisLinkHostDailyMapper.indexAverageList(type1, type2, startTime, endTime);
+			String average=sourceAnalysisLinkHostHourlyMapper.average_day(type1,type2,startTime,endTime);
+			list=sourceAnalysisLinkHostHourlyMapper.indexAverageList_day(type1, type2, startTime, endTime);
 			for(int i=0;i<list.size();i++){
 				dataList.add(""+Math.ceil(Double.valueOf(list.get(i).getSum())));
 				groupList.add(list.get(i).getLink_host());
@@ -1539,10 +1643,18 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average",null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			list=sourceAnalysisLinkHostHourlyMapper.getPage_day(startTime, endTime,0,10);
+			for(int i=0;i<list.size();i++){
+				dataList.add(""+""+(int)(Double.valueOf(list.get(i).getSum7())*100/(Double.valueOf(list.get(i).getSum2()))));
+				groupList.add(""+list.get(i).getLink_host());
+			}
+			map.put("dataList",dataList);
+			
 		}
 		/**折线图组织数据*/
-		List<String> dateList=sourceAnalysisLinkHostDailyMapper.getDateList(type,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime,endTime);
+		List<String> dateList=sourceAnalysisLinkHostHourlyMapper.getDateList_day(type,startTime, endTime);
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime,endTime);
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -1701,7 +1813,7 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			groupList=(List<String>)map1.get("groupList");
 			map.put("jsonArr", sb);//访问类型数据数组
 		}/**如果分析指标即type选择为平均访问页数4、平均访问时长6、跳出率8时，组织条形图数据*/
-		else if("8".equals(type)||"6".equals(type)||"4".equals(type)){
+		else if("6".equals(type)||"4".equals(type)){
 			
 			String type1="";
 			String type2="2";
@@ -1722,11 +1834,20 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 			map.put("average", null!=average?Math.ceil(Double.valueOf(average)):"");
 			map.put("dataList",dataList);
 			map.put("xaverage", groupList.get(groupList.size()-1));
+		}else if("8".equals(type)){
+			list=sourceAnalysisLinkHostHourlyMapper.getPage(date, startTime, endTime, 0, 10);
+			
+			for (int i = 0; i < list.size(); i++) {
+				dataList.add(""+""+(int)(Double.valueOf(list.get(i).getSum7())*100/(Double.valueOf(list.get(i).getSum2()))));
+				groupList.add(""+list.get(i).getLink_host());
+
+			}
+			
 		}
 		
 		/**折线图组织数据*/
 		List<String> dateList=sourceAnalysisLinkHostHourlyMapper.getDateList(type,date,startTime, endTime);
-		StringBuffer seriesStr=lineData(groupList,flag,type,date,startTime.toString(),endTime.toString());
+		StringBuffer seriesStr=lineData(dateList,groupList,flag,type,date,startTime.toString(),endTime.toString());
 		
 		map.put("seriesArr", seriesStr);
 		map.put("dateArr", dateList);
@@ -1798,9 +1919,10 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 	* @author LiuYong 
 	* @date 28 Dis 2016 5:39:13 PM
 	 */
-	public StringBuffer lineData(List<String> groupList,String flag,String type,String date,String startTime,String endTime){
+	public StringBuffer lineData(List<String> dateList,List<String> groupList,String flag,String type,String date,String startTime,String endTime){
 		StringBuffer seriesStr=new StringBuffer(); 
-		List<String> numbersList=new ArrayList();
+		List<String> numbersList=null;
+		List<Map<String, Object>> numbersListMap=null;
 		int count1=0;
 		seriesStr.append("[");
 		
@@ -1809,33 +1931,70 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		}
 		
 		for(int j=0;j< groupList.size();j++){
-			if("1".equals(flag)){
-				numbersList=sourceAnalysisSearchEngineDailyMapper.getLine(groupList.get(j),type,startTime, endTime);
-			}else if("2".equals(flag)){
-				numbersList=sourceAnalysisSearchWordDailyMapper.getLine(groupList.get(j),type,startTime, endTime);
-			}else if("3".equals(flag)){
-				numbersList=sourceAnalysisLinkHostDailyMapper.getLine(groupList.get(j),type,startTime, endTime);
-			}else if("5".equals(flag)){
-				numbersList=sourceAnalysisSearchEngineHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
-			}else if("6".equals(flag)){
-				numbersList=sourceAnalysisSearchWordHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
-			}else if("7".equals(flag)){
-				numbersList=sourceAnalysisLinkHostHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
-			}
-
-			for (int i = 0; i < 30; i++) {
-				numbersList.add("0");
-			}
-			
 			List<String> numbersList1=new ArrayList();
+			
 			if("8".equals(type)){
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str.replace("%", "")))).split("\\.")[0]);
+				numbersListMap=new ArrayList<Map<String, Object>>();
+				
+				if("1".equals(flag)){
+					numbersListMap=sourceAnalysisSearchEngineHourlyMapper.getLine1_day(groupList.get(j),type,startTime, endTime);
+				}else if("2".equals(flag)){
+					numbersListMap=sourceAnalysisSearchWordHourlyMapper.getLine1_day(groupList.get(j),type,startTime, endTime);
+				}else if("3".equals(flag)){
+					numbersListMap=sourceAnalysisSearchEngineHourlyMapper.getLine1_day(groupList.get(j),type,startTime, endTime);
+				}else if("5".equals(flag)){
+					numbersListMap=sourceAnalysisSearchEngineHourlyMapper.getLine1(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}else if("6".equals(flag)){
+					numbersListMap=sourceAnalysisSearchWordHourlyMapper.getLine1(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}else if("7".equals(flag)){
+					numbersListMap=sourceAnalysisLinkHostHourlyMapper.getLine1(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}
+				
+				List<Map<String, Object>> temp=new ArrayList<Map<String, Object>>();
+				Map<String, Object> map=null;
+				for (int i = 0; i < dateList.size(); i++) {
+					map=new HashMap<String, Object>();
+					map.put("date", dateList.get(i));
+					map.put("numbers","0%");
+					temp.add(map);
+				}
+				
+				for (int i = 0; i < temp.size(); i++) {
+					for (int k = 0; k < numbersListMap.size(); k++) {
+						 if(temp.get(i).get("date").equals(numbersListMap.get(k).get("date")+"")){
+							 temp.get(i).put("numbers", numbersListMap.get(k).get("numbers"));
+							 break;
+						 }
+					}
+				}
+				
+				for(Map<String, Object> item:temp){
+					numbersList1.add((""+Math.ceil(Double.valueOf(item.get("numbers").toString().replace("%", "")))).split("\\.")[0]);
 				}
 				seriesStr.append("name:\""+groupList.get(j)+"\",type:\"line\",data:"+numbersList1);
 			}else{
-				for(String str:numbersList){
-					numbersList1.add((""+Math.ceil(Double.valueOf(str))).split("\\.")[0]);
+				numbersList=new ArrayList();
+				if("1".equals(flag)){
+					numbersList=sourceAnalysisSearchEngineHourlyMapper.getLine_day(groupList.get(j),type,startTime, endTime);
+				}else if("2".equals(flag)){
+					numbersList=sourceAnalysisSearchWordHourlyMapper.getLine_day(groupList.get(j),type,startTime, endTime);
+				}else if("3".equals(flag)){
+					numbersList=sourceAnalysisLinkHostHourlyMapper.getLine_day(groupList.get(j),type,startTime, endTime);
+				}else if("5".equals(flag)){
+					numbersList=sourceAnalysisSearchEngineHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}else if("6".equals(flag)){
+					numbersList=sourceAnalysisSearchWordHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}else if("7".equals(flag)){
+					numbersList=sourceAnalysisLinkHostHourlyMapper.getLine(groupList.get(j),type,date,Integer.valueOf(startTime), Integer.valueOf(endTime));
+				}
+				
+				
+				for (int i = 0; i < 30; i++) {
+					numbersList.add("0");
+				}
+				
+				for(String item:numbersList){
+					numbersList1.add((""+Math.ceil(Double.valueOf(item))).split("\\.")[0]);
 				}
 				seriesStr.append("name:\""+groupList.get(j)+"\",type:\"line\",data:"+numbersList1);
 			}
@@ -1880,13 +2039,13 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		Double sum10=0.0;
 		for(int i=0;i<list.size();i++){
 			if("1".equals(flag)){
-				SourceAnalysisSearchEngineDaily sase=(SourceAnalysisSearchEngineDaily)list.get(i);
+				SourceAnalysisSearchEngineHourly sase=(SourceAnalysisSearchEngineHourly)list.get(i);
 				sum+=Double.valueOf(sase.getSum());
 			}else if("2".equals(flag)){
-				SourceAnalysisSearchWordDaily sasw=(SourceAnalysisSearchWordDaily)list.get(i);
+				SourceAnalysisSearchWordHourly sasw=(SourceAnalysisSearchWordHourly)list.get(i);
 				sum+=Double.valueOf(sasw.getSum());
 			}else if("3".equals(flag)){
-				SourceAnalysisLinkHostDaily salh=(SourceAnalysisLinkHostDaily)list.get(i);
+				SourceAnalysisLinkHostHourly salh=(SourceAnalysisLinkHostHourly)list.get(i);
 				sum+=Double.valueOf(salh.getSum());
 			}else if("5".equals(flag)){
 				SourceAnalysisSearchEngineHourly sase=(SourceAnalysisSearchEngineHourly)list.get(i);
@@ -1909,17 +2068,17 @@ public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 		}
 		for(int i=0;i<length;i++){
 			if("1".equals(flag)){
-				SourceAnalysisSearchEngineDaily sase=(SourceAnalysisSearchEngineDaily)list.get(i);
+				SourceAnalysisSearchEngineHourly sase=(SourceAnalysisSearchEngineHourly)list.get(i);
 				sum10+=Double.valueOf(sase.getSum());
 				groupList.add(sase.getEngine_name());
 				sb.append("value:"+sase.getSum()+",name:\""+sase.getEngine_name());
 			}else if("2".equals(flag)){
-				SourceAnalysisSearchWordDaily sasw=(SourceAnalysisSearchWordDaily)list.get(i);
+				SourceAnalysisSearchWordHourly sasw=(SourceAnalysisSearchWordHourly)list.get(i);
 				sum10+=Double.valueOf(sasw.getSum());
 				groupList.add(sasw.getKeyWord());
 				sb.append("value:"+sasw.getSum()+",name:\""+sasw.getKeyWord());
 			}else if("3".equals(flag)){
-				SourceAnalysisLinkHostDaily salh=(SourceAnalysisLinkHostDaily)list.get(i);
+				SourceAnalysisLinkHostHourly salh=(SourceAnalysisLinkHostHourly)list.get(i);
 				sum10+=Double.valueOf(salh.getSum());
 				groupList.add(salh.getLink_host());
 				sb.append("value:"+salh.getSum()+",name:\""+salh.getLink_host());

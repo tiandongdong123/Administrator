@@ -61,4 +61,6 @@ public interface DataManagerService {
 	void selectZY();
 	
 	List<Object> exportData(String dataname);
+	
+	List<Datamanager> getDatabaseByCode(String code);
 }

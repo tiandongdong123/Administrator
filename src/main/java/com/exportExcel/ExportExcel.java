@@ -789,7 +789,7 @@ public class ExportExcel {
 						row.createCell(0).setCellValue(i+1);
 						
 						if(restype.equals("期刊") || restype.equals("会议") || restype.equals("学位")){
-							row.createCell(1).setCellValue(array.getJSONObject(i).get("sourceName").toString());
+							row.createCell(1).setCellValue(array.getJSONObject(i).get("title").toString());
 							row.createCell(2).setCellValue(array.getJSONObject(i).get("sourceTypeName").toString());
 							row.createCell(3).setCellValue(array.getJSONObject(i).get("browseNum").toString());
 							row.createCell(4).setCellValue(array.getJSONObject(i).get("downloadNum").toString());

@@ -8,7 +8,14 @@ public class WebSiteHourly implements Serializable{
 	private String date;
 	private String hour;
 	private String numbers;
+	private long num;
 	
+	public long getNum() {
+		return num;
+	}
+	public void setNum(long num) {
+		this.num = num;
+	}
 	public Integer getType() {
 		return type;
 	}

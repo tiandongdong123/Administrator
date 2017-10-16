@@ -107,7 +107,7 @@ function gettable(curr,num){
     				"<td>"+res.pageRow[i].modelPV+"</td>" +
     				"<td>"+res.pageRow[i].modelVV+"</td>" +
     				"<td>"+res.pageRow[i].modelUV+"</td>" +
-    				"<td>1000</td>" +
+    				"<td>0</td>" +
     				"<td>"+res.pageRow[i].modelUV+"</td>" +
     				"<td>"+res.pageRow[i].modeAUP+"</td>" +
     				"<td></td>" +

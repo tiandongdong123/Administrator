@@ -45,6 +45,35 @@
 		GROUP BY link_host order by sum1 limit #{pageNum},#{pageSize};
   </select>
   
+  
+   <!-- 查询当前条件下来源分析（外部链接、日期、指标类型）统计信息 -->
+  <select id="getPage_day" resultMap="BaseResultMap">
+		SELECT link_host,
+		sum(CASE type when 1 then numbers else 0 end) sum1,
+		sum(CASE type when 2 then numbers else 0 end) sum2,
+		sum(CASE type when 3 then numbers else 0 end) sum3,
+		sum(CASE type when 4 then numbers else 0 end) sum4,
+		sum(CASE type when 5 then numbers else 0 end) sum5,
+		sum(CASE type when 6 then numbers else 0 end) sum6,
+		sum(CASE type when 7 then numbers else 0 end) sum7,
+		sum(CASE type when 8 then numbers else 0 end) sum8 
+		
+		from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host order by sum1 limit #{pageNum},#{pageSize};
+  </select>
+  
+  
+  
+  
+  
   <!-- 查询当前条件下来源分析（外部链接、日期、指标类型）统计信息 -->
   <select id="getPages" resultMap="BaseResultMap">
 		SELECT link_host,
@@ -72,6 +101,34 @@
 		GROUP BY link_host order by sum1;
   </select>
   
+  
+   <!-- 查询当前条件下来源分析（外部链接、日期、指标类型）统计信息 -->
+  <select id="getPages_day" resultMap="BaseResultMap">
+		SELECT link_host,
+		sum(CASE type when 1 then numbers else 0 end) sum1,
+		sum(CASE type when 2 then numbers else 0 end) sum2,
+		sum(CASE type when 3 then numbers else 0 end) sum3,
+		sum(CASE type when 4 then numbers else 0 end) sum4,
+		sum(CASE type when 5 then numbers else 0 end) sum5,
+		sum(CASE type when 6 then numbers else 0 end) sum6,
+		sum(CASE type when 7 then numbers else 0 end) sum7,
+		sum(CASE type when 8 then numbers else 0 end) sum8 
+		
+		from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host order by sum1;
+  </select>
+  
+  
+  
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）统计信息 -->
   <select id="getChart" resultMap="BaseResultMap">
 		SELECT link_host,type,date,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
@@ -92,6 +149,25 @@
 		GROUP BY link_host,type ORDER BY sum DESC;
   </select>
   
+  
+  
+  <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）统计信息 -->
+  <select id="getChart_day" resultMap="BaseResultMap">
+		SELECT link_host,type,date,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host,type ORDER BY sum DESC;
+  </select>
+  
   <!-- 查询来源分析当前条件下（外部链接、日期、平均指标类型）统计信息 -->
   <select id="indexAverageList" resultMap="BaseResultMap">
 		SELECT link_host,
@@ -100,18 +176,35 @@
 
 		from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
 		and  link_host <![CDATA[<>]]> ''
-	  	<if test="date!=null and date!=''">
-  		and date=#{date}
-   		</if>
 	  	<if test="startTime!=null and startTime !=''">
-  		and hour <![CDATA[ >= ]]> #{startTime}
+  		and date <![CDATA[ >= ]]> #{startTime}
    		</if>
    		<if test="endTime!=null and endTime !=''">
-   		and hour <![CDATA[ <= ]]> #{endTime}
+   		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
 		GROUP BY link_host ORDER BY sum DESC limit 0,10;
   </select>
+  
+  
+   <!-- 查询来源分析当前条件下（外部链接、日期、平均指标类型）统计信息 -->
+  <select id="indexAverageList_day" resultMap="BaseResultMap">
+		SELECT link_host,
+		(CASE sum(CASE type when #{type2} then numbers else 0 end) when 0 THEN 0 
+		ELSE (sum(CASE type when #{type1} then numbers else 0 end)/sum(CASE type when #{type2} then numbers else 0 end)) END)sum
+
+		from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host ORDER BY sum DESC limit 0,10;
+  </select>
+  
   
   <!-- 查询来源分析当前条件下平均指标总的平均值 -->
   <select id="average" resultType="String">
@@ -129,6 +222,23 @@
    		</if>
    		<if test="endTime!=null and endTime !=''">
    		and hour <![CDATA[ <= ]]> #{endTime}
+   		</if>
+  </select>
+  
+  
+   <!-- 查询来源分析当前条件下平均指标总的平均值 -->
+  <select id="average_day" resultType="String">
+		SELECT
+		(CASE sum(CASE type when #{type2} then numbers else 0 end) when 0 THEN 0 
+		ELSE (sum(CASE type when #{type1} then numbers else 0 end)/sum(CASE type when #{type2} then numbers else 0 end)) END)sum
+
+		from rs_source_analysis_external_linkhost_hourly WHERE 1=1
+		and  link_host <![CDATA[<>]]> '' 
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
   </select>
   
@@ -151,6 +261,26 @@
 	  	
 		GROUP BY link_host;
   </select>
+  
+  
+   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
+  <select id="getGroupList_day" resultType="String">
+		SELECT link_host from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host;
+  </select>
+  
+  
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
   <select id="getLine" resultType="String">
 		SELECT numbers from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
@@ -173,6 +303,74 @@
 	  	
 		GROUP BY link_host,hour,type;
   </select>
+  
+  
+   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
+  <select id="getLine_day" resultType="String">
+		SELECT numbers from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="link_host !=null and link_host !=''">
+  		and link_host=#{link_host}
+	  	</if>
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host,date,type;
+  </select>
+  
+  
+  
+   <select id="getLine1" resultType="map">
+		SELECT numbers,hour as date from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="link_host !=null and link_host !=''">
+  		and link_host=#{link_host}
+	  	</if>
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="date!=null and date !=''">
+  		and date=#{date}
+   		</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and hour <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and hour <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host,hour,type;
+  </select>
+  
+  
+  
+   <select id="getLine1_day" resultType="map">
+		SELECT numbers,hour as date from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="link_host !=null and link_host !=''">
+  		and link_host=#{link_host}
+	  	</if>
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host,date,type;
+  </select>
+  
+  
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
   <select id="getDateList" resultType="String">
 		SELECT hour from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
@@ -192,4 +390,23 @@
 	  	
 		GROUP BY hour;
   </select>
+  
+   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
+  <select id="getDateList_day" resultType="String">
+		SELECT hour from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY date;
+  </select>
+  
+  
 </mapper>

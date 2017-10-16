@@ -15,15 +15,14 @@ import redis.clients.jedis.BinaryClient.LIST_POSITION;
 
 import com.utils.DateTools;
 import com.wf.bean.PageList;
-import com.wf.bean.WebSiteDaily;
-import com.wf.dao.WebSiteDailyMapper;
+import com.wf.bean.WebSiteHourly;
+import com.wf.dao.WebSiteHourlyMapper;
 import com.wf.service.WebSiteDailyService;
 
 @Service
 public class WebSiteDailyServiceImpl implements WebSiteDailyService {
 	@Autowired
-	private WebSiteDailyMapper dao;
-
+	private WebSiteHourlyMapper mapper;
 	/** 查询昨天访问量 */
 	@Override
 	public HashMap<String, Object> findPageView(Integer type, String dateType) {
@@ -70,14 +69,14 @@ public class WebSiteDailyServiceImpl implements WebSiteDailyService {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		List<Object> l1 = new ArrayList<Object>();
 		List<Object> l2 = new ArrayList<Object>();
-		List<Object> list = dao.findPageView(type, startTime, endTime);
+		List<Object> list = mapper.findPageView(type, startTime, endTime);
 		if (list.size() > 0) {
 			for (int a = 0; a < list.size(); a++) {
-				WebSiteDaily daily = (WebSiteDaily) list.get(a);
+				WebSiteHourly daily = (WebSiteHourly) list.get(a);
 				l1.add(daily.getNumbers());
 				l2.add(daily.getDate());
 			}
-			map.put("type",typeToString(((WebSiteDaily) list.get(0)).getType()));
+			map.put("type",typeToString(((WebSiteHourly) list.get(0)).getType()));
 			map.put("numbers", l1);
 			map.put("date", l2);
 			map.put("time", startTime + "/" + endTime);
@@ -188,8 +187,8 @@ public class WebSiteDailyServiceImpl implements WebSiteDailyService {
 		PageList p = new PageList();
 		try {
 			int startnum = (pagenum - 1) * pagesize;
-			List<Object> list = dao.basicIndexNum(startTime, endTime, startnum,pagesize);
-			int num = dao.getBasicIndexNum(startTime, endTime);
+			List<Object> list = mapper.basicIndexNum_day(startTime, endTime, startnum,pagesize);
+			int num = mapper.getBasicIndexNum(startTime, endTime);
 			// TODO Auto-generated method stub
 			p.setPageRow(list);//查询结果列表
 			p.setPageNum(pagenum);// 当前页
@@ -270,10 +269,10 @@ public class WebSiteDailyServiceImpl implements WebSiteDailyService {
 		} else {
 			days = (time2 - time1) / (1000 * 3600 * 24);
 		}
-		List<Object> list = dao.selectSumNumbers(startTime, endTime);
+		List<Object> list = mapper.selectSumNumbers(startTime, endTime);
 		List<Map<String, Object>> json = new ArrayList<Map<String, Object>>();
 		for (int a = 0; a < list.size(); a++) {
-			WebSiteDaily web = (WebSiteDaily) list.get(a);
+			WebSiteHourly web = (WebSiteHourly) list.get(a);
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			if (web.getType() == 8) {
 				web.setNum(web.getNum() / days);

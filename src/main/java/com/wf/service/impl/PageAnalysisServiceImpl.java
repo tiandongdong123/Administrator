@@ -346,7 +346,7 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		List<String > date=new ArrayList<String>();
 		List<String > number=new ArrayList<String>();
 		if(!("".equals(age)||age.equals(null)))
-		{
+		{/*
 			List<String> list = Arrays.asList(age.split(",")) ;
 			if(list.size()==6)
 			{
@@ -425,6 +425,44 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 				}				
 				time=" and ("+time+")";
 			}
+		*/
+			
+			List<String> list = Arrays.asList(age.split(","));
+			
+			for(int i=0;i<list.size();i++)
+			{
+				if(list.get(i).equals("1"))
+				{
+					time=time+"or (age>0 and age<=19)  ";
+				}
+				if(list.get(i).equals("2"))
+				{
+					time=time+"or (age>=20 and age<=29)  ";
+				}
+				if(list.get(i).equals("3"))
+				{
+					time=time+"or (age>=30 and age<=39)  ";
+				}
+				if(list.get(i).equals("4"))
+				{
+					time=time+"or (age>=40 and age<=49)  ";
+				}
+				if(list.get(i).equals("5"))
+				{
+					time=time+"or (age>=50 and age<=59)  ";
+				}
+				if(list.get(i).equals("6"))
+				{
+					time=time+"or age>=60  ";
+				}
+				if(list.get(i).equals("7"))
+				{
+					time=time+"or age is null  ";
+				}
+			}
+			
+			time = " and ("+time.substring(2,time.length())+")";
+		
 		}		
 		if(!("".equals(title)||title.equals(null)))
 		{
@@ -1175,6 +1213,17 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 				map.put("value", json);
 				jsonp.add(map);
 			}
+			if(age.contains("7"))
+			{	
+				String sql1="";
+				sql1=sql+"and  age is null  ";
+				JSONArray json=JSONArray.fromObject(fpa.Formate(sql1, type));
+				Map<String , Object> map=new HashMap<>();
+				map.put("type", 7);
+				map.put("value", json);
+				jsonp.add(map);
+			}
+			
 		}
 		
 		if(title.equals("null")&&age.equals("null") && StringUtils.isEmpty(reserchdomain))
@@ -1352,7 +1401,7 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 
 		FormatPageAnalysis fpa=new FormatPageAnalysisImp();
 		if(!("".equals(age)||age.equals(null)))
-		{
+		{/*
 			List<String> list = Arrays.asList(age.split(",")) ;
 			if(list.size()==6)
 			{
@@ -1431,6 +1480,44 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 				}				
 				time=" and ("+time+")";
 			}
+		*/
+			
+			List<String> list = Arrays.asList(age.split(",")) ;
+		
+			for(int i=0;i<list.size();i++)
+			{
+				if(list.get(i).equals("1"))
+				{
+					time=time+"or (age>0 and age<=19)  ";
+				}
+				if(list.get(i).equals("2"))
+				{
+					time=time+"or (age>=20 and age<=29)  ";
+				}
+				if(list.get(i).equals("3"))
+				{
+					time=time+"or (age>=30 and age<=39)  ";
+				}
+				if(list.get(i).equals("4"))
+				{
+					time=time+"or (age>=40 and age<=49)  ";
+				}
+				if(list.get(i).equals("5"))
+				{
+					time=time+"or (age>=50 and age<=59)  ";
+				}
+				if(list.get(i).equals("6"))
+				{
+					time=time+"or age>=60  ";
+				}	
+				if(list.get(i).equals("7"))
+				{
+					time=time+"or age is null  ";
+				}	
+			}
+			time = time.substring(2,time.length());			
+			time=" and ("+time+")";
+		
 		}		
 		if(!("".equals(title)||title.equals(null)))
 		{

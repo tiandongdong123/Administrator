@@ -151,6 +151,29 @@
 	  	
 		GROUP BY link_host,date,type;
   </select>
+  
+  
+  <select id="getLine1" resultType="map">
+		SELECT numbers,date from rs_source_analysis_external_linkhost_daily WHERE 1=1 
+		and  link_host <![CDATA[<>]]> ''
+		<if test="link_host!=null and link_host !=''">
+  		and link_host=#{link_host}
+	  	</if>
+		<if test="type!=null and type !=''">
+  		and type=#{type}
+	  	</if>
+	  	<if test="startTime!=null and startTime !=''">
+  		and date <![CDATA[ >= ]]> #{startTime}
+   		</if>
+   		<if test="endTime!=null and endTime !=''">
+   		and date <![CDATA[ <= ]]> #{endTime}
+   		</if>
+	  	
+		GROUP BY link_host,date,type;
+  </select>
+  
+  
+  
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
   <select id="getDateList" resultType="String">
 		SELECT date from rs_source_analysis_external_linkhost_daily WHERE 1=1 
