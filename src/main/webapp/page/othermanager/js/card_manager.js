@@ -65,7 +65,7 @@ function Page(curr){
 						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].batchState == 1){
 							batchState = "未审核";
-							html1='<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>&nbsp;&nbsp;&nbsp;'
+							html1='<a href="../card/batchDetails.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>&nbsp;&nbsp;&nbsp;'
 								+ '<a href="javascript:void(0)" onclick="remind(\''+ data.pageRow[i].batchName+'\',\''+data.pageRow[i].cardTypeName+'\',\''
 								+ data.pageRow[i].applyDepartment+'\',\''+data.pageRow[i].applyPerson+'\',\''+data.pageRow[i].applyDate+'\');" style="text-decoration:underline;">提醒</a>';
 						}

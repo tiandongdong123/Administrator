@@ -28,18 +28,7 @@
      				<tr>
      					<td align="right">万方卡类型</td>
      					<td width="20px"></td>
-     					<?  var type;
-							if(map.type == 1){
-							 type = "万方充值卡";	
-							}
-							if(map.type == 2){
-							 type = "医药会员卡";	
-							}
-							if(map.type == 3){
-							 type = "医药检索卡";	
-							}
-     					?>
-     					<td align="left">${type}</td>
+     					<td align="left">${map.cardTypeName}</td>
      				</tr>
      				<tr>
      					<td align="right">卡号</td>
