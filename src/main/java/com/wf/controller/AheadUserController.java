@@ -601,10 +601,6 @@ public class AheadUserController {
 				}
 			}
 			if (resinfo > 0) {
-				// 更新前台用户信息
-				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-					HttpClientUtil.updateUserData(com.getUserId(), false);
-				}
 				in += 1;
 				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
@@ -781,10 +777,6 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				// 更新前台用户信息
-				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-					HttpClientUtil.updateUserData(com.getUserId(), false);
-				}
 				in+=1;
 				log.info("机构用户["+com.getUserId()+"]修改成功");
 			}

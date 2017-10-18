@@ -1,18 +1,17 @@
 package com.utils;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 
 import com.xxl.conf.core.XxlConfClient;
 /*
  * 利用HttpClient进行post请求的工具类
  */
 public class HttpClientUtil {
+	
+	private static Logger log = Logger.getLogger(HttpClientUtil.class);
 	
 	//private static String INIT = XxlConfClient.get("wf-public.user.init", null);
 	private static String UPDATE = XxlConfClient.get("wf-public.user.update", null);
@@ -23,17 +22,13 @@ public class HttpClientUtil {
 	public static void updateUserData(String user_id,boolean isInit) {
 		HttpPost httpPost = null;
 		try {
+			long time=System.currentTimeMillis();
 			String[] urls = UPDATE.split(";");
-			for (String url : urls) {
-				HttpClient httpclient = HttpClients.createDefault();
-				List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-				httpPost = new HttpPost(url);
-				nvps.add(new BasicNameValuePair("key", "123456789"));
-				if (isInit) {
-					nvps.add(new BasicNameValuePair("user_id", user_id));
-				}
-				httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-				httpclient.execute(httpPost);
+			for (String u : urls) {
+				String url = u + "?key=123456789&user_id=" + user_id;
+				URL httpurl = new URL(url);
+				HttpURLConnection con = (HttpURLConnection) httpurl.openConnection();
+				log.info(url+",status:" + con.getResponseCode()+",耗时："+(System.currentTimeMillis()-time));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
