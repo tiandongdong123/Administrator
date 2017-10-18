@@ -1454,6 +1454,16 @@ public class AheadUserController {
 		return view;
 	}
 	
+	/**
+	 *	万方卡绑定记录
+	 */
+	@RequestMapping("wfcard_bind")
+	public ModelAndView wfcard_bind(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/wfcard_bind");
+		return view;
+	}
+	
 	
 	/**
 	 *	充值管理
