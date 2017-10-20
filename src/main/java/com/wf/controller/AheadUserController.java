@@ -721,8 +721,12 @@ public class AheadUserController {
 			}else{
 				com.setInstitution(ps.getInstitution());
 			}
-			if(map.get("password")!=null && map.get("password")!=""){				
-				com.setPassword(String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", ""));
+			if(map.get("password")!=null && map.get("password")!=""){
+				String password = String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", "");
+				if (password.contains("不变")) {
+					password = "";
+				}
+				com.setPassword(password);
 			}else{
 				com.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 			}
