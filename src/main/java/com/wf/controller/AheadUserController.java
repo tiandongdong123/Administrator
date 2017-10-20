@@ -129,7 +129,10 @@ public class AheadUserController {
 	@RequestMapping("getkeywords")
 	@ResponseBody
 	public List<String> getkeywords(String value){
-		return aheadUserService.queryInstitution(value);
+		long time=System.currentTimeMillis();
+		List<String> list=aheadUserService.queryInstitution(value);
+		log.info("查询相似机构名称["+value+"],耗时："+(System.currentTimeMillis()-time)+"ms");
+		return list;
 	}
 	
 	/**
