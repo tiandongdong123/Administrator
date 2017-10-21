@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.DeleteArticleMapper">
+
+<resultMap type="com.wf.bean.DeleteArticle" id="BaseResultMap">
+	<id column="id" property="id" jdbcType="VARCHAR" />
+	<result column="id_type" property="idType" jdbcType="VARCHAR" />
+	<result column="model" property="model" jdbcType="VARCHAR" />
+	<result column="user_ip" property="userIp" jdbcType="VARCHAR" />
+	<result column="user_id" property="userId" jdbcType="VARCHAR" />
+	<result column="create_time" property="createTime" jdbcType="VARCHAR" />
+</resultMap>
+<!-- 根据条件查询下撤数据 -->
+<select id="queryArticle" resultMap="BaseResultMap" parameterType="java.lang.String">
+	select a.* from delete_article a where 1=1
+	<if test="null!=startTime and startTime!=''">
+		and a.create_time <![CDATA[   >=  ]]>#{startTime}
+	</if>
+	<if test="null!=endTime and endTime!=''">
+		and a.create_time <![CDATA[   <=  ]]>#{endTime}
+	</if>
+	order by a.create_time desc
+	limit #{pageNum},#{pageSize}
+</select>
+ <!-- 查询充值批次当前条件下所有记录 -->
+ <select id="queryArticleSize" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(1) from delete_article where 1=1
+	<if test="null!=startTime and startTime!=''">
+		and create_time <![CDATA[   >=  ]]>#{startTime}
+	</if>
+	<if test="null!=endTime and endTime!=''">
+		and create_time <![CDATA[   <=  ]]>#{endTime}
+	</if>
+ </select>
+<!-- 根据条件删除下撤数据 -->
+<delete id="deleteArticleList" parameterType="java.lang.String">
+	delete from delete_article where 1=1
+	<if test="null!=startTime and startTime!=''">
+		and create_time <![CDATA[   >=  ]]>#{startTime}
+	</if>
+	<if test="null!=endTime and endTime!=''">
+		and create_time <![CDATA[   <=  ]]>#{endTime}
+	</if>
+</delete>
+<!-- 根据id删除下撤数据 -->
+<delete id="deleteArticleById" parameterType="java.lang.String">
+	delete from delete_article where id=#{id}
+</delete>
+<!-- 保存下撤的数据 -->
+<insert id="saveDeleteArticle" parameterType="com.wf.bean.DeleteArticle">
+	insert into delete_article(id,id_type,model,user_ip,user_id,create_time) values(#{id},#{idType},#{model},#{userIp},#{userId},now())
+</insert>
+<!-- 批量保存下撤的数据 -->
+<insert id="saveDeleteArticleList" parameterType="java.util.List">
+	insert into delete_article(id,id_type,model,user_ip,user_id,create_time)
+	values 
+	<foreach collection="list" item="item" index="index" separator="," >
+		(#{item.id},#{item.idType},#{item.model},#{item.userIp},#{item.userId},now())
+	</foreach>
+</insert>
+</mapper>
