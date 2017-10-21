@@ -56,4 +56,9 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
 		return deleteArticle.deleteArticleById(id);
 	}
 
+	@Override
+	public List<Object> getTypeList() {
+		return deleteArticle.getTypeList();
+	}
+
 }

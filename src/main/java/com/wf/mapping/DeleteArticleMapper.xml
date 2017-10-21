@@ -6,13 +6,14 @@
 	<id column="id" property="id" jdbcType="VARCHAR" />
 	<result column="id_type" property="idType" jdbcType="VARCHAR" />
 	<result column="model" property="model" jdbcType="VARCHAR" />
+	<result column="model_name" property="modelName" jdbcType="VARCHAR" />
 	<result column="user_ip" property="userIp" jdbcType="VARCHAR" />
 	<result column="user_id" property="userId" jdbcType="VARCHAR" />
 	<result column="create_time" property="createTime" jdbcType="VARCHAR" />
 </resultMap>
 <!-- 根据条件查询下撤数据 -->
 <select id="queryArticle" resultMap="BaseResultMap" parameterType="java.lang.String">
-	select a.* from delete_article a where 1=1
+	select a.*,b.model_name from delete_article a left join delete_article_type b on a.model=b.model where 1=1
 	<if test="null!=startTime and startTime!=''">
 		and a.create_time <![CDATA[   >=  ]]>#{startTime}
 	</if>
@@ -58,4 +59,8 @@
 		(#{item.id},#{item.idType},#{item.model},#{item.userIp},#{item.userId},now())
 	</foreach>
 </insert>
+
+<select id="getTypeList" resultType="java.util.Map">
+	select * from delete_article_type order by nums;
+</select>
 </mapper>

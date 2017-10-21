@@ -62,5 +62,12 @@ public interface DeleteArticleMapper {
 	 * @return
 	 */
 	int queryArticleSize(@Param("startTime") String startTime, @Param("endTime") String endTime);
+	
+	/**
+	 * 查询solr模块参数表
+	 * 
+	 * @return
+	 */
+	List<Object> getTypeList();
 
 }

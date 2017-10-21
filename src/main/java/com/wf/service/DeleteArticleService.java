@@ -48,4 +48,10 @@ public interface DeleteArticleService {
 	 */
 	Integer deleteArticleById(String id);
 	
+	/**
+	 * 查询solr模块参数表
+	 * @return
+	 */
+	List<Object> getTypeList();
+	
 }

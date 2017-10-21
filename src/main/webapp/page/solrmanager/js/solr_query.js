@@ -27,7 +27,7 @@ function Page(curr){
 					  +'<td>'+x+'</td>'
 	                  +'<td>'+data.pageRow[i].id+'</td>'
 	                  +'<td>'+data.pageRow[i].idType+'</td>'
-	                  +'<td>'+data.pageRow[i].model+'</td>'
+	                  +'<td>'+data.pageRow[i].modelName+'</td>'
 	                  +'<td>'+data.pageRow[i].userIp+'</td>'
 	                  +'<td>'+data.pageRow[i].userId+'</td>'
 	                  +'<td>'+data.pageRow[i].createTime+'</td>'

@@ -74,8 +74,11 @@ public class SolrManagerController {
 	 * @return
 	 */
 	@RequestMapping("solrManager")
-	public String solrManager(Map<String,Object> model){
-		return "/page/solrmanager/solr_manager";
+	public ModelAndView solrManager(Map<String,Object> model){
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("typeList", deleteArticle.getTypeList());
+		mav.setViewName("/page/solrmanager/solr_manager");
+		return mav;
 	}
 	
 	/**
@@ -218,7 +221,7 @@ public class SolrManagerController {
 				allNum+=counts;
 				log.info(core+"模块本批次删除" + counts + "条记录,删除条件是：["+query+"]");
 				// 开始删除
-				//SolrService.deleteByQuery(core, query);
+				SolrService.deleteByQuery(core, query);
 				// 删除记录添加到数据库中
 				String ip = request.getRemoteHost();
 				Wfadmin admin = CookieUtil.getWfadmin(request);

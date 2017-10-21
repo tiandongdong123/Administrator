@@ -14,6 +14,8 @@ public class DeleteArticle {
 	private String userIp;
 	private String userId;
 	private String createTime;
+	//从参数表中获取字段
+	private String modelName;
 	
 	public String getId() {
 		return id;
@@ -51,5 +53,10 @@ public class DeleteArticle {
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-	
+	public String getModelName() {
+		return modelName;
+	}
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
 }
