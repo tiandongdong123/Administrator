@@ -1,19 +1,23 @@
 package com.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.ModifiableSolrParams;
 
 /**
  * Solr工具类
@@ -143,4 +147,46 @@ public class SolrService {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	/**
+	 * 批量add机会快讯
+	 */
+	public static synchronized void createIndexFound(List<Map<String, Object>> list) {
+		try {
+			Map<String,String> tokenMap=new HashMap<String,String>();
+			List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
+			SolrInputDocument aSolrInputDocument = null;
+			for (Map<String, Object> map : list) {
+				aSolrInputDocument = new SolrInputDocument();
+				for (String key : map.keySet()) {
+					aSolrInputDocument.addField(key, map.get(key));
+					if(key.contains("auto_")){
+						tokenMap.put(key, key);
+					}
+				}
+				sids.add(aSolrInputDocument);
+			}
+			UpdateRequest req = new UpdateRequest();
+			Map<String,String[]> paramMap=new HashMap<String,String[]>();
+			List<String> ls=new ArrayList<String>();
+			for(String key:tokenMap.keySet()){
+				ls.add(key);
+			}
+			String fields = StringUtils.join(ls, ",");
+			paramMap.put("langid.fl", new String[] {fields});
+			paramMap.put("mtf-langid.prependFields", new String[] {fields});
+			if (paramMap != null) {
+				req.setParams(new ModifiableSolrParams(paramMap));
+			}
+			req.add(sids);
+			req.setCommitWithin(-1);
+			req.process(server);
+			server.commit(false, false);
+		} catch (Exception e) {
+			log.error("批量创建索引失败", e);
+			e.printStackTrace();
+		}
+	}
+	
 }
