@@ -129,7 +129,10 @@ public class AheadUserController {
 	@RequestMapping("getkeywords")
 	@ResponseBody
 	public List<String> getkeywords(String value){
-		return aheadUserService.queryInstitution(value);
+		long time=System.currentTimeMillis();
+		List<String> list=aheadUserService.queryInstitution(value);
+		log.info("查询相似机构名称["+value+"],耗时："+(System.currentTimeMillis()-time)+"ms");
+		return list;
 	}
 	
 	/**
@@ -601,10 +604,6 @@ public class AheadUserController {
 				}
 			}
 			if (resinfo > 0) {
-				// 更新前台用户信息
-				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-					HttpClientUtil.updateUserData(com.getUserId(), false);
-				}
 				in += 1;
 				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
@@ -725,8 +724,12 @@ public class AheadUserController {
 			}else{
 				com.setInstitution(ps.getInstitution());
 			}
-			if(map.get("password")!=null && map.get("password")!=""){				
-				com.setPassword(String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", ""));
+			if(map.get("password")!=null && map.get("password")!=""){
+				String password = String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", "");
+				if (password.contains("不变")) {
+					password = "";
+				}
+				com.setPassword(password);
 			}else{
 				com.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 			}
@@ -781,10 +784,6 @@ public class AheadUserController {
 				}
 			}
 			if(resinfo>0){
-				// 更新前台用户信息
-				if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-					HttpClientUtil.updateUserData(com.getUserId(), false);
-				}
 				in+=1;
 				log.info("机构用户["+com.getUserId()+"]修改成功");
 			}

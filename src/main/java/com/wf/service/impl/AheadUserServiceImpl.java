@@ -49,6 +49,7 @@ import wfks.authentication.AccountId;
 import com.utils.DateUtil;
 import com.utils.ExcelUtil;
 import com.utils.GetUuid;
+import com.utils.Getproperties;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
@@ -89,6 +90,8 @@ import com.wf.service.AheadUserService;
 
 @Service
 public class AheadUserServiceImpl implements AheadUserService{
+	
+	private static String isOpen=Getproperties.getPros("validateOldUser.properties").getProperty("isOpen");
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
@@ -155,6 +158,9 @@ public class AheadUserServiceImpl implements AheadUserService{
      */
     @Override
 	public String validateOldUser(String userName) {
+		if (!"true".equals(isOpen)) {
+			return "true";
+		}
 		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");

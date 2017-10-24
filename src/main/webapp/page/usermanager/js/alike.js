@@ -2,7 +2,7 @@ var institution_name;
 $(function(){
 	//输入相似性查询
 	$("#institution,#adminname").keyup(function(e){
-		var institution = $(this);
+		var institution = $(this).val();
 		institution_name = $(this).attr("name");
 		var posturl = ""; 
 		if(institution_name=="adminname"){
@@ -11,23 +11,24 @@ $(function(){
 			posturl="../auser/getkeywords.do"
 		}
 		e.preventDefault();
-		if($(institution).val()!="" && e.keyCode != 38 && e.keyCode != 40){
+		if(institution!="" && e.keyCode != 38 && e.keyCode != 40){
 			$.ajax({
 				url:posturl,
 				type:"post",
-				data:{"value":$(institution).val()},
+				data:{"value":institution},
 				success:function(data){
-					$("#"+institution_name).siblings("div").find("ul").html("");
+					var ul=$("#"+institution_name).siblings("div").find("ul");
+					var div=$("#"+institution_name).siblings("div");
+					ul.html("");
 					if(data.length<=0){
-						$("#"+institution_name).siblings("div").hide();
+						div.hide();
 					}
 					for(var i= 0; i< data.length; i++){
-						$("#"+institution_name).siblings("div").find("ul").append("<li data-key="+data[i]+" onclick='addKeyword(this,0);' class='hoverli'><span>"+data[i]+"</span></li>");
+						ul.append("<li data-key="+data[i]+" onclick='addKeyword(this,0);' class='hoverli'><span>"+data[i]+"</span></li>");
 					}
 					var width_input = parseInt($("#"+institution_name).css("width"));
-					$("#"+institution_name).siblings("div").css("width",width_input);
-					$("#"+institution_name).siblings("div").show();
-					
+					div.css("width",width_input);
+					div.show();
 				}
 			});
 		}

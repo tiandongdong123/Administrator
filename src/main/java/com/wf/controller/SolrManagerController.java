@@ -1,6 +1,8 @@
 package com.wf.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +15,20 @@ import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.utils.SolrService;
+import com.wf.bean.DeleteArticle;
+import com.wf.bean.PageList;
+import com.wf.bean.Wfadmin;
+import com.wf.service.DeleteArticleService;
 import com.xxl.conf.core.XxlConfClient;
-
 
 /**
  * 下撤solr数据的管理类
@@ -31,6 +39,9 @@ import com.xxl.conf.core.XxlConfClient;
 @Controller
 @RequestMapping("solr")
 public class SolrManagerController {
+	
+	@Autowired
+	private DeleteArticleService deleteArticle;
 	
 	private static Logger log = Logger.getLogger(SolrManagerController.class);
 	private static final String PERIO="perio";//期刊  4种情况
@@ -63,8 +74,72 @@ public class SolrManagerController {
 	 * @return
 	 */
 	@RequestMapping("solrManager")
-	public String solrManager(Map<String,Object> model){
-		return "/page/solrmanager/solr_manager";
+	public ModelAndView solrManager(Map<String,Object> model){
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("typeList", deleteArticle.getTypeList());
+		mav.setViewName("/page/solrmanager/solr_manager");
+		return mav;
+	}
+	
+	/**
+	 * 跳转到下撤查询界面
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("solrQuery")
+	public ModelAndView solrQuery(Map<String, Object> model) {
+		ModelAndView mav = new ModelAndView();
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+		mav.addObject("startTime", fm.format(cal.getTime()));
+		mav.addObject("endTime", fm.format(cal.getTime()));
+		mav.setViewName("/page/solrmanager/solr_query");
+		return mav;
+	}
+	
+	/**
+	 * 查询下撤的solr信息
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("solrList")
+	@ResponseBody
+	public PageList solrList(String startTime, String endTime, int pageNum, int pageSize) {
+		PageList page= deleteArticle.getArticleList(startTime, endTime, pageNum, pageSize);
+		return page;
+	}
+
+	/**
+	 * 根据id删除一条下撤的数据
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("deleteArticleById")
+	@ResponseBody
+	public String deleteArticleById(String id) {
+		int msg = deleteArticle.deleteArticleById(id);
+		if(msg>0){
+			return "true";
+		}
+		return "";
+	}
+	
+	/**
+	 * 根据根据时间段删除下撤的数据
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	@RequestMapping("deleteArticleList")
+	@ResponseBody
+	public String deleteArticleList(String startTime,String endTime) {
+		int msg = deleteArticle.deleteArticleList(startTime,endTime);
+		if(msg>0){
+			return "true";
+		}
+		return "";
 	}
 	
 	@RequestMapping("deleteSolr")
@@ -126,69 +201,7 @@ public class SolrManagerController {
 			}
 			long allNum=0L;
 			for(String id:list){
-				String query = "";
-				switch(model){
-					case PERIO: //期刊
-						query=this.perio(param,id);
-						break;
-					case CONFERENCE: //会议
-						query=this.conference(param,id);
-						break;
-					case DEGREE: //学位
-						query=this.degree(id);
-						break;
-					case GAZETTEER_NEW: //旧方志
-						query=this.gazetteer_new(param,id);
-						break;
-					case GAZETTEER_OLD: //新方志
-						query=this.gazetteer_old(id);
-						break;
-					case YEARBOOKS: //年鉴
-						query=this.Yearbooks(param,id);
-						break;
-					case PATENT: //专利
-						query=this.patent(id);
-						break;
-					case STANDARDS: //标准
-						query=this.standards(id);
-						break;
-					case LEGISLATIONS: //法规
-						query=this.legislations(id);
-						break;
-					case TECH: //科技报告
-						query=this.tech(id);
-						break;
-					case TECHRESULT: //科技成果
-						query=this.techresult(id);
-						break;
-					case VIDEO: //视频
-						query=this.video(id);
-						break;
-					case APABIEBOOKS: //阿帕比电子书
-						query=this.apabiebooks(id);
-						break;
-					case SCHOLARS: //学者
-						query=this.scholars(id);
-						break;
-					case UNIT: //机构
-						query=this.unit(id);
-						break;
-					case BLOB: //博文
-						query=this.blob(id);
-						break;
-					case TBOOKS: //工具书
-						query=this.tbooks(id);
-						break;
-					case WFLocalChronicle_FZ: //旧平台志书
-						query=this.localChronicle(id);
-						break;
-					case WFLocalChronicleItem_FZ: //旧平台条目
-						query=this.localChronicle(id);
-						break;
-					default:
-						log.info("未找到正确的类型："+model);
-				}
-
+				String query=this.getQuery(model, param, id);
 				//如果是年鉴的话必须先查询再删除
 				if (YEARBOOKS.equals(model) && "single_id".equals(param)) {
 					SolrQuery st = new SolrQuery();
@@ -209,8 +222,11 @@ public class SolrManagerController {
 				log.info(core+"模块本批次删除" + counts + "条记录,删除条件是：["+query+"]");
 				// 开始删除
 				SolrService.deleteByQuery(core, query);
+				// 删除记录添加到数据库中
+				String ip = request.getRemoteHost();
+				Wfadmin admin = CookieUtil.getWfadmin(request);
+				this.saveSql(model, param, id, ip, admin.getWangfang_admin_id());
 			}
-
 			log.info(core + "模块删除" + allNum + "条记录");
 			map.put("msg", "共删除" + allNum + "条记录");
 		} catch (Exception e) {
@@ -220,9 +236,149 @@ public class SolrManagerController {
 		return map;
 	}
 	
-	//旧平台方志
+	// 查询solr语句按照格式保存如sql
+	private void saveSql(String model, String param, String id, String ip, String user_id) {
+		long time = System.currentTimeMillis();
+		Map<String, String> idMap = this.getParam(model, param, id);
+		String articleId = idMap.get("id");
+		String[] ids = articleId.split(" ");
+		for (String aid : ids) {
+			DeleteArticle da = new DeleteArticle();
+			da.setId(aid);
+			da.setIdType(idMap.get("idType"));
+			da.setModel(model);
+			da.setUserIp(ip);
+			da.setUserId(user_id);
+			deleteArticle.deleteArticleById(aid);
+			deleteArticle.saveDeleteArticle(da);
+		}
+		log.info("下撤退的数据插入数据库耗时:" + (System.currentTimeMillis() - time) + "ms");
+	}
+	
+	// 构造查询solr的方法
+	private Map<String, String> getParam(String model, String param, String id) {
+		Map<String, String> map = new HashMap<String, String>();
+		switch (model) {
+		case PERIO: // 期刊
+			map.put("id", id);
+			if ("article_id".equals(param)) {
+				map.put("idType", "article_id");
+			} else {
+				map.put("idType", "perio_id");
+			}
+			map.put("model", model);
+			break;
+		case CONFERENCE: // 会议
+			map.put("id", id);
+			map.put("idType", "id");
+			map.put("model", model);
+			break;
+		case GAZETTEER_NEW: // 新方志
+			map.put("id", id);
+			if ("gazetteers_id".equals(param)) {// 按志书ID
+				map.put("idType", "gazetteers_id");
+			} else if ("item_id".equals(param)) {// 按照条目ID
+				map.put("idType", "item_id");
+			}
+			map.put("model", model);
+			break;
+		case YEARBOOKS: // 年鉴
+			map.put("id", id);
+			if ("single_id".equals(param)) { // 单种ID
+				map.put("idType", "single_id");
+			} else if ("volume_id".equals(param)) { // 单卷ID
+				map.put("idType", "volume_id");
+			} else if ("item_id".equals(param)) { // 条目ID
+				map.put("idType", "item_id");
+			}
+			map.put("model", model);
+			break;
+		default:
+			map.put("id", id);
+			map.put("idType", "id");
+			map.put("model", model);
+		}
+		return map;
+	}
+
+	//构造查询solr的方法
+	private String getQuery(String model,String param,String id){
+		String query = "";
+		switch(model){
+			case PERIO: //期刊
+				query=this.perio(param,id);
+				break;
+			case CONFERENCE: //会议
+				query=this.conference(param,id);
+				break;
+			case DEGREE: //学位
+				query=this.degree(id);
+				break;
+			case GAZETTEER_NEW: //新方志
+				query=this.gazetteer_new(param,id);
+				break;
+			case GAZETTEER_OLD: //旧方志
+				query=this.gazetteer_old(id);
+				break;
+			case YEARBOOKS: //年鉴
+				query=this.Yearbooks(param,id);
+				break;
+			case PATENT: //专利
+				query=this.patent(id);
+				break;
+			case STANDARDS: //标准
+				query=this.standards(id);
+				break;
+			case LEGISLATIONS: //法规
+				query=this.legislations(id);
+				break;
+			case TECH: //科技报告
+				query=this.tech(id);
+				break;
+			case TECHRESULT: //科技成果
+				query=this.techresult(id);
+				break;
+			case VIDEO: //视频
+				query=this.video(id);
+				break;
+			case APABIEBOOKS: //阿帕比电子书
+				query=this.apabiebooks(id);
+				break;
+			case SCHOLARS: //学者
+				query=this.scholars(id);
+				break;
+			case UNIT: //机构
+				query=this.unit(id);
+				break;
+			case BLOB: //博文
+				query=this.blob(id);
+				break;
+			case TBOOKS: //工具书
+				query=this.tbooks(id);
+				break;
+			case WFLocalChronicle_FZ: //旧平台志书
+				query=this.localChronicle(id);
+				break;
+			case WFLocalChronicleItem_FZ: //旧平台条目
+				query=this.localChronicle(id);
+				break;
+			default:
+				log.info("未找到正确的类型："+model);
+		}
+		return query;
+	}
+	
+	// 旧平台方志
 	private String localChronicle(String id) {
-		return "Id:[" + id + "]";
+		String[] ids = id.split(" ");
+		StringBuffer sb = new StringBuffer("");
+		for (int i = 0; i < ids.length; i++) {
+			if (i == 0) {
+				sb.append("Id:" + ids[i]);
+			}
+			sb.append(" OR Id:" + ids[i]);
+		}
+		return sb.toString();
 	}
 
 	//期刊
@@ -376,7 +532,7 @@ public class SolrManagerController {
 	}
 	//视频
 	private String video(String id){//视频ID
-		return front+"video_sid:("+id+")";
+		return front+"video_id:("+id+")";
 	}
 	//阿帕比电子书
 	private String apabiebooks(String id){//电子书ID

@@ -255,6 +255,21 @@ public class CardController {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 批次详情(未审核)
+	 * @return
+	 */
+	@RequestMapping("batchDetails")
+	public ModelAndView batchDetails(String batchId){
+		Map<String,Object> object = cardBatchService.queryOneByBatchId(batchId);
+		List<Map<String,Object>> valueNumber = JSONArray.fromObject(object.get("valueNumber"));
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("object", object);
+		mav.addObject("valueNumber", valueNumber);
+		mav.setViewName("/page/othermanager/batch_details");
+		return mav;
+	}
 
 	/**
 	 * 批次详情页已领取

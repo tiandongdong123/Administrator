@@ -1,23 +1,22 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-<script type="text/javascript" src="../page/othermanager/js/batch_details_get.js"></script>
 <script type="text/javascript" src="../page/othermanager/js/batch_details.js"></script>
 
   <div class="content-wrapper">
   <input id="batchId" type="hidden" value="${object.batchId}"/>
     <!-- Content Header (Page header) -->
     <section class="content-header">
-	<?  var batchState;
-		if(object.batchState == 2){
-			batchState = "未领取";	
+	<?  var checkState;
+		if(object.checkState == 1){
+			checkState = "未审核";	
 		}
-		if(object.batchState == 3){
-			batchState = "已领取";	
+		if(object.checkState == 2){
+			checkState = "已审核";	
 		}
 	?>
       <h1>
-       	${batchState!}万方卡批次详情
+		${checkState!}万方卡批次详情
       </h1>
     </section> 
 
@@ -93,77 +92,16 @@
      				<tr>
      					<td align="right">审核状态</td>
      					<td width="20px"></td>
-     					<?  var checkState;
-							if(object.checkState == 1){
-							 checkState = "未审核";	
-							}
-							if(object.checkState == 2){
-							 checkState = "已审核";	
-							}
-     					?>
      					<td align="left"><font color="red">${checkState}</font></td>
-     				</tr>
-     				<tr>
-     					<td align="right">审核部门</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.checkDepartment}</td>
-     				</tr>
-     				<tr>
-     					<td align="right">审核人</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.checkPerson}</td>
-     				</tr>
-     				<tr>
-     					<td align="right">审核日期</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.checkDate}</td>
-     				</tr>
-     				<tr>
-     					<td align="right">领取部门</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.pullDepartment}</td>
-     				</tr>
-     				<tr>
-     					<td align="right">领取人</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.pullPerson}</td>
-     				</tr>
-     				<tr>
-     					<td align="right">领取日期</td>
-     					<td width="20px"></td>
-     					<td align="left">${object.pullDate}</td>
      				</tr>
      				</tbody>
      			</table>
      		</div>
-     	   <div style="width:700px; margin:0 auto;background-color:#f9f9f9;border-top: solid 5px #56B699;">
-                <div style=" text-align:center; font-size:16px; line-height:40px"> <i class="fa fa-circle-o text-red"></i>金额详情 </div>
-                <table  id="example1" class="table">
-                  <thead>
-                <tr>
-                  <th>序号</th>
-                  <th>卡号</th>
-                  <th>密码</th>
-                  <th>面值</th>
-                  <th>激活状态</th>
-                  <th>激活日期</th>
-                  <th>激活用户</th>
-                  <th>激活IP</th>
-                </tr>
-                </thead>
-                <tbody id="list">
-                </tbody>
-              </table>
-            <!--分页开始-->
-    		<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
-  			</div>
-   		    <!--分页结束-->
-     	 </div>
      	 </div>
      	</div>
      	</div>
      	</div>
-     	</div>
+		</div>
     </section>
     <!-- /.content -->
   </div>

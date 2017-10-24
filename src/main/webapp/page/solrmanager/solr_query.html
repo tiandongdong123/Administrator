@@ -1,0 +1,64 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript" src="../page/solrmanager/js/solr_query.js"></script>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+     <section class="content-header">
+      <h1>solr黑名单查询</h1>
+    </section> 
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group input_block ">
+                  <label class="input_name"> 申请时间</label>
+                  <input id="startTime" type="text" value="${startTime!}" class="form-control input_time" onclick="WdatePicker()">
+                  <label>——</label>
+                  <input id="endTime" type="text" value="${endTime!}" class="form-control input_time" onclick="WdatePicker()">
+                  &nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="query()">查询</button>
+                  &nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="deleteAll()">删除查询到的数据</button>
+                </div>
+              </div>
+            </form>
+            <!-- 查询结果列表开始 -->
+              <table id="example1" class="table table-bordered table-striped" >
+                <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>Id</th>
+                  <th>id类型</th>
+                  <th>模块名称</th>
+                  <th>操作ip</th>
+                  <th>操作人</th>
+                  <th>创建时间</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="list">
+                </tbody>
+              </table>
+            <!--分页开始-->
+    		<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+   		    <!--分页结束-->
+            </div>
+          <!-- 查询结果列表结束 -->
+          </div>
+          </div>
+          <!-- /.box -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<?}?>

@@ -20,6 +20,8 @@ public class CookieUtil {
 	public static final String REMIND="/user/getRemind.do";
 	public static final String INDEX="/user/toIndex.do";
 	public static final String LAYOUT="layout.";
+	
+	private static String domain=Getproperties.getPros("validateOldUser.properties").getProperty("domain");
 
 	public static String getCache(String key) {
 		return redis.get(key, 0);
@@ -53,7 +55,7 @@ public class CookieUtil {
 		try {
 			Cookie cookie = new Cookie("CASTGC", token);
 			cookie.setMaxAge(3600);
-			cookie.setDomain("wanfangdata.com.cn");
+			cookie.setDomain(domain);
 			cookie.setPath("/");
 			response.addCookie(cookie);
 		} catch (Exception e) {
@@ -101,7 +103,7 @@ public class CookieUtil {
 			String str = URLEncoder.encode(JSONObject.fromObject(user).toString(), "utf-8");
 			cookie.setValue(str);
 			cookie.setMaxAge(3600);
-			cookie.setDomain("wanfangdata.com.cn");
+			cookie.setDomain(domain);
 			cookie.setPath("/");
 			res.addCookie(cookie);
 		} catch (Exception e) {
@@ -118,7 +120,7 @@ public class CookieUtil {
 		try {
 			Cookie cookie = new Cookie("Wfadmin", "");
 			cookie.setMaxAge(0);
-			cookie.setDomain("wanfangdata.com.cn");
+			cookie.setDomain(domain);
 			cookie.setPath("/");
 			res.addCookie(cookie);
 		} catch (Exception e) {

@@ -44,7 +44,6 @@ function Page(curr){
 			var  maxsum=0;
 			var  sumnum=0;
 			if(data.pageRow[0] != null){
-				//先显示未审核的
 				$.each(data.pageRow,function (i) {
 					if(data.pageRow[i].checkState==1){
 						var checkState = "";
@@ -57,43 +56,7 @@ function Page(curr){
 							checkState = "已审核";
 							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
-						var valueNumber="";
-						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
-							var numb=eval(data.pageRow[i].valueNumber);
-							var param=numb[j];
-							if(j==0){
-								valueNumber=param.value+"/"+param.number;	
-							}else{
-								valueNumber=valueNumber+","+param.value+"/"+param.number;	
-							}							
-						}
-						sumnum++;
-						maxsum=maxsum*1+data.pageRow[i].amount*1;
-						var html ='<tr>'
-							+'<td>'+x+'</td>'
-		                  +'<td>'+data.pageRow[i].batchName+'</td>'
-		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
-		                  +'<td>'+valueNumber+'</td>'
-		                  +'<td>'+data.pageRow[i].amount+'</td>'
-		                  +'<td>'+data.pageRow[i].validStart+'~'+data.pageRow[i].validEnd+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
-		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
-		                  +'<td>'+checkState+'</td>'
-		                  +'<td>'+html1+'</td>'
-		                  +'</tr>';
-						$("#list").append(html);
-						x++;
-					}
-					sum=x;
-				});
-				//后显示已审核的
-				$.each(data.pageRow,function (i) {
-					if(data.pageRow[i].checkState==2)
-						{
-						var valueNumber = data.pageRow[i].valueNumber;
-						valueNumber = valueNumber.replace("[", "").replace("]", "").replace(/\"/g, "");
+					} else if(data.pageRow[i].checkState==2){
 						var checkState = "";
 						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
 						if(data.pageRow[i].checkState == 1){
@@ -104,36 +67,36 @@ function Page(curr){
 							checkState = "已审核";
 							html1 = '<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=0" style="text-decoration:underline;">查看详情</a>';
 						}
-						var valueNumber="";
-						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
-							var numb=eval(data.pageRow[i].valueNumber);
-							var param=numb[j];
-							if(j==0){
-								valueNumber=param.value+"/"+param.number;	
-							}else{
-								valueNumber=valueNumber+","+param.value+"/"+param.number;	
-							}
-							}
-						sumnum++;
-						maxsum=maxsum*1+data.pageRow[i].amount*1;
-						var html ='<tr>'
-						  +'<td>'+sum+'</td>'
-		                  +'<td>'+data.pageRow[i].batchName+'</td>'
-		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
-		                  +'<td>'+valueNumber+'</td>'
-		                  +'<td>'+data.pageRow[i].amount+'</td>'
-		                  +'<td>'+data.pageRow[i].validStart+'~'+data.pageRow[i].validEnd+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
-		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
-		                  +'<td>'+checkState+'</td>'
-		                  +'<td>'+html1+'</td>'
-		                  +'</tr>';
-						
-						$("#list").append(html);
-						sum++;
-						}					
+					}
+					
+					var valueNumber="";
+					for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
+						var numb=eval(data.pageRow[i].valueNumber);
+						var param=numb[j];
+						if(j==0){
+							valueNumber=param.value+"/"+param.number;
+						}else{
+							valueNumber=valueNumber+","+param.value+"/"+param.number;
+						}
+					}
+					sumnum++;
+					maxsum=maxsum*1+data.pageRow[i].amount*1;
+					var html ='<tr>'
+					  +'<td>'+x+'</td>'
+	                  +'<td>'+data.pageRow[i].batchName+'</td>'
+	                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
+	                  +'<td>'+valueNumber+'</td>'
+	                  +'<td>'+data.pageRow[i].amount+'</td>'
+	                  +'<td>'+data.pageRow[i].validStart+'~'+data.pageRow[i].validEnd+'</td>'
+	                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
+	                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
+	                  +'<td>'+data.pageRow[i].applyDate+'</td>'
+	                  +'<td><a href="../card/download1.do?url='+data.pageRow[i].adjunct+'" style="text-decoration:underline;">点击下载</a></td>'
+	                  +'<td>'+checkState+'</td>'
+	                  +'<td>'+html1+'</td>'
+	                  +'</tr>';
+					$("#list").append(html);
+					x++;
 				});
 			}else{
 				$("#list").append("暂无数据");
