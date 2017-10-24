@@ -170,7 +170,7 @@ public class MessageServiceImpl implements MessageService {
 					redis.del("ztID");
 					redis.del("special");
 					type="special";
-					list= dao.selectBycolums("special");
+					list= dao.selectBycolums(colums);
 					for(int i = 0;i < list.size();i++){
 						Message m = (Message) list.get(i);
 						String object = JSONObject.fromObject(m).toString();
@@ -203,7 +203,7 @@ public class MessageServiceImpl implements MessageService {
 					redis.del("kkID");
 					redis.del("activity");
 					type="activity";
-					list= dao.selectBycolums("activity");
+					list= dao.selectBycolums(colums);
 					for(int i = 0;i < list.size();i++){
 						Message m = (Message) list.get(i);
 						String object = JSONObject.fromObject(m).toString();
