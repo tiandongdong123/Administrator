@@ -1546,7 +1546,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 					return -1; // 修改的用户id已存在user表
 				}
 			}
-			personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
+			if(!StringUtils.isEmpty(mapping.getRelatedidKey())){
+				personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
+			}
 		}else{
 			if (person != null) {
 				return -1; //新建的用户id已存在user表

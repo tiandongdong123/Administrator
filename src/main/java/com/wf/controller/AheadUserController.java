@@ -1305,13 +1305,13 @@ public class AheadUserController {
 				map.put("flag", "fail");
 				map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
 			}
-		}
-		if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
-			String msg = aheadUserService.validateOldUser(partyId);
-			if("false".equals(msg)){
-				map.put("flag", "fail");
-				map.put("msg","旧平台存在该用户ID");
-				return map;
+			if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
+				String msg = aheadUserService.validateOldUser(partyId);
+				if("false".equals(msg)){
+					map.put("flag", "fail");
+					map.put("msg","旧平台存在该用户ID");
+					return map;
+				}
 			}
 		}
 		int result = aheadUserService.setAddauthority(authority,person);
