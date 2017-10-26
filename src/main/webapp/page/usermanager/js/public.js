@@ -39,21 +39,39 @@ $(function(e){
 });
 
 //标准
-function standardShow(count,i,obj){
+function standardShow(count,i,obj,id){
+	resetStandard(count,i);
+	$("#stand_div_"+count+"_"+i).hide();
 	if($(obj).is(':checked')){
 		$("#stand_div_"+count+"_"+i).show();
-	}else{
-		$("#companyName_"+count+"_"+i).val("");
-		$("#fullIpRange_"+count+"_"+i).val("");
-		$("#limitedParcelStarttime_"+count+"_"+i).val("");
-		$("#limitedParcelEndtime_"+count+"_"+i).val("");
-		$("#readingPrint_"+count+"_"+i).val("");
-		$("#onlineVisitor_"+count+"_"+i).val("");
-		$("#copyNo_"+count+"_"+i).val("");
-		$("#totalPrintNo_"+count+"_"+i).val("");
-		$("#singlePrintNo_"+count+"_"+i).val("");
-		$("#stand_div_"+count+"_"+i).hide();
+		if(id=="isZJ"){
+			$("#isBK").hide();
+			$("#isZJ").show();
+		}else if(id=="isBK"){
+			$("#readingPrint_"+count+"_"+i).val("0");
+			$("#onlineVisitor_"+count+"_"+i).val("-1");
+			$("#copyNo_"+count+"_"+i).val("-1");
+			$("#totalPrintNo_"+count+"_"+i).val("-1");
+			$("#singlePrintNo_"+count+"_"+i).val("-1");
+			$("#isZJ").hide();
+			$("#isBK").show();
+		}
 	}
+}
+
+//标准配置重置
+function resetStandard(count,i){
+	$("#orgName_"+count+"_"+i).val("");
+	$("#orgCode_"+count+"_"+i).val("");
+	$("#companySimp_"+count+"_"+i).val("");
+	$("#fullIpRange_"+count+"_"+i).val("");
+	$("#limitedParcelStarttime_"+count+"_"+i).val("");
+	$("#limitedParcelEndtime_"+count+"_"+i).val("");
+	$("#readingPrint_"+count+"_"+i).val("");
+	$("#onlineVisitor_"+count+"_"+i).val("");
+	$("#copyNo_"+count+"_"+i).val("");
+	$("#totalPrintNo_"+count+"_"+i).val("");
+	$("#singlePrintNo_"+count+"_"+i).val("");
 }
 
 //登录方式切换
@@ -373,31 +391,24 @@ function createDetail(count,i,resourceid,type){
 		text += '</div></div>';
 	}
 	if(type.indexOf("standard")>-1){
-		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="checkbox input_block block_left">';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="行业标准">行业标准</label>';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" onclick="standardShow('+count+','+i+',this);" value="质检出版社标准">质检出版社标准</label></div>';
+		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="form-group input_block">';
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" onclick="standardShow('+count+','+i+',this,\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',this,\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
-		text += '<label class="input_name">单位名称</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].companyName" id="companyName_'+count+'_'+i+'">';
-		text += '<div class="form-group" style="width:60%;">';
-		text += '<label>质检出版社标准全文IP范围</label>';
-		text += '<textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"></textarea></div>';
-		text += '<div class="time_block"><div class="time_input">';
-		text += '<span><b>*</b>限定包库时间</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
-		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" id="limitedParcelEndtime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
-		text += '</div></div>';
-		text += '<div class="form-group input_block"><label class="input_name">版权阅读打印</label>';
-		text += '<select class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].readingPrint" id="readingPrint_'+count+'_'+i+'">';
-		text += '<option value="0">授权阅读打印</option><option value="1">授权阅读</option>';
-		text += '<option value="2">授权打印</option><option value="3">未阅读</option></select></div>';
-		text += '<div class="form-group input_block"><label class="input_name">在线用户数</label>';
-		text += '<input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].onlineVisitor" id="onlineVisitor_'+count+'_'+i+'" placeholder="-1">-1表示不限制<br></div>';
-		text += '<div class="form-group input_block"><label class="input_name">副本数</label>';
-		text += '<input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" id="copyNo_'+count+'_'+i+'" placeholder="-1">-1表示不限制<br></div>';
-		text += '<div class="form-group input_block"><label class="input_name">打印总份数</label>';
-		text += '<input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" id="totalPrintNo_'+count+'_'+i+'" placeholder="-1">-1表示不限制<br></div>';
-		text += '<div class="form-group input_block"><label class="input_name">单标准打印数</label>';
-		text += '<input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].singlePrintNo" id="singlePrintNo_'+count+'_'+i+'" placeholder="-1">-1表示不限制<br></div>';
-		text += '</div></div></div>';
+		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" onclick="WdatePicker()" type="text">';
+		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" onclick="WdatePicker()" type="text"></div>';
+		text += '<div id="isZJ"><div class="form-group input_block"><label>&nbsp;&nbsp;单位名称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].orgName"></div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;机构名称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].orgCode">（若账号为中文，则填写全拼）</div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;机构单位简称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].companySimp"></div></div>';
+		text += '<div id="isBK"><div class="form-group input_block"><label>&nbsp;&nbsp;版权阅读打印：</label><select class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].readingPrint">';
+		text += '<option value="0" checked>授权阅读打印</option><option value="1">授权阅读</option><option value="2">授权打印</option><option value="3">未阅读</option></select></div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;在线用户数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].onlineVisitor" value="-1"><span>-1表示不限制</span><br></div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;副本数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" value="-1">-1表示不限制<br></div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;打印总份数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" value="-1">-1表示不限制<br></div>';
+		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;单标准打印数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].singlePrintNo" value="-1">-1表示不限制<br></div></div>';
+		text +='<div class="form-group" style="width:60%;"><label>&nbsp;&nbsp;质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange"></textarea>';
+		text +='</div></div></div>';
 	}
 	if(type.indexOf("local chronicles")>-1){
 		text += '<div class="tab-pane" id="localchronicles_'+count+'_'+i+'">';

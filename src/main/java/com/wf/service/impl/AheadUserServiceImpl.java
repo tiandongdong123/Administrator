@@ -786,29 +786,35 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
-			if(standardtypes.contains("质检出版社标准")){
-				if(dto.getCompanyName()!=null && !dto.getCompanyName().equals("") && !dto.getCompanyName().equals(",")){					
-					addStringToTerms("company_name","Equal",dto.getCompanyName(),Terms,"String");	
+			if(standardtypes.contains("质检出版社")){
+				if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
+					addStringToTerms("org_name","Equal",dto.getOrgName(),Terms,"String");
 				}
-				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("") && !dto.getFullIpRange().equals(",")){					
+				if(dto.getOrgCode()!=null && !dto.getOrgCode().equals("")){
+					addStringToTerms("org_code","Equal",dto.getOrgCode(),Terms,"String");
+				}
+				if(dto.getCompanySimp()!=null && !dto.getCompanySimp().equals("")){
+					addStringToTerms("company_simp","Equal",dto.getCompanySimp(),Terms,"String");
+				}
+				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("") && !dto.getFullIpRange().equals(",")){	
 					addStringToTerms("full_IP_range","Equal",dto.getFullIpRange(),Terms,"String");
 				}
-				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("") && !dto.getLimitedParcelStarttime().equals(",")){					
-					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);	
+				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("")){
+					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);
 				}
-				if(dto.getReadingPrint()!=null && !dto.getReadingPrint().equals("") && !dto.getReadingPrint().equals(",")){					
-					addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");	
+				if(dto.getReadingPrint()!=null && !dto.getReadingPrint().equals("")){
+					addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");
 				}
-				if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("") && !dto.getOnlineVisitor().equals(",")){					
-					addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");	
+				if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("")){
+					addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");
 				}
-				if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("") && !dto.getCopyNo().equals(",")){					
-					addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");	
+				if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("")){
+					addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");
 				}
-				if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("") && !dto.getTotalPrintNo().equals(",")){					
-					addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");	
+				if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("")){
+					addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");
 				}
-				if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("") && !dto.getSinglePrintNo().equals(",")){					
+				if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("")){
 					addStringToTerms("single_print_No","Equal",dto.getSinglePrintNo().toString(),Terms,"String");
 				}
 			}
@@ -872,7 +878,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    if(Verb.equals("Equal")){	    	
 	    	clcm.put("Value",value);
 	    }else if(Verb.equals("In")){
-	    	//JSONArray.fromObject(value)
 	    	clcm.put("Value",StringUtils.strip(value.replaceAll("\"","").replaceAll(" ",""),"[]").split(","));
 	    }
 	    clcm.put("ValueType", ValueType);

@@ -34,27 +34,20 @@ public class ResourceLimitsDTO {
 	private String booksClc;
 	
 	private String booksIdno;
-	
+	//标准
 	private String [] standardTypes;
-	
-	private String companyName;
-	
+	private String orgName;
+	private String orgCode;
+	private String companySimp;
 	private String fullIpRange;
-	
 	private String limitedParcelStarttime;
-	
 	private String limitedParcelEndtime;
-	
 	private Integer readingPrint;
-	
 	private Integer onlineVisitor;
-	
 	private Integer copyNo;
-	
 	private Integer totalPrintNo;
-	
 	private Integer singlePrintNo;
-	
+	//方志
 	private String gazetteersId;
 	private String gazetteersType;
 	private String gazetteersLevel;
@@ -190,12 +183,28 @@ public class ResourceLimitsDTO {
 		this.standardTypes = standardTypes;
 	}
 
-	public String getCompanyName() {
-		return companyName;
+	public String getOrgName() {
+		return orgName;
 	}
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getOrgCode() {
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
+
+	public String getCompanySimp() {
+		return companySimp;
+	}
+
+	public void setCompanySimp(String companySimp) {
+		this.companySimp = companySimp;
 	}
 
 	public String getFullIpRange() {
