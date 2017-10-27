@@ -769,12 +769,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private void userSettingConfig(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
-			if (obj != null) {// 先删除再添加
-				WfksUserSettingKey key=new WfksUserSettingKey();
-				key.setUserType(detail.getProjectid());
-				key.setUserId(com.getUserId());
-				key.setPropertyName(STANDARD_CODE);
-				wfksUserSettingMapper.deleteByUserId(key);
+			// 先删除再添加
+			WfksUserSettingKey key=new WfksUserSettingKey();
+			key.setUserType(detail.getProjectid());
+			key.setUserId(com.getUserId());
+			key.setPropertyName(STANDARD_CODE);
+			wfksUserSettingMapper.deleteByUserId(key);
+			if (obj != null) {
 				WfksUserSetting setting=new WfksUserSetting();
 				setting.setUserType(detail.getProjectid());
 				setting.setUserId(com.getUserId());
