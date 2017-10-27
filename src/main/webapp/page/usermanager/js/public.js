@@ -407,8 +407,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;副本数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" id="copyNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;打印总份数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" id="totalPrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;单标准打印数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].singlePrintNo" id="singlePrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div></div>';
-		text +='<div class="form-group" style="width:60%;"><label>&nbsp;&nbsp;质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"></textarea>';
-		text +='</div></div></div>';
+		text +='<div class="form-group" style="width:60%;"><label>&nbsp;&nbsp;质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"; 
+		text +=' onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')"></textarea></div></div></div>';
 	}
 	if(type.indexOf("local chronicles")>-1){
 		text += '<div class="tab-pane" id="localchronicles_'+count+'_'+i+'">';
