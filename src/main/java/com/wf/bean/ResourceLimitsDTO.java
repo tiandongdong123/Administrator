@@ -39,7 +39,7 @@ public class ResourceLimitsDTO {
 	private String orgName;
 	private String orgCode;
 	private String companySimp;
-	private String fullIpRange;
+	private String [] fullIpRange;
 	private String limitedParcelStarttime;
 	private String limitedParcelEndtime;
 	private Integer readingPrint;
@@ -207,11 +207,11 @@ public class ResourceLimitsDTO {
 		this.companySimp = companySimp;
 	}
 
-	public String getFullIpRange() {
+	public String[] getFullIpRange() {
 		return fullIpRange;
 	}
 
-	public void setFullIpRange(String fullIpRange) {
+	public void setFullIpRange(String[] fullIpRange) {
 		this.fullIpRange = fullIpRange;
 	}
 

@@ -8,6 +8,8 @@
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="com.wf.bean.WfksUserSetting" extends="BaseResultMap" >
     <result column="property_value" property="propertyValue" jdbcType="LONGVARCHAR" />
+    <result column="add_datetime" property="addDateTime" jdbcType="VARCHAR" />
+    <result column="last_updatetime" property="lastUpdateTime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     user_type, user_id, property_name
@@ -45,8 +47,8 @@
   </delete>
   
   <insert id="insert" parameterType="com.wf.bean.WfksUserSetting" >
-    insert into wfks_user_setting (user_type, user_id, property_name, property_value)
-    values (#{userType,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{propertyName,jdbcType=VARCHAR}, #{propertyValue,jdbcType=LONGVARCHAR})
+    insert into wfks_user_setting (user_type, user_id, property_name, property_value,add_datetime)
+    values (#{userType,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{propertyName,jdbcType=VARCHAR}, #{propertyValue,jdbcType=LONGVARCHAR},now())
   </insert>
   
   <insert id="insertSelective" parameterType="com.wf.bean.WfksUserSetting" >

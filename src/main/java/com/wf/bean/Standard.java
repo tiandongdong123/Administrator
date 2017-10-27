@@ -1,6 +1,5 @@
 package com.wf.bean;
 
-import java.util.Date;
 
 public class Standard {
 	private boolean isBK;//是否包库
@@ -8,10 +7,10 @@ public class Standard {
 	private String UserId;//用户Id
 	private String Username;//用户名称
 	private String UserEnName;//用户英文名称
-	private Date StartTime;//元数据+全文开始时间
-	private Date EndTime;//元数据+全文结束时间
-	private Date BK_StartTime;//包库开始时间
-	private Date BK_EndTime;//包库结束时间
+	private String StartTime;//元数据+全文开始时间
+	private String EndTime;//元数据+全文结束时间
+	private String BK_StartTime;//包库开始时间
+	private String BK_EndTime;//包库结束时间
 	private String OrgName;//单位名称
 	private String OrgCode;//机构名称
 	private String CompanySimp;//机构单位简写
@@ -23,16 +22,16 @@ public class Standard {
 	private int Prints;//打印总份数
 	private int Sigprint;//单标准打印数
 	
-	public boolean isBK() {
+	public boolean getIsBK() {
 		return isBK;
 	}
-	public void setBK(boolean isBK) {
+	public void setIsBK(boolean isBK) {
 		this.isBK = isBK;
 	}
-	public boolean isZJ() {
+	public boolean getIsZJ() {
 		return isZJ;
 	}
-	public void setZJ(boolean isZJ) {
+	public void setIsZJ(boolean isZJ) {
 		this.isZJ = isZJ;
 	}
 	public String getUserId() {
@@ -53,28 +52,28 @@ public class Standard {
 	public void setUserEnName(String userEnName) {
 		UserEnName = userEnName;
 	}
-	public Date getStartTime() {
+	public String getStartTime() {
 		return StartTime;
 	}
-	public void setStartTime(Date startTime) {
+	public void setStartTime(String startTime) {
 		StartTime = startTime;
 	}
-	public Date getEndTime() {
+	public String getEndTime() {
 		return EndTime;
 	}
-	public void setEndTime(Date endTime) {
+	public void setEndTime(String endTime) {
 		EndTime = endTime;
 	}
-	public Date getBK_StartTime() {
+	public String getBK_StartTime() {
 		return BK_StartTime;
 	}
-	public void setBK_StartTime(Date bK_StartTime) {
+	public void setBK_StartTime(String bK_StartTime) {
 		BK_StartTime = bK_StartTime;
 	}
-	public Date getBK_EndTime() {
+	public String getBK_EndTime() {
 		return BK_EndTime;
 	}
-	public void setBK_EndTime(Date bK_EndTime) {
+	public void setBK_EndTime(String bK_EndTime) {
 		BK_EndTime = bK_EndTime;
 	}
 	public String getOrgCode() {

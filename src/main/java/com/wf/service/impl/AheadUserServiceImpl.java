@@ -1,6 +1,5 @@
 package com.wf.service.impl;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -31,6 +30,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -46,6 +46,8 @@ import wfks.accounting.transaction.TransactionRequest;
 import wfks.accounting.transaction.TransactionResponse;
 import wfks.authentication.AccountId;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.utils.DateUtil;
 import com.utils.ExcelUtil;
 import com.utils.GetUuid;
@@ -91,7 +93,10 @@ import com.wf.service.AheadUserService;
 @Service
 public class AheadUserServiceImpl implements AheadUserService{
 	
+	private static Logger log = Logger.getLogger(AheadUserServiceImpl.class);
 	private static String isOpen=Getproperties.getPros("validateOldUser.properties").getProperty("isOpen");
+    private String STANDARD ="DB_WFSD";
+    private String STANDARD_CODE="GB168Standard";
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
@@ -645,7 +650,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
-		if(list!=null){		
+		if(list!=null){
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
 					ProjectResources pr = new ProjectResources();
@@ -653,16 +658,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 					pr.setUserId(com.getUserId());
 					pr.setProjectId(dto.getProjectid());
 					pr.setResourceId(rlDTO.getResourceid());
-					if(getField(rlDTO)!=null){				
-						pr.setContract(getField(rlDTO));
+					String field=getField(rlDTO);
+					if(field!=null){				
+						pr.setContract(field);
 					}
 					if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
+					userSettingConfig(dto,rlDTO,com);
 				}
 			}
 		}else{
+			log.error("user:"+com.getUserId()+",projectId:"+dto.getProjectid()+"没有查询到产品信息");
 			ProjectResources pr = new ProjectResources();
 			pr.setId(GetUuid.getId());
 			pr.setUserId(com.getUserId());
@@ -700,16 +708,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 					pr.setUserId(com.getUserId());
 					pr.setProjectId(dto.getProjectid());
 					pr.setResourceId(rlDTO.getResourceid());
-					if(getField(rlDTO)!=null){				
-						pr.setContract(getField(rlDTO));
+					String field=getField(rlDTO);
+					if(field!=null){				
+						pr.setContract(field);
 					}
 					if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
+					userSettingConfig(dto,rlDTO,com);
 				}
 			}
 		}else{
+			log.error("user:"+com.getUserId()+",projectId:"+dto.getProjectid()+"没有查询到产品信息");
 			ProjectResources prs = new ProjectResources();
 			prs.setId(GetUuid.getId());
 			prs.setUserId(com.getUserId());
@@ -750,6 +761,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 	}
 	
+	/**
+	 * 设置标准配置参数
+	 * @param dto
+	 * @param com
+	 */
+	private void userSettingConfig(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
+		if (STANDARD.equals(rdto.getResourceid())) {
+			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
+			if (obj != null) {// 先删除再添加
+				WfksUserSettingKey key=new WfksUserSettingKey();
+				key.setUserType(detail.getProjectid());
+				key.setUserId(com.getUserId());
+				key.setPropertyName(STANDARD_CODE);
+				wfksUserSettingMapper.deleteByUserId(key);
+				WfksUserSetting setting=new WfksUserSetting();
+				setting.setUserType(detail.getProjectid());
+				setting.setUserId(com.getUserId());
+				setting.setPropertyName(STANDARD_CODE);
+				setting.setPropertyValue(JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue));
+				wfksUserSettingMapper.insert(setting);
+			}
+		}
+	}
+	
 	
 	public static String getField(ResourceLimitsDTO dto){
 		JSONObject obj = new JSONObject();
@@ -783,42 +818,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(dto.getBooksIdno()!=null && !dto.getBooksIdno().equals("") && !dto.getBooksIdno().equals(",")){			
 			addStringToTerms("books_IDNo","Equal",dto.getBooksIdno(),Terms,"String");
 		}
-		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
-		if(StringUtils.isNoneBlank(standardtypes)){
-			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
-			if(standardtypes.contains("质检出版社")){
-				if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
-					addStringToTerms("org_name","Equal",dto.getOrgName(),Terms,"String");
-				}
-				if(dto.getOrgCode()!=null && !dto.getOrgCode().equals("")){
-					addStringToTerms("org_code","Equal",dto.getOrgCode(),Terms,"String");
-				}
-				if(dto.getCompanySimp()!=null && !dto.getCompanySimp().equals("")){
-					addStringToTerms("company_simp","Equal",dto.getCompanySimp(),Terms,"String");
-				}
-				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("") && !dto.getFullIpRange().equals(",")){	
-					addStringToTerms("full_IP_range","Equal",dto.getFullIpRange(),Terms,"String");
-				}
-				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("")){
-					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);
-				}
-				if(dto.getReadingPrint()!=null && !dto.getReadingPrint().equals("")){
-					addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");
-				}
-				if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("")){
-					addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");
-				}
-				if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("")){
-					addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");
-				}
-				if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("")){
-					addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");
-				}
-				if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("")){
-					addStringToTerms("single_print_No","Equal",dto.getSinglePrintNo().toString(),Terms,"String");
-				}
-			}
-		}
+		//处理标准配置
+		formatStandard(dto,Terms);
 		
 		String gId = formatId(dto.getGazetteersId());
 		String itemId = formatId(dto.getItemId());
@@ -857,6 +858,105 @@ public class AheadUserServiceImpl implements AheadUserService{
 			return obj.toString();
 		}
 		return null;
+	}
+	
+	/**
+	 * 处理标准配置
+	 * @param dto
+	 * @param Terms
+	 */
+	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
+		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		if(StringUtils.isNoneBlank(standardtypes)){
+			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
+			if(standardtypes.contains("质检出版社")){
+				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
+					String FullIpRange=dto.getFullIpRange()==null?"":Arrays.toString(dto.getFullIpRange());
+					addStringToTerms("full_IP_range","In",FullIpRange,Terms,"String[]");
+				}
+				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("")){
+					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);
+				}
+				
+				if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
+					addStringToTerms("org_name","Equal",dto.getOrgName(),Terms,"String");
+					if(dto.getOrgCode()!=null && !dto.getOrgCode().equals("")){
+						addStringToTerms("org_code","Equal",dto.getOrgCode(),Terms,"String");
+					}
+					if(dto.getCompanySimp()!=null && !dto.getCompanySimp().equals("")){
+						addStringToTerms("company_simp","Equal",dto.getCompanySimp(),Terms,"String");
+					}
+				}else{
+					if(dto.getReadingPrint()!=null&& !dto.getReadingPrint().equals("")){
+						addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");
+					}
+					if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("")){
+						addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");
+					}
+					if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("")){
+						addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");
+					}
+					if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("")){
+						addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");
+					}
+					if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("")){
+						addStringToTerms("single_print_No","Equal",dto.getSinglePrintNo().toString(),Terms,"String");
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 获取标准对象
+	 * @param dto
+	 * @param Terms
+	 */
+	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
+		com.alibaba.fastjson.JSONObject obj=null;
+		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		if(standardtypes.contains("质检出版社")){
+			obj=new com.alibaba.fastjson.JSONObject();
+			obj.put("UserId", com.getUserId());
+			obj.put("Username", null);
+			obj.put("UserEnName", com.getUserId());
+			if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
+				obj.put("isZJ", true);
+				obj.put("StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
+				obj.put("EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
+				obj.put("OrgName", dto.getOrgName());
+				obj.put("OrgCode", dto.getOrgCode());
+				obj.put("CompanySimp", dto.getCompanySimp());
+				obj.put("IPLimits", dto.getFullIpRange());
+				obj.put("isBK", false);
+				obj.put("BK_StartTime", null);
+				obj.put("BK_EndTime", null);
+				obj.put("BK_IPLimits", null);
+				obj.put("Rdptauth", null);
+				obj.put("Onlines", 0);
+				obj.put("Copys", 0);
+				obj.put("Prints", 0);
+				obj.put("Sigprint", 0);		
+			}else{
+				obj.put("isZJ", false);
+				obj.put("StartTime", null);
+				obj.put("EndTime", null);
+				obj.put("OrgName", null);
+				obj.put("OrgCode", null);
+				obj.put("CompanySimp", null);
+				obj.put("IPLimits", null);
+				obj.put("isBK", true);
+				obj.put("BK_StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
+				obj.put("BK_EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
+				obj.put("BK_IPLimits", dto.getFullIpRange());
+				obj.put("Rdptauth", dto.getReadingPrint().toString());
+				obj.put("Onlines", dto.getOnlineVisitor());
+				obj.put("Copys", dto.getCopyNo());
+				obj.put("Prints", dto.getTotalPrintNo());
+				obj.put("Sigprint", dto.getSinglePrintNo());
+			}
+		}
+		return obj;
 	}
 
 	private static String formatId(String ids){

@@ -436,16 +436,16 @@
 						<div id="stand_div_${i}_${j}">
 							<div class="form-group input_block">
 								<label><b>*</b>限定时间：</label>
-								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
+								<?if(!isEmpty(limited_parcel_time.Value)){?>
 									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+				          		<?}else{?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="" onclick="WdatePicker()" type="text">
 				          		<?}?>
 								<span class="to">至</span>
-								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LessThanOrEqualTo"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
+								<?if(!isEmpty(limited_parcel_time.Value)){?>
 									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
+				          		<?}else{?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="" onclick="WdatePicker()" type="text">
 				          		<?}?>
 							</div>
 							<div id="isZJ" <?if(isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
