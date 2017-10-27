@@ -404,8 +404,8 @@
 						</div>
 					</div>
 					<div class="form-group" style="width:60%;">
-						<label>质检出版社标准全文IP范围</label>
-						<textarea class="form-control" rows="3" name="fullIpRange" id="fullIpRange">${full_IP_range.Value!}</textarea>
+						<label>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
+						<textarea class="form-control" rows="3" name="fullIpRange" id="fullIpRange">${fullIP!}</textarea>
 					</div>
 				</div>
 			</div>

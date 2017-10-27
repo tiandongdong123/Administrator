@@ -95,8 +95,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	private static Logger log = Logger.getLogger(AheadUserServiceImpl.class);
 	private static String isOpen=Getproperties.getPros("validateOldUser.properties").getProperty("isOpen");
-    private String STANDARD ="DB_WFSD";
-    private String STANDARD_CODE="GB168Standard";
+    private static String STANDARD ="DB_WFSD";
+    private static String STANDARD_CODE="GB168Standard";
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
@@ -819,7 +819,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			addStringToTerms("books_IDNo","Equal",dto.getBooksIdno(),Terms,"String");
 		}
 		//处理标准配置
-		formatStandard(dto,Terms);
+		if (STANDARD.equals(dto.getResourceid())) {
+			formatStandard(dto,Terms);
+		}
 		
 		String gId = formatId(dto.getGazetteersId());
 		String itemId = formatId(dto.getItemId());
@@ -872,7 +874,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(standardtypes.contains("质检出版社")){
 				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
 					String FullIpRange=dto.getFullIpRange()==null?"":Arrays.toString(dto.getFullIpRange());
-					addStringToTerms("full_IP_range","In",FullIpRange,Terms,"String[]");
+					Pattern p2 = Pattern.compile("[^0-9.-]");
+					Matcher m2 = p2.matcher(FullIpRange);
+					FullIpRange = m2.replaceAll(" ").trim();
+					FullIpRange=FullIpRange.replaceAll("  ", " ");
+					if(StringUtils.isNotBlank(FullIpRange)){
+						addStringToTerms("full_IP_range","In",Arrays.toString(FullIpRange.split(" ")),Terms,"String[]");
+					}
 				}
 				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("")){
 					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);
@@ -920,6 +928,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 			obj.put("UserId", com.getUserId());
 			obj.put("Username", null);
 			obj.put("UserEnName", com.getUserId());
+			List<String> list=null;
+			if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
+				String FullIpRange=dto.getFullIpRange()==null?"":Arrays.toString(dto.getFullIpRange());
+				Pattern p2 = Pattern.compile("[^0-9.-]");
+				Matcher m2 = p2.matcher(FullIpRange);
+				FullIpRange = m2.replaceAll(" ").trim();
+				FullIpRange=FullIpRange.replaceAll("  ", " ");
+				if(!StringUtils.isEmpty(FullIpRange)){
+					list=Arrays.asList(FullIpRange.split(" "));
+				}
+			}
 			if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
 				obj.put("isZJ", true);
 				obj.put("StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
@@ -927,7 +946,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				obj.put("OrgName", dto.getOrgName());
 				obj.put("OrgCode", dto.getOrgCode());
 				obj.put("CompanySimp", dto.getCompanySimp());
-				obj.put("IPLimits", dto.getFullIpRange());
+				obj.put("IPLimits", list);
 				obj.put("isBK", false);
 				obj.put("BK_StartTime", null);
 				obj.put("BK_EndTime", null);
@@ -948,7 +967,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				obj.put("isBK", true);
 				obj.put("BK_StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
 				obj.put("BK_EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
-				obj.put("BK_IPLimits", dto.getFullIpRange());
+				obj.put("BK_IPLimits", list);
 				obj.put("Rdptauth", dto.getReadingPrint().toString());
 				obj.put("Onlines", dto.getOnlineVisitor());
 				obj.put("Copys", dto.getCopyNo());
