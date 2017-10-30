@@ -79,6 +79,60 @@ function resetStandard(count,i){
 	$("#singlePrintNo_"+count+"_"+i).val("");
 }
 
+//校验标准内容
+function validStandard(count,i){
+	//1、元数据和包库的要分别校验
+	if($("#isZJ_"+count+"_"+i).is(':checked')){//1、元数据+全文
+		var orgName=$("#orgName_"+count+"_"+i).val();
+		var orgCode=$("#orgCode_"+count+"_"+i).val();
+		var companySimp=$("#companySimp_"+count+"_"+i).val();
+		if(orgName==null||orgName==""){
+			layer.msg("单位名称不能为空",{icon: 1});
+			return false;
+		}
+		if(orgCode==null||orgCode==""){
+			layer.msg(" 机构名称不能为空",{icon: 1});
+			return false;
+		}
+		if(companySimp==null||companySimp==""){
+			layer.msg("机构单位简称不能为空",{icon: 1});
+			return false;
+		}
+	}else if($("#isBK_"+count+"_"+i).is(':checked')){//2、包库
+		var readingPrint=$("#readingPrint_"+count+"_"+i).val();
+		if(readingPrint==null||readingPrint==""){
+			layer.msg("版权阅读打印不能为空",{icon: 1});
+			return false;
+		}
+	}else{
+		return true;//行业标准
+	}
+	//2、时间不能为空，而且还是时间要小于等于结束时间
+	var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
+	var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
+	if(startTime==null||startTime==null){
+		layer.msg("开始时间不能为空",{icon: 1});
+		return false;
+	}
+	if(endTime==null||endTime==null){
+		layer.msg("结束时间不能为空",{icon: 1});
+		return false;
+	}
+	var d1 = new Date(startTime.replace(/\-/g, "\/"));
+	var d2 = new Date(endTime.replace(/\-/g, "\/"));
+	if(d1>d2){
+		layer.msg("开始时间不能大于结束时间",{icon: 1});
+		return false;
+	}
+	//3、ip不能为空
+	var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
+	if(fullIpRange==null||fullIpRange==""){
+		layer.msg("ip段必须填写",{icon: 1});
+		return false;
+	}
+	return true;
+}
+
 //登录方式切换
 function switchcs(obj){
 	$("#ipSegment").val("");
@@ -130,17 +184,40 @@ function openPurchaseItems(count,i,type){
 		$("a[href='#localchronicles_"+count+"_"+i+"']").parent().addClass("active");
 		$("#localchronicles_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 	}
-	layer.open({
-	    type: 1, //page层 1div，2页面
-	    area: ['40%', '600px'],
-	    title: '详情',
-	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: $("#tabs_custom_"+count+"_"+i),
-	    btn: ['确认'],
-		yes: function(){
-	        layer.closeAll();
-	    },
-	}); 
+	if(type.indexOf("standard")>-1){
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['50%', '600px'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(validStandard(count,i)){
+		    		layer.closeAll();
+		    	}
+		    }, 
+		    cancel: function(){
+		    	if(validStandard(count,i)){
+		    		layer.closeAll();
+		    	}else{
+		    		layer.openAll();
+		    	}
+			}
+		});
+	}else{
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '600px'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(){
+		        layer.closeAll();
+		    },
+		});
+	} 
 }
 
 //购买项目div样式切换
@@ -398,7 +475,7 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("standard")>-1){
 		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="form-group input_block">';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isZJ_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
 		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';

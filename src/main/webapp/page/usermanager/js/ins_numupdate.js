@@ -80,13 +80,15 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-		    	if(validStandard()){
+		    	if(validStandard(count,i)){
 		    		layer.closeAll();
 		    	}
 		    }, 
 		    cancel: function(){
-		    	if(validStandard()){
+		    	if(validStandard(count,i)){
 		    		layer.closeAll();
+		    	}else{
+		    		layer.openAll();
 		    	}
 			}
 		});
@@ -103,12 +105,6 @@ function openItems(count,i,type){
 		    },
 		});
 	}
-}
-
-//校验内容
-function validStandard(){
-	//alert("==");
-	return true;
 }
 
 //学科中图分类树
