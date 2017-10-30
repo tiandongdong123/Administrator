@@ -430,8 +430,8 @@
 					<div class="tab-pane" id="standard_${i}_${j}">
 						<div class="form-group input_block">
 							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="WFLocal" <?if(array.contain(standard_types.Value,"WFLocal")){?>checked="checked"<?}?>>行业标准</label>
-							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},this,'isZJ');" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
-							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},this,'isBK');" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
+							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},'isZJ');" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
+							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},'isBK');" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
 						</div>
 						<div id="stand_div_${i}_${j}">
 							<div class="form-group input_block">
@@ -639,8 +639,8 @@
 		<div class="tab-pane" id="standard_${i}_${j}">
 		<div class="form-group input_block">
 			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="WFLocal">行业标准</label>
-			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},this,'isZJ');" value="质检出版社">元数据+全文(质检)</label>
-			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},this,'isBK');" value="质检出版社">网络包库(质检)</label>
+			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},'isZJ');" value="质检出版社">元数据+全文(质检)</label>
+			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},'isBK');" value="质检出版社">网络包库(质检)</label>
 		</div>
 		<div id="stand_div_${i}_${j}" style="display: none;">
 			<div class="form-group input_block">

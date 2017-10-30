@@ -39,22 +39,27 @@ $(function(e){
 });
 
 //标准
-function standardShow(count,i,obj,id){
+function standardShow(count,i,id){
 	resetStandard(count,i);
 	$("#stand_div_"+count+"_"+i).hide();
-	if($(obj).is(':checked')){
-		$("#stand_div_"+count+"_"+i).show();
-		if(id=="isZJ"){
-			$("#isBK").hide();
+	$("#isBK").hide();
+	$("#isZJ").hide();
+	if(id=="isZJ"){
+		if($("#isZJ_"+count+"_"+i).is(':checked')){
 			$("#isZJ").show();
-		}else if(id=="isBK"){
+			$("#stand_div_"+count+"_"+i).show();
+			$("#isBK_"+count+"_"+i).attr("checked",false);
+		}
+	}else if(id=="isBK"){
+		if($("#isBK_"+count+"_"+i).is(':checked')){
 			$("#readingPrint_"+count+"_"+i).val("0");
 			$("#onlineVisitor_"+count+"_"+i).val("-1");
 			$("#copyNo_"+count+"_"+i).val("-1");
 			$("#totalPrintNo_"+count+"_"+i).val("-1");
 			$("#singlePrintNo_"+count+"_"+i).val("-1");
-			$("#isZJ").hide();
 			$("#isBK").show();
+			$("#stand_div_"+count+"_"+i).show();
+			$("#isZJ_"+count+"_"+i).attr("checked",false);
 		}
 	}
 }
@@ -393,8 +398,8 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("standard")>-1){
 		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="form-group input_block">';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" onclick="standardShow('+count+','+i+',this,\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',this,\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
+		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
 		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
 		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" id="limitedParcelEndtime_'+count+'_'+i+'" onclick="WdatePicker()" type="text"></div>';
@@ -407,8 +412,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;副本数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" id="copyNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;打印总份数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" id="totalPrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;单标准打印数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].singlePrintNo" id="singlePrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div></div>';
-		text +='<div class="form-group" style="width:60%;"><label>&nbsp;&nbsp;质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"; 
-		text +=' onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')"></textarea></div></div></div>';
+		text += '<div class="form-group" style="width:60%;"><label>&nbsp;&nbsp;质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"';
+		text += ' onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,\'\')"></textarea></div></div></div>';
 	}
 	if(type.indexOf("local chronicles")>-1){
 		text += '<div class="tab-pane" id="localchronicles_'+count+'_'+i+'">';
