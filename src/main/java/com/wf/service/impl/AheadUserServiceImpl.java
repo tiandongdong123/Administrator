@@ -1466,9 +1466,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<UserIp> validateIp(String userId, long beginIp, long endIp){
 		List<UserIp> list = userIpMapper.validateIp(userId, beginIp, endIp);
-		/*if(list.size()==0){			
-			return false;
-		}*/
 		return list;
 	}
 

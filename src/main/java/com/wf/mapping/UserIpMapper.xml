@@ -32,10 +32,9 @@
   </select>
   
   <select id="validateIp" resultMap="BaseResultMap">
-	select u.user_id,up.begin_ip_address_number,up.end_ip_address_number from 
-	user u left join user_ip up on u.user_id=up.user_id where u.user_id != #{userId} and u.userType = '2' and u.login_mode = '0'
-	<if test="beginIp != null and beginIp != '' and endIp != null and endIp != ''">
-		and ((#{beginIp} <![CDATA[>=]]> up.begin_ip_address_number and #{beginIp} <![CDATA[<=]]> up.end_ip_address_number) or 
+	select up.user_id,up.begin_ip_address_number,up.end_ip_address_number from user_ip up where up.user_id != #{userId}
+	<if test="beginIp != null and beginIp != '' AND endIp != null and endIp != ''">
+		and ((#{beginIp} <![CDATA[>=]]> up.begin_ip_address_number AND #{beginIp} <![CDATA[<=]]> up.end_ip_address_number) or 
 			(#{endIp} <![CDATA[>=]]> up.begin_ip_address_number and #{endIp} <![CDATA[<=]]> up.end_ip_address_number) or
 			(up.begin_ip_address_number <![CDATA[>=]]> #{beginIp} AND up.end_ip_address_number <![CDATA[<=]]> #{endIp}))
 	</if>
