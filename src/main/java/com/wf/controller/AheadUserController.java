@@ -1502,7 +1502,7 @@ public class AheadUserController {
 						op.setOpreation(flag == "2" ? "更新" : "删除");
 						if (com.getRdlist() != null) {
 							JSONObject json=JSONObject.fromObject(dto);
-							json.remove("rldto");
+							//json.remove("rldto");
 							op.setReason(json.toString());
 						}
 						op.setProjectId(dto.getProjectid());
