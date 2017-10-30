@@ -1105,7 +1105,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		p.setUserId(com.getUserId());
 		p.setInstitution(com.getInstitution());
 		try {
-			p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
+			if(StringUtils.isNotBlank(com.getPassword())){
+				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
