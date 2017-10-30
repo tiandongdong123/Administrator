@@ -32,7 +32,6 @@ function submitForm(){
 			if(data.flag=="success"){
 				layer.msg("更新成功",{icon: 1});
 				window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
-				//+"&institution="+parent.$("#institution").val()+"&adminname"+parent.$("#adminname").val()+"&adminIP"+parent.$("#adminIP").val()+"&ipSegment="+parent.$("#ipSegment").val()
 			}else{
 				layer.msg("更新失败，请联系管理员", {icon: 2});
 			}
@@ -81,12 +80,14 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-				validStandard();
-		        layer.closeAll();
+		    	if(validStandard()){
+		    		layer.closeAll();
+		    	}
 		    }, 
 		    cancel: function(){
-				validStandard();
-		    	layer.closeAll();
+		    	if(validStandard()){
+		    		layer.closeAll();
+		    	}
 			}
 		});
 	}else{
@@ -106,7 +107,8 @@ function openItems(count,i,type){
 
 //校验内容
 function validStandard(){
-	
+	//alert("==");
+	return true;
 }
 
 //学科中图分类树

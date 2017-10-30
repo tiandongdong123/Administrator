@@ -651,6 +651,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
+			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
 					ProjectResources pr = new ProjectResources();
@@ -666,7 +667,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
-					userSettingConfig(dto,rlDTO,com);
+					addUserSetting(dto,rlDTO,com);
 				}
 			}
 		}else{
@@ -701,6 +702,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public void updateProjectResources(CommonEntity com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
+			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(StringUtils.isNotBlank(rlDTO.getResourceid())){
 					ProjectResources pr = new ProjectResources();
@@ -716,7 +718,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
-					userSettingConfig(dto,rlDTO,com);
+					addUserSetting(dto,rlDTO,com);
 				}
 			}
 		}else{
@@ -762,19 +764,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	/**
-	 * 设置标准配置参数
+	 * 添加标准配置参数
 	 * @param dto
 	 * @param com
 	 */
-	private void userSettingConfig(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
+	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
-			// 先删除再添加
-			WfksUserSettingKey key=new WfksUserSettingKey();
-			key.setUserType(detail.getProjectid());
-			key.setUserId(com.getUserId());
-			key.setPropertyName(STANDARD_CODE);
-			wfksUserSettingMapper.deleteByUserId(key);
 			if (obj != null) {
 				WfksUserSetting setting=new WfksUserSetting();
 				setting.setUserType(detail.getProjectid());
@@ -784,6 +780,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 				wfksUserSettingMapper.insert(setting);
 			}
 		}
+	}
+	
+	/**
+	 * 删除标准配置删除
+	 * @param detail
+	 * @param com
+	 */
+	private void delUserSetting(ResourceDetailedDTO detail, CommonEntity com){
+		// 先删除再添加
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserType(detail.getProjectid());
+		key.setUserId(com.getUserId());
+		key.setPropertyName(STANDARD_CODE);
+		wfksUserSettingMapper.deleteByUserId(key);
 	}
 	
 	
@@ -957,7 +967,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				obj.put("Copys", 0);
 				obj.put("Prints", 0);
 				obj.put("Sigprint", 0);		
-			}else{
+			}else if(dto.getReadingPrint()!=null){
 				obj.put("isZJ", false);
 				obj.put("StartTime", null);
 				obj.put("EndTime", null);
