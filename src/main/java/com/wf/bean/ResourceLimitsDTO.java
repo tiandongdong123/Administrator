@@ -36,8 +36,8 @@ public class ResourceLimitsDTO {
 	private String booksIdno;
 	//标准
 	private String [] standardTypes;
+	private String company;
 	private String orgName;
-	private String orgCode;
 	private String companySimp;
 	private String [] fullIpRange;
 	private String limitedParcelStarttime;
@@ -191,12 +191,12 @@ public class ResourceLimitsDTO {
 		this.orgName = orgName;
 	}
 
-	public String getOrgCode() {
-		return orgCode;
+	public String getCompany() {
+		return company;
 	}
 
-	public void setOrgCode(String orgCode) {
-		this.orgCode = orgCode;
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	public String getCompanySimp() {

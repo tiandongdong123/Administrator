@@ -137,7 +137,7 @@
    <?if(!isEmpty(pldata.contract)){ var payid = pro.payChannelid; var pscode = pldata.productSourceCode;?>
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
 		<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
-		books_IDNo,standard_types,org_name,org_code,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
+		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
 			for(var n=0;n<pldata.contract.~size;n++){
 				if("journal_CLC"==pldata.contract[n].Field){
@@ -166,8 +166,8 @@
 					standard_types = pldata.contract[n];
 				}else if("org_name"==pldata.contract[n].Field){
 					org_name = pldata.contract[n];
-				}else if("org_code"==pldata.contract[n].Field){
-					org_code = pldata.contract[n];
+				}else if("company"==pldata.contract[n].Field){
+					company = pldata.contract[n];
 				}else if("company_simp"==pldata.contract[n].Field){
 					company_simp = pldata.contract[n];
 				}else if("full_IP_range"==pldata.contract[n].Field){
@@ -364,21 +364,21 @@
 					</div>
 					<div id="isZJ" <?if(isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
 						<div class="form-group input_block">
-							<label>&nbsp;&nbsp;单位名称：</label>
-							<input type="text" class="form-control input_width" name="orgName" value="${org_name.Value!}">
+							<label><b>*</b>单位名称：</label>
+							<input type="text" class="form-control input_width" name="company" value="${company.Value!}">
 						</div>
 						<div class="form-group input_block">
-							<label>&nbsp;&nbsp;机构名称：</label>
-							<input type="text" class="form-control input_width" name="orgCode" value="${org_code.Value!}">（若账号为中文，则填写全拼）
+							<label><b>*</b>机构名称：</label>
+							<input type="text" class="form-control input_width" name="orgName" value="${org_name.Value!}">（若账号为中文，则填写全拼）
 						</div>
 						<div class="form-group input_block">
-							<label>&nbsp;&nbsp;机构单位简称：</label>
+							<label><b>*</b>机构单位简称：</label>
 							<input type="text" class="form-control input_width" name="companySimp" value="${company_simp.Value!}">
 						</div>
 					</div>
 					<div id="isBK" <?if(!isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
 						<div class="form-group input_block">
-							<label>&nbsp;&nbsp;版权阅读打印：</label>
+							<label><b>*</b>版权阅读打印：</label>
 							<select class="form-control input_width" name="readingPrint">
 								<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
 								<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
@@ -404,7 +404,7 @@
 						</div>
 					</div>
 					<div class="form-group" style="width:60%;">
-						<label>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
+						<label><b>*</b>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
 						<textarea class="form-control" rows="3" name="fullIpRange" id="fullIpRange">${fullIP!}</textarea>
 					</div>
 				</div>

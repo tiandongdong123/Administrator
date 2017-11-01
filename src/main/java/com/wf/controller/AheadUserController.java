@@ -40,6 +40,7 @@ import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.StandardUnit;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.Wfadmin;
@@ -1526,6 +1527,46 @@ public class AheadUserController {
 		JSONArray array = JSONArray.fromObject(userids);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(array.toString());
+	}
+	
+	/**
+	 * 校验标准机构是否合法
+	 * @param userId
+	 * @param orgCode
+	 * @param companySimp
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping("findStandardUnit")
+    public Map<String,Object> findStandardUnit(String userId, String orgName, String companySimp) throws Exception {
+		log.info("校验标准机构:userId="+userId+",orgName="+orgName+",companySimp="+companySimp);
+		Map<String, Object> m = new HashMap<String, Object>();
+		if(StringUtils.isEmpty(orgName)||StringUtils.isEmpty(companySimp)){
+			m.put("flag", "false");
+			return m;
+		}
+		List<StandardUnit> list = aheadUserService.findStandardUnit(userId, orgName, companySimp);
+		if (list.size() == 0) {
+			m.put("flag", "true");
+			return m;
+		}
+		for (StandardUnit unit : list) {
+			if (!userId.equals(unit.getUserId())) {
+				m.put("flag", "false");
+				if (!StringUtils.isEmpty(orgName) && orgName.equals(unit.getOrgName())) {
+					m.put("msg", "机构名称有重复");
+					m.put("result", "1");
+				} else if (!StringUtils.isEmpty(companySimp)
+						&& companySimp.equals(unit.getCompanySimp())) {
+					m.put("msg", "机构用户简写有重复");
+					m.put("result", "2");
+				}
+				return m;
+			}
+		}
+		m.put("flag", "true");
+		return m;
 	}
 	
 }

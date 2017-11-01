@@ -11,8 +11,9 @@ public class Standard {
 	private String EndTime;//元数据+全文结束时间
 	private String BK_StartTime;//包库开始时间
 	private String BK_EndTime;//包库结束时间
-	private String OrgName;//单位名称
-	private String OrgCode;//机构名称
+	private String Company;//单位名称
+	private String OrgName;//机构名称
+	private String OrgCode;//机构单位code
 	private String CompanySimp;//机构单位简写
 	private String[] IPLimits;//元数据+全文ip限定
 	private String[] BK_IPLimits;//包库ip限定
@@ -76,17 +77,23 @@ public class Standard {
 	public void setBK_EndTime(String bK_EndTime) {
 		BK_EndTime = bK_EndTime;
 	}
-	public String getOrgCode() {
-		return OrgCode;
+	public String getCompany() {
+		return Company;
 	}
-	public void setOrgCode(String orgCode) {
-		OrgCode = orgCode;
+	public void setCompany(String company) {
+		Company = company;
 	}
 	public String getOrgName() {
 		return OrgName;
 	}
 	public void setOrgName(String orgName) {
 		OrgName = orgName;
+	}
+	public String getOrgCode() {
+		return OrgCode;
+	}
+	public void setOrgCode(String orgCode) {
+		OrgCode = orgCode;
 	}
 	public String getCompanySimp() {
 		return CompanySimp;

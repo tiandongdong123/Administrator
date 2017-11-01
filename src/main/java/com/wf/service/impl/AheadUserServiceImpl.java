@@ -52,6 +52,7 @@ import com.utils.DateUtil;
 import com.utils.ExcelUtil;
 import com.utils.GetUuid;
 import com.utils.Getproperties;
+import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
@@ -67,6 +68,7 @@ import com.wf.bean.Project;
 import com.wf.bean.ProjectResources;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
+import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -83,20 +85,25 @@ import com.wf.dao.ProjectBalanceMapper;
 import com.wf.dao.ProjectMapper;
 import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
+import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.dao.WfksUserSettingMapper;
 import com.wf.service.AheadUserService;
+import com.xxl.conf.core.XxlConfClient;
 
 @Service
 public class AheadUserServiceImpl implements AheadUserService{
 	
 	private static Logger log = Logger.getLogger(AheadUserServiceImpl.class);
-	private static String isOpen=Getproperties.getPros("validateOldUser.properties").getProperty("isOpen");
+	private static String isOpen=Getproperties.getKey("validateOldUser","isOpen");
+	//标准模块的参数
     private static String STANDARD ="DB_WFSD";
     private static String STANDARD_CODE="GB168Standard";
+    private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
+    private static String ORGCODE=XxlConfClient.get("wf-admin.orgcode",null);
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
@@ -139,6 +146,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Autowired
 	private AuthoritySettingMapper authoritySettingMapper;
+	
+	@Autowired
+	private StandardUnitMapper standardUnitMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -772,6 +782,58 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
 			if (obj != null) {
+				if(obj.getBooleanValue("isZJ")){//元数据+全文的才调用接口
+					//查询数据库，验证标准机构是否存在
+					StandardUnit unit=standardUnitMapper.getStandardUnitById(com.getUserId());
+					//如果存在，接口更新，数据库更新。如果不存在，接口注册，数据库新增
+					String code=standardUnitMapper.findMaxOrgCode();
+					//生产是8位数字，测试库是6为数字
+					if(code==null){
+						code=ORGCODE;
+					}else{
+						code=String.valueOf(Integer.parseInt(code)+1);
+					}
+					obj.put("OrgCode", code);
+					if(unit==null){//注册
+						unit=new StandardUnit();
+						unit.setUserId(com.getUserId());
+						unit.setOrgCode(code);
+						unit.setCompany(rdto.getCompany());
+						unit.setCompanySimp(rdto.getCompanySimp());
+						unit.setOrgName(SALEAGTID+"_"+rdto.getOrgName());
+						if(rdto.getFullIpRange()!=null){
+							unit.setiPLimits(StringUtils.join(rdto.getFullIpRange(), ";"));
+						}
+						String msg=HttpClientUtil.orgReg(unit);
+						JSONArray array =JSONArray.fromObject(msg);
+						if(array!=null){
+							JSONObject json=array.getJSONObject(0);
+							if("0".equals(json.getString("errorCode"))){
+								standardUnitMapper.insertStandardUnit(unit);
+							}else{
+								log.info("userId:"+unit.getUserId()+"注册标准账户失败");
+							}
+						}
+					}else{//更新
+						unit.setOrgName(SALEAGTID+"_"+rdto.getOrgName());
+						unit.setCompany(rdto.getCompany());
+						unit.setCompanySimp(rdto.getCompanySimp());
+						if(rdto.getFullIpRange()!=null){
+							unit.setiPLimits(StringUtils.join(rdto.getFullIpRange(), ";"));
+						}
+						String msg=HttpClientUtil.orgEdit(unit);
+						JSONArray array =JSONArray.fromObject(msg);
+						if(array!=null){
+							JSONObject json=array.getJSONObject(0);
+							if("0".equals(json.getString("errorCode"))){
+								standardUnitMapper.updateStandardUnit(unit);
+							}else{
+								log.info("userId:"+unit.getUserId()+"更新标准账户失败");
+							}
+						}
+					}
+				}
+				//wfks_user_setting表添加标准配置参数
 				WfksUserSetting setting=new WfksUserSetting();
 				setting.setUserType(detail.getProjectid());
 				setting.setUserId(com.getUserId());
@@ -899,8 +961,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				
 				if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
 					addStringToTerms("org_name","Equal",dto.getOrgName(),Terms,"String");
-					if(dto.getOrgCode()!=null && !dto.getOrgCode().equals("")){
-						addStringToTerms("org_code","Equal",dto.getOrgCode(),Terms,"String");
+					if(dto.getCompany()!=null && !dto.getCompany().equals("")){
+						addStringToTerms("company","Equal",dto.getCompany(),Terms,"String");
 					}
 					if(dto.getCompanySimp()!=null && !dto.getCompanySimp().equals("")){
 						addStringToTerms("company_simp","Equal",dto.getCompanySimp(),Terms,"String");
@@ -937,7 +999,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(standardtypes.contains("质检出版社")){
 			obj=new com.alibaba.fastjson.JSONObject();
 			obj.put("UserId", com.getUserId());
-			obj.put("Username", null);
+			obj.put("Username", com.getInstitution());
 			obj.put("UserEnName", com.getUserId());
 			List<String> list=null;
 			if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
@@ -948,14 +1010,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 				FullIpRange=FullIpRange.replaceAll("  ", " ");
 				if(!StringUtils.isEmpty(FullIpRange)){
 					list=Arrays.asList(FullIpRange.split(" "));
+					dto.setFullIpRange(FullIpRange.split(" "));
 				}
 			}
 			if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
 				obj.put("isZJ", true);
 				obj.put("StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
 				obj.put("EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
-				obj.put("OrgName", dto.getOrgName());
-				obj.put("OrgCode", dto.getOrgCode());
+				obj.put("OrgName", SALEAGTID+"_"+dto.getOrgName());
+				obj.put("OrgCode", "");//下一个方法将给OrgCode赋值
 				obj.put("CompanySimp", dto.getCompanySimp());
 				obj.put("IPLimits", list);
 				obj.put("isBK", false);
@@ -1743,15 +1806,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return i;
 	}
 
-
 	@Override
 	public List<Person> queryPersonInId(List<String> userIds) {
 		return personMapper.queryPersonInId(userIds);
 	}
 
-
 	@Override
 	public List<AuthoritySetting> getAuthoritySettingList() {
 		return authoritySettingMapper.getAuthoritySettingList();
+	}
+
+	@Override
+	public List<StandardUnit> findStandardUnit(String userId, String orgName, String companySimp) {
+		List<StandardUnit> list=standardUnitMapper.findStandardUnit(null, SALEAGTID+"_"+orgName, companySimp);
+		for(StandardUnit su:list){
+			su.setOrgName(su.getOrgName().replace(SALEAGTID+"_", ""));
+		}
+		return list;
 	}
 }
