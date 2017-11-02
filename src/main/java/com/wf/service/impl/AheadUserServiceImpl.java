@@ -54,6 +54,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
@@ -792,7 +793,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(code==null){
 						code=ORGCODE;
 					}else{
-						code=String.valueOf(Integer.parseInt(code)+1);
+						code=StringUtil.formatStr(code);
 					}
 					obj.put("OrgCode", code);
 					if (unit == null) {// 注册
