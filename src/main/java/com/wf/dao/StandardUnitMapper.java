@@ -24,8 +24,7 @@ public interface StandardUnitMapper {
 	 * @param companySimp
 	 * @return
 	 */
-	List<StandardUnit> findStandardUnit(@Param("userId") String userId, @Param("orgCode") String orgCode,
-			@Param("companySimp") String companySimp);
+	List<StandardUnit> findStandardUnit(@Param("orgCode") String orgCode,@Param("companySimp") String companySimp);
 
 	/**
 	 * 插入一个机构
