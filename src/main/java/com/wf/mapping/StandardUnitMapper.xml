@@ -18,8 +18,11 @@
     	select <include refid="Base_Column_List" /> from standard_unit where user_id=#{userId}
 	</select>
 	<select id="findStandardUnit" resultMap="BaseResultMap" parameterType="java.lang.String">
-	    select <include refid="Base_Column_List" /> from standard_unit where org_code=#{orgCode}
-	    <if test="companySimp!=null">
+	    select <include refid="Base_Column_List" /> from standard_unit where 1!=2
+	    <if test="orgCode != null and orgCode !=''">
+	    	OR org_code=#{orgCode}
+	    </if>
+	    <if test="companySimp != null and companySimp !=''">
 	    	OR company_simp=#{companySimp}
 	    </if>
 	</select>

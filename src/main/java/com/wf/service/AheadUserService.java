@@ -192,10 +192,9 @@ public interface AheadUserService {
 	
 	/**
 	 * 根据条件查询标准机构
-	 * @param userId
 	 * @param orgCode
 	 * @param companySimp
 	 * @return
 	 */
-	List<StandardUnit> findStandardUnit(String userId, String orgCode, String companySimp);
+	List<StandardUnit> findStandardUnit(String orgCode, String companySimp);
 }

@@ -59,6 +59,7 @@ import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
+import com.webservice.WebServiceUtils;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
@@ -781,10 +782,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
+			//查询数据库，验证标准机构是否存在
+			StandardUnit unit=standardUnitMapper.getStandardUnitById(com.getUserId());
 			if (obj != null) {
 				if(obj.getBooleanValue("isZJ")){//元数据+全文的才调用接口
-					//查询数据库，验证标准机构是否存在
-					StandardUnit unit=standardUnitMapper.getStandardUnitById(com.getUserId());
 					//如果存在，接口更新，数据库更新。如果不存在，接口注册，数据库新增
 					String code=standardUnitMapper.findMaxOrgCode();
 					//生产是8位数字，测试库是6为数字
@@ -794,7 +795,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						code=String.valueOf(Integer.parseInt(code)+1);
 					}
 					obj.put("OrgCode", code);
-					if(unit==null){//注册
+					if (unit == null) {// 注册
 						unit=new StandardUnit();
 						unit.setUserId(com.getUserId());
 						unit.setOrgCode(code);
@@ -832,6 +833,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 							}
 						}
 					}
+				}else{//网络包库调用接口
+					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
+					if(msg==1){
+						log.info(com.getUserId()+"包库注册/更新成功");
+					}else{
+						log.info(com.getUserId()+"包库更新失败");
+					}
 				}
 				//wfks_user_setting表添加标准配置参数
 				WfksUserSetting setting=new WfksUserSetting();
@@ -840,6 +848,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 				setting.setPropertyName(STANDARD_CODE);
 				setting.setPropertyValue(JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue));
 				wfksUserSettingMapper.insert(setting);
+			}else{//停用包库
+				int msg=WebServiceUtils.CreateNonAccountingUser(obj, 0);
+				if(msg==1){
+					log.info(com.getUserId()+"停用包库成功");
+				}else if(msg!=-1){
+					log.info(com.getUserId()+"停用包库失败");
+				}
 			}
 		}
 	}
@@ -1018,7 +1033,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				obj.put("StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
 				obj.put("EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
 				obj.put("OrgName", SALEAGTID+"_"+dto.getOrgName());
-				obj.put("OrgCode", "");//下一个方法将给OrgCode赋值
+				obj.put("OrgCode", null); //下一个方法将给OrgCode赋值
 				obj.put("CompanySimp", dto.getCompanySimp());
 				obj.put("IPLimits", list);
 				obj.put("isBK", false);
@@ -1817,8 +1832,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public List<StandardUnit> findStandardUnit(String userId, String orgName, String companySimp) {
-		List<StandardUnit> list=standardUnitMapper.findStandardUnit(null, SALEAGTID+"_"+orgName, companySimp);
+	public List<StandardUnit> findStandardUnit(String orgName, String companySimp) {
+		List<StandardUnit> list=standardUnitMapper.findStandardUnit(SALEAGTID+"_"+orgName, companySimp);
 		for(StandardUnit su:list){
 			su.setOrgName(su.getOrgName().replace(SALEAGTID+"_", ""));
 		}

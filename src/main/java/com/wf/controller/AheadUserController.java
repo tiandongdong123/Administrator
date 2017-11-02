@@ -1542,12 +1542,13 @@ public class AheadUserController {
     public Map<String,Object> findStandardUnit(String userId, String orgName, String companySimp) throws Exception {
 		log.info("校验标准机构:userId="+userId+",orgName="+orgName+",companySimp="+companySimp);
 		Map<String, Object> m = new HashMap<String, Object>();
-		if(StringUtils.isEmpty(orgName)||StringUtils.isEmpty(companySimp)){
+		if(StringUtils.isEmpty(orgName)&&StringUtils.isEmpty(companySimp)){
 			m.put("flag", "false");
 			return m;
 		}
-		List<StandardUnit> list = aheadUserService.findStandardUnit(userId, orgName, companySimp);
+		List<StandardUnit> list = aheadUserService.findStandardUnit(orgName, companySimp);//元数据
 		if (list.size() == 0) {
+			m.put("msg", "机构名称有重复");
 			m.put("flag", "true");
 			return m;
 		}
