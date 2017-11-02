@@ -35,7 +35,7 @@ function doAddModular() {
 			   layer.msg("页面链接格式不正确！",{icon: 2});
 		   }
 		}else{
-			layer.msg("请输入功能模块和页面链接！");
+			layer.msg("请输入功能模块和页面链接！",{icon: 2});
 		}
 }
 

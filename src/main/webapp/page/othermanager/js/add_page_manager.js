@@ -40,7 +40,7 @@ function doAddPageManager(){
 		}
 		
 	}else{
-		layer.msg("请选择功能模块或输入页面名称、链接！");
+		layer.msg("请选择功能模块或输入页面名称、链接！",{icon: 2});
 	}
 	
 }
