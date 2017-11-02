@@ -83,14 +83,7 @@ function openItems(count,i,type){
 		    	if(validStandard(count,i)){
 		    		layer.closeAll();
 		    	}
-		    }, 
-		    cancel: function(){
-		    	if(validStandard(count,i)){
-		    		layer.closeAll();
-		    	}else{
-		    		layer.openAll();
-		    	}
-			}
+		    }
 		});
 	}else{
 		layer.open({
