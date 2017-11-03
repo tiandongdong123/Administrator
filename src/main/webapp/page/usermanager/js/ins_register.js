@@ -34,7 +34,14 @@ function submitForm(){
 	        contentType: false  
 	    }).done(function(data){
 	    	if(data.flag=="success"){
-	    		layer.msg("注册成功",{icon: 1});
+	    		layer.alert("注册成功", {
+	    			icon: 1,
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['确定'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/register.do';
+	    		    }
+	    		});
 	    	}else{
 	    		layer.msg("注册失败",{icon: 2});
 	    	}

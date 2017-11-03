@@ -11,7 +11,14 @@ function submitForm(){
         contentType: false  
     }).done(function(data){
     	if(data.flag=="success"){
-    		layer.msg(data.success,{icon: 1});
+    		layer.alert(data.success, {
+    			icon: 1,
+    		    skin: 'layui-layer-molv',
+    		    btn: ['确定'], //按钮
+    		    yes: function(){
+    		    	window.location.href='../auser/batchupdate.do';
+    		    }
+    		});
     	}else if(data.flag=="fail"){
     		layer.msg(data.fail,{icon: 2});
     	}else{

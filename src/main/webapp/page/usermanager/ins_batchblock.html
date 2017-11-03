@@ -22,7 +22,14 @@
 		        contentType: false
 		    }).done(function(data){
 		    	if(data.flag=="success"){
-		    		layer.msg("共  "+data.count+"  条用户信息(成功  "+data.num+"  条)",{icon: 1});
+		    		layer.alert("共  "+data.count+"  条用户信息(成功  "+data.num+"  条)", {
+		    			icon: 1,
+		    		    skin: 'layui-layer-molv',
+		    		    btn: ['确定'], //按钮
+		    		    yes: function(){
+		    		    	window.location.href='../auser/batchblock.do';
+		    		    }
+		    		});
 		    	}else{
 		    		layer.msg("用户名为'"+data.userId+"'的用户不存在", {icon: 2});
 		    	}
