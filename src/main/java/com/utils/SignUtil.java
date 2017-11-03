@@ -49,25 +49,25 @@ public class SignUtil {
 		if (StringUtils.isEmpty(decrypt)) {
 			return null;
 		}
-		StringBuffer sha = new StringBuffer();
+		StringBuffer sign = new StringBuffer();
 		try {
 			// 指定sha1算法
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
 			digest.update(decrypt.getBytes("UTF-8"));
 			// 获取字节数组
 			byte messageDigest[] = digest.digest();
-			// 字节数组转换为 十六进制 数
-			for (int i = 0; i < messageDigest.length; i++) {
-				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
-				if (shaHex.length() < 2) {
-					sha.append(0);
+			// 将MD5输出的二进制结果转换为小写的十六进制
+			for (byte b : messageDigest) {
+				int bt = b & 0xff;
+				if (bt < 16) {
+					sign.append(0);
 				}
-				sha.append(shaHex);
+				sign.append(Integer.toHexString(bt));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return sha.toString().toUpperCase();
+		return sign.toString();
 	}
 	
 	/**
@@ -76,12 +76,22 @@ public class SignUtil {
 	 * @param str
 	 * @return
 	 */
-	public static String toBase64(String str) {
+	public static String toSHA1Base64(String str) {
 		if (StringUtils.isEmpty(str)) {
 			return null;
 		}
-		BASE64Encoder encode = new BASE64Encoder();
-		return encode.encode(str.getBytes());
+		String encPass = str;
+		String base64Sha1Passstr = "";
+		try {
+			MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+			byte[] sha1Passbytes = sha1.digest(encPass.getBytes());
+			if (sha1Passbytes != null) {
+				base64Sha1Passstr = new BASE64Encoder().encode(sha1Passbytes);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return base64Sha1Passstr;
 	}
 	
 }
