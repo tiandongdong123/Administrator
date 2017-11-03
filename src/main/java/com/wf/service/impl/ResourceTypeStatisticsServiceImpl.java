@@ -230,7 +230,6 @@ public class ResourceTypeStatisticsServiceImpl implements
 			if (StringUtils.isNotBlank(da.getSourceTypeName())) {
 				liname.add(da.getSourceTypeName());
 			}
-
 		}
 
 		for (String name : liname) {
