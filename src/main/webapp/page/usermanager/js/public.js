@@ -81,7 +81,24 @@ function resetStandard(count,i){
 
 //校验标准内容
 function validStandard(count,i){
-	//1、元数据和包库的要分别校验
+	//1、时间不能为空，而且还是时间要小于等于结束时间
+	var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
+	var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
+	if(startTime==null||startTime==""){
+		layer.msg("开始时间不能为空",{icon: 2});
+		return false;
+	}
+	if(endTime==null||endTime==""){
+		layer.msg("结束时间不能为空",{icon: 2});
+		return false;
+	}
+	var d1 = new Date(startTime.replace(/\-/g, "\/"));
+	var d2 = new Date(endTime.replace(/\-/g, "\/"));
+	if(d1>d2){
+		layer.msg("开始时间不能大于结束时间",{icon: 2});
+		return false;
+	}
+	//2、元数据和包库的要分别校验
 	if($("#isZJ_"+count+"_"+i).is(':checked')){//1、元数据+全文
 		var company=$("#company_"+count+"_"+i).val();
 		var orgName=$("#orgName_"+count+"_"+i).val();
@@ -118,25 +135,6 @@ function validStandard(count,i){
 			layer.msg("版权阅读打印不能为空",{icon: 2});
 			return false;
 		}
-	}else{
-		return true;//行业标准
-	}
-	//2、时间不能为空，而且还是时间要小于等于结束时间
-	var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
-	var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
-	if(startTime==null||startTime==null){
-		layer.msg("开始时间不能为空",{icon: 2});
-		return false;
-	}
-	if(endTime==null||endTime==null){
-		layer.msg("结束时间不能为空",{icon: 2});
-		return false;
-	}
-	var d1 = new Date(startTime.replace(/\-/g, "\/"));
-	var d2 = new Date(endTime.replace(/\-/g, "\/"));
-	if(d1>d2){
-		layer.msg("开始时间不能大于结束时间",{icon: 2});
-		return false;
 	}
 	//3、ip不能为空
 	var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
