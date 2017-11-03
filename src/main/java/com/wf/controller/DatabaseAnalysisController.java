@@ -65,7 +65,10 @@ public class DatabaseAnalysisController {
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		map.put("yesterday", yesterday);
+		//所有数据库名称
 		map.put("allData",dataManagerService.selectAll());
+		//所有数据来源
+		map.put("allDataSource",db_SourceService.selectAll());
 		return "/page/othermanager/data_use_manager";
 	}
 	
@@ -78,8 +81,7 @@ public class DatabaseAnalysisController {
 	
 	/**
 	* @Title: getPage
-	* @Description: TODO(列表展示数据) 
-	* @param databaseAnalysis
+	* @Description: TODO(列表展示数据)
 	* @param startTime
 	* @param endTime
 	* @param pagenum
@@ -101,8 +103,7 @@ public class DatabaseAnalysisController {
 	
 	/**
 	* @Title: getChars
-	* @Description: TODO(图表展示数据) 
-	* @param databaseAnalysis
+	* @Description: TODO(图表展示数据)
 	* @param startTime
 	* @param endTime
 	* @return Map<String,Object> 返回类型 
@@ -139,13 +140,9 @@ public class DatabaseAnalysisController {
 		StringBuffer sb=new StringBuffer("标题:");
 		
 		if(StringUtils.isNotBlank(databaseUseDaily.getInstitution_name())){
-			sb.append(databaseUseDaily.getInstitution_name()+"_");
+			sb.append(databaseUseDaily.getInstitution_name());
 		}
-		
-		if(StringUtils.isNotBlank(databaseUseDaily.getUser_id())){
-			sb.append(databaseUseDaily.getUser_id()+"_");
-		}
-		
+
 		if(StringUtils.isNotBlank(databaseUseDaily.getDate())){
 			time1=time2=databaseUseDaily.getDate();
 			String[]day=databaseUseDaily.getDate().split("-");
@@ -179,9 +176,9 @@ public class DatabaseAnalysisController {
 		Map<String,List<Map<String,String>>> data=DataUtil.ListToMap(listmap,"database_name");
 		for (Entry<String, List<Map<String, String>>> entry : data.entrySet()) {
 			
-			Double downloadSum=0.0;
-			Double searchSum=0.0;
-			Double browseSum=0.0;
+			Integer downloadSum = 0;
+			Integer searchSum = 0;
+			Integer browseSum = 0;
 			
 			//循环一次创建一个模块的统计数据
 			String title=entry.getKey();
@@ -190,29 +187,37 @@ public class DatabaseAnalysisController {
 			List<Map<String, String>> tempList=new ArrayList<Map<String, String>>();
 			for(int c=0;c<monList.size();c++){
 				String monStr=monList.get(c).get("time");
-				boolean flag=false;
+				boolean flag=false; 	
 				Map<String,String> tempMap= new HashMap<String,String>();
 				for(int m=0;m<tjList.size();m++){
 					Map<String,String> tjMap=tjList.get(m);
 					String tjStr=String.valueOf(tjMap.get("year"))+"-"+String.valueOf(tjMap.get("month"));
 					if(monStr.equals(tjStr)){
-						tempMap.put("downloadNum", String.valueOf(tjMap.get("downloadNum")));
-						tempMap.put("searchNum", String.valueOf(tjMap.get("searchNum")));
-						tempMap.put("browseNum", String.valueOf(tjMap.get("browseNum")));
+						String downloadNum = String.valueOf(tjMap.get("downloadNum"));
+						String searchNum =  String.valueOf(tjMap.get("searchNum"));
+						String browseNum = String.valueOf(tjMap.get("browseNum"));
+						tempMap.put("downloadNum",downloadNum.substring(0,downloadNum.length()-2) );
+						tempMap.put("searchNum",searchNum.substring(0,searchNum.length()-2));
+						tempMap.put("browseNum", browseNum.substring(0,browseNum.length()-2));
 						tempMap.put("time", monStr);
 						flag=true;
 						break;
 					}
 				}
 				if(!flag){
-					tempMap.put("downloadNum", "0.0");
-					tempMap.put("searchNum", "0.0");
-					tempMap.put("browseNum","0.0");
+					tempMap.put("downloadNum", "0");
+					tempMap.put("searchNum", "0");
+					tempMap.put("browseNum","0");
 				}
-				
-				downloadSum+=Double.valueOf(tempMap.get("downloadNum"));
-				searchSum+=Double.valueOf(tempMap.get("searchNum"));
-				browseSum+=Double.valueOf(tempMap.get("browseNum"));
+
+				Double downloadsum = Double.valueOf(tempMap.get("downloadNum"));
+				Double searchsum = Double.valueOf(tempMap.get("searchNum"));
+				Double browsesum = Double.valueOf(tempMap.get("browseNum"));
+
+				downloadSum = downloadsum.intValue();
+				searchSum = searchsum.intValue();
+				browseSum = browsesum.intValue();
+
 				tempList.add(tempMap);
 			}
 			Map<String,String> sum=new HashMap<String, String>();
@@ -303,5 +308,5 @@ public class DatabaseAnalysisController {
 	public List<DB_Source> getDB_SourceByInstitution(String institution){
 		return db_SourceService.getInstitutionDB_Source(institution);
 	}
-	
+
 }

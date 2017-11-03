@@ -20,4 +20,10 @@ public class DB_SourceServiceImpl implements DB_SourceService {
 		return mapper.getInstitutionDB_Source(institution);
 	}
 
+	@Override
+	public List<DB_Source> selectAll() {
+		List<DB_Source> list= mapper.selectAll();
+		return list;
+	}
+
 }

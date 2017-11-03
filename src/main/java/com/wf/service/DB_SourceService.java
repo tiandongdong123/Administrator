@@ -6,4 +6,5 @@ import com.wf.bean.DB_Source;
 
 public interface DB_SourceService {
 	List<DB_Source> getInstitutionDB_Source(String institution);
+	List<DB_Source> selectAll();
 }

@@ -330,6 +330,11 @@ public class DataManagerServiceImpl implements DataManagerService {
 		return result;
 	}
 	@Override
+	public boolean checkStatus(String id){
+		boolean result = dbConfig.checkStatus(id);
+		return result;
+	}
+	@Override
 	public boolean deleteData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
@@ -348,14 +353,48 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		return rt;
 	}
+
+	@Override
+	public boolean releaseData(String id) {
+		boolean result = false;
+		int num = 0;
+		int state = 1 ;
+		try {
+			num  = this.data.releaseData(id);
+			dbConfig.updateDatabaseState(state,id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(num>0){
+			result = true;
+		}
+		return result;
+	}
+	@Override
+	public boolean descendData(String id) {
+		boolean result = false;
+		int num = 0;
+		int state = 0 ;
+		try {
+			num  = this.data.descendData(id);
+			dbConfig.updateDatabaseState(state,id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(num>0){
+			result = true;
+		}
+		return result;
+	}
+
 	@Override
 	public boolean closeData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
-		int typeState = 0 ;
+		int status = 0 ;
 		try {
 			rtnum  = this.data.closeData(id);
-			dbConfig.updateDatabaseState(typeState,id);
+			dbConfig.updateDatabaseStatus(status,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -369,10 +408,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public boolean openData(String id) {
 		boolean rt = false;
 		int rtnum = 0;
-		int typeState = 1 ;
+		int status = 1 ;
 		try {
 			rtnum  = this.data.openData(id);
-			dbConfig.updateDatabaseState(typeState,id);
+			dbConfig.updateDatabaseStatus(status,id);
 			//cos  = this.custom.doDeleteCustom(id);
 		} catch (Exception e) {
 			e.printStackTrace();

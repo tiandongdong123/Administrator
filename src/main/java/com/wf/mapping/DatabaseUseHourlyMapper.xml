@@ -3,7 +3,7 @@
 <mapper namespace="com.wf.dao.DatabaseUseHourlyMapper" >
   <resultMap id="BaseResultMap" type="com.wf.bean.DatabaseUseHourly" >
     <id column="user_id" property="user_id" jdbcType="VARCHAR" />
-    <result column="institution_name" property="institution_name" jdbcType="VARCHAR" />
+    <result column="institution" property="institution_name" jdbcType="VARCHAR" />
     <result column="operate_type" property="operate_type" jdbcType="VARCHAR" />
     <result column="database_name" property="database_name" jdbcType="VARCHAR" />
     <result column="date" property="date" jdbcType="VARCHAR" />
@@ -16,42 +16,51 @@
   </resultMap>
   
    <!-- 查询数据库分析当前条件下分页信息 -->
-  <select id="getDatabaseAnalysisList" resultMap="BaseResultMap">
+
+	<select id="getData" resultMap="BaseResultMap">
 		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3 
-				
-		from rs_resources_statistics_database_use_hourly r 
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
+
+		from rs_resources_statistics_database_use_hourly r
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
-		where 1=1 
-		and r.product_source_code <![CDATA[ <> ]]> ''
-		and r.operate_type <![CDATA[<>]]> ''
-  	<if test="institution_name!=null and institution_name !=''">
-  		and r.institution_name=#{institution_name}
-  	</if>
-  	<if test="user_id!=null and user_id !=''">
-  		and r.user_id = #{user_id}
-  	</if>
-  	<if test="product_source_code!=null and product_source_code !=''">
-  		and r.product_source_code= #{product_source_code}
-  	</if>
-  	<if test="source_db!=null and source_db !=''">
-  		and r.source_db = #{source_db}
-  	</if>
-  	<if test="date !=null and date !=''">
-  		and date = #{date}
-  	</if>
-  	<if test="startTime!=null and startTime !=''">
-  		and r.hour <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null and endTime !=''">
-  		and r.hour <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  	group by r.product_source_code
-  	limit #{pageNum},#{pageSize}
-  </select>
+		where 1=1
+		<if test="institution_name!=null and institution_name !=''">
+			and r.institution=#{institution_name}
+		</if>
+		<if test="user_id!=null and user_id !=''">
+			and r.user_id = #{user_id}
+		</if>
+		<if test="product_source_code!=null and product_source_code !=''">
+			and r.product_source_code= #{product_source_code}
+		</if>
+		<if test="source_db!=null and source_db !=''">
+			and r.source_db = #{source_db}
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.product_source_code
+		limit #{pageNum},#{pageSize}
+	</select>
   
    <!-- 查询数据库分析当前条件下所有信息 -->
   <select id="getDatabaseAnalysisLists" resultMap="BaseResultMap">
@@ -63,11 +72,9 @@
 		from rs_resources_statistics_database_use_hourly r 
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
-		where 1=1 
-		and r.product_source_code <![CDATA[ <> ]]> ''
-		and r.operate_type <![CDATA[<>]]> ''
+		where 1=1
   	<if test="institution_name!=null and institution_name !=''">
-  		and r.institution_name=#{institution_name}
+  		and r.institution=#{institution_name}
   	</if>
   	<if test="user_id!=null and user_id !=''">
   		and r.user_id = #{user_id}
@@ -78,28 +85,36 @@
   	<if test="source_db!=null and source_db !=''">
   		and r.source_db = #{source_db}
   	</if>
-  	<if test="date !=null and date !=''">
-  		and date = #{date}
-  	</if>
-  	<if test="startTime!=null and startTime !=''">
-  		and r.hour <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null and endTime !=''">
-  		and r.hour <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  		group by r.product_source_code
+	  <choose>
+		  <when test="date !=null and date !=''">
+			  and date = #{date}
+			  <if test="startTime!=null and startTime !=''">
+				  and r.hour <![CDATA[ >= ]]> #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and r.hour <![CDATA[ <= ]]> #{endTime}
+			  </if>
+		  </when>
+		  <otherwise>
+			  <if test="startTime!=null and startTime !=''">
+				  and r.date <![CDATA[ >= ]]> #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and r.date <![CDATA[ <= ]]> #{endTime}
+			  </if>
+		  </otherwise>
+	  </choose>
+  	group by r.product_source_code
   </select>
-  
+
   <!-- 查询来源分析当前条件下（全部来源、日期、指标类型）折线图信息 -->
   <select id="getGroupList" resultType="String" parameterType="com.wf.bean.DatabaseUseDaily">
-		
-		SELECT operate_type 
+
+		SELECT operate_type
 		from rs_resources_statistics_database_use_hourly
-		WHERE 1=1 
-		and product_source_code <![CDATA[ <> ]]> ''
-		and operate_type <![CDATA[<>]]> ''
+		WHERE 1=1
 		<if test="institution_name!=null and institution_name !=''">
-  			and institution_name=#{institution_name}
+  			and institution=#{institution_name}
 	  	</if>
 	  	<if test="user_id!=null and user_id !=''">
 	  		and user_id = #{user_id}
@@ -131,21 +146,27 @@
 	  			#{item}
 	  		</foreach>
 	  	</if>
-	  	
+
 		GROUP BY operate_type;
   </select>
   
   <!-- 查询数据库分析当前条件下统计信息 -->
   <select id="DatabaseAnalysisStatistics" resultMap="BaseResultMap">
-		SELECT hour,
+	  SELECT
+	  <choose>
+		  <when test="date !=null and date !=''">
+			  hour,
+		  </when>
+		  <otherwise>
+			  date,
+		  </otherwise>
+	  </choose>
 		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
 			sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 			sum(CASE operate_type when 2 then numbers else 0 end)sum3 
 		from rs_resources_statistics_database_use_hourly where 1=1
-		and product_source_code <![CDATA[ <> ]]> '' 
-		and operate_type <![CDATA[<>]]> ''
 		<if test="institution_name!=null and institution_name !=''">
-  			and institution_name=#{institution_name}
+  			and institution=#{institution_name}
 	  	</if>
 	  	<if test="user_id!=null and user_id !=''">
 	  		and user_id = #{user_id}
@@ -156,243 +177,48 @@
   		<if test="source_db!=null and source_db !=''">
   			and source_db = #{source_db}
   		</if>
-  		<if test="date!=null and date !=''">
-  			and date = #{date}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	
-	  	<if test="urlType!=null and urlType !=''">
-	  		and operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and product_source_code in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-		group by hour
+	  <choose>
+		  <when test="date !=null and date !=''">
+			  and date = #{date}
+			  <if test="startTime!=null and startTime !=''">
+				  and hour  <![CDATA[ >= ]]> #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and hour  <![CDATA[ <= ]]> #{endTime}
+			  </if>
+		  </when>
+		  <otherwise>
+			  <if test="startTime!=null and startTime !=''">
+				  and date  <![CDATA[ >= ]]> #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and date  <![CDATA[ <= ]]> #{endTime}
+			  </if>
+		  </otherwise>
+	  </choose>
+	  <if test="urlType!=null and urlType !=''">
+		 and operate_type in
+		  <foreach collection="urlType"  item="item" open="("   separator="," close=")">
+		  	#{item}
+		  </foreach>
+	  </if>
+	  <if test="database_name!=null and database_name !=''">
+		and product_source_code in
+		  <foreach collection="database_name"  item="item" open="("   separator="," close=")">
+			#{item}
+		</foreach>
+	  </if>
+	  group by
+	  <choose>
+		  <when test="date !=null and date !=''">
+			  hour
+		  </when>
+		  <otherwise>
+			  date
+		  </otherwise>
+	  </choose>
   </select>
-  
-   <!-- 查询数据库分析当前条件下分页信息______机构用户查询 -->
-  <select id="getDatabaseAnalysisListIsInstitution" resultMap="BaseResultMap">
-		select m.table_name as database_name,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-				left join user u on p.user_id=u.user_id
-				where u.userType=2 and p.resource_id  <![CDATA[ <> ]]> ''	
-		<if test="institution_name!=null and institution_name !=''">
-	 		and u.institution=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and u.user_id = #{user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="institution_name!=null and institution_name !=''">
-	  		and d.institution_name=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and d.user_id = #{user_id}
-	  	</if>
-	  	<if test="product_source_code!=null and product_source_code !=''">
-  			and d.product_source_code= #{product_source_code}
-  		</if>
-  		<if test="source_db!=null and source_db !=''">
-  			and d.source_db = #{source_db}
-  		</if>
-	  	<if test="date !=null and date !=''">
-	  		and d.date = #{date}
-	  	</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.hour <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.hour <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  		left join datamanager m on  d.product_source_code = m.product_source_code
-		  	and d.product_source_code  <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[ <> ]]> ''
-		  	group by d.product_source_code
-		  	having  m.table_name <![CDATA[ <> ]]> ''
-		  	limit #{pageNum},#{pageSize}
-  </select>
-  
-  
-   <!-- 查询数据库分析当前条件下所有信息______机构用户查询 -->
-  <select id="getDatabaseAnalysisListsIsInstitution" resultMap="BaseResultMap">
-		
-		select m.table_name as database_name,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-				left join user u on p.user_id=u.user_id
-				where u.userType=2 and p.resource_id  <![CDATA[ <> ]]> ''
-		<if test="institution_name!=null and institution_name !=''">
-	 		and u.institution=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and u.user_id = #{user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="institution_name!=null and institution_name !=''">
-	  		and d.institution_name=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and d.user_id = #{user_id}
-	  	</if>
-	  	<if test="product_source_code!=null and product_source_code !=''">
-  			and d.product_source_code= #{product_source_code}
-  		</if>
-  		<if test="source_db!=null and source_db !=''">
-  			and d.source_db = #{source_db}
-  		</if>
-	  	<if test="date !=null and date !=''">
-	  		and d.date = #{date}
-	  	</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.hour <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.hour <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  		left join datamanager m on m.product_source_code=temp.resource_id
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-		  	group by d.product_source_code
-		  	having  m.table_name <![CDATA[ <> ]]> ''
-  </select>
-  
-  <!-- 查询来源分析当前条件下（全部来源、日期、指标类型）折线图信息______机构用户查询 -->
-  <select id="getGroupListIsInstitution" resultType="String" parameterType="com.wf.bean.DatabaseUseDaily">
-		
-		
-		select d.operate_type
-		from (select p.resource_id from wfks_pay_channel_resources p 
-		left join user u on p.user_id=u.user_id
-		left join datamanager m on p.resource_id=m.product_source_code
-		where u.userType=2 and p.resource_id <![CDATA[ <> ]]> ''
-		<if test="institution_name!=null and institution_name !=''">
-	 		and u.institution=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and u.user_id = #{user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="institution_name!=null and institution_name !=''">
-	  		and d.institution_name=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and d.user_id = #{user_id}
-	  	</if>
-	  	<if test="product_source_code!=null and product_source_code !=''">
-  			and d.product_source_code= #{product_source_code}
-  		</if>
-  		<if test="source_db!=null and source_db !=''">
-  			and d.source_db = #{source_db}
-  		</if>
-	  	<if test="date!=null and date !=''">
-  			and d.date = #{date}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.hour <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.hour <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	<if test="urlType!=null and urlType !=''">
-	  		and d.operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and d.product_source_code in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-			left join datamanager m on temp.resource_id=m.product_source_code
-			GROUP BY d.operate_type
-			having d.operate_type <![CDATA[<>]]> ''
-  </select>
-  
-  <!-- 查询数据库分析当前条件下统计信息______机构用户查询 -->
-  <select id="DatabaseAnalysisStatisticsIsInstitution" resultMap="BaseResultMap">
-		select d.hour,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-			left join user u on p.user_id=u.user_id
-			where u.userType=2 and p.resource_id <![CDATA[ <> ]]> ''
-		<if test="institution_name!=null and institution_name !=''">
-	 		and u.institution=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and u.user_id = #{user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="institution_name!=null and institution_name !=''">
-	  		and d.institution_name=#{institution_name}
-	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
-	  		and d.user_id = #{user_id}
-	  	</if>
-	  	<if test="product_source_code!=null and product_source_code !=''">
-  			and d.product_source_code= #{product_source_code}
-  		</if>
-  		<if test="source_db!=null and source_db !=''">
-  			and d.source_db = #{source_db}
-  		</if>
-	  	<if test="date!=null and date !=''">
-  			and d.date = #{date}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.hour <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.hour <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	<if test="urlType!=null and urlType !=''">
-	  		and d.operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and d.database_name in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-			left join datamanager m on temp.resource_id=m.product_source_code
-			group by d.hour
-			having d.hour <![CDATA[ <> ]]> ''
-  </select>
-  
-  
+
   <select id="exportDatabaseOneDay" resultType="java.util.Map">
   	select d.table_name as database_name,YEAR(date) as 'year',MONTH(date) as 'month',
 			sum(CASE r.operate_type when 3 then r.numbers else 0 end) as  'searchNum',
@@ -402,11 +228,8 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
-		and r.product_source_code <![CDATA[ <> ]]> '' 
-		and r.operate_type <![CDATA[<>]]> ''
-		
 		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and r.institution_name=#{databaseUseDaily.institution_name}
+	  		and r.institution=#{databaseUseDaily.institution_name}
 	  	</if>
 	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
 	  		and r.user_id = #{databaseUseDaily.user_id}
@@ -417,496 +240,26 @@
   		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
   			and r.source_db = #{databaseUseDaily.source_db}
   		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and hour <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and hour <![CDATA[ <= ]]> #{endTime}
-	  	</if>
+	  <choose>
+		  <when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
+			  and date = #{databaseUseDaily.date}
+			  <if test="startTime!=null and startTime !=''">
+				  and r.hour <![CDATA[ >= ]]>  #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and r.hour  <![CDATA[ <= ]]> #{endTime}
+			  </if>
+		  </when>
+		  <otherwise>
+			  <if test="startTime!=null and startTime !=''">
+				  and r.date <![CDATA[ >= ]]> #{startTime}
+			  </if>
+			  <if test="endTime!=null and endTime !=''">
+				  and r.date <![CDATA[ <= ]]>  #{endTime}
+			  </if>
+		  </otherwise>
+	  </choose>
 			group by  r.product_source_code,YEAR(r.date),MONTH(r.date)
   </select>
-  
-  
-  <select id="exportDatabaseOneDayIsInstitution" resultType="java.util.Map">
-  		
-  		select m.table_name as database_name,
-			YEAR(d.date) as 'year',MONTH(d.date) as 'month',
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end) as  'searchNum',
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end) as  'browseNum',
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end) as  'downloadNum' 
-		from (select p.resource_id from wfks_pay_channel_resources p 
-		left join user u on p.user_id=u.user_id 
-		where u.userType=2 and  p.resource_id  <![CDATA[ <> ]]> ''
-			<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-		 		and u.institution=#{databaseUseDaily.institution_name}
-		  	</if>
-		  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-		  		and u.user_id = #{databaseUseDaily.user_id}
-		  	</if>
-			group by p.resource_id) temp
-			left join rs_resources_statistics_database_use_hourly d
-			on temp.resource_id=d.product_source_code
-			
-			<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-		 		and d.institution_name=#{databaseUseDaily.institution_name}
-		  	</if>
-		  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-		  		and d.user_id = #{databaseUseDaily.user_id}
-		  	</if>
-		  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  				and d.product_source_code= #{databaseUseDaily.product_source_code}
-  			</if>
-  			<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  				and d.source_db = #{databaseUseDaily.source_db}
-  			</if>
-		  	<if test="startTime!=null and startTime !=''">
-	  			and d.hour <![CDATA[ >= ]]> #{startTime}
-		  	</if>
-		  	<if test="endTime!=null and endTime !=''">
-		  		and d.hour <![CDATA[ <= ]]> #{endTime}
-		  	</if>
-				and d.product_source_code <![CDATA[ <> ]]> ''
-				and d.operate_type <![CDATA[ <> ]]> ''
-				left join datamanager m on temp.resource_id=m.product_source_code 
-				group by m.table_name,YEAR(d.date),MONTH(d.date)
-  </select>
-  
-  
-  
-  
-  
-  <!-- =========================按天查询========================= -->
-  
-  
-   <!-- 查询数据库分析 机构名称 用户ID都为空 或者 用户ID为个人用户  此时只查数据库分析表 -->
-  <select id="getDatabaseAnalysisList_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3 
-				
-		from rs_resources_statistics_database_use_hourly r 
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
-		where 1=1 
-		and r.product_source_code <![CDATA[ <> ]]> ''
-		and r.operate_type <![CDATA[<>]]> ''
-  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-  		and r.institution_name=#{databaseUseDaily.institution_name}
-  	</if>
-  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-  		and r.user_id = #{databaseUseDaily.user_id}
-  	</if>
-  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  		and r.product_source_code= #{databaseUseDaily.product_source_code}
-  	</if>
-  	<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  		and r.source_db = #{databaseUseDaily.source_db}
-  	</if>
-  	<if test="startTime!=null and startTime !=''">
-  		and r.date <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null and endTime !=''">
-  		and r.date <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  	group by r.product_source_code
-  	limit #{pageNum},#{pageSize}
-  </select>
-  
-   <!-- 查询数据库分析 机构名称 用户ID都为空 或者 用户ID为个人用户  此时只查数据库分析表 -->
-  <select id="getDatabaseAnalysisLists_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3 
-				
-		from rs_resources_statistics_database_use_hourly r 
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
-		where 1=1 
-		and r.product_source_code <![CDATA[ <> ]]> '' 
-		and r.operate_type <![CDATA[<>]]> ''
-  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-  		and r.institution_name=#{databaseUseDaily.institution_name}
-  	</if>
-  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-  		and r.user_id = #{databaseUseDaily.user_id}
-  	</if>
-  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  		and r.product_source_code= #{databaseUseDaily.product_source_code}
-  	</if>
-  	<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  		and r.source_db = #{databaseUseDaily.source_db}
-  	</if>
-  	<if test="startTime!=null and startTime !=''">
-  		and r.date <![CDATA[ >= ]]> #{startTime}
-  	</if>
-  	<if test="endTime!=null and endTime !=''">
-  		and r.date <![CDATA[ <= ]]> #{endTime}
-  	</if>
-  	group by r.product_source_code
-  </select>
-  
-  <!-- 查询数据库分析 机构名称 用户ID都为空 或者 用户ID为个人用户  此时只查数据库分析表  折线图信息 --> 
-  <select id="getGroupList_day" resultType="String" parameterType="com.wf.bean.DatabaseUseDaily">
-		SELECT operate_type 
-		from rs_resources_statistics_database_use_hourly
-		WHERE 1=1 
-		and product_source_code <![CDATA[ <> ]]> ''
-		and operate_type <![CDATA[<>]]> ''
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-  			and institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	<if test="urlType!=null and urlType !=''">
-	  		and operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and product_source_code in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	
-		GROUP BY operate_type;
-  </select>
-  
- 	<!-- 查询数据库分析 机构名称 用户ID都为空 或者 用户ID为个人用户  此时只查数据库分析表  折线图信息 --> 
-  <select id="databaseAnalysisStatistics_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		SELECT date,
-			sum(CASE operate_type when 3 then numbers else 0 end)sum1,
-			sum(CASE operate_type when 1 then numbers else 0 end)sum2,
-			sum(CASE operate_type when 2 then numbers else 0 end)sum3 
-		from rs_resources_statistics_database_use_hourly where 1=1
-		and product_source_code <![CDATA[ <> ]]> '' 
-		and operate_type <![CDATA[<>]]> ''
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-  			and institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	
-	  	<if test="urlType!=null and urlType !=''">
-	  		and operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and product_source_code in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-		group by date
-  </select>
-  
-   <!-- 查询数据库分析当前条件下分页信息 -->
-  <select id="getDatabaseAnalysisListIsInstitution_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		select m.table_name as database_name,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-				left join user u on p.user_id=u.user_id
-				where 1=1 and p.resource_id  <![CDATA[ <> ]]> ''	
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	 		and u.institution=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and u.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and d.institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and d.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and d.product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and d.source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  		left join datamanager m on  d.product_source_code = m.product_source_code
-		  	and d.product_source_code  <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[ <> ]]> ''
-		  	group by d.product_source_code
-		  	having  m.table_name <![CDATA[ <> ]]> ''
-		  	limit #{pageNum},#{pageSize}
-  </select>
-  
-   <!-- 查询数据库分析当前条件下所有信息 -->
-  <select id="getDatabaseAnalysisListsIsInstitution_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		select m.table_name as database_name,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-				left join user u on p.user_id=u.user_id
-				where 1=1 and p.resource_id  <![CDATA[ <> ]]> ''
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	 		and u.institution=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and u.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and d.institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and d.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and d.product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and d.source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  		left join datamanager m on m.product_source_code=temp.resource_id
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-		  	group by d.product_source_code
-		  	having  m.table_name <![CDATA[ <> ]]> ''
-  </select>
-  
-  <!-- 查询来源分析当前条件下（全部来源、日期、指标类型）折线图信息 -->
-  <select id="getGroupListIsInstitution_day" resultType="String" parameterType="com.wf.bean.DatabaseUseDaily">
-		select d.operate_type
-		from (select p.resource_id from wfks_pay_channel_resources p 
-		left join user u on p.user_id=u.user_id
-		left join datamanager m on p.resource_id=m.product_source_code
-		where 1=1 and p.resource_id <![CDATA[ <> ]]> ''
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	 		and u.institution=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and u.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and d.institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and d.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and d.product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and d.source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	<if test="urlType!=null and urlType !=''">
-	  		and d.operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and d.product_source_code in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-			left join datamanager m on temp.resource_id=m.product_source_code
-			GROUP BY d.operate_type
-			having d.operate_type <![CDATA[<>]]> ''
-  </select>
-  
-  <!-- 查询数据库分析当前条件下统计信息 -->
-  <select id="databaseAnalysisStatisticsIsInstitution_day" resultMap="BaseResultMap" parameterType="com.wf.bean.DatabaseUseDaily">
-		select d.date,
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end)sum1,
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end)sum2,
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end)sum3
-			
-		from (select p.resource_id from wfks_pay_channel_resources p 
-			left join user u on p.user_id=u.user_id
-			where 1=1 and p.resource_id <![CDATA[ <> ]]> ''
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	 		and u.institution=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and u.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-			group by p.resource_id) temp left join rs_resources_statistics_database_use_hourly d 
-			on temp.resource_id=d.product_source_code
-	  	<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and d.institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and d.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and d.product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and d.source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and d.date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and d.date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-	  	<if test="urlType!=null and urlType !=''">
-	  		and d.operate_type in
-	  		<foreach collection="urlType"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	<if test="database_name!=null and database_name !=''">
-	  		and d.database_name in
-	  		<foreach collection="database_name"  item="item" open="("   separator="," close=")">
-	  			#{item}
-	  		</foreach>
-	  	</if>
-	  	
-		  	and d.product_source_code <![CDATA[ <> ]]> ''
-			and d.operate_type <![CDATA[<>]]> ''
-			left join datamanager m on temp.resource_id=m.product_source_code
-			GROUP BY d.date
-			having d.date <![CDATA[<>]]> ''
-  </select>
-  
-  <!--数据库使用分析导出按天导出-->
-  <select id="exportDatabaseByDay_day" resultType="java.util.Map">
-	  	select d.table_name as database_name,YEAR(date) as 'year',MONTH(date) as 'month',
-			sum(CASE r.operate_type when 3 then r.numbers else 0 end) as  'searchNum',
-			sum(CASE r.operate_type when 1 then r.numbers else 0 end) as  'browseNum',
-			sum(CASE r.operate_type when 2 then r.numbers else 0 end) as  'downloadNum'
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
-		where 1=1
-		and r.product_source_code <![CDATA[ <> ]]> '' 
-		and r.operate_type <![CDATA[<>]]> ''
-		
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-	  		and r.institution_name=#{databaseUseDaily.institution_name}
-	  	</if>
-	  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-	  		and r.user_id = #{databaseUseDaily.user_id}
-	  	</if>
-	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and r.product_source_code= #{databaseUseDaily.product_source_code}
-  		</if>
-  		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and r.source_db = #{databaseUseDaily.source_db}
-  		</if>
-	  	<if test="startTime!=null and startTime !=''">
-	  		and r.date <![CDATA[ >= ]]> #{startTime}
-	  	</if>
-	  	<if test="endTime!=null and endTime !=''">
-	  		and r.date <![CDATA[ <= ]]> #{endTime}
-	  	</if>
-			group by  r.product_source_code,YEAR(r.date),MONTH(r.date)
-  		
-  </select>
-  
-  
-  <!--数据库使用分析导出按天导出  机构用户-->
-  <select id="exportDatabaseByDayIsInstitution_day" resultType="java.util.Map">
-  
-		select m.table_name as database_name,
-			YEAR(d.date) as 'year',MONTH(d.date) as 'month',
-			sum(CASE d.operate_type when 3 then d.numbers else 0 end) as  'searchNum',
-			sum(CASE d.operate_type when 1 then d.numbers else 0 end) as  'browseNum',
-			sum(CASE d.operate_type when 2 then d.numbers else 0 end) as  'downloadNum' 
-		from (select p.resource_id from wfks_pay_channel_resources p 
-		left join user u on p.user_id=u.user_id 
-		where 1=1 and  p.resource_id  <![CDATA[ <> ]]> ''
-			<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-		 		and u.institution=#{databaseUseDaily.institution_name}
-		  	</if>
-		  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-		  		and u.user_id = #{databaseUseDaily.user_id}
-		  	</if>
-			group by p.resource_id) temp
-			left join rs_resources_statistics_database_use_hourly d
-			on temp.resource_id=d.product_source_code
-			
-			<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-		 		and d.institution_name=#{databaseUseDaily.institution_name}
-		  	</if>
-		  	<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-		  		and d.user_id = #{databaseUseDaily.user_id}
-		  	</if>
-		  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  				and d.product_source_code= #{databaseUseDaily.product_source_code}
-  			</if>
-  			<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  				and d.source_db = #{databaseUseDaily.source_db}
-  			</if>
-		  	<if test="startTime!=null and startTime !=''">
-		  		and d.date <![CDATA[ >= ]]> #{startTime}
-		  	</if>
-		  	<if test="endTime!=null and endTime !=''">
-		  		and d.date <![CDATA[ <= ]]> #{endTime}
-		  	</if>
-				and d.product_source_code <![CDATA[ <> ]]> ''
-				and d.operate_type <![CDATA[ <> ]]> ''
-				left join datamanager m on temp.resource_id=m.product_source_code 
-				group by m.table_name,YEAR(d.date),MONTH(d.date)
-  </select>
-  
-  
-  
+
 </mapper>

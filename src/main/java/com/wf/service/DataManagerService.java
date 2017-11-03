@@ -25,8 +25,17 @@ public interface DataManagerService {
 
 	boolean checkResourceForOne(String id);
 
+	boolean checkStatus(String id);
 
 	boolean deleteData(String id);
+	/**
+	 * 发布数据库
+	 */
+	boolean releaseData(String id);
+	/**
+	 * 下撤数据库
+	 */
+	boolean descendData(String id);
 	
 	boolean closeData(String id);
 	

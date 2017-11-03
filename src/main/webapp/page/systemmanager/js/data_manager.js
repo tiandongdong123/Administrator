@@ -18,7 +18,6 @@ function findone(){
 		success : datapage
 	});
 }
-
 /**
  * 分页事件
  */
@@ -43,17 +42,22 @@ function datapage(res){
 		$("#pageNum").val(pageNum);
 		$("#pageTotal").val(pageTotal);
 		var html="";
-		var status="";
+		var state="";
 		for(var i =0;res.pageRow[i];i++){
-			if(res.pageRow[i].status==1){
-				status="<td>已发布</td>";
-				buttonname="下撤";
-			}else if(res.pageRow[i].status==null){
-				status="<td>下撤</td>";
-				buttonname="发布";
+			if(res.pageRow[i].status==1) {
+				buttonOne = "冻结";
 			}else{
-				status="<td>未发布</td>";
-				buttonname="再发布";
+				buttonOne="解冻";
+			}
+			if(res.pageRow[i].state==1){
+				state="<td>已发布</td>";
+				buttonTwo="下撤";
+			}else if(res.pageRow[i].state==null){
+				state="<td>下撤</td>";
+				buttonTwo="发布";
+			}else{
+				state="<td>未发布</td>";
+				buttonTwo="再发布";
 			}
 			id = 10*(pageNum-1)+i+1;
 			var describe = res.pageRow[i].tableDescribe;
@@ -72,10 +76,10 @@ function datapage(res){
 				"<td>"+res.pageRow[i].resType+"</td>"+
 				"<td>"+res.pageRow[i].language+"</td>"+
 				"<td>"+(res.pageRow[i].customPolicy==null?"":res.pageRow[i].customPolicy)+"</td>"+
-				status +
+				state +
 				"<td><button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button></br>" +
-				"<button type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"deletedata('"+res.pageRow[i].id+"')\">删除</button></br>" +
-				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></br>";
+				"<button type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonOne+"</button></br>" +
+				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"PushData(this,'"+res.pageRow[i].id+"')\">"+buttonTwo+"</button></br>";
 		}
 		document.getElementById('databody').innerHTML = html;
 		var groups;
@@ -105,33 +109,112 @@ function datapage(res){
 
 function changedata(obj,id){
 	var btnname ="do"+ $(obj).text();
-	var a = btnname.indexOf("下撤");
-	if(a>0){
-		url="../data/closedata.do";
-	}else{
-		url="../data/opendata.do"
-	}
-	$.ajax({
-		type : "POST",
-		url : url,
-		data : {
-			'id' : id
-		},
-		dataType : "json",
-		success : function(data) {
-			if(data){
-				layer.msg("修改成功");
-				paging($(".laypage_curr").text());
-			}else {
-				layer.msg("修改失败");
-			}
+	var result = btnname.indexOf("冻结");
+	if(result>0){
+		$.ajax({
+			type : "post",
+			async:false,
+			url:"../data/checkResourceForOne.do",
+			dataType:"json",
+			data:{"id":id},
+			success:function(data){
+				if(data.flag=="true"){
+					$.ajax({
+						type : "POST",
+						url : "../data/closedata.do",
+						data : {
+							'id' : id
+						},
+						dataType : "json",
+						success : function(data) {
+							if(data){
+								layer.msg("修改成功");
+								paging($(".laypage_curr").text());
+							}else {
+								layer.msg("修改失败");
+							}
 
-		}
-	});
+						}
+					});
+				}else {
+					layer.msg("请先下撤后再冻结！");
+				}
+			}
+		});
+	}else{
+		$.ajax({
+			type : "POST",
+			url : "../data/opendata.do",
+			data : {
+				'id' : id
+			},
+			dataType : "json",
+			success : function(data) {
+				if(data){
+					layer.msg("修改成功");
+					paging($(".laypage_curr").text());
+				}else {
+					layer.msg("修改失败");
+				}
+
+			}
+		});
+	}
 }
 
-function PushData(){
-	$.post("../data/pushdata.do",function(){});
+function PushData(obj,id){
+	var btnname ="do"+ $(obj).text();
+	var result = btnname.indexOf("发布");
+	if(result>0){
+		$.ajax({
+			type : "post",
+			async:false,
+			url:"../data/checkStatus.do",
+			dataType:"json",
+			data:{"id":id},
+			success:function(data){
+				if(data.flag=="true"){
+					$.ajax({
+						type : "POST",
+						url : "../data/releaseData.do",
+						data : {
+							'id' : id
+						},
+						dataType : "json",
+						success : function(data) {
+							if(data){
+								layer.msg("修改成功");
+								paging($(".laypage_curr").text());
+							}else {
+								layer.msg("修改失败");
+							}
+
+						}
+					});
+				}else {
+					layer.msg("请先解冻后再发布！");
+				}
+			}
+		});
+	}else{
+		$.ajax({
+			type : "POST",
+			url : "../data/descendData.do",
+			data : {
+				'id' : id
+			},
+			dataType : "json",
+			success : function(data) {
+				if(data){
+					layer.msg("修改成功");
+					paging($(".laypage_curr").text());
+				}else {
+					layer.msg("修改失败");
+				}
+
+			}
+		});
+	}
 }
 
 function adddata(){
@@ -149,7 +232,7 @@ function doupdatedata(id){
 			if(data.flag=="true"){
 				window.location.href="../data/updatedata.do?id="+id;
 			}else{
-				alert("请先下撤再修改！");
+				layer.msg("请先下撤再修改！");
 			}
 		}
 	});
@@ -180,7 +263,7 @@ function deletedata(id){
 					}
 				});
 			}else{
-				alert("请先下撤再删除！");
+				layer.msg("请先下撤再删除！");
 			}
 		}
 	});
@@ -202,10 +285,10 @@ function checkAll(){
 
 function moveUp() {
 	if (!($("input:checkbox[name=commonid]:checked").is(':checked'))) {
-		alert("请选择上移内容！");
+		layer.msg("请选择上移内容！");
 	} else {
 		if ($("input:checkbox[name=commonid]:checked").size() >1) {
-			alert("请不要多选！")
+			layer.msg("请不要多选！")
 		} else {
 			var id = "";
 			$("input:checkbox[name=commonid]:checked").each(function(){
@@ -221,7 +304,7 @@ function moveUp() {
 					if(data.flag=="true"){
 						paging($(".laypage_curr").text());
 					}else{
-						alert("上移失败！");
+						layer.msg("上移失败！");
 					}
 				}
 			});
@@ -231,10 +314,10 @@ function moveUp() {
 
 function moveDown() {
 	if (!($("input:checkbox[name=commonid]:checked").is(':checked'))) {
-		alert("请选择下移内容！");
+		layer.msg("请选择下移内容！");
 	} else {
 		if ($("input:checkbox[name=commonid]:checked").size()>1) {
-			alert("请不要多选！")
+			layer.msg("请不要多选！")
 		} else {
 			var id = "";
 			$("input:checkbox[name=commonid]:checked").each(function(){
@@ -250,7 +333,7 @@ function moveDown() {
 					if(data.flag=="true"){
 						paging($(".laypage_curr").text());
 					}else{
-						alert("下移失败！");
+						layer.msg("下移失败！");
 					}
 				}
 			});

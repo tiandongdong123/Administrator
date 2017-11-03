@@ -40,8 +40,12 @@
                 </div>
                  <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">数据来源：</label>
-                  <select id="restype" onchange="getDatabaseBySourceCode(this.value)">
+                  <select id="restype">
                   	<option value="">--请选择数据来源--</option>
+                      <?for(var item in allDataSource){?>
+                      <option value="${item.dbSourceCode}">${item.dbSourceName}</option>
+                      <?}?>
+
                   </select>
                 </div>
                 
@@ -50,8 +54,8 @@
                   <select id="database">
                   	<option value="">--请选择数据库名称--</option>
                   	<?for(var item in allData){?>
-                  		<option value="${item.productSourceCode}">${item.tableName}</option>
-                  	<?}?>
+                      <option value="${item.productSourceCode}">${item.tableName}</option>
+                      <?}?>
                   </select>
                 </div>
                 

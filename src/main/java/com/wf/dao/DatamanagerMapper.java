@@ -23,6 +23,10 @@ public interface DatamanagerMapper {
     int getDataNum(@Param("dataname") String dataname);
     
     int deleteData(@Param("id") String id);
+
+    int releaseData(@Param("id") String id);
+
+    int descendData(@Param("id") String id);
     
     int closeData(@Param("id") String id);
     

@@ -35,6 +35,9 @@
 			select DISTINCT(resource_id) from wfks_pay_channel_resources where user_id in (
 			select user_id from user where institution=#{institution} )))
   </select>
-  
-  
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select * from db_source
+  </select>
+
 </mapper>

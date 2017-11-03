@@ -13,6 +13,7 @@ import com.redis.RedisUtil;
 import com.utils.JsonUtil;
 import com.wf.Setting.DatabaseConfigureSetting;
 import net.sf.json.JSONArray;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,7 +51,6 @@ public class DataManagerController {
 		}
 
 	}
-
 	/**
 	 * 资源类型上移
 	 */
@@ -94,13 +94,50 @@ public class DataManagerController {
 		return a;
 	}
 	/**
-	 *判断资源类型是否发布
+	 *判断数据库state
 	 */
 	@RequestMapping("/checkResourceForOne")
 	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean result = this.data.checkResourceForOne(id);
 		JsonUtil.toJsonHtml(response, result);
 	}
+	/**
+	 *判断数据库status
+	 */
+	@RequestMapping("/checkStatus")
+	public void checkStatus(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean result = this.data.checkStatus(id);
+		JsonUtil.toJsonHtml(response, result);
+	}
+	/**
+	 * 发布数据库
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("releaseData")
+	@ResponseBody
+	public boolean releaseData(String id) throws InterruptedException {
+		boolean result = this.data.releaseData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
+	}
+	/**
+	 * 下撤数据库
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("descendData")
+	@ResponseBody
+	public boolean descendData(String id) throws InterruptedException {
+		boolean result = this.data.descendData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
+	}
+
 	/**
 	 * 解冻数据库
 	 * @param id
@@ -235,7 +272,7 @@ public class DataManagerController {
 		Map<String,Object> check = this.data.getCheck(id);
 		mm.putAll(check);
 		map.put("rlmap", mm);
-		return "/page/systemmanager/update_data";
+		return "/page/systemmanager/updatedata";
 	}
 	
 	/**

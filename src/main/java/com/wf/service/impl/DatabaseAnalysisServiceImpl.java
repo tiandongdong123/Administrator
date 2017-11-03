@@ -21,7 +21,7 @@ import com.wf.dao.PersonMapper;
 import com.wf.service.DatabaseAnalysisService;
 @Service
 public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
-	
+
 	@Autowired
 	private DatabaseUseHourlyMapper databaseUseHourlyMapper;
 	@Autowired
@@ -29,16 +29,21 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	
 	@Override
 	public PageList getDatabaseAnalysisList(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
-		
 		PageList pl=new PageList();
-		
-
-		if(!"".equals(databaseUseDaily.getDate())&&databaseUseDaily.getDate()!=null){
-			pl=databaseUseHourly(databaseUseDaily,startTime,endTime,pageNum,pageSize);
-		}else{
-			pl=databaseUseDaily(databaseUseDaily,startTime,endTime,pageNum,pageSize);
-		}
-		
+		List<Object> PageList=new ArrayList<Object>();
+		int startNum = (pageNum-1)*pageSize;
+		List<Object> list=new ArrayList<Object>();
+		String institutionName=databaseUseDaily.getInstitution_name();
+		String userId=databaseUseDaily.getUser_id();
+		String date=databaseUseDaily.getDate();
+		String product_source_code=databaseUseDaily.getProduct_source_code();
+		String source_db=databaseUseDaily.getSource_db();
+		PageList=databaseUseHourlyMapper.getData(institutionName,userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
+		list=databaseUseHourlyMapper.getDatabaseAnalysisLists(institutionName,userId,product_source_code,source_db,date, startTime, endTime);
+		pl.setTotalRow(list.size());
+		pl.setPageRow(PageList);
+		pl.setPageNum(pageNum);
+		pl.setPageSize(pageSize);
 		return pl;
 	}
 	
@@ -46,305 +51,53 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	public Map<String, Object> DatabaseAnalysisStatistics(
 			DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer[]urlType,String[]database_name) {
 		Map<String,Object> map=new HashMap();
-		
-		if(!"".equals(databaseUseDaily.getDate())&&databaseUseDaily.getDate()!=null){
-			String institutionName=databaseUseDaily.getInstitution_name();
-			String userName=databaseUseDaily.getUser_id();
-			String date=databaseUseDaily.getDate();
-			String product_source_code=databaseUseDaily.getProduct_source_code();
-			String source_db=databaseUseDaily.getSource_db();
-			
-			map=DatabaseUseHourlyStatistics(institutionName,userName,product_source_code,source_db,date,startTime,endTime,urlType,database_name);
-		}else{
-			map=DatabaseUseDailyStatistics(databaseUseDaily,startTime,endTime,urlType,database_name);
-		}
-		
-		return map;
-	};
-	
-	/**
-	* @Title: databaseUseDaily
-	* @Description: TODO(到天表中取页面列表数据) 
-	* @param databaseUseDaily
-	* @param startTime
-	* @param endTime
-	* @param pageNum
-	* @param pageSize
-	* @return PageList 返回类型 
-	* @author LiuYong 
-	* @date 26 Dis 2016 9:32:45 AM
-	 */
-	public PageList databaseUseDaily(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
-		PageList pl=new PageList();
-		
-		int startNum = (pageNum-1)*pageSize;
-		String institutionName=databaseUseDaily.getInstitution_name();
-		String userId=databaseUseDaily.getUser_id();
-		List<Object> PageList=new ArrayList<Object>();
-		List<Object> list=new ArrayList<Object>();
-		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-			PageList=databaseUseHourlyMapper.getDatabaseAnalysisList_day(databaseUseDaily, startTime, endTime, startNum, pageSize);
-			list=databaseUseHourlyMapper.getDatabaseAnalysisLists_day(databaseUseDaily, startTime, endTime);
-		}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-			String userType=personMapper.getUserTypeByUserId(userId);
-				//userType等于0为个人用户
-				if(userType.equals("0")){
-					PageList=databaseUseHourlyMapper.getDatabaseAnalysisList_day(databaseUseDaily, startTime, endTime, startNum, pageSize);
-					list=databaseUseHourlyMapper.getDatabaseAnalysisLists_day(databaseUseDaily, startTime, endTime);
-				}else{
-					PageList=databaseUseHourlyMapper.getDatabaseAnalysisListIsInstitution_day(databaseUseDaily, startTime, endTime, startNum, pageSize);
-					list=databaseUseHourlyMapper.getDatabaseAnalysisListsIsInstitution_day(databaseUseDaily, startTime, endTime);
-				}
-		}else{
-			PageList=databaseUseHourlyMapper.getDatabaseAnalysisListIsInstitution_day(databaseUseDaily, startTime, endTime, startNum, pageSize);
-			list=databaseUseHourlyMapper.getDatabaseAnalysisListsIsInstitution_day(databaseUseDaily, startTime, endTime);
-		}
-		
-		
-		
+		List<DatabaseUseHourly> list=new ArrayList<DatabaseUseHourly>();
+		List<String>timeList=new ArrayList();
+		List<String>browseList=new ArrayList();
+		List<String>downloadList=new ArrayList();
+		List<String>searchList=new ArrayList();
 
-		pl.setTotalRow(list.size());
-		pl.setPageRow(PageList);
-		pl.setPageNum(pageNum);
-		pl.setPageSize(pageSize);
-		return pl;
-	}
-	
-	/**
-	* @Title: databaseUseHourly
-	* @Description: TODO(到小时表中取页面列表数据) 
-	* @param databaseUseDaily
-	* @param startTime
-	* @param endTime
-	* @param pageNum
-	* @param pageSize
-	* @return PageList 返回类型 
-	* @author LiuYong 
-	* @date 26 Dis 2016 9:34:00 AM
-	 */
-	public PageList databaseUseHourly(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
-		PageList pl=new PageList();
-		List<Object> PageList=new ArrayList<Object>();
-		List<Object> list=new ArrayList<Object>();
-		
-		int startNum = (pageNum-1)*pageSize;
 		String institutionName=databaseUseDaily.getInstitution_name();
 		String userId=databaseUseDaily.getUser_id();
 		String date=databaseUseDaily.getDate();
 		String product_source_code=databaseUseDaily.getProduct_source_code();
 		String source_db=databaseUseDaily.getSource_db();
-		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-			PageList=databaseUseHourlyMapper.getDatabaseAnalysisList(institutionName,userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
-			list=databaseUseHourlyMapper.getDatabaseAnalysisLists(institutionName,userId,product_source_code,source_db,date, startTime, endTime);
-		}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-			String userType=personMapper.getUserTypeByUserId(userId);
-				//userType等于0为个人用户
-				if(userType.equals("0")){
-					PageList=databaseUseHourlyMapper.getDatabaseAnalysisList(institutionName,userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
-					list=databaseUseHourlyMapper.getDatabaseAnalysisLists(institutionName,userId,product_source_code,source_db,date, startTime, endTime);
-				}else{
-					PageList=databaseUseHourlyMapper.getDatabaseAnalysisListIsInstitution(institutionName, userId,product_source_code,source_db, date, startTime, endTime, pageNum, pageSize);
-					list=databaseUseHourlyMapper.getDatabaseAnalysisListsIsInstitution(institutionName, userId, product_source_code,source_db,date, startTime, endTime);
-				}
-		}else{
-			PageList=databaseUseHourlyMapper.getDatabaseAnalysisListIsInstitution(institutionName, userId,product_source_code,source_db, date, startTime, endTime, pageNum, pageSize);
-			list=databaseUseHourlyMapper.getDatabaseAnalysisListsIsInstitution(institutionName, userId,product_source_code,source_db, date, startTime, endTime);
+
+		list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+
+		if(date!=null&&!"".equals(date)){
+			for (DatabaseUseHourly item : list) {
+				timeList.add(item.getHour());
+				searchList.add(item.getSum1());
+				browseList.add(item.getSum2());
+				downloadList.add(item.getSum3());
+			}
+		}else {
+			for (DatabaseUseHourly item : list) {
+				timeList.add(item.getDate());
+				searchList.add(item.getSum1());
+				browseList.add(item.getSum2());
+				downloadList.add(item.getSum3());
+
+			}
 		}
 
-		pl.setTotalRow(list.size());
-		pl.setPageRow(PageList);
-		pl.setPageNum(pageNum);
-		pl.setPageSize(pageSize);
-		return pl;
-	}
-
-	/**
-	* @Title: DatabaseUseDailyStatistics
-	* @Description: TODO(天表中取折线图统计数据) 
-	* @param databaseUseDaily
-	* @param startTime
-	* @param endTime
-	* @return Map<String,Object> 返回类型 
-	* @author LiuYong 
-	* @date 26 Dis 2016 10:05:17 AM
-	 */
-	public Map<String, Object> DatabaseUseDailyStatistics(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer[]urlType,String[]database_name){
-		
-		List<DatabaseUseHourly> list=new ArrayList<DatabaseUseHourly>();
-		List<String> groupList=new ArrayList<String>();
-		List<String>timeList=new ArrayList();
-		List<String>browseList=new ArrayList();
-		List<String>downloadList=new ArrayList();
-		List<String>searchList=new ArrayList();
-		
-		
-		String institutionName=databaseUseDaily.getInstitution_name();
-		String userId=databaseUseDaily.getUser_id();
-		
-		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-			list=databaseUseHourlyMapper.databaseAnalysisStatistics_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-			groupList=databaseUseHourlyMapper.getGroupList_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-		}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-			
-			String userType=personMapper.getUserTypeByUserId(userId);
-				//userType等于0为个人用户
-				if(userType.equals("0")){
-					list=databaseUseHourlyMapper.databaseAnalysisStatistics_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-					groupList=databaseUseHourlyMapper.getGroupList_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-				}else{
-					list=databaseUseHourlyMapper.databaseAnalysisStatisticsIsInstitution_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-					groupList=databaseUseHourlyMapper.getGroupListIsInstitution_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-				}
-		}else{
-			list=databaseUseHourlyMapper.databaseAnalysisStatisticsIsInstitution_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-			groupList=databaseUseHourlyMapper.getGroupListIsInstitution_day(databaseUseDaily, startTime, endTime,urlType,database_name);
-		}
-		
-		int size=7;
-		if(groupList!=null){
-			size=groupList.size();
-		}
-		
-		for (DatabaseUseHourly item : list) {
-			timeList.add(item.getDate());
-			searchList.add(item.getSum1());
-			browseList.add(item.getSum2());
-			downloadList.add(item.getSum3());
-			
-		}
-
-		
-		Map<String,Object> map=new HashMap();
 		map.put("timeArr", timeList.toArray());
 		map.put("browseArr", browseList.toArray());//浏览数
 		map.put("downloadArr", downloadList.toArray());//下载数
 		map.put("searchArr", searchList.toArray());//检索数
-		
-		
+
+
 		return map;
-		
-	}
-	
-	/**
-	* @Title: DatabaseUseHourlyStatistics
-	* @Description: TODO(小时表中取折线图统计数据) 
-	* @param institutionName
-	* @param userId
-	* @param date
-	* @param startTime
-	* @param endTime
-	* @return Map<String,Object> 返回类型 
-	* @author LiuYong 
-	* @date 26 Dis 2016 10:05:54 AM
-	 */
-	public Map<String, Object> DatabaseUseHourlyStatistics(String institutionName,String userId,String product_source_code,String source_db,String date,String startTime,String endTime,Integer[]urlType,String[]database_name){
-		
-		List<DatabaseUseHourly> list=new ArrayList<DatabaseUseHourly>();
-		List<String> groupList=new ArrayList<String>();
-		
-		List<String>timeList=new ArrayList();
-		List<String>browseList=new ArrayList();
-		List<String>downloadList=new ArrayList();
-		List<String>searchList=new ArrayList();
-		
-		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-			list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-			groupList=databaseUseHourlyMapper.getGroupList(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-		}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-			
-			String userType=personMapper.getUserTypeByUserId(userId);
-				//userType等于0为个人用户
-				if(userType.equals("0")){
-					list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-					groupList=databaseUseHourlyMapper.getGroupList(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-				}else{
-					list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsIsInstitution(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-					groupList=databaseUseHourlyMapper.getGroupListIsInstitution(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-				}
-		}else{
-			list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsIsInstitution(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-			groupList=databaseUseHourlyMapper.getGroupListIsInstitution(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-		}
-		
-		int size=7;
-		if(groupList!=null){
-			size=groupList.size();
-		}
-		
-		
-		for (DatabaseUseHourly item : list) {
-			timeList.add(item.getHour());
-			searchList.add(item.getSum1());
-			browseList.add(item.getSum2());
-			downloadList.add(item.getSum3());
-			
-		}
-		
-		Map<String,Object> map=new HashMap();
-		map.put("timeArr", timeList.toArray());
-		map.put("browseArr", browseList.toArray());//浏览数
-		map.put("downloadArr", downloadList.toArray());//下载数
-		map.put("searchArr", searchList.toArray());//检索数
-		
-		
-		return map;
-		
-	}
+
+	};
+
 
 	@Override
 	public List<Map<String, String>> exportDatabase(DatabaseUseDaily databaseUseDaily,
 			String startTime, String endTime) {
-		
-		String institutionName=databaseUseDaily.getInstitution_name();
-		String userId=databaseUseDaily.getUser_id();
-		
 		List<Map<String, String>> listmap=new ArrayList<Map<String,String>>();
-		
-		try {
-			if(!"".equals(databaseUseDaily.getDate())&&databaseUseDaily.getDate()!=null){
-				
-				if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-					listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
-				}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-					
-					String userType=personMapper.getUserTypeByUserId(userId);
-						//userType等于0为个人用户
-						if(userType.equals("0")){
-							listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
-						}else{
-							listmap=databaseUseHourlyMapper.exportDatabaseOneDayIsInstitution(databaseUseDaily, startTime, endTime);
-						}
-				}else{
-					listmap=databaseUseHourlyMapper.exportDatabaseOneDayIsInstitution(databaseUseDaily, startTime, endTime);
-				}
-			}else{
-				
-				if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-					listmap=databaseUseHourlyMapper.exportDatabaseByDay_day(databaseUseDaily, startTime, endTime);
-				}else if(StringUtils.isBlank(institutionName) && StringUtils.isNotBlank(userId)){
-					
-					String userType=personMapper.getUserTypeByUserId(userId);
-						//userType等于0为个人用户
-						if(userType.equals("0")){
-							listmap=databaseUseHourlyMapper.exportDatabaseByDay_day(databaseUseDaily, startTime, endTime);
-						}else{
-							listmap=databaseUseHourlyMapper.exportDatabaseByDayIsInstitution_day(databaseUseDaily, startTime, endTime);
-						}
-				}else{
-					listmap=databaseUseHourlyMapper.exportDatabaseByDayIsInstitution_day(databaseUseDaily, startTime, endTime);
-				}
-				
-				
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
+		listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
 		return listmap;
-		
 	}
-	
-	
 }
