@@ -150,7 +150,7 @@ function checkOrg(count,i){
 	var orgName=$("#orgName_"+count+"_"+i).val();
 	var companySimp=$("#companySimp_"+count+"_"+i).val();
 	var userId=$("#userId").val();
-	if(orgName==null||companySimp==null){
+	if(orgName==""&& companySimp==""){
 		return true;
 	}
 	var oldOrgName=$("#h_orgName_"+count+"_"+i).val();
@@ -165,13 +165,13 @@ function checkOrg(count,i){
 		url : "../auser/findStandardUnit.do",
 		dataType : "json",
 		success:function(data){
-			if(data.flag=="false"){
+			if(data.result!="0"){
 				layer.msg(data.msg,{icon: 2});
-				if(data.result=="1"){
-					$("#orgName_"+count+"_"+i).focus();
-				}else if(data.result=="2"){
-					$("#companySimp_"+count+"_"+i).focus();
-				}
+			}
+			if(data.result=="1"){
+				$("#orgName_"+count+"_"+i).focus();
+			}else if(data.result=="2"){
+				$("#companySimp_"+count+"_"+i).focus();
 			}
 		}
 	});

@@ -67,17 +67,17 @@ public class WebServiceUtils {
 			if(flag){ // 更新接口
 				msg=soap.updateNonAccountingUser(enName, BK_StartTime, BK_EndTime, Rdptauth, Onlines, Copys, Prints, Sigprint, ipStr, "", Username, UserState, token);
 				if(msg==1){
-					log.info("修改用户:"+enName+"成功,耗时："+(System.currentTimeMillis()-time)+"ms");
+					log.info("接口修改用户:"+enName+"成功,耗时："+(System.currentTimeMillis()-time)+"ms");
 				}else{
-					log.info("修改用户："+enName+"失败，错误是："+WebService.getName(msg));
+					log.info("接口修改用户："+enName+"失败，错误是："+WebService.getName(msg));
 				}
 				
 			}else{ // 注册接口
 				msg=soap.createNonAccountingUser(enName, BK_StartTime, BK_EndTime, Rdptauth, Onlines, Copys, Prints, Sigprint, ipStr, "", Username, UserState, token);
 				if(msg==1){
-					log.info("注册用户:"+enName+"成功,耗时："+(System.currentTimeMillis()-time)+"ms");
+					log.info("接口注册用户:"+enName+"成功,耗时："+(System.currentTimeMillis()-time)+"ms");
 				}else{
-					log.info("注册用户："+enName+"失败，错误是："+WebService.getName(msg));
+					log.info("接口注册用户："+enName+"失败，错误是："+WebService.getName(msg));
 				}
 			}
 		}catch(Exception e){

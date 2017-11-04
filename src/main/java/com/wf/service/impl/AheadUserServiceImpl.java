@@ -849,13 +849,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 				setting.setPropertyName(STANDARD_CODE);
 				setting.setPropertyValue(JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue));
 				wfksUserSettingMapper.insert(setting);
-			}else{//停用包库
-				int msg=WebServiceUtils.CreateNonAccountingUser(com.getUserId());
-				if(msg==1){
-					log.info(com.getUserId()+"停用包库成功");
-				}else if(msg!=-1){
-					log.info(com.getUserId()+"停用包库失败或者无包库");
-				}
 			}
 		}
 	}

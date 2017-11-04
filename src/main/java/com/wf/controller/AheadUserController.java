@@ -1587,18 +1587,18 @@ public class AheadUserController {
 		log.info("校验标准机构:userId="+userId+",orgName="+orgName+",companySimp="+companySimp);
 		Map<String, Object> m = new HashMap<String, Object>();
 		if(StringUtils.isEmpty(orgName)&&StringUtils.isEmpty(companySimp)){
-			m.put("flag", "false");
+			m.put("msg", "参数不存在");
+			m.put("result", "-1");
 			return m;
 		}
 		List<StandardUnit> list = aheadUserService.findStandardUnit(orgName, companySimp);//元数据
 		if (list.size() == 0) {
 			m.put("msg", "机构名称有重复");
-			m.put("flag", "true");
+			m.put("result", "0");
 			return m;
 		}
 		for (StandardUnit unit : list) {
 			if (!userId.equals(unit.getUserId())) {
-				m.put("flag", "false");
 				if (!StringUtils.isEmpty(orgName) && orgName.equals(unit.getOrgName())) {
 					m.put("msg", "机构名称有重复");
 					m.put("result", "1");
@@ -1606,11 +1606,13 @@ public class AheadUserController {
 						&& companySimp.equals(unit.getCompanySimp())) {
 					m.put("msg", "机构用户简写有重复");
 					m.put("result", "2");
+				}else{
+					m.put("result", "0");
 				}
 				return m;
 			}
 		}
-		m.put("flag", "true");
+		m.put("result", "0");
 		return m;
 	}
 	
