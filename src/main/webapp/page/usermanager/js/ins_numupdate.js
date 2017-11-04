@@ -30,8 +30,14 @@ function submitForm(){
 			contentType: false  
 		}).done(function(data){
 			if(data.flag=="success"){
-				layer.msg("更新成功",{icon: 1});
-				window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+	    		layer.alert("更新成功", {
+	    			icon: 1,
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['确定'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+	    		    }
+	    		});
 			}else{
 				layer.msg("更新失败，请联系管理员", {icon: 2});
 			}
