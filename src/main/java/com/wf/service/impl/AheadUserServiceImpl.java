@@ -850,11 +850,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 				setting.setPropertyValue(JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue));
 				wfksUserSettingMapper.insert(setting);
 			}else{//停用包库
-				int msg=WebServiceUtils.CreateNonAccountingUser(obj, 0);
+				int msg=WebServiceUtils.CreateNonAccountingUser(com.getUserId());
 				if(msg==1){
 					log.info(com.getUserId()+"停用包库成功");
 				}else if(msg!=-1){
-					log.info(com.getUserId()+"停用包库失败");
+					log.info(com.getUserId()+"停用包库失败或者无包库");
 				}
 			}
 		}
@@ -1362,8 +1362,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
-		if(map.get("ipSegment")!=null&&!map.get("ipSegment").equals("")){			
-			map.put("ipSegment", IPConvertHelper.IPToNumber(map.get("ipSegment").toString()));
+		try{
+			if(map.get("ipSegment")!=null&&!map.get("ipSegment").equals("")){			
+				map.put("ipSegment", IPConvertHelper.IPToNumber(map.get("ipSegment").toString()));
+			}
+		}catch (Exception e){
+			return null;
 		}
 		List<Object> list = personMapper.findListInfo(map);
 		for(Object object : list){
@@ -1476,7 +1480,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userMap.put("proList", projectList);
 			}
 		}
-		System.out.println(list.toString());
+		log.info(list.toString());
 		int i = personMapper.findListCount(map);
 		PageList pageList = new PageList();
 		pageList.setPageRow(list);
