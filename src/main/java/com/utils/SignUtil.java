@@ -3,9 +3,8 @@ package com.utils;
 import java.security.DigestException;
 import java.security.MessageDigest;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-
-import sun.misc.BASE64Encoder;
 /**
  * MD5加密方法
  * @author ouyang
@@ -86,7 +85,7 @@ public class SignUtil {
 			MessageDigest sha1 = MessageDigest.getInstance("SHA1");
 			byte[] sha1Passbytes = sha1.digest(encPass.getBytes());
 			if (sha1Passbytes != null) {
-				base64Sha1Passstr = new BASE64Encoder().encode(sha1Passbytes);
+				base64Sha1Passstr = new String(Base64.encodeBase64(sha1Passbytes));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
