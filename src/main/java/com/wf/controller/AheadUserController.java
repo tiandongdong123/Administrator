@@ -40,6 +40,7 @@ import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -416,24 +417,10 @@ public class AheadUserController {
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
-		for(ResourceDetailedDTO dto : list){
-			if(dto.getProjectid()!=null){
-				if(StringUtils.isBlank(dto.getValidityEndtime())){
-					hashmap.put("flag", "fail");
-					return hashmap;
-				}else{
-					if(dto.getProjectType().equals("balance")){
-						if(dto.getTotalMoney()==null){
-							hashmap.put("flag", "fail");
-							return hashmap;
-						}
-					}else if(dto.getProjectType().equals("count")){
-						if(dto.getPurchaseNumber()==null){
-							hashmap.put("flag", "fail");
-							return hashmap;
-						}
-					}
-				}
+		for (ResourceDetailedDTO dto : list) {
+			hashmap = this.getValidate(dto,true);
+			if (hashmap.size() > 0) {
+				return hashmap;
 			}
 		}
 		
@@ -520,13 +507,27 @@ public class AheadUserController {
 				i--;
 			}
 		}
+		List<ResourceDetailedDTO> list = com.getRdlist();
+		if (list == null || list.size() == 0) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "请选择项目");
+			return hashmap;
+		}
+		for (ResourceDetailedDTO dto : list) {
+			if(dto.getProjectid()!=null){
+				hashmap = this.getValidate(dto,false);
+				if (hashmap.size() > 0) {
+					return hashmap;
+				}
+			}
+		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
 			if(!map.get("userId").equals("") && !map.get("institution").equals("")){
 				//用户是否存在
 				Person p = aheadUserService.queryPersonInfo(map.get("userId").toString());
 				String msg = aheadUserService.validateOldUser(map.get("userId").toString());
-				if(p!=null && msg.equals("false")){
+				if(p!=null || msg.equals("false")){
 					hashmap.put("flag", "fail");
 					hashmap.put("fail", map.get("userId")+"该用户已存在");
 					return hashmap;
@@ -536,7 +537,6 @@ public class AheadUserController {
 					hashmap.put("fail", map.get("userId")+"该用户机构名与管理员机构名不符");
 					return hashmap;
 				}
-				List<ResourceDetailedDTO> list = com.getRdlist();
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				//判断金额或次数，不可存在负数
 				for(Map<String, Object> pl : lm){
@@ -579,7 +579,6 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
 			}
-			List<ResourceDetailedDTO> list = com.getRdlist();
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			for(ResourceDetailedDTO dto : list){
 				for(Map<String, Object> pro : lm) {
@@ -648,7 +647,17 @@ public class AheadUserController {
 			HttpServletRequest req,HttpServletResponse res)throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
-		Map<String,String> hashmap = new HashMap<String, String>();
+		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
+		String adminOldName = null;
+		if(StringUtils.isNotBlank(com.getAdminOldName())){			
+			adminOldName = com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/"));
+		}
+		Map<String, String> hashmap = new HashMap<String, String>();
+		if (file == null || file.isEmpty()) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "请上传附件");
+			return hashmap;
+		}
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
 		for (int i = 0; i < listmap.size(); i++) {
 			Map<String, Object> map = listmap.get(i);
@@ -657,10 +666,17 @@ public class AheadUserController {
 				i--;
 			}
 		}
-		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
-		String adminOldName = null;
-		if(StringUtils.isNotBlank(com.getAdminOldName())){			
-			adminOldName = com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/"));
+		List<ResourceDetailedDTO> list = com.getRdlist();
+		if (list == null || list.size() == 0) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "请选择项目");
+			return hashmap;
+		}
+		for (ResourceDetailedDTO dto : list) {
+			hashmap = this.getValidate(dto,false);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
 		}
 		int in = 0;
 		for(Map<String, Object> map : listmap){
@@ -685,7 +701,6 @@ public class AheadUserController {
 						}
 					}
 				}
-				List<ResourceDetailedDTO> list = com.getRdlist();
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(Map<String, Object> pl : lm){
 					//判断如果重置金额或次数，不可存在负数
@@ -754,7 +769,6 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.updateAccountRestriction(com);		
 			}
-			List<ResourceDetailedDTO> list = com.getRdlist();
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
 				for(ResourceDetailedDTO dto : list){
@@ -1067,33 +1081,18 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
-		List<ResourceDetailedDTO> tempList = com.getRdlist();
 		List<String> delList=new ArrayList<String>();
 		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
-		for (ResourceDetailedDTO dto : tempList) {
-			if (dto.getProjectid() != null) {
-				if (StringUtils.isEmpty(dto.getProjectname())) {
-					delList.add(dto.getProjectid());
-					continue;
-				}
-				if (StringUtils.isBlank(dto.getValidityEndtime())) {
-					hashmap.put("flag", "fail");
-					return hashmap;
-				} else {
-					if (dto.getProjectType().equals("balance")) {
-						if (dto.getTotalMoney() == null) {
-							hashmap.put("flag", "fail");
-							return hashmap;
-						}
-					} else if (dto.getProjectType().equals("count")) {
-						if (dto.getPurchaseNumber() == null) {
-							hashmap.put("flag", "fail");
-							return hashmap;
-						}
-					}
-				}
-				list.add(dto);
+		for (ResourceDetailedDTO dto : com.getRdlist()) {
+			if (StringUtils.isEmpty(dto.getProjectname())) {
+				delList.add(dto.getProjectid());
+				continue;
 			}
+			hashmap = this.getValidate(dto,true);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
+			list.add(dto);
 		}
 		//删除项目
 		if(delList.size()>0){
@@ -1165,6 +1164,49 @@ public class AheadUserController {
 			log.info("机构用户["+com.getUserId()+"]更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		this.saveOperationLogs(com,"2", req);
+		return hashmap;
+	}
+	
+	/**
+	 *  注册或者修改机构用户的非空校验
+	 * @param dto
+	 * @param isBatch false是批量,true是非批量
+	 * @return
+	 */
+	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean isBatch){
+		Map<String,String> hashmap=new HashMap<String,String>();
+		boolean flag=true;//判断是否有选中的数据库
+		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
+		if (StringUtils.isBlank(dto.getValidityEndtime())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限结束时间不能为空");
+			return hashmap;
+		} else if(isBatch){
+			if (dto.getProjectType().equals("balance")) {
+				if (dto.getTotalMoney() == null) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"金额不能为空");
+					return hashmap;
+				}
+			} else if (dto.getProjectType().equals("count")) {
+				if (dto.getPurchaseNumber() == null) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"次数不能为空");
+					return hashmap;
+				}
+			}
+		}
+		for(ResourceLimitsDTO rldto:dto.getRldto()){
+			if(rldto.getResourceid()!=null){
+				flag=false;
+				break;
+			}
+		}
+		if(flag){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"必须选择一个数据库");
+			return hashmap;
+		}
 		return hashmap;
 	}
 	
