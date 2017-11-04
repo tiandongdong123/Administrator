@@ -42,9 +42,13 @@ function submitForm(){
 	    		    	window.location.href='../auser/register.do';
 	    		    }
 	    		});
-	    	}else{
-	    		layer.msg("注册失败",{icon: 2});
-	    	}
+			}else{
+				if(data.fail!=null){
+					layer.msg(data.fail, {icon: 2});
+				}else{
+					layer.msg("注册失败", {icon: 2});
+				}
+			}
 	    	$("#submit").removeAttr("disabled");
 	    });
 	}

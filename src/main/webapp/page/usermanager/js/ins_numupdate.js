@@ -39,7 +39,11 @@ function submitForm(){
 	    		    }
 	    		});
 			}else{
-				layer.msg("更新失败，请联系管理员", {icon: 2});
+				if(data.fail!=null){
+					layer.msg(data.fail, {icon: 2});
+				}else{
+					layer.msg("更新失败，请联系管理员", {icon: 2});
+				}
 			}
 			$("#submit").removeAttr("disabled");
 		});
