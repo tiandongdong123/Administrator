@@ -417,6 +417,11 @@ public class AheadUserController {
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<ResourceDetailedDTO> list = com.getRdlist();
+		if(list==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "购买项目不能为空");
+			return hashmap;
+		}
 		for (ResourceDetailedDTO dto : list) {
 			hashmap = this.getValidate(dto,true);
 			if (hashmap.size() > 0) {
@@ -574,7 +579,7 @@ public class AheadUserController {
 			//Excel表格中部分账号信息
 			com.setInstitution(map.get("institution").toString());
 			com.setUserId(map.get("userId").toString());
-			com.setPassword(String.valueOf(map.get("password")).replaceAll(".0", "").replaceAll(" ", ""));
+			com.setPassword(String.valueOf(map.get("password")));
 			int resinfo = aheadUserService.addRegisterInfo(com);
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
@@ -741,7 +746,7 @@ public class AheadUserController {
 				com.setInstitution(ps.getInstitution());
 			}
 			if(map.get("password")!=null && map.get("password")!=""){
-				String password = String.valueOf(map.get("password")).replace(".0", "").replaceAll(" ", "");
+				String password = String.valueOf(map.get("password"));
 				if (password.contains("不变")) {
 					password = "";
 				}
@@ -1083,6 +1088,11 @@ public class AheadUserController {
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<String> delList=new ArrayList<String>();
 		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
+		if(com.getRdlist()==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "购买项目不能为空");
+			return hashmap;
+		}
 		for (ResourceDetailedDTO dto : com.getRdlist()) {
 			if (StringUtils.isEmpty(dto.getProjectname())) {
 				delList.add(dto.getProjectid());
