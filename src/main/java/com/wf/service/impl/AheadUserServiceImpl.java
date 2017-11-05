@@ -350,21 +350,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void addUserIp(CommonEntity com){
-		String[] arr_ip = com.getIpSegment().split("\r\n");
-		for(String ip : arr_ip){
-			if(ip.contains("-")){				
-				UserIp userIp = new UserIp();
-				userIp.setId(GetUuid.getId());
-				userIp.setUserId(com.getUserId());
-				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
-				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
-				userIpMapper.insert(userIp);
-			}
-		}
-	}
-	
-	@Override
 	public void addUserAdminIp(CommonEntity com){
 		String[] arr_ip = com.getAdminIP().split("\r\n");
 		for(String ip : arr_ip){
@@ -1246,6 +1231,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void updateUserIp(CommonEntity com){
 		userIpMapper.deleteUserIp(com.getUserId());
+		addUserIp(com);
+	}
+	
+	@Override
+	public void addUserIp(CommonEntity com){
 		String[] arr_ip = com.getIpSegment().split("\r\n");
 		for(String ip : arr_ip){
 			if(ip.contains("-")){				
@@ -1355,23 +1345,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
-		try{
-			if(map.get("ipSegment")!=null&&!map.get("ipSegment").equals("")){			
-				map.put("ipSegment", IPConvertHelper.IPToNumber(map.get("ipSegment").toString()));
-			}
-		}catch (Exception e){
-			return null;
-		}
 		List<Object> list = personMapper.findListInfo(map);
 		for(Object object : list){
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
 			try{
-				String password=(String) userMap.get("password");
-				if(!StringUtils.isEmpty(password)){
-					userMap.put("password",PasswordHelper.decryptPassword(password));
-				}
+				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
 				e.printStackTrace();
 			}

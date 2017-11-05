@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import wfks.accounting.setting.PayChannelModel;
 
+import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
 import com.utils.DateUtil;
@@ -430,8 +431,15 @@ public class AheadUserController {
 		}
 		
 		int resinfo = aheadUserService.addRegisterInfo(com);
-		if(!com.getLoginMode().equals("1")){
-			aheadUserService.addUserIp(com);
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+			//校验ip的合法性
+			if(IPConvertHelper.validateIp(com.getIpSegment())){
+				aheadUserService.addUserIp(com);
+			}else{
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "ip不合法");
+				return hashmap;
+			}
 		}
 		if(StringUtils.isNotBlank(com.getChecks())){		
 			aheadUserService.addAccountRestriction(com);
@@ -983,7 +991,9 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", userId);
-		map.put("ipSegment", ipSegment);
+		if (!StringUtil.isEmpty(ipSegment) && IPConvertHelper.validateOneIp(ipSegment)) {
+			map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
+		}
 		map.put("institution", institution);
 		map.put("adminname", adminname);
 		map.put("adminIP", adminIP);
@@ -1132,7 +1142,14 @@ public class AheadUserController {
 			aheadUserService.updatePid(map);
 		}
 		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
-			aheadUserService.updateUserIp(com);
+			//校验ip的合法性
+			if(IPConvertHelper.validateIp(com.getIpSegment())){
+				aheadUserService.updateUserIp(com);
+			}else{
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "ip不合法");
+				return hashmap;
+			}
 		}else{
 			aheadUserService.deleteUserIp(com.getUserId());
 		}
