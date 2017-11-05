@@ -788,18 +788,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if (obj != null) {
 				if(obj.getBooleanValue("isZJ")){//元数据+全文的才调用接口
 					//如果存在，接口更新，数据库更新。如果不存在，接口注册，数据库新增
-					String code=standardUnitMapper.findMaxOrgCode();
-					//生产是8位数字，测试库是6为数字
-					if(code==null){
-						code=ORGCODE;
-					}else{
-						code=StringUtil.formatStr(code);
+					String codeNum=standardUnitMapper.findMaxOrgCode();
+					//code是2位平台字母，8位数字，测试库和生产的前两位字母要不一样
+					if (codeNum == null) {
+						codeNum = ORGCODE;
+					} else {
+						codeNum = StringUtil.formatStr(codeNum);
 					}
-					obj.put("OrgCode", code);
+					obj.put("OrgCode", codeNum);
 					if (unit == null) {// 注册
 						unit=new StandardUnit();
 						unit.setUserId(com.getUserId());
-						unit.setOrgCode(code);
+						unit.setOrgCode(codeNum);
 						unit.setCompany(rdto.getCompany());
 						unit.setCompanySimp(rdto.getCompanySimp());
 						unit.setOrgName(SALEAGTID+"_"+rdto.getOrgName());

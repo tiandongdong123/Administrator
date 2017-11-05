@@ -22,11 +22,18 @@ import java.util.regex.Pattern;
 public class StringUtil {
 	private static final String randChars = "0123456789abcdefghigklmnopqrstuvtxyzABCDEFGHIGKLMNOPQRSTUVWXYZ";
 	private static Random random = new Random();
-	private static final String zero = "0000000000000000";// 16位的0
-
+	
+	/**
+	 * 
+	 * @param code
+	 * @return
+	 */
 	public static String formatStr(String code) {
-		Format f1 = new DecimalFormat(zero.substring(0, code.length()));
-		return f1.format(Integer.parseInt(code) + 1);
+		String zero = "00000000";// 8位的0
+		String front = code.substring(0, 2);
+		String back = code.substring(2);
+		Format f1 = new DecimalFormat(zero.substring(0, back.length()));
+		return front + f1.format(Integer.parseInt(back) + 1);
 	}
 	/**
 	 * 判断字符串是否为空
