@@ -1,6 +1,8 @@
 function submission() {
 //	 alert("验证结果------"+fieldsCheck());
-	if (fieldsCheck()) {
+	if (!fieldsCheck()) {
+		$("#btt").removeAttr("disabled");
+	}else{
 		doUpdateModularManager();
 	}
 }

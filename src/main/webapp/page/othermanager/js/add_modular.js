@@ -1,7 +1,9 @@
 /*对提交内容进行验证-liuYong*/
 function submission() {
 //	 alert("验证结果------"+fieldsCheck());
-	if (fieldsCheck()) {
+	if (!fieldsCheck()) {
+		$("#btt").removeAttr("disabled");
+	}else{
 		doAddModular();
 	}
 }
