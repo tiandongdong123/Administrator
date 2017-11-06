@@ -71,7 +71,7 @@ public class DatabaseAnalysisController {
 		//所有数据来源
 		map.put("allDataSource",db_SourceService.selectAll());
 		return "/page/othermanager/data_use_manager";
-	}
+		}
 	
 	@ResponseBody
 	@RequestMapping("getDatabaseBySourceCode")
