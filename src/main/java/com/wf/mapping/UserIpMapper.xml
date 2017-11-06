@@ -42,7 +42,7 @@
   
     <!-- 通过userid查询IP -->
   <select id="findIpByUserId" resultMap="BaseMap">
-	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId} order by begin_ip_address_number
+	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId}
   </select>
   
  <update id="updateIp" parameterType="com.wf.bean.UserIp">
