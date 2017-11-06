@@ -1,3 +1,4 @@
+var pagesize=10;
 $(function(){
 	
 	tabulation(1);
