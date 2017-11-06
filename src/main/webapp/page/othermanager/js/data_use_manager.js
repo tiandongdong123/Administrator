@@ -168,23 +168,21 @@ function line(urlType,database_name,datas){
 	    	        }
 	    	    ],
 	    	    series : [
-	    	        {
-	    	            name:'检索数',
-	    	            type:'line',
-	    	            data:data.searchArr
-	    	        },
-	    	        {
-	    	            name:'浏览数',
-	    	            type:'line',
-	    	            data:data.browseArr
-	    	        },
-	    	        {
-	    	            name:'下载数',
-	    	            type:'line',
-	    	            data:data.downloadArr
-	    	        }
+
 	    	    ]
 	    	};
+			for(var i =0;i<datas.length;i++){
+				var name = datas[i];
+				var num=new Array();
+				num =data.content[name];
+				option.series.push(
+					{
+						name:name,
+						type:'line',
+						data:num
+					}
+				)
+			}
 	    	myChart.setOption(option);
     
 		}

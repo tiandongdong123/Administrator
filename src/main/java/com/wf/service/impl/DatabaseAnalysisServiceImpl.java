@@ -1,9 +1,8 @@
 package com.wf.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import net.sf.json.JSONArray;
 
@@ -38,8 +37,17 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		String date=databaseUseDaily.getDate();
 		String product_source_code=databaseUseDaily.getProduct_source_code();
 		String source_db=databaseUseDaily.getSource_db();
-		PageList=databaseUseHourlyMapper.getData(institutionName,userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
-		list=databaseUseHourlyMapper.getDatabaseAnalysisLists(institutionName,userId,product_source_code,source_db,date, startTime, endTime);
+		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
+			PageList=databaseUseHourlyMapper.getData(product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
+			list=databaseUseHourlyMapper.getDataAnalysisLists(product_source_code,source_db,date, startTime, endTime);
+		}else if(StringUtils.isNotBlank(userId)){
+			PageList=databaseUseHourlyMapper.getDataById(userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
+			list=databaseUseHourlyMapper.getDataAnalysisListsById(userId,product_source_code,source_db,date, startTime, endTime);
+		}else{
+			List users = personMapper.getInstitutionUser(institutionName);
+			PageList=databaseUseHourlyMapper.getDataByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
+			list=databaseUseHourlyMapper.getDataAnalysisListsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime);
+		}
 		pl.setTotalRow(list.size());
 		pl.setPageRow(PageList);
 		pl.setPageNum(pageNum);
@@ -52,6 +60,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 			DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer[]urlType,String[]database_name) {
 		Map<String,Object> map=new HashMap();
 		List<DatabaseUseHourly> list=new ArrayList<DatabaseUseHourly>();
+		Map<String, List<String>> content = new HashMap<String, List<String>>();
 		List<String>timeList=new ArrayList();
 		List<String>browseList=new ArrayList();
 		List<String>downloadList=new ArrayList();
@@ -63,31 +72,69 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		String product_source_code=databaseUseDaily.getProduct_source_code();
 		String source_db=databaseUseDaily.getSource_db();
 
-		list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(institutionName,userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-
+		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
+			list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+		}else if(StringUtils.isNotBlank(userId)){
+			list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsById(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+		}else{
+			List users = personMapper.getInstitutionUser(institutionName);
+			list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+		}
 		if(date!=null&&!"".equals(date)){
-			for (DatabaseUseHourly item : list) {
-				timeList.add(item.getHour());
-				searchList.add(item.getSum1());
-				browseList.add(item.getSum2());
-				downloadList.add(item.getSum3());
+			for(Integer i = 1;i<=24;i++){
+				timeList.add(i.toString());
+			}
+			for(int i = 0;i<24;i++){
+				for (DatabaseUseHourly item : list) {
+					if(Integer.parseInt(item.getHour())==i+1){
+						searchList.add(item.getSum1());
+						browseList.add(item.getSum2());
+						downloadList.add(item.getSum3());
+						break;
+					}
+				}
+				if(searchList.size()==i){
+					searchList.add("0");
+					browseList.add("0");
+					downloadList.add("0");
+				}
 			}
 		}else {
-			for (DatabaseUseHourly item : list) {
-				timeList.add(item.getDate());
-				searchList.add(item.getSum1());
-				browseList.add(item.getSum2());
-				downloadList.add(item.getSum3());
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				Date starttime = format.parse(startTime);
+				Date endtime = format.parse(endTime);
+				List<Date> days = this.getDate(starttime, endtime);
+				for(Date d : days){
+					timeList.add(format.format(d));
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+			for(int i = 0;i<timeList.size();i++){
+				for (DatabaseUseHourly item : list) {
+					if(timeList.get(i).equals(item.getDate())){
+						searchList.add(item.getSum1());
+						browseList.add(item.getSum2());
+						downloadList.add(item.getSum3());
+						break;
+					}
+				}
+				if(searchList.size()==i){
+					searchList.add("0");
+					browseList.add("0");
+					downloadList.add("0");
+				}
 
 			}
 		}
+		content.put("浏览数",browseList);
+		content.put("下载数",downloadList);
+		content.put("检索数",searchList);
 
 		map.put("timeArr", timeList.toArray());
-		map.put("browseArr", browseList.toArray());//浏览数
-		map.put("downloadArr", downloadList.toArray());//下载数
-		map.put("searchArr", searchList.toArray());//检索数
-
-
+		map.put("content", content);
 		return map;
 
 	};
@@ -97,7 +144,36 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	public List<Map<String, String>> exportDatabase(DatabaseUseDaily databaseUseDaily,
 			String startTime, String endTime) {
 		List<Map<String, String>> listmap=new ArrayList<Map<String,String>>();
+		if(StringUtils.isBlank(databaseUseDaily.getInstitution_name()) && StringUtils.isBlank(databaseUseDaily.getUser_id())){
+			listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
+		}else if(StringUtils.isNotBlank(databaseUseDaily.getUser_id())){
+			listmap=databaseUseHourlyMapper.exportDatabaseOneDayById(databaseUseDaily, startTime, endTime);
+		}else{
+			List users = personMapper.getInstitutionUser(databaseUseDaily.getInstitution_name());
+			listmap=databaseUseHourlyMapper.exportDatabaseOneDayByIds(databaseUseDaily,users, startTime, endTime);
+
+		}
 		listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
 		return listmap;
+	}
+	public List<Date> getDate(Date sd, Date ed) {
+		List<Date> lDate = new ArrayList<Date>();
+		lDate.add(sd);// 把开始时间加入集合
+		Calendar cal = Calendar.getInstance();
+		// 使用给定的 Date 设置此 Calendar 的时间
+		cal.setTime(sd);
+		boolean bContinue = true;
+		while (bContinue) {
+			// 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			// 测试此日期是否在指定日期之后
+			if (ed.after(cal.getTime())) {
+				lDate.add(cal.getTime());
+			} else {
+				break;
+			}
+		}
+		lDate.add(ed);
+		return lDate;
 	}
 }

@@ -44,11 +44,11 @@ public class DatabaseConfigureSetting {
                 db.setResType(element.elementText("resourceType"));
                 db.setLanguage(element.elementText("language"));
                 db.setCustomPolicy(element.elementText("customPolicy"));
-                db.setStatus(Integer.parseInt(element.elementText("status")));
-                if(element.elementText("state").equals("")){
-                    db.setState(null);
+                db.setState(Integer.parseInt(element.elementText("state")));
+                if(element.elementText("status").equals("")){
+                    db.setStatus(null);
                 }else {
-                    db.setState(Integer.valueOf(element.elementText("state")));
+                    db.setStatus(Integer.valueOf(element.elementText("status")));
                 }
                 database.add(db);
             }
@@ -80,11 +80,11 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setStatus(Integer.parseInt(element.elementText("status")));
-                    if(element.elementText("state").equals("")){
-                        db.setState(null);
+                    db.setState(Integer.parseInt(element.elementText("state")));
+                    if(element.elementText("status").equals("")){
+                        db.setStatus(null);
                     }else {
-                        db.setState(Integer.valueOf(element.elementText("state")));
+                        db.setStatus(Integer.valueOf(element.elementText("status")));
                     }
                     database.add(db);
                 }
@@ -432,11 +432,11 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setStatus(Integer.parseInt(element.elementText("status")));
-                    if(element.elementText("state").equals("")){
-                        db.setState(null);
+                    db.setState(Integer.parseInt(element.elementText("state")));
+                    if(element.elementText("status").equals("")){
+                        db.setStatus(null);
                     }else {
-                        db.setState(Integer.valueOf(element.elementText("state")));
+                        db.setStatus(Integer.valueOf(element.elementText("status")));
                     }
                     database.add(db);
                 }

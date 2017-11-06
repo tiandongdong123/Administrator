@@ -20,8 +20,26 @@ public interface DatabaseUseHourlyMapper {
 	 * @date 12 Dis 2016 6:19:50 PM
 	 */
 	List<Object> getData(
-			@Param("institution_name") String institutionName,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("pageNum") Integer pageNum,
+			@Param("pageSize") Integer pageSize);
+
+
+	List<Object> getDataById(
 			@Param("user_id") String userId,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("pageNum") Integer pageNum,
+			@Param("pageSize") Integer pageSize);
+
+	List<Object> getDataByIds(
+			@Param("institution_name") String institutionName,
+			@Param("users") List users,
 			@Param("product_source_code") String product_source_code,
 			@Param("source_db") String source_db, @Param("date") String date,
 			@Param("startTime") String startTime,
@@ -37,9 +55,22 @@ public interface DatabaseUseHourlyMapper {
 	 * @author LiuYong
 	 * @date 12 Dis 2016 6:19:50 PM
 	 */
-	List<Object> getDatabaseAnalysisLists(
-			@Param("institution_name") String institutionName,
+	List<Object> getDataAnalysisLists(
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+
+	List<Object> getDataAnalysisListsById(
 			@Param("user_id") String userId,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+
+	List<Object> getDataAnalysisListsByIds(
+			@Param("institution_name") String institutionName,
+			@Param("users") List users,
 			@Param("product_source_code") String product_source_code,
 			@Param("source_db") String source_db, @Param("date") String date,
 			@Param("startTime") String startTime,
@@ -79,8 +110,23 @@ public interface DatabaseUseHourlyMapper {
 	 * @date 12 Dis 2016 6:19:50 PM
 	 */
 	List<DatabaseUseHourly> DatabaseAnalysisStatistics(
-			@Param("institution_name") String institutionName,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<DatabaseUseHourly> DatabaseAnalysisStatisticsById(
 			@Param("user_id") String userId,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<DatabaseUseHourly> DatabaseAnalysisStatisticsByIds(
+			@Param("institution_name") String institutionName,
+			@Param("users") List users,
 			@Param("product_source_code") String product_source_code,
 			@Param("source_db") String source_db, @Param("date") String date,
 			@Param("startTime") String startTime,
@@ -90,6 +136,17 @@ public interface DatabaseUseHourlyMapper {
 
 	List<Map<String, String>> exportDatabaseOneDay(
 			@Param("databaseUseDaily") DatabaseUseDaily databaseUseDaily,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+
+	List<Map<String, String>> exportDatabaseOneDayById(
+			@Param("databaseUseDaily") DatabaseUseDaily databaseUseDaily,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+
+	List<Map<String, String>> exportDatabaseOneDayByIds(
+			@Param("databaseUseDaily") DatabaseUseDaily databaseUseDaily,
+			@Param("users") List users,
 			@Param("startTime") String startTime,
 			@Param("endTime") String endTime);
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -131,16 +132,17 @@ public class DatabaseAnalysisController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportDatabase")
-	public void exportDatabase(HttpServletResponse response,DatabaseUseDaily databaseUseDaily, String startTime,String endTime) throws Exception{
+	public void exportDatabase(HttpServletRequest request, HttpServletResponse response, DatabaseUseDaily databaseUseDaily, String startTime, String endTime) throws Exception{
 		
 		String time1="";
 		String time2="";
 		
 		//标题拼装
-		StringBuffer sb=new StringBuffer("标题:");
+		StringBuffer sb=new StringBuffer("");
 		
 		if(StringUtils.isNotBlank(databaseUseDaily.getInstitution_name())){
-			sb.append(databaseUseDaily.getInstitution_name());
+			String name = java.net.URLDecoder.decode(request.getParameter("institution_name"), "utf-8");
+			sb.append(name);
 		}
 
 		if(StringUtils.isNotBlank(databaseUseDaily.getDate())){

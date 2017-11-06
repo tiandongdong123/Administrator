@@ -372,5 +372,8 @@
         limit 0,10
     </select>
 
+    <select id="getInstitutionUser" resultType="java.lang.String">
+        select user_id from user  where  userType in (2,3) and institution = #{institutionName}
+    </select>
 
 </mapper>
