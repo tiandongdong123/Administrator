@@ -991,8 +991,15 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", userId);
-		if (!StringUtil.isEmpty(ipSegment) && IPConvertHelper.validateOneIp(ipSegment)) {
-			map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
+		if (!StringUtil.isEmpty(ipSegment)) {
+			if(IPConvertHelper.validateOneIp(ipSegment)){
+				map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
+			}else{
+				map.put("ipSegment", ipSegment);
+				view.addObject("map", map);
+				view.setViewName("/page/usermanager/ins_information");
+				return view;
+			}
 		}
 		map.put("institution", institution);
 		map.put("adminname", adminname);
@@ -1001,20 +1008,22 @@ public class AheadUserController {
 		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
 		map.put("start_time", start_time);
 		map.put("end_time", end_time);
-		PageList pageList = aheadUserService.findListInfo(map);
-		if(pageList!=null){
-			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
-			pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
-			if(ipSegment!=null&&!ipSegment.equals("")){
-				map.put("ipSegment", ipSegment);
-			}
-			map.put("pageList", pageList);
-			//获取权限列表
-			List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
-			view.addObject("map", map);
-			view.addObject("timelimit",DateUtil.getTimeLimit());
-			view.addObject("settingList",settingList);
+		if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)) {
+			view.setViewName("/page/usermanager/ins_information");
+			return view;
 		}
+		PageList pageList = aheadUserService.findListInfo(map);
+		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
+		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
+		if(!StringUtil.isEmpty(ipSegment)){
+			map.put("ipSegment", ipSegment);
+		}
+		map.put("pageList", pageList);
+		//获取权限列表
+		List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
+		view.addObject("map", map);
+		view.addObject("timelimit",DateUtil.getTimeLimit());
+		view.addObject("settingList",settingList);
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
