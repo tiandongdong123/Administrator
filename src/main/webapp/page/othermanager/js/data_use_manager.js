@@ -1,4 +1,3 @@
-var pagesize=10;
 $(function(){
 	
 	tabulation(1);
@@ -301,11 +300,16 @@ function exportDatabase(){
 	
 	if(''!=$("#startTime").val() && ''!=$("#endTime").val()){
 		getTime();
-		window.location.href="../databaseAnalysis/exportDatabase.do?" +
-				"institution_name="+institution_name+"&user_id="+user_id+
-				"&source_db="+restype+
-				"&product_source_code="+dbname+
-				"&date="+date+"&startTime="+startTime+"&endTime="+endTime;
+		institution_name=$("#institution_name").val();
+		user_id=$("#user_id").val();
+		restype=$("#restype").val();
+		dbname=$("#database").val();
+		var url="../databaseAnalysis/exportDatabase.do?" +
+			"institution_name="+institution_name +"&user_id="+user_id+
+			"&source_db="+restype+
+			"&product_source_code="+dbname+
+			"&date="+date+"&startTime="+startTime+"&endTime="+endTime;
+		window.location.href=encodeURI(encodeURI(url));
 	}else{
 		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
@@ -402,7 +406,7 @@ function getDatabaseBySourceCode(code){
 	
 	$("#database").empty();
 	$("#database").append("<option value=''>--请选择数据库名称--</option>");
-	
+
 	if(""!=code && null!=code && undefined!=code){
 		$.ajax({
 			type : "POST",

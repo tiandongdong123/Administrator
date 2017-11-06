@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +71,7 @@ public class DatabaseAnalysisController {
 		//所有数据来源
 		map.put("allDataSource",db_SourceService.selectAll());
 		return "/page/othermanager/data_use_manager";
-	}
+		}
 	
 	@ResponseBody
 	@RequestMapping("getDatabaseBySourceCode")
@@ -131,7 +132,7 @@ public class DatabaseAnalysisController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportDatabase")
-	public void exportDatabase(HttpServletResponse response,DatabaseUseDaily databaseUseDaily, String startTime,String endTime) throws Exception{
+	public void exportDatabase(HttpServletRequest request, HttpServletResponse response, DatabaseUseDaily databaseUseDaily, String startTime, String endTime) throws Exception{
 		
 		String time1="";
 		String time2="";
@@ -140,7 +141,8 @@ public class DatabaseAnalysisController {
 		StringBuffer sb=new StringBuffer("标题:");
 		
 		if(StringUtils.isNotBlank(databaseUseDaily.getInstitution_name())){
-			sb.append(databaseUseDaily.getInstitution_name());
+			String name = java.net.URLDecoder.decode(request.getParameter("institution_name"), "utf-8");
+			sb.append(name);
 		}
 
 		if(StringUtils.isNotBlank(databaseUseDaily.getDate())){
