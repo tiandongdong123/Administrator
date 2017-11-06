@@ -132,12 +132,14 @@ function tabulation(curr){
         },
         dataType : "json",
         success : function(datas) {
+
             var data=datas.pageRow;
             var totalRow = datas.totalRow;
             var pageSize = datas.pageSize;
             var html="";
             var id;
             if(data.length>0){
+				$(".showPage").css("display","block");
                 for(var i=0;i<data.length;i++){
                     id=pageSize*(curr-1)+i+1;
                     html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
@@ -166,6 +168,7 @@ function tabulation(curr){
                     groups=pages;
                 }
             }
+
 
             //显示分页
             laypage({
