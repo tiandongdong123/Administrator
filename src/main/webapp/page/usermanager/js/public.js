@@ -82,24 +82,28 @@ function resetStandard(count,i){
 //校验标准内容
 function validStandard(count,i){
 	//1、时间不能为空，而且还是时间要小于等于结束时间
-	var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
-	var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
-	if(startTime==null||startTime==""){
-		layer.msg("开始时间不能为空",{icon: 2});
-		return false;
-	}
-	if(endTime==null||endTime==""){
-		layer.msg("结束时间不能为空",{icon: 2});
-		return false;
-	}
-	var d1 = new Date(startTime.replace(/\-/g, "\/"));
-	var d2 = new Date(endTime.replace(/\-/g, "\/"));
-	if(d1>d2){
-		layer.msg("开始时间不能大于结束时间",{icon: 2});
-		return false;
+	var isZJ=$("#isZJ_"+count+"_"+i).is(':checked');
+	var isBK=$("#isBK_"+count+"_"+i).is(':checked');
+	if (isZJ || isBK) {
+		var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
+		var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
+		if(startTime==null||startTime==""){
+			layer.msg("开始时间不能为空",{icon: 2});
+			return false;
+		}
+		if(endTime==null||endTime==""){
+			layer.msg("结束时间不能为空",{icon: 2});
+			return false;
+		}
+		var d1 = new Date(startTime.replace(/\-/g, "\/"));
+		var d2 = new Date(endTime.replace(/\-/g, "\/"));
+		if(d1>d2){
+			layer.msg("开始时间不能大于结束时间",{icon: 2});
+			return false;
+		}
 	}
 	//2、元数据和包库的要分别校验
-	if($("#isZJ_"+count+"_"+i).is(':checked')){//1、元数据+全文
+	if (isZJ) {// 1、元数据+全文
 		var company=$("#company_"+count+"_"+i).val();
 		var orgName=$("#orgName_"+count+"_"+i).val();
 		var companySimp=$("#companySimp_"+count+"_"+i).val();
@@ -129,7 +133,7 @@ function validStandard(count,i){
 				return false; 
 			}
 		}
-	}else if($("#isBK_"+count+"_"+i).is(':checked')){//2、包库
+	} else if (isBK) {// 2、包库
 		var readingPrint=$("#readingPrint_"+count+"_"+i).val();
 		if(readingPrint==null||readingPrint==""){
 			layer.msg("版权阅读打印不能为空",{icon: 2});
@@ -137,10 +141,12 @@ function validStandard(count,i){
 		}
 	}
 	//3、ip不能为空
-	var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
-	if(fullIpRange==null||fullIpRange==""){
-		layer.msg("ip段必须填写",{icon: 2});
-		return false;
+	if (isZJ || isBK) {
+		var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
+		if(fullIpRange==null||fullIpRange==""){
+			layer.msg("ip段必须填写",{icon: 2});
+			return false;
+		}
 	}
 	return true;
 }
