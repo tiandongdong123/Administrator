@@ -16,7 +16,7 @@ public class IPConvertHelper {
 		}
 		if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
 			String s[] = ip.split("\\.");
-			if (Integer.parseInt(s[0]) < 255)
+			if (Integer.parseInt(s[0]) < 233 && Integer.parseInt(s[0])>0)
 				if (Integer.parseInt(s[1]) < 255)
 					if (Integer.parseInt(s[2]) < 255)
 						if (Integer.parseInt(s[3]) < 255)
