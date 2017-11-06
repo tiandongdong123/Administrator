@@ -29,164 +29,164 @@ function query(){
  * 加载列表数据--liuYong
  */
 $(function(){
-	$('#pageChange').change(function(){
-		institution_name=$("#institution_name").val();
-		user_id=$("#user_id").val();
-		restype=$("#restype").val();
-		dbname=$("#database").val();
-		var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
-		pagesize=parseInt($(this).find('option:selected').val());
-		pagenum=curr=parseInt($number/pagesize)+1;
-		$.ajax({
-			type : "POST",
-			url : "../databaseAnalysis/getPage.do",
-			data : {
-				'institution_name' : institution_name,
-				'user_id' : user_id,
-				'date' : date,
-				'source_db':restype,
-				'product_source_code':dbname,
-				'startTime' : startTime,
-				'endTime' : endTime,
-				'pagenum' : curr,//向服务端传的参数
-				'pagesize' : pagesize
-			},
-			dataType : "json",
-			success : function(datas) {
-				var data=datas.pageRow;
-				var totalRow = datas.totalRow;
-				var pageSize = datas.pageSize;
-				var html="";
-				var id;
-				for(var i=0;i<data.length;i++){
-					id=pageSize*(curr-1)+i+1;
-					html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
-						"<td>"+id+"</td>" +
-						"<td>"+data[i].database_name+"</td>" +
-						"<td>"+data[i].sum1+"</td>" +
-						"<td>"+data[i].sum2+"</td>" +
-						"<td>"+data[i].sum3+"</td>" +
-						"</tr>";
-				}
-				document.getElementById('tbody').innerHTML = html;
-				var pages;
-				var groups;
-				if(totalRow%pageSize==0)
-				{
-					pages = parseInt(totalRow/pageSize);
-				}else
-				{
-					pages = parseInt(totalRow/pageSize+1);
-				}
-				if(pages>=4)
-				{
-					groups=4;
-				}else
-				{
-					groups=pages;
-				}
-				//显示分页
-				laypage({
-					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-					pages: pages, //通过后台拿到的总页数
-					curr: curr, //当前页
-					skip: true, //是否开启跳页
-					skin: 'molv',//当前页颜色，可16进制
-					groups: groups, //连续显示分页数
-					first: '首页', //若不显示，设置false即可
-					last: '尾页', //若不显示，设置false即可
-					prev: '上一页', //若不显示，设置false即可
-					next: '下一页', //若不显示，设置false即可
-					jump: function(obj, first){ //触发分页后的回调
-						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-							tabulation(obj.curr);
-						}
-					}
-				});
-			}
-		})
+    $('#pageChange').change(function(){
+        institution_name=$("#institution_name").val();
+        user_id=$("#user_id").val();
+        restype=$("#restype").val();
+        dbname=$("#database").val();
+        var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
+        pagesize=parseInt($(this).find('option:selected').val());
+        pagenum=curr=parseInt($number/pagesize)+1;
+        $.ajax({
+            type : "POST",
+            url : "../databaseAnalysis/getPage.do",
+            data : {
+                'institution_name' : institution_name,
+                'user_id' : user_id,
+                'date' : date,
+                'source_db':restype,
+                'product_source_code':dbname,
+                'startTime' : startTime,
+                'endTime' : endTime,
+                'pagenum' : curr,//向服务端传的参数
+                'pagesize' : pagesize
+            },
+            dataType : "json",
+            success : function(datas) {
+                var data=datas.pageRow;
+                var totalRow = datas.totalRow;
+                var pageSize = datas.pageSize;
+                var html="";
+                var id;
+                for(var i=0;i<data.length;i++){
+                    id=pageSize*(curr-1)+i+1;
+                    html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
+                        "<td>"+id+"</td>" +
+                        "<td>"+data[i].database_name+"</td>" +
+                        "<td>"+data[i].sum1+"</td>" +
+                        "<td>"+data[i].sum2+"</td>" +
+                        "<td>"+data[i].sum3+"</td>" +
+                        "</tr>";
+                }
+                document.getElementById('tbody').innerHTML = html;
+                var pages;
+                var groups;
+                if(totalRow%pageSize==0)
+                {
+                    pages = parseInt(totalRow/pageSize);
+                }else
+                {
+                    pages = parseInt(totalRow/pageSize+1);
+                }
+                if(pages>=4)
+                {
+                    groups=4;
+                }else
+                {
+                    groups=pages;
+                }
+                //显示分页
+                laypage({
+                    cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+                    pages: pages, //通过后台拿到的总页数
+                    curr: curr, //当前页
+                    skip: true, //是否开启跳页
+                    skin: 'molv',//当前页颜色，可16进制
+                    groups: groups, //连续显示分页数
+                    first: '首页', //若不显示，设置false即可
+                    last: '尾页', //若不显示，设置false即可
+                    prev: '上一页', //若不显示，设置false即可
+                    next: '下一页', //若不显示，设置false即可
+                    jump: function(obj, first){ //触发分页后的回调
+                        if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+                            tabulation(obj.curr);
+                        }
+                    }
+                });
+            }
+        })
 
-	})
+    })
 })
 function tabulation(curr){
-	pagenum=curr;
-	getTime();
-	institution_name=$("#institution_name").val();
-	user_id=$("#user_id").val();
-	restype=$("#restype").val();
-	dbname=$("#database").val();
-	$.ajax({
-		type : "POST",
-		url : "../databaseAnalysis/getPage.do",
-		data : {
-			'institution_name' : institution_name,
-			'user_id' : user_id,
-			'date' : date,
-			'source_db':restype,
-			'product_source_code':dbname,
-			'startTime' : startTime,
-			'endTime' : endTime,
-			'pagenum' : curr,//向服务端传的参数
-	        'pagesize' : pagesize
-		},
-		dataType : "json",
-		success : function(datas) {
-			var data=datas.pageRow;
-			var totalRow = datas.totalRow;
-			var pageSize = datas.pageSize;
-			var html="";
-			var id;
-			if(data.length>0){
-				for(var i=0;i<data.length;i++){
-					id=pageSize*(curr-1)+i+1;
-					html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
-						"<td>"+id+"</td>" +
-						"<td>"+data[i].database_name+"</td>" +
-						"<td>"+data[i].sum1+"</td>" +
-						"<td>"+data[i].sum2+"</td>" +
-						"<td>"+data[i].sum3+"</td>" +
-						"</tr>";
-				}
-				document.getElementById('tbody').innerHTML = html;
-				var pages;
-				var groups;
-				if(totalRow%pageSize==0)
-				{
-					pages = parseInt(totalRow/pageSize);
-				}else
-				{
-					pages = parseInt(totalRow/pageSize+1);
-				}
-				if(pages>=4)
-				{
-					groups=4;
-				}else
-				{
-					groups=pages;
-				}
-			}
+    pagenum=curr;
+    getTime();
+    institution_name=$("#institution_name").val();
+    user_id=$("#user_id").val();
+    restype=$("#restype").val();
+    dbname=$("#database").val();
+    $.ajax({
+        type : "POST",
+        url : "../databaseAnalysis/getPage.do",
+        data : {
+            'institution_name' : institution_name,
+            'user_id' : user_id,
+            'date' : date,
+            'source_db':restype,
+            'product_source_code':dbname,
+            'startTime' : startTime,
+            'endTime' : endTime,
+            'pagenum' : curr,//向服务端传的参数
+            'pagesize' : pagesize
+        },
+        dataType : "json",
+        success : function(datas) {
+            var data=datas.pageRow;
+            var totalRow = datas.totalRow;
+            var pageSize = datas.pageSize;
+            var html="";
+            var id;
+            if(data.length>0){
+                for(var i=0;i<data.length;i++){
+                    id=pageSize*(curr-1)+i+1;
+                    html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
+                        "<td>"+id+"</td>" +
+                        "<td>"+data[i].database_name+"</td>" +
+                        "<td>"+data[i].sum1+"</td>" +
+                        "<td>"+data[i].sum2+"</td>" +
+                        "<td>"+data[i].sum3+"</td>" +
+                        "</tr>";
+                }
+                document.getElementById('tbody').innerHTML = html;
+                var pages;
+                var groups;
+                if(totalRow%pageSize==0)
+                {
+                    pages = parseInt(totalRow/pageSize);
+                }else
+                {
+                    pages = parseInt(totalRow/pageSize+1);
+                }
+                if(pages>=4)
+                {
+                    groups=4;
+                }else
+                {
+                    groups=pages;
+                }
+            }
 
-	      //显示分页
-	        laypage({
-		    	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-		        pages: pages, //通过后台拿到的总页数
-		        curr: curr, //当前页
-		        skip: true, //是否开启跳页
-			    skin: 'molv',//当前页颜色，可16进制
-			    groups: groups, //连续显示分页数
-			    first: '首页', //若不显示，设置false即可
-			    last: '尾页', //若不显示，设置false即可
-			    prev: '上一页', //若不显示，设置false即可
-			    next: '下一页', //若不显示，设置false即可
-	            jump: function(obj, first){ //触发分页后的回调
-	                if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-	                	tabulation(obj.curr);
-	                }
-	            }
-	        });
-		}
-	})
-	
+            //显示分页
+            laypage({
+                cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+                pages: pages, //通过后台拿到的总页数
+                curr: curr, //当前页
+                skip: true, //是否开启跳页
+                skin: 'molv',//当前页颜色，可16进制
+                groups: groups, //连续显示分页数
+                first: '首页', //若不显示，设置false即可
+                last: '尾页', //若不显示，设置false即可
+                prev: '上一页', //若不显示，设置false即可
+                next: '下一页', //若不显示，设置false即可
+                jump: function(obj, first){ //触发分页后的回调
+                    if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+                        tabulation(obj.curr);
+                    }
+                }
+            });
+        }
+    })
+
 }
 
 /**
