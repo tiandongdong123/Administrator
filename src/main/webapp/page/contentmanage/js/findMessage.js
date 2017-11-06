@@ -307,3 +307,28 @@ function turnHtml(type,id){
 	url=ZSFX_URL+"/informationController/getDetails.do?type="+source+"&id="+id;*/
 	window.location.href="../content/getDetails.do?id="+id;
 }
+
+/**
+ * 一键发布
+ */
+function oneKeyDeploy(){
+	var index = null;
+	$.ajax({
+		type : "post",
+		url : "../content/oneKeyDeploy.do",
+		beforeSend: function (request) {
+			index = layer.load();
+		},
+		success : function (data){
+			layer.close(index);
+			if(data){
+				layer.msg("一键发布成功!");
+			}else{
+				layer.msg("发布异常!");
+			}
+		}
+	});
+
+}
+
+
