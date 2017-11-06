@@ -272,7 +272,7 @@ public class DataManagerController {
 		Map<String,Object> check = this.data.getCheck(id);
 		mm.putAll(check);
 		map.put("rlmap", mm);
-		return "/page/systemmanager/updatedata";
+		return "/page/systemmanager/update_data";
 	}
 	
 	/**
