@@ -1,17 +1,13 @@
 package com.utils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DecimalFormat;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +20,7 @@ public class ExcelUtil {
 	
     private final static String xls = "xls";  
     private final static String xlsx = "xlsx";
+    private final static DecimalFormat decimalFormat = new DecimalFormat("#.000000");
     
     /**
      * 读取Excel表格表头的内容
@@ -87,7 +84,12 @@ public class ExcelUtil {
 				strCell = cell.getStringCellValue();
 				break;
 			case Cell.CELL_TYPE_NUMERIC:
-				strCell = String.valueOf(cell.getNumericCellValue());
+				String resultStr = decimalFormat.format(new Double(cell.getNumericCellValue() + ""));
+				if (resultStr.matches("^[-+]?\\d+\\.[0]+$")) {
+					strCell = resultStr.substring(0, resultStr.indexOf("."));
+				} else {
+					strCell = cell.getNumericCellValue() + "";
+				}
 				break;
 			case Cell.CELL_TYPE_BOOLEAN:
 				strCell = String.valueOf(cell.getBooleanCellValue());

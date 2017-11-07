@@ -1,5 +1,7 @@
 package com.wf.service;
 
+import java.util.List;
+import java.util.Map;
 import com.wf.bean.Message;
 import com.wf.bean.PageList;
 public interface MessageService {
@@ -40,4 +42,12 @@ public interface MessageService {
 	 * @return
 	 */
 	boolean updateIssue(String id,String colums,String issueState);
+	
+	/**
+	 * 返回所有资讯数据
+	 * @return
+	 */
+	List<Object> getAllMessage(Map<String, Object> map);
+	
+	
 }

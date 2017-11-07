@@ -286,6 +286,14 @@ function showAuthority(msg,title,userId,e){
 
 //数据提交
 function findList(){
+	var ipSegment = $("#ipSegment").val();
+	if(ipSegment!=null&&ipSegment!=''){
+		if(!checkIP(ipSegment)){
+			$("#ipResult").html("ip格式不合法");
+			$("#ipSegment").css("border","1px solid red");
+			return false;
+		}
+	}
 	var institution = $("#institution").val();
 	if(institution!=null && institution!=""){
 		if(!institution.startWith("%") && !institution.endWith("%")){
@@ -301,6 +309,30 @@ function findList(){
 	$("#fromList").submit();
 }
 
+String.prototype.startWith=function(str){
+	var reg=new RegExp("^"+str);
+	return reg.test(this); 
+}
+
+String.prototype.endWith=function(str){
+	var reg=new RegExp(str+"$");
+	return reg.test(this);
+}
+
+//校验ip
+function checkIP(val){
+	// ip地址
+	if (val.startWith("0.") || val.endWith(".0")) {
+		return false;
+	}
+	var exp=/^(\d{1,2}|1\d\d|2[0-1]\d|22[0-3])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+	var reg = val.match(exp);
+	if (reg == null) {
+		return false;
+	} else {
+		return true;
+	}
+}
 
 String.prototype.startWith=function(str){     
 	var reg = new RegExp("^"+str);     

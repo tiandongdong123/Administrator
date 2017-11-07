@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.wf.Setting.ResourceTypeSetting;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -1494,4 +1495,28 @@ public class ContentController{
 		response.getWriter().write(array.toString());
 	}
 	
+	
+	/**
+	 *一键发布
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/oneKeyDeploy")
+	@ResponseBody
+	public Boolean oneKeyDeploy(HttpServletRequest request,HttpServletResponse response){
+		  boolean isOK=true;
+		try {
+			Map<String, Object> map=new HashMap<String, Object>();
+			map.put("issue_state",2);
+			List<Object> list=messageService.getAllMessage(map);
+			for(Object obj:list){
+				Message mm=(Message) obj;
+					messageService.updateIssue(String.valueOf(mm.getId()),mm.getColums(),"2");
+			}
+		} catch (Exception e) {
+			isOK=false;
+			e.printStackTrace();
+		}
+		return isOK;
+	}
 }

@@ -271,12 +271,7 @@ public class MessageServiceImpl implements MessageService {
 		SolrService.createIndexFound(list);
 	}
 	
-	/**
-	 * 去除html代码
-	 * @param inputString
-	 * @return
-	 */
-	private String toNoHtml(String inputString) {      
+	public static String toNoHtml(String inputString) {      
         String htmlStr = inputString.replace("&nbsp;", "").replace("&ldquo;", "").replace("&rdquo;", "");    
         htmlStr = StringUtils.deleteWhitespace(htmlStr);
         String textStr ="";      
@@ -286,8 +281,10 @@ public class MessageServiceImpl implements MessageService {
         java.util.regex.Matcher m_style;      
         java.util.regex.Pattern p_html;      
         java.util.regex.Matcher m_html;      
+            
         java.util.regex.Pattern p_html1;      
         java.util.regex.Matcher m_html1;      
+         
        try {      
             String regEx_script = "<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>"; //定义script的正则表达式{或<script[^>]*?>[\\s\\S]*?<\\/script> }      
             String regEx_style = "<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>"; //定义style的正则表达式{或<style[^>]*?>[\\s\\S]*?<\\/style> }      
@@ -315,4 +312,12 @@ public class MessageServiceImpl implements MessageService {
         }      
         return textStr;//返回文本字符串      
      }
+	
+	
+	
+	@Override
+	public List<Object> getAllMessage(Map<String, Object> map) {
+		return dao.selectMessageInforAll(new HashMap<String, Object>());
+	}     
+	
 }

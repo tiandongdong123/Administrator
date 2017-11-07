@@ -14,4 +14,8 @@ public class Getproperties {
 		}
 		return pros;
 	}
+	
+	public static String getKey(String param,String key) {
+		return Getproperties.getPros(param+".properties").getProperty(key);
+	}
 }

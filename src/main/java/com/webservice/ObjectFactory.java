@@ -1,6 +1,10 @@
 package com.webservice;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 /**
  * This object contains factory methods for each Java content interface and Java
@@ -16,6 +20,12 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
+	private final static QName _Int_QNAME = new QName("http://wfdata.sale.gb168.cn/", "int");
+	private final static QName _String_QNAME = new QName("http://wfdata.sale.gb168.cn/", "string");
+	private final static QName _DateTime_QNAME = new QName("http://wfdata.sale.gb168.cn/",
+			"dateTime");
+	private final static QName _Boolean_QNAME = new QName("http://wfdata.sale.gb168.cn/", "boolean");
+
 	/**
 	 * Create a new ObjectFactory that can be used to create new instances of
 	 * schema derived classes for package: com.webservice
@@ -25,227 +35,233 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link AddOrganizationUser }
+	 * Create an instance of {@link UpdateNonAccountingUserResponse }
 	 * 
 	 */
-	public AddOrganizationUser createAddOrganizationUser() {
-		return new AddOrganizationUser();
+	public UpdateNonAccountingUserResponse createUpdateNonAccountingUserResponse() {
+		return new UpdateNonAccountingUserResponse();
 	}
 
 	/**
-	 * Create an instance of {@link AddOrganizationUserResponse }
+	 * Create an instance of {@link IsExistedNonAccountingUserResponse }
 	 * 
 	 */
-	public AddOrganizationUserResponse createAddOrganizationUserResponse() {
-		return new AddOrganizationUserResponse();
+	public IsExistedNonAccountingUserResponse createIsExistedNonAccountingUserResponse() {
+		return new IsExistedNonAccountingUserResponse();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfUserSetting }
+	 * Create an instance of {@link DownloadFileUrlResponse }
 	 * 
 	 */
-	public ArrayOfUserSetting createArrayOfUserSetting() {
-		return new ArrayOfUserSetting();
+	public DownloadFileUrlResponse createDownloadFileUrlResponse() {
+		return new DownloadFileUrlResponse();
 	}
 
 	/**
-	 * Create an instance of {@link AddUser }
+	 * Create an instance of {@link ValidateNonAccountingUser }
 	 * 
 	 */
-	public AddUser createAddUser() {
-		return new AddUser();
+	public ValidateNonAccountingUser createValidateNonAccountingUser() {
+		return new ValidateNonAccountingUser();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfWFContract }
+	 * Create an instance of {@link ValidateUnit }
 	 * 
 	 */
-	public ArrayOfWFContract createArrayOfWFContract() {
-		return new ArrayOfWFContract();
+	public ValidateUnit createValidateUnit() {
+		return new ValidateUnit();
 	}
 
 	/**
-	 * Create an instance of {@link WFUser }
+	 * Create an instance of {@link ValidateUnitResponse }
 	 * 
 	 */
-	public WFUser createWFUser() {
-		return new WFUser();
+	public ValidateUnitResponse createValidateUnitResponse() {
+		return new ValidateUnitResponse();
 	}
 
 	/**
-	 * Create an instance of {@link ExtensionDataObject }
+	 * Create an instance of {@link GetFileResponse }
 	 * 
 	 */
-	public ExtensionDataObject createExtensionDataObject() {
-		return new ExtensionDataObject();
+	public GetFileResponse createGetFileResponse() {
+		return new GetFileResponse();
 	}
 
 	/**
-	 * Create an instance of {@link UserSetting }
+	 * Create an instance of {@link IsConnected }
 	 * 
 	 */
-	public UserSetting createUserSetting() {
-		return new UserSetting();
+	public IsConnected createIsConnected() {
+		return new IsConnected();
 	}
 
 	/**
-	 * Create an instance of {@link EditAccountIdMappingResponse }
+	 * Create an instance of {@link GetFileNameResponse }
 	 * 
 	 */
-	public EditAccountIdMappingResponse createEditAccountIdMappingResponse() {
-		return new EditAccountIdMappingResponse();
+	public GetFileNameResponse createGetFileNameResponse() {
+		return new GetFileNameResponse();
 	}
 
 	/**
-	 * Create an instance of {@link EditOrganizationUser }
+	 * Create an instance of {@link UpdateNonAccountingUser }
 	 * 
 	 */
-	public EditOrganizationUser createEditOrganizationUser() {
-		return new EditOrganizationUser();
+	public UpdateNonAccountingUser createUpdateNonAccountingUser() {
+		return new UpdateNonAccountingUser();
 	}
 
 	/**
-	 * Create an instance of {@link AddUserResponse }
+	 * Create an instance of {@link CreateNonAccountingUserResponse }
 	 * 
 	 */
-	public AddUserResponse createAddUserResponse() {
-		return new AddUserResponse();
+	public CreateNonAccountingUserResponse createCreateNonAccountingUserResponse() {
+		return new CreateNonAccountingUserResponse();
 	}
 
 	/**
-	 * Create an instance of {@link EditUserSettingResponse }
+	 * Create an instance of {@link GetUserFolder }
 	 * 
 	 */
-	public EditUserSettingResponse createEditUserSettingResponse() {
-		return new EditUserSettingResponse();
+	public GetUserFolder createGetUserFolder() {
+		return new GetUserFolder();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfWFIPLimit }
+	 * Create an instance of {@link ValidateNonAccountingUserResponse }
 	 * 
 	 */
-	public ArrayOfWFIPLimit createArrayOfWFIPLimit() {
-		return new ArrayOfWFIPLimit();
+	public ValidateNonAccountingUserResponse createValidateNonAccountingUserResponse() {
+		return new ValidateNonAccountingUserResponse();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfContractTerm }
+	 * Create an instance of {@link GetFileName }
 	 * 
 	 */
-	public ArrayOfContractTerm createArrayOfContractTerm() {
-		return new ArrayOfContractTerm();
+	public GetFileName createGetFileName() {
+		return new GetFileName();
 	}
 
 	/**
-	 * Create an instance of {@link EditUserSetting }
+	 * Create an instance of {@link CreateNonAccountingUser }
 	 * 
 	 */
-	public EditUserSetting createEditUserSetting() {
-		return new EditUserSetting();
+	public CreateNonAccountingUser createCreateNonAccountingUser() {
+		return new CreateNonAccountingUser();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfWFUser }
+	 * Create an instance of {@link GetDateTimeResponse }
 	 * 
 	 */
-	public ArrayOfWFUser createArrayOfWFUser() {
-		return new ArrayOfWFUser();
+	public GetDateTimeResponse createGetDateTimeResponse() {
+		return new GetDateTimeResponse();
 	}
 
 	/**
-	 * Create an instance of {@link ArrayOfAccountIdMapping }
+	 * Create an instance of {@link DownloadFileUrl }
 	 * 
 	 */
-	public ArrayOfAccountIdMapping createArrayOfAccountIdMapping() {
-		return new ArrayOfAccountIdMapping();
+	public DownloadFileUrl createDownloadFileUrl() {
+		return new DownloadFileUrl();
 	}
 
 	/**
-	 * Create an instance of {@link EditContractResponse }
+	 * Create an instance of {@link HelloWorld }
 	 * 
 	 */
-	public EditContractResponse createEditContractResponse() {
-		return new EditContractResponse();
+	public HelloWorld createHelloWorld() {
+		return new HelloWorld();
 	}
 
 	/**
-	 * Create an instance of {@link AccountId }
+	 * Create an instance of {@link GetUserFolderResponse }
 	 * 
 	 */
-	public AccountId createAccountId() {
-		return new AccountId();
+	public GetUserFolderResponse createGetUserFolderResponse() {
+		return new GetUserFolderResponse();
 	}
 
 	/**
-	 * Create an instance of {@link WFIPLimit }
+	 * Create an instance of {@link IsExistedNonAccountingUser }
 	 * 
 	 */
-	public WFIPLimit createWFIPLimit() {
-		return new WFIPLimit();
+	public IsExistedNonAccountingUser createIsExistedNonAccountingUser() {
+		return new IsExistedNonAccountingUser();
 	}
 
 	/**
-	 * Create an instance of {@link EditOrganizationUserResponse }
+	 * Create an instance of {@link GetDateTime }
 	 * 
 	 */
-	public EditOrganizationUserResponse createEditOrganizationUserResponse() {
-		return new EditOrganizationUserResponse();
+	public GetDateTime createGetDateTime() {
+		return new GetDateTime();
 	}
 
 	/**
-	 * Create an instance of {@link EditAccountIdMapping }
+	 * Create an instance of {@link IsConnectedResponse }
 	 * 
 	 */
-	public EditAccountIdMapping createEditAccountIdMapping() {
-		return new EditAccountIdMapping();
+	public IsConnectedResponse createIsConnectedResponse() {
+		return new IsConnectedResponse();
 	}
 
 	/**
-	 * Create an instance of {@link EditContract }
+	 * Create an instance of {@link HelloWorldResponse }
 	 * 
 	 */
-	public EditContract createEditContract() {
-		return new EditContract();
+	public HelloWorldResponse createHelloWorldResponse() {
+		return new HelloWorldResponse();
 	}
 
 	/**
-	 * Create an instance of {@link AccountIdMapping }
+	 * Create an instance of {@link GetFile }
 	 * 
 	 */
-	public AccountIdMapping createAccountIdMapping() {
-		return new AccountIdMapping();
+	public GetFile createGetFile() {
+		return new GetFile();
 	}
 
 	/**
-	 * Create an instance of {@link ContractTerm }
+	 * Create an instance of {@link JAXBElement }{@code <}{@link Integer }{@code >}
 	 * 
 	 */
-	public ContractTerm createContractTerm() {
-		return new ContractTerm();
+	@XmlElementDecl(namespace = "http://wfdata.sale.gb168.cn/", name = "int")
+	public JAXBElement<Integer> createInt(Integer value) {
+		return new JAXBElement<Integer>(_Int_QNAME, Integer.class, null, value);
 	}
 
 	/**
-	 * Create an instance of {@link EditUserResponse }
+	 * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}
 	 * 
 	 */
-	public EditUserResponse createEditUserResponse() {
-		return new EditUserResponse();
+	@XmlElementDecl(namespace = "http://wfdata.sale.gb168.cn/", name = "string")
+	public JAXBElement<String> createString(String value) {
+		return new JAXBElement<String>(_String_QNAME, String.class, null, value);
 	}
 
 	/**
-	 * Create an instance of {@link EditUser }
+	 * Create an instance of {@link JAXBElement }{@code <}
+	 * {@link XMLGregorianCalendar }{@code >}
 	 * 
 	 */
-	public EditUser createEditUser() {
-		return new EditUser();
+	@XmlElementDecl(namespace = "http://wfdata.sale.gb168.cn/", name = "dateTime")
+	public JAXBElement<XMLGregorianCalendar> createDateTime(XMLGregorianCalendar value) {
+		return new JAXBElement<XMLGregorianCalendar>(_DateTime_QNAME, XMLGregorianCalendar.class,
+				null, value);
 	}
 
 	/**
-	 * Create an instance of {@link WFContract }
+	 * Create an instance of {@link JAXBElement }{@code <}{@link Boolean }{@code >}
 	 * 
 	 */
-	public WFContract createWFContract() {
-		return new WFContract();
+	@XmlElementDecl(namespace = "http://wfdata.sale.gb168.cn/", name = "boolean")
+	public JAXBElement<Boolean> createBoolean(Boolean value) {
+		return new JAXBElement<Boolean>(_Boolean_QNAME, Boolean.class, null, value);
 	}
 
 }
