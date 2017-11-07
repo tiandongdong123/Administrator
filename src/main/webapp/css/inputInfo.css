@@ -325,7 +325,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .help-block {display: inline-block;} 
 
 #page{
-	padding:5px
+	padding:5px;
 }
 .prompt_box{
 	background: #fff;
