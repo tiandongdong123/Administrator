@@ -50,387 +50,44 @@ public class ResourceTypeStatisticsServiceImpl implements
 	}
 
 	@Override
-	public Map<String, Object> getAllLine(String starttime, String endtime,
-			ResourceStatistics res, Integer[] urls, Integer singmore) {
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (null != starttime && !"".equals(starttime) && null != endtime
-				&& !"".equals(endtime) && starttime.equals(endtime)) {
-			if (singmore == 0) {
-				map = this.getHourLineMore(starttime, endtime, res, urls);
+	public PageList getAllLine(String starttime, String endtime,
+			ResourceStatistics res,Integer singmore,Integer pageNum,Integer pageSize) {
+		PageList pageList=new PageList();
+		List<Object> PageList=new ArrayList<Object>();
+		List<Object> list=new ArrayList<Object>();
+		if(singmore==1){
+			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				PageList = this.hour.getLine(starttime,endtime,res,pageNum,pageSize);
+				list=this.hour.getLineAll(starttime,endtime,res);
+			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				PageList = this.hour.getLineById(starttime,endtime,res,pageNum,pageSize);
+				list=this.hour.getLineAllById(starttime,endtime,res);
 			} else {
-				map = this.getHourLine(starttime, endtime, res);
+				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				PageList=this.hour.getLineByIds(starttime, endtime,res,users,pageNum,pageSize);
+				list=this.hour.getLineAllByIds(starttime, endtime,res,users);
 			}
-		} else {
-			if (singmore != null && !singmore.equals("") && singmore == 0) {
-				map = this.getLineMore(starttime, endtime, res, urls);
+		}else {
+			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				PageList = this.hour.getLineMore(starttime,endtime,res,pageNum,pageSize);
+				list=this.hour.getLineMoreAll(starttime,endtime, res);
+			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				PageList = this.hour.getLineMoreById(starttime,endtime,res,pageNum,pageSize);
+				list=this.hour.getLineMoreAllByIds(starttime,endtime,res);
 			} else {
-				map = this.getLine(starttime, endtime, res);
+				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				PageList=this.hour.getLineMoreByIds(starttime, endtime,res,users,pageNum,pageSize);
+				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
 			}
 		}
-		return map;
 
+
+		pageList.setTotalRow(list.size());
+		pageList.setPageRow(PageList);
+		pageList.setPageNum(pageNum);
+		pageList.setPageSize(pageSize);
+		return pageList;
 	}
-
-	public Map<String, Object> getLine(String starttime, String endtime,
-			ResourceStatistics res) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<Date> lidate = new ArrayList<Date>();
-		List<String> liname = new ArrayList<String>();
-		List<Date> lidates = new ArrayList<Date>();
-		List<String> linames = new ArrayList<String>();
-		List<ResourceStatisticsHour> li=new ArrayList<ResourceStatisticsHour>(); 
-		
-		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-				li = this.hour.getLine_day(starttime,endtime, res);
-		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
-			String userType = personMapper.getUserTypeByUserId(res.getUserId());
-			if (userType.equals("0")) {
-				// userType等于0为个人用户
-				li = this.hour.getLine_day(starttime,endtime, res);
-			}else{
-				li=this.hour.getLine_IsInstitution_day(starttime, endtime, res);
-			}
-		} else {
-			li=this.hour.getLine_IsInstitution_day(starttime, endtime, res);
-		}
-
-		
-		for (ResourceStatisticsHour da : li) {
-			lidate.add(da.getDate());
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			liname.add(da.getSourceTypeName());
-		}
-
-		for (String name : liname) {
-			if (!linames.contains(name)) {
-				linames.add(name);
-			}
-		}
-
-		for (Date date : lidate) {
-			if (!lidates.contains(date)) {
-				lidates.add(date);
-			}
-		}
-
-		List<Date> alldate = new ArrayList<Date>();
-
-		if (lidates.size() > 0) {
-			Date sd = new Date();
-			Date ed = new Date();
-			if (starttime != null && !"".equals(starttime) && endtime != null
-					&& !"".equals(endtime)) {
-				try {
-					sd = format.parse(starttime);
-					ed = format.parse(endtime);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else {
-				sd = lidates.get(0);
-				ed = lidates.get(lidates.size() - 1);
-			}
-
-			alldate = this.getDate(sd, ed);
-		}
-
-		List<ResourceStatisticsHour> obj = new ArrayList<ResourceStatisticsHour>();
-		boolean rt = true;
-		for (String name : linames) {
-			for (Date d : alldate) {
-				for (ResourceStatisticsHour l : li) {
-					if (null != l.getSourceName()) {
-						if (l.getSourceTypeName().equals(name)
-								&& l.getDate().equals(d)) {
-							rt = false;
-						}
-					}
-				}
-				if (rt) {
-					ResourceStatisticsHour rs = new ResourceStatisticsHour();
-					rs.setDate(d);
-					rs.setSourceTypeName(name);
-					rs.setNumbers("0");
-					obj.add(rs);
-				}
-				rt = true;
-			}
-		}
-
-		li.addAll(obj);
-
-		Collections.sort(li, new Comparator<ResourceStatisticsHour>() {
-			@Override
-			public int compare(ResourceStatisticsHour arg0, ResourceStatisticsHour arg1) {
-				Date hits0 = arg0.getDate();
-				Date hits1 = arg1.getDate();
-				if (hits1.getTime() < hits0.getTime()) {
-					return 1;
-				} else if (hits1.getTime() == hits0.getTime()) {
-					return 0;
-				} else {
-					return -1;
-				}
-			}
-		});
-
-		Map<String, List<String>> m = new HashMap<String, List<String>>();
-		for (ResourceStatisticsHour l : li) {
-			String typename = l.getSourceTypeName();
-			if (m.get(typename) != null) {
-				m.get(typename).add(l.getNumbers());
-			} else {
-				List<String> num = new ArrayList<String>();
-				num.add(l.getNumbers());
-				m.put(typename, num);
-			}
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<String> date = new ArrayList<String>();
-		for (Date d : alldate) {
-			date.add(format.format(d));
-		}
-
-		map.put("content", m);
-		map.put("title", linames);
-		map.put("date", date);
-		return map;
-	}
-
-	public Map<String, Object> getHourLine(String starttime, String endtime,
-			ResourceStatistics res) {
-		List<String> lidate = new ArrayList<String>();
-		List<String> liname = new ArrayList<String>();
-		List<String> lidates = new ArrayList<String>();
-		List<String> linames = new ArrayList<String>();
-
-		List<ResourceStatisticsHour> li=new ArrayList<ResourceStatisticsHour>();
-		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-				li =  this.hour.getLine(starttime, endtime,res, starttime);
-		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
-			String userType = personMapper.getUserTypeByUserId(res.getUserId());
-			if (userType.equals("0")) {
-				// userType等于0为个人用户
-				li =  this.hour.getLine(starttime, endtime,res, starttime);
-			}else{
-				li =  this.hour.getLine_IsInstitution(starttime, endtime,res, starttime);
-			}
-		} else {
-			li =  this.hour.getLine_IsInstitution(starttime, endtime,res, starttime);
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			lidate.add(da.getHour());
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			if (StringUtils.isNotBlank(da.getSourceTypeName())) {
-				liname.add(da.getSourceTypeName());
-			}
-		}
-
-		for (String name : liname) {
-			if (!linames.contains(name)) {
-				linames.add(name);
-			}
-		}
-
-		for (String date : lidate) {
-			if (!lidates.contains(date)) {
-				lidates.add(date);
-			}
-		}
-
-		List<String> alldate = new ArrayList<String>();
-		for (int i = 1; i <= 24; i++) {
-			alldate.add(i + "");
-		}
-		List<ResourceStatisticsHour> obj = new ArrayList<ResourceStatisticsHour>();
-		boolean rt = true;
-		for (String name : linames) {
-			for (String d : alldate) {
-				for (ResourceStatisticsHour l : li) {
-					if (StringUtils.isNotBlank(l.getSourceTypeName())) {
-						if (l.getSourceTypeName().equals(name)
-								&& l.getHour().equals(d)) {
-							rt = false;
-						}
-					}
-				}
-				if (rt) {
-					ResourceStatisticsHour rs = new ResourceStatisticsHour();
-					rs.setHour(d);
-					rs.setSourceTypeName(name);
-					rs.setNumbers("0");
-					obj.add(rs);
-				}
-				rt = true;
-			}
-		}
-
-		li.addAll(obj);
-
-		Collections.sort(li, new Comparator<ResourceStatisticsHour>() {
-			@Override
-			public int compare(ResourceStatisticsHour arg0,
-					ResourceStatisticsHour arg1) {
-				String hits0 = arg0.getHour();
-				String hits1 = arg1.getHour();
-				if (Integer.parseInt(hits1) < Integer.parseInt(hits0)) {
-					return 1;
-				} else if (hits1.equals(hits0)) {
-					return 0;
-				} else {
-					return -1;
-				}
-			}
-		});
-
-		Map<String, List<String>> m = new HashMap<String, List<String>>();
-		for (ResourceStatisticsHour l : li) {
-			String typename = l.getSourceTypeName();
-			if (m.get(typename) != null) {
-				m.get(typename).add(l.getNumbers());
-			} else {
-				List<String> num = new ArrayList<String>();
-				num.add(l.getNumbers());
-				m.put(typename, num);
-			}
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("content", m);
-		map.put("title", linames);
-		map.put("date", alldate);
-		return map;
-	}
-
-	public Map<String, Object> getHourLineMore(String starttime,
-			String endtime, ResourceStatistics res, Integer[] urls) {
-		List<String> lidate = new ArrayList<String>();
-		List<String> liname = new ArrayList<String>();
-		List<String> lidates = new ArrayList<String>();
-		List<String> linames = new ArrayList<String>();
-
-		
-		List<ResourceStatisticsHour> li=new ArrayList<ResourceStatisticsHour>();
-		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-			li =  this.hour.getLineMore(starttime,endtime, res, urls, starttime);
-		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
-			String userType = personMapper.getUserTypeByUserId(res.getUserId());
-			if (userType.equals("0")) {
-				// userType等于0为个人用户
-				li =  this.hour.getLineMore(starttime,endtime, res, urls, starttime);
-			}else{
-				li =  this.hour.getLineMore_IsInstitution(starttime,endtime, res, urls, starttime);
-			}
-		} else {
-			li =  this.hour.getLineMore_IsInstitution(starttime,endtime, res, urls, starttime);
-		}
-		
-		for (ResourceStatisticsHour da : li) {
-			lidate.add(da.getHour());
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			if (da.getOperate_type() == 1) {
-				da.setCHURLTYPE("浏览数");
-			} else if (da.getOperate_type() == 2) {
-				da.setCHURLTYPE("下载数");
-			} else if (da.getOperate_type() == 3) {
-				da.setCHURLTYPE("检索数");
-			} else if (da.getOperate_type() == 4) {
-				da.setCHURLTYPE("分享数");
-			} else if (da.getOperate_type() == 5) {
-				da.setCHURLTYPE("收藏数");
-			} else if (da.getOperate_type() == 6) {
-				da.setCHURLTYPE("导出数");
-			} else if (da.getOperate_type() == 7) {
-				da.setCHURLTYPE("笔记数");
-			} else if (da.getOperate_type() == 8) {
-				da.setCHURLTYPE("订阅数");
-			}
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			liname.add(da.getCHURLTYPE());
-		}
-
-		for (String name : liname) {
-			if (!linames.contains(name)) {
-				linames.add(name);
-			}
-		}
-
-		for (String date : lidate) {
-			if (!lidates.contains(date)) {
-				lidates.add(date);
-			}
-		}
-
-		List<String> alldate = new ArrayList<String>();
-		for (int i = 1; i <= 24; i++) {
-			alldate.add(i + "");
-		}
-
-		List<ResourceStatisticsHour> obj = new ArrayList<ResourceStatisticsHour>();
-		boolean rt = true;
-		for (String name : linames) {
-			for (String d : alldate) {
-				for (ResourceStatisticsHour l : li) {
-					if (l.getCHURLTYPE().equals(name) && l.getDate().equals(d)) {
-						rt = false;
-					}
-				}
-				if (rt) {
-					ResourceStatisticsHour rs = new ResourceStatisticsHour();
-					rs.setHour(d);
-					rs.setCHURLTYPE(name);
-					rs.setNumbers("0");
-					obj.add(rs);
-				}
-				rt = true;
-			}
-		}
-
-		li.addAll(obj);
-
-		Collections.sort(li, new Comparator<ResourceStatisticsHour>() {
-			@Override
-			public int compare(ResourceStatisticsHour arg0,
-					ResourceStatisticsHour arg1) {
-				String hits0 = arg0.getHour();
-				String hits1 = arg1.getHour();
-				if (Integer.parseInt(hits1) < Integer.parseInt(hits0)) {
-					return 1;
-				} else if (hits1.equals(hits0)) {
-					return 0;
-				} else {
-					return -1;
-				}
-			}
-		});
-
-		Map<String, List<String>> m = new HashMap<String, List<String>>();
-		for (ResourceStatisticsHour l : li) {
-			String typename = l.getCHURLTYPE();
-			if (m.get(typename) != null) {
-				m.get(typename).add(l.getNumbers());
-			} else {
-				List<String> num = new ArrayList<String>();
-				num.add(l.getNumbers());
-				m.put(typename, num);
-			}
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("content", m);
-		map.put("title", linames);
-		map.put("date", alldate);
-		return map;
-	}
-
 	@Override
 	public PageList gettable(Integer table, String starttime, String endtime,
 			ResourceStatistics res, Integer pagenum, Integer pagesize) {
@@ -479,7 +136,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rb = this.getonetable(li);
 			}
 		} else if (StringUtils.isBlank(resouser.getInstitutionName())&& StringUtils.isNotBlank(resouser.getUserId())) {
-			
+
 			String userType = personMapper.getUserTypeByUserId(resouser.getUserId());
 				// userType等于0为个人用户
 				if (userType.equals("0")) {
@@ -507,7 +164,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 				li = this.hour.getonetable_IsInstitution_day(starttime, endtime, resouser);
 				rb = this.getonetable(li);
 			}
-		
+
 		}
 		int s = (pagenum - 1) * pagesize;
 		int n = pagenum * pagesize - 1;
@@ -708,23 +365,23 @@ public class ResourceTypeStatisticsServiceImpl implements
 			ResourceStatistics resour, Integer pagenum, Integer pagesize) {
 		List<ResourceStatisticsHour> li = new ArrayList<ResourceStatisticsHour>();
 		List<Object> rb = new ArrayList<Object>();
-		
+
 		if (StringUtils.isBlank(resour.getInstitutionName())&& StringUtils.isBlank(resour.getUserId())) {
 			if (table.equals(0)) {
-				li = this.hour.gethourtable(starttime, endtime, resour, starttime);
+				//li = this.hour.gethourtable(starttime, endtime, resour, starttime);
 				rb=this.gethourtable(li);
 			} else {
 				li = this.hour.gethouronetable(starttime, endtime, resour, starttime);
 				rb=this.getonehourtable(li);
 			}
 		} else if (StringUtils.isBlank(resour.getInstitutionName())&& StringUtils.isNotBlank(resour.getUserId())) {
-			
+
 			String userType = personMapper.getUserTypeByUserId(resour.getUserId());
-			
+
 				// userType等于0为个人用户
 				if (userType.equals("0")) {
 					if (table.equals(0)) {
-						li = this.hour.gethourtable(starttime, endtime, resour, starttime);
+						//li = this.hour.gethourtable(starttime, endtime, resour, starttime);
 						rb=this.gethourtable(li);
 					} else {
 						li = this.hour.gethouronetable(starttime, endtime, resour, starttime);
@@ -748,7 +405,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rb=this.getonehourtable(li);
 			}
 		}
-		
+
 		int s = (pagenum - 1) * pagesize;
 		int n = pagenum * pagesize - 1;
 
@@ -771,154 +428,6 @@ public class ResourceTypeStatisticsServiceImpl implements
 		pl.setPageRow(pageobject);
 
 		return pl;
-	}
-
-	public Map<String, Object> getLineMore(String starttime, String endtime,
-			ResourceStatistics res, Integer[] urls) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<Date> lidate = new ArrayList<Date>();
-		List<String> liname = new ArrayList<String>();
-		List<Date> lidates = new ArrayList<Date>();
-		List<String> linames = new ArrayList<String>();
-		List<ResourceStatisticsHour> li=new ArrayList<ResourceStatisticsHour>(); 
-		
-		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-				li = this.hour.getLineMore_day(starttime,endtime, res, urls);
-		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
-			String userType = personMapper.getUserTypeByUserId(res.getUserId());
-			if (userType.equals("0")) {
-				// userType等于0为个人用户
-				li = this.hour.getLineMore_day(starttime,endtime, res, urls);
-			}else{
-				li=this.hour.getLineMore_IsInstitution_day(starttime, endtime, res, urls);
-			}
-		} else {
-			li=this.hour.getLineMore_IsInstitution_day(starttime, endtime, res, urls);
-		}
-
-		
-
-		for (ResourceStatisticsHour da : li) {
-			lidate.add(da.getDate());
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			if (da.getOperate_type() == 1) {
-				da.setCHURLTYPE("浏览数");
-			} else if (da.getOperate_type() == 2) {
-				da.setCHURLTYPE("下载数");
-			} else if (da.getOperate_type() == 3) {
-				da.setCHURLTYPE("检索数");
-			} else if (da.getOperate_type() == 4) {
-				da.setCHURLTYPE("分享数");
-			} else if (da.getOperate_type() == 5) {
-				da.setCHURLTYPE("收藏数");
-			} else if (da.getOperate_type() == 6) {
-				da.setCHURLTYPE("导出数");
-			} else if (da.getOperate_type() == 7) {
-				da.setCHURLTYPE("笔记数");
-			} else if (da.getOperate_type() == 8) {
-				da.setCHURLTYPE("订阅数");
-			}
-		}
-
-		for (ResourceStatisticsHour da : li) {
-			liname.add(da.getCHURLTYPE());
-		}
-
-		for (String name : liname) {
-			if (!linames.contains(name)) {
-				linames.add(name);
-			}
-		}
-
-		for (Date date : lidate) {
-			if (!lidates.contains(date)) {
-				lidates.add(date);
-			}
-		}
-		List<Date> alldate = new ArrayList<Date>();
-		if (lidates.size() > 0) {
-
-			Date sd = new Date();
-			Date ed = new Date();
-			if (starttime != null && !"".equals(starttime) && endtime != null
-					&& !"".equals(endtime)) {
-				try {
-					sd = format.parse(starttime);
-					ed = format.parse(endtime);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else {
-				sd = lidates.get(0);
-				ed = lidates.get(lidates.size() - 1);
-			}
-
-			alldate = this.getDate(sd, ed);
-		}
-
-		List<ResourceStatisticsHour> obj = new ArrayList<ResourceStatisticsHour>();
-		boolean rt = true;
-		for (String name : linames) {
-			for (Date d : alldate) {
-				for (ResourceStatisticsHour l : li) {
-					if (StringUtils.isNotBlank(l.getCHURLTYPE())) {
-						if (l.getCHURLTYPE().equals(name)
-								&& l.getDate().equals(d)) {
-							rt = false;
-						}
-					}
-				}
-				if (rt) {
-					ResourceStatisticsHour rs = new ResourceStatisticsHour();
-					rs.setDate(d);
-					rs.setCHURLTYPE(name);
-					rs.setNumbers("0");
-					obj.add(rs);
-				}
-				rt = true;
-			}
-		}
-
-		li.addAll(obj);
-
-		Collections.sort(li, new Comparator<ResourceStatisticsHour>() {
-			@Override
-			public int compare(ResourceStatisticsHour arg0, ResourceStatisticsHour arg1) {
-				Date hits0 = arg0.getDate();
-				Date hits1 = arg1.getDate();
-				if (hits1.getTime() < hits0.getTime()) {
-					return 1;
-				} else if (hits1.getTime() == hits0.getTime()) {
-					return 0;
-				} else {
-					return -1;
-				}
-			}
-		});
-
-		Map<String, List<String>> m = new HashMap<String, List<String>>();
-		for (ResourceStatisticsHour l : li) {
-			String typename = l.getCHURLTYPE();
-			if (m.get(typename) != null) {
-				m.get(typename).add(l.getNumbers());
-			} else {
-				List<String> num = new ArrayList<String>();
-				num.add(l.getNumbers());
-				m.put(typename, num);
-			}
-		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<String> date = new ArrayList<String>();
-		for (Date d : alldate) {
-			date.add(format.format(d));
-		}
-
-		map.put("content", m);
-		map.put("title", linames);
-		map.put("date", date);
-		return map;
 	}
 
 	public List<Date> getDate(Date sd, Date ed) {
@@ -977,23 +486,23 @@ public class ResourceTypeStatisticsServiceImpl implements
 
 		List<ResourceStatisticsHour> li = new ArrayList<ResourceStatisticsHour>();
 		List<Object> rb = new ArrayList<Object>();
-		
+
 		if (StringUtils.isBlank(resour.getInstitutionName())&& StringUtils.isBlank(resour.getUserId())) {
 			if (table.equals(0)) {
-				li = this.hour.gethourtable(starttime, endtime, resour, starttime);
+				//li = this.hour.gethourtable(starttime, endtime, resour, starttime);
 				rb=this.gethourtable(li);
 			} else {
 				li = this.hour.gethouronetable(starttime, endtime, resour, starttime);
 				rb=this.getonehourtable(li);
 			}
 		} else if (StringUtils.isBlank(resour.getInstitutionName())&& StringUtils.isNotBlank(resour.getUserId())) {
-			
+
 			String userType = personMapper.getUserTypeByUserId(resour.getUserId());
-			
+
 				// userType等于0为个人用户
 				if (userType.equals("0")) {
 					if (table.equals(0)) {
-						li = this.hour.gethourtable(starttime, endtime, resour, starttime);
+						//li = this.hour.gethourtable(starttime, endtime, resour, starttime);
 						rb=this.gethourtable(li);
 					} else {
 						li = this.hour.gethouronetable(starttime, endtime, resour, starttime);
@@ -1027,7 +536,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<ResourceStatisticsHour> li = new ArrayList<ResourceStatisticsHour>();
 		List<Object> rb = new ArrayList<Object>();
 
-		
+
 		if (StringUtils.isBlank(resouser.getInstitutionName())&& StringUtils.isBlank(resouser.getUserId())) {
 			if (table.equals(0)) {
 				li = this.hour.gettable_day(starttime, endtime, resouser);
@@ -1037,9 +546,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rb = this.getonetable(li);
 			}
 		} else if (StringUtils.isBlank(resouser.getInstitutionName())&& StringUtils.isNotBlank(resouser.getUserId())) {
-			
+
 			String userType = personMapper.getUserTypeByUserId(resouser.getUserId());
-			
+
 				// userType等于0为个人用户
 				if (userType.equals("0")) {
 					if (table.equals(0)) {
@@ -1066,9 +575,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 				li = this.hour.getonetable_IsInstitution_day(starttime, endtime, resouser);
 				rb = this.getonetable(li);
 			}
-		
+
 		}
-		
+
 		return rb;
 	}
 
@@ -1111,7 +620,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<String> linames = new ArrayList<String>();
 
 		List<ResourceStatisticsHour> li = new ArrayList<ResourceStatisticsHour>();
-		
+
 		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 			li = this.hour.getLineMoreByCheckMore(starttime, endtime, res, sourceTypeName, urls, starttime);
 		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
@@ -1125,8 +634,8 @@ public class ResourceTypeStatisticsServiceImpl implements
 		} else {
 			 li = this.hour.getLineMoreByCheckMore_IsInstitution(starttime, endtime, res, sourceTypeName, urls, starttime);
 		}
-		
-		
+
+
 		for (ResourceStatisticsHour da : li) {
 			lidate.add(da.getHour());
 		}
@@ -1235,9 +744,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<String> lidates = new ArrayList<String>();
 		List<String> linames = new ArrayList<String>();
 
-		
+
 		List<ResourceStatisticsHour> li = new ArrayList<ResourceStatisticsHour>();
-		
+
 		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 			li = this.hour.getLineByCheckMore(starttime, endtime, res, sourceTypeName, starttime);
 		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
@@ -1343,7 +852,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<Date> lidates = new ArrayList<Date>();
 		List<String> linames = new ArrayList<String>();
 		List<ResourceStatisticsHour> li =new ArrayList<ResourceStatisticsHour>();
-		
+
 		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 			li = this.hour.getLineMoreByCheckMore_day(starttime, endtime, res, sourceTypeName, urls);
 		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
@@ -1486,7 +995,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<Date> lidates = new ArrayList<Date>();
 		List<String> linames = new ArrayList<String>();
 		List<ResourceStatisticsHour> li=new ArrayList<ResourceStatisticsHour>();
-		
+
 		if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 			 li = this.hour.getLineByCheckMore_day(starttime, endtime, res, sourceTypeName);
 		} else if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isNotBlank(res.getUserId())) {
@@ -1500,7 +1009,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		} else {
 			li=this.hour.getLineByCheckMore_IsInstitution_day(starttime, endtime, res, sourceTypeName);
 		}
-		
+
 		for (ResourceStatisticsHour da : li) {
 			lidate.add(da.getDate());
 		}
@@ -1604,13 +1113,13 @@ public class ResourceTypeStatisticsServiceImpl implements
 		map.put("date", date);
 		return map;
 	}
-	
-	
+
+
 	public List<Object> gethourtable(List<ResourceStatisticsHour> li){
 		List<String> liname = new ArrayList<String>();
 		List<String> linames = new ArrayList<String>();
 		List<Object> rb = new ArrayList<Object>();
-		
+
 		for (ResourceStatisticsHour res : li) {
 			liname.add(res.getSourceTypeName());
 		}
@@ -1685,16 +1194,16 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rb.add(b);
 			}
 		}
-		
+
 		return rb;
 	}
-	
-	
+
+
 	public List<Object> getonehourtable(List<ResourceStatisticsHour> li){
 		List<String> liname = new ArrayList<String>();
 		List<String> linames = new ArrayList<String>();
 		List<Object> rb = new ArrayList<Object>();
-		
+
 		for (ResourceStatisticsHour res : li) {
 			liname.add(res.getTitle());
 		}
@@ -1770,8 +1279,8 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rb.add(b);
 			}
 		}
-		
+
 		return  rb;
 	}
-	
+
 }

@@ -57,10 +57,12 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("getline")
 	@ResponseBody
-	public Map<String,Object> getLine(Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore){
-		Map<String,Object> map = new HashMap<String, Object>();
-		map =this.resource.getAllLine(starttime,endtime,res,urls,singmore);
-		return map;
+	public PageList getLine(
+			Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res, @RequestParam(value="urls[]",required=false)
+			Integer[] urls,Integer singmore,Integer pageNum,Integer pageSize){
+		PageList pageList=new PageList();
+		pageList =this.resource.getAllLine(starttime,endtime,res,singmore,pageNum,pageSize);
+		return pageList;
 	}
 	
 	@RequestMapping("gettable")
