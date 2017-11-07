@@ -190,7 +190,7 @@
       res_type = #{resType,jdbcType=VARCHAR},
       language = #{language,jdbcType=VARCHAR},
       source_db = #{sourceDb,jdbcType=VARCHAR},
-      dbtype = #{dbtype,jdbcType=VARCHAR},
+      dbtype = #{dbtype,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   

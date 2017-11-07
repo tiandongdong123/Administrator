@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wf.service.DB_SourceService;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,8 @@ public class ResourceTypeStatisticsController {
 
 	@Autowired
 	private ResourceTypeStatisticsService resource;
+	@Autowired
+	private DB_SourceService db_SourceService;
 
 	@Autowired
 	private DataManagerService dataManagerService;
@@ -45,6 +48,8 @@ public class ResourceTypeStatisticsController {
 		cal.add(Calendar.DATE,   -1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		map.put("allData",dataManagerService.selectAll());
+		//所有数据来源
+		map.put("allDataSource",db_SourceService.selectAll());
 		map.put("yesterday", yesterday);
 		map.put("resourcetype", li);
 		return "/page/othermanager/res_use_manager";
