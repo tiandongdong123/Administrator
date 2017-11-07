@@ -348,7 +348,7 @@
 					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
 					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
 				</div>
-				<div id="stand_div">
+				<div id="stand_div" <?if(isEmpty(reading_print.Value)&&isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
 					<div class="form-group input_block">
 						<label><b>*</b>限定时间：</label>
 						<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
@@ -377,7 +377,7 @@
 							<input type="text" class="form-control input_width" name="companySimp" value="${company_simp.Value!}">
 						</div>
 					</div>
-					<div id="isBK" <?if(!isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
+					<div id="isBK" <?if(isEmpty(reading_print.Value)){?>style="display:none;"<?}?>>
 						<div class="form-group input_block">
 							<label><b>*</b>版权阅读打印：</label>
 							<select class="form-control input_width" name="readingPrint">
