@@ -134,6 +134,8 @@ function del_click(data){
 }
 
 function reback(){
+	$("select option:first").prop("selected", 'selected'); 
 	$("input").val("");
 	$(".FilerItem").remove();
+	$("#file_name").text("");
 }
