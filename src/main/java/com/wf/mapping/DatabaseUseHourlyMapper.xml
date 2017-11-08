@@ -111,9 +111,6 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
-		<if test="institution_name!=null and institution_name !=''">
-			and r.institution=#{institution_name}
-		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
@@ -288,9 +285,6 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
-		<if test="institution_name!=null and institution_name !=''">
-			and r.institution=#{institution_name}
-		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
@@ -475,9 +469,6 @@
 		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 		sum(CASE operate_type when 2 then numbers else 0 end)sum3
 		from rs_resources_statistics_database_use_hourly where 1=1
-		<if test="institution_name!=null and institution_name !=''">
-			and institution=#{institution_name}
-		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and product_source_code= #{product_source_code}
@@ -626,9 +617,6 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
-		<if test="databaseUseDaily.institution_name!=null and databaseUseDaily.institution_name !=''">
-			and r.institution=#{databaseUseDaily.institution_name}
-		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
 				and r.product_source_code= #{databaseUseDaily.product_source_code}
