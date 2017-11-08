@@ -28,7 +28,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	
 	@Override
 	public PageList getDatabaseAnalysisList(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
-		PageList pl=new PageList();
+		PageList pageList=new PageList();
 		List<Object> PageList=new ArrayList<Object>();
 		int startNum = (pageNum-1)*pageSize;
 		List<Object> list=new ArrayList<Object>();
@@ -48,11 +48,11 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 			PageList=databaseUseHourlyMapper.getDataByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
 			list=databaseUseHourlyMapper.getDataAnalysisListsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime);
 		}
-		pl.setTotalRow(list.size());
-		pl.setPageRow(PageList);
-		pl.setPageNum(pageNum);
-		pl.setPageSize(pageSize);
-		return pl;
+		pageList.setTotalRow(list.size());
+		pageList.setPageRow(PageList);
+		pageList.setPageNum(pageNum);
+		pageList.setPageSize(pageSize);
+		return pageList;
 	}
 	
 	@Override
@@ -151,9 +151,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		}else{
 			List users = personMapper.getInstitutionUser(databaseUseDaily.getInstitution_name());
 			listmap=databaseUseHourlyMapper.exportDatabaseOneDayByIds(databaseUseDaily,users, startTime, endTime);
-
 		}
-		listmap=databaseUseHourlyMapper.exportDatabaseOneDay(databaseUseDaily, startTime, endTime);
 		return listmap;
 	}
 	public List<Date> getDate(Date sd, Date ed) {

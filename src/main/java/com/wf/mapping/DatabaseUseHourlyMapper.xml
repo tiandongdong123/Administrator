@@ -553,7 +553,7 @@
   		</if>
 	  <choose>
 		  <when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-			  and date = #{databaseUseDaily.date}
+			  and r.date = #{databaseUseDaily.date}
 			  <if test="startTime!=null and startTime !=''">
 				  and r.hour <![CDATA[ >= ]]>  #{startTime}
 			  </if>
@@ -586,11 +586,11 @@
 		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-				and product_source_code= #{databaseUseDaily.product_source_code}
+				and r.product_source_code= #{databaseUseDaily.product_source_code}
 			</when>
 			<otherwise>
-				and product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{user_id} )
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{databaseUseDaily.user_id} )
 			</otherwise>
 		</choose>
 		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
@@ -598,7 +598,7 @@
 		</if>
 		<choose>
 			<when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-				and date = #{databaseUseDaily.date}
+				and r.date = #{databaseUseDaily.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]>  #{startTime}
 				</if>
@@ -631,10 +631,10 @@
 		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-				and product_source_code= #{databaseUseDaily.product_source_code}
+				and r.product_source_code= #{databaseUseDaily.product_source_code}
 			</when>
 			<otherwise>
-				and product_source_code in(select resource_id
+				and r.product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -647,7 +647,7 @@
 		</if>
 		<choose>
 			<when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-				and date = #{databaseUseDaily.date}
+				and r.date = #{databaseUseDaily.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]>  #{startTime}
 				</if>

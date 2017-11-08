@@ -42,7 +42,10 @@
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">数据来源：</label>
                   <select id="source_db" onchange="getDatabaseBySourceCode(this.value)">
-                  	<option value="">--请选择数据来源--</option>
+                      <option value="">--请选择数据来源--</option>
+                      <?for(var item in allDataSource){?>
+                      <option value="${item.dbSourceCode}">${item.dbSourceName}</option>
+                      <?}?>
                   </select>
                 </div>
                 <div class="form-group input_block">

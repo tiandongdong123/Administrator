@@ -139,9 +139,10 @@ public class DatabaseAnalysisController {
 		
 		//标题拼装
 		StringBuffer sb=new StringBuffer("");
-		
+
 		if(StringUtils.isNotBlank(databaseUseDaily.getInstitution_name())){
 			String name = java.net.URLDecoder.decode(request.getParameter("institution_name"), "utf-8");
+			databaseUseDaily.setInstitution_name(name);
 			sb.append(name);
 		}
 
