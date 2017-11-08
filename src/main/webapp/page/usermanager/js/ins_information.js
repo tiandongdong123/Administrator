@@ -322,7 +322,7 @@ String.prototype.endWith=function(str){
 //校验ip
 function checkIP(val){
 	// ip地址
-	if (val.startWith("0.") || val.endWith(".0")) {
+	if (val.startWith("0.")) {
 		return false;
 	}
 	var exp=/^(\d{1,2}|1\d\d|2[0-1]\d|22[0-3])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;

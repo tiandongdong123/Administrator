@@ -1061,6 +1061,9 @@ public class AheadUserController {
 		CommonEntity com = new CommonEntity();
 		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
 		for (String json : list) {
+			if(StringUtils.isEmpty(json)){
+				continue;
+			}
 			JSONObject obj = JSONObject.fromObject(json);
 			String userId = obj.getString("userId");
 			String institution = obj.getString("institution");
