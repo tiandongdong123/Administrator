@@ -8,7 +8,6 @@ import net.sf.json.JSONArray;
 import org.apache.ibatis.annotations.Param;
 
 import com.wf.bean.ResourceType;
-import org.apache.xpath.operations.String;
 
 public interface ResourceTypeMapper {
 	/**
@@ -74,7 +73,7 @@ public interface ResourceTypeMapper {
 	
 	List<ResourceType> getAll();
 
-	List<java.lang.String> getAllName();
+	List<String> getAllName();
 	
 	JSONArray getAll1();
 	

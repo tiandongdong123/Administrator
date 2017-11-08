@@ -1041,7 +1041,7 @@
 		group by r.title
 	</select>
 
-	<select id="getLineMoreAllByIds" resultMap="BaseResultMap">
+	<select id="getLineMoreAllById" resultMap="BaseResultMap">
 		SELECT rs.resource_type_name as sourceTypeName,r.title
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
@@ -1096,7 +1096,7 @@
 		group by r.title
 	</select>
 
-	<select id="getLineMoreByIds" resultMap="BaseResultMap">
+	<select id="getLineMoreAllByIds" resultMap="BaseResultMap">
 		SELECT rs.resource_type_name as sourceTypeName,r.title
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
