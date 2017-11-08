@@ -57,7 +57,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	
 	@Override
 	public Map<String, Object> DatabaseAnalysisStatistics(
-			DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer[]urlType,String[]database_name) {
+			DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer[] urlType,String[] database_name) {
 		Map<String,Object> map=new HashMap();
 		List<DatabaseUseHourly> list=new ArrayList<DatabaseUseHourly>();
 		Map<String, List<String>> content = new HashMap<String, List<String>>();

@@ -2,12 +2,14 @@ var pageIndex;
 var singmore;
 var restype;
 var urltype;
+var date;
 var starttime;
 var endtime;
 var username;
 var unitname;
 var product_source_code;
 var source_db;
+var database_name;
 var pagesize=10;
 
 $(function(){
@@ -397,6 +399,8 @@ function gettable(curr){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
+				date:date,
+				database_name:database_name,
 				num:num,
 			}, function(res){
 				var html="";
@@ -492,23 +496,24 @@ function gettable(curr){
 				});
 			});
 		}
-
 	}
-
-
 };
+
 
 function getline(initial){
 	var checkbox=$("#rstype:checked");
 	var rstnames=new Array();
 	var urls = new Array();
-	getTime();
-	$("input[name=item]").each(function() {  
-        if ($(this).is(':checked')) {  
-        	urls.push($(this).val());  
-        } 
+	$("input[name=item]").each(function() {
+			if ($(this).is(':checked')) {
+				urls.push($(this).val());
+			}
 	});
-	
+	$("input[name=item]").each(function() {
+		if ($(this).is(':checked')) {
+			rstnames.push($(this).val());
+		}
+	});
 	var singmore = $("#singmore").val();
 	var restype=$("#restype").find("option:selected").text();
 	var urltype=$("#urltype").find("option:selected").val();
@@ -518,7 +523,6 @@ function getline(initial){
 	var unitname=$("#institution_name").val();
 	var source_db=$("#source_db").val();
 	var product_source_code=$("#database").val();
-	
 	var num=0;
 	if(restype=='期刊'||restype=='会议'||restype=='学位'){
 		num=1;
@@ -526,9 +530,10 @@ function getline(initial){
 	if(restype=='--请选择资源类型--' && initial==2){
 		getLineByCheckMore(checkbox);
 	}else{
+
 		if(restype=='学位')
 		{
-		$.ajax( {  
+		$.ajax( {
 			type : "POST",  
 			url : "../resourceTypeStatistics/getline.do",
 			data : {
@@ -542,7 +547,7 @@ function getline(initial){
 				'product_source_code':product_source_code,
 				'urls':urls,
 				'singmore':singmore,
-				'num':num,
+				'num':num
 			},
 			dataType : "json",
 			success : function(data) {
@@ -566,6 +571,8 @@ function getline(initial){
 					'sourceTypeName':restype,
 					'urls':urls,
 					'singmore':singmore,
+					'date':date,
+					'database_name':database_name,
 					'num':num,
 				},
 				dataType : "json",
@@ -579,6 +586,88 @@ function getline(initial){
 	}
 	
 }
+//
+function getLineByCheckMore(checkbox){
+
+	var rstnames=new Array();
+	var urls = new Array();
+
+	checkbox.each(function(){
+		rstnames.push($(this).val());
+	});
+
+	$("input[name=item]").each(function() {
+		if ($(this).is(':checked')) {
+			urls.push($(this).val());
+		}
+	});
+	var singmore = $("#singmore").val();
+	var urltype=$("#urltype").find("option:selected").val();
+	var starttime = $("#startTime").val();
+	var endtime=$("#endtime").val();
+	var username=$("#username").val();
+	var unitname=$("#institution_name").val();
+	var source_db=$("#source_db").val();
+	var product_source_code=$("#database").val();
+	if(rstnames.length>0){
+		if(rstnames.length==1 && rstnames[0]=='学位')
+		{
+			$.ajax( {
+				type : "POST",
+				url : "../resourceTypeStatistics/getLineBycheckMore.do",
+				data : {
+					'starttime' : starttime,
+					'endtime':endtime,
+					'userId':username,
+					'operate_type':urltype,
+					'institution_name':unitname,
+					'source_db':source_db,
+					'product_source_code':product_source_code,
+					'rstnames':rstnames,
+					'urls':urls,
+					'singmore':singmore
+				},
+				dataType : "json",
+				success : function(data) {
+					tree(data);
+					pie(data);
+				}
+			});
+		}
+		else{
+			$.ajax( {
+				type : "POST",
+				url : "../resourceTypeStatistics/getLineBycheckMore.do",
+				data : {
+					'starttime' : starttime,
+					'endtime':endtime,
+					'userId':username,
+					'operate_type':urltype,
+					'institutionName':unitname,
+					'source_db':source_db,
+					'product_source_code':product_source_code,
+					'rstnames':rstnames,
+					'urls':urls,
+					'singmore':singmore
+				},
+				dataType : "json",
+				success : function(data) {
+					tree(data);
+					pie(data);
+				}
+			});
+		}
+	}else{
+		$("#singmore").val("1");
+		$("#single").show();
+		$("#more").hide();
+		$("input[name=item]").prop("checked",false);
+		$("#checkallsource").prop("checked",false);
+
+		getline(1);
+	}
+}
+
 
 function tree(data){
 	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
@@ -715,7 +804,6 @@ function checkboxchange(){
 		$("#more").show();
 		$("#singmore").val("0");
 	}
-	
 	getLineByCheckMore(checkbox);
 }
 
@@ -734,86 +822,6 @@ function checkAll(){
 }
 
 
-function getLineByCheckMore(checkbox){
-	
-	var rstnames=new Array();
-	var urls = new Array();
-	
-	checkbox.each(function(){
-		rstnames.push($(this).val());
-	});
-	
-	$("input[name=item]").each(function() {  
-        if ($(this).is(':checked')) {  
-        	urls.push($(this).val());  
-        } 
-	});
-	var singmore = $("#singmore").val();
-	var urltype=$("#urltype").find("option:selected").val();
-	var starttime = $("#startTime").val();
-	var endtime=$("#endtime").val();
-	var username=$("#username").val();
-	var unitname=$("#institution_name").val();
-	var source_db=$("#source_db").val();
-	var product_source_code=$("#database").val();
-	if(rstnames.length>0){
-		if(rstnames.length==1 && rstnames[0]=='学位')
-		{
-		$.ajax( {  
-			type : "POST",  
-			url : "../resourceTypeStatistics/getLineBycheckMore.do",
-			data : {
-				'starttime' : starttime,
-				'endtime':endtime,
-				'userId':username,
-				'operate_type':urltype,
-				'institution_name':unitname,
-				'source_db':source_db,
-				'product_source_code':product_source_code,
-				'rstnames':rstnames,
-				'urls':urls,
-				'singmore':singmore
-			},
-			dataType : "json",
-			success : function(data) {
-				tree(data);
-				pie(data);
-			}
-			});
-		}
-	else{
-		$.ajax( {  
-			type : "POST",  
-			url : "../resourceTypeStatistics/getLineBycheckMore.do",
-			data : {
-				'starttime' : starttime,
-				'endtime':endtime,
-				'userId':username,
-				'operate_type':urltype,
-				'institutionName':unitname,
-				'source_db':source_db,
-				'product_source_code':product_source_code,
-				'rstnames':rstnames,
-				'urls':urls,
-				'singmore':singmore
-			},
-			dataType : "json",
-			success : function(data) {
-				tree(data);
-				pie(data);
-			}
-			});
-	}
-}else{
-		$("#singmore").val("1");
-		$("#single").show();
-		$("#more").hide();
-		$("input[name=item]").prop("checked",false);
-		$("#checkallsource").prop("checked",false);
-
-		getline(1);
-}
-}
 
 
 function getDatabaseBySourceCode(code){
