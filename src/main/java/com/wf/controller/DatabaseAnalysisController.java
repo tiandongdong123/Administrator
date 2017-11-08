@@ -268,11 +268,12 @@ public class DatabaseAnalysisController {
 					row=sheet.createRow(i+r+2);
 					row.createCell(0).setCellValue(title);
 					row.createCell(1).setCellValue(type[r]);
-					for (int j =0; j <resultList.size(); j++) {
-						row.createCell(j+2).setCellValue(resultList.get(j).get(type2[r]));
-						row.createCell(namelist.size()-1).setCellValue(resultList.get(j).get(type3[r]));
+					int sum = 0 ;
+					for (int j =1; j <resultList.size(); j++) {
+						row.createCell(j+1).setCellValue(resultList.get(j-1).get(type2[r]));
+						sum+=Integer.parseInt(resultList.get(j-1).get(type2[r]));
 					}
-					
+					row.createCell(namelist.size()-1).setCellValue(sum);
 					if(r==type.length-1){
 						sheet.addMergedRegion(new CellRangeAddress(i+r,i+r+2,0,0));
 					}
