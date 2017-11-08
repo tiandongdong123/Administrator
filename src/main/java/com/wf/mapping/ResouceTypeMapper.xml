@@ -83,7 +83,7 @@
   <select id="getAll"  resultMap="BaseResultMap">
   select * from resource_type
   </select>
-    <select id="getAllName" resultMap="java.lang.String">
+    <select id="getAllName" resultType="java.lang.String">
         select resource_type_name from resource_type
     </select>
    <select id="getAll1"  resultMap="BaseResultMap">

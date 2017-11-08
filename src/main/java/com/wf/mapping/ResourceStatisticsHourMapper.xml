@@ -48,7 +48,7 @@
 	</if>
 	<choose>
 		<when test="res.date !=null and res.date !=''">
-			and date = #{date}
+			and date = #{res.date}
 			<if test="startTime!=null and startTime !=''">
 				and r.hour <![CDATA[ >= ]]> #{startTime}
 			</if>
@@ -103,7 +103,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -162,7 +162,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -209,7 +209,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -264,7 +264,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -323,7 +323,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -350,7 +350,7 @@
 			rs.resource_type_name as sourceTypeName,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -385,9 +385,15 @@
 				#{item}
 			</foreach>
 		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -409,7 +415,7 @@
 			resource_type_name,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -424,7 +430,7 @@
 			rs.resource_type_name as sourceTypeName,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -468,6 +474,12 @@
 				#{item}
 			</foreach>
 		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{date}
@@ -492,7 +504,7 @@
 			resource_type_name,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -507,7 +519,7 @@
 			rs.resource_type_name as sourceTypeName,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -555,9 +567,15 @@
 				#{item}
 			</foreach>
 		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -579,7 +597,7 @@
 			resource_type_name,
 		</if>
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -592,7 +610,7 @@
 	<select id="getChartMore" resultMap="BaseResultMap">
 		SELECT
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -635,7 +653,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -654,7 +672,7 @@
 		</choose>
 		group by
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -666,7 +684,7 @@
 	<select id="getChartMoreById" resultMap="BaseResultMap">
 		SELECT
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -718,7 +736,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -737,7 +755,7 @@
 		</choose>
 		group by
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -749,7 +767,7 @@
 	<select id="getChartMoreByIds" resultMap="BaseResultMap">
 		SELECT
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour,
 			</when>
 			<otherwise>
@@ -805,7 +823,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -824,7 +842,7 @@
 		</choose>
 		group by
 		<choose>
-			<when test="date !=null and date !=''">
+			<when test="res.date !=null and res.date !=''">
 				hour
 			</when>
 			<otherwise>
@@ -974,7 +992,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -1021,7 +1039,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -1076,7 +1094,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -1135,7 +1153,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>

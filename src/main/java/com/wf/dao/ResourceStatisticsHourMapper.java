@@ -10,119 +10,119 @@ import com.wf.bean.ResourceStatisticsHour;
 public interface ResourceStatisticsHourMapper {
 
 	List<Object> getLine(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineAll(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res);
 
 	List<Object> getLineAllById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res);
 
 	List<Object> getLineAllByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users);
 
 
 	List<Object> getLineMore(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineMoreById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineMoreByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
 	List<Object> getLineMoreAll(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res);
 
 	List<Object> getLineMoreAllById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res);
 
 	List<Object> getLineMoreAllByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users);
 
 	List<ResourceStatisticsHour> getChart(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
 	List<ResourceStatisticsHour> getChartById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
 	List<ResourceStatisticsHour> getChartByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
 	List<ResourceStatisticsHour> getChartMore(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("title") String[] title);
 
 	List<ResourceStatisticsHour> getChartMoreById(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("title") String[] title);
 
 	List<ResourceStatisticsHour> getChartMoreByIds(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
+			@Param("startTime") String starttime,
+			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
 			@Param("title") String[] title);
