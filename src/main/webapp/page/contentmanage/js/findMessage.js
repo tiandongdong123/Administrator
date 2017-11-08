@@ -113,10 +113,10 @@ function serachdata(data){
             "<td class='mailbox-date'><div title='"+rows.createTime+"' style='width:70px;'>"+rows.createTime+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
 			if(rows.colums=='基金会议'){
-				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:50px;'>置顶</button>&nbsp;";
+				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>置顶</button>&nbsp;";
 			}
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:50px;'>修改</button></div></td>" +
+			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
+			"<button type='button' onclick=\"updateMessage('"+rows.id+"')\" class='btn btn-primary'>修改</button></div></td>" +
           "</tr>";
 		}
 	}
