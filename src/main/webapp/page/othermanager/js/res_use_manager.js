@@ -25,7 +25,7 @@ $(function(){
 
 
 function changeres(){
-	restype=$("#restype").find("option:selected").text();
+	restype=$("#restype").find("option:selected").val();
 	if(restype!='--请选择资源类型--'){
 		$("#single").hide();
 		$("#more").show();
@@ -265,7 +265,7 @@ $(function(){
 		}
 	})
 })
-//分页显示
+//分页显示            表格--------------------------------------
 function gettable(curr){
 	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
 		layer.msg("请选择前后统计时间!",{icon: 2});
@@ -283,13 +283,10 @@ function gettable(curr){
 		source_db=$("#source_db").val();
 		product_source_code=$("#database").find("option:selected").val();
 		num = "";
-		if(restype=='期刊'||restype=='会议'||restype=='学位'){
-			num=1;
-		}else{
-			num=0;
-		}
-		if(restype=='学位')
+		if(restype=='期刊'||restype=='会议'||restype=='学位')
 		{
+			alert("dan");
+			num=1;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
 				pagesize :pagesize,
@@ -301,6 +298,7 @@ function gettable(curr){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
+
 				num:num,
 			}, function(res){
 				var html="";
@@ -337,15 +335,15 @@ function gettable(curr){
 						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数。。。。。
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数。。。。。
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
 						"</tr>";
 
 				}
@@ -387,7 +385,10 @@ function gettable(curr){
 					}
 				});
 			});
-		}  else{
+		}
+		else{
+			alert("quan");
+			num=0;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
 				pagesize :pagesize,
@@ -407,10 +408,13 @@ function gettable(curr){
 				var htmltitle=""
 				var htmlbody=""
 				if(restype=='期刊'){
+					alert("dan");
 					htmltitle="<th>期刊名称</th>";
 				}else if(restype=='会议'){
+					alert("dan");
 					htmltitle="<th>会议名称</th>";
 				}else if(restype=='学位'){
+					alert("dan");
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
@@ -445,15 +449,15 @@ function gettable(curr){
 						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
 						"</tr>";
 				}
 				document.getElementById('databody').innerHTML = html;
