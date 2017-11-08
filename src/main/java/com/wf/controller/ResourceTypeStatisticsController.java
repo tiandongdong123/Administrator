@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.wf.service.DB_SourceService;
 import net.sf.json.JSONArray;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,19 +58,18 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("getline")
 	@ResponseBody
-	public PageList getLine(
-			Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res, @RequestParam(value="urls[]",required=false)
-			Integer[] urls,Integer singmore,Integer pageNum,Integer pageSize){
-		PageList pageList=new PageList();
-		pageList =this.resource.getAllLine(starttime,endtime,res,singmore,pageNum,pageSize);
-		return pageList;
+	public Map<String,Object> getLine(Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res
+			,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore,String[] title,String[] database_name){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map =this.resource.getAllLine(num,starttime,endtime,res,urls,singmore,title,database_name);
+		return map;
 	}
 	
 	@RequestMapping("gettable")
 	@ResponseBody
 	public PageList getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
-		PageList pl  = this.resource.gettable(num,starttime,endtime, res, pagenum, pagesize);
-		return pl;
+		PageList pageList  = this.resource.gettable(num,starttime,endtime, res,pagenum, pagesize);
+		return pageList;
 	}
 	
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")

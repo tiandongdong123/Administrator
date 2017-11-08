@@ -30,15 +30,15 @@ public class ResourceStatisticsHour implements Serializable {
 
 	private String product_source_code;
 
-	private String num1;//浏览数
-	private String num2;//下载数
-	private String num3;//检索数
-	private String num4;//分享数
-	private String num5;//收藏数
-	private String num6;//导出数
-	private String num7;//笔记数
-	private String num8;//跳转数
-	private String num9;//订阅数
+	private String sum1;//浏览数
+	private String sum2;//下载数
+	private String sum3;//检索数
+	private String sum4;//分享数
+	private String sum5;//收藏数
+	private String sum6;//导出数
+	private String sum7;//笔记数
+	private String sum8;//跳转数
+	private String sum9;//订阅数
 
 
 
@@ -148,75 +148,75 @@ public class ResourceStatisticsHour implements Serializable {
 		this.product_source_code = product_source_code;
 	}
 
-	public String getNum1() {
-		return num1;
+	public String getSum1() {
+		return sum1;
 	}
 
-	public void setNum1(String num1) {
-		this.num1 = num1;
+	public void setSum1(String sum1) {
+		this.sum1 = sum1;
 	}
 
-	public String getNum2() {
-		return num2;
+	public String getSum2() {
+		return sum2;
 	}
 
-	public void setNum2(String num2) {
-		this.num2 = num2;
+	public void setSum2(String sum2) {
+		this.sum2 = sum2;
 	}
 
-	public String getNum3() {
-		return num3;
+	public String getSum3() {
+		return sum3;
 	}
 
-	public void setNum3(String num3) {
-		this.num3 = num3;
+	public void setSum3(String sum3) {
+		this.sum3 = sum3;
 	}
 
-	public String getNum4() {
-		return num4;
+	public String getSum4() {
+		return sum4;
 	}
 
-	public void setNum4(String num4) {
-		this.num4 = num4;
+	public void setSum4(String sum4) {
+		this.sum4 = sum4;
 	}
 
-	public String getNum5() {
-		return num5;
+	public String getSum5() {
+		return sum5;
 	}
 
-	public void setNum5(String num5) {
-		this.num5 = num5;
+	public void setSum5(String sum5) {
+		this.sum5 = sum5;
 	}
 
-	public String getNum6() {
-		return num6;
+	public String getSum6() {
+		return sum6;
 	}
 
-	public void setNum6(String num6) {
-		this.num6 = num6;
+	public void setSum6(String sum6) {
+		this.sum6 = sum6;
 	}
 
-	public String getNum7() {
-		return num7;
+	public String getSum7() {
+		return sum7;
 	}
 
-	public void setNum7(String num7) {
-		this.num7 = num7;
+	public void setSum7(String sum7) {
+		this.sum7 = sum7;
 	}
 
-	public String getNum8() {
-		return num8;
+	public String getSum8() {
+		return sum8;
 	}
 
-	public void setNum8(String num8) {
-		this.num8 = num8;
+	public void setSum8(String sum8) {
+		this.sum8 = sum8;
 	}
 
-	public String getNum9() {
-		return num9;
+	public String getSum9() {
+		return sum9;
 	}
 
-	public void setNum9(String num9) {
-		this.num9 = num9;
+	public void setSum9(String sum9) {
+		this.sum9 = sum9;
 	}
 }

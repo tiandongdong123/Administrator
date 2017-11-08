@@ -10,9 +10,9 @@ import com.wf.bean.ResourceType;
 public interface ResourceTypeStatisticsService {
 
 	List<ResourceType> getResourceType();
-	
-	PageList getAllLine(String starttime,String endtime,
-			ResourceStatistics res,Integer singmore,Integer pagenum,Integer pagesize);
+
+	Map<String, Object> getAllLine(Integer num,String starttime,String endtime,
+			ResourceStatistics res,Integer[] urls,Integer singmore,String[] title,String[] database_name);
 	
 	PageList gettable(Integer num,String starttime,String endtime,
 			ResourceStatistics res,Integer pagenum,Integer pagesize);

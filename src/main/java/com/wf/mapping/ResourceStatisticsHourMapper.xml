@@ -342,6 +342,818 @@
 		</choose>
 		group by r.title limit #{pageNum},#{pageSize}
 	</select>
+
+
+	<select id="getChart" resultMap="BaseResultMap">
+		SELECT
+		<if test="singmore==0">
+			rs.resource_type_name as sourceTypeName,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<if test="res.product_source_code!=null and res.product_source_code!=''">
+			and r.product_source_code=#{res.product_source_code}
+		</if>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<if test="singmore==0">
+			resource_type_name,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getChartById" resultMap="BaseResultMap">
+		SELECT
+		<if test="singmore==0">
+			rs.resource_type_name as sourceTypeName,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.userId!=null and res.userId!=''">
+			and r.user_id=#{res.userId}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<if test="singmore==0">
+			resource_type_name,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getChartByIds" resultMap="BaseResultMap">
+		SELECT
+		<if test="singmore==0">
+			rs.resource_type_name as sourceTypeName,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.institutionName!=null and res.institutionName!=''">
+			and r.institution=#{res.institutionName}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<if test="singmore==0">
+			resource_type_name,
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getChartMore" resultMap="BaseResultMap">
+		SELECT
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<if test="res.product_source_code!=null and res.product_source_code!=''">
+			and r.product_source_code=#{res.product_source_code}
+		</if>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="title!=null and title !=''">
+			and title in
+			<foreach collection="title"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getChartMoreById" resultMap="BaseResultMap">
+		SELECT
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.userId!=null and res.userId!=''">
+			and r.user_id=#{res.userId}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="title!=null and title !=''">
+			and title in
+			<foreach collection="title"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getChartMoreByIds" resultMap="BaseResultMap">
+		SELECT
+		<choose>
+			<when test="date !=null and date !=''">
+				hour,
+			</when>
+			<otherwise>
+				date,
+			</otherwise>
+		</choose>
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.institutionName!=null and res.institutionName!=''">
+			and r.institution=#{res.institutionName}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="title!=null and title !=''">
+			and title in
+			<foreach collection="title"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by
+		<choose>
+			<when test="date !=null and date !=''">
+				hour
+			</when>
+			<otherwise>
+				date
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="getLineAll" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<if test="res.product_source_code!=null and res.product_source_code!=''">
+			and r.product_source_code=#{res.product_source_code}
+		</if>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.source_type_name
+	</select>
+
+	<select id="getLineAllById" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.userId!=null and res.userId!=''">
+			and r.user_id=#{res.userId}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.source_type_name
+	</select>
+
+	<select id="getLineAllByIds" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.institutionName!=null and res.institutionName!=''">
+			and r.institution=#{res.institutionName}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.source_type_name
+	</select>
+
+
+	<select id="getLineMoreAll" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,r.title
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<if test="res.product_source_code!=null and res.product_source_code!=''">
+			and r.product_source_code=#{res.product_source_code}
+		</if>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.title
+	</select>
+
+	<select id="getLineMoreAllByIds" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,r.title
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.userId!=null and res.userId!=''">
+			and r.user_id=#{res.userId}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.title
+	</select>
+
+	<select id="getLineMoreByIds" resultMap="BaseResultMap">
+		SELECT rs.resource_type_name as sourceTypeName,r.title
+		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
+		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
+		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
+		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
+		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
+		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
+		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
+		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
+		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.institutionName!=null and res.institutionName!=''">
+			and r.institution=#{res.institutionName}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by r.title
+	</select>
   
   <select id="getLine_IsInstitution" resultMap="BaseResultMap">
 	SELECT sum(numbers) numbers,date,source_type_name sourceTypeName,hour

@@ -69,12 +69,13 @@ public interface ResourceStatisticsHourMapper {
 			@Param("users") List users,
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
+
 	List<Object> getLineMoreAll(
 			@Param("starttime") String starttime,
 			@Param("endtime") String endtime,
 			@Param("res") ResourceStatistics res);
 
-	List<Object> getLineMoreAllByIds(
+	List<Object> getLineMoreAllById(
 			@Param("starttime") String starttime,
 			@Param("endtime") String endtime,
 			@Param("res") ResourceStatistics res);
@@ -84,6 +85,52 @@ public interface ResourceStatisticsHourMapper {
 			@Param("endtime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users);
+
+	List<ResourceStatisticsHour> getChart(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("singmore") Integer singmore,
+			@Param("database_name") String[] database_name);
+
+	List<ResourceStatisticsHour> getChartById(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("singmore") Integer singmore,
+			@Param("database_name") String[] database_name);
+
+	List<ResourceStatisticsHour> getChartByIds(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("users") List users,
+			@Param("singmore") Integer singmore,
+			@Param("database_name") String[] database_name);
+
+	List<ResourceStatisticsHour> getChartMore(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("title") String[] title);
+
+	List<ResourceStatisticsHour> getChartMoreById(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("title") String[] title);
+
+	List<ResourceStatisticsHour> getChartMoreByIds(
+			@Param("starttime") String starttime,
+			@Param("endtime") String endtime,
+			@Param("res") ResourceStatistics res,
+			@Param("users") List users,
+			@Param("title") String[] title);
+
+
+
+
+
 
 
 
