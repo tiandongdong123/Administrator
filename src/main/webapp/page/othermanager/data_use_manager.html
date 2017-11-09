@@ -51,7 +51,7 @@
                 
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">数据库名称：</label>
-                  <select id="database">
+                  <select id="database" onchange="mySelect()">
                   	<option value="">--请选择数据库名称--</option>
                   	<?for(var item in allData){?>
                       <option value="${item.productSourceCode}">${item.tableName}</option>

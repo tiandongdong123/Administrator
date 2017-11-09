@@ -144,13 +144,14 @@ function tabulation(curr){
 					$(".showPage").css("display","block");
 					for(var i=0;i<data.length;i++){
 						id=pageSize*(curr-1)+i+1;
-						html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
+						html+="<tr><td><input type='checkbox' class='rui' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
 							"<td>"+id+"</td>" +
-							"<td>"+data[i].database_name+"</td>" +
+							"<td class='a'>"+data[i].database_name+"</td>" +
 							"<td>"+data[i].sum1+"</td>" +
 							"<td>"+data[i].sum2+"</td>" +
 							"<td>"+data[i].sum3+"</td>" +
 							"</tr>";
+
 					}
 					document.getElementById('tbody').innerHTML = html;
 					var pages;
@@ -169,6 +170,7 @@ function tabulation(curr){
 					{
 						groups=pages;
 					}
+
 				}else{
 					$(".showPage").css("display","none");
 					$("#tbody").html("");
@@ -196,6 +198,8 @@ function tabulation(curr){
 	}
 }
 
+
+
 //
 /**
  * 加载图表数据--liuYong
@@ -210,7 +214,6 @@ function line(urlType,database_name,datas){
 		restype=$("#restype").val();
 		dbname=$("#database").val();
 		getTime();
-
 		$.ajax({
 			type : "POST",
 			url : "../databaseAnalysis/getChart.do",
@@ -227,58 +230,109 @@ function line(urlType,database_name,datas){
 			},
 			dataType : "json",
 			success : function(data) {
+				if(database_name.length>1){
+					var myChart = echarts.init(document.getElementById('main'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:database_name
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.timeArr
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
 
-				var myChart = echarts.init(document.getElementById('main'));
-				option = {
-					tooltip : {
-						trigger: 'axis'
-					},
-					legend: {
-						data:datas,
-					},
-					toolbox: {
-						show : true,
-						feature : {
-							mark : {show: true},
-							dataView : {show: true, readOnly: false},
-							magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-							restore : {show: true},
-							saveAsImage : {show: true}
-						}
-					},
-					calculable : true,
-					xAxis : [
-						{
-							type : 'category',
-							boundaryGap : false,
-							data : data.timeArr
-						}
-					],
-					yAxis : [
-						{
-							type : 'value'
-						}
-					],
-					series : [
+						]
+					};
+					for(var i =0;i<database_name.length;i++){
+						var name = database_name[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
+				}else {
+					var myChart = echarts.init(document.getElementById('main'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:datas,
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.timeArr
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
 
-					]
-				};
-				for(var i =0;i<datas.length;i++){
-					var name = datas[i];
-					var num=new Array();
-					num =data.content[name];
-					option.series.push(
-						{
-							name:name,
-							type:'line',
-							data:num
-						}
-					)
+						]
+					};
+					for(var i =0;i<datas.length;i++){
+						var name = datas[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
 				}
-				myChart.setOption(option);
-
 			}
 		});
+
+
 	}
 }
 
@@ -333,6 +387,10 @@ function checkAll(){
 function checkOne(){
 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
 	moreOrSimple();
+		 if($('.rui').is(':checked')){
+		 var r=$('td').eq(2).text()
+		 }
+
 }
 
 //根据数据库选择情况  展示指标数量
@@ -340,9 +398,8 @@ function moreOrSimple(){
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
 		$("#simple").show();
 		$("#more").hide();
-		
 		checkitem();
-		
+
 	}else{
 		$("#simple").hide();
 		$("#more").show();
@@ -350,6 +407,19 @@ function moreOrSimple(){
 		checkitem_more();
 	}
 } 
+//数据库名称选择
+function mySelect(){
+	if( $("#database").val() == "" || $("#database").val() == null){
+		$("#simple").show();
+		$("#more").hide();
+	}else {
+		$("#simple").hide();
+		$("#more").show();
+	}
+
+
+}
+
 
 //指标单选
 function checkitem(){
@@ -358,7 +428,7 @@ function checkitem(){
 	var datas=new Array();
 	var url=$("#urltype").val();
 	urlType.push(url);
-	
+
 	if(url==1){
 		datas.push("浏览数");
 	}else if(url==2){
@@ -371,7 +441,7 @@ function checkitem(){
 	$("input[name='checkOne']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	
+
 	
 	line(urlType,database_name,datas);
 }
@@ -380,6 +450,7 @@ function checkitem(){
 function checksource(){
 	$("input[name='item']").prop("checked",$("#checkallsource").prop("checked"));
 	checkitem_more();
+
 }
 
 //指标多选
@@ -405,16 +476,12 @@ function checkitem_more(){
 	$("input[name='checkOne']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	
 	line(urlType,database_name,datas);
 }
 
-
 function getDatabaseBySourceCode(code){
-	
 	$("#database").empty();
 	$("#database").append("<option value=''>--请选择数据库名称--</option>");
-
 	if(""!=code && null!=code && undefined!=code){
 		$.ajax({
 			type : "POST",
