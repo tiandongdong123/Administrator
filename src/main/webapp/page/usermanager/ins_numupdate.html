@@ -493,8 +493,8 @@
 							</div>
 							<div class="form-group" style="width:60%;">
 								<label><b>*</b>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
-								<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}" 
-								onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')">${fullIP!}</textarea>
+								<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+									onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')">${fullIP!}</textarea>
 							</div>
 						</div>
 					</div>
@@ -694,8 +694,8 @@
 			</div>
 			<div class="form-group" style="width:60%;">
 				<label><b>*</b>质检出版社标准全文IP范围：</label>
-				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}" 
-					onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')"></textarea>
+				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+					onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
 			</div>
 			</div>
 		</div>
