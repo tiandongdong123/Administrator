@@ -54,7 +54,8 @@ $(function(){
 		var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
 		pagesize=parseInt($(this).find('option:selected').val());
 		pagenum=curr=parseInt($number/pagesize)+1;
-		if(restype=='期刊'||restype=='会议'||restype=='学位'){
+		if(restype=='期刊'||restype=='会议'||restype=='学位')
+		{
 			num=1;
 		}else{
 			num=0;
@@ -72,6 +73,7 @@ $(function(){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
+
 				num:num,
 			}, function(res){
 				var html="";
@@ -99,6 +101,7 @@ $(function(){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
+					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
 					if(restype=='期刊'||restype=='会议'||restype=='学位'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
@@ -107,15 +110,15 @@ $(function(){
 						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数。。。。。
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数。。。。。
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
 						"</tr>";
 
 				}
@@ -157,7 +160,9 @@ $(function(){
 					}
 				});
 			});
-		}  else{
+		}
+		else{
+			num=0;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
 				pagesize :pagesize,
@@ -169,6 +174,8 @@ $(function(){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
+				date:date,
+				database_name:database_name,
 				num:num,
 			}, function(res){
 				var html="";
@@ -186,7 +193,7 @@ $(function(){
 					"<th>序号</th>" +htmltitle+
 					"<th>资源类型</th>" +
 					"<th>检索数</th>" +
-					"<th  >浏览数</th>" +
+					"<th>浏览数</th>" +
 					"<th>下载数</th>" +
 					"<th>跳转数</th>" +
 					"<th>订阅数</th>" +
@@ -196,6 +203,7 @@ $(function(){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
+					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
 					if(restype=='期刊'||restype=='会议'||restype=='学位'){
 
@@ -212,15 +220,15 @@ $(function(){
 						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
 						"</tr>";
 				}
 				document.getElementById('databody').innerHTML = html;
@@ -265,7 +273,7 @@ $(function(){
 		}
 	})
 })
-//分页显示            表格--------------------------------------
+//分页显示   表格
 function gettable(curr){
 	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
 		layer.msg("请选择前后统计时间!",{icon: 2});
