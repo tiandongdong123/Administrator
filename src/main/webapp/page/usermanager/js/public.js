@@ -88,17 +88,17 @@ function validStandard(count,i){
 		var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
 		var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
 		if(startTime==null||startTime==""){
-			layer.msg("开始时间不能为空",{icon: 2});
+			layer.msg("开始时间不能为空",{icon: 2,time: 20000});
 			return false;
 		}
 		if(endTime==null||endTime==""){
-			layer.msg("结束时间不能为空",{icon: 2});
+			layer.msg("结束时间不能为空",{icon: 2,time: 20000});
 			return false;
 		}
 		var d1 = new Date(startTime.replace(/\-/g, "\/"));
 		var d2 = new Date(endTime.replace(/\-/g, "\/"));
 		if(d1>d2){
-			layer.msg("开始时间不能大于结束时间",{icon: 2});
+			layer.msg("开始时间不能大于结束时间",{icon: 2,time: 20000});
 			return false;
 		}
 	}
@@ -108,35 +108,35 @@ function validStandard(count,i){
 		var orgName=$("#orgName_"+count+"_"+i).val();
 		var companySimp=$("#companySimp_"+count+"_"+i).val();
 		if(company==null||company==""){
-			layer.msg("单位名称不能为空",{icon: 2});
+			layer.msg("单位名称不能为空",{icon: 2,time: 20000});
 			return false;
 		}
 		if(orgName==null||orgName==""){
-			layer.msg(" 机构名称不能为空",{icon: 2});
+			layer.msg(" 机构名称不能为空",{icon: 2,time: 20000});
 			return false;
 		}else{
 			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){ 
-				layer.msg(" 机构名称不能包含汉字",{icon: 2});
+				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 20000});
 				return false; 
 			}
 		}
 		if(companySimp==null||companySimp==""){
-			layer.msg("机构单位简称不能为空",{icon: 2});
+			layer.msg("机构单位简称不能为空",{icon: 2,time: 20000});
 			return false;
 		}else{
 			if(companySimp.length<5 || companySimp.length>30){
-				layer.msg("机构单位简称的长度必须在5到30之间",{icon: 2});
+				layer.msg("机构单位简称的长度必须在5到30之间",{icon: 2,time: 20000});
 				return false;
 			}
 			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){ 
-				layer.msg(" 机构名称不能包含汉字",{icon: 2});
+				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 20000});
 				return false; 
 			}
 		}
 	} else if (isBK) {// 2、包库
 		var readingPrint=$("#readingPrint_"+count+"_"+i).val();
 		if(readingPrint==null||readingPrint==""){
-			layer.msg("版权阅读打印不能为空",{icon: 2});
+			layer.msg("版权阅读打印不能为空",{icon: 2,time: 20000});
 			return false;
 		}
 	}
@@ -144,7 +144,7 @@ function validStandard(count,i){
 	if (isZJ || isBK) {
 		var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
 		if(fullIpRange==null||fullIpRange==""){
-			layer.msg("ip段必须填写",{icon: 2});
+			layer.msg("ip段必须填写",{icon: 2,time: 20000});
 			return false;
 		}
 	}
@@ -1069,9 +1069,8 @@ function validateIp(ip,userId,object){
 	}
 }
 
-
-
-function IpFormat(str){		
+//校验多行ip对
+function IpFormat(str){
 	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
 	var ip = str.split("\n");
 	for(i in ip){
