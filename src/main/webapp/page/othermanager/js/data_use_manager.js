@@ -135,7 +135,6 @@ function tabulation(curr){
 			},
 			dataType : "json",
 			success : function(datas) {
-
 				var data=datas.pageRow;
 				var totalRow = datas.totalRow;
 				var pageSize = datas.pageSize;
