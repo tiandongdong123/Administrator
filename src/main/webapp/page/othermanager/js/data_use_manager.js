@@ -169,6 +169,9 @@ function tabulation(curr){
 					{
 						groups=pages;
 					}
+				}else{
+					$(".showPage").css("display","none");
+					$("#tbody").html("");
 				}
 				//显示分页
 				laypage({
