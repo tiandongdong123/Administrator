@@ -350,6 +350,7 @@ function pushData(state,id){
 }
 //导出资源
 function exportResource(){
+	typeName =$("#typeName").val();
 	window.location.href="../content/exportResource.do?resouceType="+typeName;
 }
 
