@@ -37,6 +37,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		String date=databaseUseDaily.getDate();
 		String product_source_code=databaseUseDaily.getProduct_source_code();
 		String source_db=databaseUseDaily.getSource_db();
+
 		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
 			PageList=databaseUseHourlyMapper.getData(product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
 			list=databaseUseHourlyMapper.getDataAnalysisLists(product_source_code,source_db,date, startTime, endTime);
