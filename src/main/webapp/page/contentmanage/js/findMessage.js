@@ -307,3 +307,14 @@ function turnHtml(type,id){
 	url=ZSFX_URL+"/informationController/getDetails.do?type="+source+"&id="+id;*/
 	window.location.href="../content/getDetails.do?id="+id;
 }
+
+/**
+ * 导出
+ */
+function exportexecl(){
+	window.location.href="../content/exportMessage.do?branch="+branch
+							+"&colums="+clum+"&human="+human
+							+"&startTime="+startTime+"&endTime="+endTime;
+}
+
+

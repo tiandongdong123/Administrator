@@ -21,10 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.wf.Setting.ResourceTypeSetting;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.storage.Hash;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
@@ -1493,5 +1495,24 @@ public class ContentController{
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(array.toString());
 	}
+	
+	/**
+	 * 资讯导出
+	 * @param branch
+	 * @param clum
+	 * @param human
+	 * @param startTime
+	 * @param endTime
+	 */
+	@RequestMapping("exportMessage")
+	public void exportMessage(HttpServletResponse response,String branch,String colums,String human,String startTime,String endTime){
+		List<Object> list=new ArrayList<>();
+		list= messageService.exportMessage(branch,colums,human,startTime,endTime);
+		JSONArray array=JSONArray.fromObject(list);
+		List<String> names=Arrays.asList(new String[]{"序号","栏目","标题","原文链接","添加人","添加日期"});
+		ExportExcel excel=new ExportExcel();
+		excel.exportMessage(response, array, names);
+	}
+	
 	
 }

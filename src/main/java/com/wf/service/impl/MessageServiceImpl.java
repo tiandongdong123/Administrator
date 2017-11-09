@@ -318,9 +318,25 @@ public class MessageServiceImpl implements MessageService {
               System.err.println("Html2Text: " + e.getMessage());      
         }      
         return textStr;//返回文本字符串      
-     }     
+     }
+	
+	@Override
+	public List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime) {
+		
+		if(StringUtils.isEmpty(branch)) branch=null;
+		if(StringUtils.isEmpty(human)) human=null;
+		if(StringUtils.isEmpty(colums)) colums=null;
+		if(StringUtils.isEmpty(startTime)) startTime=null;
+		if(StringUtils.isEmpty(endTime)) endTime=null;
+		Map<String, Object> mpPara=new HashMap<String,Object>();
+		mpPara.put("branch", branch);
+		mpPara.put("human", human);
+		mpPara.put("colums", colums);
+		mpPara.put("startTime", startTime);
+		mpPara.put("endTime", endTime);
+		
+		
+		return dao.selectMessageInforAll(mpPara);
+	}     
 
-	
-	
-	
 }

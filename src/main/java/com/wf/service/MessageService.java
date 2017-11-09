@@ -1,5 +1,8 @@
 package com.wf.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.wf.bean.Message;
 import com.wf.bean.PageList;
 public interface MessageService {
@@ -40,4 +43,7 @@ public interface MessageService {
 	 * @return
 	 */
 	boolean updateIssue(String id,String colums,String issueState);
+	
+	
+	List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime);
 }
