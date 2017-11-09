@@ -54,238 +54,8 @@ $(function(){
 		var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
 		pagesize=parseInt($(this).find('option:selected').val());
 		pagenum=curr=parseInt($number/pagesize)+1;
-		if(restype=='期刊'||restype=='会议'||restype=='学位'){
-			num=1;
-		}else{
-			num=0;
-		}
-		if(restype=='学位')
-		{
-			$.post("../resourceTypeStatistics/gettable.do", {
-				pagenum: curr,//向服务端传的参数
-				pagesize :pagesize,
-				institutionName : unitname,
-				userId:username,
-				source_db:source_db,
-				product_source_code:product_source_code,
-				sourceTypeName:restype,
-				starttime : starttime,
-				endtime:endtime,
-				operate_type:urltype,
-				num:num,
-			}, function(res){
-				var html="";
-				var htmltitle=""
-				var htmlbody=""
-				if(restype=='期刊'){
-					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
-					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
-					htmltitle='<th>授予学位的机构名称</th>';
-				}
-				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
-					"<th>序号</th>" +htmltitle+
-					"<th>资源类型</th>" +
-					"<th>检索数</th>" +
-					"<th>浏览数</th>" +
-					"<th>下载数</th>" +
-					"<th>跳转数</th>" +
-					"<th>订阅数</th>" +
-					"<th>收藏数</th>" +
-					"<th>笔记数</th>" +
-					"<th>分享数</th>" +
-					"<th>导出数</th>" +
-					"</tr>"
-				for(var i =0;res.pageRow[i];i++){
-					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
-						htmlbody="<td>"+res.pageRow[i].title+"</td>";
-					}
-					html+="<tr>" +
-						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
-						"<td>"+id+"</td>" +htmlbody+//序号
-						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数。。。。。
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
-						"</tr>";
-
-				}
-				document.getElementById('databody').innerHTML = html;
-				var totalRow = res.pageTotal;
-				var pageSize = res.pageSize;
-				var pages;
-				var groups;
-				if(totalRow%pageSize==0)
-				{
-					pages = totalRow/pageSize;
-				}else
-				{
-					pages = totalRow/pageSize+1;
-				}
-				if(pages>=4)
-				{
-					groups=4;
-				}else
-				{
-					groups=pages;
-				}
-				//显示分页
-				laypage({
-					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-					pages: pages, //通过后台拿到的总页数
-					curr: curr, //当前页
-					skip: true, //是否开启跳页
-					skin: 'molv',//当前页颜色，可16进制
-					groups: groups, //连续显示分页数
-					first: '首页', //若不显示，设置false即可
-					last: '尾页', //若不显示，设置false即可
-					prev: '上一页', //若不显示，设置false即可
-					next: '下一页', //若不显示，设置false即可
-					jump: function(obj, first){ //触发分页后的回调
-						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-							gettable(obj.curr);
-						}
-					}
-				});
-			});
-		}  else{
-			$.post("../resourceTypeStatistics/gettable.do", {
-				pagenum: curr,//向服务端传的参数
-				pagesize :pagesize,
-				institutionName:unitname,
-				userId:username,
-				source_db:source_db,
-				product_source_code:product_source_code,
-				sourceTypeName:restype,
-				starttime : starttime,
-				endtime:endtime,
-				operate_type:urltype,
-				num:num,
-			}, function(res){
-				var html="";
-				var htmltitle=""
-				var htmlbody=""
-				if(restype=='期刊'){
-					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
-					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
-					htmltitle='<th>授予学位的机构名称</th>';
-				}
-				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
-					"<th>序号</th>" +htmltitle+
-					"<th>资源类型</th>" +
-					"<th>检索数</th>" +
-					"<th  >浏览数</th>" +
-					"<th>下载数</th>" +
-					"<th>跳转数</th>" +
-					"<th>订阅数</th>" +
-					"<th>收藏数</th>" +
-					"<th>笔记数</th>" +
-					"<th>分享数</th>" +
-					"<th>导出数</th>" +
-					"</tr>"
-				for(var i =0;res.pageRow[i];i++){
-					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
-
-						var title;
-						if(res.pageRow[i].title==null){
-							title="";
-						}else{
-							title=res.pageRow[i].title;
-						}
-
-						htmlbody="<td>"+title+"</td>";
-					}
-					html+="<tr>" +
-						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
-						"<td>"+id+"</td>" +htmlbody+//序号
-						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
-						"<td>"+res.pageRow[i].searchNum+"</td>" +//检索数
-						"<td>"+res.pageRow[i].browseNum+"</td>" +//浏览数
-						"<td>"+res.pageRow[i].downloadNum+"</td>" +//下载数
-						"<td>"+res.pageRow[i].skipNum+"</td>" +//跳转数
-						"<td>"+res.pageRow[i].subscibeNum+"</td>" +//订阅数
-						"<td>"+res.pageRow[i].collectNum+"</td>" +//收藏数
-						"<td>"+res.pageRow[i].noteNum+"</td>" +//笔记数
-						"<td>"+res.pageRow[i].shareNum+"</td>" +//分享数
-						"<td>"+res.pageRow[i].exportNum+"</td>" +//导出数
-						"</tr>";
-				}
-				document.getElementById('databody').innerHTML = html;
-				var totalRow = res.pageTotal;
-				var pageSize = res.pageSize;
-				var pages;
-				var groups;
-				if(totalRow%pageSize==0)
-				{
-					pages = totalRow/pageSize;
-				}else
-				{
-					pages = totalRow/pageSize+1;
-				}
-				if(pages>=4)
-				{
-					groups=4;
-				}else
-				{
-					groups=pages;
-				}
-				//显示分页
-				laypage({
-					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-					pages: pages, //通过后台拿到的总页数
-					curr: curr, //当前页
-					skip: true, //是否开启跳页
-					skin: 'molv',//当前页颜色，可16进制
-					groups: groups, //连续显示分页数
-					first: '首页', //若不显示，设置false即可
-					last: '尾页', //若不显示，设置false即可
-					prev: '上一页', //若不显示，设置false即可
-					next: '下一页', //若不显示，设置false即可
-					jump: function(obj, first){ //触发分页后的回调
-						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-							gettable(obj.curr);
-
-						}
-					}
-				});
-			});
-		}
-	})
-})
-//分页显示            表格--------------------------------------
-function gettable(curr){
-	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
-		layer.msg("请选择前后统计时间!",{icon: 2});
-	}
-	else{
-		pageIndex=curr;
-		getTime();
-		url="";
-		restype=$("#restype").find("option:selected").text();
-		urltype=$("#urltype").find("option:selected").val();
-		starttime = $("#starttime").val();
-		endtime=$("#endtime").val();
-		username=$("#username").val();
-		unitname=$("#institution_name").val();
-		source_db=$("#source_db").val();
-		product_source_code=$("#database").find("option:selected").val();
-		num = "";
 		if(restype=='期刊'||restype=='会议'||restype=='学位')
 		{
-			alert("dan");
 			num=1;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
@@ -387,7 +157,6 @@ function gettable(curr){
 			});
 		}
 		else{
-			alert("quan");
 			num=0;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
@@ -408,13 +177,243 @@ function gettable(curr){
 				var htmltitle=""
 				var htmlbody=""
 				if(restype=='期刊'){
-					alert("dan");
 					htmltitle="<th>期刊名称</th>";
 				}else if(restype=='会议'){
-					alert("dan");
 					htmltitle="<th>会议名称</th>";
 				}else if(restype=='学位'){
-					alert("dan");
+					htmltitle='<th>授予学位的机构名称</th>';
+				}
+				html=	"<tr>" +
+					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
+					"<th>序号</th>" +htmltitle+
+					"<th>资源类型</th>" +
+					"<th>检索数</th>" +
+					"<th>浏览数</th>" +
+					"<th>下载数</th>" +
+					"<th>跳转数</th>" +
+					"<th>订阅数</th>" +
+					"<th>收藏数</th>" +
+					"<th>笔记数</th>" +
+					"<th>分享数</th>" +
+					"<th>导出数</th>" +
+					"</tr>"
+				for(var i =0;res.pageRow[i];i++){
+					$(".showPage").css("display","block");
+					id = pagesize*(curr-1)+i+1;
+					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+
+						var title;
+						if(res.pageRow[i].title==null){
+							title="";
+						}else{
+							title=res.pageRow[i].title;
+						}
+
+						htmlbody="<td>"+title+"</td>";
+					}
+					html+="<tr>" +
+						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
+						"<td>"+id+"</td>" +htmlbody+//序号
+						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
+						"</tr>";
+				}
+				document.getElementById('databody').innerHTML = html;
+				var totalRow = res.pageTotal;
+				var pageSize = res.pageSize;
+				var pages;
+				var groups;
+				if(totalRow%pageSize==0)
+				{
+					pages = totalRow/pageSize;
+				}else
+				{
+					pages = totalRow/pageSize+1;
+				}
+				if(pages>=4)
+				{
+					groups=4;
+				}else
+				{
+					groups=pages;
+				}
+				//显示分页
+				laypage({
+					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+					pages: pages, //通过后台拿到的总页数
+					curr: curr, //当前页
+					skip: true, //是否开启跳页
+					skin: 'molv',//当前页颜色，可16进制
+					groups: groups, //连续显示分页数
+					first: '首页', //若不显示，设置false即可
+					last: '尾页', //若不显示，设置false即可
+					prev: '上一页', //若不显示，设置false即可
+					next: '下一页', //若不显示，设置false即可
+					jump: function(obj, first){ //触发分页后的回调
+						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+							gettable(obj.curr);
+
+						}
+					}
+				});
+			});
+		}
+	})
+})
+//分页显示   表格
+function gettable(curr){
+	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
+		layer.msg("请选择前后统计时间!",{icon: 2});
+	}
+	else{
+		pageIndex=curr;
+		getTime();
+		url="";
+		restype=$("#restype").find("option:selected").text();
+		urltype=$("#urltype").find("option:selected").val();
+		starttime = $("#starttime").val();
+		endtime=$("#endtime").val();
+		username=$("#username").val();
+		unitname=$("#institution_name").val();
+		source_db=$("#source_db").val();
+		product_source_code=$("#database").find("option:selected").val();
+		num = "";
+		if(restype=='期刊'||restype=='会议'||restype=='学位')
+		{
+			num=1;
+			$.post("../resourceTypeStatistics/gettable.do", {
+				pagenum: curr,//向服务端传的参数
+				pagesize :pagesize,
+				institutionName : unitname,
+				userId:username,
+				source_db:source_db,
+				product_source_code:product_source_code,
+				sourceTypeName:restype,
+				starttime : starttime,
+				endtime:endtime,
+				operate_type:urltype,
+
+				num:num,
+			}, function(res){
+				var html="";
+				var htmltitle=""
+				var htmlbody=""
+				if(restype=='期刊'){
+					htmltitle="<th>期刊名称</th>";
+				}else if(restype=='会议'){
+					htmltitle="<th>会议名称</th>";
+				}else if(restype=='学位'){
+					htmltitle='<th>授予学位的机构名称</th>';
+				}
+				html=	"<tr>" +
+					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
+					"<th>序号</th>" +htmltitle+
+					"<th>资源类型</th>" +
+					"<th>检索数</th>" +
+					"<th>浏览数</th>" +
+					"<th>下载数</th>" +
+					"<th>跳转数</th>" +
+					"<th>订阅数</th>" +
+					"<th>收藏数</th>" +
+					"<th>笔记数</th>" +
+					"<th>分享数</th>" +
+					"<th>导出数</th>" +
+					"</tr>"
+				for(var i =0;res.pageRow[i];i++){
+					$(".showPage").css("display","block");
+					id = pagesize*(curr-1)+i+1;
+					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+						htmlbody="<td>"+res.pageRow[i].title+"</td>";
+					}
+					html+="<tr>" +
+						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
+						"<td>"+id+"</td>" +htmlbody+//序号
+						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
+						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
+						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
+						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数。。。。。
+						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
+						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
+						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
+						"<td>"+res.pageRow[i].sum4+"</td>" +//分享数
+						"<td>"+res.pageRow[i].sum6+"</td>" +//导出数
+						"</tr>";
+
+				}
+				document.getElementById('databody').innerHTML = html;
+				var totalRow = res.pageTotal;
+				var pageSize = res.pageSize;
+				var pages;
+				var groups;
+				if(totalRow%pageSize==0)
+				{
+					pages = totalRow/pageSize;
+				}else
+				{
+					pages = totalRow/pageSize+1;
+				}
+				if(pages>=4)
+				{
+					groups=4;
+				}else
+				{
+					groups=pages;
+				}
+				//显示分页
+				laypage({
+					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+					pages: pages, //通过后台拿到的总页数
+					curr: curr, //当前页
+					skip: true, //是否开启跳页
+					skin: 'molv',//当前页颜色，可16进制
+					groups: groups, //连续显示分页数
+					first: '首页', //若不显示，设置false即可
+					last: '尾页', //若不显示，设置false即可
+					prev: '上一页', //若不显示，设置false即可
+					next: '下一页', //若不显示，设置false即可
+					jump: function(obj, first){ //触发分页后的回调
+						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+							gettable(obj.curr);
+						}
+					}
+				});
+			});
+		}
+		else{
+			num=0;
+			$.post("../resourceTypeStatistics/gettable.do", {
+				pagenum: curr,//向服务端传的参数
+				pagesize :pagesize,
+				institutionName:unitname,
+				userId:username,
+				source_db:source_db,
+				product_source_code:product_source_code,
+				sourceTypeName:restype,
+				starttime : starttime,
+				endtime:endtime,
+				operate_type:urltype,
+				date:date,
+				database_name:database_name,
+				num:num,
+			}, function(res){
+				var html="";
+				var htmltitle=""
+				var htmlbody=""
+				if(restype=='期刊'){
+					htmltitle="<th>期刊名称</th>";
+				}else if(restype=='会议'){
+					htmltitle="<th>会议名称</th>";
+				}else if(restype=='学位'){
+
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
