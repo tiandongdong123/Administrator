@@ -6,14 +6,15 @@
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="BaseMap" type="java.util.Map" >
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
   </resultMap>
   <insert id="insert" parameterType="com.wf.bean.UserIp">
-    insert into user_ip (id, user_id, begin_ip_address_number, end_ip_address_number)
-    values (#{id}, #{userId}, #{beginIpAddressNumber}, #{endIpAddressNumber})
+    insert into user_ip (id, user_id, begin_ip_address_number, end_ip_address_number,sort)
+    values (#{id}, #{userId}, #{beginIpAddressNumber}, #{endIpAddressNumber},#{sort})
   </insert>
   
   <delete id="deleteUserIp" parameterType="java.lang.String">
@@ -42,7 +43,7 @@
   
     <!-- 通过userid查询IP -->
   <select id="findIpByUserId" resultMap="BaseMap">
-	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId}
+	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId} order by sort
   </select>
   
  <update id="updateIp" parameterType="com.wf.bean.UserIp">

@@ -321,7 +321,7 @@
   </select>
   
   <select id="findListCount" resultType="int" parameterType="java.util.Map">
-   select count(1) from (select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+	select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
 	<if test="userId !=null and userId !=''"><!-- 精确查询 -->
 		and ((u.user_id = #{userId} and userType = '2') or 
 		(u.user_id = (select pid from user where user_id = #{userId} and userType = '3')) or 
@@ -336,7 +336,6 @@
 	<if test="adminname != null and adminname != ''">
 		and u.pid = #{adminname} and userType = '2'
 	</if>
-	GROUP BY u.user_id) count
   </select>
   <select id="getEducations" resultType="java.lang.String" parameterType="java.lang.String">
   	select education from identify_scholar
