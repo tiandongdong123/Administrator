@@ -43,7 +43,7 @@
 	<if test="res.product_source_code!=null and res.product_source_code!=''">
 		 and r.product_source_code=#{res.product_source_code}
 	</if>
-	<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+	<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 		 and r.source_type_name=#{res.sourceTypeName}
 	</if>
 	<choose>
@@ -98,7 +98,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -157,7 +157,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -184,7 +184,7 @@
 
 
 	<select id="getLineMore" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -204,7 +204,7 @@
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
 			and r.product_source_code=#{res.product_source_code}
 		</if>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -230,7 +230,7 @@
 	</select>
 
 	<select id="getLineMoreById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -259,7 +259,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -285,7 +285,7 @@
 	</select>
 
 	<select id="getLineMoreByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -318,7 +318,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -376,7 +376,7 @@
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
 			and r.product_source_code=#{res.product_source_code}
 		</if>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -465,7 +465,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -558,7 +558,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -636,7 +636,7 @@
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
 			and r.product_source_code=#{res.product_source_code}
 		</if>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -719,7 +719,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -806,7 +806,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<if test="urls!=null and urls !=''">
@@ -873,7 +873,7 @@
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
 			and r.product_source_code=#{res.product_source_code}
 		</if>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -928,7 +928,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -987,7 +987,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -1014,7 +1014,7 @@
 
 
 	<select id="getLineMoreAll" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,r.title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -1034,7 +1034,7 @@
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
 			and r.product_source_code=#{res.product_source_code}
 		</if>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -1060,7 +1060,7 @@
 	</select>
 
 	<select id="getLineMoreAllById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,r.title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -1089,7 +1089,7 @@
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
@@ -1115,7 +1115,7 @@
 	</select>
 
 	<select id="getLineMoreAllByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.title
+		SELECT rs.resource_type_name as sourceTypeName,r.title,
 		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
 		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
 		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
@@ -1148,7 +1148,7 @@
 				)
 			</otherwise>
 		</choose>
-		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' and res.sourceTypeName!='--请选择资源类型--'">
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and r.source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>

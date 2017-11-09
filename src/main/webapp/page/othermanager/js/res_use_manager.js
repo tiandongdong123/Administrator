@@ -43,7 +43,7 @@ function changeres(){
 
 $(function(){
 	$('#pageChange').change(function(){
-		restype=$("#restype").find("option:selected").text();
+		restype=$("#restype").find("option:selected").val();
 		urltype=$("#urltype").find("option:selected").val();
 		starttime = $("#starttime").val();
 		endtime=$("#endtime").val();
@@ -277,7 +277,7 @@ function gettable(curr){
 		pageIndex=curr;
 		getTime();
 		url="";
-		restype=$("#restype").find("option:selected").text();
+		restype=$("#restype").find("option:selected").val();
 		urltype=$("#urltype").find("option:selected").val();
 		starttime = $("#starttime").val();
 		endtime=$("#endtime").val();
@@ -302,6 +302,7 @@ function gettable(curr){
 				operate_type:urltype,
 
 				num:num,
+				date:date,
 			}, function(res){
 				var html="";
 				var htmltitle=""
@@ -404,6 +405,7 @@ function gettable(curr){
 				date:date,
 				database_name:database_name,
 				num:num,
+				date:date,
 			}, function(res){
 				var html="";
 				var htmltitle=""
@@ -518,7 +520,7 @@ function getline(initial){
 		}
 	});
 	var singmore = $("#singmore").val();
-	var restype=$("#restype").find("option:selected").text();
+	var restype=$("#restype").find("option:selected").val();
 	var urltype=$("#urltype").find("option:selected").val();
 	var starttime = $("#starttime").val();
 	var endtime=$("#endtime").val();
