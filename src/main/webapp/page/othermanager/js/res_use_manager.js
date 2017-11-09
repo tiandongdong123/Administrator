@@ -283,9 +283,8 @@ function gettable(curr){
 		source_db=$("#source_db").val();
 		product_source_code=$("#database").find("option:selected").val();
 		num = "";
-		if(restype=='期刊'||restype=='会议'||restype=='学位')
+		if(restype=='perio'||restype=='conference'||restype=='degree')
 		{
-			alert("dan");
 			num=1;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
@@ -305,11 +304,11 @@ function gettable(curr){
 				var html="";
 				var htmltitle=""
 				var htmlbody=""
-				if(restype=='期刊'){
+				if(restype=='perio'){
 					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
+				}else if(restype=='conference'){
 					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
+				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
@@ -329,7 +328,7 @@ function gettable(curr){
 				for(var i =0;res.pageRow[i];i++){
 					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+					if(restype=='perio'||restype=='conference'||restype=='degree'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
 					}
 					html+="<tr>" +
@@ -388,7 +387,6 @@ function gettable(curr){
 			});
 		}
 		else{
-			alert("quan");
 			num=0;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
@@ -409,14 +407,11 @@ function gettable(curr){
 				var html="";
 				var htmltitle=""
 				var htmlbody=""
-				if(restype=='期刊'){
-					alert("dan");
+				if(restype=='perio'){
 					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
-					alert("dan");
+				}else if(restype=='conference'){
 					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
-					alert("dan");
+				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
@@ -436,7 +431,7 @@ function gettable(curr){
 				for(var i =0;res.pageRow[i];i++){
 					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+					if(restype=='perio'||restype=='conference'||restype=='degree'){
 
 						var title;
 						if(res.pageRow[i].title==null){

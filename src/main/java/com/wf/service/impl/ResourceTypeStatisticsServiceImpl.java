@@ -367,28 +367,29 @@ public class ResourceTypeStatisticsServiceImpl implements
 		PageList pageList=new PageList();
 		List<Object> PageList=new ArrayList<Object>();
 		List<Object> list=new ArrayList<Object>();
+		int startNum = (pageNum-1)*pageSize;
 		if(table==0){
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-				PageList = this.hour.getLine(starttime,endtime,res,pageNum,pageSize);
+				PageList = this.hour.getLine(starttime,endtime,res,startNum,pageSize);
 				list=this.hour.getLineAll(starttime,endtime,res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
-				PageList = this.hour.getLineById(starttime,endtime,res,pageNum,pageSize);
+				PageList = this.hour.getLineById(starttime,endtime,res,startNum,pageSize);
 				list=this.hour.getLineAllById(starttime,endtime,res);
 			} else {
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
-				PageList=this.hour.getLineByIds(starttime, endtime,res,users,pageNum,pageSize);
+				PageList=this.hour.getLineByIds(starttime, endtime,res,users,startNum,pageSize);
 				list=this.hour.getLineAllByIds(starttime, endtime,res,users);
 			}
 		}else {
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
-				PageList = this.hour.getLineMore(starttime,endtime,res,pageNum,pageSize);
+				PageList = this.hour.getLineMore(starttime,endtime,res,startNum,pageSize);
 				list=this.hour.getLineMoreAll(starttime,endtime, res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
-				PageList = this.hour.getLineMoreById(starttime,endtime,res,pageNum,pageSize);
+				PageList = this.hour.getLineMoreById(starttime,endtime,res,startNum,pageSize);
 				list=this.hour.getLineMoreAllById(starttime,endtime,res);
 			} else {
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
-				PageList=this.hour.getLineMoreByIds(starttime, endtime,res,users,pageNum,pageSize);
+				PageList=this.hour.getLineMoreByIds(starttime, endtime,res,users,startNum,pageSize);
 				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
 			}
 		}
