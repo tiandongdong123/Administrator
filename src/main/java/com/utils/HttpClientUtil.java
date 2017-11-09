@@ -127,7 +127,7 @@ public class HttpClientUtil {
 		Map<String, String> map = new HashMap<String, String>();
 		String saleagtid = SALEAGTID;
 		String orgCode = unit.getOrgCode();
-		String orgName = saleagtid+"_"+unit.getOrgName();
+		String orgName = unit.getOrgName();
 		String company = unit.getCompany();
 		String companysimp = unit.getCompanySimp();
 		String ipsection = unit.getiPLimits();
