@@ -39,16 +39,14 @@ public class SonSystemController {
 			String code =son.getProductResourceCode();
 			List<String> list=Arrays.asList(code.split(","));
 			String sourcedata="";
-			for(int j=0;j<list.size();j++)
-			{
+			for(int j=0;j<list.size();j++){
 				Datamanager json=data.getDataManagerBySourceCode(list.get(j));
-				if(j==0)
-				{
-					sourcedata=json.getTableName();
-				}
-				else
-				{
-					sourcedata=sourcedata+","+json.getTableName();
+				if(null!=json){
+					if(j==0){
+						sourcedata=json.getTableName();
+					}else{
+						sourcedata=sourcedata+","+json.getTableName();
+					}
 				}
 			}
 			son.setProductResourceCode(sourcedata);
