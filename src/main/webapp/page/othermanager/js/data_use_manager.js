@@ -269,7 +269,7 @@ function line(urlType,database_name,datas){
 					for(var i =0;i<database_name.length;i++){
 						var name = database_name[i];
 						var num=new Array();
-						num =data.content[name];
+						num =data.content[name];//.............
 						option.series.push(
 							{
 								name:name,
