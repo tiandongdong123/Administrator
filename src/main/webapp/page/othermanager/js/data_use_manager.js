@@ -1,6 +1,5 @@
 var pagesize=10;
 $(function(){
-	
 	tabulation(1);
 	moreOrSimple();
 	keyword();
@@ -213,6 +212,7 @@ function line(urlType,database_name,datas){
 		restype=$("#restype").val();
 		dbname=$("#database").val();
 		getTime();
+
 		$.ajax({
 			type : "POST",
 			url : "../databaseAnalysis/getChart.do",
@@ -236,7 +236,7 @@ function line(urlType,database_name,datas){
 							trigger: 'axis'
 						},
 						legend: {
-							data:database_name
+							data:data.title
 						},
 						toolbox: {
 							show : true,
@@ -266,9 +266,9 @@ function line(urlType,database_name,datas){
 						]
 					};
 					for(var i =0;i<database_name.length;i++){
-						var name = database_name[i];
+						var name = data.title[i];
 						var num=new Array();
-						num =data.content[name];//.............
+						num =data.content[name];
 						option.series.push(
 							{
 								name:name,
@@ -347,8 +347,7 @@ function getTime(){
 		if(between<=0){
 			date=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();
 			startTime=0;
-			endTime=24; 	
-//			alert("type:"+type+"date:"+date+"startTime:"+startTime+"endTime:"+endTime);
+			endTime=24;
 		}else{
 			date="";
 		}
@@ -386,10 +385,6 @@ function checkAll(){
 function checkOne(){
 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
 	moreOrSimple();
-		 if($('.rui').is(':checked')){
-		 var r=$('td').eq(2).text()
-		 }
-
 }
 
 //根据数据库选择情况  展示指标数量
@@ -415,8 +410,6 @@ function mySelect(){
 		$("#simple").hide();
 		$("#more").show();
 	}
-
-
 }
 
 
@@ -435,13 +428,9 @@ function checkitem(){
 	}else if(url==3){
 		datas.push("检索数");
 	}
-	
-	
 	$("input[name='checkOne']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-
-	
 	line(urlType,database_name,datas);
 }
 
@@ -455,7 +444,6 @@ function checksource(){
 
 //指标多选
 function checkitem_more(){
-	
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();

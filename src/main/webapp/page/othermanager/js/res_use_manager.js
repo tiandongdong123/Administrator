@@ -13,7 +13,7 @@ var database_name;
 var pagesize=10;
 
 $(function(){
-	getline(1);
+	getline();
 	gettable(1);
 	$("#single").show();
 	$("#more").hide();
@@ -24,21 +24,21 @@ $(function(){
 })
 
 
-function changeres(){
-	restype=$("#restype").find("option:selected").val();
-	if(restype!='--请选择资源类型--'){
-		$("#single").hide();
-		$("#more").show();
-		$("#singmore").val("0");
-	}else{
-		$("#singmore").val("1");
-		$("#single").show();
-		$("#more").hide();
+ function changeres(){
+ 	restype=$("#restype").find("option:selected").val();
+ 	if(restype!=''){
+ 		$("#single").hide();
+ 		$("#more").show();
+ 		$("#singmore").val("0");
+ 	}else{
+ 		$("#singmore").val("1");
+ 		$("#single").show();
+ 		$("#more").hide();
 		$("input[name=item]").prop("checked",false);
-		$("#checkallsource").prop("checked",false);
-		
-	}
-}
+ 		$("#checkallsource").prop("checked",false);
+
+ 	}
+ }
 
 
 $(function(){
@@ -170,7 +170,6 @@ $(function(){
 				endtime:endtime,
 				operate_type:urltype,
 				date:date,
-				database_name:database_name,
 				num:num,
 			}, function(res){
 
@@ -186,8 +185,8 @@ $(function(){
 				}
 				html=	"<tr>" +
 					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
-					"<th>序号</th>" +htmltitle+
-					"<th>资源类型</th>" +
+					"<th>序号</th>" +
+					"<th>资源类型</th>" +htmltitle+
 					"<th>检索数</th>" +
 					"<th>浏览数</th>" +
 					"<th>下载数</th>" +
@@ -214,8 +213,9 @@ $(function(){
 					}
 					html+="<tr>" +
 						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
-						"<td>"+id+"</td>" +htmlbody+//序号
+						"<td>"+id+"</td>" +
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
+						htmlbody+//序号
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
 						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
 						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
@@ -315,8 +315,8 @@ function gettable(curr){
 				}
 				html=	"<tr>" +
 					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
-					"<th>序号</th>" +htmltitle+
-					"<th>资源类型</th>" +
+					"<th>序号</th>" +
+					"<th>资源类型</th>" +htmltitle+
 					"<th>检索数</th>" +
 					"<th>浏览数</th>" +
 					"<th>下载数</th>" +
@@ -334,9 +334,10 @@ function gettable(curr){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
-						"<td>"+id+"</td>" +htmlbody+//序号
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
+						"<td>"+id+"</td>" +
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
+						htmlbody+//序号
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
 						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
 						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
@@ -401,7 +402,7 @@ function gettable(curr){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
-				// date:date,
+				date:date,
 				database_name:database_name,
 				num:num,
 			}, function(res){
@@ -445,7 +446,7 @@ function gettable(curr){
 						htmlbody="<td>"+title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeCode+" onclick='checkAll(); '></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
@@ -502,41 +503,115 @@ function gettable(curr){
 };
 
 
-function getline(initial){
-	var checkbox=$("#rstype:checked");
-	var rstnames=new Array();
-	var urls = new Array();
-	$("input[name=item]").each(function() {
-			if ($(this).is(':checked')) {
-				urls.push($(this).val());
-			}
-	});
-	$("input[name=item]").each(function() {
-		if ($(this).is(':checked')) {
-			rstnames.push($(this).val());
-		}
-	});
-	var singmore = $("#singmore").val();
-	var restype=$("#restype").find("option:selected").val();
-	var urltype=$("#urltype").find("option:selected").val();
-	var starttime = $("#starttime").val();
-	var endtime=$("#endtime").val();
-	var username=$("#username").val();
-	var unitname=$("#institution_name").val();
-	var source_db=$("#source_db").val();
-	var product_source_code=$("#database").val();
-	var num=0;
-	if(restype=='期刊'||restype=='会议'||restype=='学位'){
-		num=1;
+function getline(){
+	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
+		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
-	if(restype=='--请选择资源类型--' && initial==2){
-		getLineByCheckMore(checkbox);
-	}else{
+	else {
+		var checkbox=$("#rstype:checked");
+		var rstnames=new Array();
+		var urls = new Array();
+		var resourcetypeName=new Array();
+		//资源选项卡多选
+		if( $("#restype").val() == "" || $("#restype").val() == null){
+			//表格单选
+			if($("input[name='rscheckr']:checked").length>1 || $("input[name='rscheckr']:checked").length==0){
+				urls.push($("#urltype").val());
+				if(urls==1){
+					rstnames.push("浏览数");
+				}else if(urls==2){
+					rstnames.push("下载数");
+				}else if(urls==3){
+					rstnames.push("检索数");
+				}else if(urls==4){
+					rstnames.push("跳转数");
+				}else if(urls==5){
+					rstnames.push("订阅数");
+				}else if(urls==6){
+					rstnames.push("收藏数");
+				}else if(urls==7){
+					rstnames.push("笔记数");
+				}else if(urls==8){
+					rstnames.push("分享数");
+				}else if(urls==9){
+					rstnames.push("导出数");
+				}
+				singmore = 0 ;
+			} else{
+				$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
+				$("input[name='item']:checked").each(function(){
+					urls.push($(this).val());
+					if($(this).val()==1){
+						rstnames.push("浏览数");
+					}else if($(this).val()==2){
+						rstnames.push("下载数");
+					}else if($(this).val()==3){
+						rstnames.push("检索数");
+					}else if($(this).val()==4){
+						rstnames.push("跳转数");
+					}else if($(this).val()==5){
+						rstnames.push("订阅数");
+					}else if($(this).val()==6){
+						rstnames.push("收藏数");
+					}else if($(this).val()==7){
+						rstnames.push("笔记数");
+					}else if($(this).val()==8){
+						rstnames.push("分享数");
+					}else if($(this).val()==9) {
+						rstnames.push("导出数");
+					}
+				});
+				singmore = 1 ;
+			}
 
-		if(restype=='学位')
-		{
+		}else{
+			$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
+			$("input[name='item']:checked").each(function(){
+				urls.push($(this).val());
+				if($(this).val()==1){
+					rstnames.push("浏览数");
+				}else if($(this).val()==2){
+					rstnames.push("下载数");
+				}else if($(this).val()==3){
+					rstnames.push("检索数");
+				}else if($(this).val()==4){
+					rstnames.push("跳转数");
+				}else if($(this).val()==5){
+					rstnames.push("订阅数");
+				}else if($(this).val()==6){
+					rstnames.push("收藏数");
+				}else if($(this).val()==7){
+					rstnames.push("笔记数");
+				}else if($(this).val()==8){
+					rstnames.push("分享数");
+				}else if($(this).val()==9) {
+					rstnames.push("导出数");
+				}
+			});
+			//资源选项卡单选
+			singmore = 1 ;
+		}
+
+		$("input[name=restye]").each(function() {
+			if ($(this).is(':checked')) {
+				resourcetypeName.push($(this).val());
+			}
+		});
+		var restype=$("#restype").find("option:selected").val();
+		var urltype=$("#urltype").find("option:selected").val();
+		var starttime = $("#starttime").val();
+		var endtime=$("#endtime").val();
+		var username=$("#username").val();
+		var unitname=$("#institution_name").val();
+		var source_db=$("#source_db").val();
+		var product_source_code=$("#database").val();
+		var num=0;
+		if(restype=='perio'||restype=='conference'||restype=='degree'){
+
+			num=1;
+		}
 		$.ajax( {
-			type : "POST",  
+			type : "POST",
 			url : "../resourceTypeStatistics/getline.do",
 			data : {
 				'institutionName':unitname,
@@ -549,220 +624,52 @@ function getline(initial){
 				'product_source_code':product_source_code,
 				'urls':urls,
 				'singmore':singmore,
+				'database_name':resourcetypeName,
 				'num':num
 			},
 			dataType : "json",
 			success : function(data) {
-				tree(data);
+				var myChart = echarts.init(document.getElementById('line'));
+				option = {
+					tooltip : {
+						trigger: 'axis'
+					},
+					legend: {
+						data:data.title
+					},
+					calculable : true,
+					xAxis : [
+						{
+							type : 'category',
+							boundaryGap : false,
+							data : data.date
+						}
+					],
+					yAxis : [
+						{
+							type : 'value'
+						}
+					],
+					series : [
+					]
+				};
+
+				for(var i =0;i<data.title.length;i++){
+					var name = data.title[i];
+					var num=new Array();
+					num =data.content[name];
+					option.series.push(
+						{
+							name:name,
+							type:'line',
+							data:num
+						}
+					)
+				}
+				myChart.setOption(option);
 				pie(data);
 			}
-			});
-		
-		}else{
-			$.ajax( {  
-				type : "POST",  
-				url : "../resourceTypeStatistics/getline.do",
-				data : {
-					'userId':username,
-					'source_db':source_db,
-					'starttime' : starttime,
-					'endtime':endtime,
-					'operate_type':urltype,
-					'product_source_code':product_source_code,
-					'institutionName':unitname,
-					'sourceTypeName':restype,
-					'urls':urls,
-					'singmore':singmore,
-					'date':date,
-					'database_name':database_name,
-					'num':num,
-				},
-				dataType : "json",
-				success : function(data) {
-					tree(data);
-					pie(data);
-				}
-				});
-	}
-		
-	}
-	
-}
-//
-function getLineByCheckMore(checkbox){
-
-	var rstnames=new Array();
-	var urls = new Array();
-
-	checkbox.each(function(){
-		rstnames.push($(this).val());
-	});
-
-	$("input[name=item]").each(function() {
-		if ($(this).is(':checked')) {
-			urls.push($(this).val());
-		}
-	});
-	var singmore = $("#singmore").val();
-	var urltype=$("#urltype").find("option:selected").val();
-	var starttime = $("#startTime").val();
-	var endtime=$("#endtime").val();
-	var username=$("#username").val();
-	var unitname=$("#institution_name").val();
-	var source_db=$("#source_db").val();
-	var product_source_code=$("#database").val();
-	if(rstnames.length>0){
-		if(rstnames.length==1 && rstnames[0]=='学位')
-		{
-			$.ajax( {
-				type : "POST",
-				url : "../resourceTypeStatistics/getLineBycheckMore.do",
-				data : {
-					'starttime' : starttime,
-					'endtime':endtime,
-					'userId':username,
-					'operate_type':urltype,
-					'institution_name':unitname,
-					'source_db':source_db,
-					'product_source_code':product_source_code,
-					'rstnames':rstnames,
-					'urls':urls,
-					'singmore':singmore
-				},
-				dataType : "json",
-				success : function(data) {
-					tree(data);
-					pie(data);
-				}
-			});
-		}
-		else{
-			$.ajax( {
-				type : "POST",
-				url : "../resourceTypeStatistics/getLineBycheckMore.do",
-				data : {
-					'starttime' : starttime,
-					'endtime':endtime,
-					'userId':username,
-					'operate_type':urltype,
-					'institutionName':unitname,
-					'source_db':source_db,
-					'product_source_code':product_source_code,
-					'rstnames':rstnames,
-					'urls':urls,
-					'singmore':singmore
-				},
-				dataType : "json",
-				success : function(data) {
-					tree(data);
-					pie(data);
-				}
-			});
-		}
-	}else{
-		$("#singmore").val("1");
-		$("#single").show();
-		$("#more").hide();
-		$("input[name=item]").prop("checked",false);
-		$("#checkallsource").prop("checked",false);
-
-		getline(1);
-	}
-}
-
-
-function tree(data){
-	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
-		layer.msg("请选择前后统计时间!",{icon: 2});
-	}
-	else{
-		var myChart = echarts.init(document.getElementById('line'));
-		option = {
-			tooltip : {
-				trigger: 'axis'
-			},
-			legend: {
-				data:data.title
-			},
-			calculable : true,
-			xAxis : [
-				{
-					type : 'category',
-					boundaryGap : false,
-					data : data.date
-				}
-			],
-			yAxis : [
-				{
-					type : 'value'
-				}
-			],
-			series : [
-			]
-		};
-
-		for(var i =0;i<data.title.length;i++){
-			var name = data.title[i];
-			var num=new Array();
-			num =data.content[name];
-			option.series.push(
-				{
-					name:name,
-					type:'line',
-					data:num
-				}
-			)
-		}
-		myChart.setOption(option);
-	}
-}
-
-function pie(data){
-	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
-		layer.msg("请选择前后统计时间!",{icon: 2});
-	}
-	else{
-		var myChart = echarts.init(document.getElementById('pie'));
-		var urltype=$("#urltype").find("option:selected").text();
-		option = {
-			tooltip : {
-				trigger: 'item',
-				formatter: "{b} : {c} ({d}%)"
-			},
-			legend: {
-				orient : 'vertical',
-				x : 'left',
-				data:data.title
-			},
-			calculable : true,
-			series : [
-				{
-					type:'pie',
-					radius : '60%',
-					center: ['50%', '60%'],
-					data:[
-					]
-				}
-			]
-		};
-
-
-		for(var i =0;i<data.title.length;i++){
-			var name = data.title[i];
-			var num=new Array();
-			num =data.content[name];
-			var val = 0;
-			for(var k =0;k<num.length;k++){
-				val=val+parseInt(num[k]);
-			}
-			option.series[0].data.push(
-				{
-					value:val,
-					name:name
-				}
-			)
-		}
-		myChart.setOption(option);
+		});
 	}
 }
 
@@ -774,9 +681,7 @@ function checksource(){
 		}
 }
 
-function checkitem(){
-	getline(2);
-}
+
 //导出
 function exportresource(){
 	getTime();
@@ -796,7 +701,6 @@ function exportresource(){
 function checkboxchange(){
 	var checkbox=$("#rstype:checked");
 	if(checkbox.length>1){
-		$("#singmore").val("1");
 		$("#single").show();
 		$("#more").hide();
 		$("input[name=item]").prop("checked",false);
@@ -804,9 +708,8 @@ function checkboxchange(){
 	}else{
 		$("#single").hide();
 		$("#more").show();
-		$("#singmore").val("0");
 	}
-	getLineByCheckMore(checkbox);
+	getline();
 }
 
 function checkAll(){
