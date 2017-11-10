@@ -12,7 +12,9 @@ function sonpage(curr)
 	    	html="";
 	    for(var i =0;res.pageRow[i];i++){
 	    	id = 10*(curr-1)+i+1;
-	    	html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].id+" ></td> <td>"+id+"</td><td>"+res.pageRow[i].sonName+"</td><td>"+res.pageRow[i].sonCode+"</td><td>"+res.pageRow[i].productResourceCode+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateson("+res.pageRow[i].id+",'"+res.pageRow[i].sonName+"','"+res.pageRow[i].sonCode+"','"+res.pageRow[i].productResourceCode+"')\">修改</button><button type='button' class='btn btn-primary' onclick=\"deleteson("+res.pageRow[i].id+")\">删除</button></td></tr>";   	
+	    	html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].id+" ></td> " +
+	    			"<td>"+id+"</td><td>"+res.pageRow[i].sonName+"</td><td>"+res.pageRow[i].sonCode+"</td>" +
+	    					"<td><button type='button' class='btn btn-primary' onclick=\"updateson("+res.pageRow[i].id+",'"+res.pageRow[i].sonName+"','"+res.pageRow[i].sonCode+"','"+res.pageRow[i].productResourceCode+"')\">修改</button><button type='button' class='btn btn-primary' onclick=\"deleteson("+res.pageRow[i].id+")\">删除</button></td></tr>";   	
 	    }
 	    document.getElementById('ttab').innerHTML = html;
         var totalRow = res.pageTotal;
@@ -172,14 +174,14 @@ function addson(){
 	layer.open({
 	    type: 1, //page层 1div，2页面
 	    area: ['50%', '500px'],
-	    title: '新增产品类型',
+	    title: '新增平台类型',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#add_sonSystem"),
 	    btn: ['确认', '取消'],
 		yes: function(){
 			var soncode=$("#son_code").val();
 			var sonname=$("#son_name").val();
-			var chk_value =[]; 
+			/*var chk_value =[]; 
 			$('input[name="sourcedata"]:checked').each(function(){ 
 				if(chk_value=="")
 				{
@@ -189,14 +191,14 @@ function addson(){
 				{
 				chk_value=chk_value+","+$(this).val();
 				}
-			}); 
-			checksonnameto(sonname,soncode,chk_value);
+			}); */
+			checksonnameto(sonname,soncode);
 	    },
 	}); 
 }
 
 
-function checksonnameto(sonname,soncode,chk_value)
+function checksonnameto(sonname,soncode)
 {	
 	$.ajax( {  
 		type : "POST",  
@@ -204,15 +206,13 @@ function checksonnameto(sonname,soncode,chk_value)
 			data : {
 				'sonName' : sonname,
 				'sonCode' : soncode,
-				'productResourceCode' : chk_value
-				
 			},
 			dataType : "json",
 			success : function(data) {
 				if(data){
 					$("#checkname").text("部门名称重复，请重新输入");
 				}else{	
-					doaddson(sonname,soncode,chk_value);
+					doaddson(sonname,soncode);
 				}
 			}
 		});
@@ -241,16 +241,15 @@ function checksonname(id,sonname,soncode,chk_value){
 		});
 }
 
-function doaddson(sonname,soncode,chk_value){
+function doaddson(sonname,soncode){
 	$("#checkname").text("");
-	if(sonname!=null&&sonname!=''&&soncode!=null&&soncode!=''&&chk_value!=null&&chk_value!=''){
+	if(sonname!=null&&sonname!=''&&soncode!=null&&soncode!=''){
 		$.ajax( {  
 			type : "POST",  
 			url : "../son/doaddson.do",
 				data : {
 					'sonName' : sonname,
 					'sonCode' : soncode,
-					'productResourceCode' : chk_value 
 				},
 				dataType : "json",
 				success : function(data) {
