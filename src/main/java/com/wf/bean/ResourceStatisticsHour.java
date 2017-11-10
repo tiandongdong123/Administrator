@@ -30,6 +30,8 @@ public class ResourceStatisticsHour implements Serializable {
 
 	private String product_source_code;
 
+	private String resourceTypeCode;
+
 	private String sum1;//浏览数
 	private String sum2;//下载数
 	private String sum3;//检索数
@@ -148,6 +150,13 @@ public class ResourceStatisticsHour implements Serializable {
 		this.product_source_code = product_source_code;
 	}
 
+	public String getResourceTypeCode() {
+		return resourceTypeCode;
+	}
+
+	public void setResourceTypeCode(String resourceTypeCode) {
+		this.resourceTypeCode = resourceTypeCode;
+	}
 	public String getSum1() {
 		return sum1;
 	}
@@ -219,4 +228,5 @@ public class ResourceStatisticsHour implements Serializable {
 	public void setSum9(String sum9) {
 		this.sum9 = sum9;
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.wf.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,41 +74,43 @@ public class ResourceTypeStatisticsController {
 	}
 	
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
-	public void exportresourceType(HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
+	public void exportresourceType(HttpServletRequest request,HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res) throws UnsupportedEncodingException {
 		List<Object> list=new ArrayList<Object>();
+		if(StringUtils.isNotBlank(res.getInstitutionName())){
+			String name = java.net.URLDecoder.decode(request.getParameter("institutionName"), "utf-8");
+			res.setInstitutionName(name);
+		}
+
 		list= this.resource.exportresourceType(num,starttime,endtime, res);
 		JSONArray array=JSONArray.fromObject(list);
 		
 		List<String> names=new ArrayList<String>();
 		names.add("序号");
+		names.add("资源类型");
 		String restype=res.getSourceTypeName();
-		
-		if("期刊".equals(restype)){
+		if("perio".equals(restype)){
 			names.add("期刊名称");
-		}else if("会议".equals(restype)){
+		}else if("conference".equals(restype)){
 			names.add("会议名称");
-		}else if("学位".equals(restype)){
+		}else if("degree".equals(restype)){
 			names.add("授予学位的机构名称");
 		}
-
-		names.add("资源类型");
-		names.add("浏览数");									
-		names.add("下载数");
 		names.add("检索数");
-		names.add("分享数");
-		names.add("收藏数");
-		names.add("导出数");
-		names.add("笔记数");
+		names.add("浏览数");
+		names.add("下载数");
+		names.add("跳转数");
 		names.add("订阅数");
+		names.add("收藏数");
+		names.add("笔记数");
+		names.add("分享数");
+		names.add("导出数");
 		
 		List<String> paramter=new ArrayList<String>();
-		String name="学位".equals(restype)?res.getSourceName():res.getInstitutionName();
+		String name="degree".equals(restype)?res.getSourceName():res.getInstitutionName();
 		if(StringUtils.isNotBlank(name))
 			paramter.add("机构名称："+name);
 		if(StringUtils.isNotBlank(res.getUserId()))
 			paramter.add("用户ID："+res.getUserId());
-		if(StringUtils.isNotBlank(restype) && !"--请选择资源类型--".equals(restype))
-			paramter.add("资源类型："+restype);
 		
 		if(null!=res.getDate()){
 			paramter.add("统计日期："+res.getDate());
@@ -124,14 +127,6 @@ public class ResourceTypeStatisticsController {
 		ExportExcel excel=new ExportExcel();
 		excel.exportresourceType(response, array, names, restype,paramter);
 		
-	}
-	
-	@RequestMapping("getLineBycheckMore")
-	@ResponseBody
-	public Map<String,Object> getLineBycheckMore(String starttime,String endtime,@ModelAttribute ResourceStatistics res,@RequestParam(value="rstnames[]",required=false)String[]rstnames,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore){
-		Map<String,Object> map = new HashMap<String, Object>();
-		map =this.resource.getAllLineByCheckMore(starttime, endtime, res, rstnames, urls, singmore);
-		return map;
 	}
 	
 }

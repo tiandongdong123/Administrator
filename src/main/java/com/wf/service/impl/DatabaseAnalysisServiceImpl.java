@@ -268,7 +268,6 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 
 	};
 
-
 	@Override
 	public List<Map<String, String>> exportDatabase(DatabaseUseDaily databaseUseDaily,
 			String startTime, String endTime) {

@@ -90,6 +90,7 @@ public interface ResourceStatisticsHourMapper {
 			@Param("startTime") String starttime,
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
+			@Param("urls") Integer[] urls,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
@@ -97,6 +98,7 @@ public interface ResourceStatisticsHourMapper {
 			@Param("startTime") String starttime,
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
+			@Param("urls") Integer[] urls,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
@@ -105,6 +107,7 @@ public interface ResourceStatisticsHourMapper {
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
+			@Param("urls") Integer[] urls,
 			@Param("singmore") Integer singmore,
 			@Param("database_name") String[] database_name);
 
@@ -112,20 +115,20 @@ public interface ResourceStatisticsHourMapper {
 			@Param("startTime") String starttime,
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
-			@Param("title") String[] title);
+			@Param("urls") Integer[] urls);
 
 	List<ResourceStatisticsHour> getChartMoreById(
 			@Param("startTime") String starttime,
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
-			@Param("title") String[] title);
+			@Param("urls") Integer[] urls);
 
 	List<ResourceStatisticsHour> getChartMoreByIds(
 			@Param("startTime") String starttime,
 			@Param("endTime") String endtime,
 			@Param("res") ResourceStatistics res,
 			@Param("users") List users,
-			@Param("title") String[] title);
+			@Param("urls") Integer[] urls);
 
 
 
