@@ -988,6 +988,7 @@ public class AheadUserController {
 	@RequestMapping("information")
 	public ModelAndView information(String userId,String ipSegment,String institution,String adminname,
 			String adminIP,String pageNum,String pageSize,String start_time,String end_time){
+		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", userId);
@@ -1024,6 +1025,7 @@ public class AheadUserController {
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.addObject("settingList",settingList);
+		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
