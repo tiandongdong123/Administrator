@@ -52,13 +52,20 @@ function purviewtree(json){
 	});
 	
 	function onCheck(){
-		var tree=""
+		var tree="";
+		var checknodesNum=0;
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
 			tree+= a[i].menuId+",";
+			 if(a[i].level==0){
+				   checknodesNum++;
+			   }
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
+		var nodes = zTree_Menu.getNodes();
+		$("#checkall").prop("checked",checknodesNum==nodes.length);
+		
 	}
 }
 
@@ -123,7 +130,7 @@ function checkrole(obj){//全选
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(true);
 		//获取treeids
-		var tree=""
+		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
 			tree+= a[i].menuId+",";
