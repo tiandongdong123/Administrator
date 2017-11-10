@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.wf.dao.DatamanagerMapper;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,8 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	private DatabaseUseHourlyMapper databaseUseHourlyMapper;
 	@Autowired
 	private PersonMapper personMapper;
+	@Autowired
+	private DatamanagerMapper datamanagerMapper;
 	
 	@Override
 	public PageList getDatabaseAnalysisList(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
@@ -73,69 +76,194 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		String product_source_code=databaseUseDaily.getProduct_source_code();
 		String source_db=databaseUseDaily.getSource_db();
 
-		if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
-			list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-		}else if(StringUtils.isNotBlank(userId)){
-			list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsById(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-		}else{
-			List users = personMapper.getInstitutionUser(institutionName);
-			list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-		}
-		if(date!=null&&!"".equals(date)){
-			for(Integer i = 1;i<=24;i++){
-				timeList.add(i.toString());
+		if(database_name==null){
+			if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatistics(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+			}else if(StringUtils.isNotBlank(userId)){
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsById(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+			}else{
+				List users = personMapper.getInstitutionUser(institutionName);
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
 			}
-			for(int i = 0;i<24;i++){
-				for (DatabaseUseHourly item : list) {
-					if(Integer.parseInt(item.getHour())==i+1){
-						searchList.add(item.getSum1());
-						browseList.add(item.getSum2());
-						downloadList.add(item.getSum3());
-						break;
+			if(date!=null&&!"".equals(date)){
+				for(Integer i = 1;i<=24;i++){
+					timeList.add(i.toString());
+				}
+				for(int i = 0;i<24;i++){
+					for (DatabaseUseHourly item : list) {
+						if(Integer.parseInt(item.getHour())==i+1){
+							searchList.add(item.getSum1());
+							browseList.add(item.getSum2());
+							downloadList.add(item.getSum3());
+							break;
+						}
+					}
+					if(searchList.size()==i){
+						searchList.add("0");
+						browseList.add("0");
+						downloadList.add("0");
 					}
 				}
-				if(searchList.size()==i){
-					searchList.add("0");
-					browseList.add("0");
-					downloadList.add("0");
+			}else {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date starttime = format.parse(startTime);
+					Date endtime = format.parse(endTime);
+					List<Date> days = this.getDate(starttime, endtime);
+					for(Date d : days){
+						timeList.add(format.format(d));
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				for(int i = 0;i<timeList.size();i++){
+					for (DatabaseUseHourly item : list) {
+						if(timeList.get(i).equals(item.getDate())){
+							searchList.add(item.getSum1());
+							browseList.add(item.getSum2());
+							downloadList.add(item.getSum3());
+							break;
+						}
+					}
+					if(searchList.size()==i){
+						searchList.add("0");
+						browseList.add("0");
+						downloadList.add("0");
+					}
+
 				}
 			}
+			content.put("浏览数",browseList);
+			content.put("下载数",downloadList);
+			content.put("检索数",searchList);
+
+			map.put("timeArr", timeList.toArray());
+			map.put("content", content);
 		}else {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			try {
-				Date starttime = format.parse(startTime);
-				Date endtime = format.parse(endTime);
-				List<Date> days = this.getDate(starttime, endtime);
-				for(Date d : days){
-					timeList.add(format.format(d));
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
+			if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsMore(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+			}else if(StringUtils.isNotBlank(userId)){
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIdMore(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
+			}else{
+				List users = personMapper.getInstitutionUser(institutionName);
+				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIdsMore(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
 			}
-
-			for(int i = 0;i<timeList.size();i++){
-				for (DatabaseUseHourly item : list) {
-					if(timeList.get(i).equals(item.getDate())){
-						searchList.add(item.getSum1());
-						browseList.add(item.getSum2());
-						downloadList.add(item.getSum3());
-						break;
+			List<String> databaseName = datamanagerMapper.getdatabseName(database_name);
+			if(date!=null&&!"".equals(date)){
+				for(Integer i = 1;i<=24;i++){
+					timeList.add(i.toString());
+				}
+				for(int j = 0;j<databaseName.size();j++){
+					List arrayList = new ArrayList<>();
+					if(urlType[0]==1){
+					for(int i = 0;i<24;i++){
+						for (DatabaseUseHourly item : list) {
+							if(databaseName.get(j).equals(item.getDatabase_name())&&Integer.parseInt(item.getHour())==i+1){
+								arrayList.add(item.getSum2());
+								break;
+								}
+							}
+						if(arrayList.size()==i){
+							arrayList.add("0");
+						}
+						}
+					content.put(databaseName.get(j),arrayList);
+					}
+					if(urlType[0]==2){
+						for(int i = 0;i<24;i++){
+							for (DatabaseUseHourly item : list) {
+								if(databaseName.get(j).equals(item.getDatabase_name())&&Integer.parseInt(item.getHour())==i+1){
+									arrayList.add(item.getSum3());
+									break;
+								}
+							}
+							if(arrayList.size()==i){
+								arrayList.add("0");
+							}
+						}
+						content.put(databaseName.get(j),arrayList);
+					}
+					if(urlType[0]==3){
+						for(int i = 0;i<24;i++){
+							for (DatabaseUseHourly item : list) {
+								if(databaseName.get(j).equals(item.getDatabase_name())&&Integer.parseInt(item.getHour())==i+1){
+									arrayList.add(item.getSum1());
+									break;
+								}
+							}
+							if(arrayList.size()==i){
+								arrayList.add("0");
+							}
+						}
+						content.put(databaseName.get(j),arrayList);
 					}
 				}
-				if(searchList.size()==i){
-					searchList.add("0");
-					browseList.add("0");
-					downloadList.add("0");
+			}else {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date starttime = format.parse(startTime);
+					Date endtime = format.parse(endTime);
+					List<Date> days = this.getDate(starttime, endtime);
+					for(Date d : days){
+						timeList.add(format.format(d));
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 
+				for(int j = 0;j<databaseName.size();j++){
+					List arrayList = new ArrayList<>();
+					if(urlType[0]==1){
+						for(int i = 0;i<timeList.size();i++){
+							for (DatabaseUseHourly item : list) {
+								if(databaseName.get(j).equals(item.getDatabase_name())&&timeList.get(i).equals(item.getDate())){
+									arrayList.add(item.getSum2());
+									break;
+								}
+							}
+							if(arrayList.size()==i){
+								arrayList.add("0");
+							}
+						}
+						content.put(databaseName.get(j),arrayList);
+					}
+					if(urlType[0]==2){
+						for(int i = 0;i<timeList.size();i++){
+							for (DatabaseUseHourly item : list) {
+								if(databaseName.get(j).equals(item.getDatabase_name())&&timeList.get(i).equals(item.getDate())){
+									arrayList.add(item.getSum3());
+									break;
+								}
+							}
+							if(arrayList.size()==i){
+								arrayList.add("0");
+							}
+						}
+						content.put(databaseName.get(j),arrayList);
+					}
+					if(urlType[0]==3){
+						for(int i = 0;i<timeList.size();i++){
+							for (DatabaseUseHourly item : list) {
+								if(databaseName.get(j).equals(item.getDatabase_name())&&timeList.get(i).equals(item.getDate())){
+									arrayList.add(item.getSum1());
+									break;
+								}
+							}
+							if(arrayList.size()==i){
+								arrayList.add("0");
+							}
+						}
+						content.put(databaseName.get(j),arrayList);
+					}
+				}
 			}
-		}
-		content.put("浏览数",browseList);
-		content.put("下载数",downloadList);
-		content.put("检索数",searchList);
 
-		map.put("timeArr", timeList.toArray());
-		map.put("content", content);
+			map.put("title",databaseName.toArray());
+			map.put("timeArr", timeList.toArray());
+			map.put("content", content);
+		}
+
 		return map;
 
 	};
