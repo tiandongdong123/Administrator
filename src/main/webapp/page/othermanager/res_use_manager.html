@@ -75,25 +75,28 @@
 					<button type='button' class='btn btn-primary' onclick="getline(),gettable(1)">查询</button>
 		           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportresource();">导出</button>
              	</div>
-	         	<table  class="table table-bordered table-striped">
-                <tbody id="databody">
-                
-                </tbody>
-                
-              </table>
-                  <div class="pageAll" style="overflow: hidden;">
-                      <div class="showPage" style="font-size: 12px;font-family: 微软雅黑; padding:3px;margin-left: 33%;float: left;line-height: 30px;display: none;">
-                          每页显示：
-                          <select name="" id="pageChange" style="height: 24px;display: inline-block;">
-                              <option value="10" selected="selected">10</option>
-                              <option value="20">20</option>
-                              <option value="30">30</option>
-                              <option value="50">50</option>
-                          </select>
-                          条数据
+
+                  <div style="overflow-y:scroll; height:300px;">
+                      <table  class="table table-bordered table-striped" >
+                          <tbody id="databody"></tbody>
+                      </table>
+                      <div class="pageAll" style="overflow: hidden;">
+                          <div class="showPage" style="font-size: 12px;font-family: 微软雅黑; padding:3px;margin-left: 33%;float: left;line-height: 30px;display: none;">
+                              每页显示：
+                              <select name="" id="pageChange" style="height: 24px;display: inline-block;">
+                                  <option value="10" selected="selected">10</option>
+                                  <option value="20">20</option>
+                                  <option value="30">30</option>
+                                  <option value="50">50</option>
+                              </select>
+                              条数据
+                          </div>
+                          <div id="page" style="float: left"></div>
                       </div>
-                      <div id="page" style="float: left"></div>
                   </div>
+
+
+
 	             分析指标：
              	<div id="single">
 	              <select id="urltype" onchange="checkitem()">

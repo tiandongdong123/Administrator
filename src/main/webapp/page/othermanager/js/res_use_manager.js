@@ -54,14 +54,9 @@ $(function(){
 		var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
 		pagesize=parseInt($(this).find('option:selected').val());
 		pagenum=curr=parseInt($number/pagesize)+1;
-		if(restype=='期刊'||restype=='会议'||restype=='学位')
+		if(restype=='perio'||restype=='conference'||restype=='degree')
 		{
 			num=1;
-		}else{
-			num=0;
-		}
-		if(restype=='学位')
-		{
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
 				pagesize :pagesize,
@@ -73,17 +68,17 @@ $(function(){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
-
 				num:num,
+				date:date,
 			}, function(res){
 				var html="";
 				var htmltitle=""
 				var htmlbody=""
-				if(restype=='期刊'){
+				if(restype=='perio'){
 					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
+				}else if(restype=='conference'){
 					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
+				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
@@ -101,9 +96,9 @@ $(function(){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
-					$(".showPage").css("display","block");
+					// $(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+					if(restype=='perio'||restype=='conference'||restype=='degree'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
 					}
 					html+="<tr>" +
@@ -178,14 +173,15 @@ $(function(){
 				database_name:database_name,
 				num:num,
 			}, function(res){
+
 				var html="";
 				var htmltitle=""
 				var htmlbody=""
-				if(restype=='期刊'){
+				if(restype=='perio'){
 					htmltitle="<th>期刊名称</th>";
-				}else if(restype=='会议'){
+				}else if(restype=='conference'){
 					htmltitle="<th>会议名称</th>";
-				}else if(restype=='学位'){
+				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
@@ -205,7 +201,7 @@ $(function(){
 				for(var i =0;res.pageRow[i];i++){
 					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
-					if(restype=='期刊'||restype=='会议'||restype=='学位'){
+					if(restype=='perio'||restype=='conference'||restype=='degree'){
 
 						var title;
 						if(res.pageRow[i].title==null){
@@ -232,7 +228,7 @@ $(function(){
 						"</tr>";
 				}
 				document.getElementById('databody').innerHTML = html;
-				var totalRow = res.pageTotal;
+				var totalRow = res.totalRow;
 				var pageSize = res.pageSize;
 				var pages;
 				var groups;
@@ -265,7 +261,6 @@ $(function(){
 					jump: function(obj, first){ //触发分页后的回调
 						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
 							gettable(obj.curr);
-
 						}
 					}
 				});
@@ -333,7 +328,7 @@ function gettable(curr){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
-					$(".showPage").css("display","block");
+					// $(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
 					if(restype=='perio'||restype=='conference'||restype=='degree'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
@@ -345,7 +340,7 @@ function gettable(curr){
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
 						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
 						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
-						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数。。。。。
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数
 						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
 						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
 						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
@@ -355,7 +350,7 @@ function gettable(curr){
 
 				}
 				document.getElementById('databody').innerHTML = html;
-				var totalRow = res.pageTotal;
+				var totalRow = res.totalRow;
 				var pageSize = res.pageSize;
 				var pages;
 				var groups;
@@ -406,11 +401,11 @@ function gettable(curr){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
-				date:date,
+				// date:date,
 				database_name:database_name,
 				num:num,
-				date:date,
 			}, function(res){
+
 				var html="";
 				var htmltitle=""
 				var htmlbody=""
@@ -465,7 +460,7 @@ function gettable(curr){
 						"</tr>";
 				}
 				document.getElementById('databody').innerHTML = html;
-				var totalRow = res.pageTotal;
+				var totalRow = res.totalRow;
 				var pageSize = res.pageSize;
 				var pages;
 				var groups;
@@ -498,7 +493,6 @@ function gettable(curr){
 					jump: function(obj, first){ //触发分页后的回调
 						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
 							gettable(obj.curr);
-
 						}
 					}
 				});
