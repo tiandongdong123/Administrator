@@ -417,7 +417,14 @@ public class ContentController{
             HttpServletResponse response,HttpServletRequest request,Model model) throws IOException {
 		int pageNum=1;
 		int pageSize=10;
-		PageList p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
+		PageList p=new PageList();
+		if(null==typeName || "".equals(typeName)){
+			 p=resourceTypeService.getResourceType(pageNum, pageSize);
+		}else{
+			p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
+		}
+		
+		
 		model.addAttribute("pageList",p);
         JSONObject json=JSONObject.fromObject(p);
         response.setCharacterEncoding("UTF-8");
