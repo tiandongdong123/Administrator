@@ -30,8 +30,9 @@
 	  				<td class="ar">
 	  					<select id="xjbm">
 	  						<option>全部</option>
-	  						<option>市场部</option>
-	  						<option>运维部</option>
+	  						<?for(dept in deptList){?>
+		        				<option>${dept}</option>
+		        			<?}?>
 	  					</select>
 	  				</td>
 	  				<td class="al">添加人</td>

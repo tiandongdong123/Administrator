@@ -1,5 +1,7 @@
 package com.wf.service;
 
+import java.util.List;
+
 import com.wf.bean.Department;
 import com.wf.bean.PageList;
 
@@ -16,4 +18,6 @@ public interface DepartmentService {
 	boolean deleteDept(Integer id);
 	
 	boolean checkDept(String deptname);
+	
+	List<Object> getAllDept();
 }

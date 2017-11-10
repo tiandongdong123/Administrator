@@ -52,6 +52,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.JsonUtil;
 import com.utils.ParamUtils;
+import com.wf.bean.Department;
 import com.wf.bean.Message;
 import com.wf.bean.Notes;
 import com.wf.bean.PageList;
@@ -62,6 +63,7 @@ import com.wf.bean.ShareTtemplateNames;
 import com.wf.bean.Subject;
 import com.wf.bean.Volume;
 import com.wf.bean.Wfadmin;
+import com.wf.service.DepartmentService;
 import com.wf.service.MessageService;
 import com.wf.service.NotesService;
 import com.wf.service.ResourceTypeService;
@@ -104,6 +106,8 @@ public class ContentController{
 	@Autowired
 	ShareTemplateNamesFiledsService filedsService;
 
+	@Autowired
+	DepartmentService departmentService;
 	
 	RedisUtil redis = new RedisUtil();
 	/**
@@ -288,6 +292,13 @@ public class ContentController{
 		mp.put("endTime",endTime);
 		model.addAttribute("pageList",messageList);
 		model.addAttribute("meaasgeMap", mp);
+		
+		List<String> deptList=new ArrayList<String>();
+		for (Object department : departmentService.getAllDept()) {
+			deptList.add(((Department)department).getDeptName());
+		}
+		
+		model.addAttribute("deptList",deptList);
 		return "/page/contentmanage/message";
 	}
 	/**
