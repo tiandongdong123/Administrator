@@ -305,7 +305,6 @@ function gettable(curr){
 				starttime : starttime,
 				endtime:endtime,
 				operate_type:urltype,
-
 				num:num,
 				date:date,
 			}, function(res){

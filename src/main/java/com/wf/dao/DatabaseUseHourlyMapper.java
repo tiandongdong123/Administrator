@@ -134,6 +134,31 @@ public interface DatabaseUseHourlyMapper {
 			@Param("urlType") Integer[] urlType,
 			@Param("database_name") String[] database_name);
 
+	List<DatabaseUseHourly> DatabaseAnalysisStatisticsMore(
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<DatabaseUseHourly> DatabaseAnalysisStatisticsByIdMore(
+			@Param("user_id") String userId,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<DatabaseUseHourly> DatabaseAnalysisStatisticsByIdsMore(
+			@Param("institution_name") String institutionName,
+			@Param("users") List users,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+
 	List<Map<String, String>> exportDatabaseOneDay(
 			@Param("databaseUseDaily") DatabaseUseDaily databaseUseDaily,
 			@Param("startTime") String startTime,

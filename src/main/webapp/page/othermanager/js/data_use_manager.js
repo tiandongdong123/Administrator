@@ -376,6 +376,7 @@ function checkitem(){
 
 //多选指标  全部
 function checksource(){
+
 	$("input[name='item']").prop("checked",$("#checkallsource").prop("checked"));
 	checkitem_more();
 }

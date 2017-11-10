@@ -67,6 +67,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<String>noteList=new ArrayList();
 		List<String>jumpList=new ArrayList();
 		List<String>subscriptionList=new ArrayList();
+		List<String> resources = new ArrayList<>();
 
 		if(table==0){
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
@@ -93,90 +94,141 @@ public class ResourceTypeStatisticsServiceImpl implements
 					timeList.add(i.toString());
 				}
 				if(database_name.length>0){
-					for(int i =0;i<database_name.length;i++){
-						List arrayList = new ArrayList<>();
-						for(int j = 0;j<24;j++){
-							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
-									searchList.add(item.getSum1() );
-									browseList.add(item.getSum2());
-									downloadList.add(item.getSum3());
-									shareList.add(item.getSum4());
-									collectionList.add(item.getSum5());
-									exportList.add(item.getSum6());
-									noteList.add(item.getSum7());
-									jumpList.add(item.getSum8());
-									subscriptionList.add(item.getSum9());
-									break;
-								}
-							}
-							if(searchList.size()==j){
-								searchList.add("0");
-								browseList.add("0");
-								downloadList.add("0");
-								shareList.add("0");
-								collectionList.add("0");
-								exportList.add("0");
-								noteList.add("0");
-								jumpList.add("0");
-								subscriptionList.add("0");
-							}
-						}
-						arrayList.add(browseList);
-						arrayList.add(downloadList);
-						arrayList.add(searchList);
-						arrayList.add(shareList);
-						arrayList.add(collectionList);
-						arrayList.add(exportList);
-						arrayList.add(noteList);
-						arrayList.add(jumpList);
-						arrayList.add(subscriptionList);
-						content.put(database_name[i],arrayList);
-					}
+					resources = resourceTypeMapper.getResourceByCode(database_name);
 				}else {
-					List<String> resources = resourceTypeMapper.getAllName();
-					for(int i =0;i<resources.size();i++){
-						List arrayList = new ArrayList<>();
+					for(ResourceStatisticsHour item : list){
+						resources.add(item.getSourceTypeName());
+					}
+				}
+				for(int i =0;i<resources.size();i++){
+					List arrayList = new ArrayList<>();
+					if(urls[i]==1){
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
-									searchList.add(item.getSum1() );
-									browseList.add(item.getSum2());
-									downloadList.add(item.getSum3());
-									shareList.add(item.getSum4());
-									collectionList.add(item.getSum5());
-									exportList.add(item.getSum6());
-									noteList.add(item.getSum7());
-									jumpList.add(item.getSum8());
-									subscriptionList.add(item.getSum9());
+									arrayList.add(item.getSum1() );
 									break;
 								}
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
-								browseList.add("0");
-								downloadList.add("0");
-								shareList.add("0");
-								collectionList.add("0");
-								exportList.add("0");
-								noteList.add("0");
-								jumpList.add("0");
-								subscriptionList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
-						arrayList.add(browseList);
-						arrayList.add(downloadList);
-						arrayList.add(searchList);
-						arrayList.add(shareList);
-						arrayList.add(collectionList);
-						arrayList.add(exportList);
-						arrayList.add(noteList);
-						arrayList.add(jumpList);
-						arrayList.add(subscriptionList);
+						content.put(database_name[i],arrayList);
+					}
+					if(urls[i]==2){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum2() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==3){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum3() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==4){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum4() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==5){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum5() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==6){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum6() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==7){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum7() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==8){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum8() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[i]==9){
+						for(int j = 0;j<24;j++){
+							for (ResourceStatisticsHour item : list) {
+								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
+									arrayList.add(item.getSum9() );
+									break;
+								}
+							}
+							if(arrayList.size()==j){
+								arrayList.add("0");
+							}
+						}
 						content.put(resources.get(i),arrayList);
 					}
 				}
-
 			}else {
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				try {
@@ -190,90 +242,143 @@ public class ResourceTypeStatisticsServiceImpl implements
 					e.printStackTrace();
 				}
 				if(database_name.length>0){
-					for(int i =0;i<database_name.length;i++){
-						List arrayList = new ArrayList<>();
+					resources = resourceTypeMapper.getResourceByCode(database_name);
+				}else {
+					for(ResourceStatisticsHour item : list){
+						resources.add(item.getSourceTypeName());
+					}
+				}
+				for(int i =0;i<resources.size();i++){
+					List arrayList = new ArrayList<>();
+					if(urls[0]==1){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
 								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
 									searchList.add(item.getSum1() );
-									browseList.add(item.getSum2());
-									downloadList.add(item.getSum3());
-									shareList.add(item.getSum4());
-									collectionList.add(item.getSum5());
-									exportList.add(item.getSum6());
-									noteList.add(item.getSum7());
-									jumpList.add(item.getSum8());
-									subscriptionList.add(item.getSum9());
 									break;
 								}
 							}
 							if(searchList.size()==j){
 								searchList.add("0");
-								browseList.add("0");
-								downloadList.add("0");
-								shareList.add("0");
-								collectionList.add("0");
-								exportList.add("0");
-								noteList.add("0");
-								jumpList.add("0");
-								subscriptionList.add("0");
 							}
 						}
-						arrayList.add(browseList);
-						arrayList.add(downloadList);
-						arrayList.add(searchList);
-						arrayList.add(shareList);
-						arrayList.add(collectionList);
-						arrayList.add(exportList);
-						arrayList.add(noteList);
-						arrayList.add(jumpList);
-						arrayList.add(subscriptionList);
-						content.put(database_name[i],arrayList);
+						content.put(resources.get(i),arrayList);
 					}
-				}else {
-					List<String> resources = resourceTypeMapper.getAllName();
-					for(int i =0;i<resources.size();i++){
-						List arrayList = new ArrayList<>();
-						for(int j = 0;j<24;j++){
+					if(urls[0]==2){
+						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
-									searchList.add(item.getSum1() );
-									browseList.add(item.getSum2());
-									downloadList.add(item.getSum3());
-									shareList.add(item.getSum4());
-									collectionList.add(item.getSum5());
-									exportList.add(item.getSum6());
-									noteList.add(item.getSum7());
-									jumpList.add(item.getSum8());
-									subscriptionList.add(item.getSum9());
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum2() );
 									break;
 								}
 							}
 							if(searchList.size()==j){
 								searchList.add("0");
-								browseList.add("0");
-								downloadList.add("0");
-								shareList.add("0");
-								collectionList.add("0");
-								exportList.add("0");
-								noteList.add("0");
-								jumpList.add("0");
-								subscriptionList.add("0");
 							}
 						}
-						arrayList.add(browseList);
-						arrayList.add(downloadList);
-						arrayList.add(searchList);
-						arrayList.add(shareList);
-						arrayList.add(collectionList);
-						arrayList.add(exportList);
-						arrayList.add(noteList);
-						arrayList.add(jumpList);
-						arrayList.add(subscriptionList);
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==3){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum3() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==4){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum4() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==5){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum5() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==6){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum6() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==7){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum7() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==8){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum8() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
+						content.put(resources.get(i),arrayList);
+					}
+					if(urls[0]==9){
+						for(int j = 0;j<timeList.size();j++){
+							for (ResourceStatisticsHour item : list) {
+								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
+									searchList.add(item.getSum9() );
+									break;
+								}
+							}
+							if(searchList.size()==j){
+								searchList.add("0");
+							}
+						}
 						content.put(resources.get(i),arrayList);
 					}
 				}
 			}
+			map.put("title",resources.toArray());
 		}else {
 			if(res.getDate()!=null&&!"".equals(res.getDate())){
 				for(Integer i = 1;i<=24;i++){

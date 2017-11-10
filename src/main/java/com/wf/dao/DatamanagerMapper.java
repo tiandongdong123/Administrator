@@ -47,4 +47,6 @@ public interface DatamanagerMapper {
    JSONArray selectZY();
     
    List<Object> exportData(@Param("dataname") String dataname,@Param("dataname1") String dataname1);
+
+    List<String> getdatabseName(@Param("productSourceCode") String[] database_name);
 }

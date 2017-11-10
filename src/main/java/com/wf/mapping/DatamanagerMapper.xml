@@ -208,5 +208,12 @@
 	select product_source_code as productSourceCode, table_name as tableName
 	    from datamanager where status = '1' and source_db = #{productSourceCode}
  </select>
-  
+  <select id="getdatabseName" resultType="java.lang.String" >
+      select table_name from datamanager
+      where product_source_code IN
+      <foreach collection="productSourceCode" item="item" open="(" separator="," close=")">
+          #{item}
+      </foreach>
+      group by table_name
+  </select>
 </mapper>
