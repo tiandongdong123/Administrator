@@ -141,7 +141,10 @@ function MoneyCheck(str){
     	return true;
     }
 }
-function productType()
-{
+function productType(){
+	window.location='../system/productType.do';
+}
+function sonSystem(){
 	window.location='../system/sonSystem.do';
 }
+
