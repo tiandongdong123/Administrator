@@ -214,6 +214,6 @@ function doupdateunit(unitname,unitcode,id){
 	
 }
 
-function goback(id){
+function goback(){
 	window.history.go(-1);
 }

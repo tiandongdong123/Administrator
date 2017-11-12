@@ -2,7 +2,7 @@
 	getResource();
 });*/
 function addunit(){
-	window.location.href="../system/unitSystem.do";
+	window.location.href="../system/unitSystem.do?id=goback";
 }
 
 function select_product(){
