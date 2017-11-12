@@ -143,5 +143,5 @@ function MoneyCheck(str){
 }
 function productType()
 {
-	window.location='../system/prductType.do';
+	window.location='../system/sonSystem.do';
 }
