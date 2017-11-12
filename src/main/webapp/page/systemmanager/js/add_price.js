@@ -122,6 +122,10 @@ function doaddprice(id){
 						$("#name").val("");
 						$("#rid").val("");
 						$("#price").val("");
+						$("#son").val("");
+						$("#product").html("");
+						$("#rname").html("");
+						$("#unitname option:first").prop("selected", 'selected');  
 					}else{
 						layer.msg("添加成功",{time:2000});
 						window.location.href="../system/resourceManager.do";
