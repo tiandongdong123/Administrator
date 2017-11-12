@@ -112,6 +112,8 @@ function addunit(){
 			var unitname=$("#addunitname").val();
 			var unitcode=$("#addunitcode").val();
 			checkunitname(unitname,unitcode);
+			$("#addunitname").val("");
+			$("#addunitcode").val("");
 	    },
 	}); 
 }
