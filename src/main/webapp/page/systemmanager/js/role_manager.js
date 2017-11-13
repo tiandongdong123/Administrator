@@ -12,9 +12,14 @@ function rolepage(curr){
     	html="";
     for(var i =0;res.pageRow[i];i++){
     	id = 10*(curr-1)+i+1;
-    	html+="<tr><td>"+id+"</td><td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].deptName+"</td><td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td><td>"+res.pageRow[i].description+"</td><td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td><td><button type='button' class='btn btn-primary' onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</button>" +
-    			"<button type='button' class='btn btn-primary' onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</button></td>" +
-    					"</tr>";   	
+    	html+="<tr><td>"+id+"</td>" +
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].deptName+"</td>" +
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>" +
+    			  "<td><button type='button' class='btn btn-primary' onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</button>" +
+    			  "<button type='button' class='btn btn-primary' onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</button></td>" +
+    			  "</tr>";   	
     }
         document.getElementById('rolebody').innerHTML = html;
         var totalRow = res.pageTotal;
