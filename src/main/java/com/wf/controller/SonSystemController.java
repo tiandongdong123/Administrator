@@ -78,10 +78,10 @@ public class SonSystemController {
 	@ResponseBody
 	public boolean checkProduct(HttpServletRequest request){
 		SonSystem son=new SonSystem();
-		String source_code=request.getParameter("productResourceCode");
+		//String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
 		String code=request.getParameter("sonCode");
-		son.setProductResourceCode(source_code);
+		//son.setProductResourceCode(source_code);
 		son.setSonCode(code);
 		son.setSonName(name);
 		boolean rt = this.pts.checkSon(son);
@@ -119,7 +119,7 @@ public class SonSystemController {
 		String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
 		String code=request.getParameter("sonCode");
-		son.setProductResourceCode(source_code);
+		son.setProductResourceCode(source_code==null?"":source_code);
 		son.setSonCode(code);
 		son.setSonName(name);
 		son.setId(Integer.valueOf(id));

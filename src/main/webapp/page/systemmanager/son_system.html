@@ -51,19 +51,20 @@
           </div>
       </div>
     </section>
-    <div id="add_sonSystem" style="display: none;">				
+    <div id="add_sonSystem" style="display: none;">	
+    	<div class="form-group input_block">
+			<label class="input_name" style="width: 20%">
+			<b style="color: #FF0000;margin-right: 5px;">*</b>平台名称:
+			</label>
+			<input id="son_name" class="form-control input_width" name="son_id" placeholder="请输入..." type="text">
+		</div>			
 		<div class="form-group input_block">
 			<label class="input_name" style="width: 20%">
 			<b style="color: #FF0000;margin-right: 5px;">*</b>平台Code:
 			</label>
 			<input id="son_code" class="form-control input_width" name="son_code" placeholder="请输入..." type="text">
 		</div>
-		<div class="form-group input_block">
-			<label class="input_name" style="width: 20%">
-			<b style="color: #FF0000;margin-right: 5px;">*</b>平台名称:
-			</label>
-			<input id="son_name" class="form-control input_width" name="son_id" placeholder="请输入..." type="text">
-		</div>
+		
 		<!-- <div id="source" class="form-group input_block">
 			<label class="input_name" style="width: 20%">
 			<b style="color: #FF0000;margin-right: 5px;">*</b>平台来源:
@@ -73,21 +74,22 @@
 	<div id="up_sonSystem" style="display: none;">	
 		<div class="form-group input_block">
 			<label class="input_name" style="width: 20%">
-			<b style="color: #FF0000;margin-right: 5px;">*</b>产品名称:
+			<b style="color: #FF0000;margin-right: 5px;">*</b>平台名称:
 			</label>
-			<input id="up_name" readonly="readonly" class="form-control input_width" name="son_code" type="text">
+			<input id="up_name" class="form-control input_width" name="son_id"  type="text">
+			
 		</div>							
 		<div class="form-group input_block">
 			<label class="input_name" style="width: 20%">
-			<b style="color: #FF0000;margin-right: 5px;">*</b>产品Code:
+			<b style="color: #FF0000;margin-right: 5px;">*</b>平台Code:
 			</label>
-			<input id="up_code" class="form-control input_width" name="son_id"  type="text">
+			<input id="up_code" readonly="readonly" class="form-control input_width" name="son_code" type="text">
 		</div>
-		<div id='upsource' class="form-group input_block">
+		<!-- <div id='upsource' class="form-group input_block">
 			<label class="input_name" style="width: 20%">
 			<b style="color: #FF0000;margin-right: 5px;">*</b>资源来源:
 			</label>
-		</div>							
+		</div> -->							
 	</div>
 </div>
 </div>

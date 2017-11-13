@@ -104,14 +104,14 @@ function deleteson(id){
 }
 
 
-function updateson(id,code,name,source){
+function updateson(id,name,code,source){
 	$('#up_name').val(name);
 	$('#up_code').val(code);
 	var json=source.split(",");
 	$("#upsource span").remove();
 	$.post("../son/source_data.do",function(data){
 		$("#upsource span").remove();
-		var html="<span><input type='checkbox' onclick='upcheckall();'  id='upall'>全选</span>"
+		var html="<span><input type='checkbox' onclick='upcheckall();'  id='upall'>全选</span>";
 			$("#upsource").append(html);
 		var input=null;
 			for(var i=0;i<data.length;i++)
@@ -134,7 +134,7 @@ function updateson(id,code,name,source){
 	layer.open({
 	    type: 1, //page层 1div，2页面
 	    area: ['50%', '500px'],
-	    title: '修改产品类型',
+	    title: '修改平台类型',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#up_sonSystem"),
 	    btn: ['确认', '取消'],
@@ -210,7 +210,7 @@ function checksonnameto(sonname,soncode)
 			dataType : "json",
 			success : function(data) {
 				if(data){
-					$("#checkname").text("部门名称重复，请重新输入");
+					layer.msg("平台名称或平台Code重复,请重新输入....",{time:2000});
 				}else{	
 					doaddson(sonname,soncode);
 				}
@@ -218,27 +218,8 @@ function checksonnameto(sonname,soncode)
 		});
 }
 
-function checksonname(id,sonname,soncode,chk_value){
-	$("#checkname").text("");
-	$.ajax( {  
-		type : "POST",  
-		url : "../son/checkson.do",
-			data : {
-				'id' : id,
-				'sonName' : sonname,
-				'sonCode' : soncode,
-				'productResourceCode' : chk_value
-				
-			},
-			dataType : "json",
-			success : function(data) {
-				if(data){
-					$("#checkname").text("部门名称重复，请重新输入");
-				}else{
-						doupdateson(id,sonname,soncode,chk_value);
-				}
-			}
-		});
+function checksonname(id,sonname,soncode){
+	doupdateson(id,sonname,soncode);
 }
 
 function doaddson(sonname,soncode){
@@ -268,9 +249,9 @@ function doaddson(sonname,soncode){
 	}
 
 }
-function doupdateson(id,sonname,soncode,chk_value){
+function doupdateson(id,sonname,soncode){
 	$("#checkname").text("");
-	if(chk_value!=null&&chk_value!=''&&sonname!=null&&sonname!=''&&soncode!=null&&soncode!=''){
+	if(sonname!=null&&sonname!=''&&soncode!=null&&soncode!=''){
 		$.ajax( {  
 			type : "POST",  
 			url : "../son/doupdateson.do",
@@ -278,7 +259,6 @@ function doupdateson(id,sonname,soncode,chk_value){
 					'id':id,
 					'sonName' : sonname,
 					'sonCode' : soncode,
-					'productResourceCode' : chk_value
 				},
 				dataType : "json",
 				success : function(data) {

@@ -26,7 +26,7 @@
   </delete>
   
    <select id="checkSon" resultMap="BaseResultMap">
-  	select id,son_name ,son_code,product_source_code from son_system where son_name =  #{sonName} and son_code = #{sonCode} and product_source_code=#{productResourceCode}
+  	select id,son_name ,son_code,product_source_code from son_system where son_name =  #{sonName} and son_code = #{sonCode}
    </select>
    <select id="getAll" resultMap="BaseResultMap">
   	select * from son_system 
