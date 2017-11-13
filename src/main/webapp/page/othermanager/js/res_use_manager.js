@@ -606,10 +606,10 @@ function getline(){
 		var source_db=$("#source_db").val();
 		var product_source_code=$("#database").val();
 		var num=0;
-		if(restype=='perio'||restype=='conference'||restype=='degree'){
-
-			num=1;
-		}
+		// if(restype=='perio'||restype=='conference'||restype=='degree'){
+        //
+		// 	num=1;
+		// }
 		$.ajax( {
 			type : "POST",
 			url : "../resourceTypeStatistics/getline.do",
@@ -629,45 +629,109 @@ function getline(){
 			},
 			dataType : "json",
 			success : function(data) {
-				var myChart = echarts.init(document.getElementById('line'));
-				option = {
-					tooltip : {
-						trigger: 'axis'
-					},
-					legend: {
-						data:data.title
-					},
-					calculable : true,
-					xAxis : [
-						{
-							type : 'category',
-							boundaryGap : false,
-							data : data.date
-						}
-					],
-					yAxis : [
-						{
-							type : 'value'
-						}
-					],
-					series : [
-					]
-				};
+				if (singmore.length > 1) {
+					var myChart = echarts.init(document.getElementById('line'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:data.title
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.date
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
+						]
+					};
 
-				for(var i =0;i<data.title.length;i++){
-					var name = data.title[i];
-					var num=new Array();
-					num =data.content[name];
-					option.series.push(
-						{
-							name:name,
-							type:'line',
-							data:num
-						}
-					)
+					for(var i =0;i<data.title.length;i++){
+						var name = data.title[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
+					pie(data);
+
 				}
-				myChart.setOption(option);
-				pie(data);
+				else{
+					var myChart = echarts.init(document.getElementById('line'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:data.title
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.date
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
+						]
+					};
+
+					for(var i =0;i<data.title.length;i++){
+						var name = data.title[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
+					pie(data);
+				}
 			}
 		});
 	}

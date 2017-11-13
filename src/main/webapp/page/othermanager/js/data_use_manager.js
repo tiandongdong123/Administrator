@@ -212,7 +212,6 @@ function line(urlType,database_name,datas){
 		restype=$("#restype").val();
 		dbname=$("#database").val();
 		getTime();
-
 		$.ajax({
 			type : "POST",
 			url : "../databaseAnalysis/getChart.do",
@@ -330,8 +329,6 @@ function line(urlType,database_name,datas){
 				}
 			}
 		});
-
-
 	}
 }
 
