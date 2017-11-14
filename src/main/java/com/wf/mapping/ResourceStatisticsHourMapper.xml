@@ -387,7 +387,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -476,7 +476,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -569,7 +569,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -1180,7 +1180,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -1238,7 +1238,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -1300,7 +1300,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and r.source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>

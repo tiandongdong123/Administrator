@@ -53,7 +53,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 
 	@Override
 	public Map<String, Object> getAllLine(String starttime,String endtime,ResourceStatistics res,
-										  Integer[] urls,Integer singmore,String[] title,String[] database_name) {
+										  Integer[] urls,Integer singmore,String[] database_name) {
 		Map<String,Object> map=new HashMap();
 		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
 		Map<String, List<String>> content = new HashMap<String, List<String>>();
