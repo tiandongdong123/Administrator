@@ -129,7 +129,7 @@ function validStandard(count,i){
 				return false;
 			}
 			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){ 
-				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 2000});
+				layer.msg(" 机构单位简称不能包含汉字",{icon: 2,time: 2000});
 				return false; 
 			}
 		}
