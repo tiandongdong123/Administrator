@@ -1,5 +1,7 @@
 package com.utils;
 
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +22,19 @@ import java.util.regex.Pattern;
 public class StringUtil {
 	private static final String randChars = "0123456789abcdefghigklmnopqrstuvtxyzABCDEFGHIGKLMNOPQRSTUVWXYZ";
 	private static Random random = new Random();
+	
+	/**
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public static String formatStr(String code) {
+		String zero = "00000000";// 8位的0
+		String front = code.substring(0, 2);
+		String back = code.substring(2);
+		Format f1 = new DecimalFormat(zero.substring(0, back.length()));
+		return front + f1.format(Integer.parseInt(back) + 1);
+	}
 	/**
 	 * 判断字符串是否为空
 	 * 

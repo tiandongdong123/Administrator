@@ -96,50 +96,48 @@ public class MessageServiceImpl implements MessageService {
 		int num = dao.updateIssue(map);
 		if(num > 0){
 			flag = true;
-			//--------------修改成功发布至redis---------------
-			
-				if("专题聚焦".equals(colums)){
-					//清空redis中对应的key
-					redis.del("ztID");
-					redis.del("special");
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("ztID", i, m.getId());//发布到redis
-						redis.hset("special", m.getId(), object);
-					}
-				}else if("科技动态".equals(colums)){
-					redis.del("hyID");
-					redis.del("conference");
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("hyID", i, m.getId());
-						redis.hset("conference", m.getId(), object);
-					}
-				}else if("基金会议".equals(colums)){
-					redis.del("jjID");
-					redis.del("fund");
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("jjID", i, m.getId());
-						redis.hset("fund", m.getId(), object);
-					}
-				}else if("万方资讯".equals(colums)){
-					redis.del("kkID");
-					redis.del("activity");
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("kkID", i, m.getId());
-						redis.hset("activity", m.getId(), object);
-					}
+			if("专题聚焦".equals(colums)){
+				//清空redis中对应的key
+				redis.del("ztID");
+				redis.del("special");
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("ztID", i, m.getId());//发布到redis
+					redis.hset("special", m.getId(), object);
 				}
+			}else if("科技动态".equals(colums)){
+				redis.del("hyID");
+				redis.del("conference");
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("hyID", i, m.getId());
+					redis.hset("conference", m.getId(), object);
+				}
+			}else if("基金会议".equals(colums)){
+				redis.del("jjID");
+				redis.del("fund");
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("jjID", i, m.getId());
+					redis.hset("fund", m.getId(), object);
+				}
+			}else if("万方资讯".equals(colums)){
+				redis.del("kkID");
+				redis.del("activity");
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("kkID", i, m.getId());
+					redis.hset("activity", m.getId(), object);
+				}
+			}
 		}
 		return flag;
 	}
@@ -163,120 +161,114 @@ public class MessageServiceImpl implements MessageService {
 		int num = dao.updateIssue(map);
 		if(num > 0){
 			flag = true;
-			//--------------修改成功发布至redis---------------
-			
-				if("专题聚焦".equals(colums)){
-					//清空redis中对应的key
-					redis.del("ztID");
-					redis.del("special");
-					type="special";
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("ztID", i, m.getId());//发布到redis
-						redis.hset("special", m.getId(), object);
-					}
-				}else if("科技动态".equals(colums)){
-					redis.del("hyID");
-					redis.del("conference");
-					type="conference";
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("hyID", i, m.getId());
-						redis.hset("conference", m.getId(), object);
-					}
-				}else if("基金会议".equals(colums)){
-					redis.del("jjID");
-					redis.del("fund");
-					type="fund";
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("jjID", i, m.getId());
-						redis.hset("fund", m.getId(), object);
-					}
-				}else if("万方资讯".equals(colums)){
-					redis.del("kkID");
-					redis.del("activity");
-					type="activity";
-					list= dao.selectBycolums(colums);
-					for(int i = 0;i < list.size();i++){
-						Message m = (Message) list.get(i);
-						String object = JSONObject.fromObject(m).toString();
-						redis.zadd("kkID", i, m.getId());
-						redis.hset("activity", m.getId(), object);
-					}
+
+			if("专题聚焦".equals(colums)){
+				//清空redis中对应的key
+				redis.del("ztID");
+				redis.del("special");
+				type="special";
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("ztID", i, m.getId());//发布到redis
+					redis.hset("special", m.getId(), object);
 				}
-				
-				//--------------修改/下撤成功发布至solr---------------
-				if(issue==2){//发布
-					Message message=dao.findMessage(id);
-					deployInformation("information",type,message);
-				}else if(issue==3){//下撤
-					RedisUtil redisUtil = new RedisUtil();
-					String collection = redisUtil.get("information", 3);
-					SolrService.getInstance(hosts+"/"+collection);
-					SolrService.deleteIndex(id);
+			}else if("科技动态".equals(colums)){
+				redis.del("hyID");
+				redis.del("conference");
+				type="conference";
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("hyID", i, m.getId());
+					redis.hset("conference", m.getId(), object);
+				}
+			}else if("基金会议".equals(colums)){
+				redis.del("jjID");
+				redis.del("fund");
+				type="fund";
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("jjID", i, m.getId());
+					redis.hset("fund", m.getId(), object);
+				}
+			}else if("万方资讯".equals(colums)){
+				redis.del("kkID");
+				redis.del("activity");
+				type="activity";
+				list= dao.selectBycolums(colums);
+				for(int i = 0;i < list.size();i++){
+					Message m = (Message) list.get(i);
+					String object = JSONObject.fromObject(m).toString();
+					redis.zadd("kkID", i, m.getId());
+					redis.hset("activity", m.getId(), object);
 				}
 			}
+			
+			//修改/下撤成功发布至solr
+			if(issue==2){//发布
+				Message message=dao.findMessage(id);
+				deployInformation("information",type,message);
+			}else if(issue==3){//下撤
+				RedisUtil redisUtil = new RedisUtil();
+				String collection = redisUtil.get("information", 3);
+				SolrService.getInstance(hosts+"/"+collection);
+				SolrService.deleteIndex(id);
+			}
+		}
 		return flag;
 	}
 	
 	
-	/**
-	 * 将数据发布到solr中
-	 */
-	private  void  deployInformation(String core,String type,Message message) {
-			Map<String,Object> newMap = new HashMap<>();
-			List<Map<String,Object>> list = new ArrayList<>();
-			String abstracts = message.getAbstracts();
-			String author = message.getAuthor();
-			String branch = message.getBranch();
-			String colums = message.getColums();
-			String content = message.getContent();
-			String createTime = message.getCreateTime();
-			String human = message.getHuman();
-			String id = message.getId();
-			String imageUrl = message.getImageUrl();
-			Integer issueState = message.getIssueState();
-			String linkAddress = message.getLinkAddress();
-			String organName = message.getOrganName();
-			String stick = message.getStick();
-			String title = message.getTitle();
-			
-			newMap.put("id", id);
-			newMap.put("type", type);
-			newMap.put("auto_stringITS_abstracts", abstracts);
-			//处理特殊字符
-			content =toNoHtml((String)content);
-			newMap.put("auto_stringITS_content", content);
-			newMap.put("auto_stringITS_title", title);
-			
-			newMap.put("stringIS_author", author);
-			newMap.put("stringIS_branch", branch);
-			newMap.put("stringIS_colums", colums);
-			newMap.put("stringIS_createTime", createTime);
-			newMap.put("stringIS_human", human);
-			newMap.put("stringIS_imageUrl", imageUrl);
-			newMap.put("intIS_issueState", issueState);
-			newMap.put("stringIS_linkAddress", linkAddress);
-			newMap.put("stringIS_organName", organName);
-			newMap.put("stringIS_stick", stick);
-			
-			list.add(newMap);
-			
+	private void deployInformation(String core,String type,Message message) {
+		Map<String,Object> newMap = new HashMap<>();
+		List<Map<String,Object>> list = new ArrayList<>();
+		String abstracts = message.getAbstracts();
+		String author = message.getAuthor();
+		String branch = message.getBranch();
+		String colums = message.getColums();
+		String content = message.getContent();
+		String createTime = message.getCreateTime();
+		String human = message.getHuman();
+		String id = message.getId();
+		String imageUrl = message.getImageUrl();
+		Integer issueState = message.getIssueState();
+		String linkAddress = message.getLinkAddress();
+		String organName = message.getOrganName();
+		String stick = message.getStick();
+		String title = message.getTitle();
+		
+		newMap.put("id", id);
+		newMap.put("type", type);
+		newMap.put("auto_stringITS_abstracts", abstracts);
+		//处理特殊字符
+		content =toNoHtml((String)content);
+		newMap.put("auto_stringITS_content", content);
+		newMap.put("auto_stringITS_title", title);
+		newMap.put("stringIS_author", author);
+		newMap.put("stringIS_branch", branch);
+		newMap.put("stringIS_colums", colums);
+		newMap.put("stringIS_createTime", createTime);
+		newMap.put("stringIS_human", human);
+		newMap.put("stringIS_imageUrl", imageUrl);
+		newMap.put("intIS_issueState", issueState);
+		newMap.put("stringIS_linkAddress", linkAddress);
+		newMap.put("stringIS_organName", organName);
+		newMap.put("stringIS_stick", stick);
+		
+		list.add(newMap);
+
 		RedisUtil redisUtil = new RedisUtil();
 		String collection = redisUtil.get(core, 3);
 		
 		SolrService.getInstance(hosts+"/"+collection);
 		SolrService.createIndexFound(list);
-	} 
-	
-	
+	}
+
 	
 	public static String toNoHtml(String inputString) {      
         String htmlStr = inputString.replace("&nbsp;", "").replace("&ldquo;", "").replace("&rdquo;", "");    
@@ -337,6 +329,11 @@ public class MessageServiceImpl implements MessageService {
 		
 		
 		return dao.selectMessageInforAll(mpPara);
+	}     
+
+	@Override
+	public List<Object> getAllMessage(Map<String, Object> map) {
+		return dao.selectMessageInforAll(new HashMap<String, Object>());
 	}     
 
 }

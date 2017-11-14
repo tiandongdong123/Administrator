@@ -90,7 +90,7 @@
   	<if test="batchState !=null">
   		and b.batch_state=#{batchState}
   	</if>
-  	ORDER BY create_date DESC
+    ORDER BY b.batch_name DESC
   	limit #{pageNum},#{pageSize}
   </select>
   <!-- 查询充值批次当前条件下所有记录 -->

@@ -34,10 +34,21 @@ function submitForm(){
 	        contentType: false  
 	    }).done(function(data){
 	    	if(data.flag=="success"){
-	    		layer.msg("注册成功",{icon: 1});
-	    	}else{
-	    		layer.msg("注册失败",{icon: 2});
-	    	}
+	    		layer.alert("注册成功", {
+	    			icon: 1,
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['确定'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/register.do';
+	    		    }
+	    		});
+			}else{
+				if(data.fail!=null){
+					layer.msg(data.fail, {icon: 2});
+				}else{
+					layer.msg("注册失败", {icon: 2});
+				}
+			}
 	    	$("#submit").removeAttr("disabled");
 	    });
 	}

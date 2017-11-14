@@ -2,14 +2,25 @@
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <script type="text/javascript" src="../page/othermanager/js/batch_details_get.js"></script>
+<script type="text/javascript" src="../page/othermanager/js/batch_details.js"></script>
 
   <div class="content-wrapper">
   <input id="batchId" type="hidden" value="${object.batchId}"/>
     <!-- Content Header (Page header) -->
     <section class="content-header">
+	<?  var batchState;
+		if(object.batchState == 2){
+			batchState = "未领取";	
+		}
+		if(object.batchState == 3){
+			batchState = "已领取";	
+		}
+	?>
       <h1>
+
        	万方卡批次详情
        	<a href="../card/cardManager.do">返回</a>
+
       </h1>
     </section> 
     <!-- Main content -->
@@ -39,7 +50,7 @@
      					<td width="20px"></td>
      					<td align="left">
      					<?for(valuenum in valueNumber){?>
-     					 ${valuenum.value}/${valuenum.number},
+     					 ${valuenum.value}(元) × ${valuenum.number}(张),
      					<?}?>
      					</td>
      				</tr>
@@ -76,15 +87,11 @@
      				<tr>
      					<td align="right">附件</td>
      					<td width="20px"></td>
-     					<td align="left"><a href="../card/download1.do?url=${object.adjunct}" style="text-decoration:underline;" id="download">点击下载</a><?if(object.checkState == 1){?>&nbsp;&nbsp;
-     					<a href="javascript:;" style="text-decoration:underline;" onclick="updateFile()">修改</a><?}?></td>
-     				</tr>
-     				<tr id="adjunct" style="display:none;">
-     				    <td align="right">附件</td>
-     					<td width="20px"></td>
-     					<td><div class="btn btn-default btn-file"><i class="fa fa-paperclip"></i> 添加附件<input type="file" name="attachment" id="file"></div>
+     					<td align="left"><a href="../card/download1.do?url=${object.adjunct}" style="text-decoration:underline;" id="download">点击下载</a>
+     					&nbsp;&nbsp;<a href="javascript:;" style="text-decoration:underline;" onclick="updateFile()">修改</a>
+     					&nbsp;&nbsp;<div class="btn btn-default btn-file" id="adjunct" style="display:none;"><i class="fa fa-paperclip"></i>修改附件<input type="file" name="attachment" id="file"></div>
                   		<span id="file_name" style="margin-left: 10px;"></span></td>
-					</tr>
+     				</tr>
      				<tr>
      					<td align="right">审核状态</td>
      					<td width="20px"></td>

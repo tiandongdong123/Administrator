@@ -148,9 +148,9 @@ public class SolrService {
 		}
 	}
 	
-	
+
 	/**
-	 * 批量add机会快讯
+	 * 批量add专题聚焦、科技动态、基金会议、万方资讯
 	 */
 	public static synchronized void createIndexFound(List<Map<String, Object>> list) {
 		try {

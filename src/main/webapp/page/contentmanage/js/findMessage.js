@@ -313,6 +313,7 @@ function turnHtml(type,id){
 }
 
 /**
+
  * 导出
  */
 function exportexecl(){
@@ -320,5 +321,24 @@ function exportexecl(){
 							+"&colums="+clum+"&human="+human
 							+"&startTime="+startTime+"&endTime="+endTime;
 }
-
-
+ 
+/* 一键发布
+ */
+function oneKeyDeploy(){
+	var index = null;
+	$.ajax({
+		type : "post",
+		url : "../content/oneKeyDeploy.do",
+		beforeSend: function (request) {
+			index = layer.load();
+		},
+		success : function (data){
+			layer.close(index);
+			if(data){
+				layer.msg("一键发布成功!");
+			}else{
+				layer.msg("发布异常!");
+			}
+		}
+	});
+}

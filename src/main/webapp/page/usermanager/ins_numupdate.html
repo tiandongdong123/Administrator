@@ -195,7 +195,7 @@
        			<a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
 				    <? if(!isEmpty(data.contract)){?>
 			    	<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
-					books_IDNo,standard_types,company_name,full_IP_range,limited_parcel_time,reading_print,online_visitor,
+					books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
 			    	for(var n=0;n<data.contract.~size;n++){
 						if("journal_CLC"==data.contract[n].Field){
@@ -222,8 +222,12 @@
 							books_IDNo = data.contract[n];
 						}else if("standard_types"==data.contract[n].Field){
 							standard_types = data.contract[n];
-						}else if("company_name"==data.contract[n].Field){
-							company_name = data.contract[n];
+						}else if("org_name"==data.contract[n].Field){
+							org_name = data.contract[n];
+						}else if("company"==data.contract[n].Field){
+							company = data.contract[n];
+						}else if("company_simp"==data.contract[n].Field){
+							company_simp = data.contract[n];
 						}else if("full_IP_range"==data.contract[n].Field){
 							full_IP_range = data.contract[n];
 						}else if("limited_parcel_time"==data.contract[n].Field){
@@ -424,67 +428,85 @@
 		            <?if(strutil.contain(rt,"standard")){?>
 			        <!-- 标准 -->
 					<div class="tab-pane" id="standard_${i}_${j}">
-					<div class="checkbox input_block block_left">
-					<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="行业标准" <?if(array.contain(standard_types.Value,"行业标准")){?>checked="checked"<?}?>>行业标准</label>&nbsp;&nbsp;&nbsp;&nbsp;
-			        <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" onclick="standardShow(${i},${j},this)" value="质检出版社标准" <?if(array.contain(standard_types.Value,"质检出版社标准")){?>checked="checked"<?}?>>质检出版社标准</label>
-					</div>
-					<div id="stand_div_${i}_${j}">
-						<label class="input_name">单位名称</label>
-						<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companyName" id="companyName" value="${company_name.Value!}">
-						<div class="form-group" style="width:60%;">
-							<label>质检出版社标准全文IP范围</label>
-							<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange">${full_IP_range.Value!}</textarea>
+						<div class="form-group input_block">
+							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="WFLocal" <?if(array.contain(standard_types.Value,"WFLocal")){?>checked="checked"<?}?>>行业标准</label>
+							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},'isZJ');" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
+							<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},'isBK');" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
 						</div>
-						<div class="time_block">
-							<div class="time_input">
-								<span><b>*</b>限定包库时间</span>
-								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+						<div id="stand_div_${i}_${j}" <?if(isEmpty(reading_print.Value)&&isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
+							<div class="form-group input_block">
+								<label><b>*</b>限定时间：</label>
+								<?if(!isEmpty(limited_parcel_time.Value)){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" id="limitedParcelStarttime_${i}_${j}" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+				          		<?}else{?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" id="limitedParcelStarttime_${i}_${j}" value="" onclick="WdatePicker()" type="text">
 				          		<?}?>
 								<span class="to">至</span>
-								<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LessThanOrEqualTo"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-				          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
-									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
+								<?if(!isEmpty(limited_parcel_time.Value)){?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" id="limitedParcelEndtime_${i}_${j}" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
+				          		<?}else{?>
+									<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" id="limitedParcelEndtime_${i}_${j}" value="" onclick="WdatePicker()" type="text">
 				          		<?}?>
 							</div>
-						</div>
-						<div class="form-group input_block">
-							<label class="input_name">版权阅读打印</label>
-							<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint">
-								<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
-								<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
-								<option value="2" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==2){?>selected="selected"<?}?>>授权打印</option>
-								<option value="3" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==3){?>selected="selected"<?}?>>未阅读</option>
-							</select>
-						</div>
-						<div class="form-group input_block">
-							<label class="input_name">在线用户数</label>
-							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor" value="${online_visitor.Value!}">-1表示不限制<br>
-						</div>
-						<div class="form-group input_block">
-							<label class="input_name">副本数</label>
-							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo" value="${copy_No.Value!}">-1表示不限制<br>
-						</div>
-						<div class="form-group input_block">
-							<label class="input_name">打印总份数</label>
-							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo" value="${total_print_No.Value!}">-1表示不限制<br>
-						</div>
-						<div class="form-group input_block">
-							<label class="input_name">单标准打印数</label>
-							<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo" value="${single_print_No.Value!}">-1表示不限制<br>
-						</div>
+							<div id="isZJ" <?if(isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
+								<div class="form-group input_block">
+									<label><b>*</b>单位名称：</label>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].company" id="company_${i}_${j}" value="${company.Value!}">
+								</div>
+								<div class="form-group input_block">
+									<label><b>*</b>机构名称：</label>
+									<input type="hidden" id="h_orgName_${i}_${j}" value="${org_name.Value!}"/>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" value="${org_name.Value!}" 
+									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})"/>（若账号为中文，则填写全拼）
+								</div>
+								<div class="form-group input_block">
+									<label><b>*</b>机构单位简称：</label>
+									<input type="hidden" id="h_companySimp_${i}_${j}" value="${company_simp.Value!}"/>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" value="${company_simp.Value!}" 
+									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
+								</div>
+							</div>
+							<div id="isBK" <?if(isEmpty(reading_print.Value)){?>style="display:none;"<?}?>>
+								<div class="form-group input_block">
+									<label><b>*</b>版权阅读打印：</label>
+									<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint_${i}_${j}" >
+										<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
+										<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
+										<option value="2" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==2){?>selected="selected"<?}?>>授权打印</option>
+										<option value="3" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==3){?>selected="selected"<?}?>>未阅读</option>
+									</select>
+								</div>
+								<div class="form-group input_block">
+									<label>&nbsp;&nbsp;在线用户数：</label>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor_${i}_${j}"  value="${online_visitor.Value!}"><span>-1表示不限制</span><br>
+								</div>
+								<div class="form-group input_block">
+									<label>&nbsp;&nbsp;副本数：</label>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo_${i}_${j}"  value="${copy_No.Value!}">-1表示不限制<br>
+								</div>
+								<div class="form-group input_block">
+									<label>&nbsp;&nbsp;打印总份数：</label>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo_${i}_${j}"  value="${total_print_No.Value!}">-1表示不限制<br>
+								</div>
+								<div class="form-group input_block">
+									<label>&nbsp;&nbsp;单标准打印数：</label>
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo_${i}_${j}"  value="${single_print_No.Value!}">-1表示不限制<br>
+								</div>
+							</div>
+							<div class="form-group" style="width:60%;">
+								<label><b>*</b>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
+								<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+									onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')">${fullIP!}</textarea>
+							</div>
 						</div>
 					</div>
 		            <?}?>
 				</div>
 			</div>
 		<!-- 详情结束 -->
-<? }else{ ?>
-      <!-- 详情开始 -->
-      <div class="nav-tabs-custom" id="tabs_custom_${i}_${j}" style="display: none;">
+		<? }else{ ?>
+      	<!-- 详情开始 -->
+      	<div class="nav-tabs-custom" id="tabs_custom_${i}_${j}" style="display: none;">
            <ul class="nav nav-tabs">
              <?if(strutil.contain(rt,"perio")){?><li><a href="#perio_${i}_${j}" data-toggle="tab">期刊限定</a></li><?}?>
              <?if(strutil.contain(rt,"degree")){?><li><a href="#degree_${i}_${j}" data-toggle="tab">学位限定</a></li><?}?>
@@ -619,49 +641,65 @@
         <?if(strutil.contain(rt,"standard")){?>
        <!-- 标准 -->
 		<div class="tab-pane" id="standard_${i}_${j}">
-		<div class="checkbox input_block block_left">
-		<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="行业标准">行业标准</label>&nbsp;&nbsp;&nbsp;&nbsp;
-	       <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" onclick="standardShow('${i}',${j},this);" value="质检出版社标准">质检出版社标准</label>
+		<div class="form-group input_block">
+			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" value="WFLocal">行业标准</label>
+			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},'isZJ');" value="质检出版社">元数据+全文(质检)</label>
+			<label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},'isBK');" value="质检出版社">网络包库(质检)</label>
 		</div>
 		<div id="stand_div_${i}_${j}" style="display: none;">
-			<label class="input_name">单位名称</label>
-			<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companyName" id="companyName">
-			<div class="form-group" style="width:60%;">
-				<label>质检出版社标准全文IP范围</label>
-				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange"></textarea>
+			<div class="form-group input_block">
+				<label><b>*</b>限定时间：</label>
+				<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" id="limitedParcelStarttime_${i}_${j}" onclick="WdatePicker()" type="text">
+				<span class="to">至</span>
+				<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" id="limitedParcelEndtime_${i}_${j}" onclick="WdatePicker()" type="text">
 			</div>
-			<div class="time_block">
-				<div class="time_input">
-					<span><b>*</b>限定包库时间</span>
-					<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelStarttime" id="limitedParcelStarttime" onclick="WdatePicker()" type="text">
-					<span class="to">至</span>
-					<input class="Wdate" name="rdlist[${i}].rldto[${j}].limitedParcelEndtime" id="limitedParcelEndtime" onclick="WdatePicker()" type="text">
+			<div id="isZJ">
+				<div class="form-group input_block">
+					<label><b>*</b>单位名称：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].company" id="company_${i}_${j}">
+				</div>
+				<div class="form-group input_block">
+					<label><b>*</b>机构名称：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" 
+					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">（若账号为中文，则填写全拼）
+				</div>
+				<div class="form-group input_block">
+					<label><b>*</b>机构单位简称：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" 
+					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
 				</div>
 			</div>
-			<div class="form-group input_block">
-				<label class="input_name">版权阅读打印</label>
-				<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint">
-					<option value="0">授权阅读打印</option>
-					<option value="1">授权阅读</option>
-					<option value="2">授权打印</option>
-					<option value="3">未阅读</option>
-				</select>
+			<div id="isBK">
+				<div class="form-group input_block">
+					<label><b>*</b>版权阅读打印：</label>
+					<select class="form-control input_width" name="rdlist[${i}].rldto[${j}].readingPrint" id="readingPrint_${i}_${j}">
+						<option value="0" checked>授权阅读打印</option>
+						<option value="1">授权阅读</option>
+						<option value="2">授权打印</option>
+						<option value="3">未阅读</option>
+					</select>
+				</div>
+				<div class="form-group input_block">
+					<label>&nbsp;&nbsp;在线用户数：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor_${i}_${j}" value="-1"><span>-1表示不限制</span><br>
+				</div>
+				<div class="form-group input_block">
+					<label>&nbsp;&nbsp;副本数：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo_${i}_${j}" value="-1">-1表示不限制<br>
+				</div>
+				<div class="form-group input_block">
+					<label>&nbsp;&nbsp;打印总份数：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo_${i}_${j}" value="-1">-1表示不限制<br>
+				</div>
+				<div class="form-group input_block">
+					<label>&nbsp;&nbsp;单标准打印数：</label>
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo_${i}_${j}" value="-1">-1表示不限制<br>
+				</div>
 			</div>
-			<div class="form-group input_block">
-				<label class="input_name">在线用户数</label>
-				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].onlineVisitor" id="onlineVisitor">-1表示不限制<br>
-			</div>
-			<div class="form-group input_block">
-				<label class="input_name">副本数</label>
-				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].copyNo" id="copyNo" >-1表示不限制<br>
-			</div>
-			<div class="form-group input_block">
-				<label class="input_name">打印总份数</label>
-				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].totalPrintNo" id="totalPrintNo">-1表示不限制<br>
-			</div>
-			<div class="form-group input_block">
-				<label class="input_name">单标准打印数</label>
-				<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].singlePrintNo" id="singlePrintNo">-1表示不限制<br>
+			<div class="form-group" style="width:60%;">
+				<label><b>*</b>质检出版社标准全文IP范围：</label>
+				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+					onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
 			</div>
 			</div>
 		</div>

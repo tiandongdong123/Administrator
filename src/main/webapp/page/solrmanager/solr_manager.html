@@ -26,24 +26,9 @@
                   <label  class="input_name">* 下撤类型</label>
                   <select id="type" name="type" class="form-control input_width" onchange="getType(this.value)">
                   		<option value="">--请选择模块名称--</option>
-					 <option value="perio">期刊</option>
-					 <option value="conference">会议</option>
-					 <option value="degree">学位</option>
-					 <option value="gazetteer_new">新方志</option>
-					 <option value="gazetteer_old">旧方志</option>
-					 <option value="Yearbooks">年鉴</option>
-					 <option value="patent">专利</option>
-					 <option value="standards">标准</option>
-					 <option value="legislations">法规</option>
-					 <option value="tech">科技报告</option>
-					 <option value="techResult">科技成果</option>
-					 <option value="video">视频</option>
-					 <option value="books">电子图书</option>
-					 <option value="scholars">学者</option>
-					 <option value="unit">机构</option>
-					 <option value="blob">博文</option>
-					 <option value="WFLocalChronicle_FZ">方志中国志书库</option>
-					 <option value="WFLocalChronicleItem_FZ">方志中国条目库</option>
+	                  <?if(!isEmpty(typeList)){ for(type in typeList){ ?>
+	                  	<option value="${type.model}">${type.model_name}</option>
+	                  <?}}?>
                   </select>
                 </div>
                 <div class="form-group input_block ">

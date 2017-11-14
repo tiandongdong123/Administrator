@@ -151,7 +151,5 @@ $(function() {/* 文档加载，执行一个函数 */
 function fieldsCheck() {
 	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
 	bootstrapValidator.validate();
-
 	return (bootstrapValidator.isValid());
-
 }
