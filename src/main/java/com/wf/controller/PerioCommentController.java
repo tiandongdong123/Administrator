@@ -53,15 +53,13 @@ public class PerioCommentController {
 		String name=request.getParameter("perioName");
 		info.setPerioName(name);
 		
-		if(StringUtils.isNotBlank(endTime)){
-			
+	/*	if(StringUtils.isEmpty(endTime)){
 			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 			Calendar  calendar=new  GregorianCalendar(); 
-			
 			calendar.setTime(format.parse(endTime));
 			calendar.add(calendar.DATE,1);
 			endTime=format.format(calendar.getTime());
-		}
+		}*/
 		
 		PageList pl  = this.pc.getComment(info,dataState,complaintStatus,startTime, endTime, sauditm, eauditm, slayoutm, elayoutm, pagenum, pagesize);
 		return pl;

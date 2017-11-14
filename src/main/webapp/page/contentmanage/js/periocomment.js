@@ -30,6 +30,15 @@ function commentpage(curr){
 	if(subtime=='请选择'){
 		subtime='';
 	}
+	
+	if(startTime!=null&&endTime!=null){
+		 var d1 = new Date(startTime.replace(/\-/g, "\/"));  
+		 var d2 = new Date(endTime.replace(/\-/g, "\/")); 
+		 if(d1 >d2){
+			 layer.msg("请查看，起始日期和结束日期时间是否符合标准！");
+			 return false;
+		 }
+	}
 	subtime=subtime.replace("个月","");
 	sauditm = $("#sauditm").val();
 	eauditm = $("#eauditm").val();
@@ -149,9 +158,13 @@ function commentpage(curr){
 						html+="<td>"+num+"0</td>";
 						}					
 			html+=" <td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.perioName+"</td>"+
-					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hireCon+"</td>"+
-	                "<td >"+rows.subTime+"个月</td>"+
-	                "<td>"+rows.auditMoney+"</td>"+
+					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hireCon+"</td>";
+					if(rows.subTime==0){
+						html+= "<td >其他</td>";
+					}else{
+						html+= "<td >"+rows.subTime+"个月</td>";
+					}
+					html+="<td>"+rows.auditMoney+"</td>"+
 	                "<td>"+rows.layoutMoney+"</td>"+
 	                "<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.commentContent+"</td>"+
 	                "<td>"+rows.authorName+"</td>"+
