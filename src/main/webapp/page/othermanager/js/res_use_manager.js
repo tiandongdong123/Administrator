@@ -440,8 +440,11 @@ function gettable(curr){
 
 						htmlbody="<td>"+title+"</td>";
 					}
+					var str = res.pageRow[i].resourceTypeCode;
+
+					var rstr = str.replace(" ",'!');
 					html+="<tr>" +
-						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeCode+" onclick='checkboxchange(); '></th>" +
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+ rstr +" onclick='checkboxchange(); '></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
@@ -597,7 +600,7 @@ function getline(){
 		var resourcetypeName=new Array();
 
 		$("input[id='rstype']:checked").each(function(){
-			resourcetypeName.push($(this).val());
+			resourcetypeName.push($(this).val().replace('!',' '));
 		});
 		// if(restype=='perio'||restype=='conference'||restype=='degree'){
         //
@@ -733,7 +736,7 @@ function checksource(){
 		if ($("#checkallsource").is(':checked')) {
 			$("input[name=item]").prop("checked", true);
 		} else {
-			$("input[name=item]").prop("checked", false);
+			$("input[name=item]").prop("checked", true);
 		}
 }
 
