@@ -82,7 +82,6 @@ $(function(){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
 					"<th>序号</th>" +htmltitle+
 					"<th>资源类型</th>" +
 					"<th>检索数</th>" +
@@ -96,19 +95,17 @@ $(function(){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
-					// $(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
 					if(restype=='perio'||restype=='conference'||restype=='degree'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
 						"<td>"+res.pageRow[i].sum1+"</td>" +//浏览数
 						"<td>"+res.pageRow[i].sum2+"</td>" +//下载数
-						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数。。。。。
+						"<td>"+res.pageRow[i].sum8+"</td>" +//跳转数
 						"<td>"+res.pageRow[i].sum9+"</td>" +//订阅数
 						"<td>"+res.pageRow[i].sum5+"</td>" +//收藏数
 						"<td>"+res.pageRow[i].sum7+"</td>" +//笔记数
@@ -314,7 +311,6 @@ function gettable(curr){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
 					"<th>序号</th>" +
 					"<th>资源类型</th>" +htmltitle+
 					"<th>检索数</th>" +
@@ -328,13 +324,12 @@ function gettable(curr){
 					"<th>导出数</th>" +
 					"</tr>"
 				for(var i =0;res.pageRow[i];i++){
-					// $(".showPage").css("display","block");
+					$(".showPage").css("display","block");
 					id = pagesize*(curr-1)+i+1;
 					if(restype=='perio'||restype=='conference'||restype=='degree'){
 						htmlbody="<td>"+res.pageRow[i].title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].sourceTypeName+" onclick='checkboxchange();'></th>" +
 						"<td>"+id+"</td>" +
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型
 						htmlbody+//序号
@@ -446,7 +441,7 @@ function gettable(curr){
 						htmlbody="<td>"+title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeCode+" onclick='checkAll(); '></th>" +
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeName+" onclick='checkboxchange(); '></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
@@ -537,6 +532,9 @@ function getline(){
 					rstnames.push("导出数");
 				}
 				singmore = 0 ;
+				$("input[name='checkAll']:checked").each(function(){
+					database_name.push($(this).val());
+				});
 			} else{
 				$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 				$("input[name='item']:checked").each(function(){
@@ -562,6 +560,9 @@ function getline(){
 					}
 				});
 				singmore = 1 ;
+				$("input[name='checkAll']:checked").each(function(){
+					database_name.push($(this).val());
+				});
 			}
 
 		}else{
@@ -590,6 +591,9 @@ function getline(){
 			});
 			//资源选项卡单选
 			singmore = 1 ;
+			$("input[name='checkAll']:checked").each(function(){
+				database_name.push($(this).val());
+			});
 		}
 
 		$("input[name=restye]").each(function() {
@@ -629,7 +633,7 @@ function getline(){
 			},
 			dataType : "json",
 			success : function(data) {
-				if (singmore.length > 1) {
+				if (singmore==0) {
 					var myChart = echarts.init(document.getElementById('line'));
 					option = {
 						tooltip : {
@@ -641,10 +645,10 @@ function getline(){
 						toolbox: {
 							show : true,
 							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-								restore : {show: true},
+								// mark : {show: true},
+								// dataView : {show: true, readOnly: false},
+								// magicType : {show: true, type: ['line']},
+								// restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -653,7 +657,7 @@ function getline(){
 							{
 								type : 'category',
 								boundaryGap : false,
-								data : data.date
+								data : data.timeArr
 							}
 						],
 						yAxis : [
@@ -688,15 +692,15 @@ function getline(){
 							trigger: 'axis'
 						},
 						legend: {
-							data:data.title
+							data:rstnames,
 						},
 						toolbox: {
 							show : true,
 							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-								restore : {show: true},
+								// mark : {show: true},
+								// dataView : {show: true, readOnly: false},
+								// magicType : {show: true, type: ['line']},
+								// restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -705,7 +709,7 @@ function getline(){
 							{
 								type : 'category',
 								boundaryGap : false,
-								data : data.date
+								data : data.timeArr
 							}
 						],
 						yAxis : [
@@ -717,8 +721,8 @@ function getline(){
 						]
 					};
 
-					for(var i =0;i<data.title.length;i++){
-						var name = data.title[i];
+					for(var i =0;i<rstnames.length;i++){
+						var name = rstnames[i];
 						var num=new Array();
 						num =data.content[name];
 						option.series.push(
@@ -865,7 +869,6 @@ function getTime(){
 			date=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();
 			startTime=0;
 			endTime=24;
-//			alert("type:"+type+"date:"+date+"startTime:"+startTime+"endTime:"+endTime);
 		}else{
 			date="";
 		}
@@ -873,7 +876,51 @@ function getTime(){
 		date="";
 	}
 }
+function pie(data){
+	var myChart = echarts.init(document.getElementById('pie'));
+	var urltype=$("#urltype").find("option:selected").text();
+	option = {
+		tooltip : {
+			trigger: 'item',
+			formatter: "{b} : {c} ({d}%)"
+		},
+		legend: {
+			orient : 'vertical',
+			x : 'left',
+			data:data.title
+		},
+		calculable : true,
+		series : [
+			{
+				type:'pie',
+				radius : '60%',
+				center: ['50%', '60%'],
+				data:[
+				]
+			}
+		]
+	};
 
+
+	for(var i =0;i<data.title.length;i++){
+		var name = data.title[i];
+		var num=new Array();
+		num =data.content[name];
+		var val = 0;
+		for(var k =0;k<num.length;k++){
+			val=val+parseInt(num[k]);
+		}
+		option.series[0].data.push(
+			{
+				value:val,
+				name:name
+			}
+		)
+	}
+
+
+	myChart.setOption(option);
+}
 
 
 
