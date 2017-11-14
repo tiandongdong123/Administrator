@@ -43,6 +43,8 @@ public interface MessageService {
 	 */
 	boolean updateIssue(String id,String colums,String issueState);
 	
+	List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime);
+
 	/**
 	 * 返回所有资讯数据
 	 * @return

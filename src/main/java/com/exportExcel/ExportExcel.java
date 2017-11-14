@@ -967,4 +967,43 @@ public class ExportExcel {
 				e.printStackTrace();
 			}	
 		}	
+		
+		
+		public void exportMessage(HttpServletResponse response,JSONArray array,List<String> names){
+			
+			try {
+				
+				SimpleDateFormat format=new SimpleDateFormat("yyyyMMddHHmmss");
+				String filename=format.format(new Date())+".xlsx";
+				XSSFWorkbook workbook=new XSSFWorkbook();
+				XSSFSheet sheet=workbook.createSheet("资讯导出");
+				XSSFRow row=sheet.createRow(0);
+				for (int i = 0; i < names.size(); i++) {
+					row.createCell(i).setCellValue(names.get(i));
+				}
+				
+				for (int i = 0; i < array.size(); i++) {
+					row=sheet.createRow(i+1);
+					row.createCell(0).setCellValue(i+1);
+					row.createCell(1).setCellValue(array.getJSONObject(i).get("colums").toString());
+					row.createCell(2).setCellValue(array.getJSONObject(i).get("title").toString());
+					row.createCell(3).setCellValue(array.getJSONObject(i).get("linkAddress").toString());
+					row.createCell(4).setCellValue(array.getJSONObject(i).get("human").toString());
+					row.createCell(5).setCellValue(array.getJSONObject(i).get("createTime").toString());
+				}
+				
+				//设置Content-Disposition  
+				response.setHeader("Content-Disposition", "attachment;filename="+ filename); 
+		        OutputStream out = response.getOutputStream();
+				// 写文件
+				workbook.write(out);  
+				// 关闭输出流
+				out.close();
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		
 }

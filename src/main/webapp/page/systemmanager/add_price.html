@@ -25,12 +25,12 @@
           <div class="form-group" style="width:40%;margin-left: 30%;">
            		 <label>平台名称：</label>
            		 <select id="son" name="son" style = "width:200px;" onchange="select_product();">
-           		 	<option selected="selected">请选择平台名称</option>
+           		 	<option selected="selected" value="">请选择平台名称</option>
 					<?for(var son in rlmap.son){?>
 	      				<option value="${son.sonCode}">${son.sonName}</option>
 	        		<?}?>
                   </select>
-      			<button type="button"  class="btn btn-info btn-flat" style="margin-left: 20px" onclick="productType();">子系统设置</button>
+      			<button type="button"  class="btn btn-info btn-flat" style="margin-left: 20px" onclick="sonSystem();">子系统设置</button>
             </div>
            	<div class="form-group" style="width:40%;margin-left: 30%;">
 	           	<label>产品来源：</label>

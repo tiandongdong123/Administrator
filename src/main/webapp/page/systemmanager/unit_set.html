@@ -55,7 +55,10 @@
           <!-- general form elements -->
           <div class="box box-primary">
             <button type="button" class="btn btn-primary" onclick="addunit()">新增单位</button>
-            <button type="button" class="btn btn-primary" onclick="goback()">确定</button>
+            <?if(goback=="break"){?>
+            	<button type="button" class="btn btn-primary" onclick="goback()">返回</button>
+            <?}?>
+            	
             <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>

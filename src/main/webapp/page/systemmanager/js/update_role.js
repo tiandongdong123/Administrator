@@ -27,6 +27,16 @@ function checktree(ids){
 	for(var i=0;i<ids.length;i++){
 		zTree_Menu.checkNode(zTree_Menu.getNodeByParam("menuId",ids[i]), true ); 
 	}
+	
+	var nodes = zTree_Menu.getNodes();
+	var checknodesNum=0;
+	var checkNodes=zTree_Menu.getCheckedNodes(true);
+	for(var i=0;i<checkNodes.length;i++){
+	   if(checkNodes[i].level==0){
+		   checknodesNum++;
+	   }
+	} 	
+	$("#checkall").attr("checked",checknodesNum==nodes.length);
 }
 
 function purviewtree(json){
@@ -66,13 +76,13 @@ function purviewtree(json){
 	});
 	
 	function onCheck(){
-		var tree=""
+		var tree="";
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
 			tree+= a[i].menuId+",";
 		}
 		tree = tree.substring(0,tree.length-1);
-		$("#treeids").val(tree)
+		$("#treeids").val(tree);
 	}
 }
 
@@ -103,7 +113,7 @@ function checkrolename(name){
 		}
 		
 	}else{
-		$("#cname").val("Y")
+		$("#cname").val("Y");
 	}
 }
 
@@ -143,7 +153,7 @@ function checkrole(obj){
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(true);
 		//获取treeids
-		var tree=""
+		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
 			tree+= a[i].menuId+",";

@@ -113,10 +113,10 @@ function serachdata(data){
             "<td class='mailbox-date'><div title='"+rows.createTime+"' style='width:70px;'>"+rows.createTime+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
 			if(rows.colums=='基金会议'){
-				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:50px;'>置顶</button>&nbsp;";
+				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>置顶</button>&nbsp;";
 			}
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" style='width:60px;'>"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"updateMessage('"+rows.id+"')\" style='width:50px;'>修改</button></div></td>" +
+			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
+			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -142,8 +142,12 @@ function stick(id,colums){
 	});
 }
 
-function updateMessage(id){
-	window.location.href="../content/updateMessage.do?id="+id;
+function updateMessage(id,issueState){
+	if(issueState!=2){
+		window.location.href="../content/updateMessage.do?id="+id;
+	}else{
+		layer.msg("请先下撤该数据再进行修改",{icon: 2});
+	}
 }
 function addMessage(){
 	window.location.href="../content/addMessage.do";
@@ -309,7 +313,16 @@ function turnHtml(type,id){
 }
 
 /**
- * 一键发布
+
+ * 导出
+ */
+function exportexecl(){
+	window.location.href="../content/exportMessage.do?branch="+branch
+							+"&colums="+clum+"&human="+human
+							+"&startTime="+startTime+"&endTime="+endTime;
+}
+ 
+/* 一键发布
  */
 function oneKeyDeploy(){
 	var index = null;
@@ -328,7 +341,4 @@ function oneKeyDeploy(){
 			}
 		}
 	});
-
 }
-
-

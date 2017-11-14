@@ -39,16 +39,14 @@ public class SonSystemController {
 			String code =son.getProductResourceCode();
 			List<String> list=Arrays.asList(code.split(","));
 			String sourcedata="";
-			for(int j=0;j<list.size();j++)
-			{
+			for(int j=0;j<list.size();j++){
 				Datamanager json=data.getDataManagerBySourceCode(list.get(j));
-				if(j==0)
-				{
-					sourcedata=json.getTableName();
-				}
-				else
-				{
-					sourcedata=sourcedata+","+json.getTableName();
+				if(null!=json){
+					if(j==0){
+						sourcedata=json.getTableName();
+					}else{
+						sourcedata=sourcedata+","+json.getTableName();
+					}
 				}
 			}
 			son.setProductResourceCode(sourcedata);
@@ -80,10 +78,10 @@ public class SonSystemController {
 	@ResponseBody
 	public boolean checkProduct(HttpServletRequest request){
 		SonSystem son=new SonSystem();
-		String source_code=request.getParameter("productResourceCode");
+		//String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
 		String code=request.getParameter("sonCode");
-		son.setProductResourceCode(source_code);
+		//son.setProductResourceCode(source_code);
 		son.setSonCode(code);
 		son.setSonName(name);
 		boolean rt = this.pts.checkSon(son);
@@ -102,7 +100,7 @@ public class SonSystemController {
 		String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
 		String code=request.getParameter("sonCode");
-		son.setProductResourceCode(source_code);
+		son.setProductResourceCode(source_code==null?"":source_code);
 		son.setSonCode(code);
 		son.setSonName(name);
 		boolean rt = this.pts.doAddSon(son);
@@ -121,7 +119,7 @@ public class SonSystemController {
 		String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
 		String code=request.getParameter("sonCode");
-		son.setProductResourceCode(source_code);
+		son.setProductResourceCode(source_code==null?"":source_code);
 		son.setSonCode(code);
 		son.setSonName(name);
 		son.setId(Integer.valueOf(id));

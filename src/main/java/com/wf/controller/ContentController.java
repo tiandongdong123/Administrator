@@ -26,6 +26,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.storage.Hash;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
@@ -51,6 +52,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.JsonUtil;
 import com.utils.ParamUtils;
+import com.wf.bean.Department;
 import com.wf.bean.Message;
 import com.wf.bean.Notes;
 import com.wf.bean.PageList;
@@ -61,6 +63,7 @@ import com.wf.bean.ShareTtemplateNames;
 import com.wf.bean.Subject;
 import com.wf.bean.Volume;
 import com.wf.bean.Wfadmin;
+import com.wf.service.DepartmentService;
 import com.wf.service.MessageService;
 import com.wf.service.NotesService;
 import com.wf.service.ResourceTypeService;
@@ -103,6 +106,8 @@ public class ContentController{
 	@Autowired
 	ShareTemplateNamesFiledsService filedsService;
 
+	@Autowired
+	DepartmentService departmentService;
 	
 	RedisUtil redis = new RedisUtil();
 	/**
@@ -287,6 +292,13 @@ public class ContentController{
 		mp.put("endTime",endTime);
 		model.addAttribute("pageList",messageList);
 		model.addAttribute("meaasgeMap", mp);
+		
+		List<String> deptList=new ArrayList<String>();
+		for (Object department : departmentService.getAllDept()) {
+			deptList.add(((Department)department).getDeptName());
+		}
+		
+		model.addAttribute("deptList",deptList);
 		return "/page/contentmanage/message";
 	}
 	/**
@@ -416,7 +428,14 @@ public class ContentController{
             HttpServletResponse response,HttpServletRequest request,Model model) throws IOException {
 		int pageNum=1;
 		int pageSize=10;
-		PageList p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
+		PageList p=new PageList();
+		if(null==typeName || "".equals(typeName)){
+			 p=resourceTypeService.getResourceType(pageNum, pageSize);
+		}else{
+			p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
+		}
+		
+		
 		model.addAttribute("pageList",p);
         JSONObject json=JSONObject.fromObject(p);
         response.setCharacterEncoding("UTF-8");
@@ -1495,6 +1514,23 @@ public class ContentController{
 		response.getWriter().write(array.toString());
 	}
 	
+	/**
+	 * 资讯导出
+	 * @param branch
+	 * @param clum
+	 * @param human
+	 * @param startTime
+	 * @param endTime
+	 */
+	@RequestMapping("exportMessage")
+	public void exportMessage(HttpServletResponse response,String branch,String colums,String human,String startTime,String endTime){
+		List<Object> list=new ArrayList<>();
+		list= messageService.exportMessage(branch,colums,human,startTime,endTime);
+		JSONArray array=JSONArray.fromObject(list);
+		List<String> names=Arrays.asList(new String[]{"序号","栏目","标题","原文链接","添加人","添加日期"});
+		ExportExcel excel=new ExportExcel();
+		excel.exportMessage(response, array, names);
+	}
 	
 	/**
 	 *一键发布
