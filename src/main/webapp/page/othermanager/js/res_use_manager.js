@@ -34,8 +34,8 @@ $(function(){
  		$("#singmore").val("1");
  		$("#single").show();
  		$("#more").hide();
-		$("input[name=item]").prop("checked",false);
- 		$("#checkallsource").prop("checked",false);
+		$("input[name=item]").prop("checked",true);
+ 		$("#checkallsource").prop("checked",true);
 
  	}
  }
@@ -759,8 +759,8 @@ function checkboxchange(){
 	if(checkbox.length>1){
 		$("#single").show();
 		$("#more").hide();
-		$("input[name=item]").prop("checked",false);
-		$("#checkallsource").prop("checked",false);
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
 	}else{
 		$("#single").hide();
 		$("#more").show();
