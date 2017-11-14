@@ -441,7 +441,7 @@ function gettable(curr){
 						htmlbody="<td>"+title+"</td>";
 					}
 					html+="<tr>" +
-						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeName+" onclick='checkboxchange(); '></th>" +
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+res.pageRow[i].resourceTypeCode+" onclick='checkboxchange(); '></th>" +
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
@@ -506,7 +506,6 @@ function getline(){
 		var checkbox=$("#rstype:checked");
 		var rstnames=new Array();
 		var urls = new Array();
-		var resourcetypeName=new Array();
 		//资源选项卡多选
 		if( $("#restype").val() == "" || $("#restype").val() == null){
 			//表格单选
@@ -532,9 +531,6 @@ function getline(){
 					rstnames.push("导出数");
 				}
 				singmore = 0 ;
-				$("input[name='checkAll']:checked").each(function(){
-					database_name.push($(this).val());
-				});
 			} else{
 				$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 				$("input[name='item']:checked").each(function(){
@@ -560,9 +556,6 @@ function getline(){
 					}
 				});
 				singmore = 1 ;
-				$("input[name='checkAll']:checked").each(function(){
-					database_name.push($(this).val());
-				});
 			}
 
 		}else{
@@ -591,16 +584,8 @@ function getline(){
 			});
 			//资源选项卡单选
 			singmore = 1 ;
-			$("input[name='checkAll']:checked").each(function(){
-				database_name.push($(this).val());
-			});
 		}
 
-		$("input[name=restye]").each(function() {
-			if ($(this).is(':checked')) {
-				resourcetypeName.push($(this).val());
-			}
-		});
 		var restype=$("#restype").find("option:selected").val();
 		var urltype=$("#urltype").find("option:selected").val();
 		var starttime = $("#starttime").val();
@@ -609,7 +594,11 @@ function getline(){
 		var unitname=$("#institution_name").val();
 		var source_db=$("#source_db").val();
 		var product_source_code=$("#database").val();
-		var num=0;
+		var resourcetypeName=new Array();
+
+		$("input[id='rstype']:checked").each(function(){
+			resourcetypeName.push($(this).val());
+		});
 		// if(restype=='perio'||restype=='conference'||restype=='degree'){
         //
 		// 	num=1;
@@ -626,10 +615,9 @@ function getline(){
 				'source_db':source_db,
 				'sourceTypeName':restype,
 				'product_source_code':product_source_code,
+				'database_name':resourcetypeName,
 				'urls':urls,
 				'singmore':singmore,
-				'database_name':resourcetypeName,
-				'num':num
 			},
 			dataType : "json",
 			success : function(data) {
