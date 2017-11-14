@@ -352,6 +352,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void addUserAdminIp(CommonEntity com){
 		String[] arr_ip = com.getAdminIP().split("\r\n");
+		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){
 				UserIp userIp = new UserIp();
@@ -359,6 +360,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userIp.setUserId(com.getAdminname());
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
+				userIp.setSort(index++);
 				userIpMapper.insert(userIp);
 			}
 		}
@@ -1237,6 +1239,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void addUserIp(CommonEntity com){
 		String[] arr_ip = com.getIpSegment().split("\r\n");
+		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){				
 				UserIp userIp = new UserIp();
@@ -1244,6 +1247,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userIp.setUserId(com.getUserId());
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
+				userIp.setSort(index++);
 				userIpMapper.insert(userIp);
 			}
 		}

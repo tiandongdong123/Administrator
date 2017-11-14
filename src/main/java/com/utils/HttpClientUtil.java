@@ -35,7 +35,6 @@ public class HttpClientUtil {
 	private static String EDIT_URL=XxlConfClient.get("wf-admin.bzcbsorgedit",null);
     private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
     private static String SALEPUBKEY=XxlConfClient.get("wf-admin.salepubkey",null);
-    private static String FRONT_STR=XxlConfClient.get("wf-admin.salefontstr",null);
 	private static String CHARSET="UTF-8";
 	
     /** 
@@ -128,7 +127,7 @@ public class HttpClientUtil {
 		Map<String, String> map = new HashMap<String, String>();
 		String saleagtid = SALEAGTID;
 		String orgCode = unit.getOrgCode();
-		String orgName = FRONT_STR+unit.getOrgName();
+		String orgName = unit.getOrgName();
 		String company = unit.getCompany();
 		String companysimp = unit.getCompanySimp();
 		String ipsection = unit.getiPLimits();

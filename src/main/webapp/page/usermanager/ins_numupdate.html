@@ -456,12 +456,14 @@
 								<div class="form-group input_block">
 									<label><b>*</b>机构名称：</label>
 									<input type="hidden" id="h_orgName_${i}_${j}" value="${org_name.Value!}"/>
-									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" value="${org_name.Value!}" onblur="checkOrg(${i},${j})"/>（若账号为中文，则填写全拼）
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" value="${org_name.Value!}" 
+									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})"/>（若账号为中文，则填写全拼）
 								</div>
 								<div class="form-group input_block">
 									<label><b>*</b>机构单位简称：</label>
 									<input type="hidden" id="h_companySimp_${i}_${j}" value="${company_simp.Value!}"/>
-									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" value="${company_simp.Value!}" onblur="checkOrg(${i},${j})">
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" value="${company_simp.Value!}" 
+									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
 								</div>
 							</div>
 							<div id="isBK" <?if(isEmpty(reading_print.Value)){?>style="display:none;"<?}?>>
@@ -493,8 +495,8 @@
 							</div>
 							<div class="form-group" style="width:60%;">
 								<label><b>*</b>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
-								<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}" 
-								onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')">${fullIP!}</textarea>
+								<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+									onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')">${fullIP!}</textarea>
 							</div>
 						</div>
 					</div>
@@ -658,11 +660,13 @@
 				</div>
 				<div class="form-group input_block">
 					<label><b>*</b>机构名称：</label>
-					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" onblur="checkOrg(${i},${j})">（若账号为中文，则填写全拼）
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" 
+					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">（若账号为中文，则填写全拼）
 				</div>
 				<div class="form-group input_block">
 					<label><b>*</b>机构单位简称：</label>
-					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" onblur="checkOrg(${i},${j})">
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" 
+					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
 				</div>
 			</div>
 			<div id="isBK">
@@ -694,8 +698,8 @@
 			</div>
 			<div class="form-group" style="width:60%;">
 				<label><b>*</b>质检出版社标准全文IP范围：</label>
-				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}" 
-					onkeyup="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-\r\n]/g,'')"></textarea>
+				<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].fullIpRange" id="fullIpRange_${i}_${j}"
+					onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
 			</div>
 			</div>
 		</div>

@@ -8,6 +8,8 @@ public class UserIp {
     private long beginIpAddressNumber;
 
     private long endIpAddressNumber;
+    
+    private int sort;
 
     public String getId() {
         return id;
@@ -40,4 +42,12 @@ public class UserIp {
     public void setEndIpAddressNumber(long endIpAddressNumber) {
         this.endIpAddressNumber = endIpAddressNumber;
     }
+
+	public int getSort() {
+		return sort;
+	}
+
+	public void setSort(int sort) {
+		this.sort = sort;
+	}
 }
