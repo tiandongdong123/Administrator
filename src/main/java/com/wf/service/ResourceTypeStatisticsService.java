@@ -11,7 +11,7 @@ public interface ResourceTypeStatisticsService {
 
 	List<ResourceType> getResourceType();
 
-	Map<String, Object> getAllLine(Integer num,String starttime,String endtime,
+	Map<String, Object> getAllLine(String starttime,String endtime,
 			ResourceStatistics res,Integer[] urls,Integer singmore,String[] title,String[] database_name);
 	
 	PageList gettable(Integer num,String starttime,String endtime,

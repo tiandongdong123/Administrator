@@ -59,10 +59,10 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("getline")
 	@ResponseBody
-	public Map<String,Object> getLine(Integer num,String starttime,String endtime,@ModelAttribute ResourceStatistics res
+	public Map<String,Object> getLine(String starttime,String endtime,@ModelAttribute ResourceStatistics res
 			,@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore,String[] title,String[] database_name){
 		Map<String,Object> map = new HashMap<String, Object>();
-		map =this.resource.getAllLine(num,starttime,endtime,res,urls,singmore,title,database_name);
+		map =this.resource.getAllLine(starttime,endtime,res,urls,singmore,title,database_name);
 		return map;
 	}
 	

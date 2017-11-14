@@ -12,7 +12,7 @@ public class ResourceStatisticsHour implements Serializable {
 
 	private String sourceName;
 
-	private Date date;
+	private String date;
 
 	private String hour;
 
@@ -86,11 +86,11 @@ public class ResourceStatisticsHour implements Serializable {
 		this.sourceName = sourceName == null ? null : sourceName.trim();
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

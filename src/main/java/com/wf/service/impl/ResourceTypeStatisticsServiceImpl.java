@@ -52,7 +52,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 	}
 
 	@Override
-	public Map<String, Object> getAllLine(Integer table,String starttime,String endtime,ResourceStatistics res,
+	public Map<String, Object> getAllLine(String starttime,String endtime,ResourceStatistics res,
 										  Integer[] urls,Integer singmore,String[] title,String[] database_name) {
 		Map<String,Object> map=new HashMap();
 		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
@@ -68,15 +68,20 @@ public class ResourceTypeStatisticsServiceImpl implements
 		List<String>jumpList=new ArrayList();
 		List<String>subscriptionList=new ArrayList();
 		List<String> resources = new ArrayList<>();
+		List users = new ArrayList();
+		List<String> titleList = new ArrayList<>();
 
-		if(table==0){
+		if(urls.length<=1){
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 				list = this.hour.getChart(starttime,endtime,res,urls,singmore,database_name);
+				titleList = this.hour.getTtitle(starttime,endtime,res,urls,singmore,database_name);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				list = this.hour.getChartById(starttime,endtime,res,urls,singmore,database_name);
+				titleList = this.hour.getTtitleById(starttime,endtime,res,urls,singmore,database_name);
 			} else {
-				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				list=this.hour.getChartByIds(starttime, endtime,res,users,urls,singmore,database_name);
+				titleList = this.hour.getTtitleByIds(starttime, endtime,res,users,urls,singmore,database_name);
 			}
 		}else {
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
@@ -84,7 +89,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				list = this.hour.getChartMoreById(starttime,endtime,res,urls);
 			} else {
-				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				list=this.hour.getChartMoreByIds(starttime, endtime,res,users,urls);
 			}
 		}
@@ -93,12 +98,8 @@ public class ResourceTypeStatisticsServiceImpl implements
 				for(Integer i = 1;i<=24;i++){
 					timeList.add(i.toString());
 				}
-				if(database_name.length>0){
-					resources = resourceTypeMapper.getResourceByCode(database_name);
-				}else {
-					for(ResourceStatisticsHour item : list){
-						resources.add(item.getSourceTypeName());
-					}
+				for(String item : titleList){
+					resources.add(item);
 				}
 				for(int i =0;i<resources.size();i++){
 					List arrayList = new ArrayList<>();
@@ -107,8 +108,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum1() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -121,8 +123,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum2() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -135,8 +138,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum3() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -149,8 +153,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum4() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -163,8 +168,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum5() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -177,8 +183,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum6() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -191,8 +198,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum7() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -205,8 +213,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum8() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -219,8 +228,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 							for (ResourceStatisticsHour item : list) {
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum9() );
-									break;
+									list.remove(0);
 								}
+								break;
 							}
 							if(arrayList.size()==j){
 								arrayList.add("0");
@@ -241,25 +251,22 @@ public class ResourceTypeStatisticsServiceImpl implements
 				}catch (ParseException e) {
 					e.printStackTrace();
 				}
-				if(database_name.length>0){
-					resources = resourceTypeMapper.getResourceByCode(database_name);
-				}else {
-					for(ResourceStatisticsHour item : list){
-						resources.add(item.getSourceTypeName());
-					}
+				for(String item : titleList){
+					resources.add(item);
 				}
 				for(int i =0;i<resources.size();i++){
 					List arrayList = new ArrayList<>();
 					if(urls[0]==1){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum1() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum1() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -267,13 +274,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==2){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum2() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum2() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -281,13 +289,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==3){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum3() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum3() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -295,13 +304,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==4){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum4() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum4() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -309,13 +319,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==5){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum5() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum5() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -323,13 +334,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==6){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum6() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum6() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -337,13 +349,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==7){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum7() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum7() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -351,13 +364,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==8){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum8() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum8() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);
@@ -365,13 +379,14 @@ public class ResourceTypeStatisticsServiceImpl implements
 					if(urls[0]==9){
 						for(int j = 0;j<timeList.size();j++){
 							for (ResourceStatisticsHour item : list) {
-								if(database_name[i].equals(item.getSourceTypeName())&&timeList.get(i).equals(item.getDate())){
-									searchList.add(item.getSum9() );
-									break;
+								if(resources.get(i).equals(item.getSourceTypeName())&&timeList.get(j).equals(item.getDate())){
+									arrayList.add(item.getSum9() );
+									list.remove(0);
 								}
+								break;
 							}
-							if(searchList.size()==j){
-								searchList.add("0");
+							if(arrayList.size()==j){
+								arrayList.add("0");
 							}
 						}
 						content.put(resources.get(i),arrayList);

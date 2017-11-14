@@ -7,7 +7,7 @@
     <result column="source_type_name" property="sourceTypeName" jdbcType="VARCHAR" />
 	<result column="resource_type_code" property="resourceTypeCode" jdbcType="VARCHAR" />
     <result column="source_db" property="sourceName" jdbcType="VARCHAR" />
-    <result column="date" property="date" jdbcType="DATE" />
+    <result column="date" property="date" jdbcType="VARCHAR" />
     <result column="hour" property="hour" jdbcType="VARCHAR" />
     <result column="numbers" property="numbers" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
@@ -1155,5 +1155,177 @@
 		</choose>
 		group by r.title
 	</select>
+
+
+
+	<select id="getTtitle" resultType="java.lang.String">
+		SELECT
+		rs.resource_type_name as sourceTypeName
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<if test="res.product_source_code!=null and res.product_source_code!=''">
+			and r.product_source_code=#{res.product_source_code}
+		</if>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{res.date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by resource_type_name
+	</select>
+
+	<select id="getTtitleById" resultType="java.lang.String">
+		SELECT
+		rs.resource_type_name as sourceTypeName
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.userId!=null and res.userId!=''">
+			and r.user_id=#{res.userId}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by resource_type_name
+	</select>
+
+	<select id="getTtitleByIds" resultType="java.lang.String">
+		SELECT
+		rs.resource_type_name as sourceTypeName
+		from rs_resources_statistics_sourcetype_use_hourly r left join
+		resource_type rs on r.source_type_name = rs.resource_type_code
+		where 1=1
+		<if test="res.institutionName!=null and res.institutionName!=''">
+			and r.institution=#{res.institutionName}
+		</if>
+		<if test="res.source_db!=null and res.source_db!=''">
+			and r.source_db=#{res.source_db}
+		</if>
+		<choose>
+			<when test="res.product_source_code!=null and res.product_source_code !=''">
+				and r.product_source_code= #{res.product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
+			and r.source_type_name=#{res.sourceTypeName}
+		</if>
+		<if test="urls!=null and urls !=''">
+			and operate_type in
+			<foreach collection="urls"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<choose>
+			<when test="res.date !=null and res.date !=''">
+				and date = #{res.date}
+				<if test="startTime!=null and startTime !=''">
+					and r.hour <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.hour <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and r.date <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and r.date <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		group by resource_type_name
+	</select>
+
 
 </mapper>
