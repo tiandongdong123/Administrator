@@ -66,8 +66,8 @@
 			</if>
 		</otherwise>
 	</choose>
-		group by r.source_type_name limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
   </select>
 
 	<select id="getLineById" resultMap="BaseResultMap">
@@ -122,8 +122,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineByIds" resultMap="BaseResultMap">
@@ -182,8 +182,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 
@@ -230,8 +230,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.title order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreById" resultMap="BaseResultMap">
@@ -286,8 +286,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.title  order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreByIds" resultMap="BaseResultMap">
@@ -346,8 +346,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit order by sum3
-		#{pageNum},#{pageSize}
+		group by r.title order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 

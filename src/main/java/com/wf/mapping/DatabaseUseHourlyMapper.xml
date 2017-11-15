@@ -916,7 +916,7 @@
 			</foreach>
 		</if>
 		group by
-		product_source_code
+		r.product_source_code
 	</select>
 	<select id="getTtitleById" resultType="java.lang.String">
 		SELECT  d.table_name as database_name
@@ -971,7 +971,7 @@
 			</foreach>
 		</if>
 		group by
-		product_source_code
+		r.product_source_code
 	</select>
 	<select id="getTtitleByIds" resultType="java.lang.String">
 		SELECT  d.table_name as database_name
@@ -1027,7 +1027,7 @@
 			</foreach>
 		</if>
 		group by
-	    product_source_code
+	    r.product_source_code
 	</select>
 
 </mapper>
