@@ -15,8 +15,6 @@ var pagesize=10;
 $(function(){
 	getline();
 	gettable(1);
-	$("#single").show();
-	$("#more").hide();
 	keyword();
 	$(document).click(function(){
 	    $("#searchsug").hide();
@@ -29,13 +27,15 @@ $(function(){
  	if(restype!=''){
  		$("#single").hide();
  		$("#more").show();
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
  		$("#singmore").val("0");
  	}else{
  		$("#singmore").val("1");
  		$("#single").show();
  		$("#more").hide();
-		$("input[name=item]").prop("checked",true);
- 		$("#checkallsource").prop("checked",true);
+		// $("input[name=item]").prop("checked",true);
+ 		// $("#checkallsource").prop("checked",true);
 
  	}
  }
@@ -382,6 +382,11 @@ function gettable(curr){
 						}
 					}
 				});
+				$("#rstype:first").prop("checked",true);
+				$("#simple").hide();
+				$("#more").show();
+				$("input[name=item]").prop("checked",true);
+				$("#checkallsource").prop("checked",true);
 			});
 		}
 		else{
@@ -413,7 +418,7 @@ function gettable(curr){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
 				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll();'></th>" +
+					"<th><input type='checkbox' name='rscheck' ></th>" +//onclick='checkAll();'
 					"<th>序号</th>" +htmltitle+
 					"<th>资源类型</th>" +
 					"<th>检索数</th>" +
@@ -444,7 +449,7 @@ function gettable(curr){
 
 					var rstr = str.replace(" ",'!');
 					html+="<tr>" +
-						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+ rstr +" onclick='checkboxchange(); '></th>" +
+						"<th><input type='checkbox' name='rscheckr' id='rstype' value="+ rstr +" onclick='checkboxchange()'></th>" +//onclick='checkboxchange(); '
 						"<td>"+id+"</td>" +htmlbody+//序号
 						"<td>"+res.pageRow[i].sourceTypeName+"</td>" +//资源类型   retrieval
 						"<td>"+res.pageRow[i].sum3+"</td>" +//检索数
@@ -495,6 +500,11 @@ function gettable(curr){
 						}
 					}
 				});
+				$("#rstype:first").prop("checked",true);
+				$("#simple").hide();
+				$("#more").show();
+				$("input[name=item]").prop("checked",true);
+				$("#checkallsource").prop("checked",true);
 			});
 		}
 	}
@@ -602,10 +612,6 @@ function getline(){
 		$("input[id='rstype']:checked").each(function(){
 			resourcetypeName.push($(this).val().replace('!',' '));
 		});
-		// if(restype=='perio'||restype=='conference'||restype=='degree'){
-        //
-		// 	num=1;
-		// }
 		$.ajax( {
 			type : "POST",
 			url : "../resourceTypeStatistics/getline.do",
@@ -688,10 +694,6 @@ function getline(){
 						toolbox: {
 							show : true,
 							feature : {
-								// mark : {show: true},
-								// dataView : {show: true, readOnly: false},
-								// magicType : {show: true, type: ['line']},
-								// restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -762,13 +764,13 @@ function checkboxchange(){
 	if(checkbox.length>1){
 		$("#single").show();
 		$("#more").hide();
-		$("input[name=item]").prop("checked",true);
-		$("#checkallsource").prop("checked",true);
 	}else{
 		$("#single").hide();
 		$("#more").show();
+		// $("input[name=item]").prop("checked",true);
+		// $("#checkallsource").prop("checked",true);
 	}
-	getline();
+	// getline();
 }
 
 function checkAll(){

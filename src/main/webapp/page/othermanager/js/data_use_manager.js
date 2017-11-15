@@ -29,6 +29,8 @@ function query(){
  * 加载列表数据--liuYong
  */
 $(function(){
+	$("#simple").hide();
+	$("#more").show();
 	$('#pageChange').change(function(){
 			institution_name=$("#institution_name").val();
 			user_id=$("#user_id").val();
@@ -60,7 +62,7 @@ $(function(){
 					var id;
 					for(var i=0;i<data.length;i++){
 						id=pageSize*(curr-1)+i+1;
-						html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
+						html+="<tr><td><input type='checkbox' name='checkOne';' value='"+data[i].product_source_code+"'></td>" +
 							"<td>"+id+"</td>" +
 							"<td>"+data[i].database_name+"</td>" +
 							"<td>"+data[i].sum1+"</td>" +
@@ -106,6 +108,8 @@ $(function(){
 				}
 			})
     })
+	$("#simple").show();
+	$("#more").hide();
 })
 function tabulation(curr){
 	if($("#startTime").val() == ''|| $("#endTime").val() == '' || $("#startTime").val() == null || $("#endTime").val() ==  null) {
@@ -143,7 +147,7 @@ function tabulation(curr){
 					$(".showPage").css("display","block");
 					for(var i=0;i<data.length;i++){
 						id=pageSize*(curr-1)+i+1;
-						html+="<tr><td><input type='checkbox' class='rui' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
+						html+="<tr><td><input type='checkbox' class='rui' name='checkOne' onclick='checkOne()' value='"+data[i].product_source_code+"'></td>" +
 							"<td>"+id+"</td>" +
 							"<td class='a'>"+data[i].database_name+"</td>" +
 							"<td>"+data[i].sum1+"</td>" +
@@ -192,6 +196,11 @@ function tabulation(curr){
 						}
 					}
 				});
+				$(".rui:first").prop("checked",true);
+				$("#simple").hide();
+				$("#more").show();
+				$("input[name=item]").prop("checked",true);
+				$("#checkallsource").prop("checked",true);
 			}
 		})
 	}
@@ -240,10 +249,6 @@ function line(urlType,database_name,datas){
 						toolbox: {
 							show : true,
 							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-								restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -289,10 +294,6 @@ function line(urlType,database_name,datas){
 						toolbox: {
 							show : true,
 							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-								restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -381,22 +382,38 @@ function checkAll(){
 //单选
 function checkOne(){
 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
-	moreOrSimple();
+	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+		$("#simple").show();
+		$("#more").hide();
+		// checkitem();
+
+	}else{
+		$("#simple").hide();
+		$("#more").show();
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
+
+		// checkitem_more();
+	}
+	// moreOrSimple();
 }
 
 //根据数据库选择情况  展示指标数量
 function moreOrSimple(){
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
-		$("#simple").show();
-		$("#more").hide();
+	// 	$("#simple").show();
+	// 	$("#more").hide();
 		checkitem();
-
+    //
 	}else{
-		$("#simple").hide();
-		$("#more").show();
-		
+	// 	$("#simple").hide();
+	// 	$("#more").show();
+	// 	$("input[name=item]").prop("checked",true);
+	// 	$("#checkallsource").prop("checked",true);
+	//
 		checkitem_more();
 	}
+
 } 
 //数据库名称选择
 function mySelect(){
@@ -406,6 +423,8 @@ function mySelect(){
 	}else {
 		$("#simple").hide();
 		$("#more").show();
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
 	}
 }
 
@@ -444,6 +463,7 @@ function checkitem_more(){
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();
+
 	
 	$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 	$("input[name='item']:checked").each(function(){
