@@ -13,8 +13,8 @@ var database_name;
 var pagesize=10;
 
 $(function(){
-	getline();
 	gettable(1);
+	getline();
 	keyword();
 	$(document).click(function(){
 	    $("#searchsug").hide();
@@ -519,6 +519,7 @@ function getline(){
 		var checkbox=$("#rstype:checked");
 		var rstnames=new Array();
 		var urls = new Array();
+		getTime();
 		//资源选项卡多选
 		if( $("#restype").val() == "" || $("#restype").val() == null){
 			//表格单选
@@ -531,17 +532,17 @@ function getline(){
 				}else if(urls==3){
 					rstnames.push("检索数");
 				}else if(urls==4){
-					rstnames.push("跳转数");
+					rstnames.push("分享数");
 				}else if(urls==5){
-					rstnames.push("订阅数");
-				}else if(urls==6){
 					rstnames.push("收藏数");
+				}else if(urls==6){
+					rstnames.push("导出数");
 				}else if(urls==7){
 					rstnames.push("笔记数");
 				}else if(urls==8){
-					rstnames.push("分享数");
+					rstnames.push("跳转数");
 				}else if(urls==9){
-					rstnames.push("导出数");
+					rstnames.push("订阅数");
 				}
 				singmore = 0 ;
 			} else{
@@ -555,17 +556,17 @@ function getline(){
 					}else if($(this).val()==3){
 						rstnames.push("检索数");
 					}else if($(this).val()==4){
-						rstnames.push("跳转数");
+						rstnames.push("分享数");
 					}else if($(this).val()==5){
-						rstnames.push("订阅数");
-					}else if($(this).val()==6){
 						rstnames.push("收藏数");
+					}else if($(this).val()==6){
+						rstnames.push("导出数");
 					}else if($(this).val()==7){
 						rstnames.push("笔记数");
 					}else if($(this).val()==8){
-						rstnames.push("分享数");
+						rstnames.push("跳转数");
 					}else if($(this).val()==9) {
-						rstnames.push("导出数");
+						rstnames.push("订阅数");
 					}
 				});
 				singmore = 1 ;
@@ -582,17 +583,17 @@ function getline(){
 				}else if($(this).val()==3){
 					rstnames.push("检索数");
 				}else if($(this).val()==4){
-					rstnames.push("跳转数");
+					rstnames.push("分享数");
 				}else if($(this).val()==5){
-					rstnames.push("订阅数");
-				}else if($(this).val()==6){
 					rstnames.push("收藏数");
+				}else if($(this).val()==6){
+					rstnames.push("导出数");
 				}else if($(this).val()==7){
 					rstnames.push("笔记数");
 				}else if($(this).val()==8){
-					rstnames.push("分享数");
+					rstnames.push("跳转数");
 				}else if($(this).val()==9) {
-					rstnames.push("导出数");
+					rstnames.push("订阅数");
 				}
 			});
 			//资源选项卡单选
@@ -627,6 +628,7 @@ function getline(){
 				'database_name':resourcetypeName,
 				'urls':urls,
 				'singmore':singmore,
+				'date':date,
 			},
 			dataType : "json",
 			success : function(data) {

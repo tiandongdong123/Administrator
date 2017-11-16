@@ -480,9 +480,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 				for(int i = 0;i<24;i++){
 					for (ResourceStatisticsHour item : list) {
 						if(Integer.parseInt(item.getHour())==i+1){
-							searchList.add(item.getSum1() );
-							browseList.add(item.getSum2());
-							downloadList.add(item.getSum3());
+							browseList.add(item.getSum1() );
+							downloadList.add(item.getSum2());
+							searchList.add(item.getSum3());
 							shareList.add(item.getSum4());
 							collectionList.add(item.getSum5());
 							exportList.add(item.getSum6());
@@ -523,9 +523,9 @@ public class ResourceTypeStatisticsServiceImpl implements
 				for(int i = 0;i<timeList.size();i++){
 					for (ResourceStatisticsHour item : list) {
 						if(timeList.get(i).equals(item.getDate())){
-							searchList.add(item.getSum1() );
-							browseList.add(item.getSum2());
-							downloadList.add(item.getSum3());
+							browseList.add(item.getSum1() );
+							downloadList.add(item.getSum2());
+							searchList.add(item.getSum3());
 							shareList.add(item.getSum4());
 							collectionList.add(item.getSum5());
 							exportList.add(item.getSum6());
