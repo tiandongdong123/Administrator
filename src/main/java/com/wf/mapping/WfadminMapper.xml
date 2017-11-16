@@ -164,7 +164,10 @@
   <select id="getAdminById"  resultMap="BaseResultMap">
   select * from wfadmin where id = #{id}
   </select>
-
+  
+  <select id="getAdminByAdminIds" resultType="String">
+   select wangfang_admin_id from wfadmin where id in <foreach collection="ids"  item="item" open="(" separator="," close=")">#{item}</foreach>
+  </select>
 
   <update id="doUpdateAdmin" parameterType="com.wf.bean.Wfadmin" >
     update wfadmin

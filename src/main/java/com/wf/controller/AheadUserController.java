@@ -1358,7 +1358,15 @@ public class AheadUserController {
 				view.addObject("ps", ps);
 				String jsonStr = ps.getExtend();
 				JSONObject json = JSONObject.fromObject(jsonStr);
-				boolean flag = (boolean) json.get("IsTrialPartyAdminTime");
+				Object obj=json.get("IsTrialPartyAdminTime");
+				boolean flag = false;
+				if (obj != null) {
+					if (obj instanceof String) {
+						flag = String.valueOf(obj).equals("true") ? true : false;
+					} else if (obj instanceof Boolean) {
+						flag = (boolean) obj;
+					}
+				}
 				if (flag) {
 					trial = "isTrial";
 				}
