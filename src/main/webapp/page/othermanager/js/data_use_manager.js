@@ -147,7 +147,7 @@ function tabulation(curr){
 					$(".showPage").css("display","block");
 					for(var i=0;i<data.length;i++){
 						id=pageSize*(curr-1)+i+1;
-						html+="<tr><td><input type='checkbox' class='rui' name='checkOne'  value='"+data[i].product_source_code+"'></td>" +
+						html+="<tr><td><input type='checkbox' class='rui' name='checkOne' onclick='checkOne()' value='"+data[i].product_source_code+"'></td>" +
 								//onclick='checkOne()'
 							"<td>"+id+"</td>" +
 							"<td class='a'>"+data[i].database_name+"</td>" +
@@ -377,28 +377,21 @@ function exportDatabase(){
 //数据库选择  全选 全不选
 function checkAll(){
 	$("input[name='checkOne']").prop("checked",$("#checkAll").prop("checked"));
-	// moreOrSimple();
+
 }
 
 //单选
-// function checkOne(){
-// 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
-// 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
-// 		$("#simple").show();
-// 		$("#more").hide();
-// 		// checkitem_more();
-// 		// checkitem();
-//
-// 	}else{
-// 		$("#simple").hide();
-// 		$("#more").show();
-// 		$("input[name=item]").prop("checked",true);
-// 		$("#checkallsource").prop("checked",true);
-// 		// checkitem();
-// 		//checkitem_more();
-// 	}
-// 	moreOrSimple();
-// }
+function checkOne(){
+if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+ 		$("#simple").show();
+ 		$("#more").hide();
+ 	}else{
+ 		$("#simple").hide();
+ 		$("#more").show();
+ 		$("input[name=item]").prop("checked",true);
+ 		$("#checkallsource").prop("checked",true);
+ 	}
+ }
 
 //根据数据库选择情况  展示指标数量
 function moreOrSimple(){
@@ -411,12 +404,8 @@ function moreOrSimple(){
 	}else{
 		$("#simple").hide();
 		$("#more").show();
-		// $("input[name=item]").prop("checked",true);
-		// $("#checkallsource").prop("checked",true);
-
 		checkitem_more();
 	}
-
 } 
 //数据库名称选择
 function mySelect(){
@@ -434,7 +423,6 @@ function mySelect(){
 
 //指标单选
 function checkitem(){
-	alert("指标单选");
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();
@@ -451,7 +439,7 @@ function checkitem(){
 	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	line(urlType,database_name,datas);
+	// line(urlType,database_name,datas);
 }
 
 //多选指标  全部
@@ -481,7 +469,7 @@ function checkitem_more(){
 	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	line(urlType,database_name,datas);
+	// line(urlType,database_name,datas);
 }
 
 function getDatabaseBySourceCode(code){
@@ -500,7 +488,6 @@ function getDatabaseBySourceCode(code){
 			}
 		});
 	}
-	
 }
 
 

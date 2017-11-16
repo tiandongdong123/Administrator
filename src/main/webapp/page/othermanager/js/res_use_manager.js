@@ -24,14 +24,12 @@ $(function(){
  function changeres(){
  	restype=$("#restype").find("option:selected").val();
  	if(restype!=''){
-		alert("27");
  		$("#single").hide();
  		$("#more").show();
 		$("input[name=item]").prop("checked",true);
 		$("#checkallsource").prop("checked",true);
  		$("#singmore").val("0");
  	}else{
-		alert("33");
  		$("#singmore").val("1");
  		$("#single").show();
  		$("#more").hide();
@@ -379,7 +377,6 @@ function gettable(curr){
 					}
 				});
 				$("#rstype:first").prop("checked",true);
-				alert("384");
 				$("#simple").hide();
 				$("#more").show();
 				$("input[name=item]").prop("checked",true);
@@ -499,9 +496,7 @@ function gettable(curr){
 					}
 				});
 				$("#rstype:first").prop("checked",true);
-				alert("504");
 				$("#single").hide();
-				alert("506");
 				$("#more").show();
 				$("input[name=item]").prop("checked",true);
 				$("#checkallsource").prop("checked",true);
@@ -762,17 +757,14 @@ function exportresource(){
 function checkboxchange(){
 	var checkbox=$("#rstype:checked");
 	if(checkbox.length>1){
-		alert("xiala1");
 		$("#single").show();
 		$("#more").hide();
 	}else{
-		alert("xiala2");
 		$("#single").hide();
 		$("#more").show();
 		$("input[name=item]").prop("checked",true);
 		$("#checkallsource").prop("checked",true);
 	}
-	//getline();
 }
 
 function checkAll(){
