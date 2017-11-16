@@ -381,7 +381,27 @@ function checkAll(){
 }
 
 //单选
-function checkOne(){
+// function checkOne(){
+// 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
+// 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+// 		$("#simple").show();
+// 		$("#more").hide();
+// 		// checkitem_more();
+// 		// checkitem();
+//
+// 	}else{
+// 		$("#simple").hide();
+// 		$("#more").show();
+// 		$("input[name=item]").prop("checked",true);
+// 		$("#checkallsource").prop("checked",true);
+// 		// checkitem();
+// 		//checkitem_more();
+// 	}
+// 	moreOrSimple();
+// }
+
+//根据数据库选择情况  展示指标数量
+function moreOrSimple(){
 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
 		$("#simple").show();
@@ -391,27 +411,9 @@ function checkOne(){
 	}else{
 		$("#simple").hide();
 		$("#more").show();
-		$("input[name=item]").prop("checked",true);
-		$("#checkallsource").prop("checked",true);
+		// $("input[name=item]").prop("checked",true);
+		// $("#checkallsource").prop("checked",true);
 
-		checkitem_more();
-	}
-	// moreOrSimple();
-}
-
-//根据数据库选择情况  展示指标数量
-function moreOrSimple(){
-	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
-	// 	$("#simple").show();
-	// 	$("#more").hide();
-		checkitem();
-    //
-	}else{
-	// 	$("#simple").hide();
-	// 	$("#more").show();
-	// 	$("input[name=item]").prop("checked",true);
-	// 	$("#checkallsource").prop("checked",true);
-	//
 		checkitem_more();
 	}
 
@@ -432,6 +434,7 @@ function mySelect(){
 
 //指标单选
 function checkitem(){
+	alert("指标单选");
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();
@@ -462,7 +465,6 @@ function checkitem_more(){
 	var database_name=new Array();
 	var datas=new Array();
 
-	
 	$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 	$("input[name='item']:checked").each(function(){
 		urlType.push($(this).val());

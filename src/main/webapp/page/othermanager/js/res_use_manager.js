@@ -24,18 +24,17 @@ $(function(){
  function changeres(){
  	restype=$("#restype").find("option:selected").val();
  	if(restype!=''){
+		alert("27");
  		$("#single").hide();
  		$("#more").show();
 		$("input[name=item]").prop("checked",true);
 		$("#checkallsource").prop("checked",true);
  		$("#singmore").val("0");
  	}else{
+		alert("33");
  		$("#singmore").val("1");
  		$("#single").show();
  		$("#more").hide();
-		// $("input[name=item]").prop("checked",true);
- 		// $("#checkallsource").prop("checked",true);
-
  	}
  }
 
@@ -382,6 +381,7 @@ function gettable(curr){
 					}
 				});
 				$("#rstype:first").prop("checked",true);
+				alert("384");
 				$("#simple").hide();
 				$("#more").show();
 				$("input[name=item]").prop("checked",true);
@@ -501,7 +501,9 @@ function gettable(curr){
 					}
 				});
 				$("#rstype:first").prop("checked",true);
-				$("#simple").hide();
+				alert("504");
+				$("#single").hide();
+				alert("506");
 				$("#more").show();
 				$("input[name=item]").prop("checked",true);
 				$("#checkallsource").prop("checked",true);
@@ -764,13 +766,15 @@ function exportresource(){
 function checkboxchange(){
 	var checkbox=$("#rstype:checked");
 	if(checkbox.length>1){
+		alert("xiala1");
 		$("#single").show();
 		$("#more").hide();
 	}else{
+		alert("xiala2");
 		$("#single").hide();
 		$("#more").show();
-		// $("input[name=item]").prop("checked",true);
-		// $("#checkallsource").prop("checked",true);
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
 	}
 	//getline();
 }
@@ -852,16 +856,16 @@ function text_show(data){
 /**判断是否用小时为统计单位*/
 function getTime(){
 	starttime=$("#starttime").val();
-	endTime=$("#endtime").val();
+	endtime=$("#endtime").val();
 
 	if((starttime!=''&& endtime!='')&&(starttime != null && endtime != null)){
-		var date1= new Date(endtime.replace(/-/g,"/"));
-		var date2= new Date(starttime.replace(/-/g,"/"));
-		var between = date1-date2;
-		if(between<=0){
-			date=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();
+		var date1=endtime.replace(/-/g,"");
+		var date2= starttime.replace(/-/g,"");
+		if(date1==date2){
+			date=starttime;
 			starttime=0;
 			endtime=24;
+
 		}else{
 			date="";
 		}
