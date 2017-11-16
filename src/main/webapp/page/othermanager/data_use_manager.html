@@ -102,20 +102,20 @@
               	             分析指标：
              	<div id="simple">
 	              <select id="urltype" >
+	              <option value="3">检索数</option>
 	              <option value="1">浏览数</option>
-	              <option value="2">下载数</option>
-	              <option selected="selected" value="3">检索数</option>
+	              <option selected="selected" value="2">下载数</option>
 	              </select>
              	</div>
              	
              	<div id="more" style="display:none;">
 	             	<input type="checkbox"  style="margin-left: 10px; margin-right: 0px;" id="checkallsource" onclick="checksource()">全部
                     <!--onclick="checksource()"-->
-	             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="1" type="checkbox" >浏览数
+	             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="3" type="checkbox" >检索数
+                    <!--checkitem_more()-->
+	             	<input name="item" style="margin-left: 10px; margin-right: 0px;"  value="1" type="checkbox" >浏览数
                     <!--checkitem_more()-->
 	             	<input name="item" style="margin-left: 10px; margin-right: 0px;"  value="2" type="checkbox" >下载数
-                    <!--checkitem_more()-->
-	             	<input name="item" style="margin-left: 10px; margin-right: 0px;"  value="3" type="checkbox" >检索数
                     <!--checkitem_more()-->
              	</div>
                   <div style="width: 200px;margin:0 auto;">

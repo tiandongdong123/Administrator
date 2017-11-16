@@ -13,7 +13,6 @@ var database_name;
 var pagesize=10;
 
 $(function(){
-	getline();
 	gettable(1);
 	keyword();
 	$(document).click(function(){
@@ -516,6 +515,7 @@ function getline(){
 		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
 	else {
+		getTime();
 		var checkbox=$("#rstype:checked");
 		var rstnames=new Array();
 		var urls = new Array();
@@ -627,6 +627,7 @@ function getline(){
 				'database_name':resourcetypeName,
 				'urls':urls,
 				'singmore':singmore,
+				'date' : date,
 			},
 			dataType : "json",
 			success : function(data) {
@@ -746,7 +747,7 @@ function checksource(){
 //导出
 function exportresource(){
 	getTime();
-	if($("#startTime").val() == ''|| $("#endTime").val() == '') {
+	if($("#starttime").val() == ''|| $("#endTime").val() == '') {
 		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
 	else{
@@ -851,17 +852,17 @@ function text_show(data){
 }
 /**判断是否用小时为统计单位*/
 function getTime(){
-	startTime=$("#startTime").val();
-	endTime=$("#endTime").val();
+	starttime=$("#starttime").val();
+	endTime=$("#endtime").val();
 
-	if((startTime!=''&& endTime!='')&&(startTime != null && endTime != null)){
-		var date1= new Date(endTime.replace(/-/g,"/"));
-		var date2= new Date(startTime.replace(/-/g,"/"));
+	if((starttime!=''&& endtime!='')&&(starttime != null && endtime != null)){
+		var date1= new Date(endtime.replace(/-/g,"/"));
+		var date2= new Date(starttime.replace(/-/g,"/"));
 		var between = date1-date2;
 		if(between<=0){
 			date=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();
-			startTime=0;
-			endTime=24;
+			starttime=0;
+			endtime=24;
 		}else{
 			date="";
 		}

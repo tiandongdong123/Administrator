@@ -1,7 +1,7 @@
 var pagesize=10;
 $(function(){
 	tabulation(1);
-	moreOrSimple();
+
 	keyword();
 	
 	$(document).click(function(){
@@ -21,7 +21,7 @@ var pagenum;
 /**查询执行方法*/
 function query(){
 	tabulation(1);
-	moreOrSimple();
+
 }
 
 
