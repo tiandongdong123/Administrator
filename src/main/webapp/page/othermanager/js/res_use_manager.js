@@ -747,7 +747,7 @@ function checksource(){
 //导出
 function exportresource(){
 	getTime();
-	if($("#starttime").val() == ''|| $("#endTime").val() == '') {
+	if($("#starttime").val() == ''|| $("#endtime").val() == '') {
 		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
 	else{
