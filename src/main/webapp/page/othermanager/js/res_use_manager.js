@@ -274,8 +274,6 @@ function gettable(curr){
 		url="";
 		restype=$("#restype").find("option:selected").val();
 		urltype=$("#urltype").find("option:selected").val();
-		starttime = $("#starttime").val();
-		endtime=$("#endtime").val();
 		username=$("#username").val();
 		unitname=$("#institution_name").val();
 		source_db=$("#source_db").val();
@@ -604,8 +602,6 @@ function getline(){
 
 		var restype=$("#restype").find("option:selected").val();
 		var urltype=$("#urltype").find("option:selected").val();
-		var starttime = $("#starttime").val();
-		var endtime=$("#endtime").val();
 		var username=$("#username").val();
 		var unitname=$("#institution_name").val();
 		var source_db=$("#source_db").val();

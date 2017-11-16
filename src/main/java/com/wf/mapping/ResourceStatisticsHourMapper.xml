@@ -35,7 +35,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 	<if test="res.source_db!=null and res.source_db!=''">
@@ -82,7 +82,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -138,7 +138,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -199,7 +199,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -246,7 +246,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -302,7 +302,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -374,7 +374,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -454,7 +454,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -489,7 +489,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -543,7 +543,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -634,7 +634,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -702,7 +702,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -779,7 +779,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -853,7 +853,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -867,7 +867,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -899,7 +899,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -922,7 +922,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -954,7 +954,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -1014,7 +1014,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -1060,7 +1060,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -1115,7 +1115,7 @@
 		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
 		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
@@ -1167,7 +1167,7 @@
 	<select id="getTtitle" resultType="java.lang.String">
 		SELECT
 		rs.resource_type_name as sourceTypeName
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
@@ -1216,7 +1216,7 @@
 	<select id="getTtitleById" resultType="java.lang.String">
 		SELECT
 		rs.resource_type_name as sourceTypeName
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
@@ -1251,7 +1251,7 @@
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
-				and date = #{date}
+				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
 					and r.hour <![CDATA[ >= ]]> #{startTime}
 				</if>
@@ -1274,7 +1274,7 @@
 	<select id="getTtitleByIds" resultType="java.lang.String">
 		SELECT
 		rs.resource_type_name as sourceTypeName
-		from rs_resources_statistics_sourcetype_use_hourly r left join
+		from rs_resources_statistics_sourcetype_use_hourly r  join
 		resource_type rs on r.source_type_name = rs.resource_type_code
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">

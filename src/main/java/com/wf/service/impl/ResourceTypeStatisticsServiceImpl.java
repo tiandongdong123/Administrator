@@ -138,7 +138,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 				for(int i =0;i<resources.size();i++){
 					List arrayList = new ArrayList<>();
 					//通过分析指标的值来判断需要哪个sum
-					if(urls[i]==1){
+					if(urls[0]==1){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							//遍历list集合
@@ -158,7 +158,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==2){
+					if(urls[0]==2){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							//遍历list集合
@@ -178,7 +178,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==3){
+					if(urls[0]==3){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -197,7 +197,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==4){
+					if(urls[0]==4){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -216,7 +216,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==5){
+					if(urls[0]==5){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -235,7 +235,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==6){
+					if(urls[0]==6){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -254,7 +254,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==7){
+					if(urls[0]==7){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -273,7 +273,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==8){
+					if(urls[0]==8){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
@@ -292,7 +292,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 						}
 						content.put(resources.get(i),arrayList);
 					}
-					if(urls[i]==9){
+					if(urls[0]==9){
 						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
