@@ -417,9 +417,8 @@ function gettable(curr){
 				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
-				alert("123");
 				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' onclick='checkAll()></th>" +//onclick='checkAll();'
+					"<th><input type='checkbox' name='rscheck' onclick='checkAll()'></th>" +//onclick='checkAll()'
 					"<th>序号</th>" +htmltitle+
 					"<th>资源类型</th>" +
 					"<th>检索数</th>" +
