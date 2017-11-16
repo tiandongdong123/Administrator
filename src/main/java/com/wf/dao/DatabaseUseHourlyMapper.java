@@ -174,4 +174,29 @@ public interface DatabaseUseHourlyMapper {
 			@Param("users") List users,
 			@Param("startTime") String startTime,
 			@Param("endTime") String endTime);
+
+	List<String> getTtitle(
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<String> getTtitleById(
+			@Param("user_id") String userId,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
+	List<String> getTtitleByIds(
+			@Param("institution_name") String institutionName,
+			@Param("users") List users,
+			@Param("product_source_code") String product_source_code,
+			@Param("source_db") String source_db, @Param("date") String date,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime,
+			@Param("urlType") Integer[] urlType,
+			@Param("database_name") String[] database_name);
 }

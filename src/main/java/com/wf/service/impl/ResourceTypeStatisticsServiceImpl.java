@@ -57,76 +57,121 @@ public class ResourceTypeStatisticsServiceImpl implements
 		Map<String,Object> map=new HashMap();
 		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
 		Map<String, List<String>> content = new HashMap<String, List<String>>();
-		List<String>timeList=new ArrayList();
-		List<String>browseList=new ArrayList();
-		List<String>downloadList=new ArrayList();
-		List<String>searchList=new ArrayList();
-		List<String>shareList=new ArrayList();
-		List<String>collectionList=new ArrayList();
-		List<String>exportList=new ArrayList();
-		List<String>noteList=new ArrayList();
-		List<String>jumpList=new ArrayList();
-		List<String>subscriptionList=new ArrayList();
-		List<String> resources = new ArrayList<>();
-		List users = new ArrayList();
-		List<String> titleList = new ArrayList<>();
-
+		List<String>timeList=new ArrayList();//时间集合（按小时：1-24 按天：每一天的日期）
+		List<String>browseList=new ArrayList();//浏览数集合
+		List<String>downloadList=new ArrayList();//下载数集合
+		List<String>searchList=new ArrayList();//检索数集合
+		List<String>shareList=new ArrayList();//分享数
+		List<String>collectionList=new ArrayList();//收藏数
+		List<String>exportList=new ArrayList();//导出数
+		List<String>noteList=new ArrayList();//笔记数
+		List<String>jumpList=new ArrayList();//跳转数
+		List<String>subscriptionList=new ArrayList();//订阅数
+		List<String> resources = new ArrayList<>();//资源类型集合
+		List users = new ArrayList();//用户集合
+		List<String> titleList = new ArrayList<>();//折线图标题集合
+		//根据分析指标数判断
+		//当分析指标数组长度小于等于1，按分析指标展示
+		//当分析指标数组长度大于1，按资源类型展示
 		if(urls.length<=1){
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按条件查询
 				list = this.hour.getChart(starttime,endtime,res,urls,singmore,database_name);
+				//按条件查询折线图标题
 				titleList = this.hour.getTtitle(starttime,endtime,res,urls,singmore,database_name);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按条件查询
 				list = this.hour.getChartById(starttime,endtime,res,urls,singmore,database_name);
+				//按条件查询折线图标题
 				titleList = this.hour.getTtitleById(starttime,endtime,res,urls,singmore,database_name);
 			} else {
+				//查处属于此机构的所有用户（包括机构账号和机构子账号）
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按条件查询
 				list=this.hour.getChartByIds(starttime, endtime,res,users,urls,singmore,database_name);
+				//按条件查询折线图标题
 				titleList = this.hour.getTtitleByIds(starttime, endtime,res,users,urls,singmore,database_name);
 			}
 		}else {
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按条件查询
 				list = this.hour.getChartMore(starttime,endtime,res,urls);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按条件查询
 				list = this.hour.getChartMoreById(starttime,endtime,res,urls);
 			} else {
+				//查处属于此机构的所有用户
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按条件查询
 				list=this.hour.getChartMoreByIds(starttime, endtime,res,users,urls);
 			}
 		}
+		//处理按条件查的数据
+		//当资源和表格中的复选框同时多选时
 		if(singmore==0){
+			//按小时统计
 			if(res.getDate()!=null&&!"".equals(res.getDate())){
+				//得到每个小时
 				for(Integer i = 1;i<=24;i++){
 					timeList.add(i.toString());
 				}
+				//得到标题
 				for(String item : titleList){
 					resources.add(item);
 				}
+				/**
+				 * 此处有3层for循环（业务需求）
+				 * 数据量特别大时本不合理，但通过控制，虽有表面是3层循环，但实际上只相当于2层
+				 */
 				for(int i =0;i<resources.size();i++){
 					List arrayList = new ArrayList<>();
+					//通过分析指标的值来判断需要哪个sum
 					if(urls[i]==1){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
+							//遍历list集合
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum1() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
 						}
-						content.put(database_name[i],arrayList);
+						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==2){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
+							//遍历list集合
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum2() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -134,14 +179,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==3){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum3() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -149,14 +198,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==4){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum4() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -164,14 +217,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==5){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum5() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -179,14 +236,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==6){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum6() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -194,14 +255,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==7){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum7() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -209,14 +274,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==8){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum8() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -224,14 +293,18 @@ public class ResourceTypeStatisticsServiceImpl implements
 						content.put(resources.get(i),arrayList);
 					}
 					if(urls[i]==9){
+						//得到每个小时的值
 						for(int j = 0;j<24;j++){
 							for (ResourceStatisticsHour item : list) {
+								//判断是否是当前标题和时间点
 								if(resources.get(i).equals(item.getSourceTypeName())&&Integer.parseInt(item.getHour())==j+1){
 									arrayList.add(item.getSum9() );
+									//移除当前元素  目的：能够每次只判断第一条，减轻for循环次数
 									list.remove(0);
 								}
 								break;
 							}
+							//如果这个时间点没有数据，设为0
 							if(arrayList.size()==j){
 								arrayList.add("0");
 							}
@@ -240,17 +313,19 @@ public class ResourceTypeStatisticsServiceImpl implements
 					}
 				}
 			}else {
+				//按天统计
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				try {
 					Date startTime = format.parse(starttime);
 					Date endTime = format.parse(endtime);
 					List<Date> days = this.getDate(startTime, endTime);
+					//获取统计时间没的日期（每一天）
 					for(Date d : days){
 						timeList.add(format.format(d));
 					}
 				}catch (ParseException e) {
 					e.printStackTrace();
-				}
+				}//得到标题
 				for(String item : titleList){
 					resources.add(item);
 				}
@@ -395,16 +470,19 @@ public class ResourceTypeStatisticsServiceImpl implements
 			}
 			map.put("title",resources.toArray());
 		}else {
+			//按小时统计
+			//获取时间(1-24)
 			if(res.getDate()!=null&&!"".equals(res.getDate())){
 				for(Integer i = 1;i<=24;i++){
 					timeList.add(i.toString());
 				}
+				//设置每个时间点的各项指标数
 				for(int i = 0;i<24;i++){
 					for (ResourceStatisticsHour item : list) {
 						if(Integer.parseInt(item.getHour())==i+1){
-							searchList.add(item.getSum1() );
-							browseList.add(item.getSum2());
-							downloadList.add(item.getSum3());
+							browseList.add(item.getSum1() );
+							downloadList.add(item.getSum2());
+							searchList.add(item.getSum3());
 							shareList.add(item.getSum4());
 							collectionList.add(item.getSum5());
 							exportList.add(item.getSum6());
@@ -414,6 +492,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 							break;
 						}
 					}
+					//如果此时间点没有数据，设为0
 					if(searchList.size()==i){
 						searchList.add("0");
 						browseList.add("0");
@@ -427,24 +506,26 @@ public class ResourceTypeStatisticsServiceImpl implements
 					}
 				}
 			}else {
+				//按天统计
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				try {
 					Date startTime = format.parse(starttime);
 					Date endTime = format.parse(endtime);
 					List<Date> days = this.getDate(startTime, endTime);
+					//获取统计时间内的每天
 					for(Date d : days){
 						timeList.add(format.format(d));
 					}
 				}catch (ParseException e) {
 					e.printStackTrace();
 				}
-
+				//设置每一天的各项指标数
 				for(int i = 0;i<timeList.size();i++){
 					for (ResourceStatisticsHour item : list) {
 						if(timeList.get(i).equals(item.getDate())){
-							searchList.add(item.getSum1() );
-							browseList.add(item.getSum2());
-							downloadList.add(item.getSum3());
+							browseList.add(item.getSum1() );
+							downloadList.add(item.getSum2());
+							searchList.add(item.getSum3());
 							shareList.add(item.getSum4());
 							collectionList.add(item.getSum5());
 							exportList.add(item.getSum6());
@@ -454,6 +535,7 @@ public class ResourceTypeStatisticsServiceImpl implements
 							break;
 						}
 					}
+					//若当天没有数据，则设为0
 					if(searchList.size()==i){
 						searchList.add("0");
 						browseList.add("0");
@@ -487,36 +569,68 @@ public class ResourceTypeStatisticsServiceImpl implements
 		PageList pageList=new PageList();
 		List<Object> PageList=new ArrayList<Object>();
 		List<Object> list=new ArrayList<Object>();
+		//分页开始的值（limit中的）
 		int startNum = (pageNum-1)*pageSize;
+		/**
+		 * 判断表格显示
+		 * 资源类型选择期刊、会议、学位中的一中 table==0
+		 * 其他情况table==1
+		 */
 		if(table==0){
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按查询条件得到表格中的分页后数据
 				PageList = this.hour.getLine(starttime,endtime,res,startNum,pageSize);
+				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineAll(starttime,endtime,res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按查询条件得到表格中的数据
 				PageList = this.hour.getLineById(starttime,endtime,res,startNum,pageSize);
+				//用于得到页面总数
 				list=this.hour.getLineAllById(starttime,endtime,res);
 			} else {
+				//得到此机构中所有的用户（包括机构账号和机构子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按查询条件得到表格中的数据
 				PageList=this.hour.getLineByIds(starttime, endtime,res,users,startNum,pageSize);
+				//用于得到页面总数
 				list=this.hour.getLineAllByIds(starttime, endtime,res,users);
 			}
 		}else {
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按查询条件得到表格中的数据
 				PageList = this.hour.getLineMore(starttime,endtime,res,startNum,pageSize);
+				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineMoreAll(starttime,endtime, res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按查询条件得到表格中的数据
 				PageList = this.hour.getLineMoreById(starttime,endtime,res,startNum,pageSize);
+				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineMoreAllById(starttime,endtime,res);
 			} else {
+				//得到此机构中所有的用户（包括机构账号和机构子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按查询条件得到表格中的数据
 				PageList=this.hour.getLineMoreByIds(starttime, endtime,res,users,startNum,pageSize);
+				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
 			}
 		}
-		pageList.setTotalRow(list.size());
-		pageList.setPageRow(PageList);
-		pageList.setPageNum(pageNum);
-		pageList.setPageSize(pageSize);
+		pageList.setTotalRow(list.size());//每页显示的数量
+		pageList.setPageRow(PageList);//查询结果表
+		pageList.setPageNum(pageNum);//当前页
+		pageList.setPageSize(pageSize);//每页显示的数量
 		return pageList;
 	}
 	public List<Date> getDate(Date sd, Date ed) {
@@ -544,22 +658,47 @@ public class ResourceTypeStatisticsServiceImpl implements
 	public List<Object> exportresourceType(Integer table, String starttime,
 			String endtime, ResourceStatistics res) {
 		List<Object> list = new ArrayList<Object>();
+		/**
+		 * 判断表格显示
+		 * 资源类型选择期刊、会议、学位中的一中 table==0
+		 * 其他情况table==1
+		 */
 		if(table==0){
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按查询条件得出结果
 				list = this.hour.getLineAll(starttime,endtime,res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按查询条件得出结果
 				list = this.hour.getLineAllById(starttime,endtime,res);
 			} else {
+				//得到此机构中所有的用户（包括账号和子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按查询条件得出结果
 				list=this.hour.getLineAllByIds(starttime, endtime,res,users);
 			}
 		}else {
+			/**
+			 * 分三种情况：
+			 * 1.机构名称和用户ID都为空时
+			 * 2.用户ID不为空时
+			 * 3.机构名称不为空（用户ID要为空）
+			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
+				//按查询条件得出结果
 				list = this.hour.getLineMoreAll(starttime,endtime,res);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
+				//按查询条件得出结果
 				list = this.hour.getLineAllById(starttime,endtime,res);
 			} else {
+				//得到此机构中所有的用户（包括账号和子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
+				//按查询条件得出结果
 				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
 			}
 		}

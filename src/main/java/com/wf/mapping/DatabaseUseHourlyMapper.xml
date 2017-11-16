@@ -52,7 +52,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code
+		group by r.product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
 	<select id="getDataById" resultMap="BaseResultMap">
@@ -99,7 +99,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code
+		group by r.product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
 	<select id="getDataByIds" resultMap="BaseResultMap">
@@ -146,7 +146,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code
+		group by r.product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
    <!-- 查询数据库分析当前条件下所有信息 -->
@@ -868,6 +868,166 @@
 			</otherwise>
 		</choose>
 		group by  r.product_source_code,YEAR(r.date),MONTH(r.date)
+	</select>
+
+
+
+	<select id="getTtitle" resultType="java.lang.String">
+		SELECT  d.table_name as database_name
+		from rs_resources_statistics_database_use_hourly r
+		left join
+		datamanager d on d.product_source_code=r.product_source_code
+		where 1=1
+		<if test="product_source_code!=null and product_source_code !=''">
+			and r.product_source_code= #{product_source_code}
+		</if>
+		<if test="source_db!=null and source_db !=''">
+			and  r.source_db = #{source_db}
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				and  r.date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and  r.hour  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and  r.hour  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and  r.date  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and  r.date  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		<if test="urlType!=null and urlType !=''">
+			and  r.operate_type in
+			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and  r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		group by
+		r.product_source_code
+	</select>
+	<select id="getTtitleById" resultType="java.lang.String">
+		SELECT  d.table_name as database_name
+		from rs_resources_statistics_database_use_hourly r
+		left join
+		datamanager d on d.product_source_code=r.product_source_code
+		where 1=1
+		<if test="user_id!=null and user_id !=''">
+			and r.user_id = #{user_id}
+		</if>
+		<choose>
+			<when test="product_source_code!=null and product_source_code !=''">
+				and r.product_source_code= #{product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id = #{user_id} )
+			</otherwise>
+		</choose>
+		<if test="source_db!=null and source_db !=''">
+			and r.source_db = #{source_db}
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and hour  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and hour  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and date  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and date  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		<if test="urlType!=null and urlType !=''">
+			and r.operate_type in
+			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		group by
+		r.product_source_code
+	</select>
+	<select id="getTtitleByIds" resultType="java.lang.String">
+		SELECT  d.table_name as database_name
+		from rs_resources_statistics_database_use_hourly r
+		left join
+		datamanager d on d.product_source_code=r.product_source_code
+		where 1=1
+		<choose>
+			<when test="product_source_code!=null and product_source_code !=''">
+				and r.product_source_code= #{product_source_code}
+			</when>
+			<otherwise>
+				and r.product_source_code in(select resource_id
+				from wfks_pay_channel_resources wkfs where user_id in
+				<foreach collection="users" item="item" open="("   separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			</otherwise>
+		</choose>
+		<if test="source_db!=null and source_db !=''">
+			and r.source_db = #{source_db}
+		</if>
+		<choose>
+			<when test="date !=null and date !=''">
+				and date = #{date}
+				<if test="startTime!=null and startTime !=''">
+					and hour  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and hour  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</when>
+			<otherwise>
+				<if test="startTime!=null and startTime !=''">
+					and date  <![CDATA[ >= ]]> #{startTime}
+				</if>
+				<if test="endTime!=null and endTime !=''">
+					and date  <![CDATA[ <= ]]> #{endTime}
+				</if>
+			</otherwise>
+		</choose>
+		<if test="urlType!=null and urlType !=''">
+			and r.operate_type in
+			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="database_name!=null and database_name !=''">
+			and r.product_source_code in
+			<foreach collection="database_name"  item="i tem" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		group by
+	    r.product_source_code
 	</select>
 
 </mapper>

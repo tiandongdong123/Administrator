@@ -531,17 +531,17 @@ function getline(){
 				}else if(urls==3){
 					rstnames.push("检索数");
 				}else if(urls==4){
-					rstnames.push("跳转数");
+					rstnames.push("分享数");
 				}else if(urls==5){
-					rstnames.push("订阅数");
-				}else if(urls==6){
 					rstnames.push("收藏数");
+				}else if(urls==6){
+					rstnames.push("导出数");
 				}else if(urls==7){
 					rstnames.push("笔记数");
 				}else if(urls==8){
-					rstnames.push("分享数");
+					rstnames.push("跳转数");
 				}else if(urls==9){
-					rstnames.push("导出数");
+					rstnames.push("订阅数");
 				}
 				singmore = 0 ;
 			} else{
@@ -555,17 +555,17 @@ function getline(){
 					}else if($(this).val()==3){
 						rstnames.push("检索数");
 					}else if($(this).val()==4){
-						rstnames.push("跳转数");
+						rstnames.push("分享数");
 					}else if($(this).val()==5){
-						rstnames.push("订阅数");
-					}else if($(this).val()==6){
 						rstnames.push("收藏数");
+					}else if($(this).val()==6){
+						rstnames.push("导出数");
 					}else if($(this).val()==7){
 						rstnames.push("笔记数");
 					}else if($(this).val()==8){
-						rstnames.push("分享数");
+						rstnames.push("跳转数");
 					}else if($(this).val()==9) {
-						rstnames.push("导出数");
+						rstnames.push("订阅数");
 					}
 				});
 				singmore = 1 ;
@@ -582,17 +582,17 @@ function getline(){
 				}else if($(this).val()==3){
 					rstnames.push("检索数");
 				}else if($(this).val()==4){
-					rstnames.push("跳转数");
+					rstnames.push("分享数");
 				}else if($(this).val()==5){
-					rstnames.push("订阅数");
-				}else if($(this).val()==6){
 					rstnames.push("收藏数");
+				}else if($(this).val()==6){
+					rstnames.push("导出数");
 				}else if($(this).val()==7){
 					rstnames.push("笔记数");
 				}else if($(this).val()==8){
-					rstnames.push("分享数");
+					rstnames.push("跳转数");
 				}else if($(this).val()==9) {
-					rstnames.push("导出数");
+					rstnames.push("订阅数");
 				}
 			});
 			//资源选项卡单选

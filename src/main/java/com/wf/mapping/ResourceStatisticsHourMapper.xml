@@ -66,7 +66,8 @@
 			</if>
 		</otherwise>
 	</choose>
-		group by r.source_type_name limit #{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
   </select>
 
 	<select id="getLineById" resultMap="BaseResultMap">
@@ -96,7 +97,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -121,7 +122,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name limit #{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineByIds" resultMap="BaseResultMap">
@@ -155,7 +157,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -180,7 +182,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name limit #{pageNum},#{pageSize}
+		group by r.source_type_name order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 
@@ -227,7 +230,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit #{pageNum},#{pageSize}
+		group by r.title order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreById" resultMap="BaseResultMap">
@@ -257,7 +261,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -282,7 +286,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit #{pageNum},#{pageSize}
+		group by r.title  order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreByIds" resultMap="BaseResultMap">
@@ -316,7 +321,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -341,7 +346,8 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title limit #{pageNum},#{pageSize}
+		group by r.title order by sum3
+		limit #{pageNum},#{pageSize}
 	</select>
 
 
@@ -413,7 +419,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			resource_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -463,7 +469,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id )
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -502,7 +508,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			resource_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -556,7 +562,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -595,7 +601,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			resource_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -711,7 +717,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -792,7 +798,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -908,7 +914,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -967,7 +973,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -1069,7 +1075,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -1128,7 +1134,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -1204,7 +1210,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by resource_type_name
+		group by source_type_name
 	</select>
 
 	<select id="getTtitleById" resultType="java.lang.String">
@@ -1225,7 +1231,7 @@
 			</when>
 			<otherwise>
 				and r.product_source_code in(select resource_id
-				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} )
+				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
@@ -1262,7 +1268,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by resource_type_name
+		group by source_type_name
 	</select>
 
 	<select id="getTtitleByIds" resultType="java.lang.String">
@@ -1287,7 +1293,7 @@
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
 				</foreach>
-				)
+				GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
@@ -1324,7 +1330,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by resource_type_name
+		group by source_type_name
 	</select>
 
 
