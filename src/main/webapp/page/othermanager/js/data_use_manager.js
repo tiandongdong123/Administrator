@@ -439,7 +439,7 @@ function checkitem(){
 	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	// line(urlType,database_name,datas);
+	line(urlType,database_name,datas);
 }
 
 //多选指标  全部
@@ -469,7 +469,7 @@ function checkitem_more(){
 	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	// line(urlType,database_name,datas);
+	line(urlType,database_name,datas);
 }
 
 function getDatabaseBySourceCode(code){

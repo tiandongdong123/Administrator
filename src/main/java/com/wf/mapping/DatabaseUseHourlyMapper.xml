@@ -111,6 +111,12 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
+		<if test="users!=null and users !=''">
+			and r.user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
@@ -197,7 +203,7 @@
 		<if test="institution_name!=null and institution_name !=''">
   			and institution=#{institution_name}
 	  	</if>
-	  	<if test="user_id!=null and user_id !=''">
+	  	<if test="users!=null and users !=''">
 	  		and user_id = #{user_id}
 	  	</if>
 	  	<if test="product_source_code!=null and product_source_code !=''">
@@ -285,6 +291,12 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
+		<if test="users!=null and users !=''">
+			and r.user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
@@ -468,7 +480,14 @@
 		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
 		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 		sum(CASE operate_type when 2 then numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly where 1=1
+		from rs_resources_statistics_database_use_hourly
+		where 1=1
+		<if test="users!=null and users !=''">
+			and user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and product_source_code= #{product_source_code}
@@ -683,6 +702,12 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
+		<if test="users!=null and users !=''">
+			and r.user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
@@ -832,6 +857,12 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
+		<if test="users!=null and users !=''">
+			and r.user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
 				and r.product_source_code= #{databaseUseDaily.product_source_code}
@@ -979,6 +1010,12 @@
 		left join
 		datamanager d on d.product_source_code=r.product_source_code
 		where 1=1
+		<if test="users!=null and users !=''">
+			and r.user_id IN
+			<foreach collection="users" item="item" open="("   separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
 				and r.product_source_code= #{product_source_code}
