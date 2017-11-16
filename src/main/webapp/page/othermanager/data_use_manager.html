@@ -102,9 +102,9 @@
               	             分析指标：
              	<div id="simple">
 	              <select id="urltype" >
-	              <option value="3">检索数</option>
+	              <option value="3" selected="selected">检索数</option>
 	              <option value="1">浏览数</option>
-	              <option selected="selected" value="2">下载数</option>
+	              <option value="2">下载数</option>
 	              </select>
              	</div>
              	
@@ -119,7 +119,7 @@
                     <!--checkitem_more()-->
              	</div>
                   <div style="width: 200px;margin:0 auto;">
-                      <button type='button' class='btn btn-primary' onclick='checkitem(),checkitem_more(),moreOrSimple();' >提交</button>
+                      <button type='button' class='btn btn-primary' onclick='checkOne(),checkitem(),moreOrSimple(),line(urlType,database_name,datas)' >提交</button>
                       <!--checkOne(),-->
                   </div>
               <div class="form-group input_block">

@@ -389,6 +389,7 @@ function gettable(curr){
 			});
 		}
 		else{
+
 			num=0;
 			$.post("../resourceTypeStatistics/gettable.do", {
 				pagenum: curr,//向服务端传的参数
@@ -416,8 +417,9 @@ function gettable(curr){
 				}else if(restype=='degree'){
 					htmltitle='<th>授予学位的机构名称</th>';
 				}
+				alert("123");
 				html=	"<tr>" +
-					"<th><input type='checkbox' name='rscheck' ></th>" +//onclick='checkAll();'
+					"<th><input type='checkbox' name='rscheck' onclick='checkAll()></th>" +//onclick='checkAll();'
 					"<th>序号</th>" +htmltitle+
 					"<th>资源类型</th>" +
 					"<th>检索数</th>" +
@@ -771,7 +773,7 @@ function checkboxchange(){
 		// $("input[name=item]").prop("checked",true);
 		// $("#checkallsource").prop("checked",true);
 	}
-	// getline();
+	//getline();
 }
 
 function checkAll(){
@@ -784,7 +786,6 @@ function checkAll(){
 			$(this).removeAttr("checked");
 		});
 	}
-	
 	checkboxchange();
 }
 
@@ -809,7 +810,6 @@ function getDatabaseBySourceCode(code){
 			}
 		});
 	}
-	
 }
 
 
@@ -914,6 +914,41 @@ function pie(data){
 
 
 	myChart.setOption(option);
+}
+
+function checksource(){
+	$("input[name='item']").prop("checked",$("#checkallsource").prop("checked"));
+	var checkbox=$("#rstype:checked");
+	var rstnames=new Array();
+	var urls = new Array();
+
+	$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
+	$("input[name='item']:checked").each(function(){
+		urlType.push($(this).val());
+
+		if(urls==1){
+			rstnames.push("浏览数");
+		}else if(urls==2){
+			rstnames.push("下载数");
+		}else if(urls==3){
+			rstnames.push("检索数");
+		}else if(urls==4){
+			rstnames.push("分享数");
+		}else if(urls==5){
+			rstnames.push("收藏数");
+		}else if(urls==6){
+			rstnames.push("导出数");
+		}else if(urls==7){
+			rstnames.push("笔记数");
+		}else if(urls==8){
+			rstnames.push("跳转数");
+		}else if(urls==9){
+			rstnames.push("订阅数");
+		}
+	});
+	$("input[id='rstype']:checked").each(function(){
+		database_name.push($(this).val());
+	});
 }
 
 
