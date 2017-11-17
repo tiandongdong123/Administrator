@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.wf.bean.Log;
+
 public interface LogMapper {
 	/**
 	 * 根据条件查询后台日志
@@ -22,4 +24,21 @@ public interface LogMapper {
 			@Param("endTime") String endTime);
 	
 	Integer deleteLogByID(@Param("ids")Integer[]ids);
+	
+	/**
+	 * 获取所有模块名称
+	 * @return
+	 */
+	List<String> getAllLogModel();
+	
+	
+	List<String> getResTypeByModel(@Param("modelname")String modelname);
+	
+	/**
+	 * 记录后台操作日志
+	 * @param log
+	 * @return
+	 */
+	Integer addLog(@Param("log")Log log);
+	
 }

@@ -30,4 +30,11 @@ public class ShareTtemplateNames {
 		this.templet_name_en = templet_name_en;
 	}
 
+	@Override
+	public String toString() {
+		return "ShareTtemplateNames [id=" + id + ", templet_name="
+				+ templet_name + ", templet_name_en=" + templet_name_en + "]";
+	}
+	
+
 }

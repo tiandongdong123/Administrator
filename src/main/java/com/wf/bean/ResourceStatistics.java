@@ -126,7 +126,15 @@ public class ResourceStatistics implements Serializable {
 	public void setProduct_source_code(String product_source_code) {
 		this.product_source_code = product_source_code;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "ResourceStatistics [userId=" + userId + ", urlType=" + urlType
+				+ ", institutionName=" + institutionName + ", sourceName="
+				+ sourceName + ", date=" + date + ", numbers=" + numbers
+				+ ", sourceTypeName=" + sourceTypeName + ", CHURLTYPE="
+				+ CHURLTYPE + ", operate_type=" + operate_type + ", source_db="
+				+ source_db + ", title=" + title + ", product_source_code="
+				+ product_source_code + "]";
+	}
 }

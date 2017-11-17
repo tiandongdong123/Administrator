@@ -95,5 +95,15 @@ public class Authority {
 	public void setEndtime(String endtime) {
 		this.endtime = endtime;
 	}
+
+	@Override
+	public String toString() {
+		return "Authority [userId=" + userId + ", authorityType="
+				+ authorityType + ", relatedIdAccountType="
+				+ relatedIdAccountType + ", trial=" + trial + ", partyAdmin="
+				+ partyAdmin + ", oldPartyAdmin=" + oldPartyAdmin
+				+ ", password=" + password + ", begintime=" + begintime
+				+ ", endtime=" + endtime + "]";
+	}
 	
 }

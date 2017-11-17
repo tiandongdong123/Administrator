@@ -1,8 +1,8 @@
 package com.wf.service;
 
 import java.util.List;
-import java.util.Map;
 
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 
 public interface LogService {
@@ -20,4 +20,10 @@ public interface LogService {
 			String startTime, String endTime);
 	
 	Integer deleteLogByID(Integer[]ids);
+	
+	List<String> getAllLogModel();
+	
+	List<String> getResTypeByModel(String modelname);
+	
+	Integer addLog(Log log);
 }

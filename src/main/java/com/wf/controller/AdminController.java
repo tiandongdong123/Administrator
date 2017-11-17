@@ -1,5 +1,7 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.Wfadmin;
 import com.wf.service.AdminService;
+import com.wf.service.LogService;
 
 @Controller
 @RequestMapping("admin")
@@ -24,7 +30,11 @@ public class AdminController {
 	@Autowired
 	private AdminService admin;
 	
+	@Autowired
+	LogService logService;
+	
 	/**查询管理员
+	 * @throws UnknownHostException 
 	 * 
 	 */
 	@RequestMapping("getadmin")
@@ -32,8 +42,23 @@ public class AdminController {
 	public PageList getAdmin(HttpServletRequest request,
 			@RequestParam(value="pagenum",required=false) Integer pagenum,
 			@RequestParam(value="pagesize",required=false) Integer pagesize,
-			@RequestParam(value="adminname",required=false) String adminname){
+			@RequestParam(value="adminname",required=false) String adminname) throws Exception{
 		PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
+		
+		//记录日志
+		StringBuffer operation_content=new StringBuffer("管理员管理查询条件:"); 
+		operation_content.append("检索词:"+adminname);
+		
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content(operation_content.toString());
+		logService.addLog(log);
+		
 		return pl;
 	}
 	
@@ -46,33 +71,74 @@ public class AdminController {
 	
 	/**
 	 * 删除管理员
+	 * @param request 
+	 * @throws Exception 
 	 */
 	@RequestMapping("deleteadmin")
 	@ResponseBody
-	public boolean deleteAdmin(@RequestParam(value="ids[]",required=false) String[] ids){
+	public boolean deleteAdmin(@RequestParam(value="ids[]",required=false) String[] ids, HttpServletRequest request) throws Exception{
 		boolean rt = this.admin.deleteAdmin(ids);
+		
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("删除");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content("删除管理员ID:"+ids.toString());
+		logService.addLog(log);
+		
 		return rt;
 	}
 	/**
 	 * 冻结账号
 	 * @param ids
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("closeadmin")
 	@ResponseBody
-	public boolean closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids){
+	public boolean closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
 		boolean rt = this.admin.closeAdmin(ids);
+		
+		//记录日志
+		StringBuffer operation_content=new StringBuffer("冻结账号:"+ids.toString()); 
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("冻结");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content(operation_content.toString());
+		logService.addLog(log);
+		
 		return rt;
 	}
 	/**
 	 * 解冻账号
 	 * @param ids
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("openadmin")
 	@ResponseBody
-	public boolean openAdmin(@RequestParam(value="ids[]",required=false) String[] ids){
+	public boolean openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
 		boolean rt = this.admin.openAdmin(ids);
+		
+		//记录日志
+		StringBuffer operation_content=new StringBuffer("解冻账号:"+ids.toString()); 
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("解冻");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content(operation_content.toString());
+		logService.addLog(log);
+		
 		return rt;
 	}
 	
@@ -105,11 +171,25 @@ public class AdminController {
 	 * 添加管理员
 	 * @param admin
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("doaddadmin")
 	@ResponseBody
-	public boolean doAddAdmin(@ModelAttribute Wfadmin admin){
+	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request) throws Exception{
 		boolean rt = this.admin.doAddAdmin(admin);
+		
+		//记录日志
+		StringBuffer operation_content=new StringBuffer("增加管理员信息:"+admin.toString()); 
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("增加");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content(operation_content.toString());
+		logService.addLog(log);
+		
 		return rt;
 	}
 	/**
@@ -137,7 +217,20 @@ public class AdminController {
 	 */
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
-	public boolean doUpdateAdmin(@ModelAttribute Wfadmin admin){
+	public boolean doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request)throws Exception{
+		
+		//记录日志
+		StringBuffer operation_content=new StringBuffer("修改后管理员信息:"+admin.toString()); 
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("管理员管理");
+		log.setOperation_content(operation_content.toString());
+		logService.addLog(log);
+		
 		boolean rt = this.admin.doUpdateAdmin(admin);
 		return rt;
 	}

@@ -140,4 +140,18 @@ public class Wfadmin {
 		this.dept = dept;
 	}
 
+	@Override
+	public String toString() {
+		return "Wfadmin [id=" + id + ", wangfang_admin_id=" + wangfang_admin_id
+				+ ", user_realname=" + user_realname + ", password=" + password
+				+ ", is_male=" + is_male + ", mobile_phone=" + mobile_phone
+				+ ", tel_phone=" + tel_phone + ", department=" + department
+				+ ", email=" + email + ", role_id=" + role_id
+				+ ", registration_time=" + registration_time + ", registrant="
+				+ registrant + ", role=" + role + ", status=" + status
+				+ ", dept=" + dept + "]";
+	}
+	
+	
+
 }

@@ -44,5 +44,11 @@ public class ResourceType {
 	public void setTypeState(String typeState) {
 		this.typeState = typeState;
 	}
+	@Override
+	public String toString() {
+		return "ResourceType [id=" + id + ", typeName=" + typeName
+				+ ", typedescri=" + typedescri + ", typeCode=" + typeCode
+				+ ", addTime=" + addTime + ", typeState=" + typeState + "]";
+	}
 	
 }

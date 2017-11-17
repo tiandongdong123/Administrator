@@ -64,4 +64,17 @@
 			1=2
 		</if>
 	</delete>
+	
+	<select id="getAllLogModel" resultType="String">
+		select DISTINCT(model_name) from log_model
+	</select>
+	
+	<select id="getResTypeByModel" resultType="String">
+		select restype from log_model where model_name=#{modelname}
+	</select>
+	
+	<select id="addLog">
+		insert into log(username,behavior,url,time,ip,module,operation_content)
+		values(#{log.username},#{log.behavior},#{log.url},#{log.time},#{log.ip},#{log.module},#{log.operation_content})
+	</select>
 </mapper>

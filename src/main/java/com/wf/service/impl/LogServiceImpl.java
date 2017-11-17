@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.dao.LogMapper;
 import com.wf.service.LogService;
@@ -43,6 +44,21 @@ public class LogServiceImpl implements LogService{
 	@Override
 	public Integer deleteLogByID(Integer[]ids) {
 		return logMapper.deleteLogByID(ids);
+	}
+
+	@Override
+	public List<String> getAllLogModel() {
+		return  logMapper.getAllLogModel();
+	}
+
+	@Override
+	public List<String> getResTypeByModel(String modelname) {
+		return logMapper.getResTypeByModel(modelname);
+	}
+
+	@Override
+	public Integer addLog(Log log) {
+		return logMapper.addLog(log);
 	}
 
 }

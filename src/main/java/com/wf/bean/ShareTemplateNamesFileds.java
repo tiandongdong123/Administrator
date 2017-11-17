@@ -47,4 +47,12 @@ public class ShareTemplateNamesFileds {
 		this.share_template_names_id = share_template_names_id;
 	}
 
+	@Override
+	public String toString() {
+		return "ShareTemplateNamesFileds [id=" + id + ", field_zh=" + field_zh
+				+ ", field_eng=" + field_eng + ", share_template_names_id="
+				+ share_template_names_id + ", check=" + check + "]";
+	}
+
+	
 }

@@ -1,5 +1,7 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
+
+
+
+import com.utils.CookieUtil;
+import com.utils.DateTools;
 import com.utils.KylinJDBC;
+import com.wf.bean.Log;
 import com.wf.dao.PageManagerMapper;
+import com.wf.service.LogService;
 import com.wf.service.PageAnalysisService;
 import com.wf.service.impl.PageAnalysisServiceImpl;
 
@@ -32,6 +41,8 @@ public class PageAnalysisController {
 	private PageManagerMapper pageManagerMapper;
 	@Autowired
 	private PageAnalysisService pageAnalysisService;
+	@Autowired
+	private LogService logService;
 	
 	@RequestMapping("pageAnalysis")
 	public String pageAnalysis(){
@@ -58,7 +69,19 @@ public class PageAnalysisController {
 	
 	@RequestMapping("getdataSource")
 	@ResponseBody
-	public Object datasource(HttpServletRequest request) {
+	public Object datasource(HttpServletRequest request) throws Exception {
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("页面分析");
+		log.setOperation_content("");
+		logService.addLog(log);
+		
 		String age=request.getParameter("age");
 		String title=request.getParameter("title");
 		String exlevel=request.getParameter("exlevel");

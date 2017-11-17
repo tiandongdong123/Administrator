@@ -1,5 +1,7 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
+import com.utils.DateTools;
 import com.wf.bean.Datamanager;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.SonSystem;
 import com.wf.service.DataManagerService;
+import com.wf.service.LogService;
 import com.wf.service.SonSystemService;
 
 @Controller
@@ -27,11 +33,12 @@ public class SonSystemController {
 	@Autowired
 	DataManagerService data;
 	
+	LogService logService;
 	
 	@RequestMapping("getson")
 	@ResponseBody
 	public PageList getProduct(@RequestParam("pagenum") Integer pagenum,
-			@RequestParam("pagesize") Integer pagesize){
+			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request) throws Exception{
 		PageList  pl = this.pts.getSon(pagenum, pagesize);
 		for(int i=0;i<pl.getPageRow().size();i++)
 		{
@@ -50,6 +57,18 @@ public class SonSystemController {
 				}
 			}
 			son.setProductResourceCode(sourcedata);
+			
+			//记录日志
+			Log log=new Log();
+			log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+			log.setBehavior("查询");
+			log.setUrl(request.getRequestURL().toString());
+			log.setTime(DateTools.getSysTime());
+			log.setIp(InetAddress.getLocalHost().toString());
+			log.setModule("平台配置管理");
+			log.setOperation_content("");
+			logService.addLog(log);
+			
 			pl.getPageRow().remove(i);
 			pl.getPageRow().add(i, son);
 		}
@@ -61,11 +80,24 @@ public class SonSystemController {
 	 * 删除资源单位
 	 * @param ids
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("deleteson")
 	@ResponseBody
-	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids){
+	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
 		boolean rt = this.pts.deleteSon(ids);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("删除");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("平台配置管理");
+		log.setOperation_content("删除的平台ID:"+ids.toString());
+		logService.addLog(log);
+
 		return rt;
 	}
 	
@@ -92,10 +124,11 @@ public class SonSystemController {
 	 * 添加子系统
 	 * @param unitname
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("doaddson")
 	@ResponseBody
-	public boolean doAddSon(HttpServletRequest request){
+	public boolean doAddSon(HttpServletRequest request) throws Exception{
 		SonSystem son=new SonSystem();
 		String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
@@ -104,16 +137,29 @@ public class SonSystemController {
 		son.setSonCode(code);
 		son.setSonName(name);
 		boolean rt = this.pts.doAddSon(son);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("增加");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("平台配置管理");
+		log.setOperation_content("增加的平台信息:"+son.toString());
+		logService.addLog(log);
+
 		return rt;
 	}
 	/**
 	 * 更新子系统
 	 * @param son
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("doupdateson")
 	@ResponseBody
-	public boolean doUpdateSon(HttpServletRequest request){
+	public boolean doUpdateSon(HttpServletRequest request) throws Exception{
 		SonSystem son=new SonSystem();
 		String id=request.getParameter("id");
 		String source_code=request.getParameter("productResourceCode");
@@ -124,6 +170,18 @@ public class SonSystemController {
 		son.setSonName(name);
 		son.setId(Integer.valueOf(id));
 		boolean rt = this.pts.doUpdateSon(son);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().toString());
+		log.setModule("平台配置管理");
+		log.setOperation_content("修改后的平台信息:"+son.toString());
+		logService.addLog(log);
+
 		return rt ;
 	}
 	

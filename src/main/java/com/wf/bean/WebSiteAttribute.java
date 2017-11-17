@@ -48,6 +48,11 @@ public class WebSiteAttribute implements Serializable{
 		this.numbers = numbers;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "WebSiteAttribute [type=" + type + ", date=" + date
+				+ ", groupName=" + groupName + ", numbers=" + numbers
+				+ ", num=" + num + ", percent=" + percent + "]";
+	}
 	
 }

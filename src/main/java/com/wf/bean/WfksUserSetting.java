@@ -29,4 +29,12 @@ public class WfksUserSetting extends WfksUserSettingKey {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
+	public String toString() {
+		return "WfksUserSetting [propertyValue=" + propertyValue
+				+ ", addDateTime=" + addDateTime + ", lastUpdateTime="
+				+ lastUpdateTime + "]";
+	}
+
+	
 }

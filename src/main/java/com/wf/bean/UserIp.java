@@ -50,4 +50,14 @@ public class UserIp {
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
+
+	@Override
+	public String toString() {
+		return "UserIp [id=" + id + ", userId=" + userId
+				+ ", beginIpAddressNumber=" + beginIpAddressNumber
+				+ ", endIpAddressNumber=" + endIpAddressNumber + ", sort="
+				+ sort + "]";
+	}
+	
+	
 }

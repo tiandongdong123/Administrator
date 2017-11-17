@@ -33,6 +33,11 @@ public class WebSiteDaily implements Serializable{
 	public void setNum(long num) {
 		this.num = num;
 	}
+	@Override
+	public String toString() {
+		return "WebSiteDaily [type=" + type + ", date=" + date + ", numbers="
+				+ numbers + ", num=" + num + "]";
+	}
 	
 	
 	

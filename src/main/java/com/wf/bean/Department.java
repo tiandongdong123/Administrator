@@ -30,4 +30,11 @@ public class Department {
     public void setDeptDescribe(String deptDescribe) {
         this.deptDescribe = deptDescribe == null ? null : deptDescribe.trim();
     }
+
+	@Override
+	public String toString() {
+		return "Department [id=" + id + ", deptName=" + deptName
+				+ ", deptDescribe=" + deptDescribe + "]";
+	}
+    
 }

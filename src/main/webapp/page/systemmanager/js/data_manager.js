@@ -109,7 +109,7 @@ function changedata(obj,id){
 	if(a>0){
 		url="../data/closedata.do";
 	}else{
-		url="../data/opendata.do"
+		url="../data/opendata.do";
 	}
 	$.ajax({
 		type : "POST",
@@ -205,7 +205,7 @@ function moveUp() {
 		alert("请选择上移内容！");
 	} else {
 		if ($("input:checkbox[name=commonid]:checked").size() >1) {
-			alert("请不要多选！")
+			alert("请不要多选！");
 		} else {
 			var id = "";
 			$("input:checkbox[name=commonid]:checked").each(function(){

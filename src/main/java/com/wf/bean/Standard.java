@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import java.util.Arrays;
+
 
 public class Standard {
 	private boolean isBK;//是否包库
@@ -142,6 +144,19 @@ public class Standard {
 	}
 	public void setSigprint(int sigprint) {
 		Sigprint = sigprint;
+	}
+	@Override
+	public String toString() {
+		return "Standard [isBK=" + isBK + ", isZJ=" + isZJ + ", UserId="
+				+ UserId + ", Username=" + Username + ", UserEnName="
+				+ UserEnName + ", StartTime=" + StartTime + ", EndTime="
+				+ EndTime + ", BK_StartTime=" + BK_StartTime + ", BK_EndTime="
+				+ BK_EndTime + ", Company=" + Company + ", OrgName=" + OrgName
+				+ ", OrgCode=" + OrgCode + ", CompanySimp=" + CompanySimp
+				+ ", IPLimits=" + Arrays.toString(IPLimits) + ", BK_IPLimits="
+				+ Arrays.toString(BK_IPLimits) + ", Rdptauth=" + Rdptauth
+				+ ", Onlines=" + Onlines + ", Copys=" + Copys + ", Prints="
+				+ Prints + ", Sigprint=" + Sigprint + "]";
 	}
 	
 }

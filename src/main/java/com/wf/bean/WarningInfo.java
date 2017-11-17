@@ -44,5 +44,12 @@ public class WarningInfo {
 	public void setCountthreshold(Integer countthreshold) {
 		this.countthreshold = countthreshold;
 	}
+	@Override
+	public String toString() {
+		return "WarningInfo [id=" + id + ", amountthreshold=" + amountthreshold
+				+ ", datethreshold=" + datethreshold + ", remindtime="
+				+ remindtime + ", remindemail=" + remindemail
+				+ ", countthreshold=" + countthreshold + "]";
+	}
 	
 }

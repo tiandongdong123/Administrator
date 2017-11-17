@@ -112,7 +112,6 @@ function deleteMore(){
 		layer.msg("请选择要删除的数据",{icon:2});
 		return;
 	}
-	alert(ids);
 	$.ajax({
 		type:"POST",
 		data:{"ids":ids},
@@ -151,5 +150,29 @@ function exportLog(){
 //刷新页面
 function refresh(){
 	window.location.href="../log/getLog.do";
+}
+
+//动态获取模块对应的操作类型
+function getResTypeOnSelect(model){
+	$("#restype").empty();
+	$("#restype").append("<option value=''>--请选择操作类型--</option>");
+	if(null!=$(model).val() && ""!=$(model).val()){
+		$.ajax({
+			type:"POST",
+			data:{"modelname":$(model).val()},
+			url:"../log/getResTypeByModel.do",
+			dataType:"json",
+			success:function(data){
+				if(null!=data && ""!=data){
+					$.each(data,function(key,val) {
+						$("#restype").append("<option value='"+val+"'>"+val+"</option>");
+					});
+				}
+			},
+			error:function(error){
+				layer.msg(error,{icon: 2});
+			}
+		});
+	}
 }
 

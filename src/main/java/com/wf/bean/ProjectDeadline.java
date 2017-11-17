@@ -50,4 +50,12 @@ public class ProjectDeadline {
     public void setValidityEndTime(String validityEndTime) {
         this.validityEndTime = validityEndTime;
     }
+
+	@Override
+	public String toString() {
+		return "ProjectDeadline [id=" + id + ", projectId=" + projectId
+				+ ", userId=" + userId + ", validityStartTime="
+				+ validityStartTime + ", validityEndTime=" + validityEndTime
+				+ "]";
+	}
 }

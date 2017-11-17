@@ -74,4 +74,15 @@ public class StandardUnit {
 	public void setiPLimits(String iPLimits) {
 		this.iPLimits = iPLimits;
 	}
+
+	@Override
+	public String toString() {
+		return "StandardUnit [userId=" + userId + ", orgName=" + orgName
+				+ ", orgCode=" + orgCode + ", company=" + company
+				+ ", companySimp=" + companySimp + ", createTime=" + createTime
+				+ ", updateTime=" + updateTime + ", iPLimits=" + iPLimits + "]";
+	}
+	
+	
+	
 }

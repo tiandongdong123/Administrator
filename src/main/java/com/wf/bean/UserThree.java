@@ -62,4 +62,13 @@ public class UserThree {
     public void setUserId(String userId) {
         this.userId = userId == null ? null : userId.trim();
     }
+
+	@Override
+	public String toString() {
+		return "UserThree [type=" + type + ", openid=" + openid + ", status="
+				+ status + ", createTime=" + createTime + ", updateTime="
+				+ updateTime + ", userId=" + userId + "]";
+	}
+    
+    
 }

@@ -29,5 +29,11 @@ public class ShareTemplate {
 	public void setShareTime(String shareTime) {
 		this.shareTime = shareTime;
 	}
+	@Override
+	public String toString() {
+		return "ShareTemplate [id=" + id + ", shareType=" + shareType
+				+ ", shareContent=" + shareContent + ", shareTime=" + shareTime
+				+ "]";
+	}
 	
 }

@@ -1216,7 +1216,6 @@ public class AheadUserController {
 	 */
 	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean isBatch){
 		Map<String,String> hashmap=new HashMap<String,String>();
-		boolean flag=true;//判断是否有选中的数据库
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if (StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
@@ -1237,16 +1236,19 @@ public class AheadUserController {
 				}
 			}
 		}
-		for(ResourceLimitsDTO rldto:dto.getRldto()){
-			if(rldto.getResourceid()!=null){
-				flag=false;
-				break;
+		if (dto.getRldto() != null) {
+			boolean flag = true;// 判断是否有选中的数据库
+			for (ResourceLimitsDTO rldto : dto.getRldto()) {
+				if (rldto.getResourceid() != null) {
+					flag = false;
+					break;
+				}
 			}
-		}
-		if(flag){
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", projectname+"必须选择一个数据库");
-			return hashmap;
+			if (flag) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname + "必须选择一个数据库");
+				return hashmap;
+			}
 		}
 		return hashmap;
 	}
@@ -1357,15 +1359,10 @@ public class AheadUserController {
 				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 				view.addObject("ps", ps);
 				String jsonStr = ps.getExtend();
-				JSONObject json = JSONObject.fromObject(jsonStr);
-				Object obj=json.get("IsTrialPartyAdminTime");
 				boolean flag = false;
-				if (obj != null) {
-					if (obj instanceof String) {
-						flag = String.valueOf(obj).equals("true") ? true : false;
-					} else if (obj instanceof Boolean) {
-						flag = (boolean) obj;
-					}
+				if (!StringUtils.isEmpty(jsonStr)) {
+					JSONObject json = JSONObject.fromObject(jsonStr);
+					flag = (boolean) json.get("IsTrialPartyAdminTime");
 				}
 				if (flag) {
 					trial = "isTrial";
