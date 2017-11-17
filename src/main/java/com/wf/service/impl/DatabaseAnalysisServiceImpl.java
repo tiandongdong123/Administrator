@@ -182,17 +182,14 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 			if(StringUtils.isBlank(institutionName) && StringUtils.isBlank(userId)){
 				//按条件查询
 				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsMore(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-				titleList = databaseUseHourlyMapper.getTtitle(product_source_code,source_db,date, startTime, endTime,urlType,database_name);
 			}else if(StringUtils.isNotBlank(userId)){
 				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIdMore(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-				titleList = databaseUseHourlyMapper.getTtitleById(userId,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
 			}else{
 				//查处属于此机构的所有用户（包括机构账号和机构子账号）
 				List users = personMapper.getInstitutionUser(institutionName);
 				list=databaseUseHourlyMapper.DatabaseAnalysisStatisticsByIdsMore(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
-				titleList = databaseUseHourlyMapper.getTtitleByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime,urlType,database_name);
 			}
-			List<String> databaseName = datamanagerMapper.getdatabseName(database_name);
+			titleList = datamanagerMapper.getdatabseName(database_name);
 			if(date!=null&&!"".equals(date)){
 				for(Integer i = 1;i<=24;i++){
 					timeList.add(i.toString());
@@ -280,7 +277,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 				for(String item : titleList){
 					databases.add(item);
 				}
-				for(int j = 0;j<databaseName.size();j++){
+				for(int j = 0;j<databases.size();j++){
 					List arrayList = new ArrayList<>();
 					if(urlType[0]==1){
 						for(int i = 0;i<timeList.size();i++){

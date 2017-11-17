@@ -214,6 +214,6 @@
       <foreach collection="productSourceCode" item="item" open="(" separator="," close=")">
           #{item}
       </foreach>
-      group by table_name
+      group by product_source_code
   </select>
 </mapper>

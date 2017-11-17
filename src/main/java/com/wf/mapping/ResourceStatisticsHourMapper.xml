@@ -286,7 +286,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title  order by sum3
+		group by r.title order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
@@ -419,7 +419,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			source_type_name,
+			r.source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -508,7 +508,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			source_type_name,
+			r.source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -601,7 +601,7 @@
 		</choose>
 		group by
 		<if test="singmore==0">
-			source_type_name,
+			r.source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -1210,7 +1210,7 @@
 				</if>
 			</otherwise>
 		</choose>
-		group by source_type_name
+		group by r.source_type_name
 	</select>
 
 	<select id="getTtitleById" resultType="java.lang.String">

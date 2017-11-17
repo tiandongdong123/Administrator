@@ -83,21 +83,16 @@ public class ResourceTypeStatisticsServiceImpl implements
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 				//按条件查询
 				list = this.hour.getChart(starttime,endtime,res,urls,singmore,database_name);
-				//按条件查询折线图标题
-				titleList = this.hour.getTtitle(starttime,endtime,res,urls,singmore,database_name);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				//按条件查询
 				list = this.hour.getChartById(starttime,endtime,res,urls,singmore,database_name);
-				//按条件查询折线图标题
-				titleList = this.hour.getTtitleById(starttime,endtime,res,urls,singmore,database_name);
 			} else {
 				//查处属于此机构的所有用户（包括机构账号和机构子账号）
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				//按条件查询
 				list=this.hour.getChartByIds(starttime, endtime,res,users,urls,singmore,database_name);
-				//按条件查询折线图标题
-				titleList = this.hour.getTtitleByIds(starttime, endtime,res,users,urls,singmore,database_name);
 			}
+			titleList = resourceTypeMapper.getResourceByCode(database_name);
 		}else {
 			/**
 			 * 分三种情况：

@@ -97,5 +97,14 @@
   <select id="checkRsTypeName" parameterType="java.lang.String" resultType="java.lang.String">
     select resource_type_name from resource_type where resource_type_name=#{rsTypeName}
   </select>
+
+    <select id="getResourceByCode" resultType="java.lang.String">
+        select resource_type_name from resource_type
+        where resource_type_code IN
+        <foreach collection="code" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by resource_type_code
+    </select>
   
 </mapper>
