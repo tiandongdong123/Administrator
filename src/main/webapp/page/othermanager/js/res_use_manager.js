@@ -637,10 +637,6 @@ function getline(){
 						toolbox: {
 							show : true,
 							feature : {
-								// mark : {show: true},
-								// dataView : {show: true, readOnly: false},
-								// magicType : {show: true, type: ['line']},
-								// restore : {show: true},
 								saveAsImage : {show: true}
 							}
 						},
@@ -721,6 +717,7 @@ function getline(){
 							}
 						)
 					}
+
 					myChart.setOption(option);
 					pie(data);
 				}
@@ -862,9 +859,12 @@ function getTime(){
 	}
 }
 function pie(data){
-	var myChart = echarts.init(document.getElementById('pie'));
-	var urltype=$("#urltype").find("option:selected").text();
-	option = {
+	var rstnames=new Array();
+	var urls = new Array();
+	if(singmore==0){
+		var myChart = echarts.init(document.getElementById('pie'));
+		var urltype=$("#urltype").find("option:selected").text();
+		option = {
 		tooltip : {
 			trigger: 'item',
 			formatter: "{b} : {c} ({d}%)"
@@ -884,10 +884,8 @@ function pie(data){
 				]
 			}
 		]
-	};
-
-
-	for(var i =0;i<data.title.length;i++){
+		};
+		for(var i =0;i<data.title.length;i++){
 		var name = data.title[i];
 		var num=new Array();
 		num =data.content[name];
@@ -901,10 +899,72 @@ function pie(data){
 				name:name
 			}
 		)
+		}
+		myChart.setOption(option);
 	}
-
-
-	myChart.setOption(option);
+	else{
+		var myChart = echarts.init(document.getElementById('pie'));
+		var restype=$("#restype").find("option:selected").text();
+		$("input[name='item']:checked").each(function(){
+			urls.push($(this).val());
+			if($(this).val()==1){
+				rstnames.push("浏览数");
+			}else if($(this).val()==2){
+				rstnames.push("下载数");
+			}else if($(this).val()==3){
+				rstnames.push("检索数");
+			}else if($(this).val()==4){
+				rstnames.push("分享数");
+			}else if($(this).val()==5){
+				rstnames.push("收藏数");
+			}else if($(this).val()==6){
+				rstnames.push("导出数");
+			}else if($(this).val()==7){
+				rstnames.push("笔记数");
+			}else if($(this).val()==8){
+				rstnames.push("跳转数");
+			}else if($(this).val()==9) {
+				rstnames.push("订阅数");
+			}
+		});
+		option = {
+			tooltip : {
+				trigger: 'item',
+				formatter: "{b} : {c} ({d}%)"
+			},
+			legend: {
+				orient : 'vertical',
+				x : 'left',
+				data:rstnames
+			},
+			calculable : true,
+			series : [
+				{
+					type:'pie',
+					radius : '60%',
+					center: ['50%', '60%'],
+					data:[
+					]
+				}
+			]
+		};
+		for(var i =0;i<rstnames.length;i++){
+			var name = rstnames[i];
+			var num=new Array();
+			num =data.content[name];
+			var val = 0;
+			for(var k =0;k<num.length;k++){
+				val=val+parseInt(num[k]);
+			}
+			option.series[0].data.push(
+				{
+					value:val,
+					name:name
+				}
+			)
+		}
+		myChart.setOption(option);
+	}
 }
 
 function checksource(){
