@@ -201,7 +201,7 @@ function Page(curr){
 			                  +'<td>'+data.pageRow[i].publishDate+'</td>'
 			                  +'<td>'+data.pageRow[i].docuNumber+'</td>'
 			                  +'<td><div class="price_div">'+data.pageRow[i].volumePrice+'<i class="fa fa-fw fa-pencil" onclick="pencilHide(this,\''+data.pageRow[i].id+'\',event)" id="'+data.pageRow[i].volumePrice+'"></i></div></td>'
-			                  +'<td>'+issueHtml+'<a href="../content/updateOne.do?id='+data.pageRow[i].id+'">修改</a><a href="javascript:void(0)" onclick="deleteOne(\''+data.pageRow[i].id+'\')">删除</a></td>'
+			                  +'<td>'+issueHtml+'<a href="../content/updateOne.do?id='+data.pageRow[i].id+'" target=_blank>修改</a><a href="javascript:void(0)" onclick="deleteOne(\''+data.pageRow[i].id+'\')">删除</a></td>'
 			                  +'</tr>';
 						
 						$("#glist").append(html);
