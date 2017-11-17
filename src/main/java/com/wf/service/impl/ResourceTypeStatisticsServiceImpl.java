@@ -102,15 +102,15 @@ public class ResourceTypeStatisticsServiceImpl implements
 			 */
 			if (StringUtils.isBlank(res.getInstitutionName())&& StringUtils.isBlank(res.getUserId())) {
 				//按条件查询
-				list = this.hour.getChartMore(starttime,endtime,res,urls);
+				list = this.hour.getChartMore(starttime,endtime,res,urls,database_name);
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				//按条件查询
-				list = this.hour.getChartMoreById(starttime,endtime,res,urls);
+				list = this.hour.getChartMoreById(starttime,endtime,res,urls,database_name);
 			} else {
 				//查处属于此机构的所有用户
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				//按条件查询
-				list=this.hour.getChartMoreByIds(starttime, endtime,res,users,urls);
+				list=this.hour.getChartMoreByIds(starttime, endtime,res,users,urls,database_name);
 			}
 		}
 		//处理按条件查的数据

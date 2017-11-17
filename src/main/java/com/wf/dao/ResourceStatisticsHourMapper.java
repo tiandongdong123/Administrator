@@ -115,44 +115,22 @@ public interface ResourceStatisticsHourMapper {
             @Param("startTime") String starttime,
             @Param("endTime") String endtime,
             @Param("res") ResourceStatistics res,
-            @Param("urls") Integer[] urls);
+            @Param("urls") Integer[] urls,
+            @Param("database_name") String[] database_name);
 
     List<ResourceStatisticsHour> getChartMoreById(
             @Param("startTime") String starttime,
             @Param("endTime") String endtime,
             @Param("res") ResourceStatistics res,
-            @Param("urls") Integer[] urls);
+            @Param("urls") Integer[] urls,
+            @Param("database_name") String[] database_name);
 
     List<ResourceStatisticsHour> getChartMoreByIds(
             @Param("startTime") String starttime,
             @Param("endTime") String endtime,
             @Param("res") ResourceStatistics res,
             @Param("users") List users,
-            @Param("urls") Integer[] urls);
-
-    List<String> getTtitle(
-            @Param("startTime") String starttime,
-            @Param("endTime") String endtime,
-            @Param("res") ResourceStatistics res,
             @Param("urls") Integer[] urls,
-            @Param("singmore") Integer singmore,
-            @Param("database_name") String[] database_name);
-
-    List<String> getTtitleById(
-            @Param("startTime") String starttime,
-            @Param("endTime") String endtime,
-            @Param("res") ResourceStatistics res,
-            @Param("urls") Integer[] urls,
-            @Param("singmore") Integer singmore,
-            @Param("database_name") String[] database_name);
-
-    List<String> getTtitleByIds(
-            @Param("startTime") String starttime,
-            @Param("endTime") String endtime,
-            @Param("res") ResourceStatistics res,
-            @Param("users") List users,
-            @Param("urls") Integer[] urls,
-            @Param("singmore") Integer singmore,
             @Param("database_name") String[] database_name);
 
 }
