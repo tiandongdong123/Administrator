@@ -58,6 +58,7 @@ public class DatabaseAnalysisController {
 	@Autowired
 	private PersonService personService;
 	
+	@Autowired
 	LogService logService;
 	
 	/**
@@ -103,6 +104,9 @@ public class DatabaseAnalysisController {
 	@ResponseBody
 	public PageList getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize, HttpServletRequest request) throws Exception{
 		
+		//列表展示		
+		PageList pl=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -111,17 +115,13 @@ public class DatabaseAnalysisController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("数据库使用分析");
-		
 		log.setOperation_content("查询条件:机构名称:"+databaseUseDaily.getInstitution_name()+
 				",用户ID:"+databaseUseDaily.getUser_id()+",数据来源:"+databaseUseDaily.getSource_db()+
 				",数据库名称:"+databaseUseDaily.getProduct_source_code()+
 				"统计时间:"+startTime+"-"+endTime);
 		
 		logService.addLog(log);
-
-		//列表展示		
-		PageList pl=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
-				
+		
 		return pl;
 	}
 	

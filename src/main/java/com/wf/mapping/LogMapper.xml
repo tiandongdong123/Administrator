@@ -10,6 +10,7 @@
 		<result column="time" property="time" jdbcType="VARCHAR" />
 		<result column="ip" property="ip" jdbcType="VARCHAR" />
 		<result column="module" property="module" jdbcType="VARCHAR" />
+		<result column="operation_content" property="operation_content" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<select id="getLog"  resultMap="BaseResultMap">
