@@ -2,6 +2,7 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,7 +75,7 @@ public class PriceUnitController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("单位设置");
-		log.setOperation_content("删除的资源单位ID:"+ids.toString());
+		log.setOperation_content("删除的资源单位ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 		
 		return rt;

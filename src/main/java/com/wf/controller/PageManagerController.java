@@ -87,7 +87,7 @@ public class PageManagerController {
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("分析页面管理");
 		
-		log.setOperation_content("查询条件:页面名称:"+pageName+",功能模块:"+ids.toString());
+		log.setOperation_content("查询条件:页面名称:"+pageName+",功能模块:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 
 		return pl;

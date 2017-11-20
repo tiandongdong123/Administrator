@@ -1098,6 +1098,13 @@ public class ContentController{
 			endTime=format.format(calendar.getTime());
 		}
 		
+		int pageSize=10;
+		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		JSONObject json=JSONObject.fromObject(NotepageList);
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(json.toString());
+		
+		
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -1107,17 +1114,12 @@ public class ContentController{
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("笔记管理");
 		
-		log.setOperation_content("笔记管理查询条件:用户ID"+userName+",笔记编号:"+noteNum
+		log.setOperation_content("笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
 				+",资源名称:"+resourceName+",笔记日期:"+startTime+"-"+endTime
-				+ ",资源类型:"+resourceType.toString()+",数据状态:"+dataState.toString()+","
-				+"申诉状态:"+complaintStatus.toString());
+				+ ",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))+","
+				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)));
 		logService.addLog(log);
-
-		int pageSize=10;
-		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
-		JSONObject json=JSONObject.fromObject(NotepageList);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());
+		
 	}
 	
 	@RequestMapping("/findNote")

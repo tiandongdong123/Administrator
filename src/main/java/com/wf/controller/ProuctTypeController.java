@@ -2,6 +2,7 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +87,7 @@ public class ProuctTypeController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("产品类型设置");
-		log.setOperation_content("删除的产品类型ID"+ids.toString());
+		log.setOperation_content("删除的产品类型ID"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 		
 		return rt;

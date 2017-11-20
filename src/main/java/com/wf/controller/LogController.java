@@ -160,7 +160,7 @@ public class LogController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("日志管理");
-		log.setOperation_content("删除日志ID:"+ids.toString());
+		log.setOperation_content("删除日志ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 
 		return logService.deleteLogByID(ids);

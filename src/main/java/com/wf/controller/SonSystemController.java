@@ -95,7 +95,7 @@ public class SonSystemController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("平台配置管理");
-		log.setOperation_content("删除的平台ID:"+ids.toString());
+		log.setOperation_content("删除的平台ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 
 		return rt;

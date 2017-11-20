@@ -2,6 +2,7 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class AdminController {
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
 		log.setModule("管理员管理");
-		log.setOperation_content("删除管理员ID:"+ids.toString());
+		log.setOperation_content("删除管理员ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 		
 		return rt;
@@ -103,7 +104,7 @@ public class AdminController {
 		boolean rt = this.admin.closeAdmin(ids);
 		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("冻结账号:"+ids.toString()); 
+		StringBuffer operation_content=new StringBuffer("冻结账号:"+(ids==null?"":Arrays.asList(ids))); 
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
 		log.setBehavior("冻结");
@@ -128,7 +129,7 @@ public class AdminController {
 		boolean rt = this.admin.openAdmin(ids);
 		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("解冻账号:"+ids.toString()); 
+		StringBuffer operation_content=new StringBuffer("解冻账号:"+(ids==null?"":Arrays.asList(ids))); 
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
 		log.setBehavior("解冻");
