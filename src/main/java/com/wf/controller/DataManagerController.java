@@ -3,6 +3,7 @@ package com.wf.controller;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -406,7 +407,13 @@ public class DataManagerController {
 		log.setOperation_content("导出查询条件数据库名称:"+dataname);
 		logService.addLog(log);
 
-		List<Object> list=data.exportData(dataname);
+		List<Object> list =data.exportData(dataname);
+		if(null==list){
+			list=new ArrayList<Object>();
+		}else{
+			list=data.exportData(dataname);
+		}
+		
 		List<String> names=Arrays.asList(new String[]{"序号","数据库名称","数据库描述","数据库类型","数据库来源","资源类型","语种","自定义策略","状态"});
 		JSONArray array=JSONArray.fromObject(list);
 		ExportExcel excel=new ExportExcel();
