@@ -347,8 +347,14 @@ public class CardController {
 		logService.addLog(log);
 		
 		try {
-	        //设置Content-Disposition  
-	        response.setHeader("Content-Disposition", "attachment;filename="+java.net.URLEncoder.encode(name, "UTF-8")+type);  
+			// 设置Content-Disposition
+			String userAgent = request.getHeader("USER-AGENT");
+			if (StringUtils.contains(userAgent, "Mozilla")) {// google,火狐浏览器
+				name = new String(name.getBytes(), "ISO8859-1");
+			} else {
+				name = java.net.URLEncoder.encode(name, "UTF8");// 其他浏览器
+			}
+			response.setHeader("Content-Disposition", "attachment;filename=" + name + type);
 			InputStream in = new FileInputStream(fileName);
 			OutputStream out = response.getOutputStream();
 			int b;
@@ -493,7 +499,7 @@ public class CardController {
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
 		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("万方卡审核");
+		log.setModule("审核万方卡");
 		log.setOperation_content(operation_content.toString());
 		logService.addLog(log);
 
