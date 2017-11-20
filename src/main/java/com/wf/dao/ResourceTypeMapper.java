@@ -75,7 +75,7 @@ public interface ResourceTypeMapper {
 
 	List<String> getAllName();
 
-	List<String> getResourceByCode(@Param("code") String[] database_name);
+	List<ResourceType> getResourceByCode(@Param("code") String[] database_name);
 	
 	JSONArray getAll1();
 	

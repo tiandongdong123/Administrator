@@ -5,7 +5,7 @@
     <id column="user_id" property="user_id" jdbcType="VARCHAR" />
     <result column="institution" property="institution_name" jdbcType="VARCHAR" />
     <result column="operate_type" property="operate_type" jdbcType="VARCHAR" />
-    <result column="database_name" property="database_name" jdbcType="VARCHAR" />
+	<result column="product_source_code" property="product_source_code" jdbcType="VARCHAR" />
     <result column="date" property="date" jdbcType="VARCHAR" />
     <result column="hour" property="hour" jdbcType="VARCHAR" />
     <result column="numbers" property="numbers" jdbcType="VARCHAR" />
@@ -18,111 +18,105 @@
    <!-- 查询数据库分析当前条件下分页信息 -->
 
 	<select id="getData" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
+		SELECT product_source_code,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
 
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="product_source_code!=null and product_source_code !=''">
-			and r.product_source_code= #{product_source_code}
+			and product_source_code= #{product_source_code}
 		</if>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
 				and date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code order by sum1
+		group by product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
 	<select id="getDataById" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
+		SELECT product_source_code,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
 
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="user_id!=null and user_id !=''">
-			and r.user_id = #{user_id}
+			and user_id = #{user_id}
 		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
-				and r.product_source_code= #{product_source_code}
+				and product_source_code= #{product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{user_id} )
 			</otherwise>
 		</choose>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
 				and date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code order by sum1
+		group by product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
 	<select id="getDataByIds" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		SELECT product_source_code,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="users!=null and users !=''">
-			and r.user_id IN
+			and user_id IN
 			<foreach collection="users" item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
-				and r.product_source_code= #{product_source_code}
+				and product_source_code= #{product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -131,67 +125,65 @@
 			</otherwise>
 		</choose>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
 				and date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code order by sum1
+		group by product_source_code order by sum1
 		limit #{pageNum},#{pageSize}
 	</select>
    <!-- 查询数据库分析当前条件下所有信息 -->
   <select id="getDataAnalysisLists" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3 
+		SELECT product_source_code ,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
 				
-		from rs_resources_statistics_database_use_hourly r 
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
   	<if test="product_source_code!=null and product_source_code !=''">
-  		and r.product_source_code= #{product_source_code}
+  		and product_source_code= #{product_source_code}
   	</if>
   	<if test="source_db!=null and source_db !=''">
-  		and r.source_db = #{source_db}
+  		and source_db = #{source_db}
   	</if>
 	  <choose>
 		  <when test="date !=null and date !=''">
 			  and date = #{date}
 			  <if test="startTime!=null and startTime !=''">
-				  and r.hour <![CDATA[ >= ]]> #{startTime}
+				  and hour <![CDATA[ >= ]]> #{startTime}
 			  </if>
 			  <if test="endTime!=null and endTime !=''">
-				  and r.hour <![CDATA[ <= ]]> #{endTime}
+				  and hour <![CDATA[ <= ]]> #{endTime}
 			  </if>
 		  </when>
 		  <otherwise>
 			  <if test="startTime!=null and startTime !=''">
-				  and r.date <![CDATA[ >= ]]> #{startTime}
+				  and date <![CDATA[ >= ]]> #{startTime}
 			  </if>
 			  <if test="endTime!=null and endTime !=''">
-				  and r.date <![CDATA[ <= ]]> #{endTime}
+				  and date <![CDATA[ <= ]]> #{endTime}
 			  </if>
 		  </otherwise>
 	  </choose>
-  	group by r.product_source_code
+  	group by product_source_code
   </select>
 
   <!-- 查询来源分析当前条件下（全部来源、日期、指标类型）折线图信息 -->
@@ -237,72 +229,68 @@
 		GROUP BY operate_type;
   </select>
 	<select id="getDataAnalysisListsById" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
+		SELECT product_source_code,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
 
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="user_id!=null and user_id !=''">
-			and r.user_id = #{user_id}
+			and user_id = #{user_id}
 		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
-				and r.product_source_code= #{product_source_code}
+				and product_source_code= #{product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{user_id} )
 			</otherwise>
 		</choose>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
 				and date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and.date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code
+		group by product_source_code
 	</select>
 	<select id="getDataAnalysisListsByIds" resultMap="BaseResultMap">
-		SELECT d.table_name as database_name,r.product_source_code as product_source_code,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end)sum1,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end)sum2,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		SELECT product_source_code,
+		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
+		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
+		sum(CASE operate_type when 2 then numbers else 0 end)sum3
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="users!=null and users !=''">
-			and r.user_id IN
+			and user_id IN
 			<foreach collection="users" item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<choose>
 			<when test="product_source_code!=null and product_source_code !=''">
-				and r.product_source_code= #{product_source_code}
+				and product_source_code= #{product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -311,28 +299,28 @@
 			</otherwise>
 		</choose>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
 				and date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.product_source_code
+		group by product_source_code
 	</select>
   
   <!-- 查询数据库分析当前条件下统计信息 -->
@@ -522,7 +510,7 @@
 	</select>
 
 	<select id="DatabaseAnalysisStatisticsMore" resultMap="BaseResultMap">
-		SELECT  d.table_name as database_name,r.product_source_code as product_source_code,
+		SELECT product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour,
@@ -534,46 +522,44 @@
 		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
 		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 		sum(CASE operate_type when 2 then numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="source_db!=null and source_db !=''">
-			and  r.source_db = #{source_db}
+			and  source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
-				and  r.date = #{date}
+				and  date = #{date}
 				<if test="startTime!=null and startTime !=''">
-					and  r.hour  <![CDATA[ >= ]]> #{startTime}
+					and  hour  <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and  r.hour  <![CDATA[ <= ]]> #{endTime}
+					and  hour  <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and  r.date  <![CDATA[ >= ]]> #{startTime}
+					and  date  <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and  r.date  <![CDATA[ <= ]]> #{endTime}
+					and  date  <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
 		<if test="urlType!=null and urlType !=''">
-			and  r.operate_type in
+			and  operate_type in
 			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and  r.product_source_code in
+			and  product_source_code in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		group by
-		r.product_source_code,
+		product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour
@@ -584,7 +570,7 @@
 		</choose>
 	</select>
 	<select id="DatabaseAnalysisStatisticsByIdMore" resultMap="BaseResultMap">
-		SELECT  d.table_name as database_name,r.product_source_code as product_source_code,
+		SELECT product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour,
@@ -596,15 +582,13 @@
 		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
 		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 		sum(CASE operate_type when 2 then numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="user_id!=null and user_id !=''">
-			and r.user_id = #{user_id}
+			and user_id = #{user_id}
 		</if>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
@@ -626,19 +610,19 @@
 			</otherwise>
 		</choose>
 		<if test="urlType!=null and urlType !=''">
-			and r.operate_type in
+			and operate_type in
 			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and product_source_code in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		group by
-		r.product_source_code,
+		product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour
@@ -649,7 +633,7 @@
 		</choose>
 	</select>
 	<select id="DatabaseAnalysisStatisticsByIdsMore" resultMap="BaseResultMap">
-		SELECT  d.table_name as database_name,r.product_source_code as product_source_code,
+		SELECT product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour,
@@ -661,18 +645,16 @@
 		sum(CASE operate_type when 3 then numbers else 0 end)sum1,
 		sum(CASE operate_type when 1 then numbers else 0 end)sum2,
 		sum(CASE operate_type when 2 then numbers else 0 end)sum3
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="users!=null and users !=''">
-			and r.user_id IN
+			and user_id IN
 			<foreach collection="users" item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<if test="source_db!=null and source_db !=''">
-			and r.source_db = #{source_db}
+			and source_db = #{source_db}
 		</if>
 		<choose>
 			<when test="date !=null and date !=''">
@@ -694,19 +676,19 @@
 			</otherwise>
 		</choose>
 		<if test="urlType!=null and urlType !=''">
-			and r.operate_type in
+			and operate_type in
 			<foreach collection="urlType"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.product_source_code in
+			and product_source_code in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		group by
-		r.product_source_code,
+		product_source_code,
 		<choose>
 			<when test="date !=null and date !=''">
 				hour
@@ -718,107 +700,101 @@
 	</select>
 
   <select id="exportDatabaseOneDay" resultType="java.util.Map">
-  	select d.table_name as database_name,YEAR(date) as 'year',MONTH(date) as 'month',
-			sum(CASE r.operate_type when 3 then r.numbers else 0 end) as  'searchNum',
-			sum(CASE r.operate_type when 1 then r.numbers else 0 end) as  'browseNum',
-			sum(CASE r.operate_type when 2 then r.numbers else 0 end) as  'downloadNum'
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+  	select product_source_code,YEAR(date) as 'year',MONTH(date) as 'month',
+			sum(CASE operate_type when 3 then numbers else 0 end) as  'searchNum',
+			sum(CASE operate_type when 1 then numbers else 0 end) as  'browseNum',
+			sum(CASE operate_type when 2 then numbers else 0 end) as  'downloadNum'
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 	  	<if test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-  			and r.product_source_code= #{databaseUseDaily.product_source_code}
+  			and product_source_code= #{databaseUseDaily.product_source_code}
   		</if>
   		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-  			and r.source_db = #{databaseUseDaily.source_db}
+  			and source_db = #{databaseUseDaily.source_db}
   		</if>
 	  <choose>
 		  <when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-			  and r.date = #{databaseUseDaily.date}
+			  and date = #{databaseUseDaily.date}
 			  <if test="startTime!=null and startTime !=''">
-				  and r.hour <![CDATA[ >= ]]>  #{startTime}
+				  and hour <![CDATA[ >= ]]>  #{startTime}
 			  </if>
 			  <if test="endTime!=null and endTime !=''">
-				  and r.hour  <![CDATA[ <= ]]> #{endTime}
+				  and hour  <![CDATA[ <= ]]> #{endTime}
 			  </if>
 		  </when>
 		  <otherwise>
 			  <if test="startTime!=null and startTime !=''">
-				  and r.date <![CDATA[ >= ]]> #{startTime}
+				  and date <![CDATA[ >= ]]> #{startTime}
 			  </if>
 			  <if test="endTime!=null and endTime !=''">
-				  and r.date <![CDATA[ <= ]]>  #{endTime}
+				  and date <![CDATA[ <= ]]>  #{endTime}
 			  </if>
 		  </otherwise>
 	  </choose>
-			group by  r.product_source_code,YEAR(r.date),MONTH(r.date) order by 'searchNum'
+			group by product_source_code,YEAR(date),MONTH(date)
   </select>
 	<select id="exportDatabaseOneDayById" resultType="java.util.Map">
-		select d.table_name as database_name,YEAR(date) as 'year',MONTH(date) as 'month',
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) as  'searchNum',
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) as  'browseNum',
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) as  'downloadNum'
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		select product_source_code,YEAR(date) as 'year',MONTH(date) as 'month',
+		sum(CASE operate_type when 3 then numbers else 0 end) as  'searchNum',
+		sum(CASE operate_type when 1 then numbers else 0 end) as  'browseNum',
+		sum(CASE operate_type when 2 then numbers else 0 end) as  'downloadNum'
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="databaseUseDaily.user_id!=null and databaseUseDaily.user_id !=''">
-			and r.user_id = #{databaseUseDaily.user_id}
+			and user_id = #{databaseUseDaily.user_id}
 		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-				and r.product_source_code= #{databaseUseDaily.product_source_code}
+				and product_source_code= #{databaseUseDaily.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{databaseUseDaily.user_id} )
 			</otherwise>
 		</choose>
 		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-			and r.source_db = #{databaseUseDaily.source_db}
+			and source_db = #{databaseUseDaily.source_db}
 		</if>
 		<choose>
 			<when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-				and r.date = #{databaseUseDaily.date}
+				and date = #{databaseUseDaily.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]>  #{startTime}
+					and hour <![CDATA[ >= ]]>  #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour  <![CDATA[ <= ]]> #{endTime}
+					and hour  <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]>  #{endTime}
+					and date <![CDATA[ <= ]]>  #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by  r.product_source_code,YEAR(r.date),MONTH(r.date) order by 'searchNum'
+		group by  product_source_code,YEAR(date),MONTH(date)
 	</select>
 	<select id="exportDatabaseOneDayByIds" resultType="java.util.Map">
-		select d.table_name as database_name,YEAR(date) as 'year',MONTH(date) as 'month',
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) as  'searchNum',
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) as  'browseNum',
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) as  'downloadNum'
-		from rs_resources_statistics_database_use_hourly r
-		left join
-		datamanager d on d.product_source_code=r.product_source_code
+		select product_source_code,YEAR(date) as 'year',MONTH(date) as 'month',
+		sum(CASE operate_type when 3 then numbers else 0 end) as  'searchNum',
+		sum(CASE operate_type when 1 then numbers else 0 end) as  'browseNum',
+		sum(CASE operate_type when 2 then numbers else 0 end) as  'downloadNum'
+		from rs_resources_statistics_database_use_hourly
 		where 1=1
 		<if test="users!=null and users !=''">
-			and r.user_id IN
+			and user_id IN
 			<foreach collection="users" item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
 		</if>
 		<choose>
 			<when test="databaseUseDaily.product_source_code!=null and databaseUseDaily.product_source_code !=''">
-				and r.product_source_code= #{databaseUseDaily.product_source_code}
+				and product_source_code= #{databaseUseDaily.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -827,28 +803,28 @@
 			</otherwise>
 		</choose>
 		<if test="databaseUseDaily.source_db!=null and databaseUseDaily.source_db !=''">
-			and r.source_db = #{databaseUseDaily.source_db}
+			and source_db = #{databaseUseDaily.source_db}
 		</if>
 		<choose>
 			<when test="databaseUseDaily.date !=null and databaseUseDaily.date !=''">
-				and r.date = #{databaseUseDaily.date}
+				and date = #{databaseUseDaily.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]>  #{startTime}
+					and hour <![CDATA[ >= ]]>  #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour  <![CDATA[ <= ]]> #{endTime}
+					and hour  <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]>  #{endTime}
+					and date <![CDATA[ <= ]]>  #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by  r.product_source_code,YEAR(r.date),MONTH(r.date)order by 'searchNum'
+		group by  product_source_code,YEAR(date),MONTH(date)
 	</select>
 
 </mapper>

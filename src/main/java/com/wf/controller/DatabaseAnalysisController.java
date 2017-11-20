@@ -95,11 +95,11 @@ public class DatabaseAnalysisController {
 	 */
 	@RequestMapping("getPage")
 	@ResponseBody
-	public PageList getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize) throws Exception{
+	public Map getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize) throws Exception{
 		//列表展示		
-		PageList pl=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
+		Map map=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
 				
-		return pl;
+		return map;
 	}
 	
 	/**
@@ -174,9 +174,8 @@ public class DatabaseAnalysisController {
 		namelist.add("合计");
 		
 		//数据包装
-		List<Map<String, String>> listmap=new ArrayList<Map<String,String>>();
-		listmap=databaseAnalysisService.exportDatabase(databaseUseDaily, startTime, endTime);
-		Map<String,List<Map<String,String>>> data=DataUtil.ListToMap(listmap,"database_name");
+
+		Map<String,List<Map<String,String>>> data=databaseAnalysisService.exportDatabase(databaseUseDaily, startTime, endTime);
 		for (Entry<String, List<Map<String, String>>> entry : data.entrySet()) {
 			
 			Integer downloadSum = 0;

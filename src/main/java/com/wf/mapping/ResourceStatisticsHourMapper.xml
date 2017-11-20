@@ -24,135 +24,132 @@
   </resultMap>
   
     <select id="getLine" resultMap="BaseResultMap">
-	SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+	SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 	<if test="res.source_db!=null and res.source_db!=''">
-		 and r.source_db=#{res.source_db}
+		 and source_db=#{res.source_db}
 	</if>
 	<if test="res.product_source_code!=null and res.product_source_code!=''">
-		 and r.product_source_code=#{res.product_source_code}
+		 and product_source_code=#{res.product_source_code}
 	</if>
 	<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-		 and r.source_type_name=#{res.sourceTypeName}
+		 and source_type_name=#{res.sourceTypeName}
 	</if>
 	<choose>
 		<when test="res.date !=null and res.date !=''">
 			and date = #{res.date}
 			<if test="startTime!=null and startTime !=''">
-				and r.hour <![CDATA[ >= ]]> #{startTime}
+				and hour <![CDATA[ >= ]]> #{startTime}
 			</if>
 			<if test="endTime!=null and endTime !=''">
-				and r.hour <![CDATA[ <= ]]> #{endTime}
+				and hour <![CDATA[ <= ]]> #{endTime}
 			</if>
 		</when>
 		<otherwise>
 			<if test="startTime!=null and startTime !=''">
-				and r.date <![CDATA[ >= ]]> #{startTime}
+				and date <![CDATA[ >= ]]> #{startTime}
 			</if>
 			<if test="endTime!=null and endTime !=''">
-				and r.date <![CDATA[ <= ]]> #{endTime}
+				and date <![CDATA[ <= ]]> #{endTime}
 			</if>
 		</otherwise>
 	</choose>
-		group by r.source_type_name order by sum3
+		group by source_type_name order by sum3
 		limit #{pageNum},#{pageSize}
   </select>
 
 	<select id="getLineById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+		SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name order by sum3
+		group by source_type_name order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
+		SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
 
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -161,162 +158,156 @@
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name order by sum3
+		group by source_type_name order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
 
 	<select id="getLineMore" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
-			and r.product_source_code=#{res.product_source_code}
+			and product_source_code=#{res.product_source_code}
 		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title order by sum3
+		group by title order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title order by sum3
+		group by title order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
 	<select id="getLineMoreByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -325,28 +316,28 @@
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title order by sum3
+		group by title order by sum3
 		limit #{pageNum},#{pageSize}
 	</select>
 
@@ -354,7 +345,7 @@
 	<select id="getChart" resultMap="BaseResultMap">
 		SELECT
 		<if test="singmore==0">
-			rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
+			source_type_name as resource_type_code,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -364,24 +355,22 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
-			and r.product_source_code=#{res.product_source_code}
+			and product_source_code=#{res.product_source_code}
 		</if>
 		<if test="urls!=null and urls !=''">
 			and operate_type in
@@ -390,7 +379,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -399,24 +388,24 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
 		group by
 		<if test="singmore==0">
-			r.source_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -431,7 +420,7 @@
 	<select id="getChartById" resultMap="BaseResultMap">
 		SELECT
 		<if test="singmore==0">
-			rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
+			source_type_name as resource_type_code,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -441,31 +430,29 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id )
 			</otherwise>
 		</choose>
@@ -476,7 +463,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -485,24 +472,24 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
 		group by
 		<if test="singmore==0">
-			r.source_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -517,7 +504,7 @@
 	<select id="getChartByIds" resultMap="BaseResultMap">
 		SELECT
 		<if test="singmore==0">
-			rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
+			source_type_name as resource_type_code,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -527,31 +514,29 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -566,7 +551,7 @@
 			</foreach>
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -575,24 +560,24 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
 		group by
 		<if test="singmore==0">
-			r.source_type_name,
+			source_type_name,
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
@@ -615,27 +600,25 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
-			and r.product_source_code=#{res.product_source_code}
+			and product_source_code=#{res.product_source_code}
 		</if>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -650,18 +633,18 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
@@ -686,36 +669,34 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -730,18 +711,18 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
@@ -766,31 +747,29 @@
 				date,
 			</otherwise>
 		</choose>
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -799,7 +778,7 @@
 			</otherwise>
 		</choose>
 		<if test="database_name!=null and database_name !=''">
-			and r.source_type_name in
+			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
 				#{item}
 			</foreach>
@@ -814,18 +793,18 @@
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
@@ -842,133 +821,127 @@
 
 
 	<select id="getLineAll" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
-			and r.product_source_code=#{res.product_source_code}
+			and product_source_code=#{res.product_source_code}
 		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name
+		group by source_type_name
 	</select>
 
 	<select id="getLineAllById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name
+		group by source_type_name
 	</select>
 
 	<select id="getLineAllByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -977,159 +950,153 @@
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.source_type_name
+		group by source_type_name
 	</select>
 
 
 	<select id="getLineMoreAll" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,r.title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<if test="res.product_source_code!=null and res.product_source_code!=''">
-			and r.product_source_code=#{res.product_source_code}
+			and product_source_code=#{res.product_source_code}
 		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title
+		group by title
 	</select>
 
 	<select id="getLineMoreAllById" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,r.title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.userId!=null and res.userId!=''">
-			and r.user_id=#{res.userId}
+			and user_id=#{res.userId}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title
+		group by title
 	</select>
 
 	<select id="getLineMoreAllByIds" resultMap="BaseResultMap">
-		SELECT rs.resource_type_name as sourceTypeName,r.source_type_name as resource_type_code,r.title,
-		sum(CASE r.operate_type when 1 then r.numbers else 0 end) sum1,
-		sum(CASE r.operate_type when 2 then r.numbers else 0 end) sum2,
-		sum(CASE r.operate_type when 3 then r.numbers else 0 end) sum3,
-		sum(CASE r.operate_type when 4 then r.numbers else 0 end) sum4,
-		sum(CASE r.operate_type when 5 then r.numbers else 0 end) sum5,
-		sum(CASE r.operate_type when 6 then r.numbers else 0 end) sum6,
-		sum(CASE r.operate_type when 7 then r.numbers else 0 end) sum7,
-		sum(CASE r.operate_type when 8 then r.numbers else 0 end) sum8,
-		sum(CASE r.operate_type when 9 then r.numbers else 0 end) sum9
-
-		from rs_resources_statistics_sourcetype_use_hourly r  join
-		resource_type rs on r.source_type_name = rs.resource_type_code
+		SELECT source_type_name as resource_type_code,title,
+		sum(CASE operate_type when 1 then numbers else 0 end) sum1,
+		sum(CASE operate_type when 2 then numbers else 0 end) sum2,
+		sum(CASE operate_type when 3 then numbers else 0 end) sum3,
+		sum(CASE operate_type when 4 then numbers else 0 end) sum4,
+		sum(CASE operate_type when 5 then numbers else 0 end) sum5,
+		sum(CASE operate_type when 6 then numbers else 0 end) sum6,
+		sum(CASE operate_type when 7 then numbers else 0 end) sum7,
+		sum(CASE operate_type when 8 then numbers else 0 end) sum8,
+		sum(CASE operate_type when 9 then numbers else 0 end) sum9
+		from rs_resources_statistics_sourcetype_use_hourly
 		where 1=1
 		<if test="res.institutionName!=null and res.institutionName!=''">
-			and r.institution=#{res.institutionName}
+			and institution=#{res.institutionName}
 		</if>
 		<if test="res.source_db!=null and res.source_db!=''">
-			and r.source_db=#{res.source_db}
+			and source_db=#{res.source_db}
 		</if>
 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
-				and r.product_source_code= #{res.product_source_code}
+				and product_source_code= #{res.product_source_code}
 			</when>
 			<otherwise>
-				and r.product_source_code in(select resource_id
+				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id in
 				<foreach collection="users" item="item" open="("   separator="," close=")">
 					#{item}
@@ -1138,28 +1105,28 @@
 			</otherwise>
 		</choose>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
-			and r.source_type_name=#{res.sourceTypeName}
+			and source_type_name=#{res.sourceTypeName}
 		</if>
 		<choose>
 			<when test="res.date !=null and res.date !=''">
 				and date = #{res.date}
 				<if test="startTime!=null and startTime !=''">
-					and r.hour <![CDATA[ >= ]]> #{startTime}
+					and hour <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.hour <![CDATA[ <= ]]> #{endTime}
+					and hour <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and r.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
-					and r.date <![CDATA[ <= ]]> #{endTime}
+					and date <![CDATA[ <= ]]> #{endTime}
 				</if>
 			</otherwise>
 		</choose>
-		group by r.title
+		group by title
 	</select>
 
 </mapper>

@@ -98,12 +98,15 @@
     select resource_type_name from resource_type where resource_type_name=#{rsTypeName}
   </select>
 
-    <select id="getResourceByCode" resultType="java.lang.String">
-        select resource_type_name from resource_type
-        where resource_type_code IN
-        <foreach collection="code" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+    <select id="getResourceByCode" resultMap="BaseResultMap">
+        select resource_type_name,resource_type_code from resource_type
+        where 1=1
+        <if test="code!=null and code!=''">
+            and resource_type_code IN
+            <foreach collection="code" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         group by resource_type_code
     </select>
   

@@ -12,14 +12,12 @@ public interface DatabaseUseHourlyMapper {
 
 	/**
 	 * @Title: getData
-	 * @param institutionName
-	 * @param userId
 	 * @param date
 	 * @return List<Object> 返回类型
 	 * @author LiuYong
 	 * @date 12 Dis 2016 6:19:50 PM
 	 */
-	List<Object> getData(
+	List<DatabaseUseHourly> getData(
 			@Param("product_source_code") String product_source_code,
 			@Param("source_db") String source_db, @Param("date") String date,
 			@Param("startTime") String startTime,
@@ -28,7 +26,7 @@ public interface DatabaseUseHourlyMapper {
 			@Param("pageSize") Integer pageSize);
 
 
-	List<Object> getDataById(
+	List<DatabaseUseHourly> getDataById(
 			@Param("user_id") String userId,
 			@Param("product_source_code") String product_source_code,
 			@Param("source_db") String source_db, @Param("date") String date,
@@ -37,7 +35,7 @@ public interface DatabaseUseHourlyMapper {
 			@Param("pageNum") Integer pageNum,
 			@Param("pageSize") Integer pageSize);
 
-	List<Object> getDataByIds(
+	List<DatabaseUseHourly> getDataByIds(
 			@Param("institution_name") String institutionName,
 			@Param("users") List users,
 			@Param("product_source_code") String product_source_code,
@@ -48,8 +46,6 @@ public interface DatabaseUseHourlyMapper {
 			@Param("pageSize") Integer pageSize);
 	/**
 	 * @Title: getDatabaseAnalysisLists
-	 * @param institutionName
-	 * @param userId
 	 * @param date
 	 * @return List<Object> 返回类型
 	 * @author LiuYong
@@ -101,8 +97,6 @@ public interface DatabaseUseHourlyMapper {
 
 	/**
 	 * @Title: DatabaseAnalysisStatistics
-	 * @param institutionName
-	 * @param userId
 	 * @param date
 	 * @return List<DatabaseAnalysis> 返回类型
 	 * @author LiuYong

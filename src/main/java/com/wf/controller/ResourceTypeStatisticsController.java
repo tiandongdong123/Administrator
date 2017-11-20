@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wf.bean.ResourceStatisticsHour;
 import com.wf.service.DB_SourceService;
 import net.sf.json.JSONArray;
 
@@ -69,14 +70,14 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("gettable")
 	@ResponseBody
-	public PageList getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
-		PageList pageList  = this.resource.gettable(num,starttime,endtime, res,pagenum, pagesize);
-		return pageList;
+	public Map getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
+		Map map  = this.resource.gettable(num,starttime,endtime, res,pagenum, pagesize);
+		return map;
 	}
 	
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
 	public void exportresourceType(HttpServletRequest request,HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res) throws UnsupportedEncodingException {
-		List<Object> list=new ArrayList<Object>();
+		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
 		if(StringUtils.isNotBlank(res.getInstitutionName())){
 			String name = java.net.URLDecoder.decode(request.getParameter("institutionName"), "utf-8");
 			res.setInstitutionName(name);
@@ -108,10 +109,12 @@ public class ResourceTypeStatisticsController {
 		
 		List<String> paramter=new ArrayList<String>();
 		String name="degree".equals(restype)?res.getSourceName():res.getInstitutionName();
-		if(StringUtils.isNotBlank(name))
+		if(StringUtils.isNotBlank(name)){
 			paramter.add("机构名称："+name);
-		if(StringUtils.isNotBlank(res.getUserId()))
+		}
+		if(StringUtils.isNotBlank(res.getUserId())){
 			paramter.add("用户ID："+res.getUserId());
+		}
 		
 		if(null!=res.getDate()){
 			paramter.add("统计日期："+res.getDate());

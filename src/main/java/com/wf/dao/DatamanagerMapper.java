@@ -48,5 +48,5 @@ public interface DatamanagerMapper {
     
    List<Object> exportData(@Param("dataname") String dataname,@Param("dataname1") String dataname1);
 
-    List<String> getdatabseName(@Param("productSourceCode") String[] database_name);
+    List<Datamanager> getdatabseName(@Param("productSourceCode") String[] database_name);
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wf.bean.PageList;
 import com.wf.bean.ResourceStatistics;
+import com.wf.bean.ResourceStatisticsHour;
 import com.wf.bean.ResourceType;
 
 public interface ResourceTypeStatisticsService {
@@ -14,9 +15,9 @@ public interface ResourceTypeStatisticsService {
 	Map<String, Object> getAllLine(String starttime,String endtime,
 			ResourceStatistics res,Integer[] urls,Integer singmore,String[] database_name);
 	
-	PageList gettable(Integer num,String starttime,String endtime,
+	Map gettable(Integer num,String starttime,String endtime,
 			ResourceStatistics res,Integer pagenum,Integer pagesize);
 	
-	List<Object> exportresourceType(Integer num,String starttime,String endtime,
-			ResourceStatistics res);
+	List<ResourceStatisticsHour> exportresourceType(Integer num, String starttime, String endtime,
+													ResourceStatistics res);
 }
