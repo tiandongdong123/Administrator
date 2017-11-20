@@ -34,8 +34,6 @@ function query(){
  * 加载列表数据--liuYong
  */
 $(function(){
-	$("#simple").hide();
-	$("#more").show();
 	$('#pageChange').change(function(){
 			institution_name=$("#institution_name").val();
 			user_id=$("#user_id").val();
@@ -113,8 +111,6 @@ $(function(){
 				}
 			})
     })
-	$("#simple").show();
-	$("#more").hide();
 })
 function tabulation(curr){
 	if($("#startTime").val() == ''|| $("#endTime").val() == '' || $("#startTime").val() == null || $("#endTime").val() ==  null) {
@@ -202,6 +198,7 @@ function tabulation(curr){
 						}
 					}
 				});
+
 				$(".rui:first").prop("checked",true);
 				$("#simple").hide();
 				$("#more").show();
@@ -402,6 +399,7 @@ if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:che
 function moreOrSimple(){
 	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+
 		$("#simple").show();
 		$("#more").hide();
 		 checkitem();
