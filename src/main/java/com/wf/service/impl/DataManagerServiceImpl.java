@@ -235,9 +235,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 			r = dbConfig.findDatabaseByName(dataName);
 			ArrayList<Object> pageRow = new ArrayList<>();
 
-				for(int i = 0 ; i<r.size();i++){
-					pageRow.add(r.get(i));
-				}
+			for(int i = 0 ; i<r.size();i++){
+				pageRow.add(r.get(i));
+			}
 			if(pageRow.size()>0){
 				for(int i=0;i<pageRow.size();i++)
 				{
