@@ -1,6 +1,11 @@
 var pagesize=10;
+
+$.ajaxSetup({
+	async: false
+});
 $(function(){
 	tabulation(1);
+	moreOrSimple();
 	keyword();
 	$(document).click(function(){
 	    $("#searchsug").hide();
@@ -399,12 +404,12 @@ function moreOrSimple(){
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
 		$("#simple").show();
 		$("#more").hide();
-		checkitem();
+		 checkitem();
 
 	}else{
 		$("#simple").hide();
 		$("#more").show();
-		checkitem_more();
+		 checkitem_more();
 	}
 } 
 //数据库名称选择
@@ -452,7 +457,6 @@ function checkitem_more(){
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();
-
 	$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 	$("input[name='item']:checked").each(function(){
 		urlType.push($(this).val());

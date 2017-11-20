@@ -12,8 +12,13 @@ var source_db;
 var database_name;
 var pagesize=10;
 
+$.ajaxSetup({
+	async: false
+});
 $(function(){
+	$.ajaxSetup();
 	gettable(1);
+	getline();
 	keyword();
 	$(document).click(function(){
 	    $("#searchsug").hide();
@@ -624,6 +629,7 @@ function getline(){
 				'date' : date,
 			},
 			dataType : "json",
+
 			success : function(data) {
 				if (singmore==0) {
 					var myChart = echarts.init(document.getElementById('line'));
@@ -745,7 +751,7 @@ function exportresource(){
 		var url="../resourceTypeStatistics/exportresourceType.do?" +
 			"starttime="+starttime+"&endtime="+endtime+"&userId="+username+"&operate_type="+urltype+
 			"&institutionName="+unitname+"&sourceTypeName="+restype+"&num="+num+"&source_db="+source_db+
-			"&product_source_code="+product_source_code;
+			"&product_source_code="+product_source_code+"&date="+date;
 		window.location.href=encodeURI(encodeURI(url));
 	}
 }
