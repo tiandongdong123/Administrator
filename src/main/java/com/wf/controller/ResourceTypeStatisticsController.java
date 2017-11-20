@@ -116,7 +116,7 @@ public class ResourceTypeStatisticsController {
 			paramter.add("用户ID："+res.getUserId());
 		}
 		
-		if(null!=res.getDate()){
+		if(null!=res.getDate()&&!"".equals(res.getDate())){
 			paramter.add("统计日期："+res.getDate());
 		}else{
 			if(StringUtils.isNotBlank(starttime) && StringUtils.isNotBlank(endtime)){
