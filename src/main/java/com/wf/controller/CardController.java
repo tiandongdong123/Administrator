@@ -174,16 +174,18 @@ public class CardController {
 	
 	@RequestMapping("addCardBatch")
 	@ResponseBody
-	public boolean addCardBatch(HttpServletRequest request,String type,String valueNumber,String validStart,String validEnd,String applyDepartment,
+	public boolean addCardBatch(HttpServletRequest request,String type,String cardTypeName,String valueNumber,String validStart,String validEnd,String applyDepartment,
 			String applyPerson,String applyDate) throws UnknownHostException{
 		String adjunct = FileUploadUtil.upload(request, "/imgs/te/");
 		
 		Boolean flag = cardBatchService.insertCardBatch(type, valueNumber, validStart, validEnd, applyDepartment, applyPerson, applyDate,adjunct);
 		
+		 net.sf.json.JSONArray jsonArray=net.sf.json.JSONArray.fromObject(valueNumber);
+		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("增加万方卡:"); 
-		operation_content.append("万方卡类型 :"+type);
-		operation_content.append(",面值(单张) :元,张数"+valueNumber);
+		StringBuffer operation_content=new StringBuffer(); 
+		operation_content.append("万方卡类型 :"+cardTypeName);
+		operation_content.append(",面值(单张):"+jsonArray.getJSONObject(0).getString("value")+"元,张数:"+jsonArray.getJSONObject(0).getString("number"));
 		operation_content.append(",有效期 :"+validStart+"-"+validEnd);
 		operation_content.append(",申请部门:"+applyDepartment);
 		operation_content.append(",申请人 :"+applyPerson);

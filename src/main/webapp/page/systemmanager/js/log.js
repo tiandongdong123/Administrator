@@ -42,7 +42,7 @@ function tabulation(curr){
 					id=10*(curr||1-1)+i+1;
 					time=pagerow[i].time;
 					html+="<tr>" +
-					"<td><input type='checkbox' name='check_one' value="+pagerow[i].id+"></td>" +
+					/*"<td><input type='checkbox' name='check_one' value="+pagerow[i].id+"></td>" +*/
 					"<td>"+id+"</td>" +
 					"<td>"+pagerow[i].username+"</td>" +
 					"<td>"+pagerow[i].ip+"</td>" +
@@ -50,7 +50,7 @@ function tabulation(curr){
 					"<td>"+pagerow[i].module+"</td>" +
 					"<td>"+pagerow[i].behavior+"</td>" +
 					"<td>"+pagerow[i].operation_content+"</td>" +
-					"<td><div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+pagerow[i].id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"
+					/*"<td><div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+pagerow[i].id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"*/
 				 "</tr>";
 					
 				});

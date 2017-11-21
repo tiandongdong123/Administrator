@@ -48,6 +48,11 @@ public class LogController {
 	 */
 	@RequestMapping("getLog")
 	public String getLog(Map<String, Object> model) {
+		
+		Calendar   cal   =   Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
+		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+		model.put("yesterday", yesterday);
 		model.put("getAllModel", logService.getAllLogModel());
 		return "/page/systemmanager/log";
 	}
