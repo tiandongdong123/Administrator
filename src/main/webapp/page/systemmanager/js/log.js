@@ -1,5 +1,6 @@
 var username;
 var ip;
+var module;
 var behavior;
 var startTime;
 var endTime;
@@ -14,6 +15,7 @@ $(function(){
 function tabulation(curr){
 		username=$("#user_id").val();
 		ip=$("#institution_name").val();
+		module=$("#model").find("option:selected").val();
 		behavior=$("#restype").find("option:selected").val();
 		startTime=$("#startTime").val();
 		endTime=$("#endTime").val();
@@ -22,6 +24,7 @@ function tabulation(curr){
 			data:{
 				"username":username,
 				"ip":ip,
+				"module":module,
 				"behavior":behavior,
 				"startTime":startTime,
 				"endTime":endTime,
@@ -44,7 +47,9 @@ function tabulation(curr){
 					"<td>"+pagerow[i].username+"</td>" +
 					"<td>"+pagerow[i].ip+"</td>" +
 					"<td>"+time.substring(0,time.length-2)+"</td>" +
+					"<td>"+pagerow[i].module+"</td>" +
 					"<td>"+pagerow[i].behavior+"</td>" +
+					"<td>"+pagerow[i].operation_content+"</td>" +
 					"<td><div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+pagerow[i].id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"
 				 "</tr>";
 					

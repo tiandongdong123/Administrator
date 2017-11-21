@@ -48,7 +48,7 @@ public class WebControlController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站监控管理");
 		log.setOperation_content("");
 		logService.addLog(log);
@@ -87,7 +87,7 @@ public class WebControlController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站监控管理");
 		log.setOperation_content("修改后的站点信息:{id:"+id+",ip:"+ip+"}");
 		logService.addLog(log);
@@ -112,7 +112,7 @@ public class WebControlController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站监控管理");
 		log.setOperation_content("删除的站点ID:"+id);
 		logService.addLog(log);
@@ -150,7 +150,7 @@ public class WebControlController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站监控管理");
 		log.setOperation_content("增加的站点信息"+c.toString());
 		logService.addLog(log);

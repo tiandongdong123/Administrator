@@ -73,7 +73,7 @@ public class ModularManagerController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("功能模块管理");
 		
 		log.setOperation_content("添加功能模块信息:"+md.toString());
@@ -100,7 +100,7 @@ public class ModularManagerController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("功能模块管理");
 		
 		log.setOperation_content("修改功能模块信息:"+md.toString());
@@ -120,7 +120,7 @@ public class ModularManagerController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("功能模块管理");
 		
 		log.setOperation_content("删除功能模块ID:"+id);
@@ -161,7 +161,7 @@ public class ModularManagerController {
 			log.setBehavior("导出");
 			log.setUrl(request.getRequestURL().toString());
 			log.setTime(DateTools.getSysTime());
-			log.setIp(InetAddress.getLocalHost().toString());
+			log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 			log.setModule("功能模块管理");
 			
 			log.setOperation_content("导出条件:功能模块:"+ids.toString());

@@ -41,7 +41,7 @@ public class DepartmentController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("部门管理");
 		log.setOperation_content("");
 		logService.addLog(log);
@@ -66,7 +66,7 @@ public class DepartmentController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("部门管理");
 		log.setOperation_content("增加部门信息:"+dept.toString());
 		logService.addLog(log);
@@ -92,7 +92,7 @@ public class DepartmentController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("部门管理");
 		log.setOperation_content("修改部门后信息:"+dept.toString());
 		logService.addLog(log);
@@ -111,7 +111,7 @@ public class DepartmentController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("部门管理");
 		log.setOperation_content("删除部门ID:"+id);
 		logService.addLog(log);

@@ -48,7 +48,7 @@ public class PriceUnitController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("单位设置");
 		log.setOperation_content("");
 		logService.addLog(log);
@@ -73,7 +73,7 @@ public class PriceUnitController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("单位设置");
 		log.setOperation_content("删除的资源单位ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
@@ -111,7 +111,7 @@ public class PriceUnitController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("单位设置");
 		log.setOperation_content("增加的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode);
 		logService.addLog(log);
@@ -130,7 +130,7 @@ public class PriceUnitController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("单位设置");
 		log.setOperation_content("修改后的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode);
 		logService.addLog(log);

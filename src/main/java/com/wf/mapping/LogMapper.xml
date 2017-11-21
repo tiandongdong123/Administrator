@@ -21,6 +21,9 @@
 		<if test="null!=ip and ''!=ip">
 			and ip=#{ip}
 		</if>
+		<if test="null!=module and ''!=module">
+			and module=#{module}
+		</if>
 		<if test="null!=behavior and ''!=behavior">
 			and behavior=#{behavior}
 		</if>
@@ -41,6 +44,9 @@
 		</if>
 		<if test="null!=ip and ''!=ip">
 			and ip=#{ip}
+		</if>
+		<if test="null!=module and ''!=module">
+			and module=#{module}
 		</if>
 		<if test="null!=behavior and ''!=behavior">
 			and behavior=#{behavior}

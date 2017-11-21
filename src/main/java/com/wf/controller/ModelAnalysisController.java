@@ -57,7 +57,7 @@ public class ModelAnalysisController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("功能模块分析");
 		log.setOperation_content("");
 		logService.addLog(log);

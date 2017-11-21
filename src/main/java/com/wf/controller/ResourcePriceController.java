@@ -54,7 +54,7 @@ public class ResourcePriceController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源单价配置管理");
 		log.setOperation_content("资源单价配置管理条件:产品名称:"+name);
 		logService.addLog(log);
@@ -78,7 +78,7 @@ public class ResourcePriceController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源单价配置管理");
 		log.setOperation_content("删除的产品ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
@@ -126,7 +126,7 @@ public class ResourcePriceController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源单价配置管理");
 		log.setOperation_content("增加的产品定价信息:"+rp.toString());
 		logService.addLog(log);
@@ -152,7 +152,7 @@ public class ResourcePriceController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源单价配置管理");
 		log.setOperation_content("修改后的产品定价信息:"+rp.toString());
 		logService.addLog(log);

@@ -137,7 +137,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
@@ -176,7 +176,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
@@ -230,7 +230,7 @@ public class ContentController{
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("增加的学科分类信息:"+subject.toString());
@@ -274,7 +274,7 @@ public class ContentController{
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("修改后的学科分类信息:"+subject.toString());
@@ -301,7 +301,7 @@ public class ContentController{
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("删除的学科分类ID:"+ids.toString());
@@ -329,7 +329,7 @@ public class ContentController{
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("增加的资讯信息:"+message.toString());
@@ -390,7 +390,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
@@ -424,7 +424,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
@@ -482,7 +482,7 @@ public class ContentController{
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("删除的资讯ID:"+ids);
@@ -519,7 +519,7 @@ public class ContentController{
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("修改后的资讯信息:"+message.toString());
@@ -545,7 +545,7 @@ public class ContentController{
 		log.setBehavior("发布/下撤/再发布");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("资讯ID:"+id+",栏目:"+colums+",发布状态:"+issueState);
@@ -593,7 +593,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("查询条件:资源类型名称:"+typeName);
@@ -624,7 +624,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("查询条件:资源类型名称:"+typeName);
@@ -664,7 +664,7 @@ public class ContentController{
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("新增资源类型信息:"+resourceType.toString());
@@ -686,7 +686,7 @@ public class ContentController{
 		log.setBehavior("上移");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("上移资源类型ID:"+id);
@@ -713,7 +713,7 @@ public class ContentController{
 		log.setBehavior("下移");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("下移资源类型ID:"+id);
@@ -770,7 +770,7 @@ public class ContentController{
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("修改后的资源类型信息:"+resourceType.toString());
@@ -801,7 +801,7 @@ public class ContentController{
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("删除的资源类型ID:"+ids);
@@ -868,7 +868,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分享模板管理");
 		
 		log.setOperation_content("查询条件:分享类型:"+shareType);
@@ -894,7 +894,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分享模板管理");
 		
 		log.setOperation_content("查询条件:分享类型:"+shareType);
@@ -941,7 +941,7 @@ public class ContentController{
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分享模板管理");
 		
 		log.setOperation_content("新增分享模块信息:"+shareTemplate.toString());
@@ -959,7 +959,7 @@ public class ContentController{
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分享模板管理");
 		
 		log.setOperation_content("删除的分享模块ID:"+ids);
@@ -1008,7 +1008,7 @@ public class ContentController{
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分享模板管理");
 		
 		log.setOperation_content("修改后的分享模板信息:"+shareTemplate.toString());
@@ -1111,7 +1111,7 @@ public class ContentController{
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("笔记管理");
 		
 		log.setOperation_content("笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
@@ -1158,7 +1158,7 @@ public class ContentController{
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("笔记管理");
 		log.setOperation_content("修改后的笔记信息:"+notes.toString());
 		logService.addLog(log);
@@ -1688,12 +1688,28 @@ public class ContentController{
 	 * @param startTime 笔记日期 开始
 	 * @param endTime 笔记日期 结束
 	 * @param pageNum 当前页
+	 * @throws Exception 
 	 */
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime){
+			String[] complaintStatus,String startTime,String endTime) throws Exception{
 		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("导出");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("笔记审核管理");
+		
+		log.setOperation_content("导出条件:用户ID:"+userName+",笔记编号:"+noteNum+",资源名称:"+resourceName
+				+",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))
+				+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))
+				+",申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus))
+				+",开始时间:"+startTime+",结束时间:"+endTime);
+
 		ExportExcel excel=new ExportExcel();
 	
 		if(StringUtils.isEmpty(userName)) userName=null;
@@ -1725,10 +1741,26 @@ public class ContentController{
 	 * @param pageNum
 	 * @param pageSize
 	 * @param response
+	 * @param request 
+	 * @throws Exception 
 	 */
 	@RequestMapping("exportVolumeDocu")
 	public void exportVolumeDocu(String startTime,String endTime,String searchWord,String volumeType,String volumeState,
-			String sortColumn,String sortWay,HttpServletResponse response){
+			String sortColumn,String sortWay,HttpServletResponse response, HttpServletRequest request) throws Exception{
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("导出");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("文辑管理");
+		
+		log.setOperation_content("文辑管理:导出条件:开始时间"+startTime+",结束时间:"+endTime+
+				",关键字:"+searchWord+",文辑类型:"+volumeType+",文辑状态:"+volumeState+
+				"排序列:"+sortColumn+",顺序:"+sortWay);
+		logService.addLog(log);
 		
 		List<Object> list=new ArrayList<Object>();
 		list= volumeService.exportVolumeDocu(startTime, endTime, searchWord, volumeType, volumeState, sortColumn,sortWay);
@@ -1746,10 +1778,24 @@ public class ContentController{
 	 * 导出分享模板
 	 * @param response
 	 * @param shareType 分享类型
+	 * @param request 
+	 * @throws Exception 
 	 */
 	@RequestMapping("exportshareTemplate")
-	public void exportshareTemplate(HttpServletResponse response,String shareType){
+	public void exportshareTemplate(HttpServletResponse response,String shareType, HttpServletRequest request) throws Exception{
 		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("导出");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("分享模板管理");
+		
+		log.setOperation_content("导出条件:分享类型:"+shareType);
+		logService.addLog(log);
+
 		List<Object> list=new ArrayList<Object>();
 		
 		list=shareTemplateService.exportshareTemplate(shareType);
@@ -1779,7 +1825,7 @@ public class ContentController{
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型管理");
 		
 		log.setOperation_content("导出条件:资源类型:"+resouceType);
@@ -1826,7 +1872,7 @@ public class ContentController{
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("学科分类管理");
 		
 		log.setOperation_content("导出条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
@@ -1899,7 +1945,7 @@ public class ContentController{
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资讯管理");
 		
 		log.setOperation_content("导出条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);

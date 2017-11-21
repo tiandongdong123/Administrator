@@ -77,7 +77,7 @@ public class ResourceTypeStatisticsController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型使用分析");
 		
 		log.setOperation_content("查询条件:机构名称:"+res.getInstitutionName()+
@@ -146,7 +146,7 @@ public class ResourceTypeStatisticsController {
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("资源类型使用分析");
 		
 		log.setOperation_content("导出条件:机构名称:"+res.getInstitutionName()+

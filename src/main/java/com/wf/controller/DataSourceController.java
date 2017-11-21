@@ -140,7 +140,7 @@ public class DataSourceController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("监控管理");
 		log.setOperation_content("删除的settingID:"+id);
 		logService.addLog(log);
@@ -187,7 +187,7 @@ public class DataSourceController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("监控管理");
 		log.setOperation_content("修改后的Setting信息:"+setting.toString());
 		logService.addLog(log);

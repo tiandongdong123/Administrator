@@ -125,7 +125,7 @@ public class SiteProfileController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站概况");
 		log.setOperation_content("按天查询");
 		logService.addLog(log);
@@ -153,7 +153,7 @@ public class SiteProfileController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("网站概况");
 		log.setOperation_content("按小时查询");
 		logService.addLog(log);

@@ -113,7 +113,7 @@ public class DatabaseAnalysisController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库使用分析");
 		log.setOperation_content("查询条件:机构名称:"+databaseUseDaily.getInstitution_name()+
 				",用户ID:"+databaseUseDaily.getUser_id()+",数据来源:"+databaseUseDaily.getSource_db()+

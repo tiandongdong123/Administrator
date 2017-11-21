@@ -14,31 +14,36 @@ public interface LogMapper {
 	 * @return 查询结果
 	 */
 	List<Object> getLog(@Param("username") String username,
-			@Param("ip") String ip, @Param("behavior") String behavior,
+			@Param("ip") String ip, @Param("module") String module,
+			@Param("behavior") String behavior,
 			@Param("startTime") String startTime,
-			@Param("endTime") String endTime, @Param("pageNum")Integer pageNum,@Param("pageSize")Integer pageSize);
+			@Param("endTime") String endTime,
+			@Param("pageNum") Integer pageNum,
+			@Param("pageSize") Integer pageSize);
 
-	List<Object> getLogCount(@Param("username") String username, @Param("ip") String ip,
+	List<Object> getLogCount(@Param("username") String username,
+			@Param("ip") String ip, @Param("module") String module,
 			@Param("behavior") String behavior,
 			@Param("startTime") String startTime,
 			@Param("endTime") String endTime);
-	
-	Integer deleteLogByID(@Param("ids")Integer[]ids);
-	
+
+	Integer deleteLogByID(@Param("ids") Integer[] ids);
+
 	/**
 	 * 获取所有模块名称
+	 * 
 	 * @return
 	 */
 	List<String> getAllLogModel();
-	
-	
-	List<String> getResTypeByModel(@Param("modelname")String modelname);
-	
+
+	List<String> getResTypeByModel(@Param("modelname") String modelname);
+
 	/**
 	 * 记录后台操作日志
+	 * 
 	 * @param log
 	 * @return
 	 */
-	Integer addLog(@Param("log")Log log);
-	
+	Integer addLog(@Param("log") Log log);
+
 }

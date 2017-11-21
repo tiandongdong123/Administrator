@@ -84,7 +84,7 @@ public class PageManagerController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分析页面管理");
 		
 		log.setOperation_content("查询条件:页面名称:"+pageName+",功能模块:"+(ids==null?"":Arrays.asList(ids)));
@@ -126,7 +126,7 @@ public class PageManagerController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("功能模块管理");
 		
 		log.setOperation_content("添加功能模块信息:"+md.toString());
@@ -169,7 +169,7 @@ public class PageManagerController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分析页面管理");
 		
 		log.setOperation_content("添加分析页面信息:"+pm.toString());
@@ -218,7 +218,7 @@ public class PageManagerController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分析页面管理");
 		
 		log.setOperation_content("修改后分析页面信息:"+pm.toString());
@@ -248,7 +248,7 @@ public class PageManagerController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分析页面管理");
 		
 		log.setOperation_content("删除分析页面ID:"+id);
@@ -292,7 +292,7 @@ public class PageManagerController {
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("分析页面管理");
 		
 		log.setOperation_content("导出条件:页面名称:"+pageName+",功能模块:"+ids.toString());

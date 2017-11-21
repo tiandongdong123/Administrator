@@ -64,7 +64,7 @@ public class SonSystemController {
 			log.setBehavior("查询");
 			log.setUrl(request.getRequestURL().toString());
 			log.setTime(DateTools.getSysTime());
-			log.setIp(InetAddress.getLocalHost().toString());
+			log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 			log.setModule("平台配置管理");
 			log.setOperation_content("");
 			logService.addLog(log);
@@ -93,7 +93,7 @@ public class SonSystemController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("平台配置管理");
 		log.setOperation_content("删除的平台ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
@@ -144,7 +144,7 @@ public class SonSystemController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("平台配置管理");
 		log.setOperation_content("增加的平台信息:"+son.toString());
 		logService.addLog(log);
@@ -177,7 +177,7 @@ public class SonSystemController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("平台配置管理");
 		log.setOperation_content("修改后的平台信息:"+son.toString());
 		logService.addLog(log);

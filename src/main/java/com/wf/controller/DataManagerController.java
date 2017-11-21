@@ -60,7 +60,7 @@ public class DataManagerController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("数据库名称:"+dataname);
 		logService.addLog(log);
@@ -88,7 +88,7 @@ public class DataManagerController {
 		log.setBehavior("上移");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("资源类型ID:"+id);
 		logService.addLog(log);
@@ -116,7 +116,7 @@ public class DataManagerController {
 		log.setBehavior("下移");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("资源类型ID:"+id);
 		logService.addLog(log);
@@ -147,7 +147,7 @@ public class DataManagerController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("资源类型ID:"+id);
 		logService.addLog(log);
@@ -177,7 +177,7 @@ public class DataManagerController {
 		log.setBehavior("解冻");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("解冻资源类型ID:"+id);
 		logService.addLog(log);
@@ -203,7 +203,7 @@ public class DataManagerController {
 		log.setBehavior("冻结");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("冻结资源类型ID:"+id);
 		logService.addLog(log);
@@ -315,7 +315,7 @@ public class DataManagerController {
 		log.setBehavior("增加");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("增加数据库信息:"+data.toString());
 		logService.addLog(log);
@@ -371,7 +371,7 @@ public class DataManagerController {
 		log.setBehavior("修改");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("修改后数据库信息:"+data.toString());
 		logService.addLog(log);
@@ -402,7 +402,7 @@ public class DataManagerController {
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("数据库配置管理");
 		log.setOperation_content("导出查询条件数据库名称:"+dataname);
 		logService.addLog(log);

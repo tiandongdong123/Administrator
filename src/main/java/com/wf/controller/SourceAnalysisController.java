@@ -65,7 +65,7 @@ public class SourceAnalysisController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
 		log.setModule("来源分析");
 		log.setOperation_content("");
 		logService.addLog(log);

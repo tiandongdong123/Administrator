@@ -61,7 +61,7 @@ public class LogController {
 	 */
 	@RequestMapping("getLogJson")
 	public void getLogJson(HttpServletResponse response,String username,
-			String ip, String behavior, String startTime, String endTime,
+			String ip, String module,String behavior, String startTime, String endTime,
 			Integer pageNum, HttpServletRequest request) throws Exception {
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 		Calendar  calendar=new  GregorianCalendar(); 
@@ -75,7 +75,7 @@ public class LogController {
 		}
 		  
 		 
-		PageList p=logService.getLog(username,ip,behavior,startTime,endTime,pageNum);
+		PageList p=logService.getLog(username,ip,module,behavior,startTime,endTime, pageNum);
 		
 		//记录日志
 		Log log=new Log();
@@ -83,8 +83,8 @@ public class LogController {
 		log.setBehavior("查询");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("日志管理");
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("后台日志管理");
 		log.setOperation_content("查询条件:操作用户："+username+",操作IP:"+ip+","
 				+ "操作模块:"+behavior+",操作类型:"+behavior+",操作时间:"+startTime+"-"+"endTime");
 		logService.addLog(log);
@@ -107,7 +107,7 @@ public class LogController {
 	 */
 	@RequestMapping("exportLog")
 	public void exportLog(HttpServletResponse response, String username,
-			String ip, String behavior, String startTime, String endTime, HttpServletRequest request) throws Exception{
+			String ip,String module,String behavior, String startTime, String endTime, HttpServletRequest request) throws Exception{
 		
 		//记录日志
 		Log log=new Log();
@@ -115,10 +115,10 @@ public class LogController {
 		log.setBehavior("导出");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("日志管理");
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("后台日志管理");
 		log.setOperation_content("导出条件:操作用户："+username+",操作IP:"+ip+","
-				+ "操作模块:"+behavior+",操作类型:"+behavior+",操作时间:"+startTime+"-"+"endTime");
+				+ "操作模块:"+module+",操作类型:"+behavior+",操作时间:"+startTime+"-"+"endTime");
 		logService.addLog(log);
 		
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
@@ -132,7 +132,7 @@ public class LogController {
 			endTime=format.format(calendar.getTime());
 		}
 		
-		List<Object> list=logService.exportLog(username, ip, behavior, startTime, endTime);
+		List<Object> list=logService.exportLog(username, ip, module,behavior, startTime, endTime);
 		JSONArray array=JSONArray.fromObject(list);
 		List<String> names=Arrays.asList(new String[]{"序号","操作用户","操作IP","操作时间","操作类型"});
 		
@@ -158,8 +158,8 @@ public class LogController {
 		log.setBehavior("删除");
 		log.setUrl(request.getRequestURL().toString());
 		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("日志管理");
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("后台日志管理");
 		log.setOperation_content("删除日志ID:"+(ids==null?"":Arrays.asList(ids)));
 		logService.addLog(log);
 
