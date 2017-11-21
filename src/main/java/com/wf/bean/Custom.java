@@ -60,4 +60,12 @@ public class Custom {
     public void setRelation(String relation) {
         this.relation = relation == null ? null : relation.trim();
     }
+
+	@Override
+	public String toString() {
+		return "Custom [id=" + id + ", dbId=" + dbId + ", paramOne=" + paramOne
+				+ ", accuracy=" + accuracy + ", paramTwo=" + paramTwo
+				+ ", relation=" + relation + "]";
+	}
+    
 }

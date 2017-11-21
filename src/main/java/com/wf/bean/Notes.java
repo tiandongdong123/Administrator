@@ -110,5 +110,17 @@ public class Notes implements Serializable{
 	public void setComplaintStatus(String complaintStatus) {
 		this.complaintStatus = complaintStatus;
 	}
+	@Override
+	public String toString() {
+		return "Notes [id=" + id + ", noteNum=" + noteNum + ", resourceNum="
+				+ resourceNum + ", resourceName=" + resourceName
+				+ ", resourceType=" + resourceType + ", noteContent="
+				+ noteContent + ", userName=" + userName + ", userId=" + userId
+				+ ", noteDate=" + noteDate + ", dataState=" + dataState
+				+ ", complaintStatus=" + complaintStatus
+				+ ", preliminaryOpinions=" + preliminaryOpinions
+				+ ", appealReason=" + appealReason + ", finalOpinion="
+				+ finalOpinion + ", handlingStatus=" + handlingStatus + "]";
+	}
 	
 }

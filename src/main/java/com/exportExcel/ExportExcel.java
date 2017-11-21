@@ -421,7 +421,7 @@ public class ExportExcel {
 						row.createCell(4).setCellValue(array.getJSONObject(i).get("resourceType").toString());
 						row.createCell(5).setCellValue(array.getJSONObject(i).get("noteContent").toString());
 						row.createCell(6).setCellValue(array.getJSONObject(i).get("finalOpinion").toString());
-						row.createCell(7).setCellValue(array.getJSONObject(i).get("userName").toString());
+						row.createCell(7).setCellValue(array.getJSONObject(i).get("userId").toString());
 						row.createCell(8).setCellValue(array.getJSONObject(i).get("noteDate").toString());
 						row.createCell(9).setCellValue(array.getJSONObject(i).get("dataState").toString().equals("1")?"正常":"禁用");
 						row.createCell(10).setCellValue(array.getJSONObject(i).get("complaintStatus").toString().equals("1")?"正常":"申诉");

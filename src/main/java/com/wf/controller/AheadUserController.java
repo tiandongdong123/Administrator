@@ -1216,7 +1216,6 @@ public class AheadUserController {
 	 */
 	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean isBatch){
 		Map<String,String> hashmap=new HashMap<String,String>();
-		boolean flag=true;//判断是否有选中的数据库
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if (StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
@@ -1237,16 +1236,19 @@ public class AheadUserController {
 				}
 			}
 		}
-		for(ResourceLimitsDTO rldto:dto.getRldto()){
-			if(rldto.getResourceid()!=null){
-				flag=false;
-				break;
+		if (dto.getRldto() != null) {
+			boolean flag = true;// 判断是否有选中的数据库
+			for (ResourceLimitsDTO rldto : dto.getRldto()) {
+				if (rldto.getResourceid() != null) {
+					flag = false;
+					break;
+				}
 			}
-		}
-		if(flag){
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", projectname+"必须选择一个数据库");
-			return hashmap;
+			if (flag) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname + "必须选择一个数据库");
+				return hashmap;
+			}
 		}
 		return hashmap;
 	}
@@ -1357,8 +1359,11 @@ public class AheadUserController {
 				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 				view.addObject("ps", ps);
 				String jsonStr = ps.getExtend();
-				JSONObject json = JSONObject.fromObject(jsonStr);
-				boolean flag = (boolean) json.get("IsTrialPartyAdminTime");
+				boolean flag = false;
+				if (!StringUtils.isEmpty(jsonStr)) {
+					JSONObject json = JSONObject.fromObject(jsonStr);
+					flag = (boolean) json.get("IsTrialPartyAdminTime");
+				}
 				if (flag) {
 					trial = "isTrial";
 				}
@@ -1428,58 +1433,12 @@ public class AheadUserController {
 	 *	个人用户管理管理 
 	 */
 	@RequestMapping("perManager")
-	public ModelAndView perManager(Person person,Integer pageNum,Integer pageSize,String userRoless, String flag){
+	public ModelAndView perManager() {
 		ModelAndView view = new ModelAndView();
-		String[] roles=null;
-		if(userRoless!=null&&!"".equals(userRoless)){
-			roles=userRoless.split(",");
-		}
-		
-		Map<String,Object> p = personservice.QueryPersion(person,pageNum,pageSize,roles);
-		view.addObject("PageList", p);
-//		if("1".equals(flag)){
-			view.addObject("person", person);
-//		}else{
-//			view.addObject("person",new Person());
-//		}
-		
-		//确认页面checkbox选中状态
-		String roles1="";
-		String roles2="";
-		String roles3="";
-		if(roles!=null&&roles.length==3){
-			roles1=roles[0];
-			roles2=roles[1];
-			roles3=roles[2];
-		}else if(roles!=null&&roles.length==2){
-			if(!"0".equals(roles[0])){
-				roles2=roles[0];
-				roles3=roles[1];
-			}else if(!"1".equals(roles[0])){
-				roles1=roles[0];
-				roles3=roles[1];
-			}else if(!"2".equals(roles[0])){
-				roles1=roles[0];
-				roles2=roles[1];
-			}
-		}else if(roles!=null&&roles.length==1){
-			if("0".equals(roles[0])){
-				roles1=roles[0];
-			}else if("1".equals(roles[0])){
-				roles2=roles[0];
-			}else if("2".equals(roles[0])){
-				roles3=roles[0];
-			}
-		}
-//		if("1".equals(flag)||flag==null){
-//			view.addObject("flag", "0");
-//		}
-		view.addObject("roles1", roles1);
-		view.addObject("roles2", roles2);
-		view.addObject("roles3", roles3);
 		view.setViewName("/page/usermanager/per_manager");
 		return view;
 	}
+	
 	/**
 	* @Title: addDept
 	* @Description: TODO(返回修改页面) 

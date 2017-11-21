@@ -51,4 +51,12 @@ public class Project {
     public void setDetailSetting(String detailSetting) {
         this.detailSetting = detailSetting == null ? null : detailSetting.trim();
     }
+
+	@Override
+	public String toString() {
+		return "Project [id=" + id + ", name=" + name + ", authorizedUserType="
+				+ authorizedUserType + ", payWallet=" + payWallet
+				+ ", detailSetting=" + detailSetting + "]";
+	}
+    
 }

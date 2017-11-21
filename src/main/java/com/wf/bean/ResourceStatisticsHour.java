@@ -136,4 +136,16 @@ public class ResourceStatisticsHour implements Serializable {
 		this.product_source_code = product_source_code;
 	}
 
+	@Override
+	public String toString() {
+		return "ResourceStatisticsHour [urlType=" + urlType
+				+ ", institutionName=" + institutionName + ", sourceTypeName="
+				+ sourceTypeName + ", sourceName=" + sourceName + ", date="
+				+ date + ", hour=" + hour + ", numbers=" + numbers
+				+ ", userId=" + userId + ", CHURLTYPE=" + CHURLTYPE
+				+ ", operate_type=" + operate_type + ", source_db=" + source_db
+				+ ", title=" + title + ", product_source_code="
+				+ product_source_code + "]";
+	}
+	
 }

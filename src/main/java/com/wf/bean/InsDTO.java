@@ -26,6 +26,11 @@ public class InsDTO {
 	public void setList(List<AdminInfo> list) {
 		this.adlist = list;
 	}
+
+	@Override
+	public String toString() {
+		return "InsDTO [ins=" + ins + ", adlist=" + adlist + "]";
+	}
 	
 	
 }

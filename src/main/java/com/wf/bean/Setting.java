@@ -40,8 +40,11 @@ public class Setting {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
-
-	
+	@Override
+	public String toString() {
+		return "Setting [id=" + id + ", settingName=" + settingName
+				+ ", settingKey=" + settingKey + ", settingValue="
+				+ settingValue + ", remark=" + remark + "]";
+	}
 	
 }

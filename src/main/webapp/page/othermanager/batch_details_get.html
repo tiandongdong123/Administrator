@@ -6,6 +6,7 @@
 
   <div class="content-wrapper">
   <input id="batchId" type="hidden" value="${object.batchId}"/>
+  <input id="checkState" type="hidden" value="${object.checkState}">
     <!-- Content Header (Page header) -->
     <section class="content-header">
 	<?  var batchState;
@@ -105,6 +106,7 @@
      					?>
      					<td align="left"><font color="red">${checkState}</font></td>
      				</tr>
+					<?if(object.checkState != 1){?>
      				<tr>
      					<td align="right">审核部门</td>
      					<td width="20px"></td>
@@ -120,6 +122,8 @@
      					<td width="20px"></td>
      					<td align="left">${object.checkDate}</td>
      				</tr>
+					<?}?>
+					<?if(object.batchState ==3){?>
      				<tr>
      					<td align="right">领取部门</td>
      					<td width="20px"></td>
@@ -135,11 +139,13 @@
      					<td width="20px"></td>
      					<td align="left">${object.pullDate}</td>
      				</tr>
+					<?}?>
      				</tbody>
      			</table>
      		</div>
-     	   <div style="width:700px; margin:0 auto;background-color:#f9f9f9;border-top: solid 5px #56B699;">
-                <div style=" text-align:center; font-size:16px; line-height:40px"> <i class="fa fa-circle-o text-red"></i>金额详情 </div>
+			<?if(object.checkState != 1){?>
+			<div style="width:700px; margin:0 auto;background-color:#f9f9f9;border-top: solid 5px #56B699;">
+				<div style=" text-align:center; font-size:16px; line-height:40px"> <i class="fa fa-circle-o text-red"></i>金额详情 </div>
                 <table  id="example1" class="table">
                   <thead>
                 <tr>
@@ -155,12 +161,12 @@
                 </thead>
                 <tbody id="list">
                 </tbody>
-              </table>
-            <!--分页开始-->
-    		<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
-  			</div>
-   		    <!--分页结束-->
-     	 </div>
+				</table>
+	            <!--分页开始-->
+	    		<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;"></div>
+	   		    <!--分页结束-->
+			</div>
+			<?}?>
      	 </div>
      	</div>
      	</div>

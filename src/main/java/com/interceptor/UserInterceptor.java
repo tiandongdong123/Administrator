@@ -51,21 +51,26 @@ public class UserInterceptor implements HandlerInterceptor {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		//4、已经登录的每次请求都往session放入参数
-		String userName=(String) session.getAttribute("userName");
-		if (!url.endsWith(CookieUtil.INDEX) && userName == null) {
-			String json = CookieUtil.getCache(CookieUtil.LAYOUT + id);
-			if(json==null){
+		// 4、判断是否被强退
+		if (!url.endsWith(CookieUtil.INDEX)) {
+			if (!CookieUtil.exists(CookieUtil.LAYOUT + id)) {
 				res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 				return false;
 			}
-			JSONObject obj = JSONObject.fromObject(json);
-			session.setAttribute("purviews", obj.get("purviews"));
-			session.setAttribute("userName", obj.get("userName"));
-			session.setAttribute("department", obj.get("department"));
+			String userName = (String) session.getAttribute("userName");
+			if (userName == null) {
+				String json = CookieUtil.getCache(CookieUtil.LAYOUT + id);
+				if (json == null) {
+					res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+					return false;
+				}
+				JSONObject obj = JSONObject.fromObject(json);
+				session.setAttribute("purviews", obj.get("purviews"));
+				session.setAttribute("userName", obj.get("userName"));
+				session.setAttribute("department", obj.get("department"));
+			}
 		}
-		String menu_url = url.split("/")[url.split("/").length - 1];
-		session.setAttribute("menu_first", menu_url);
+		session.setAttribute("menu_first", url.split("/")[url.split("/").length - 1]);
 		return true;
 	}
 	

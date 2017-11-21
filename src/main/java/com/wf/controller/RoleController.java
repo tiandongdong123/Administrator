@@ -1,7 +1,11 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -12,8 +16,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
+import com.wf.service.LogService;
 import com.wf.service.RoleService;
 
 @Controller
@@ -22,14 +30,32 @@ public class RoleController {
 
 	@Autowired
 	private RoleService role;
+	
+	
+	@Autowired
+	LogService logService;
+	
 	/**
 	 * 查询管理员
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("getrole")
 	@ResponseBody
-	public PageList getRole(Integer pagesize,Integer pagenum){
+	public PageList getRole(Integer pagesize,Integer pagenum,HttpServletRequest request) throws Exception{
 		PageList pl = this.role.getRole(pagenum, pagesize);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("角色管理");
+		log.setOperation_content("");
+		logService.addLog(log);
+
 		return pl;
 	}
 	/**
@@ -76,11 +102,24 @@ public class RoleController {
 	 * 角色添加
 	 * @param role
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("doaddrole")
 	@ResponseBody
-	public boolean doAddRole(@ModelAttribute Role role){
+	public boolean doAddRole(@ModelAttribute Role role,HttpServletRequest request) throws Exception{
 		boolean rt = this.role.doAddRole(role);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("增加");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("角色管理");
+		log.setOperation_content("增加角色信息:"+role.toString());
+		logService.addLog(log);
+		
 		return rt ;
 	}
 	
@@ -103,18 +142,43 @@ public class RoleController {
 	 * 角色修改
 	 * @param role
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("doupdaterole")
 	@ResponseBody
-	public boolean doUpdateRole(@ModelAttribute Role role){
+	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request) throws Exception{
 		boolean rt = this.role.doUpdateRole(role);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("角色管理");
+		log.setOperation_content("修改角色后信息:"+role.toString());
+		logService.addLog(log);
+
 		return rt ;
 	}
 	
 	@RequestMapping("deleterole")
 	@ResponseBody
-	public boolean deleteRole(String id){
+	public boolean deleteRole(String id,HttpServletRequest request) throws Exception{
 		boolean rt = this.role.deleteRole(id);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("删除");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("角色管理");
+		log.setOperation_content("删除角色ID:"+id);
+		logService.addLog(log);
+		
 		return rt;
 	}
 }

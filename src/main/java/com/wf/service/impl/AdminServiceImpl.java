@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.redis.RedisUtil;
+import com.utils.CookieUtil;
 import com.wf.bean.PageList;
 import com.wf.bean.Wfadmin;
 import com.wf.dao.DepartmentMapper;
@@ -26,7 +28,9 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private RoleMapper role;
 	
+	private RedisUtil redis = new RedisUtil();
 	private SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	@Override
 	public PageList getAdmin(String adminname, Integer pagenum, Integer pagesize) {
 		PageList pl = new PageList();
@@ -67,7 +71,17 @@ public class AdminServiceImpl implements AdminService {
 		int result = 0;
 		boolean re = false;
 		try {
-			 result = this.admin.closeAdmin(ids);
+			result = this.admin.closeAdmin(ids);
+			if (ids != null && ids.length > 0) {
+				List<String> list = admin.getAdminByAdminIds(ids);
+				if (list != null && list.size() > 0) {
+					String[] strs = new String[list.size()];
+					for (int i = 0; i < list.size(); i++) {
+						strs[i] = CookieUtil.LAYOUT + list.get(i);
+					}
+					redis.del(0, strs);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

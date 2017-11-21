@@ -32,5 +32,12 @@ public class AdminInfo {
 	public void setAdminIP(String adminIP) {
 		this.adminIP = adminIP;
 	}
+
+	@Override
+	public String toString() {
+		return "AdminInfo [adminId=" + adminId + ", adminpassword="
+				+ adminpassword + ", adminIP=" + adminIP + "]";
+	}
+	
 	
 }

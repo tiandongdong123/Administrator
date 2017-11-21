@@ -90,4 +90,15 @@ public class ProjectNumber {
     public void setBalanceMoney(Double balanceMoney) {
         this.balanceMoney = balanceMoney;
     }
+
+	@Override
+	public String toString() {
+		return "ProjectNumber [resourcePurchaseId=" + resourcePurchaseId
+				+ ", projectId=" + projectId + ", userId=" + userId
+				+ ", validityStartTime=" + validityStartTime
+				+ ", validityEndTime=" + validityEndTime + ", totalNumber="
+				+ totalNumber + ", surplusNumber=" + surplusNumber
+				+ ", totalMoney=" + totalMoney + ", balanceMoney="
+				+ balanceMoney + "]";
+	}
 }

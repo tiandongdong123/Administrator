@@ -210,5 +210,23 @@ public class CommonEntity implements Serializable {
 	public void setCheckuser(String checkuser) {
 		this.checkuser = checkuser;
 	}
+
+	@Override
+	public String toString() {
+		return "CommonEntity [institution=" + institution + ", userId="
+				+ userId + ", loginMode=" + loginMode + ", password="
+				+ password + ", resetMoney=" + resetMoney + ", resetCount="
+				+ resetCount + ", checkuser=" + checkuser + ", managerType="
+				+ managerType + ", adminOldName=" + adminOldName
+				+ ", adminname=" + adminname + ", adminpassword="
+				+ adminpassword + ", adminIP=" + adminIP + ", adminEmail="
+				+ adminEmail + ", ipSegment=" + ipSegment + ", checks="
+				+ checks + ", upperlimit=" + upperlimit
+				+ ", pConcurrentnumber=" + pConcurrentnumber
+				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks="
+				+ chargebacks + ", downloadupperlimit=" + downloadupperlimit
+				+ ", rdlist=" + rdlist + "]";
+	}
+	
 	
 }

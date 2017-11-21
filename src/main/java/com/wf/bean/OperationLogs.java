@@ -60,4 +60,12 @@ public class OperationLogs {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+	@Override
+	public String toString() {
+		return "OperationLogs [id=" + id + ", userId=" + userId
+				+ ", crateTime=" + crateTime + ", opreation=" + opreation
+				+ ", person=" + person + ", reason=" + reason + ", projectId="
+				+ projectId + ", projectName=" + projectName + "]";
+	}
+	
 }

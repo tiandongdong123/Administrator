@@ -89,6 +89,15 @@ public class ResourceTableBean {
 	public void setSubscibeNum(Integer subscibeNum) {
 		this.subscibeNum = subscibeNum;
 	}
-
+	@Override
+	public String toString() {
+		return "ResourceTableBean [urlType=" + urlType + ", sourceTypeName="
+				+ sourceTypeName + ", sourceName=" + sourceName + ", title="
+				+ title + ", browseNum=" + browseNum + ", downloadNum="
+				+ downloadNum + ", searchNum=" + searchNum + ", shareNum="
+				+ shareNum + ", collectNum=" + collectNum + ", exportNum="
+				+ exportNum + ", noteNum=" + noteNum + ", subscibeNum="
+				+ subscibeNum + "]";
+	}
 
 }

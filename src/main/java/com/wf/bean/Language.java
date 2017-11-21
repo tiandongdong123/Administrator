@@ -32,4 +32,11 @@ public class Language {
     public void setLanguageName(String languageName) {
         this.languageName = languageName == null ? null : languageName.trim();
     }
+
+	@Override
+	public String toString() {
+		return "Language [languageId=" + languageId + ", languageName="
+				+ languageName + ", languageCode=" + languageCode + "]";
+	}
+    
 }

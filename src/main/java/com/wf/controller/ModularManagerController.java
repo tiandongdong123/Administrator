@@ -1,10 +1,13 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -18,8 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.exportExcel.ExportExcel;
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
 import com.wf.bean.Modular;
 import com.wf.bean.PageList;
+import com.wf.service.LogService;
 import com.wf.service.ModularService;
 
 @Controller
@@ -28,6 +35,8 @@ public class ModularManagerController {
 	@Autowired
 	ModularService modularService;
 	
+	@Autowired
+	LogService logService;
 	
 	/**
 	 * 功能模块管理页面
@@ -55,8 +64,21 @@ public class ModularManagerController {
 	
 	@RequestMapping("doAddModular")
 	@ResponseBody
-	public boolean doAddModular(@ModelAttribute Modular md){
+	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request) throws Exception{
 		boolean rt = modularService.doAddModular(md);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("增加");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("功能模块管理");
+		
+		log.setOperation_content("添加功能模块信息:"+md.toString());
+		logService.addLog(log);
+
 		return rt;
 	}
 	
@@ -69,15 +91,41 @@ public class ModularManagerController {
 	
 	@RequestMapping("doUpdateModular")
 	@ResponseBody
-	public boolean doUpdateModular(@ModelAttribute Modular md){
+	public boolean doUpdateModular(@ModelAttribute Modular md, HttpServletRequest request) throws Exception{
 		boolean bl = modularService.doUpdateModular(md);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("功能模块管理");
+		
+		log.setOperation_content("修改功能模块信息:"+md.toString());
+		logService.addLog(log);
+		
 		return bl;
 	}
 	
 	@RequestMapping("deleteModular")
 	@ResponseBody
-	public boolean deleteModular(String id){
+	public boolean deleteModular(String id, HttpServletRequest request) throws Exception{
 		boolean rt = modularService.deleteModular(id);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("功能模块管理");
+		
+		log.setOperation_content("删除功能模块ID:"+id);
+		logService.addLog(log);
+
 		return rt;
 	}
 	
@@ -98,12 +146,26 @@ public class ModularManagerController {
 	 * @param response
 	 * @param pageNum
 	 * @param ids
+	 * @param request 
+	 * @throws Exception 
 	 */
 	@RequestMapping("exportmodular")
-	public void  exportmodular(HttpServletResponse response,String[] ids){
+	public void  exportmodular(HttpServletResponse response,String[] ids, HttpServletRequest request) throws Exception{
 			List<Object> list=new ArrayList<Object>();
 			
 			if(ids.length==0) ids=null;
+			
+			//记录日志
+			Log log=new Log();
+			log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+			log.setBehavior("导出");
+			log.setUrl(request.getRequestURL().toString());
+			log.setTime(DateTools.getSysTime());
+			log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+			log.setModule("功能模块管理");
+			
+			log.setOperation_content("导出条件:功能模块:"+ids.toString());
+			logService.addLog(log);
 			
 			list= modularService.exportmodular(ids);
 			JSONArray array=JSONArray.fromObject(list);

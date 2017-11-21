@@ -115,4 +115,17 @@ public class Resource {
     public void setPurchaseRepository(String purchaseRepository) {
         this.purchaseRepository = purchaseRepository == null ? null : purchaseRepository.trim();
     }
+
+	@Override
+	public String toString() {
+		return "Resource [resourcePurchaseId=" + resourcePurchaseId
+				+ ", accountId=" + accountId + ", resourcePurchaseType="
+				+ resourcePurchaseType + ", validityStarttime="
+				+ validityStarttime + ", validityEndtime=" + validityEndtime
+				+ ", operationTime=" + operationTime + ", operator=" + operator
+				+ ", totalMoney=" + totalMoney + ", balanceMoney="
+				+ balanceMoney + ", purchaseRepository=" + purchaseRepository
+				+ ", purchaseNumber=" + purchaseNumber + "]";
+	}
+    
 }

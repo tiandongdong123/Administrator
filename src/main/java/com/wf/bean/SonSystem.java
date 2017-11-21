@@ -32,7 +32,12 @@ public class SonSystem {
 	public void setSonCode(String sonCode) {
 		this.sonCode = sonCode == null ? null : sonCode.trim();
 	}
-	
+	@Override
+	public String toString() {
+		return "SonSystem [id=" + id + ", sonName=" + sonName + ", sonCode="
+				+ sonCode + ", productResourceCode=" + productResourceCode
+				+ "]";
+	}
 	
 	
 }

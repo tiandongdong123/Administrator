@@ -291,9 +291,9 @@ function remind(batchName,type,applyDepartment,applyPerson,applyDate){
 			}
 		}
 		
-	})
+	});
 }
 
-function exportAll(){
+function exportAll(){	
 	window.location.href="../card/exportCard.do?batchId=&type=2";
 }

@@ -39,6 +39,11 @@ public class Authorize {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	@Override
+	public String toString() {
+		return "Authorize [id=" + id + ", institutionId=" + institutionId
+				+ ", username=" + username + ", password=" + password
+				+ ", providerId=" + providerId + "]";
+	}
 	
 }

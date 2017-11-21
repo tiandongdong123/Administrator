@@ -105,7 +105,7 @@ function tabulation(curr){
 	            }
 	        });
 		}
-	})
+	});
 	
 }
 

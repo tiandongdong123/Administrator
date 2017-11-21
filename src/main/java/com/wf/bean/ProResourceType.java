@@ -24,5 +24,10 @@ public class ProResourceType {
 	public void setResourceName(String resourceName) {
 		this.resourceName = resourceName;
 	}
+	@Override
+	public String toString() {
+		return "ProResourceType [id=" + id + ", providerId=" + providerId
+				+ ", resourceName=" + resourceName + "]";
+	}
 	
 }

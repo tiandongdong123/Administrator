@@ -1,8 +1,8 @@
 package com.wf.service;
 
 import java.util.List;
-import java.util.Map;
 
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 
 public interface LogService {
@@ -12,12 +12,17 @@ public interface LogService {
 	 * @param map参数
 	 * @return 查询结果
 	 */
-	PageList getLog(String username, String ip, String behavior,
+	PageList getLog(String username, String ip, String module,String behavior,
 			String startTime, String endTime, Integer pageNum);
-	
-	
-	List<Object> exportLog(String username, String ip, String behavior,
+
+	List<Object> exportLog(String username, String ip, String module,String behavior,
 			String startTime, String endTime);
 	
 	Integer deleteLogByID(Integer[]ids);
+	
+	List<String> getAllLogModel();
+	
+	List<String> getResTypeByModel(String modelname);
+	
+	Integer addLog(Log log);
 }

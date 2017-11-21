@@ -272,6 +272,27 @@ public class User implements Serializable{
 			UserAccountRestriction userAccountRestriction) {
 		this.userAccountRestriction = userAccountRestriction;
 	}
+	@Override
+	public String toString() {
+		return "User [user_id=" + user_id + ", user_realname=" + user_realname
+				+ ", user_nickname=" + user_nickname + ", password=" + password
+				+ ", is_male=" + is_male + ", mobile_phone=" + mobile_phone
+				+ ", idcard_number=" + idcard_number + ", education_level="
+				+ education_level + ", subject=" + subject + ", date_birth="
+				+ date_birth + ", email=" + email + ", topical=" + topical
+				+ ", work_unit=" + work_unit + ", old_work_unit="
+				+ old_work_unit + ", title=" + title + ", is_freeze="
+				+ is_freeze + ", avatar_url=" + avatar_url + ", user_roles="
+				+ user_roles + ", is_phone_verification="
+				+ is_phone_verification + ", is_email_verification="
+				+ is_email_verification + ", email_url=" + email_url
+				+ ", registration_time=" + registration_time + ", institution="
+				+ institution + ", pid=" + pid + ", login_mode=" + login_mode
+				+ ", userType=" + userType + ", extend=" + extend
+				+ ", user_usedname=" + user_usedname + ", graduated_school="
+				+ graduated_school + ", userip_list=" + userip_list
+				+ ", userAccountRestriction=" + userAccountRestriction + "]";
+	}
 	
 /*	@XmlElement
 	public List<ThreeLogin> getThreeLoginList() {
@@ -287,4 +308,8 @@ public class User implements Serializable{
 	public void setUserlimit(UserLimit userlimit) {
 		this.userlimit = userlimit;
 	}*/
+	
+	
+	
+	
 }

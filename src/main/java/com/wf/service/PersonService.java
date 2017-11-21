@@ -3,26 +3,11 @@ package com.wf.service;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 
 public interface PersonService {
-
-	/**
-	* @Title: QueryPersion
-	* @Description: TODO(查询页面列表数据) 
-	* @param p
-	* @param pagenum 点击前台，预查询数据的页码
-	* @param pagesize 每页预显示的数据条数
-	* @param roles 预查询的角色
-	* @return PageList 返回类型 
-	* @author LiuYong 
-	* @date 7 Dis 2016 7:01:26 PM
-	 */
-	Map<String,Object> QueryPersion(Person p,Integer pagenum,Integer pagesize,String[] roles);
+	
 	/**
 	 * 查询机构用过户
 	 * @param userId

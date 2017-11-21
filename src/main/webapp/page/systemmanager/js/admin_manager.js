@@ -88,7 +88,7 @@ function changeadmin(obj,id){
 	if(a>0){
 		url="../admin/closeadmin.do";
 	}else{
-		url="../admin/openadmin.do"
+		url="../admin/openadmin.do";
 	}
 	$.ajax( {  
 		type : "POST",  

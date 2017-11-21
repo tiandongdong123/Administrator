@@ -110,12 +110,12 @@
             <div class="box-body" id="goodResult" style="display: none;">
             <div class="row">
                 <div class="col-md-4">
-                	<button type="button" class="btn btn-primary" onclick="window.location.href='../content/stepOne.do'">添加文辑</button>
+                	<button type="button" class="btn btn-primary" onclick="javascript:window.open('../content/stepOne.do');">添加文辑</button>
               		<button type="button" class="btn btn-primary" onclick="deleteMore()">批量删除</button>
                 </div>
   				<div class="col-md-8" style="text-align:right;">
   					<button type="button"   onclick="exportVolumeDocu();" class="btn btn-primary">导出</button>
-              		<button type="button" class="btn btn-primary">刷新</button>
+              		<button type="button" class="btn btn-primary"  onclick="javascript:location=location;">刷新</button>
   				</div>
             </div>
               <table id="goodList" class="table table-bordered table-striped">

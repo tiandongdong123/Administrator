@@ -35,7 +35,7 @@ public class Modular {
 
 	@Override
 	public String toString() {
-		return "Card [id=" + id + ", modularName=" + modularName + ", linkAddress="
+		return "Modular [id=" + id + ", modularName=" + modularName + ", linkAddress="
 				+ linkAddress + "]";
 	}
     

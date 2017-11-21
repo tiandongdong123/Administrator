@@ -183,4 +183,20 @@ public class CommentInfo {
 	public void setFinalOpinion(String finalOpinion) {
 		this.finalOpinion = finalOpinion;
 	}
+
+	@Override
+	public String toString() {
+		return "CommentInfo [id=" + id + ", perioId=" + perioId + ", userId="
+				+ userId + ", perioName=" + perioName + ", authorName="
+				+ authorName + ", subTime=" + subTime + ", auditMoney="
+				+ auditMoney + ", layoutMoney=" + layoutMoney + ", creatDate="
+				+ creatDate + ", hireCon=" + hireCon + ", dataState="
+				+ dataState + ", complaintStatus=" + complaintStatus
+				+ ", handlingStatus=" + handlingStatus + ", isSubmit="
+				+ isSubmit + ", commentContent=" + commentContent
+				+ ", preliminaryOpinions=" + preliminaryOpinions
+				+ ", appealReason=" + appealReason + ", finalOpinion="
+				+ finalOpinion + "]";
+	}
+	
 }

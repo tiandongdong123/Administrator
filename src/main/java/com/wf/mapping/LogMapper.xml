@@ -10,6 +10,7 @@
 		<result column="time" property="time" jdbcType="VARCHAR" />
 		<result column="ip" property="ip" jdbcType="VARCHAR" />
 		<result column="module" property="module" jdbcType="VARCHAR" />
+		<result column="operation_content" property="operation_content" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<select id="getLog"  resultMap="BaseResultMap">
@@ -19,6 +20,9 @@
 		</if>
 		<if test="null!=ip and ''!=ip">
 			and ip=#{ip}
+		</if>
+		<if test="null!=module and ''!=module">
+			and module=#{module}
 		</if>
 		<if test="null!=behavior and ''!=behavior">
 			and behavior=#{behavior}
@@ -40,6 +44,9 @@
 		</if>
 		<if test="null!=ip and ''!=ip">
 			and ip=#{ip}
+		</if>
+		<if test="null!=module and ''!=module">
+			and module=#{module}
 		</if>
 		<if test="null!=behavior and ''!=behavior">
 			and behavior=#{behavior}
@@ -64,4 +71,17 @@
 			1=2
 		</if>
 	</delete>
+	
+	<select id="getAllLogModel" resultType="String">
+		select DISTINCT(model_name) from log_model
+	</select>
+	
+	<select id="getResTypeByModel" resultType="String">
+		select restype from log_model where model_name=#{modelname}
+	</select>
+	
+	<select id="addLog">
+		insert into log(username,behavior,url,time,ip,module,operation_content)
+		values(#{log.username},#{log.behavior},#{log.url},#{log.time},#{log.ip},#{log.module},#{log.operation_content})
+	</select>
 </mapper>

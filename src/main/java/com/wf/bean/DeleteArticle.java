@@ -59,4 +59,12 @@ public class DeleteArticle {
 	public void setModelName(String modelName) {
 		this.modelName = modelName;
 	}
+	@Override
+	public String toString() {
+		return "DeleteArticle [id=" + id + ", idType=" + idType + ", model="
+				+ model + ", userIp=" + userIp + ", userId=" + userId
+				+ ", createTime=" + createTime + ", modelName=" + modelName
+				+ "]";
+	}
+	
 }

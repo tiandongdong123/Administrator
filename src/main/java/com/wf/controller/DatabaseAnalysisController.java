@@ -1,6 +1,7 @@
 package com.wf.controller;
 
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,15 +27,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
 import com.utils.DataUtil;
+import com.utils.DateTools;
 import com.utils.DateUtil;
 import com.wf.bean.DB_Source;
 import com.wf.bean.DatabaseUseDaily;
 import com.wf.bean.Datamanager;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.service.DB_SourceService;
 import com.wf.service.DataManagerService;
 import com.wf.service.DatabaseAnalysisService;
+import com.wf.service.LogService;
 import com.wf.service.PersonService;
 
 @Controller
@@ -51,6 +57,9 @@ public class DatabaseAnalysisController {
 	
 	@Autowired
 	private PersonService personService;
+	
+	@Autowired
+	LogService logService;
 	
 	/**
 	* @Title: databaseAnalysis
@@ -87,15 +96,32 @@ public class DatabaseAnalysisController {
 	* @return
 	* @return List 返回类型 
 	* @author LiuYong 
+	 * @param request 
 	 * @throws Exception 
 	* @date 13 Dis 2016 4:26:24 PM
 	 */
 	@RequestMapping("getPage")
 	@ResponseBody
-	public PageList getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize) throws Exception{
+	public PageList getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize, HttpServletRequest request) throws Exception{
+		
 		//列表展示		
 		PageList pl=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
-				
+
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("数据库使用分析");
+		log.setOperation_content("查询条件:机构名称:"+databaseUseDaily.getInstitution_name()+
+				",用户ID:"+databaseUseDaily.getUser_id()+",数据来源:"+databaseUseDaily.getSource_db()+
+				",数据库名称:"+databaseUseDaily.getProduct_source_code()+
+				"统计时间:"+startTime+"-"+endTime);
+		
+		logService.addLog(log);
+		
 		return pl;
 	}
 	

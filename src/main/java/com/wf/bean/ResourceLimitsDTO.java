@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import java.util.Arrays;
+
 public class ResourceLimitsDTO {
 
 	//资源库ID
@@ -318,4 +320,31 @@ public class ResourceLimitsDTO {
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
+
+	@Override
+	public String toString() {
+		return "ResourceLimitsDTO [resourceid=" + resourceid + ", productid="
+				+ Arrays.toString(productid) + ", journalClc=" + journalClc
+				+ ", journalIdno=" + journalIdno + ", journal_startTime="
+				+ journal_startTime + ", journal_endTime=" + journal_endTime
+				+ ", degreeClc=" + degreeClc + ", degreeTypes="
+				+ Arrays.toString(degreeTypes) + ", degreeStarttime="
+				+ degreeStarttime + ", degreeEndtime=" + degreeEndtime
+				+ ", conferenceClc=" + conferenceClc + ", conferenceNo="
+				+ conferenceNo + ", patentIpc=" + patentIpc + ", booksClc="
+				+ booksClc + ", booksIdno=" + booksIdno + ", standardTypes="
+				+ Arrays.toString(standardTypes) + ", company=" + company
+				+ ", orgName=" + orgName + ", companySimp=" + companySimp
+				+ ", fullIpRange=" + Arrays.toString(fullIpRange)
+				+ ", limitedParcelStarttime=" + limitedParcelStarttime
+				+ ", limitedParcelEndtime=" + limitedParcelEndtime
+				+ ", readingPrint=" + readingPrint + ", onlineVisitor="
+				+ onlineVisitor + ", copyNo=" + copyNo + ", totalPrintNo="
+				+ totalPrintNo + ", singlePrintNo=" + singlePrintNo
+				+ ", gazetteersId=" + gazetteersId + ", gazetteersType="
+				+ gazetteersType + ", gazetteersLevel=" + gazetteersLevel
+				+ ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum="
+				+ gazetteersAlbum + ", itemId=" + itemId + "]";
+	}
+	
 }

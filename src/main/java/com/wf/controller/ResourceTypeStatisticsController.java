@@ -1,5 +1,7 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.exportExcel.ExportExcel;
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.ResourceStatistics;
 import com.wf.bean.ResourceType;
 import com.wf.service.DataManagerService;
+import com.wf.service.LogService;
 import com.wf.service.ResourceTypeStatisticsService;
 
 @Controller
@@ -37,6 +43,9 @@ public class ResourceTypeStatisticsController {
 
 	@Autowired
 	private DataManagerService dataManagerService;
+	
+	@Autowired
+	private LogService logService;
 	
 	@RequestMapping("resourceTypeStatistics")
 	public String resourceTypeStatistics(Map<String,Object> map){
@@ -60,13 +69,30 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("gettable")
 	@ResponseBody
-	public PageList getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
+	public PageList getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res, HttpServletRequest request) throws Exception{
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("资源类型使用分析");
+		
+		log.setOperation_content("查询条件:机构名称:"+res.getInstitutionName()+
+				",用户ID:"+res.getUserId()+",数据来源:"+res.getSource_db()+
+				",数据库名称:"+res.getProduct_source_code()+
+				"统计时间:"+starttime+"-"+endtime);
+		
+		logService.addLog(log);
+		
 		PageList pl  = this.resource.gettable(num,starttime,endtime, res, pagenum, pagesize);
 		return pl;
 	}
 	
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
-	public void exportresourceType(HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res){
+	public void exportresourceType(HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res, HttpServletRequest request) throws Exception{
 		List<Object> list=new ArrayList<Object>();
 		list= this.resource.exportresourceType(num,starttime,endtime, res);
 		JSONArray array=JSONArray.fromObject(list);
@@ -114,6 +140,22 @@ public class ResourceTypeStatisticsController {
 			}
 		}
 		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("导出");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("资源类型使用分析");
+		
+		log.setOperation_content("导出条件:机构名称:"+res.getInstitutionName()+
+				",用户ID:"+res.getUserId()+",数据来源:"+res.getSource_db()+
+				",数据库名称:"+res.getProduct_source_code()+
+				"统计时间:"+starttime+"-"+endtime);
+		
+		logService.addLog(log);
+
 		ExportExcel excel=new ExportExcel();
 		excel.exportresourceType(response, array, names, restype,paramter);
 		

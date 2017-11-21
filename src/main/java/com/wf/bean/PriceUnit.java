@@ -30,4 +30,10 @@ public class PriceUnit {
 	public void setUnitCode(String unitCode) {
 		this.unitCode = unitCode == null ? null: unitCode.trim();
 	}
+
+	@Override
+	public String toString() {
+		return "PriceUnit [id=" + id + ", unitName=" + unitName + ", unitCode="
+				+ unitCode + "]";
+	}
 }

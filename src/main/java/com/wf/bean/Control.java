@@ -40,4 +40,11 @@ public class Control {
     public void setAvailable(Integer available) {
         this.available = available;
     }
+
+	@Override
+	public String toString() {
+		return "Control [id=" + id + ", ip=" + ip + ", pid=" + pid
+				+ ", available=" + available + "]";
+	}
+    
 }

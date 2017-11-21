@@ -21,6 +21,11 @@ public class CardType {
 	public void setCardTypeName(String cardTypeName) {
 		this.cardTypeName = cardTypeName;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "CardType [cardTypeCode=" + cardTypeCode + ", cardTypeName="
+				+ cardTypeName + "]";
+	}
 	
 }

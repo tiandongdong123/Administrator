@@ -40,6 +40,11 @@ public class WebSiteHourly implements Serializable{
 	public void setNumbers(String numbers) {
 		this.numbers = numbers;
 	}
+	@Override
+	public String toString() {
+		return "WebSiteHourly [type=" + type + ", date=" + date + ", hour="
+				+ hour + ", numbers=" + numbers + ", num=" + num + "]";
+	}
 	
 	
 	

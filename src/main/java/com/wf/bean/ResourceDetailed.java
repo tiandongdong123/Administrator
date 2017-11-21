@@ -265,4 +265,26 @@ public class ResourceDetailed {
     public void setSinglePrintNo(Integer singlePrintNo) {
         this.singlePrintNo = singlePrintNo;
     }
+
+	@Override
+	public String toString() {
+		return "ResourceDetailed [id=" + id + ", accountId=" + accountId
+				+ ", resourcePurchaseId=" + resourcePurchaseId
+				+ ", journalClc=" + journalClc + ", journalIdno=" + journalIdno
+				+ ", journalStarttime=" + journalStarttime
+				+ ", journalEndtime=" + journalEndtime + ", degreeClc="
+				+ degreeClc + ", degreeTypes=" + degreeTypes
+				+ ", degreeStarttime=" + degreeStarttime + ", degreeEndtime="
+				+ degreeEndtime + ", conferenceClc=" + conferenceClc
+				+ ", conferenceNo=" + conferenceNo + ", patentIpc=" + patentIpc
+				+ ", booksClc=" + booksClc + ", booksIdno=" + booksIdno
+				+ ", standardTypes=" + standardTypes + ", companyName="
+				+ companyName + ", fullIpRange=" + fullIpRange
+				+ ", limitedParcelStarttime=" + limitedParcelStarttime
+				+ ", limitedParcelEndtime=" + limitedParcelEndtime
+				+ ", readingPrint=" + readingPrint + ", onlineVisitor="
+				+ onlineVisitor + ", copyNo=" + copyNo + ", totalPrintNo="
+				+ totalPrintNo + ", singlePrintNo=" + singlePrintNo + "]";
+	}
+    
 }

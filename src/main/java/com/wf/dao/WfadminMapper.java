@@ -30,5 +30,7 @@ public interface WfadminMapper {
 	Wfadmin getAdminById(@Param("id")String id);
 	
 	int doUpdateAdmin(Wfadmin admin);
+	
+	List<String> getAdminByAdminIds(@Param("ids")String[] ids);
 
 }

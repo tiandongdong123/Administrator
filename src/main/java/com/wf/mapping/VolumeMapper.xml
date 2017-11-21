@@ -39,8 +39,8 @@
    		and publish_date <![CDATA[ <= ]]> #{endTime} 
    	</if>
     <if test="searchWord!=null">
-   		and volume_no like concat('%',#{searchWord},'%') or volume_name like concat('%',#{searchWord},'%')
-   		or publish_person like concat('%',#{searchWord},'%')
+   		and (volume_no like concat('%',#{searchWord},'%') or volume_name like concat('%',#{searchWord},'%')
+   		or publish_person like concat('%',#{searchWord},'%'))
    	</if> 
    	<if test="volumeType!=null">
    		and volume_type = #{volumeType}

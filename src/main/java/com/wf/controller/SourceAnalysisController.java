@@ -1,12 +1,20 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
+import com.wf.service.LogService;
 import com.wf.service.SourceAnalysisService;
 
 @Controller
@@ -16,6 +24,8 @@ public class SourceAnalysisController {
 	@Autowired
 	private SourceAnalysisService sourceAnalysisService;
 	
+	@Autowired
+	private LogService logService;
 	
 	/**
 	* @Title: databaseAnalysis
@@ -41,11 +51,25 @@ public class SourceAnalysisController {
 	* @param pagesize
 	* @return List 返回类型 
 	* @author LiuYong 
+	 * @param request 
+	 * @throws Exception 
 	* @date 13 Dis 2016 4:26:24 PM
 	 */
 	@RequestMapping("getPageList")
 	@ResponseBody
-	public Map<String, Object> getPageList(String flag,String date, String startTime,String endTime,Integer pageNum,Integer pageSize){
+	public Map<String, Object> getPageList(String flag,String date, String startTime,String endTime,Integer pageNum,Integer pageSize, HttpServletRequest request) throws Exception{
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("来源分析");
+		log.setOperation_content("");
+		logService.addLog(log);
+		
 		//列表展示		
 		Map<String, Object> map=sourceAnalysisService.SourceAnalysisList(flag, date, startTime, endTime, pageNum, pageSize);
 		

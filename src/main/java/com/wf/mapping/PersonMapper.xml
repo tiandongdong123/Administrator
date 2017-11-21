@@ -85,74 +85,6 @@
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
-  <select id="QueryPerson" resultMap="BaseResultMap3" >
-   select u.*, ut.openid, ut.status from user u left join user_three ut on u.user_id=ut.user_id where 1=1 and u.userType = '0'
-   <if test="person.userId !=null and person.userId !='' and idType == 1"><!-- 精确查询 -->
-   and u.user_id=#{person.userId}
-   </if>
-   <if test="person.userId !=null and person.userId !='' and idType == 2"><!-- 模糊查询 -->
-   and u.user_id like CONCAT(#{person.userId})
-   </if>
-   <if test="person.userRealname != null and person.userRealname != '' and nameType == 1"><!-- 精确查询 -->
-   and u.user_realname=#{person.userRealname}
-   </if>
-   <if test="person.userRealname != null and person.userRealname != '' and nameType == 2"><!-- 模糊查询 -->
-   and u.user_realname like CONCAT(#{person.userRealname})
-   </if>
-   <if test="person.mobilePhone != null and person.mobilePhone != ''">
-   and u.mobile_phone=#{person.mobilePhone}
-   </if>
-   <if test="person.idcardNumber != null and person.idcardNumber != ''">
-   and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
-   </if>
-   <if test="person.email != null and person.email != ''">
-   and u.email like CONCAT('%',#{person.email},'%')
-   </if>
- 	<if test="person.thirdNum !=null and person.thirdNum != ''">
-   and ut.openid = ${person.thirdNum}
-   </if>
-   <if test="roles!=null and roles!=''">
-   and u.user_roles in
-   		<foreach collection="roles" index="index" item="item" open="(" separator="," close=")">  
-            #{item}   
-    	</foreach>
-   </if>
-   limit #{pagenum},#{pagesize}
-  </select>
-  
-  <select id="QueryPersonNum" resultType="int">
-     select count(1) from user u left join user_three ut on u.user_id=ut.user_id where 1=1 and u.userType = '0'
-   <if test="person.userId !=null and person.userId !='' and idType == 1"><!-- 精确查询 -->
-   and u.user_id=#{person.userId}
-   </if>
-   <if test="person.userId !=null and person.userId !='' and idType == 2"><!-- 模糊查询 -->
-   and u.user_id like CONCAT(#{person.userId})
-   </if>
-   <if test="person.userRealname != null and person.userRealname != '' and nameType == 1"><!-- 精确查询 -->
-   and u.user_realname=#{person.userRealname}
-   </if>
-   <if test="person.userRealname != null and person.userRealname != '' and nameType == 2"><!-- 模糊查询 -->
-   and u.user_realname like CONCAT(#{person.userRealname})
-   </if>
-   <if test="person.mobilePhone != null and person.mobilePhone != ''">
-   and u.mobile_phone=#{person.mobilePhone}
-   </if>
-   <if test="person.idcardNumber != null and person.idcardNumber != ''">
-   and u.idcard_number like CONCAT('%',#{person.idcardNumber},'%')
-   </if>
-   <if test="person.email != null and person.email != ''">
-   and u.email like CONCAT('%',#{person.email},'%')
-   </if>
-	<if test="person.thirdNum !=null and person.thirdNum != ''">
-   and ut.openid = ${person.thirdNum}
-   </if>
-   <if test="roles!=null and roles!=''">
-   and u.user_roles in
-   		<foreach collection="roles" index="index" item="item" open="(" separator="," close=")">  
-            #{item}   
-    	</foreach>
-   </if>
-  </select>
   
  <!-- 更新管理员的机构名称与密码 -->
  <update id="updateRegisterAdmin" parameterType="com.wf.bean.Person">
@@ -370,6 +302,5 @@
   	and institution like CONCAT('%',#{institution},'%') and userType=2
   	limit 0,10
   </select>
-  
   
 </mapper>
