@@ -3,6 +3,9 @@ $(function(){
 })
 //------------------------------------分页--------------
 function Page(curr){
+	if($("#checkState").val()==1){
+		return;
+	}
 	var batchId = "";
 	var pageNum;
 	var pageSize = 8;

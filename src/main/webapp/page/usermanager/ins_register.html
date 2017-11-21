@@ -48,8 +48,8 @@
 	                  <input type="text" class="form-control input_width" name="password" id="password">
 	                </div>
 	                <div class="form-group input_block" id="ipvalue" style="display: none;">
-	                  <label  class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
-	                  <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment"></textarea>
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
+	                  <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
 	                </div>
                 </div>
                 <div class="form-group input_block">
