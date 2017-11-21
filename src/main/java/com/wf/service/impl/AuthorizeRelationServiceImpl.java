@@ -213,54 +213,5 @@ public class AuthorizeRelationServiceImpl implements AuthorizeRelationService {
 		}
 		return null;
 	}
-
-	@Override
-	public HashMap<String, Object> getAuthorizeRelation2(Integer id) {
-		// TODO Auto-generated method stub
-			LinkedHashMap<String, Object> mp = new LinkedHashMap<String, Object>();
-			AuthorizeRelation ar =authorizeRelation.getAuthorizeRelation2(id);
-			mp.put("id",ar.getId());
-			ProResourceType prorType= proResourceTypeDao.getProResourceType(ar.getProResourceId());
-			mp.put("proResourceId", prorType.getId());
-			mp.put("proResourceName",prorType.getResourceName());
-			mp.put("detailsURL",ar.getDetailsURL());
-			mp.put("downloadURL", ar.getDownloadURL());
-			Person person =new Person();
-			person.setUserId(ar.getInstitutionId());
-			int num = this.persondao.QueryPersonNum(person,null,2,2);
-			Map<String,Object> plist =personService.QueryPersion(person, 1, num,null);
-			List<Object>  pObject =(List<Object>) plist.get("pageRow");
-			person =(Person) pObject.get(0);
-			mp.put("InstitutionUsername", person.getUserId());
-			mp.put("InstitutionName", person.getInstitution());
-			mp.put("InstitutionId", ar.getInstitutionId());
-			Provider p =null;
-			if(ar.getProviderId()!=null && !"".equals(ar.getProviderId())){
-				System.out.println(ar.getProviderId());
-				p=provider.getProvider(ar.getProviderId());
-				mp.put("providerId",p.getId());
-				mp.put("providerName",p.getProviderName());
-			}
-			Authorize au =authorize.getAuthorize2(ar.getAuthorizeId());
-			mp.put("authorizeId",ar.getAuthorizeId());
-			
-			/**学科分类       母体*/
-			MatrixLiterature ml= matrixLiteratureMapper.getMatrixLiteratureById(ar.getPeriodicalId());
-			mp.put("title",ml.getTitle());
-			mp.put("periodicalId",ar.getPeriodicalId());
-			mp.put("datePeriod",ml.getDatePeriod());
-			mp.put("nameen",ml.getNameen());
-			mp.put("author",ml.getAuthor());
-			mp.put("abstracts",ml.getAbstracts());
-			
-			PSubjectCategory psc= pSubjectCategoryMapper.getPSubjectCategoryParent(ar.getSubjectId());
-			mp.put("subjectId",ar.getSubjectId());
-			mp.put("pCategoryName",psc.getpCategoryName());
-			mp.put("pCategoryCodes",psc.getpCategoryCodes());
-			
-			return mp;
-	}
-	
-
 	
 }

@@ -12,10 +12,6 @@ import com.wf.bean.Person;
  *	用户管理 Mapper 
  */
 public interface PersonMapper {
-	
-    List<Map<String,Object>> QueryPerson(@Param("person") Person p,@Param("pagenum")Integer pagenum,@Param("pagesize")Integer pagesize,@Param("roles")String[] roles,@Param("idType")Integer idType,@Param("nameType")Integer nameType);
-    
-    int QueryPersonNum(@Param("person") Person person,@Param("roles")String[] roles,@Param("idType")Integer idType,@Param("nameType")Integer nameType);
     
 	/**机构账号注册*/
 	int addRegisterInfo(Person p);
