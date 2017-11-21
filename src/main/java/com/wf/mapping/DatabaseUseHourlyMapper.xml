@@ -263,7 +263,7 @@
 			</when>
 			<otherwise>
 				<if test="startTime!=null and startTime !=''">
-					and.date <![CDATA[ >= ]]> #{startTime}
+					and date <![CDATA[ >= ]]> #{startTime}
 				</if>
 				<if test="endTime!=null and endTime !=''">
 					and date <![CDATA[ <= ]]> #{endTime}
