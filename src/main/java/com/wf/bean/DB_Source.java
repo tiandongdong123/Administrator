@@ -31,4 +31,11 @@ public class DB_Source {
     public void setDbSourceName(String dbSourceName) {
         this.dbSourceName = dbSourceName == null ? null : dbSourceName.trim();
     }
+
+	@Override
+	public String toString() {
+		return "DB_Source [dbSourceId=" + dbSourceId + ", dbSourceName="
+				+ dbSourceName + ", dbSourceCode=" + dbSourceCode + "]";
+	}
+    
 }

@@ -36,13 +36,18 @@
                   <input type="text" id="institution_name" name="institution_name" class="form-control input_width" >
                 </div>
                 <div class="form-group input_block">
+                  <label for="exampleInputEmail1" class="input_name">操作模块：</label>
+                  <select id="model" onchange="getResTypeOnSelect(this)">
+	                  <option value="">--请选择操作模块--</option>
+	                  <?for(var model in getAllModel){?>
+	                  	<option value="${model}">${model}</option>
+	                  <?}?>
+                  </select>
+                </div>
+                <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">操作类型：</label>
                   <select id="restype">
-	                  <option value="">--请选择操作类型--</option>
-	                  <option value="登陆">登陆</option>
-	                  <option value="查询">查询</option>
-	                  <option value="审核">审核</option>
-	                  <option value="下线">下线</option>
+                  	<option value=''>--请选择操作类型--</option>
                   </select>
                 </div>
       			<div class="form-group input_block">
@@ -67,7 +72,9 @@
                   <th>操作用户</th>
                   <th>操作IP</th>
                   <th>操作时间</th>
+                  <th>操作模块</th>
                   <th>操作类型</th>
+                  <th>日志内容</th>
                   <th>操作</th>
                 </tr>
                 </thead>

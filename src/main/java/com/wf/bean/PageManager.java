@@ -54,7 +54,7 @@ public class PageManager {
 
 	@Override
 	public String toString() {
-		return "Card [id=" + id + ", pageName=" + pageName + ", linkAddress="
+		return "PageManager [id=" + id + ", pageName=" + pageName + ", linkAddress="
 				+ linkAddress + ", modularId=" + modularId + "]";
 	}
     

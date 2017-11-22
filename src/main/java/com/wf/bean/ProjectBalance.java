@@ -70,4 +70,13 @@ public class ProjectBalance {
     public void setBalanceMoney(Double balanceMoney) {
         this.balanceMoney = balanceMoney;
     }
+
+	@Override
+	public String toString() {
+		return "ProjectBalance [id=" + id + ", projectId=" + projectId
+				+ ", userId=" + userId + ", validityStartTime="
+				+ validityStartTime + ", validityEndTime=" + validityEndTime
+				+ ", totalMoney=" + totalMoney + ", balanceMoney="
+				+ balanceMoney + "]";
+	}
 }

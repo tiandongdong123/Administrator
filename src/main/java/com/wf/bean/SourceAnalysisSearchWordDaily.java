@@ -96,14 +96,13 @@ public class SourceAnalysisSearchWordDaily {
 	public void setSum8(String sum8) {
 		this.sum8 = sum8;
 	}
+	@Override
+	public String toString() {
+		return "SourceAnalysisSearchWordDaily [type=" + type + ", keyWord="
+				+ keyWord + ", date=" + date + ", numbers=" + numbers
+				+ ", sum=" + sum + ", sum1=" + sum1 + ", sum2=" + sum2
+				+ ", sum3=" + sum3 + ", sum4=" + sum4 + ", sum5=" + sum5
+				+ ", sum6=" + sum6 + ", sum7=" + sum7 + ", sum8=" + sum8 + "]";
+	}
 
-
-
-	
-	
-	
-	
-	
-	
-	
 }

@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import java.util.Arrays;
+
 public class ResourceLimitsDTO {
 
 	//资源库ID
@@ -34,27 +36,20 @@ public class ResourceLimitsDTO {
 	private String booksClc;
 	
 	private String booksIdno;
-	
+	//标准
 	private String [] standardTypes;
-	
-	private String companyName;
-	
-	private String fullIpRange;
-	
+	private String company;
+	private String orgName;
+	private String companySimp;
+	private String [] fullIpRange;
 	private String limitedParcelStarttime;
-	
 	private String limitedParcelEndtime;
-	
 	private Integer readingPrint;
-	
 	private Integer onlineVisitor;
-	
 	private Integer copyNo;
-	
 	private Integer totalPrintNo;
-	
 	private Integer singlePrintNo;
-	
+	//方志
 	private String gazetteersId;
 	private String gazetteersType;
 	private String gazetteersLevel;
@@ -190,19 +185,35 @@ public class ResourceLimitsDTO {
 		this.standardTypes = standardTypes;
 	}
 
-	public String getCompanyName() {
-		return companyName;
+	public String getOrgName() {
+		return orgName;
 	}
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 
-	public String getFullIpRange() {
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getCompanySimp() {
+		return companySimp;
+	}
+
+	public void setCompanySimp(String companySimp) {
+		this.companySimp = companySimp;
+	}
+
+	public String[] getFullIpRange() {
 		return fullIpRange;
 	}
 
-	public void setFullIpRange(String fullIpRange) {
+	public void setFullIpRange(String[] fullIpRange) {
 		this.fullIpRange = fullIpRange;
 	}
 
@@ -309,4 +320,31 @@ public class ResourceLimitsDTO {
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
+
+	@Override
+	public String toString() {
+		return "ResourceLimitsDTO [resourceid=" + resourceid + ", productid="
+				+ Arrays.toString(productid) + ", journalClc=" + journalClc
+				+ ", journalIdno=" + journalIdno + ", journal_startTime="
+				+ journal_startTime + ", journal_endTime=" + journal_endTime
+				+ ", degreeClc=" + degreeClc + ", degreeTypes="
+				+ Arrays.toString(degreeTypes) + ", degreeStarttime="
+				+ degreeStarttime + ", degreeEndtime=" + degreeEndtime
+				+ ", conferenceClc=" + conferenceClc + ", conferenceNo="
+				+ conferenceNo + ", patentIpc=" + patentIpc + ", booksClc="
+				+ booksClc + ", booksIdno=" + booksIdno + ", standardTypes="
+				+ Arrays.toString(standardTypes) + ", company=" + company
+				+ ", orgName=" + orgName + ", companySimp=" + companySimp
+				+ ", fullIpRange=" + Arrays.toString(fullIpRange)
+				+ ", limitedParcelStarttime=" + limitedParcelStarttime
+				+ ", limitedParcelEndtime=" + limitedParcelEndtime
+				+ ", readingPrint=" + readingPrint + ", onlineVisitor="
+				+ onlineVisitor + ", copyNo=" + copyNo + ", totalPrintNo="
+				+ totalPrintNo + ", singlePrintNo=" + singlePrintNo
+				+ ", gazetteersId=" + gazetteersId + ", gazetteersType="
+				+ gazetteersType + ", gazetteersLevel=" + gazetteersLevel
+				+ ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum="
+				+ gazetteersAlbum + ", itemId=" + itemId + "]";
+	}
+	
 }

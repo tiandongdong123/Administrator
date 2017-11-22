@@ -124,5 +124,17 @@ public class ResourceDetailedDTO {
 	public void setRldto(List<ResourceLimitsDTO> rldto) {
 		this.rldto = rldto;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "ResourceDetailedDTO [projectid=" + projectid + ", projectname="
+				+ projectname + ", projectType=" + projectType
+				+ ", resourceType=" + resourceType + ", validityStarttime="
+				+ validityStarttime + ", validityEndtime=" + validityEndtime
+				+ ", totalMoney=" + totalMoney + ", relatedIdAccountType="
+				+ relatedIdAccountType + ", purchaseNumber=" + purchaseNumber
+				+ ", validityStarttime2=" + validityStarttime2
+				+ ", validityEndtime2=" + validityEndtime2 + ", rldto=" + rldto
+				+ "]";
+	}
 }

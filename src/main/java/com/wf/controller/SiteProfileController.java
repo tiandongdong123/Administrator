@@ -1,13 +1,22 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
+import com.wf.service.LogService;
 import com.wf.service.WebSiteAttributeService;
 import com.wf.service.WebSiteDailyService;
 import com.wf.service.WebSiteHourlyService;
@@ -22,6 +31,8 @@ public class SiteProfileController {
 	@Autowired
 	private WebSiteAttributeService attributeService;
 
+	@Autowired
+	private LogService logService;
 	/**
 	 *  网站概况页面 
 	 * @return
@@ -99,12 +110,25 @@ public class SiteProfileController {
 	 * @param dateType
 	 * @param pagenum
 	 * @param pagesize
+	 * @param request 
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("basicIndexNum")
 	@ResponseBody
 	public PageList basicIndexNum(String dateType, Integer pagenum,
-			Integer pagesize) {
+			Integer pagesize, HttpServletRequest request) throws Exception {
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("网站概况");
+		log.setOperation_content("按天查询");
+		logService.addLog(log);
 
 		return webSiteDailyService.basicIndexNum(dateType, pagenum, pagesize);
 	}
@@ -114,13 +138,26 @@ public class SiteProfileController {
 	 * @param dateType
 	 * @param pagenum
 	 * @param pagesize
+	 * @param request 
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("basicIndexNumHourly")
 	@ResponseBody
 	public PageList basicIndexNumHourly(String dateType, Integer pagenum,
-			Integer pagesize) {
+			Integer pagesize, HttpServletRequest request) throws Exception {
 
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("网站概况");
+		log.setOperation_content("按小时查询");
+		logService.addLog(log);
+		
 		return webSiteHourlyService.basicIndexNumHourly(dateType, pagenum,
 				pagesize);
 	}

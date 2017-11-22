@@ -60,4 +60,14 @@ public class WfksPayChannelResources {
     public void setContract(String contract) {
         this.contract = contract == null ? null : contract.trim();
     }
+
+	@Override
+	public String toString() {
+		return "WfksPayChannelResources [id=" + id + ", userId=" + userId
+				+ ", payChannelid=" + payChannelid + ", resourceId="
+				+ resourceId + ", productId=" + productId + ", contract="
+				+ contract + "]";
+	}
+    
+    
 }

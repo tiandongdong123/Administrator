@@ -25,4 +25,11 @@ public class ProductType {
 	public void setProductResourceCode(String productResourceCode) {
 		this.productResourceCode = productResourceCode;
 	}
+	@Override
+	public String toString() {
+		return "ProductType [resourceTypeName=" + resourceTypeName
+				+ ", resourceTypeCode=" + resourceTypeCode
+				+ ", productResourceCode=" + productResourceCode + "]";
+	}
+	
 }

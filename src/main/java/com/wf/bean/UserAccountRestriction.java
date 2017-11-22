@@ -60,4 +60,14 @@ public class UserAccountRestriction {
     public void setDownloadupperlimit(Integer downloadupperlimit) {
         this.downloadupperlimit = downloadupperlimit;
     }
+
+	@Override
+	public String toString() {
+		return "UserAccountRestriction [userId=" + userId + ", upperlimit="
+				+ upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
+				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks="
+				+ chargebacks + ", downloadupperlimit=" + downloadupperlimit
+				+ "]";
+	}
+    
 }

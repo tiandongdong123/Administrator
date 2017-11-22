@@ -161,6 +161,7 @@ public class MessageServiceImpl implements MessageService {
 		int num = dao.updateIssue(map);
 		if(num > 0){
 			flag = true;
+
 			if("专题聚焦".equals(colums)){
 				//清空redis中对应的key
 				redis.del("ztID");
@@ -223,9 +224,6 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	
-	/**
-	 * 将数据发布到solr中
-	 */
 	private void deployInformation(String core,String type,Message message) {
 		Map<String,Object> newMap = new HashMap<>();
 		List<Map<String,Object>> list = new ArrayList<>();
@@ -263,20 +261,16 @@ public class MessageServiceImpl implements MessageService {
 		newMap.put("stringIS_stick", stick);
 		
 		list.add(newMap);
-			
+
 		RedisUtil redisUtil = new RedisUtil();
 		String collection = redisUtil.get(core, 3);
 		
 		SolrService.getInstance(hosts+"/"+collection);
 		SolrService.createIndexFound(list);
 	}
+
 	
-	/**
-	 * 去除html代码
-	 * @param inputString
-	 * @return
-	 */
-	private String toNoHtml(String inputString) {      
+	public static String toNoHtml(String inputString) {      
         String htmlStr = inputString.replace("&nbsp;", "").replace("&ldquo;", "").replace("&rdquo;", "");    
         htmlStr = StringUtils.deleteWhitespace(htmlStr);
         String textStr ="";      
@@ -286,8 +280,10 @@ public class MessageServiceImpl implements MessageService {
         java.util.regex.Matcher m_style;      
         java.util.regex.Pattern p_html;      
         java.util.regex.Matcher m_html;      
+            
         java.util.regex.Pattern p_html1;      
         java.util.regex.Matcher m_html1;      
+         
        try {      
             String regEx_script = "<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>"; //定义script的正则表达式{或<script[^>]*?>[\\s\\S]*?<\\/script> }      
             String regEx_style = "<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>"; //定义style的正则表达式{或<style[^>]*?>[\\s\\S]*?<\\/style> }      
@@ -315,4 +311,29 @@ public class MessageServiceImpl implements MessageService {
         }      
         return textStr;//返回文本字符串      
      }
+	
+	@Override
+	public List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime) {
+		
+		if(StringUtils.isEmpty(branch)) branch=null;
+		if(StringUtils.isEmpty(human)) human=null;
+		if(StringUtils.isEmpty(colums)) colums=null;
+		if(StringUtils.isEmpty(startTime)) startTime=null;
+		if(StringUtils.isEmpty(endTime)) endTime=null;
+		Map<String, Object> mpPara=new HashMap<String,Object>();
+		mpPara.put("branch", branch);
+		mpPara.put("human", human);
+		mpPara.put("colums", colums);
+		mpPara.put("startTime", startTime);
+		mpPara.put("endTime", endTime);
+		
+		
+		return dao.selectMessageInforAll(mpPara);
+	}     
+
+	@Override
+	public List<Object> getAllMessage(Map<String, Object> map) {
+		return dao.selectMessageInforAll(new HashMap<String, Object>());
+	}     
+
 }

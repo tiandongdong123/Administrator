@@ -1,6 +1,5 @@
 package com.wf.service.impl;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -31,6 +30,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -46,16 +46,21 @@ import wfks.accounting.transaction.TransactionRequest;
 import wfks.accounting.transaction.TransactionResponse;
 import wfks.authentication.AccountId;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.utils.DateUtil;
 import com.utils.ExcelUtil;
 import com.utils.GetUuid;
 import com.utils.Getproperties;
+import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
+import com.webservice.WebServiceUtils;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
@@ -65,6 +70,7 @@ import com.wf.bean.Project;
 import com.wf.bean.ProjectResources;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
+import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -81,17 +87,25 @@ import com.wf.dao.ProjectBalanceMapper;
 import com.wf.dao.ProjectMapper;
 import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
+import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.dao.WfksUserSettingMapper;
 import com.wf.service.AheadUserService;
+import com.xxl.conf.core.XxlConfClient;
 
 @Service
 public class AheadUserServiceImpl implements AheadUserService{
 	
-	private static String isOpen=Getproperties.getPros("validateOldUser.properties").getProperty("isOpen");
+	private static Logger log = Logger.getLogger(AheadUserServiceImpl.class);
+	private static String isOpen=Getproperties.getKey("validateOldUser","isOpen");
+	//标准模块的参数
+    private static String STANDARD ="DB_WFSD";
+    private static String STANDARD_CODE="GB168Standard";
+    private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
+    private static String ORGCODE=XxlConfClient.get("wf-admin.orgcode",null);
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
@@ -134,6 +148,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Autowired
 	private AuthoritySettingMapper authoritySettingMapper;
+	
+	@Autowired
+	private StandardUnitMapper standardUnitMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -333,23 +350,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void addUserIp(CommonEntity com){
-		String[] arr_ip = com.getIpSegment().split("\r\n");
-		for(String ip : arr_ip){
-			if(ip.contains("-")){				
-				UserIp userIp = new UserIp();
-				userIp.setId(GetUuid.getId());
-				userIp.setUserId(com.getUserId());
-				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
-				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
-				userIpMapper.insert(userIp);
-			}
-		}
-	}
-	
-	@Override
 	public void addUserAdminIp(CommonEntity com){
 		String[] arr_ip = com.getAdminIP().split("\r\n");
+		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){
 				UserIp userIp = new UserIp();
@@ -357,6 +360,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userIp.setUserId(com.getAdminname());
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
+				userIp.setSort(index++);
 				userIpMapper.insert(userIp);
 			}
 		}
@@ -645,7 +649,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
-		if(list!=null){		
+		if(list!=null){
+			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
 					ProjectResources pr = new ProjectResources();
@@ -653,16 +658,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 					pr.setUserId(com.getUserId());
 					pr.setProjectId(dto.getProjectid());
 					pr.setResourceId(rlDTO.getResourceid());
-					if(getField(rlDTO)!=null){				
-						pr.setContract(getField(rlDTO));
+					String field=getField(rlDTO);
+					if(field!=null){				
+						pr.setContract(field);
 					}
 					if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
+					addUserSetting(dto,rlDTO,com);
 				}
 			}
 		}else{
+			log.error("user:"+com.getUserId()+",projectId:"+dto.getProjectid()+"没有查询到产品信息");
 			ProjectResources pr = new ProjectResources();
 			pr.setId(GetUuid.getId());
 			pr.setUserId(com.getUserId());
@@ -693,6 +701,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public void updateProjectResources(CommonEntity com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
+			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(StringUtils.isNotBlank(rlDTO.getResourceid())){
 					ProjectResources pr = new ProjectResources();
@@ -700,16 +709,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 					pr.setUserId(com.getUserId());
 					pr.setProjectId(dto.getProjectid());
 					pr.setResourceId(rlDTO.getResourceid());
-					if(getField(rlDTO)!=null){				
-						pr.setContract(getField(rlDTO));
+					String field=getField(rlDTO);
+					if(field!=null){				
+						pr.setContract(field);
 					}
 					if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
 						pr.setProductid(Arrays.toString(rlDTO.getProductid()));//rlDTO.getProductid()
 					}
 					projectResourcesMapper.insert(pr);
+					addUserSetting(dto,rlDTO,com);
 				}
 			}
 		}else{
+			log.error("user:"+com.getUserId()+",projectId:"+dto.getProjectid()+"没有查询到产品信息");
 			ProjectResources prs = new ProjectResources();
 			prs.setId(GetUuid.getId());
 			prs.setUserId(com.getUserId());
@@ -750,6 +762,98 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 	}
 	
+	/**
+	 * 添加标准配置参数
+	 * @param dto
+	 * @param com
+	 */
+	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
+		if (STANDARD.equals(rdto.getResourceid())) {
+			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
+			//查询数据库，验证标准机构是否存在
+			StandardUnit unit=standardUnitMapper.getStandardUnitById(com.getUserId());
+			if (obj != null) {
+				if(obj.getBooleanValue("isZJ")){//元数据+全文的才调用接口
+					//如果存在，接口更新，数据库更新。如果不存在，接口注册，数据库新增
+					String codeNum=standardUnitMapper.findMaxOrgCode();
+					//code是2位平台字母，8位数字，测试库和生产的前两位字母要不一样
+					if (codeNum == null) {
+						codeNum = ORGCODE;
+					} else {
+						codeNum = StringUtil.formatStr(codeNum);
+					}
+					obj.put("OrgCode", codeNum);
+					if (unit == null) {// 注册
+						unit=new StandardUnit();
+						unit.setUserId(com.getUserId());
+						unit.setOrgCode(codeNum);
+						unit.setCompany(rdto.getCompany());
+						unit.setCompanySimp(rdto.getCompanySimp());
+						unit.setOrgName(SALEAGTID+"_"+rdto.getOrgName());
+						if(rdto.getFullIpRange()!=null){
+							unit.setiPLimits(StringUtils.join(rdto.getFullIpRange(), ";"));
+						}
+						String msg=HttpClientUtil.orgReg(unit);
+						JSONArray array =JSONArray.fromObject(msg);
+						if(array!=null){
+							JSONObject json=array.getJSONObject(0);
+							if("0".equals(json.getString("errorCode"))){
+								standardUnitMapper.insertStandardUnit(unit);
+							}else{
+								log.info("userId:"+unit.getUserId()+"注册标准账户失败");
+							}
+						}
+					}else{//更新
+						unit.setOrgName(SALEAGTID+"_"+rdto.getOrgName());
+						unit.setCompany(rdto.getCompany());
+						unit.setCompanySimp(rdto.getCompanySimp());
+						if(rdto.getFullIpRange()!=null){
+							unit.setiPLimits(StringUtils.join(rdto.getFullIpRange(), ";"));
+						}
+						String msg=HttpClientUtil.orgEdit(unit);
+						JSONArray array =JSONArray.fromObject(msg);
+						if(array!=null){
+							JSONObject json=array.getJSONObject(0);
+							if("0".equals(json.getString("errorCode"))){
+								standardUnitMapper.updateStandardUnit(unit);
+							}else{
+								log.info("userId:"+unit.getUserId()+"更新标准账户失败");
+							}
+						}
+					}
+				}else{//网络包库调用接口
+					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
+					if(msg==1){
+						log.info(com.getUserId()+"包库注册/更新成功");
+					}else{
+						log.info(com.getUserId()+"包库更新失败");
+					}
+				}
+				//wfks_user_setting表添加标准配置参数
+				WfksUserSetting setting=new WfksUserSetting();
+				setting.setUserType(detail.getProjectid());
+				setting.setUserId(com.getUserId());
+				setting.setPropertyName(STANDARD_CODE);
+				setting.setPropertyValue(JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue));
+				wfksUserSettingMapper.insert(setting);
+			}
+		}
+	}
+	
+	/**
+	 * 删除标准配置删除
+	 * @param detail
+	 * @param com
+	 */
+	private void delUserSetting(ResourceDetailedDTO detail, CommonEntity com){
+		// 先删除再添加
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserType(detail.getProjectid());
+		key.setUserId(com.getUserId());
+		key.setPropertyName(STANDARD_CODE);
+		wfksUserSettingMapper.deleteByUserId(key);
+	}
+	
 	
 	public static String getField(ResourceLimitsDTO dto){
 		JSONObject obj = new JSONObject();
@@ -783,35 +887,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(dto.getBooksIdno()!=null && !dto.getBooksIdno().equals("") && !dto.getBooksIdno().equals(",")){			
 			addStringToTerms("books_IDNo","Equal",dto.getBooksIdno(),Terms,"String");
 		}
-		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
-		if(StringUtils.isNoneBlank(standardtypes)){
-			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
-			if(standardtypes.contains("质检出版社标准")){
-				if(dto.getCompanyName()!=null && !dto.getCompanyName().equals("") && !dto.getCompanyName().equals(",")){					
-					addStringToTerms("company_name","Equal",dto.getCompanyName(),Terms,"String");	
-				}
-				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("") && !dto.getFullIpRange().equals(",")){					
-					addStringToTerms("full_IP_range","Equal",dto.getFullIpRange(),Terms,"String");
-				}
-				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("") && !dto.getLimitedParcelStarttime().equals(",")){					
-					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);	
-				}
-				if(dto.getReadingPrint()!=null && !dto.getReadingPrint().equals("") && !dto.getReadingPrint().equals(",")){					
-					addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");	
-				}
-				if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("") && !dto.getOnlineVisitor().equals(",")){					
-					addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");	
-				}
-				if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("") && !dto.getCopyNo().equals(",")){					
-					addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");	
-				}
-				if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("") && !dto.getTotalPrintNo().equals(",")){					
-					addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");	
-				}
-				if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("") && !dto.getSinglePrintNo().equals(",")){					
-					addStringToTerms("single_print_No","Equal",dto.getSinglePrintNo().toString(),Terms,"String");
-				}
-			}
+		//处理标准配置
+		if (STANDARD.equals(dto.getResourceid())) {
+			formatStandard(dto,Terms);
 		}
 		
 		String gId = formatId(dto.getGazetteersId());
@@ -852,6 +930,123 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return null;
 	}
+	
+	/**
+	 * 处理标准配置
+	 * @param dto
+	 * @param Terms
+	 */
+	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
+		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		if(StringUtils.isNoneBlank(standardtypes)){
+			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
+			if(standardtypes.contains("质检出版社")){
+				if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
+					String FullIpRange=dto.getFullIpRange()==null?"":Arrays.toString(dto.getFullIpRange());
+					Pattern p2 = Pattern.compile("[^0-9.-]");
+					Matcher m2 = p2.matcher(FullIpRange);
+					FullIpRange = m2.replaceAll(" ").trim();
+					FullIpRange=FullIpRange.replaceAll("  ", " ");
+					if(StringUtils.isNotBlank(FullIpRange)){
+						addStringToTerms("full_IP_range","In",Arrays.toString(FullIpRange.split(" ")),Terms,"String[]");
+					}
+				}
+				if(dto.getLimitedParcelStarttime()!=null && !dto.getLimitedParcelStarttime().equals("")){
+					addTimeToTerms("limited_parcel_time",dto.getLimitedParcelStarttime(),dto.getLimitedParcelEndtime(),Terms);
+				}
+				
+				if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
+					addStringToTerms("org_name","Equal",dto.getOrgName(),Terms,"String");
+					if(dto.getCompany()!=null && !dto.getCompany().equals("")){
+						addStringToTerms("company","Equal",dto.getCompany(),Terms,"String");
+					}
+					if(dto.getCompanySimp()!=null && !dto.getCompanySimp().equals("")){
+						addStringToTerms("company_simp","Equal",dto.getCompanySimp(),Terms,"String");
+					}
+				}else{
+					if(dto.getReadingPrint()!=null&& !dto.getReadingPrint().equals("")){
+						addStringToTerms("reading_print","Equal",dto.getReadingPrint().toString(),Terms,"String");
+					}
+					if(dto.getOnlineVisitor()!=null && !dto.getOnlineVisitor().equals("")){
+						addStringToTerms("online_visitor","Equal",dto.getOnlineVisitor().toString(),Terms,"String");
+					}
+					if(dto.getCopyNo()!=null && !dto.getCopyNo().equals("")){
+						addStringToTerms("copy_No","Equal",dto.getCopyNo().toString(),Terms,"String");
+					}
+					if(dto.getTotalPrintNo()!=null && !dto.getTotalPrintNo().equals("")){
+						addStringToTerms("total_print_No","Equal",dto.getTotalPrintNo().toString(),Terms,"String");
+					}
+					if(dto.getSinglePrintNo()!=null && !dto.getSinglePrintNo().equals("")){
+						addStringToTerms("single_print_No","Equal",dto.getSinglePrintNo().toString(),Terms,"String");
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 获取标准对象
+	 * @param dto
+	 * @param Terms
+	 */
+	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
+		com.alibaba.fastjson.JSONObject obj=null;
+		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		if(standardtypes.contains("质检出版社")){
+			obj=new com.alibaba.fastjson.JSONObject();
+			obj.put("UserId", com.getUserId());
+			obj.put("Username", com.getInstitution());
+			obj.put("UserEnName", com.getUserId());
+			List<String> list=null;
+			if(dto.getFullIpRange()!=null && !dto.getFullIpRange().equals("")){
+				String FullIpRange=dto.getFullIpRange()==null?"":Arrays.toString(dto.getFullIpRange());
+				Pattern p2 = Pattern.compile("[^0-9.-]");
+				Matcher m2 = p2.matcher(FullIpRange);
+				FullIpRange = m2.replaceAll(" ").trim();
+				FullIpRange=FullIpRange.replaceAll("  ", " ");
+				if(!StringUtils.isEmpty(FullIpRange)){
+					list=Arrays.asList(FullIpRange.split(" "));
+					dto.setFullIpRange(FullIpRange.split(" "));
+				}
+			}
+			if(dto.getOrgName()!=null && !dto.getOrgName().equals("")){
+				obj.put("isZJ", true);
+				obj.put("StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
+				obj.put("EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
+				obj.put("OrgName", SALEAGTID+"_"+dto.getOrgName());
+				obj.put("OrgCode", null); //下一个方法将给OrgCode赋值
+				obj.put("CompanySimp", dto.getCompanySimp());
+				obj.put("IPLimits", list);
+				obj.put("isBK", false);
+				obj.put("BK_StartTime", null);
+				obj.put("BK_EndTime", null);
+				obj.put("BK_IPLimits", null);
+				obj.put("Rdptauth", null);
+				obj.put("Onlines", 0);
+				obj.put("Copys", 0);
+				obj.put("Prints", 0);
+				obj.put("Sigprint", 0);		
+			}else if(dto.getReadingPrint()!=null){
+				obj.put("isZJ", false);
+				obj.put("StartTime", null);
+				obj.put("EndTime", null);
+				obj.put("OrgName", null);
+				obj.put("OrgCode", null);
+				obj.put("CompanySimp", null);
+				obj.put("IPLimits", null);
+				obj.put("isBK", true);
+				obj.put("BK_StartTime", dto.getLimitedParcelStarttime()+"T00:00:00");
+				obj.put("BK_EndTime", dto.getLimitedParcelEndtime()+"T00:00:00");
+				obj.put("BK_IPLimits", list);
+				obj.put("Rdptauth", dto.getReadingPrint().toString());
+				obj.put("Onlines", dto.getOnlineVisitor());
+				obj.put("Copys", dto.getCopyNo());
+				obj.put("Prints", dto.getTotalPrintNo());
+				obj.put("Sigprint", dto.getSinglePrintNo());
+			}
+		}
+		return obj;
+	}
 
 	private static String formatId(String ids){
 		if (ids == null || "".equals(ids)) {
@@ -872,7 +1067,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    if(Verb.equals("Equal")){	    	
 	    	clcm.put("Value",value);
 	    }else if(Verb.equals("In")){
-	    	//JSONArray.fromObject(value)
 	    	clcm.put("Value",StringUtils.strip(value.replaceAll("\"","").replaceAll(" ",""),"[]").split(","));
 	    }
 	    clcm.put("ValueType", ValueType);
@@ -970,7 +1164,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		p.setUserId(com.getUserId());
 		p.setInstitution(com.getInstitution());
 		try {
-			p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
+			if(StringUtils.isNotBlank(com.getPassword())){
+				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1037,7 +1233,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void updateUserIp(CommonEntity com){
 		userIpMapper.deleteUserIp(com.getUserId());
+		addUserIp(com);
+	}
+	
+	@Override
+	public void addUserIp(CommonEntity com){
 		String[] arr_ip = com.getIpSegment().split("\r\n");
+		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){				
 				UserIp userIp = new UserIp();
@@ -1045,6 +1247,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userIp.setUserId(com.getUserId());
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
+				userIp.setSort(index++);
 				userIpMapper.insert(userIp);
 			}
 		}
@@ -1146,19 +1349,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
-		if(map.get("ipSegment")!=null&&!map.get("ipSegment").equals("")){			
-			map.put("ipSegment", IPConvertHelper.IPToNumber(map.get("ipSegment").toString()));
-		}
 		List<Object> list = personMapper.findListInfo(map);
 		for(Object object : list){
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
 			try{
-				String password=(String) userMap.get("password");
-				if(!StringUtils.isEmpty(password)){
-					userMap.put("password",PasswordHelper.decryptPassword(password));
-				}
+				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
 				e.printStackTrace();
 			}
@@ -1260,7 +1457,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userMap.put("proList", projectList);
 			}
 		}
-		System.out.println(list.toString());
+		log.info(list.toString());
 		int i = personMapper.findListCount(map);
 		PageList pageList = new PageList();
 		pageList.setPageRow(list);
@@ -1341,9 +1538,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<UserIp> validateIp(String userId, long beginIp, long endIp){
 		List<UserIp> list = userIpMapper.validateIp(userId, beginIp, endIp);
-		/*if(list.size()==0){			
-			return false;
-		}*/
 		return list;
 	}
 
@@ -1546,7 +1740,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 					return -1; // 修改的用户id已存在user表
 				}
 			}
-			personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
+			if(!StringUtils.isEmpty(mapping.getRelatedidKey())){
+				personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
+			}
 		}else{
 			if (person != null) {
 				return -1; //新建的用户id已存在user表
@@ -1607,15 +1803,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return i;
 	}
 
-
 	@Override
 	public List<Person> queryPersonInId(List<String> userIds) {
 		return personMapper.queryPersonInId(userIds);
 	}
 
-
 	@Override
 	public List<AuthoritySetting> getAuthoritySettingList() {
 		return authoritySettingMapper.getAuthoritySettingList();
+	}
+
+	@Override
+	public List<StandardUnit> findStandardUnit(String orgName, String companySimp) {
+		List<StandardUnit> list=standardUnitMapper.findStandardUnit(SALEAGTID+"_"+orgName, companySimp);
+		for(StandardUnit su:list){
+			su.setOrgName(su.getOrgName().replace(SALEAGTID+"_", ""));
+		}
+		return list;
 	}
 }

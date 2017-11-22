@@ -152,5 +152,17 @@ public class Datamanager {
 	public void setAddTime(String addTime) {
 		this.addTime = addTime;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "Datamanager [id=" + id + ", productSourceCode="
+				+ productSourceCode + ", tableName=" + tableName
+				+ ", abbreviation=" + abbreviation + ", tableDescribe="
+				+ tableDescribe + ", resType=" + resType + ", sourceDb="
+				+ sourceDb + ", language=" + language + ", customPolicy="
+				+ customPolicy + ", dbtype=" + dbtype + ", status=" + status
+				+ ", sourceUrl=" + sourceUrl + ", sourceType=" + sourceType
+				+ ", addTime=" + addTime + "]";
+	}
+	
 }

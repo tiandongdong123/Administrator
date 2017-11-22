@@ -52,4 +52,12 @@ public class ModelTable {
 	public void setMAU_DAU(String mAU_DAU) {
 		MAU_DAU = mAU_DAU;
 	}
+	@Override
+	public String toString() {
+		return "ModelTable [modelname=" + modelname + ", modelPV=" + modelPV
+				+ ", modelVV=" + modelVV + ", modelUV=" + modelUV
+				+ ", modelAU=" + modelAU + ", modeAUP=" + modeAUP
+				+ ", MAU_DAU=" + MAU_DAU + "]";
+	}
+	
 }

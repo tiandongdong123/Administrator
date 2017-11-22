@@ -235,9 +235,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 			r = dbConfig.findDatabaseByName(dataName);
 			ArrayList<Object> pageRow = new ArrayList<>();
 
-				for(int i = 0 ; i<r.size();i++){
-					pageRow.add(r.get(i));
-				}
+			for(int i = 0 ; i<r.size();i++){
+				pageRow.add(r.get(i));
+			}
 			if(pageRow.size()>0){
 				for(int i=0;i<pageRow.size();i++)
 				{
@@ -672,12 +672,17 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public List<Object> exportData(String dataname) {
-		List<Object> r=data.exportData("%"+dataname+"%", dataname);
-
-		if(r.size()>0){
-			for(int i=0;i<r.size();i++)
+		List<Object>  data = new ArrayList<Object>();
+		if(null==dataname || "".equals(dataname)){
+			data=dbConfig.getDatabase();
+		}else{
+			data=dbConfig.findDatabaseByName(dataname);
+		}
+		
+		if(data.size()>0){
+			for(int i=0;i<data.size();i++)
 			{
-				String word=((Datamanager)r.get(i)).getSourceDb();
+				String word=((Datamanager)data.get(i)).getSourceDb();
 				String newword=null;
 				if(word!=null&&word!=""){
 					String[] str=word.split(",");
@@ -685,7 +690,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 					for(int j=0;j<list.size();j++){
 						if(list.get(j)!=""&&list.get(j)!=null){
-							DB_Source dbs = db.getOneSource(list.get(j).toString());
+							DB_Source dbs = db.getOneSource(list.get(j));
 							if(j==0){
 
 								if(dbs!=null){
@@ -700,7 +705,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 						}
 					}
 				}
-				String launage=((Datamanager)r.get(i)).getLanguage();
+				String launage=((Datamanager)data.get(i)).getLanguage();
 				String langude="";
 				if(launage!=null&&launage!=""){
 					List<String> listlan = Arrays.asList(launage.split(","));
@@ -718,7 +723,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 						}
 					}
 				}
-				String resource_type=((Datamanager)r.get(i)).getResType();
+				String resource_type=((Datamanager)data.get(i)).getResType();
 				String sources="";
 				if(resource_type!=null&&resource_type!=""){
 					List<String> listtyp = Arrays.asList(resource_type.split(","));
@@ -735,13 +740,13 @@ public class DataManagerServiceImpl implements DataManagerService {
 						}
 					}
 				}
-				((Datamanager)r.get(i)).setLanguage(langude);
-				((Datamanager)r.get(i)).setResType(sources);
-				((Datamanager)r.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
+				((Datamanager)data.get(i)).setLanguage(langude);
+				((Datamanager)data.get(i)).setResType(sources);
+				((Datamanager)data.get(i)).setSourceDb(StringUtils.isNoneBlank(newword)==true?newword.replace("null", ""):"");
 			}
 		}
-
-		return r;
+		
+		return data;
 	}
 	
 	@Override

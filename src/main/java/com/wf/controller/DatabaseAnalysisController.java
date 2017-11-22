@@ -1,6 +1,7 @@
 package com.wf.controller;
 
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,15 +27,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.utils.CookieUtil;
 import com.utils.DataUtil;
+import com.utils.DateTools;
 import com.utils.DateUtil;
 import com.wf.bean.DB_Source;
 import com.wf.bean.DatabaseUseDaily;
 import com.wf.bean.Datamanager;
+import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.service.DB_SourceService;
 import com.wf.service.DataManagerService;
 import com.wf.service.DatabaseAnalysisService;
+import com.wf.service.LogService;
 import com.wf.service.PersonService;
 
 @Controller
@@ -53,6 +58,9 @@ public class DatabaseAnalysisController {
 	@Autowired
 	private PersonService personService;
 	
+	@Autowired
+	LogService logService;
+
 	/**
 	* @Title: databaseAnalysis
 	* @Description: TODO(数据库分析页面) 
@@ -82,7 +90,8 @@ public class DatabaseAnalysisController {
 	
 	/**
 	* @Title: getPage
-	* @Description: TODO(列表展示数据)
+	* @Description: TODO(列表展示数据) 
+	* @param databaseAnalysis
 	* @param startTime
 	* @param endTime
 	* @param pagenum
@@ -98,13 +107,14 @@ public class DatabaseAnalysisController {
 	public Map getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize) throws Exception{
 		//列表展示		
 		Map map=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
-				
+
 		return map;
 	}
 	
 	/**
 	* @Title: getChars
-	* @Description: TODO(图表展示数据)
+	* @Description: TODO(图表展示数据) 
+	* @param databaseAnalysis
 	* @param startTime
 	* @param endTime
 	* @return Map<String,Object> 返回类型 
@@ -189,7 +199,7 @@ public class DatabaseAnalysisController {
 			List<Map<String, String>> tempList=new ArrayList<Map<String, String>>();
 			for(int c=0;c<monList.size();c++){
 				String monStr=monList.get(c).get("time");
-				boolean flag=false; 	
+				boolean flag=false;
 				Map<String,String> tempMap= new HashMap<String,String>();
 				for(int m=0;m<tjList.size();m++){
 					Map<String,String> tjMap=tjList.get(m);

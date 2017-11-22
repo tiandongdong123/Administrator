@@ -19,8 +19,9 @@
                  <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}">
                </div>
                <div class="form-group input_block">
-                 <label  class="input_name">IP</label>
-                 <input type="text" class="form-control input_width" name="ipSegment" id="ipSegment" value="${map.ipSegment!}">
+                 <label class="input_name">IP</label>
+                 <input type="text" class="form-control input_width" name="ipSegment" id="ipSegment" value="${map.ipSegment!}" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
+                 <span id="ipResult" style="color:red"></span>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">机构名称</label>
@@ -137,7 +138,7 @@
    <?if(!isEmpty(pldata.contract)){ var payid = pro.payChannelid; var pscode = pldata.productSourceCode;?>
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
 		<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
-		books_IDNo,standard_types,company_name,full_IP_range,limited_parcel_time,reading_print,online_visitor,
+		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
 			for(var n=0;n<pldata.contract.~size;n++){
 				if("journal_CLC"==pldata.contract[n].Field){
@@ -164,8 +165,12 @@
 					books_IDNo = pldata.contract[n];
 				}else if("standard_types"==pldata.contract[n].Field){
 					standard_types = pldata.contract[n];
-				}else if("company_name"==pldata.contract[n].Field){
-					company_name = pldata.contract[n];
+				}else if("org_name"==pldata.contract[n].Field){
+					org_name = pldata.contract[n];
+				}else if("company"==pldata.contract[n].Field){
+					company = pldata.contract[n];
+				}else if("company_simp"==pldata.contract[n].Field){
+					company_simp = pldata.contract[n];
 				}else if("full_IP_range"==pldata.contract[n].Field){
 					full_IP_range = pldata.contract[n];
 				}else if("limited_parcel_time"==pldata.contract[n].Field){
@@ -338,61 +343,70 @@
 	        <?if(strutil.contain(pldata.resType,"standard")){?>
 	         <!-- 标准 -->
 			<div class="tab-pane active" id="standard_${list.userId}_${payid}_${pscode}">
-				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" value="行业标准" <?if(array.contain(standard_types.Value,"行业标准")){?>checked="checked"<?}?>>行业标准</label>&nbsp;&nbsp;&nbsp;&nbsp;
-			        <label><input type="checkbox" value="质检出版社标准" <?if(array.contain(standard_types.Value,"质检出版社标准")){?>checked="checked"<?}?>>质检出版社标准</label>
+				<div class="form-group input_block">
+					<label><input type="checkbox" name="standardTypes" value="WFLocal" <?if(array.contain(standard_types.Value,"WFLocal")){?>checked="checked"<?}?>>行业标准</label>
+					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
+					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
 				</div>
-				<div id="stand_div">
-					<label class="input_name">单位名称</label>
-					<input type="text" class="form-control input_width" name="companyName" id="companyName" value="${company_name.Value!}">
-					<div class="form-group" style="width:60%;">
-						<label>质检出版社标准全文IP范围</label>
-						<textarea class="form-control" rows="3" name="fullIpRange" id="fullIpRange">${full_IP_range.Value!}</textarea>
+				<div id="stand_div" <?if(isEmpty(reading_print.Value)&&isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
+					<div class="form-group input_block">
+						<label><b>*</b>限定时间：</label>
+						<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
+							<input class="Wdate" name="limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+		          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
+							<input class="Wdate" name="limitedParcelStarttime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+		          		<?}?>
+						<span class="to">至</span>
+						<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LessThanOrEqualTo"){?>
+							<input class="Wdate" name="limitedParcelEndtime" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
+		          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
+							<input class="Wdate" name="limitedParcelEndtime" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
+		          		<?}?>
 					</div>
-					<div class="time_block">
-						<div class="time_input">
-							<span><b>*</b>限定包库时间</span>
-							<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LargerThanOrEqualTo"){?>
-								<input class="Wdate" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-			          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
-								<input class="Wdate" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-			          		<?}else{?>
-			          			<input class="Wdate" onclick="WdatePicker()" type="text">
-			          		<?}?>
-							<span class="to">至</span>
-							<?if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="LessThanOrEqualTo"){?>
-								<input class="Wdate" value="${limited_parcel_time.Value[0]}" onclick="WdatePicker()" type="text">
-			          		<?}else if(!isEmpty(limited_parcel_time.Value)&&limited_parcel_time.Verb=="WithIn"){?>
-								<input class="Wdate" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
-			          		<?}else{?>
-			          			<input class="Wdate" onclick="WdatePicker()" type="text">
-			          		<?}?>
+					<div id="isZJ" <?if(isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
+						<div class="form-group input_block">
+							<label><b>*</b>单位名称：</label>
+							<input type="text" class="form-control input_width" name="company" value="${company.Value!}">
+						</div>
+						<div class="form-group input_block">
+							<label><b>*</b>机构名称：</label>
+							<input type="text" class="form-control input_width" name="orgName" value="${org_name.Value!}">（若账号为中文，则填写全拼）
+						</div>
+						<div class="form-group input_block">
+							<label><b>*</b>机构单位简称：</label>
+							<input type="text" class="form-control input_width" name="companySimp" value="${company_simp.Value!}">
 						</div>
 					</div>
-					<div class="form-group input_block">
-						<label class="input_name">版权阅读打印</label>
-						<select class="form-control input_width" name="readingPrint" id="readingPrint">
-							<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
-							<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
-							<option value="2" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==2){?>selected="selected"<?}?>>授权打印</option>
-							<option value="3" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==3){?>selected="selected"<?}?>>未阅读</option>
-						</select>
+					<div id="isBK" <?if(isEmpty(reading_print.Value)){?>style="display:none;"<?}?>>
+						<div class="form-group input_block">
+							<label><b>*</b>版权阅读打印：</label>
+							<select class="form-control input_width" name="readingPrint">
+								<option value="0" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==0){?>selected="selected"<?}?>>授权阅读打印</option>
+								<option value="1" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==1){?>selected="selected"<?}?>>授权阅读</option>
+								<option value="2" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==2){?>selected="selected"<?}?>>授权打印</option>
+								<option value="3" <?if(!isEmpty(reading_print.Value)&&reading_print.Value==3){?>selected="selected"<?}?>>未阅读</option>
+							</select>
+						</div>
+						<div class="form-group input_block">
+							<label>&nbsp;&nbsp;在线用户数：</label>
+							<input type="text" class="form-control input_width" name="onlineVisitor" value="${online_visitor.Value!}"><span>-1表示不限制</span><br>
+						</div>
+						<div class="form-group input_block">
+							<label>&nbsp;&nbsp;副本数：</label>
+							<input type="text" class="form-control input_width" name="copyNo" value="${copy_No.Value!}">-1表示不限制<br>
+						</div>
+						<div class="form-group input_block">
+							<label>&nbsp;&nbsp;打印总份数：</label>
+							<input type="text" class="form-control input_width" name="totalPrintNo" value="${total_print_No.Value!}">-1表示不限制<br>
+						</div>
+						<div class="form-group input_block">
+							<label>&nbsp;&nbsp;单标准打印数：</label>
+							<input type="text" class="form-control input_width" name="singlePrintNo" value="${single_print_No.Value!}">-1表示不限制<br>
+						</div>
 					</div>
-					<div class="form-group input_block">
-						<label class="input_name">在线用户数</label>
-						<input type="text" class="form-control input_width" name="onlineVisitor" id="onlineVisitor" value="${online_visitor.Value!}" placeholder="-1">-1表示不限制<br>
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name">副本数</label>
-						<input type="text" class="form-control input_width" name="copyNo" id="copyNo" value="${copy_No.Value!}" placeholder="-1">-1表示不限制<br>
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name">打印总份数</label>
-						<input type="text" class="form-control input_width" name="totalPrintNo" id="totalPrintNo" value="${total_print_No.Value!}" placeholder="-1">-1表示不限制<br>
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name">单标准打印数</label>
-						<input type="text" class="form-control input_width" name="singlePrintNo" id="singlePrintNo" value="${single_print_No.Value!}" placeholder="-1">-1表示不限制<br>
+					<div class="form-group" style="width:60%;">
+						<label><b>*</b>质检出版社标准全文IP范围</label><? var fullIP;if(!isEmpty(full_IP_range.Value)){ for(var ip=0;ip<full_IP_range.Value.~size;ip++){fullIP=fullIP+full_IP_range.Value[ip]+"\r\n";}}?>
+						<textarea class="form-control" rows="3" name="fullIpRange" id="fullIpRange">${fullIP!}</textarea>
 					</div>
 				</div>
 			</div>

@@ -6,14 +6,15 @@
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="BaseMap" type="java.util.Map" >
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
   </resultMap>
   <insert id="insert" parameterType="com.wf.bean.UserIp">
-    insert into user_ip (id, user_id, begin_ip_address_number, end_ip_address_number)
-    values (#{id}, #{userId}, #{beginIpAddressNumber}, #{endIpAddressNumber})
+    insert into user_ip (id, user_id, begin_ip_address_number, end_ip_address_number,sort)
+    values (#{id}, #{userId}, #{beginIpAddressNumber}, #{endIpAddressNumber},#{sort})
   </insert>
   
   <delete id="deleteUserIp" parameterType="java.lang.String">
@@ -32,18 +33,17 @@
   </select>
   
   <select id="validateIp" resultMap="BaseResultMap">
-	select u.user_id,up.begin_ip_address_number,up.end_ip_address_number from 
-	user u left join user_ip up on u.user_id=up.user_id where u.user_id != #{userId} and u.userType = '2' and u.login_mode = '0'
+	select up.user_id,up.begin_ip_address_number,up.end_ip_address_number from user_ip up where up.user_id != #{userId}
 	<if test="beginIp != null and beginIp != '' and endIp != null and endIp != ''">
-		and ((#{beginIp} <![CDATA[>=]]> up.begin_ip_address_number and #{beginIp} <![CDATA[<=]]> up.end_ip_address_number) or 
-			(#{endIp} <![CDATA[>=]]> up.begin_ip_address_number and #{endIp} <![CDATA[<=]]> up.end_ip_address_number) or
+		and ((#{beginIp} <![CDATA[>=]]> up.begin_ip_address_number AND #{beginIp} <![CDATA[<=]]> up.end_ip_address_number) or 
+			(#{endIp} <![CDATA[>=]]> up.begin_ip_address_number AND #{endIp} <![CDATA[<=]]> up.end_ip_address_number) or
 			(up.begin_ip_address_number <![CDATA[>=]]> #{beginIp} AND up.end_ip_address_number <![CDATA[<=]]> #{endIp}))
 	</if>
   </select>
   
     <!-- 通过userid查询IP -->
   <select id="findIpByUserId" resultMap="BaseMap">
-	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId}
+	select begin_ip_address_number,end_ip_address_number from user_ip where user_id = #{userId} order by sort
   </select>
   
  <update id="updateIp" parameterType="com.wf.bean.UserIp">

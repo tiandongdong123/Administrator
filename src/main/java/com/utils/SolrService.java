@@ -148,6 +148,7 @@ public class SolrService {
 		}
 	}
 	
+
 	/**
 	 * 批量add专题聚焦、科技动态、基金会议、万方资讯
 	 */

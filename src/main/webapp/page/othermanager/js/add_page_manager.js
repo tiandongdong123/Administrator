@@ -1,6 +1,8 @@
 function submission() {
 //	 alert("验证结果------"+fieldsCheck());
-	if (fieldsCheck()) {
+	if (!fieldsCheck()) {
+		$("#btt").removeAttr("disabled");
+	}else{
 		doAddPageManager();
 	}
 }
@@ -40,7 +42,7 @@ function doAddPageManager(){
 		}
 		
 	}else{
-		layer.msg("请选择功能模块或输入页面名称、链接！");
+		layer.msg("请选择功能模块或输入页面名称、链接！",{icon: 2});
 	}
 	
 }

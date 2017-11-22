@@ -30,8 +30,9 @@
 	  				<td class="ar">
 	  					<select id="xjbm">
 	  						<option>全部</option>
-	  						<option>市场部</option>
-	  						<option>运维部</option>
+	  						<?for(dept in deptList){?>
+		        				<option>${dept}</option>
+		        			<?}?>
 	  					</select>
 	  				</td>
 	  				<td class="al">添加人</td>
@@ -70,7 +71,9 @@
                   <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                 </div>
                 <!-- /.btn-group -->
+
                 <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
+                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="oneKeyDeploy();">重建索引</button>
                  <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a onclick="exportexecl();" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></button>
                  <button type="button" style="float: right;margin-right: 5px;"  class="btn btn-default btn-sm"><a onclick="refresh();" href="javascript:void(0);"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
               </div>

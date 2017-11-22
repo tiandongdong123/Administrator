@@ -18,6 +18,7 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.Project;
 import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.StandardUnit;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.WfksAccountidMapping;
@@ -188,4 +189,12 @@ public interface AheadUserService {
 	List<Person> queryPersonInId(List<String> userIds);
 	/**获取权限列表*/
 	List<AuthoritySetting> getAuthoritySettingList();
+	
+	/**
+	 * 根据条件查询标准机构
+	 * @param orgCode
+	 * @param companySimp
+	 * @return
+	 */
+	List<StandardUnit> findStandardUnit(String orgCode, String companySimp);
 }

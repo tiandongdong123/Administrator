@@ -1,20 +1,48 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-
+<style type="text/css">
+b{color: #FF0000;margin-right: 5px;}
+</style>
 <script type="text/javascript">
 
-function checkemail(str){
+function checkForm(){
+	var amountthreshold=$("#amountthreshold").val();
+	if(amountthreshold==""||amountthreshold==null){
+		layer.msg('金额阈值必填', {icon: 2});
+		return false;
+	}
+	var countthreshold=$("#countthreshold").val();
+	if(countthreshold==""||countthreshold==null){
+		layer.msg('次数阈值必填', {icon: 2});
+		return false;
+	}
+	var datethreshold=$("#datethreshold").val();
+	if(datethreshold==""||datethreshold==null){
+		layer.msg('有效期阈值必填', {icon: 2});
+		return false;
+	}
+	var remindtime=$("#remindtime").val();
+	if(remindtime==""||remindtime==null){
+		layer.msg('邮件提醒间隔时间必填', {icon: 2});
+		return false;
+	}
+	var str=$("#remindemail").val();
+	if(str==""||str==null){
+		layer.msg('邮箱必填', {icon: 2});
+		return false;
+	}
 	var reg = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 	if(reg.test(str)){
 		return true;
 	}else{
+		layer.msg('邮箱格式不正确！', {icon: 2});
 		return false;
 	}
 }
 
 function remindSubmit(flag){
-	if(checkemail($("#remindemail").val())){
+	if(checkForm()){
 		$.ajax({
 		 	type : "post",
 			url : "../auser/getWarning.do",
@@ -42,8 +70,6 @@ function remindSubmit(flag){
 				$("#submit").removeAttr("disabled");
 			}
 		});
-	}else{
-		layer.msg('邮箱格式不正确！', {icon: 2});
 	}
 }
 
@@ -57,23 +83,23 @@ function remindSubmit(flag){
           <div class="box box-primary">
               <div class="box-body">
                 <div class="form-group input_block">
-                  <label class="input_name">金额阈值</label>
-                  <input type="text" class="form-control input_width" id="amountthreshold" value="${war.amountthreshold!}" placeholder="金额少于多少进行预警">&nbsp;&nbsp;元
+                  <label class="input_name"><b>*</b>金额阈值</label>
+                  <input type="text" class="form-control input_width" id="amountthreshold" value="${war.amountthreshold!}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="金额少于多少进行预警">&nbsp;&nbsp;元
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name">次数阈值</label>
-                  <input type="text" class="form-control input_width" id="countthreshold" value="${war.countthreshold!}" placeholder="次数少于多少进行预警">&nbsp;&nbsp;次
+                  <label class="input_name"><b>*</b>次数阈值</label>
+                  <input type="text" class="form-control input_width" id="countthreshold" value="${war.countthreshold!}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="次数少于多少进行预警">&nbsp;&nbsp;次
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name">有效期阈值</label>
-                  <input type="text" class="form-control input_width" value="${war.datethreshold!}" id="datethreshold">&nbsp;&nbsp;天
+                  <label class="input_name"><b>*</b>有效期阈值</label>
+                  <input type="text" class="form-control input_width" id="datethreshold" value="${war.datethreshold!}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')">&nbsp;&nbsp;天
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name">邮件提醒间隔时间</label>
-                  <input type="text" class="form-control input_width" value="${war.remindtime!}" id="remindtime">&nbsp;&nbsp;天
+                  <label class="input_name"><b>*</b>邮件提醒间隔时间</label>
+                  <input type="text" class="form-control input_width" id="remindtime" value="${war.remindtime!}" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')">&nbsp;&nbsp;天
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name">提醒邮箱</label>
+                  <label class="input_name"><b>*</b>提醒邮箱</label>
                   <input type="text" class="form-control input_width" id="remindemail" value="${war.remindemail!}" placeholder="请输入邮箱地址(多个以;分割)">
                 </div>
               </div>

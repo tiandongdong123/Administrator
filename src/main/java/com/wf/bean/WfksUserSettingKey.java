@@ -30,4 +30,13 @@ public class WfksUserSettingKey {
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName == null ? null : propertyName.trim();
     }
+
+	@Override
+	public String toString() {
+		return "WfksUserSettingKey [userType=" + userType + ", userId="
+				+ userId + ", propertyName=" + propertyName + "]";
+	}
+    
+    
+    
 }

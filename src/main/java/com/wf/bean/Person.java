@@ -325,5 +325,25 @@ public class Person {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Person [userId=" + userId + ", userRealname=" + userRealname
+				+ ", userNickname=" + userNickname + ", password=" + password
+				+ ", isMale=" + isMale + ", mobilePhone=" + mobilePhone
+				+ ", idcardNumber=" + idcardNumber + ", educationLevel="
+				+ educationLevel + ", subject=" + subject + ", dateBirth="
+				+ dateBirth + ", email=" + email + ", topical=" + topical
+				+ ", workUnit=" + workUnit + ", old_work_unit=" + old_work_unit
+				+ ", title=" + title + ", isFreeze=" + isFreeze
+				+ ", avatarUrl=" + avatarUrl + ", userRoles=" + userRoles
+				+ ", is_phone_verification=" + is_phone_verification
+				+ ", is_email_verification=" + is_email_verification
+				+ ", registrationTime=" + registrationTime + ", institution="
+				+ institution + ", pid=" + pid + ", loginMode=" + loginMode
+				+ ", usertype=" + usertype + ", extend=" + extend
+				+ ", usedName=" + usedName + ", award=" + award + ", thirdNum="
+				+ thirdNum + ", status=" + status + ", resourceDetailed="
+				+ resourceDetailed + ", adminEmail=" + adminEmail + "]";
+	}
 }

@@ -129,4 +129,16 @@ public class DatabaseUseHourly {
 		this.source_db = source_db;
 	}
 
+	@Override
+	public String toString() {
+		return "DatabaseUseHourly [user_id=" + user_id + ", institution_name="
+				+ institution_name + ", url_type=" + url_type
+				+ ", operate_type=" + operate_type + ", database_name="
+				+ database_name + ", date=" + date + ", hour=" + hour
+				+ ", numbers=" + numbers + ", product_source_code="
+				+ product_source_code + ", source_db=" + source_db + ", sum="
+				+ sum + ", sum1=" + sum1 + ", sum2=" + sum2 + ", sum3=" + sum3
+				+ "]";
+	}
+
 }

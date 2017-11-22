@@ -70,5 +70,14 @@ public class AuthorizeRelation {
 	public void setDownloadURL(String downloadURL) {
 		this.downloadURL = downloadURL;
 	}
-
+	@Override
+	public String toString() {
+		return "AuthorizeRelation [id=" + id + ", authorizeId=" + authorizeId
+				+ ", institutionId=" + institutionId + ", providerId="
+				+ providerId + ", subjectId=" + subjectId + ", periodicalId="
+				+ periodicalId + ", detailsURL=" + detailsURL
+				+ ", downloadURL=" + downloadURL + ", proResourceId="
+				+ proResourceId + "]";
+	}
+	
 }

@@ -82,4 +82,14 @@ public class ResourcePrice {
     public void setPrice(Double price) {
         this.price = price;
     }
+
+	@Override
+	public String toString() {
+		return "ResourcePrice [rid=" + rid + ", sonCode=" + sonCode
+				+ ", sourceCode=" + sourceCode + ", resourceTypeCode="
+				+ resourceTypeCode + ", name=" + name + ", unitCode="
+				+ unitCode + ", price=" + price + ", applyUserType="
+				+ applyUserType + "]";
+	}
+    
 }

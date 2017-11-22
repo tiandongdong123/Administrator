@@ -21,15 +21,17 @@
 	<div class="box box-primary">
 		<div id="defaultForm">
 			<div class="form-group input_block">
-				<label for="exampleInputEmail1" class="input_name">功能模块名称</label> 
+				<label for="exampleInputEmail1" class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>功能模块名称</label> 
 				<input type="text" id="modularName" name="name" class="form-control input_width" value="${modular.modularName}">
 			</div>
 			<div class="form-group input_block">
-				<label for="exampleInputEmail1" class="input_name">URL地址</label> 
+				<label for="exampleInputEmail1" class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>URL地址</label>
 				<input type="text" id="linkAddress" name="address" class="form-control input_width" value="${modular.linkAddress}">
 			</div>
 			<div class="box-footer" style="text-align:center;">
-				<button type="button" onclick="submission()" class="btn btn-primary">提交</button>
+				<button type="button" id="btt" onclick="submission()" class="btn btn-primary">提交</button>
+				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 		<button type="button" id="btt1" onclick="history.go(-1);" class="btn btn-primary">返回</button>
 			</div>
 		</div>
 	</div>

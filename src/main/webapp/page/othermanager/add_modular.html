@@ -26,19 +26,21 @@
 			<div id="defaultForm">
 	
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">功能模块</label>
+             <label for="exampleInputEmail1" class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>功能模块</label>
              <input type="text" id="modularName" name="name" class="form-control input_width" >
          	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">页面链接</label>
+             <label for="exampleInputEmail1" class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>页面链接</label>
              <input type="text" id="linkAddress" name="address" class="form-control input_width" >
          	</div>
          	 
 	            <div class="box-footer" style="text-align:center;">
 	            <!-- submission(), -->
-	                <button type="button" onclick="doAddModular();" class="btn btn-primary">提交</button>
+	                <button type="button" id="btt" onclick="submission();" class="btn btn-primary">提交</button>
 	                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		 	<button type="button" class="btn btn-primary" onclick="reset()">重置</button>
+		 			<button type="button" class="btn btn-primary" onclick="reset()">重置</button>
+		 	 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 			<button type="button" id="btt1" onclick="history.go(-1);" class="btn btn-primary">返回</button>
 	            </div>
             </div>
       </div>

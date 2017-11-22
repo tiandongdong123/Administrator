@@ -57,5 +57,12 @@ public class PSubjectCategory {
 	public void setpCategoryName(String pCategoryName) {
 		this.pCategoryName = pCategoryName;
 	}
+	@Override
+	public String toString() {
+		return "PSubjectCategory [id=" + id + ", providerId=" + providerId
+				+ ", pCategoryCodes=" + pCategoryCodes + ", pCategoryName="
+				+ pCategoryName + ", parentId=" + parentId + ", proResourceId="
+				+ proResourceId + ", parentName=" + parentName + "]";
+	}
 	
 }

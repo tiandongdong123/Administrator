@@ -1,6 +1,79 @@
 package com.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class IPConvertHelper {
+	
+	/**
+	 * 是否是合法ip
+	 * @param ip
+	 * @return
+	 */
+	public static boolean validateOneIp(String ip) {
+		boolean flag = false;
+		if (StringUtils.isBlank(ip)) {
+			return flag;
+		}
+		if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+			String s[] = ip.split("\\.");
+			if (Integer.parseInt(s[0]) <= 223 && Integer.parseInt(s[0])>0)
+				if (Integer.parseInt(s[1]) <= 255)
+					if (Integer.parseInt(s[2]) <= 255)
+						if (Integer.parseInt(s[3]) <= 255)
+							flag = true;
+		}
+		return flag;
+	}
+
+	/**
+	 * 是否是合法ip对(ip对中间"-"号分割)
+	 * 
+	 * @param ips
+	 * @return
+	 */
+	public static boolean validateDoubleIp(String ips) {
+		if (StringUtils.isBlank(ips)) {
+			return false;
+		}
+		// 开始ip
+		String startip = ips.substring(0, ips.indexOf("-"));
+		if (!validateOneIp(startip)) {
+			return false;
+		}
+		// 结束ip
+		String endip = ips.substring(0, ips.indexOf("-"));
+		if (!validateOneIp(endip)) {
+			return false;
+		}
+		// 结束ip大于等于开始ip
+		if (IPToNumber(startip) > IPToNumber(endip)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 是否是合法ip组
+	 * 
+	 * @param ip
+	 * @return
+	 */
+	public static boolean validateIp(String ips) {
+		if (StringUtils.isBlank(ips)) {
+			return false;
+		}
+		String[] arr_ip = ips.split("\r\n");
+		for (String ip : arr_ip) {
+			if (ip.contains("-")) {
+				if (!validateDoubleIp(ip)) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/// <summary>
     /// 将IPv4字符串转换成数字

@@ -134,11 +134,11 @@ function Page(curr){
 						var handle = "";
 						if(data.pageRow[i].volumeState == 1){
 							state = "公开";
-							handle = '<a href="javascript:void(0)" onclick="showPush(this.id)" id="'+data.pageRow[i].id+'">推优</a>';
+							handle = '<a href="javascript:void(0)" onclick="showPush(this.id)" id="'+data.pageRow[i].id+'" target=_blank>推优</a>';
 						}
 						if(data.pageRow[i].volumeState == 2){
 							state = "私有";
-							handle = '<a href="../content/volumeDetails.do?id='+data.pageRow[i].id+'&volumeChapter='+data.pageRow[i].volumeChapter+'">推优</a>';
+							handle = '<a href="../content/volumeDetails.do?id='+data.pageRow[i].id+'&volumeChapter='+data.pageRow[i].volumeChapter+'" target=_blank >推优</a>';
 						}
 						var content = data.pageRow[i].volumeName;
 						if(content.length > 10){
@@ -147,7 +147,7 @@ function Page(curr){
 						var html ='<tr>'
 		                  +'<td>'+(serial+i)+'</td>'
 		                  +'<td>'+data.pageRow[i].volumeNo+'</td>'
-		                  +'<td><a href="http://work.wanfangdata.com.cn/volume/detailsChapter.do?id='+data.pageRow[i].id+'">'+content+'</a></td>'
+		                  +'<td><a href="http://work.wanfangdata.com.cn/volume/detailsChapter.do?id='+data.pageRow[i].id+'" target=_blank>'+content+'</a></td>'
 		                  +'<td>'+data.pageRow[i].keyword+'</td>'
 		                  +'<td>'+state+'</td>'
 		                  +'<td>'+data.pageRow[i].publishPerson+'</td>'
@@ -195,13 +195,13 @@ function Page(curr){
 			                  +'<td>'+(serial+i)+'</td>'
 			                  +'<td>'+data.pageRow[i].volumeNo+'</td>'
 			                  +'<td>'+(data.pageRow[i].subjectName == null?data.pageRow[i].subjectName:data.pageRow[i].subjectName.substring(0,10))+'...</td>'
-			                  +'<td><a href="../content/volumeDetails.do?id='+data.pageRow[i].id+'&volumeChapter='+data.pageRow[i].volumeChapter+'">'+content+'</a></td>'
+			                  +'<td><a href="../content/volumeDetails.do?id='+data.pageRow[i].id+'&volumeChapter='+data.pageRow[i].volumeChapter+'" target=_blank>'+content+'</a></td>'
 			                  +'<td>'+data.pageRow[i].keyword+'</td>'
 			                  +'<td>'+data.pageRow[i].userId+'</td>'
 			                  +'<td>'+data.pageRow[i].publishDate+'</td>'
 			                  +'<td>'+data.pageRow[i].docuNumber+'</td>'
 			                  +'<td><div class="price_div">'+data.pageRow[i].volumePrice+'<i class="fa fa-fw fa-pencil" onclick="pencilHide(this,\''+data.pageRow[i].id+'\',event)" id="'+data.pageRow[i].volumePrice+'"></i></div></td>'
-			                  +'<td>'+issueHtml+'<a href="../content/updateOne.do?id='+data.pageRow[i].id+'">修改</a><a href="javascript:void(0)" onclick="deleteOne(\''+data.pageRow[i].id+'\')">删除</a></td>'
+			                  +'<td>'+issueHtml+'<a href="../content/updateOne.do?id='+data.pageRow[i].id+'" target=_blank>修改</a><a href="javascript:void(0)" onclick="deleteOne(\''+data.pageRow[i].id+'\')">删除</a></td>'
 			                  +'</tr>';
 						
 						$("#glist").append(html);

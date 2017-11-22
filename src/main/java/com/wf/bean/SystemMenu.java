@@ -60,4 +60,14 @@ public class SystemMenu {
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
     }
+
+	@Override
+	public String toString() {
+		return "SystemMenu [menuId=" + menuId + ", menuName=" + menuName
+				+ ", level=" + level + ", pid=" + pid + ", type=" + type
+				+ ", url=" + url + "]";
+	}
+    
+    
+    
 }

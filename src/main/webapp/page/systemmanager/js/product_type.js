@@ -133,7 +133,20 @@ function addproduct(){
 			var productname=$("#resource_type_name").val();
 			var value_code=$("input[name='source_code']:checked").val();
 			checkproductnameto(productname,productcode,value_code);
+			$("#resource_type_code").val("");
+			$("#resource_type_name").val("");
+			$("[name='source_code']").prop("checked",false);
 	    },
+	    btn2: function(){  
+	    	$("#resource_type_code").val("");
+			$("#resource_type_name").val("");
+			$("[name='source_code']").prop("checked",false);
+	    },  
+	    cancel: function(){
+	    	$("#resource_type_code").val("");
+			$("#resource_type_name").val("");
+			$("[name='source_code']").prop("checked",false);
+	    },  
 	}); 
 }
 

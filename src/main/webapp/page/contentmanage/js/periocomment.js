@@ -30,6 +30,15 @@ function commentpage(curr){
 	if(subtime=='请选择'){
 		subtime='';
 	}
+	
+	if(startTime!=null&&endTime!=null){
+		 var d1 = new Date(startTime.replace(/\-/g, "\/"));  
+		 var d2 = new Date(endTime.replace(/\-/g, "\/")); 
+		 if(d1 >d2){
+			 layer.msg("请查看，起始日期和结束日期时间是否符合标准！");
+			 return false;
+		 }
+	}
 	subtime=subtime.replace("个月","");
 	sauditm = $("#sauditm").val();
 	eauditm = $("#eauditm").val();
@@ -136,7 +145,7 @@ function commentpage(curr){
 				}else if(rows.handlingStatus==3){
 					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" type='button' onclick=\"chechPerio('"+rows.id+"_"+rows.userId+"')\">已处理</button>";
 				}else if(rows.handlingStatus==4){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" onclick=\"opennote('"+rows.id+"_"+rows.userId+"')\" type='button'>解禁</button>";
+					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" onclick=\"openSHOW('"+rows.id+"_"+rows.userId+"')\" type='button'>解禁</button>";
 				}
 					
 			html+=" <tr>"; 
@@ -149,9 +158,13 @@ function commentpage(curr){
 						html+="<td>"+num+"0</td>";
 						}					
 			html+=" <td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.perioName+"</td>"+
-					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hireCon+"</td>"+
-	                "<td >"+rows.subTime+"个月</td>"+
-	                "<td>"+rows.auditMoney+"</td>"+
+					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hireCon+"</td>";
+					if(rows.subTime==0){
+						html+= "<td >其他</td>";
+					}else{
+						html+= "<td >"+rows.subTime+"个月</td>";
+					}
+					html+="<td>"+rows.auditMoney+"</td>"+
 	                "<td>"+rows.layoutMoney+"</td>"+
 	                "<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.commentContent+"</td>"+
 	                "<td>"+rows.authorName+"</td>"+
@@ -179,8 +192,7 @@ function closenote(data)
 	if($("#"+data).text()=='禁用'){
 		$.post("controltype.do",{userId : userid,id : id,dataState:'0',handlingStatus:'3'},function(data)
 				{
-				if(data=='ok')
-					{
+				if(data=='ok'){
 					 window.location.reload();
 					}					
 				});
@@ -208,21 +220,37 @@ function benSHOW(data){
 }
 
 
-function opennote(data)
-{
-	
+function opennote(data){
 	var list=data.split("_");
 	var userid=list[1];
 	var id=list[0];
 	if($("#"+data).text()=='解禁'){
-		$.post("controltype.do",{userId : userid,id : id,dataState:'1',handlingStatus:'3'},function(data)
-				{
-				/*if(data=='ok')
-					{
+		$.post("controltype.do",{userId : userid,id : id,dataState:'1',handlingStatus:'3'},function(data){
+				if(data=='ok'){
 					 window.location.reload();
-					}			*/		
+					}					
 				});
+	}
 }
+
+function openSHOW(data){
+	  layer.open({
+	        type: 1
+	        ,title: false //不显示标题栏
+	        ,closeBtn: false
+	        ,area: '300px;'
+	        ,shade: 0.8
+	        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+	        ,btn: ['解禁', '取消']
+	        ,moveType: 1 //拖拽模式，0或者1
+	        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">*解禁后数据将会在前台显示</div>'
+	        ,success: function(layero){
+	          var btn = layero.find('.layui-layer-btn0');
+	          btn.css('text-align', 'center').on("click",function(){
+	        	  opennote(data);
+	          });
+	        }
+	      });
 }
 
 function findNote(data){

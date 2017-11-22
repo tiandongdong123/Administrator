@@ -82,4 +82,16 @@ public class WfksAccountidMapping {
     public void setLastUpdatetime(Date lastUpdatetime) {
         this.lastUpdatetime = lastUpdatetime;
     }
+
+	@Override
+	public String toString() {
+		return "WfksAccountidMapping [mappingid=" + mappingid
+				+ ", idAccounttype=" + idAccounttype + ", idKey=" + idKey
+				+ ", relatedidAccounttype=" + relatedidAccounttype
+				+ ", relatedidKey=" + relatedidKey + ", begintime=" + begintime
+				+ ", endtime=" + endtime + ", lastUpdatetime=" + lastUpdatetime
+				+ "]";
+	}
+    
+    
 }

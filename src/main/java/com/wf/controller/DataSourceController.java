@@ -1,5 +1,7 @@
 package com.wf.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -22,9 +26,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.redis.RedisUtil;
+import com.utils.CookieUtil;
+import com.utils.DateTools;
 import com.utils.Getproperties;
 import com.wf.bean.Authorize;
 import com.wf.bean.AuthorizeRelation;
+import com.wf.bean.Log;
 import com.wf.bean.MatrixLiterature;
 import com.wf.bean.PSubjectCategory;
 import com.wf.bean.PageList;
@@ -42,6 +49,7 @@ import com.wf.dao.ProviderMapper;
 import com.wf.dao.SettingMapper;
 import com.wf.service.AuthorizeRelationService;
 import com.wf.service.AuthorizeService;
+import com.wf.service.LogService;
 import com.wf.service.MatrixLiteratureService;
 import com.wf.service.PSubjectCategoryService;
 import com.wf.service.PersonService;
@@ -53,6 +61,7 @@ import com.wf.service.SettingService;
 @RequestMapping("dataSource")
 public class DataSourceController {
 
+	private static final HttpServletRequest request = null;
 	@Autowired
 	private ProviderService providerService; // 资源提供商 Service
 	@Autowired
@@ -81,7 +90,9 @@ public class DataSourceController {
 	private ProResourceTypeService proResourceType; // 资源类型 service
 	@Autowired
 	private ProResourceTypeMapper proResourceTypeMapper;// 资源Dao层
-
+	@Autowired
+	private LogService logService;
+	
 	private static Connection con = null;
 	private static PreparedStatement pst = null;
 	static{
@@ -115,11 +126,25 @@ public class DataSourceController {
 	@Autowired
 	private SettingMapper settingDao;
 
-	/** 删除Setting */
+	/** 删除Setting 
+	 * @param request 
+	 * @throws Exception */
 	@RequestMapping("deleteSetting")
 	@ResponseBody
-	public int deleteSetting(String id) {
+	public int deleteSetting(String id, HttpServletRequest request) throws Exception {
 		int num = settingDao.deleteSetting(id);
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("增加");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("监控管理");
+		log.setOperation_content("删除的settingID:"+id);
+		logService.addLog(log);
+		
 		return num;
 	}
 	//查询授权机构详细信息
@@ -131,11 +156,12 @@ public class DataSourceController {
 			 return map;
 		}
 		
-	/** 更新 Setting */
+	/** 更新 Setting 
+	 * @throws Exception */
 	@RequestMapping("addOrUpdateSetting")
 	@ResponseBody
 	public int addOrUpdateSetting(String id, String settingName,
-			String settingKey, String settingValue, String remark) {
+			String settingKey, String settingValue, String remark) throws Exception {
 		Setting setting = null;
 		int num = 0;
 		if (!"".equals(id) && id != null) {
@@ -154,6 +180,18 @@ public class DataSourceController {
 				num = 1;
 			}
 		}
+		
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("修改");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("监控管理");
+		log.setOperation_content("修改后的Setting信息:"+setting.toString());
+		logService.addLog(log);
+
 		return num;
 	}
 

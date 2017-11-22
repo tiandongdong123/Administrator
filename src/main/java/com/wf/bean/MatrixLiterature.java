@@ -74,6 +74,13 @@ public class MatrixLiterature {
 	public void setCover(String cover) {
 		this.cover = cover;
 	}
-	
+	@Override
+	public String toString() {
+		return "MatrixLiterature [id=" + id + ", title=" + title
+				+ ", providerId=" + providerId + ", proResourceId="
+				+ proResourceId + ", psubjectId=" + psubjectId + ", nameen="
+				+ nameen + ", author=" + author + ", abstracts=" + abstracts
+				+ ", datePeriod=" + datePeriod + ", cover=" + cover + "]";
+	}
 	
 }

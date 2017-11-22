@@ -44,6 +44,12 @@ public class Subject {
 	public void setType(String type) {
 		this.type = type;
 	}
+	@Override
+	public String toString() {
+		return "Subject [id=" + id + ", level=" + level + ", classNum="
+				+ classNum + ", className=" + className + ", pid=" + pid
+				+ ", type=" + type + "]";
+	}
 	
 	
 	

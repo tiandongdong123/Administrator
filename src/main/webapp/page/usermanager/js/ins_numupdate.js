@@ -30,11 +30,20 @@ function submitForm(){
 			contentType: false  
 		}).done(function(data){
 			if(data.flag=="success"){
-				layer.msg("更新成功",{icon: 1});
-				window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
-				//+"&institution="+parent.$("#institution").val()+"&adminname"+parent.$("#adminname").val()+"&adminIP"+parent.$("#adminIP").val()+"&ipSegment="+parent.$("#ipSegment").val()
+	    		layer.alert("更新成功", {
+	    			icon: 1,
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['确定'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+	    		    }
+	    		});
 			}else{
-				layer.msg("更新失败，请联系管理员", {icon: 2});
+				if(data.fail!=null){
+					layer.msg(data.fail, {icon: 2});
+				}else{
+					layer.msg("更新失败，请联系管理员", {icon: 2});
+				}
 			}
 			$("#submit").removeAttr("disabled");
 		});
@@ -72,17 +81,33 @@ function openItems(count,i,type){
 		findSubjectEcho(count+"_"+i);
 		findPatentEcho(count+"_"+i);
 	}
-	layer.open({
-	    type: 1, //page层 1div，2页面
-	    area: ['50%', '600px'],
-	    title: '详情',
-	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: $("#tabs_custom_"+count+"_"+i),
-	    btn: ['确认'],
-		yes: function(){
-	        layer.closeAll();
-	    },
-	});
+	if(type.indexOf("standard")>-1){
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['50%', '600px'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(validStandard(count,i)){
+		    		layer.closeAll();
+		    	}
+		    }
+		});
+	}else{
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['50%', '600px'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(){
+		        layer.closeAll();
+		    },
+		});
+	}
 }
 
 //学科中图分类树

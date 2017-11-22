@@ -111,4 +111,13 @@ public class Mail implements Serializable {
 		this.affixName = affixName;
 	}
 
+	@Override
+	public String toString() {
+		return "Mail [host=" + host + ", sender=" + sender + ", receiver="
+				+ receiver + ", name=" + name + ", username=" + username
+				+ ", password=" + password + ", subject=" + subject
+				+ ", message=" + message + ", affix=" + affix + ", affixName="
+				+ affixName + "]";
+	}
+
 }

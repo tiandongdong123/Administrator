@@ -60,4 +60,11 @@ public class ProjectResources {
 	public void setProductid(String productid) {
 		this.productid = productid;
 	}
+
+	@Override
+	public String toString() {
+		return "ProjectResources [id=" + id + ", userId=" + userId
+				+ ", projectId=" + projectId + ", resourceId=" + resourceId
+				+ ", contract=" + contract + ", productid=" + productid + "]";
+	}
 }

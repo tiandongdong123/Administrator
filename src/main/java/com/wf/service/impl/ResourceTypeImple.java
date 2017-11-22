@@ -174,8 +174,6 @@ public class ResourceTypeImple implements ResourceTypeService {
 		try {
 
 			if(StringUtils.isEmpty(typeName)) typeName=null;
-			Map<String,Object> mp=new HashMap<String, Object>();
-			mp.put("typeName", typeName);
 			list=dao.selectResourceTypeInforAll(typeName);
 
 		} catch (Exception e) {

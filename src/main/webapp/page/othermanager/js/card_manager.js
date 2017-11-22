@@ -6,12 +6,14 @@ function query(){
 	numStart = $.trim($("#numStart").val());//卡号开始
 	numEnd = $.trim($("#numEnd").val());//卡号结束
 	batchName = $("#batchName").val().trim();//批次
-	if((numStart == '' || numStart == null) && (numEnd == '' || numEnd == null)){
-		$("#result").hide();
-		$("#result2").show();//卡号为空，显示列表2  批次表
-	}else{
+	invokeState = $("input[name='invokeState']:checked").val();  //万方卡状态
+	if((''!=numStart && null!=numStart) || (''!=numEnd && null!=numEnd) || (''!=invokeState && null!=invokeState)){
 		$("#result2").hide();
 		$("#result").show();//卡号不为空，显示列表1 万方卡表
+	}else{
+		$("#result").hide();
+		$("#result2").show();//卡号为空，显示列表2  批次表
+		
 	}
 	Page(1);
 }
@@ -39,96 +41,7 @@ function Page(curr){
 	//万方卡状态
 	invokeState = $("input[name='invokeState']:checked").val();
 	
-	if((numStart == '' || numStart == null) && (numEnd == '' || numEnd == null)){//卡号不为空，显示列表2  批次表
-		$.ajax({
-			type : "post",  
-			url : "../card/queryCheck.do",
-			data :{ 
-				"batchName" : batchName, 
-				"applyDepartment" : applyDepartment,
-				"applyPerson" : applyPerson,
-				"startTime" : startTime,
-				"endTime" : endTime,
-				"cardType" : cardType,
-				"batchState" : batchState,
-				"pageNum" : curr || 1,
-				"pageSize" : pageSize,
-			},
-			dataType : "json",
-			success : function(data){
-				$("#list2").empty();//清空
-				if(data.pageRow[0] != null){
-					value="[";
-					$.each(data.pageRow,function (i) {
-						var valueNumber = data.pageRow[i].valueNumber;
-						var batchState = "";
-						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
-						if(data.pageRow[i].batchState == 1){
-							batchState = "未审核";
-							html1='<a href="../card/batchDetails.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>&nbsp;&nbsp;&nbsp;'
-								+ '<a href="javascript:void(0)" onclick="remind(\''+ data.pageRow[i].batchName+'\',\''+data.pageRow[i].cardTypeName+'\',\''
-								+ data.pageRow[i].applyDepartment+'\',\''+data.pageRow[i].applyPerson+'\',\''+data.pageRow[i].applyDate+'\');" style="text-decoration:underline;">提醒</a>';
-						}
-						if(data.pageRow[i].batchState == 2){
-							batchState = "已审核未领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
-								+'<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">领取</a>';
-						}
-						if(data.pageRow[i].batchState == 3){
-							batchState = "已领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=2" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
-								+'<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>';
-						}
-						var valueNumber="";
-						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
-							var numb=eval(data.pageRow[i].valueNumber);
-							var param=numb[j];
-							if(j==0){
-								valueNumber=param.value+"/"+param.number;	
-							}else{
-								valueNumber=valueNumber+","+param.value+"/"+param.number;	
-							}							
-						}
-						var html ='<tr>'
-		                  +'<td>'+(serial+i)+'</td>'
-		                  +'<td>'+data.pageRow[i].batchName+'</td>'
-		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
-		                  +'<td>'+valueNumber+'</td>'
-		                  +'<td>'+data.pageRow[i].amount+'</td>'
-		                  +'<td>'+data.pageRow[i].validStart+'~'+data.pageRow[i].validEnd+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
-		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
-		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
-		                  +'<td>'+batchState+'</td>'
-		                  +'<td>'+html1+'</td>'
-		                  +'</tr>';
-						$("#list2").append(html);
-					});
-				}else{
-					$("#list2").append("暂无数据");
-				}
-				layui.use(['laypage', 'layer'], function(){
-					var laypage = layui.laypage,layer = layui.layer;
-					laypage.render({
-						elem: 'divPager2',
-						count: data.totalRow,
-						first: '首页',
-						last: '尾页',
-						curr: curr || 1,
-						page: Math.ceil(data.totalRow / pageSize),//总页数
-						limit: pageSize,
-						layout: ['count', 'prev', 'page', 'next', 'skip'],
-						jump: function (obj, first) {
-				            if(!first){
-				                Page(obj.curr);
-				            }
-						}
-					});
-				});
-			},
-			error : function(data){}
-		})
-	}else{//卡号不为空，显示列表1 万方卡表
+	if((''!=numStart && null!=numStart) || (''!=numEnd && null!=numEnd) || (''!=invokeState && null!=invokeState)){//卡号不为空或者万方卡状态不为空，显示列表1 万方卡表
 		$.ajax({
 			type : "post",  
 			url : "../card/queryCard.do",
@@ -251,6 +164,95 @@ function Page(curr){
 				});
 			},	
 		});
+	}else{//卡号为空，万方卡状态默认，显示列表2  批次表
+		$.ajax({
+			type : "post",  
+			url : "../card/queryCheck.do",
+			data :{ 
+				"batchName" : batchName, 
+				"applyDepartment" : applyDepartment,
+				"applyPerson" : applyPerson,
+				"startTime" : startTime,
+				"endTime" : endTime,
+				"cardType" : cardType,
+				"batchState" : batchState,
+				"pageNum" : curr || 1,
+				"pageSize" : pageSize,
+			},
+			dataType : "json",
+			success : function(data){
+				$("#list2").empty();//清空
+				if(data.pageRow[0] != null){
+					value="[";
+					$.each(data.pageRow,function (i) {
+						var valueNumber = data.pageRow[i].valueNumber;
+						var batchState = "";
+						var html1 = "";//审核通过、查看详情。如果批次状态是未审核，则操作是审核通过。
+						if(data.pageRow[i].batchState == 1){
+							batchState = "未审核";
+							html1='<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>&nbsp;&nbsp;&nbsp;'
+								+ '<a href="javascript:void(0)" onclick="remind(\''+ data.pageRow[i].batchName+'\',\''+data.pageRow[i].cardTypeName+'\',\''
+								+ data.pageRow[i].applyDepartment+'\',\''+data.pageRow[i].applyPerson+'\',\''+data.pageRow[i].applyDate+'\');" style="text-decoration:underline;">提醒</a>';
+						}
+						if(data.pageRow[i].batchState == 2){
+							batchState = "已审核未领取";
+							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+								+'<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">领取</a>';
+						}
+						if(data.pageRow[i].batchState == 3){
+							batchState = "已领取";
+							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=2" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+								+'<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>';
+						}
+						var valueNumber="";
+						for(var j=0;j<eval(data.pageRow[i].valueNumber).length;j++){
+							var numb=eval(data.pageRow[i].valueNumber);
+							var param=numb[j];
+							if(j==0){
+								valueNumber=param.value+"/"+param.number;	
+							}else{
+								valueNumber=valueNumber+","+param.value+"/"+param.number;	
+							}							
+						}
+						var html ='<tr>'
+		                  +'<td>'+(serial+i)+'</td>'
+		                  +'<td>'+data.pageRow[i].batchName+'</td>'
+		                  +'<td>'+data.pageRow[i].cardTypeName+'</td>'
+		                  +'<td>'+valueNumber+'</td>'
+		                  +'<td>'+data.pageRow[i].amount+'</td>'
+		                  +'<td>'+data.pageRow[i].validStart+'~'+data.pageRow[i].validEnd+'</td>'
+		                  +'<td>'+data.pageRow[i].applyDepartment+'</td>'
+		                  +'<td>'+data.pageRow[i].applyPerson+'</td>'
+		                  +'<td>'+data.pageRow[i].applyDate+'</td>'
+		                  +'<td>'+batchState+'</td>'
+		                  +'<td>'+html1+'</td>'
+		                  +'</tr>';
+						$("#list2").append(html);
+					});
+				}else{
+					$("#list2").append("暂无数据");
+				}
+				layui.use(['laypage', 'layer'], function(){
+					var laypage = layui.laypage,layer = layui.layer;
+					laypage.render({
+						elem: 'divPager2',
+						count: data.totalRow,
+						first: '首页',
+						last: '尾页',
+						curr: curr || 1,
+						page: Math.ceil(data.totalRow / pageSize),//总页数
+						limit: pageSize,
+						layout: ['count', 'prev', 'page', 'next', 'skip'],
+						jump: function (obj, first) {
+				            if(!first){
+				                Page(obj.curr);
+				            }
+						}
+					});
+				});
+			},
+			error : function(data){}
+		})
 	}
 }
 
@@ -289,9 +291,9 @@ function remind(batchName,type,applyDepartment,applyPerson,applyDate){
 			}
 		}
 		
-	})
+	});
 }
 
-function exportAll(){
+function exportAll(){	
 	window.location.href="../card/exportCard.do?batchId=&type=2";
 }

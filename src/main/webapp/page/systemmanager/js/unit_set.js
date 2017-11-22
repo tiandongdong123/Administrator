@@ -94,6 +94,15 @@ function updateunit(id,name,code){
 			var unitcode=$("#unitcode").val();
 			checkunitname(unitname,unitcode,id);
 	    },
+	    btn2: function(){  
+	    	$("#addunitname").val("");
+			$("#addunitcode").val("");
+	    },  
+	    cancel: function(){
+	    	$("#addunitname").val("");
+			$("#addunitcode").val("");
+	    },  
+	    
 	}); 
 }
 
@@ -112,7 +121,17 @@ function addunit(){
 			var unitname=$("#addunitname").val();
 			var unitcode=$("#addunitcode").val();
 			checkunitname(unitname,unitcode);
+			$("#addunitname").val("");
+			$("#addunitcode").val("");
 	    },
+	    btn2: function(){  
+	    	$("#addunitname").val("");
+			$("#addunitcode").val("");
+	    },  
+	    cancel: function(){
+	    	$("#addunitname").val("");
+			$("#addunitcode").val("");
+	    },  
 	}); 
 }
 
@@ -132,7 +151,7 @@ function checkunitname(unitname,unitcode,id){
 					if(id!=null&&id!=''){
 						doupdateunit(unitname,unitcode,id);
 					}else{
-						doaddunit(unitname,unitcode)
+						doaddunit(unitname,unitcode);
 					}
 				}
 			}
@@ -195,6 +214,6 @@ function doupdateunit(unitname,unitcode,id){
 	
 }
 
-function goback(id){
+function goback(){
 	window.history.go(-1);
 }

@@ -127,4 +127,14 @@ public class CookieUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 判断key是否存在
+	 * @param key
+	 * @return
+	 */
+	public static boolean exists(String key) {
+		boolean flag=redis.exists(key, 0);
+		return flag;
+	}
 }

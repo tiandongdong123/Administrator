@@ -30,4 +30,11 @@ public class AuthoritySetting {
 		this.authoritySort = authoritySort;
 	}
 
+	@Override
+	public String toString() {
+		return "AuthoritySetting [authorityCode=" + authorityCode
+				+ ", authorityName=" + authorityName + ", authoritySort="
+				+ authoritySort + "]";
+	}
+
 }

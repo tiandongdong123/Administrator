@@ -50,13 +50,15 @@
 			<div class="form-group"  style="width:40%;">
                   <label>产品来源：</label>
                   <select id="product" style = "width:200px;" onchange="select_source();">
-                    <?for(var b in rlmap.Data){?>
-                  <?if(b.productSourceCode==rlmap.resourceprice.sourceCode){?>
-                  <option value="${b.productSourceCode}" selected="selected">${b.tableName}</option>
-                  <?}?>
-                  <?else{?>
-      					 <option value="${b.productSourceCode}">${b.tableName}</option>
-                  <?}?>
+                  <?for(var b in rlmap.Data){?>
+                 	<?if(!isEmpty(b.productSourceCode) && !isEmpty(rlmap.resourceprice.sourceCode)){?>
+	             	  <?if(b.productSourceCode==rlmap.resourceprice.sourceCode){?>
+	              			<option value="${b.productSourceCode}" selected="selected">${b.tableName}</option>
+	                  <?}?>
+	                  <?else{?>
+	      					<option value="${b.productSourceCode}">${b.tableName}</option>
+	                  <?}?>
+                 	<?}?>
         		<?}?>
                   </select>
            	</div>

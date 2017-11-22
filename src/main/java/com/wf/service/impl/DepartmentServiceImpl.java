@@ -115,4 +115,8 @@ public class DepartmentServiceImpl implements DepartmentService{
 		}
 		return rt;
 	}
+	@Override
+	public List<Object> getAllDept() {
+		return dept.getAllDept();
+	}
 }

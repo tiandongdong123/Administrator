@@ -12,7 +12,10 @@ function deptpage(curr){
     	html="";
     for(var i =0;res.pageRow[i];i++){
     	id = 10*(curr-1)+i+1;
-    	html+="<tr><td>"+id+"</td><td>"+res.pageRow[i].deptName+"</td><td>"+res.pageRow[i].deptDescribe+"</td><td><button type='button' class='btn btn-primary' onclick=\"updatedept("+res.pageRow[i].id+")\">修改</button> <button type='button' class='btn btn-primary' onclick=\"deletedept("+res.pageRow[i].id+")\">删除</button></td></tr>";   	
+    	html+="<tr><td>"+id+"</td><td style=\"word-break:break-all;\" width=\"230px;\">"+res.pageRow[i].deptName+
+    	"</td><td style=\"word-break:break-all;\" width=\"230px;\">"+res.pageRow[i].deptDescribe+"</td>" +
+    	"<td><button type='button' class='btn btn-primary' onclick=\"updatedept("+res.pageRow[i].id+")\">修改</button> " +
+    	"<button type='button' class='btn btn-primary' onclick=\"deletedept("+res.pageRow[i].id+")\">删除</button></td></tr>";   	
     }
         document.getElementById('deptbody').innerHTML = html;
         var totalRow = res.pageTotal;

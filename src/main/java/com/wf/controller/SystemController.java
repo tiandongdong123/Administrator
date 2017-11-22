@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.wf.bean.Datamanager;
 import com.wf.bean.ProductType;
 import com.wf.bean.SonSystem;
@@ -111,8 +113,9 @@ public class SystemController {
 	 * @return
 	 */
 	@RequestMapping("/unitSystem")
-	public ModelAndView unitSystem(){
+	public ModelAndView unitSystem(String id){
 		ModelAndView mav = new ModelAndView();
+		mav.addObject("goback",id);
 		mav.setViewName("/page/systemmanager/unit_set");
 		return mav;
 	}
