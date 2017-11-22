@@ -104,9 +104,23 @@ public class DatabaseAnalysisController {
 	 */
 	@RequestMapping("getPage")
 	@ResponseBody
-	public Map getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize) throws Exception{
+	public Map getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize,HttpServletRequest request) throws Exception{
 		//列表展示		
 		Map map=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
+		//记录日志
+		Log log=new Log();
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		log.setBehavior("查询");
+		log.setUrl(request.getRequestURL().toString());
+		log.setTime(DateTools.getSysTime());
+		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
+		log.setModule("数据库使用分析");
+		log.setOperation_content("查询条件:机构名称:"+databaseUseDaily.getInstitution_name()+
+				",用户ID:"+databaseUseDaily.getUser_id()+",数据来源:"+databaseUseDaily.getSource_db()+
+				",数据库名称:"+databaseUseDaily.getProduct_source_code()+
+				"统计时间:"+startTime+"-"+endTime);
+
+		logService.addLog(log);
 
 		return map;
 	}
@@ -129,7 +143,7 @@ public class DatabaseAnalysisController {
 		
 		//图表展示
 		Map<String,Object> map=databaseAnalysisService.DatabaseAnalysisStatistics(databaseUseDaily,startTime,endTime,urlType,databaseNames);
-				
+
 		return map;
 	}
 	
