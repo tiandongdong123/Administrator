@@ -1,4 +1,4 @@
-var dataname;
+var dataname="";
 $(function(){
 	paging(1);
 });
