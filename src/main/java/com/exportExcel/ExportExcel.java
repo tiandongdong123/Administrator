@@ -761,18 +761,14 @@ public class ExportExcel {
 					sheet.addMergedRegion(new CellRangeAddress(0,0,0,names.size()-1)); 
 					XSSFRow row=sheet.createRow(0);
 					row.setHeightInPoints(100);
-					XSSFCell cell=row.createCell(0); 
-					
+					XSSFCell cell=row.createCell(0);
+
 					//设置前几个字:   查询条件  字体样式
 					XSSFFont font = (XSSFFont) workbook.createFont();
-					font.setFontHeightInPoints((short) 12); // 字体高度
-					font.setFontName("宋体"); // 字体
-					font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD); // 宽度
-					
-					
-					StringBuffer sb=new StringBuffer("查询条件:\n");
+
+					StringBuffer sb=new StringBuffer("");
 					for (int i = 0; i <paramter.size(); i++) {
-						sb.append("("+(i+1)+")"+paramter.get(i)+"\n");
+						sb.append("("+(i+1)+")"+paramter.get(i)+"\r\n");
 					}
 					
 					XSSFRichTextString xxt =new  XSSFRichTextString(sb.toString());
@@ -788,27 +784,29 @@ public class ExportExcel {
 						row=sheet.createRow(i+2);
 						row.createCell(0).setCellValue(i+1);
 						
-						if(restype.equals("期刊") || restype.equals("会议") || restype.equals("学位")){
-							row.createCell(1).setCellValue(array.getJSONObject(i).get("title").toString());
-							row.createCell(2).setCellValue(array.getJSONObject(i).get("sourceTypeName").toString());
-							row.createCell(3).setCellValue(array.getJSONObject(i).get("browseNum").toString());
-							row.createCell(4).setCellValue(array.getJSONObject(i).get("downloadNum").toString());
-							row.createCell(5).setCellValue(array.getJSONObject(i).get("searchNum").toString());
-							row.createCell(6).setCellValue(array.getJSONObject(i).get("shareNum").toString());
-							row.createCell(7).setCellValue(array.getJSONObject(i).get("collectNum").toString());
-							row.createCell(8).setCellValue(array.getJSONObject(i).get("exportNum").toString());
-							row.createCell(9).setCellValue(array.getJSONObject(i).get("noteNum").toString());
-							row.createCell(10).setCellValue(array.getJSONObject(i).get("subscibeNum").toString());
+						if(restype.equals("perio") || restype.equals("conference") || restype.equals("degree")){
+							row.createCell(1).setCellValue(array.getJSONObject(i).get("sourceTypeName").toString());
+							row.createCell(2).setCellValue(array.getJSONObject(i).get("title").toString());
+							row.createCell(3).setCellValue(array.getJSONObject(i).get("sum3").toString());
+							row.createCell(4).setCellValue(array.getJSONObject(i).get("sum1").toString());
+							row.createCell(5).setCellValue(array.getJSONObject(i).get("sum2").toString());
+							row.createCell(6).setCellValue(array.getJSONObject(i).get("sum8").toString());
+							row.createCell(7).setCellValue(array.getJSONObject(i).get("sum9").toString());
+							row.createCell(8).setCellValue(array.getJSONObject(i).get("sum5").toString());
+							row.createCell(9).setCellValue(array.getJSONObject(i).get("sum7").toString());
+							row.createCell(10).setCellValue(array.getJSONObject(i).get("sum4").toString());
+							row.createCell(11).setCellValue(array.getJSONObject(i).get("sum6").toString());
 						}else{
 							row.createCell(1).setCellValue(array.getJSONObject(i).get("sourceTypeName").toString());
-							row.createCell(2).setCellValue(array.getJSONObject(i).get("browseNum").toString());
-							row.createCell(3).setCellValue(array.getJSONObject(i).get("downloadNum").toString());
-							row.createCell(4).setCellValue(array.getJSONObject(i).get("searchNum").toString());
-							row.createCell(5).setCellValue(array.getJSONObject(i).get("shareNum").toString());
-							row.createCell(6).setCellValue(array.getJSONObject(i).get("collectNum").toString());
-							row.createCell(7).setCellValue(array.getJSONObject(i).get("exportNum").toString());
-							row.createCell(8).setCellValue(array.getJSONObject(i).get("noteNum").toString());
-							row.createCell(9).setCellValue(array.getJSONObject(i).get("subscibeNum").toString());
+							row.createCell(2).setCellValue(array.getJSONObject(i).get("sum3").toString());
+							row.createCell(3).setCellValue(array.getJSONObject(i).get("sum1").toString());
+							row.createCell(4).setCellValue(array.getJSONObject(i).get("sum2").toString());
+							row.createCell(5).setCellValue(array.getJSONObject(i).get("sum8").toString());
+							row.createCell(6).setCellValue(array.getJSONObject(i).get("sum9").toString());
+							row.createCell(7).setCellValue(array.getJSONObject(i).get("sum5").toString());
+							row.createCell(8).setCellValue(array.getJSONObject(i).get("sum7").toString());
+							row.createCell(9).setCellValue(array.getJSONObject(i).get("sum4").toString());
+							row.createCell(10).setCellValue(array.getJSONObject(i).get("sum6").toString());
 						}
 					}
 					

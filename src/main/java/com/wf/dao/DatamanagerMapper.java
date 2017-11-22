@@ -23,6 +23,10 @@ public interface DatamanagerMapper {
     int getDataNum(@Param("dataname") String dataname);
     
     int deleteData(@Param("id") String id);
+
+    int releaseData(@Param("id") String id);
+
+    int descendData(@Param("id") String id);
     
     int closeData(@Param("id") String id);
     
@@ -43,4 +47,6 @@ public interface DatamanagerMapper {
    JSONArray selectZY();
     
    List<Object> exportData(@Param("dataname") String dataname,@Param("dataname1") String dataname1);
+
+    List<Datamanager> getdatabseName(@Param("productSourceCode") String[] database_name);
 }
