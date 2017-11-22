@@ -417,11 +417,17 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
-		List<ResourceDetailedDTO> list = com.getRdlist();
-		if(list==null){
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		List<ResourceDetailedDTO> list = new ArrayList<ResourceDetailedDTO>();
+		if (rdlist==null) {
 			hashmap.put("flag", "fail");
-			hashmap.put("fail",  "购买项目不能为空");
+			hashmap.put("fail","购买项目不能为空");
 			return hashmap;
+		}
+		for (ResourceDetailedDTO dto : rdlist) {
+			if (!StringUtils.isEmpty(dto.getProjectname())) {
+				list.add(dto);
+			}
 		}
 		for (ResourceDetailedDTO dto : list) {
 			hashmap = this.getValidate(dto,true);
@@ -450,21 +456,19 @@ public class AheadUserController {
 		}
 		//购买详情信息
 		for(ResourceDetailedDTO dto : list){
-			if(dto.getProjectid()!=null){				
-				if(dto.getProjectType().equals("balance")){
-					if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){					
-						aheadUserService.addProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("time")){
-					//增加限时信息
-					if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){						
-						aheadUserService.addProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("count")){
-					//增加次数信息
-					if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
-						aheadUserService.addProjectResources(com, dto);
-					}
+			if(dto.getProjectType().equals("balance")){
+				if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("time")){
+				//增加限时信息
+				if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("count")){
+				//增加次数信息
+				if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
 				}
 			}
 		}

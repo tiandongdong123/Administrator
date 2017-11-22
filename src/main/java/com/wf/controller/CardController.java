@@ -435,7 +435,7 @@ public class CardController {
 		
 		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("万方卡审核状态改变:"); 
+		StringBuffer operation_content=new StringBuffer(); 
 		operation_content.append("万方卡卡号:"+batchId);
 		
 		Log log=new Log();
