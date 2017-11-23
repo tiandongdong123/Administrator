@@ -1312,16 +1312,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		map.put("userId", userId);
 		return personMapper.updateUserFreeze(map);
 	}
-
-/*	@Override
-	public List<Map<String, Object>> selectList(){
-		List<Map<String, Object>> list = datamanagerMapper.selectList();
-		for(Map<String, Object> map : list) {
-			List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(map.get("productSourceCode").toString());
-			map.put("rp", rp);
-		}
-		return list; 
-	}*/
 	
 	@Override
 	public List<Map<String, Object>> selectListByRid(String proid){
@@ -1349,7 +1339,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
-		List<Object> list = personMapper.findListInfo(map);
+		List<Object> list = personMapper.findListInfoSimp(map);
+		for (int i = 0; i < list.size(); i++) {// 如果查询出的是机构子账号，则再查询一次
+			Map<String, Object> userMap = (Map<String, Object>) list.get(i);
+			String userType = userMap.get("usertype").toString();
+			if ("3".equals(userType)) {
+				list.remove(i);
+				Map<String, Object> uMap = personMapper.findUserById(userMap.get("pid").toString());
+				if (uMap.size() > 0) {
+					list.add(uMap);
+				}
+				break;
+			}
+		}
 		for(Object object : list){
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
@@ -1458,7 +1460,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 		}
 		log.info(list.toString());
-		int i = personMapper.findListCount(map);
+		int i = personMapper.findListCountSimp(map);
 		PageList pageList = new PageList();
 		pageList.setPageRow(list);
 		pageList.setTotalRow(i);
