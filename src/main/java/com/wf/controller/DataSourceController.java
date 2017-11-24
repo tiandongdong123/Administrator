@@ -56,6 +56,7 @@ import com.wf.service.PersonService;
 import com.wf.service.ProResourceTypeService;
 import com.wf.service.ProviderService;
 import com.wf.service.SettingService;
+import com.xxl.conf.core.XxlConfClient;
 
 @Controller
 @RequestMapping("dataSource")
@@ -591,9 +592,13 @@ public class DataSourceController {
 	}
 	public static void userRolePower(){
 		RedisUtil redis = new RedisUtil();
-		String url = Getproperties.getPros("jdbc.properties").getProperty("jdbc.url");
+		/*String url =Getproperties.getPros("jdbc.properties").getProperty("jdbc.url");
 		String userName = Getproperties.getPros("jdbc.properties").getProperty("jdbc.username");
-		String passWord = Getproperties.getPros("jdbc.properties").getProperty("jdbc.password");
+		String passWord = Getproperties.getPros("jdbc.properties").getProperty("jdbc.password");*/
+		
+		String url =XxlConfClient.get("jdbc.adminManager.url", null);
+		String userName = XxlConfClient.get("jdbc.adminManager.username", null);
+		String passWord = XxlConfClient.get("jdbc.adminManager.password", null);
 		try {
 //			con = DriverManager.getConnection(url,userName,passWord);
 //			pst = con.prepareStatement("select * from UserRole");

@@ -1,5 +1,14 @@
 package com.wf.bean;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.utils.CookieUtil;
+import com.utils.DateTools;
+import com.utils.GetIP;
+
 public class Log {
 
 	private Integer id;
@@ -10,6 +19,39 @@ public class Log {
 	private String ip;
 	private String module;
 	private String operation_content;
+	
+	public Log(){}
+	
+	/**
+	 * 
+	 * @param behavior 操作类型
+	 * @param module 操作模块
+	 * @param operation_content 操作内容
+	 * @param request 通过request获取操作人以及当前客户端IP
+	 */
+	public Log(String module,String behavior,String operation_content,HttpServletRequest request) {
+		super();
+		this.username = CookieUtil.getWfadmin(request).getUser_realname();
+		this.behavior = behavior;
+		this.url = request.getRequestURL().toString();
+		this.time = DateTools.getSysTime();
+		this.ip =GetIP.getIP();
+		this.module = module;
+		this.operation_content = operation_content;
+	}
+	
+	public Log(Integer id, String username, String behavior, String url,
+			String time, String ip, String module, String operation_content) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.behavior = behavior;
+		this.url = url;
+		this.time = time;
+		this.ip = ip;
+		this.module = module;
+		this.operation_content = operation_content;
+	}
 
 	public Integer getId() {
 		return id;
