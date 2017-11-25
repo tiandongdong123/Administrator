@@ -45,5 +45,7 @@ public interface LogMapper {
 	 * @return
 	 */
 	Integer addLog(@Param("log") Log log);
+	
+	Integer addLog_institution(@Param("log") Log log);
 
 }

@@ -61,6 +61,11 @@ public class LogServiceImpl implements LogService{
 		return logMapper.addLog(log);
 	}
 
+	@Override
+	public Integer addLog_Institution(Log log) {
+		return logMapper.addLog_institution(log);
+	}
+
 }
 
 

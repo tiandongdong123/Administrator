@@ -25,4 +25,6 @@ public interface LogService {
 	List<String> getResTypeByModel(String modelname);
 	
 	Integer addLog(Log log);
+	
+	Integer addLog_Institution(Log log);
 }

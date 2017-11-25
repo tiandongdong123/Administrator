@@ -496,6 +496,7 @@ public class AheadUserController {
 			log.info("机构用户["+com.getUserId()+"]注册失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		this.saveOperationLogs(com,"1", req);
+		this.addLogs(com,"1",req);
 		return hashmap;
 	}
 	
@@ -638,6 +639,7 @@ public class AheadUserController {
 				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
 			this.saveOperationLogs(com, "3", req);
+			this.addLogs(com,"3",req);
 		}
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
 			if(com.getManagerType().equals("new")){
@@ -834,6 +836,7 @@ public class AheadUserController {
 				log.info("机构用户["+com.getUserId()+"]修改成功");
 			}
 			this.saveOperationLogs(com,"2", req);
+			this.addLogs(com,"2",req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
@@ -1054,12 +1057,6 @@ public class AheadUserController {
 		view.addObject("settingList",settingList);
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
-		
-		//添加日志
-		String operation_content="查询 条件:用户ID:"+adminname+",IP:"+adminIP+",机构名称:"+institution;
-		Log log=new Log("机构用户信息管理","查询",operation_content,request);
-		logService.addLog(log);
-		
 		return view;
 	}
 	
@@ -1132,6 +1129,7 @@ public class AheadUserController {
 		}
 		com.setRdlist(rdlist);
 		this.saveOperationLogs(com, "3", req);
+		this.addLogs(com,"3",req);
 	}
 	
 	/**
@@ -1236,6 +1234,7 @@ public class AheadUserController {
 			log.info("机构用户["+com.getUserId()+"]更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		this.saveOperationLogs(com,"2", req);
+		this.addLogs(com,"2",req);
 		return hashmap;
 	}
 	
@@ -1654,5 +1653,62 @@ public class AheadUserController {
 		m.put("result", "0");
 		return m;
 	}
+	
+	/**
+	 * 添加操作日志信息
+	 * @return
+	 */
+	private void addLogs(CommonEntity com,String flag,HttpServletRequest req){
+		if(com!=null){
+			Wfadmin admin =CookieUtil.getWfadmin(req);
+			List<ResourceDetailedDTO> list = com.getRdlist();
+			if(list!=null &&list.size()>0){
+				for(ResourceDetailedDTO dto:list){
+					if(dto.getProjectid()!=null){
+						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("count")
+								&& dto.getPurchaseNumber() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("time")) {
+							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
+							continue;
+							}
+						}
+						
+						OperationLogs op = new OperationLogs();
+						op.setUserId(com.getUserId());
+						op.setPerson(admin.getWangfang_admin_id());
+						String behavior = null;
+						if(flag == "1" ){
+							op.setOpreation("注册");
+							behavior="注册";
+						}else if(flag == "2" ){
+							op.setOpreation("更新");
+							behavior="更新";
+						}else if(flag == "3" ){
+							op.setOpreation("删除");
+							behavior="删除";
+						}
+						
+						if (com.getRdlist() != null) {
+							JSONObject json=JSONObject.fromObject(dto);
+							//json.remove("rldto");
+							op.setReason(json.toString());
+						}
+						op.setProjectId(dto.getProjectid());
+						op.setProjectName(dto.getProjectname());
+						
+						Log log=new Log("机构用户信息管理",behavior,req, JSONObject.fromObject(op).toString());
+						logService.addLog_Institution(log);
+					}
+				}
+			}
+		}
+	}
+
+	
+	
 	
 }

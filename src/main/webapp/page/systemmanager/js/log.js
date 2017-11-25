@@ -7,7 +7,7 @@ var endTime;
 
 $(function(){
 	tabulation();
-})
+});
 
 /**
  * 加载列表数据--liuYong
@@ -36,25 +36,40 @@ function tabulation(curr){
 				
 				var pagerow=data.pageRow;
 				var html="";
-				var id;
-				var time;
-				$.each(pagerow, function(i, obj) {
-					id=10*(curr||1-1)+i+1;
-					time=pagerow[i].time;
-					html+="<tr>" +
-					/*"<td><input type='checkbox' name='check_one' value="+pagerow[i].id+"></td>" +*/
-					"<td>"+id+"</td>" +
-					"<td>"+pagerow[i].username+"</td>" +
-					"<td>"+pagerow[i].ip+"</td>" +
-					"<td>"+time.substring(0,time.length-2)+"</td>" +
-					"<td>"+pagerow[i].module+"</td>" +
-					"<td>"+pagerow[i].behavior+"</td>" +
-					"<td>"+pagerow[i].operation_content+"</td>" +
-					/*"<td><div class='col-md-3 col-sm-4'><a href='#' onclick=\"remove('"+pagerow[i].id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div></td>"*/
-				 "</tr>";
-					
-				});
-				$("#tbody").html(html);
+				
+				if("机构用户信息管理"==module){
+					$.each(pagerow, function(i, obj) {
+						html+="<tr>" +
+						"<td>"+(10*(curr||1-1)+i+1)+"</td>" +
+						"<td>"+pagerow[i].username+"</td>" +
+						"<td>"+pagerow[i].ip+"</td>" +
+						"<td>"+timeStamp2String(pagerow[i].time)+"</td>" +
+						"<td>"+pagerow[i].module+"</td>" +
+						"<td>"+pagerow[i].behavior+"</td>" +
+						"<td>"+pagerow[i].userId+"</td>" +
+						"<td>"+pagerow[i].projectname+"</td>" +
+						"<td>"+pagerow[i].totalMoney+"</td>" +
+						"<td>"+pagerow[i].purchaseNumber+"</td>" +
+						"<td>"+pagerow[i].validityStarttime+"</td>" +
+						"<td>"+pagerow[i].validityEndtime+"</td>" +
+					 "</tr>";
+					});
+					$("#tbody_").html(html);
+				}else{
+					$.each(pagerow, function(i, obj) {
+						html+="<tr>" +
+						"<td>"+(10*(curr||1-1)+i+1)+"</td>" +
+						"<td>"+pagerow[i].username+"</td>" +
+						"<td>"+pagerow[i].ip+"</td>" +
+						"<td>"+timeStamp2String(pagerow[i].time)+"</td>" +
+						"<td>"+pagerow[i].module+"</td>" +
+						"<td>"+pagerow[i].behavior+"</td>" +
+						"<td>"+pagerow[i].operation_content+"</td>" +
+					 "</tr>";
+					});
+					$("#tbody").html(html);
+				}
+				
 				var pageTotal=data.pageTotal;
 				var pageSize=data.pageSize;
 				var pages=pageTotal%pageSize==0?pageTotal/pageSize:pageTotal/pageSize+1;
@@ -144,8 +159,17 @@ function checkAll(){
 
 //日志导出
 function exportLog(){
+	
+	username=$("#user_id").val();
+	ip=$("#institution_name").val();
+	module=$("#model").find("option:selected").val();
+	behavior=$("#restype").find("option:selected").val();
+	startTime=$("#startTime").val();
+	endTime=$("#endTime").val();
+	alert(module);
 	window.location.href="../log/exportLog.do?" +
 			"username="+username+
+			"&module="+module+
 			"&ip="+ip+
 			"&behavior="+behavior+
 			"&startTime="+startTime+
@@ -178,6 +202,42 @@ function getResTypeOnSelect(model){
 				layer.msg(error,{icon: 2});
 			}
 		});
+		
+		changeShow($(model).val());
+		tabulation();
+		
 	}
 }
+
+/**
+ * 是否展示机构用户信息
+ * @param model 模块名称
+ */
+function changeShow(model){
+	if("机构用户信息管理"==model){
+		$("#one").hide();
+		$("#two").show();
+	}else{
+		$("#two").hide();
+		$("#one").show();
+	}
+}
+
+
+
+/**
+ * 日期转换
+ * @param time
+ * @returns {String}
+ */
+function timeStamp2String(time){
+    var year = 1900+time.year;
+    var month = time.month + 1 < 10 ? "0" + (time.month + 1) : time.month + 1;
+    var date = time.date < 10 ? "0" + time.date : time.date;
+    var hour = time.hours< 10 ? "0" + time.hours : time.hours;
+    var minute = time.minutes< 10 ? "0" + time.minutes : time.minutes;
+    var second = time.seconds< 10 ? "0" + time.seconds : time.seconds;
+    return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
+}
+
 
