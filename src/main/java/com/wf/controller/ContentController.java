@@ -129,20 +129,8 @@ public class ContentController{
 			@RequestParam(value="level",required=false) String level,
 			@RequestParam(value="classNum",required=false) String classNum,
 			@RequestParam(value="className",required=false) String className,
-			HttpServletRequest request,Model model) throws Exception{
+			HttpServletRequest request,Model model){
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
-		logService.addLog(log);
-
 		int pageNum=1;
 		int pageSize=5;
 		PageList subjectList =subjectService.getSubject(pageNum,pageSize,level,classNum,className);
@@ -152,6 +140,11 @@ public class ContentController{
 		mapPara.put("classNum", classNum);
 		model.addAttribute("pageList",subjectList);
 		model.addAttribute("paraList",mapPara);
+		
+		//记录日志
+		Log log=new Log("学科分类管理","查询","查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
+		logService.addLog(log);
+		
 		return "/page/contentmanage/subject";
 	}
 	/**
@@ -171,15 +164,7 @@ public class ContentController{
 		//int pageNum=Integer.parseInt(request.getParameter("page"));
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
+		Log log=new Log("学科分类管理","查询","查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
 		logService.addLog(log);
 
 		PageList subjectList =subjectService.getSubject(pageNum,pageSize,level,classNum,className);
@@ -225,15 +210,7 @@ public class ContentController{
 		Boolean b=subjectService.insertSubject(subject);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("增加的学科分类信息:"+subject.toString());
+		Log log=new Log("学科分类管理","增加",subject.toString(),request);
 		logService.addLog(log);
 
 		JsonUtil.toJsonHtml(response, b);
@@ -269,16 +246,8 @@ public class ContentController{
 		boolean b =subjectService.updateSubject(subject);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("修改后的学科分类信息:"+subject.toString());
-
+		Log log=new Log("学科分类管理","修改",subject.toString(),request);
+		logService.addLog(log);
 		
 		JsonUtil.toJsonHtml(response, b);
 	}
@@ -294,19 +263,12 @@ public class ContentController{
 			HttpServletResponse response,HttpServletRequest request) throws Exception{
 		if(StringUtils.isEmpty(ids))ids=null;
 		Boolean b=subjectService.deleteSubject(ids);
+		JsonUtil.toJsonHtml(response, b);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
+		Log log=new Log("学科分类管理","删除",ids.toString(),request);
+		logService.addLog(log);
 		
-		log.setOperation_content("删除的学科分类ID:"+ids.toString());
-		
-		JsonUtil.toJsonHtml(response, b);
 	}
 	
 	/**
@@ -323,18 +285,6 @@ public class ContentController{
 	@RequestMapping("/addMessageJson")
 	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("增加的资讯信息:"+message.toString());
-		logService.addLog(log);
-		
 		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setId(GetUuid.getId());
 		message.setHuman(admin.getUser_realname());
@@ -346,6 +296,12 @@ public class ContentController{
 		message.setStick(sdf1.format(new Date()));
 		boolean b =messageService.insertMessage(message);
 		JsonUtil.toJsonHtml(response, b);
+
+		//记录日志
+		Log log=new Log("资讯管理","增加",message.toString(),request);
+		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		logService.addLog(log);
+		
 	}
 	
 	/**
@@ -385,15 +341,7 @@ public class ContentController{
 		}
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
+		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
 		logService.addLog(log);
 		
 		model.addAttribute("deptList",deptList);
@@ -419,15 +367,7 @@ public class ContentController{
 		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
+		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
 		logService.addLog(log);
 
 		return  messageList;
@@ -477,15 +417,7 @@ public class ContentController{
 		boolean b =messageService.deleteMessage(ids);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("删除的资讯ID:"+ids);
+		Log log=new Log("资讯管理","删除",ids.toString(),request);
 		logService.addLog(log);
 
 		JsonUtil.toJsonHtml(response, b);
@@ -514,15 +446,7 @@ public class ContentController{
 		boolean b =messageService.updateMessage(message);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("修改后的资讯信息:"+message.toString());
+		Log log=new Log("资讯管理","修改",message.toString(),request);
 		logService.addLog(log);
 
 		JsonUtil.toJsonHtml(response, b);
@@ -539,19 +463,12 @@ public class ContentController{
 	@ResponseBody
 	public boolean updateIssue(String id,String colums,String issueState, HttpServletRequest request) throws Exception{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("发布/下撤/再发布");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
+		boolean b =messageService.updateIssue(id,colums,issueState);
 		
-		log.setOperation_content("资讯ID:"+id+",栏目:"+colums+",发布状态:"+issueState);
+		//记录日志
+		Log log=new Log("资讯管理","发布/下撤/再发布","资讯ID:"+id+",栏目:"+colums+",发布状态:"+issueState,request);
 		logService.addLog(log);
 
-		boolean b =messageService.updateIssue(id,colums,issueState);
 		return b;
 	}
 	/**
@@ -587,22 +504,14 @@ public class ContentController{
 			p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
 		}
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("查询条件:资源类型名称:"+typeName);
-		logService.addLog(log);
-		
 		model.addAttribute("pageList",p);
         JSONObject json=JSONObject.fromObject(p);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json.toString());
+        
+		//记录日志
+		Log log=new Log("资源类型管理","查询","查询条件:资源类型名称:"+typeName,request);
+		logService.addLog(log);
 	}
 
 
@@ -618,23 +527,16 @@ public class ContentController{
 			@RequestParam(value="page",required=false) int pageNum,String typeName,
 			HttpServletResponse response,HttpServletRequest request) throws IOException{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("查询条件:资源类型名称:"+typeName);
-		logService.addLog(log);
-		
 		int pageSize=10;
 		PageList p=resourceTypeService.getResourceType(pageNum, pageSize);
 		JSONObject json=JSONObject.fromObject(p);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
+		
+		//记录日志
+		Log log=new Log("资源类型管理","查询","查询条件:资源类型名称:"+typeName,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -658,19 +560,11 @@ public class ContentController{
 		resourceType.setId(GetUuid.getId());
 		boolean result=resourceTypeService.addResourceType(resourceType);
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("新增资源类型信息:"+resourceType.toString());
-		logService.addLog(log);
-
 		JsonUtil.toJsonHtml(response, result);
+		
+		//记录日志
+		Log log=new Log("资源类型管理","增加",resourceType.toString(),request);
+		logService.addLog(log);
 	}
 
 	/**
@@ -680,18 +574,6 @@ public class ContentController{
 	public void moveUpResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("上移");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("上移资源类型ID:"+id);
-		logService.addLog(log);
-
 		boolean result=resourceTypeService.moveUpResource(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
@@ -699,6 +581,11 @@ public class ContentController{
 		redis.del("sourcetype");
 		redis.set("sourcetype", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, result);
+		
+		//记录日志
+		Log log=new Log("资源类型管理","上移",id,request);
+		logService.addLog(log);
+
 	}
 	/**
 	 * 资源类型下移
@@ -706,19 +593,7 @@ public class ContentController{
 	@RequestMapping("/moveDownResource")
 	public void moveDownResource(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("下移");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("下移资源类型ID:"+id);
-		logService.addLog(log);
-
+	
 		boolean result=resourceTypeService.moveDownResource(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
@@ -726,6 +601,10 @@ public class ContentController{
 			redis.del("sourcetype");
 			redis.set("sourcetype", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, result);
+		
+		//记录日志
+		Log log=new Log("资源类型管理","下移",id,request);
+		logService.addLog(log);
 	}
 	/**
 	 *判断资源类型是否发布
@@ -763,21 +642,14 @@ public class ContentController{
 	 */
 	@RequestMapping("/updateResourceJson")
 	public void updateResourceJson(ResourceType resourceType,HttpServletResponse response,HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("修改后的资源类型信息:"+resourceType.toString());
-		logService.addLog(log);
 
 		boolean b =resourceTypeService.updateResourceType(resourceType);
 		JsonUtil.toJsonHtml(response, b);
+		
+		//记录日志
+		Log log=new Log("资源类型管理","修改",resourceType.toString(),request);
+		logService.addLog(log);
+
 		//更新REDIS资源类型状态
 /*		JSONArray list=	resourceTypeService.getAll1();
 		redis.del("sourcetype");

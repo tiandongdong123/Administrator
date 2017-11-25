@@ -544,12 +544,15 @@ public class AheadUserController {
 			hashmap.put("fail", "请选择项目");
 			return hashmap;
 		}
-		for (ResourceDetailedDTO dto : list) {
-			if(dto.getProjectid()!=null){
-				hashmap = this.getValidate(dto,false);
+		for (int j = 0; j < list.size(); j++) {
+			ResourceDetailedDTO dto = list.get(j);
+			if (dto.getProjectid() != null) {
+				hashmap = this.getValidate(dto, false);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
+			} else {
+				list.remove(j--);
 			}
 		}
 		int in = 0;
@@ -705,10 +708,15 @@ public class AheadUserController {
 			hashmap.put("fail", "请选择项目");
 			return hashmap;
 		}
-		for (ResourceDetailedDTO dto : list) {
-			hashmap = this.getValidate(dto,false);
-			if (hashmap.size() > 0) {
-				return hashmap;
+		for (int j = 0; j < list.size(); j++) {
+			ResourceDetailedDTO dto = list.get(j);
+			if (dto.getProjectid() != null) {
+				hashmap = this.getValidate(dto, false);
+				if (hashmap.size() > 0) {
+					return hashmap;
+				}
+			} else {
+				list.remove(j--);
 			}
 		}
 		int in = 0;
