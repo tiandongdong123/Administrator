@@ -36,9 +36,18 @@ public interface PersonMapper {
 
 	/** 查询用户列表信息 */
 	List<Object> findListInfo(Map<String, Object> map);
+	
+	/** 查询用户列表信息(优化) */
+	List<Object> findListInfoSimp(Map<String, Object> map);
 
 	/** 查询用户列表总数 */
 	int findListCount(Map<String, Object> map);
+	
+	/** 查询用户列表总数(优化) */
+	int findListCountSimp(Map<String, Object> map);
+	
+	/** 查询多个用户 */
+	Map<String, Object> findUserById(String userId);
 	
 	/** 添加/移除机构管理员 */
 	int updatePid(Map<String, Object> map);

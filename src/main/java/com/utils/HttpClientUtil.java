@@ -31,6 +31,7 @@ public class HttpClientUtil {
 	private static Logger log = Logger.getLogger(HttpClientUtil.class);
 	
 	private static String UPDATE = XxlConfClient.get("wf-public.user.update", null);
+	private static String DELETE = XxlConfClient.get("wf-public.user.delete", null);
 	private static String REG_URL=XxlConfClient.get("wf-admin.bzcbsorgreg", null);
 	private static String EDIT_URL=XxlConfClient.get("wf-admin.bzcbsorgedit",null);
     private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
@@ -40,11 +41,16 @@ public class HttpClientUtil {
     /** 
      * 调用接口验证老平台用户是否存在 
      */
-	public static void updateUserData(String user_id,boolean isInit) {
+	public static void updateUserData(String user_id,String loginMode) {
 		HttpPost httpPost = null;
 		try {
 			long time=System.currentTimeMillis();
-			String[] urls = UPDATE.split(";");
+			String[] urls = null;
+			if("0".equals(loginMode)){
+				urls=UPDATE.split(";");
+			}else{
+				urls=DELETE.split(";");
+			}
 			for (String u : urls) {
 				String url = u + "?key=123456789&user_id=" + user_id;
 				URL httpurl = new URL(url);

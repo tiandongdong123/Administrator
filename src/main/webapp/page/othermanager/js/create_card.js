@@ -15,7 +15,7 @@ $(function(){
 		var extStart = filepath.lastIndexOf('\\');
 		var ext = filepath.substring(extStart+1, filepath.length).toUpperCase();//上传文件的后缀
 		$('#file_name').html(ext);
-	})
+	});
 });
 
 function showMore(){
@@ -49,6 +49,7 @@ function put(){
 	 valueNumber=eval(valueNumber);
 	var formData = new FormData();
 	formData.append('type', type);
+	formData.append('cardTypeName',$("#cardType").find("option:selected").text());
 	formData.append('valueNumber', JSON.stringify(valueNumber));
 	formData.append('validStart', validStart);
 	formData.append('validEnd', validEnd);

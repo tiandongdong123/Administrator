@@ -37,6 +37,7 @@ import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
+import com.wf.bean.Log;
 import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -49,6 +50,7 @@ import com.wf.bean.Wfadmin;
 import com.wf.bean.WfksAccountidMapping;
 import com.wf.bean.WfksUserSetting;
 import com.wf.service.AheadUserService;
+import com.wf.service.LogService;
 import com.wf.service.OpreationLogsService;
 import com.wf.service.PersonService;
 
@@ -70,8 +72,12 @@ public class AheadUserController {
 	
 	@Autowired
 	private OpreationLogsService opreationLogs;
+
+	@Autowired
+	private LogService logService;
 	
 	private RedisUtil redis = new RedisUtil();
+	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	
 	/**
@@ -366,13 +372,21 @@ public class AheadUserController {
 	 */
 	@RequestMapping("getWarning")
 	@ResponseBody
-	public String updateWarning(String flag,Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold){
+	public String updateWarning(String flag,Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,HttpServletRequest request){
+		
+		Log log=null;
+		String operation_content="金额阈值:"+amountthreshold+",次数阈值:"+countthreshold+",有效期阈值:"+datethreshold+",邮件提醒间隔时间:"+remindtime+",提醒邮箱:"+remindemail;
 		int i = 0;
-		if(flag.equals("1")){			
+		if(flag.equals("1")){
 			i = aheadUserService.updateWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
+			log=new Log("机构用户预警设置","修改",operation_content,request);
 		}else{
 			i = aheadUserService.addWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
+			log=new Log("机构用户预警设置","增加",operation_content,request);
 		}
+		
+		logService.addLog(log);
+		
 		String msg = "";
 		if(i>0){
 			msg="true";
@@ -474,15 +488,15 @@ public class AheadUserController {
 		}
 		if (resinfo > 0) {
 			//更新前台用户信息
-			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
-				HttpClientUtil.updateUserData(com.getUserId(), false);
-			}
+			HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());
 			hashmap.put("flag", "success");
 			log.info("机构用户["+com.getUserId()+"]注册成功，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		} else {
 			hashmap.put("flag", "fail");
 			log.info("机构用户["+com.getUserId()+"]注册失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
+		this.saveOperationLogs(com,"1", req);
+		this.addLogs(com,"1",req);
 		return hashmap;
 	}
 	
@@ -530,12 +544,15 @@ public class AheadUserController {
 			hashmap.put("fail", "请选择项目");
 			return hashmap;
 		}
-		for (ResourceDetailedDTO dto : list) {
-			if(dto.getProjectid()!=null){
-				hashmap = this.getValidate(dto,false);
+		for (int j = 0; j < list.size(); j++) {
+			ResourceDetailedDTO dto = list.get(j);
+			if (dto.getProjectid() != null) {
+				hashmap = this.getValidate(dto, false);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
+			} else {
+				list.remove(j--);
 			}
 		}
 		int in = 0;
@@ -624,6 +641,8 @@ public class AheadUserController {
 				in += 1;
 				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
+			this.saveOperationLogs(com, "3", req);
+			this.addLogs(com,"3",req);
 		}
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
 			if(com.getManagerType().equals("new")){
@@ -689,10 +708,15 @@ public class AheadUserController {
 			hashmap.put("fail", "请选择项目");
 			return hashmap;
 		}
-		for (ResourceDetailedDTO dto : list) {
-			hashmap = this.getValidate(dto,false);
-			if (hashmap.size() > 0) {
-				return hashmap;
+		for (int j = 0; j < list.size(); j++) {
+			ResourceDetailedDTO dto = list.get(j);
+			if (dto.getProjectid() != null) {
+				hashmap = this.getValidate(dto, false);
+				if (hashmap.size() > 0) {
+					return hashmap;
+				}
+			} else {
+				list.remove(j--);
 			}
 		}
 		int in = 0;
@@ -820,6 +844,7 @@ public class AheadUserController {
 				log.info("机构用户["+com.getUserId()+"]修改成功");
 			}
 			this.saveOperationLogs(com,"2", req);
+			this.addLogs(com,"2",req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功更新："+in+"条");
@@ -880,13 +905,18 @@ public class AheadUserController {
 	 */
 	@RequestMapping("blockunlock")
 	@ResponseBody
-	public Map<String,Object> blockUnlock(MultipartFile file,String radio){
+	public Map<String,Object> blockUnlock(MultipartFile file,String radio,HttpServletRequest request){
+		
+		String operation_content="";
+		String behavior="";
+		
 		Map<String,Object> hashmap = new HashMap<String, Object>();
 		List<String> list = aheadUserService.getExceluser(file);
 		int in = 0;
 		for(String str : list){
 			Person person = aheadUserService.queryPersonInfo(str);
-			if(person!=null){				
+			if(person!=null){
+				operation_content+=str;
 				int i = aheadUserService.updateUserFreeze(str,radio);
 				if(i>0){
 					if ("1".equals(radio)) { //冻结
@@ -906,6 +936,10 @@ public class AheadUserController {
 		hashmap.put("flag", "success");
 		hashmap.put("num", in);
 		hashmap.put("count", list.size());
+		
+		Log log=new Log("批量账号冻结/解冻","1".equals(radio)?"冻结":"解冻",operation_content,request);
+		logService.addLog(log);
+		
 		return hashmap;
 	}
 	
@@ -991,7 +1025,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("information")
 	public ModelAndView information(String userId,String ipSegment,String institution,String adminname,
-			String adminIP,String pageNum,String pageSize,String start_time,String end_time){
+			String adminIP,String pageNum,String pageSize,String start_time,String end_time,HttpServletRequest request){
 		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1103,6 +1137,7 @@ public class AheadUserController {
 		}
 		com.setRdlist(rdlist);
 		this.saveOperationLogs(com, "3", req);
+		this.addLogs(com,"3",req);
 	}
 	
 	/**
@@ -1199,9 +1234,7 @@ public class AheadUserController {
 		}
 		if (resinfo > 0) {
 			// 更新前台用户信息
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				HttpClientUtil.updateUserData(com.getUserId(), false);
-			}
+			HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());
 			hashmap.put("flag", "success");
 			log.info("机构用户["+com.getUserId()+"]更新成功，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		} else {
@@ -1209,6 +1242,7 @@ public class AheadUserController {
 			log.info("机构用户["+com.getUserId()+"]更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 		this.saveOperationLogs(com,"2", req);
+		this.addLogs(com,"2",req);
 		return hashmap;
 	}
 	
@@ -1548,7 +1582,15 @@ public class AheadUserController {
 						OperationLogs op = new OperationLogs();
 						op.setUserId(com.getUserId());
 						op.setPerson(admin.getWangfang_admin_id());
-						op.setOpreation(flag == "2" ? "更新" : "删除");
+						
+						if(flag == "1" ){
+							op.setOpreation("注册");
+						}else if(flag == "2" ){
+							op.setOpreation("更新");
+						}else if(flag == "3" ){
+							op.setOpreation("删除");
+						}
+						
 						if (com.getRdlist() != null) {
 							JSONObject json=JSONObject.fromObject(dto);
 							//json.remove("rldto");
@@ -1619,5 +1661,62 @@ public class AheadUserController {
 		m.put("result", "0");
 		return m;
 	}
+	
+	/**
+	 * 添加操作日志信息
+	 * @return
+	 */
+	private void addLogs(CommonEntity com,String flag,HttpServletRequest req){
+		if(com!=null){
+			Wfadmin admin =CookieUtil.getWfadmin(req);
+			List<ResourceDetailedDTO> list = com.getRdlist();
+			if(list!=null &&list.size()>0){
+				for(ResourceDetailedDTO dto:list){
+					if(dto.getProjectid()!=null){
+						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("count")
+								&& dto.getPurchaseNumber() == 0) {
+							continue;
+						} else if (dto.getProjectType().equals("time")) {
+							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
+							continue;
+							}
+						}
+						
+						OperationLogs op = new OperationLogs();
+						op.setUserId(com.getUserId());
+						op.setPerson(admin.getWangfang_admin_id());
+						String behavior = null;
+						if(flag == "1" ){
+							op.setOpreation("注册");
+							behavior="注册";
+						}else if(flag == "2" ){
+							op.setOpreation("更新");
+							behavior="更新";
+						}else if(flag == "3" ){
+							op.setOpreation("删除");
+							behavior="删除";
+						}
+						
+						if (com.getRdlist() != null) {
+							JSONObject json=JSONObject.fromObject(dto);
+							//json.remove("rldto");
+							op.setReason(json.toString());
+						}
+						op.setProjectId(dto.getProjectid());
+						op.setProjectName(dto.getProjectname());
+						
+						Log log=new Log("机构用户信息管理",behavior,req, JSONObject.fromObject(op).toString());
+						logService.addLog_Institution(log);
+					}
+				}
+			}
+		}
+	}
+
+	
+	
 	
 }

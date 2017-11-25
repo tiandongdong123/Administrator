@@ -52,22 +52,22 @@
                 </div>
       			<div class="form-group input_block">
 	           	  <label for="exampleInputEmail1" class="input_name">操作时间：</label>
-	              <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" />
-	              -<input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" />
+	              <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" value="${yesterday}" />
+	              -<input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" value="${yesterday}"/>
 	         	</div>
 	            <center><button type='button' class='btn btn-primary' onclick="tabulation()">查询</button></center>
 <!-- 	         	<div style="overflow-y:scroll; height:300px;"> -->
 	 			<div class="mailbox-controls">
-	                <div class="btn-group">
+	                <!-- <div class="btn-group">
 	                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-	                </div>
+	                </div> -->
 	                 <button type="button" style="float: right;margin-right: 5px;" onclick="exportLog();" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
-	             	 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
+	             	 <!-- <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button> -->
 	             </div>
-	         	<table  class="table table-bordered table-striped">
+	         	<table  class="table table-bordered table-striped" id="one">
                 <thead>
                 <tr>
-                  <th><input type="checkbox" id="checkAll" onclick="checkAll();"></th>
+                  <!-- <th><input type="checkbox" id="checkAll" onclick="checkAll();"></th> -->
                   <th>序号</th>
                   <th>操作用户</th>
                   <th>操作IP</th>
@@ -75,11 +75,32 @@
                   <th>操作模块</th>
                   <th>操作类型</th>
                   <th>日志内容</th>
-                  <th>操作</th>
                 </tr>
                 </thead>
                 <tbody id="tbody"></tbody>
               </table>
+              
+              <table  class="table table-bordered table-striped" id="two">
+                <thead>
+                <tr>
+                  <!-- <th><input type="checkbox" id="checkAll" onclick="checkAll();"></th> -->
+                  <th>序号</th>
+                  <th>操作用户</th>
+                  <th>操作IP</th>
+                  <th>操作时间</th>
+                  <th>操作模块</th>
+                  <th>操作类型</th>
+                  <th>用户ID</th>
+                  <th>购买项目名称</th>
+                  <th>金额</th>
+                  <th>次数</th>
+                  <th>有效开始时间</th>
+                  <th>有效结束时间</th>
+                </tr>
+                </thead>
+                <tbody id="tbody_"></tbody>
+              </table>
+              
               <div id="page"></div>	
               </div>
           </div>

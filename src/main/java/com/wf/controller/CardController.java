@@ -106,7 +106,7 @@ public class CardController {
 	 */
 	@RequestMapping("addcardtype")
 	@ResponseBody
-	public int addcode(HttpServletRequest request) throws UnknownHostException {
+	public int addcode(HttpServletRequest request){
 		CardType card=new CardType();
 		card.setCardTypeCode(request.getParameter("code"));
 		card.setCardTypeName(request.getParameter("name"));
@@ -116,15 +116,7 @@ public class CardController {
 		StringBuffer operation_content=new StringBuffer("新增万方卡类型:"); 
 		operation_content.append("万方卡类型Code:"+request.getParameter("code"));
 		operation_content.append(",万方卡类型名称"+request.getParameter("name"));
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("新增万方卡类型");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("新增万方卡类型","增加",operation_content.toString(),request);
 		logService.addLog(log);
 		
 		return i;
@@ -174,30 +166,24 @@ public class CardController {
 	
 	@RequestMapping("addCardBatch")
 	@ResponseBody
-	public boolean addCardBatch(HttpServletRequest request,String type,String valueNumber,String validStart,String validEnd,String applyDepartment,
+	public boolean addCardBatch(HttpServletRequest request,String type,String cardTypeName,String valueNumber,String validStart,String validEnd,String applyDepartment,
 			String applyPerson,String applyDate) throws UnknownHostException{
 		String adjunct = FileUploadUtil.upload(request, "/imgs/te/");
 		
 		Boolean flag = cardBatchService.insertCardBatch(type, valueNumber, validStart, validEnd, applyDepartment, applyPerson, applyDate,adjunct);
 		
+		 net.sf.json.JSONArray jsonArray=net.sf.json.JSONArray.fromObject(valueNumber);
+		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("增加万方卡:"); 
-		operation_content.append("万方卡类型 :"+type);
-		operation_content.append(",面值(单张) :元,张数"+valueNumber);
+		StringBuffer operation_content=new StringBuffer(); 
+		operation_content.append("万方卡类型 :"+cardTypeName);
+		operation_content.append(",面值(单张):"+jsonArray.getJSONObject(0).getString("value")+"元,张数:"+jsonArray.getJSONObject(0).getString("number"));
 		operation_content.append(",有效期 :"+validStart+"-"+validEnd);
 		operation_content.append(",申请部门:"+applyDepartment);
 		operation_content.append(",申请人 :"+applyPerson);
 		operation_content.append(",申请日期 :"+applyDate);
 		operation_content.append(",附件保存地址 :"+adjunct);
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("生成万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("生成万方卡","增加",operation_content.toString(),request);
 		logService.addLog(log);
 		
 		return flag;
@@ -236,7 +222,7 @@ public class CardController {
 	@ResponseBody
 	public PageList queryCheck(String batchName, String applyDepartment, String applyPerson,
 			String startTime, String endTime, String cardType, String checkState,
-			String batchState, int pageNum, int pageSize,HttpServletRequest request) throws UnknownHostException {
+			String batchState, int pageNum, int pageSize,HttpServletRequest request){
 		
 		//记录日志
 		StringBuffer operation_content=new StringBuffer("万方卡审核:"); 
@@ -247,14 +233,7 @@ public class CardController {
 		operation_content.append("万方卡类型 :"+cardType+",");
 		operation_content.append("审核状态:"+checkState);
 		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("审核万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("审核万方卡","查询","operation_content",request);
 		logService.addLog(log);
 		
 		return cardBatchService.queryCheck(batchName, applyDepartment, applyPerson,
@@ -277,7 +256,7 @@ public class CardController {
 	@ResponseBody
 	public PageList  queryCard(String batchName,String numStart,String numEnd,
 			String applyDepartment,String applyPerson,String startTime,
-			String endTime,String cardType,String batchState,String invokeState,int pageNum,int pageSize,HttpServletRequest request) throws UnknownHostException{
+			String endTime,String cardType,String batchState,String invokeState,int pageNum,int pageSize,HttpServletRequest request){
 		PageList p = cardService.queryCard(batchName, numStart, numEnd, applyDepartment, applyPerson, startTime, endTime, cardType, batchState,invokeState, pageNum, pageSize);
 		
 		//记录日志
@@ -290,15 +269,7 @@ public class CardController {
 		operation_content.append("万方卡类型:"+cardType+",");
 		operation_content.append("批次状态:"+batchState+",");
 		operation_content.append("万方卡状态:"+invokeState+",");
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("管理万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("管理万方卡","查询",operation_content.toString(),request);
 		logService.addLog(log);
 		
 		return p;
@@ -333,17 +304,7 @@ public class CardController {
 		
 		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("万方卡附件下载:"); 
-		operation_content.append("附件名称 :"+name);
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("下载");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("审核万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("审核万方卡","下载","附件名称 :"+name,request);
 		logService.addLog(log);
 		
 		try {
@@ -431,19 +392,8 @@ public class CardController {
 	public boolean updateCheckState(HttpServletRequest request,String batchId) throws UnknownHostException{
 		Wfadmin admin=CookieUtil.getWfadmin(request);
 		
-		
 		//记录日志
-		StringBuffer operation_content=new StringBuffer("万方卡审核状态改变:"); 
-		operation_content.append("万方卡卡号:"+batchId);
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("审核");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("审核万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("审核万方卡","审核","万方卡卡号:"+batchId,request);
 		logService.addLog(log);
 		
 		return cardBatchService.updateCheckState(admin, batchId);//审核状态改变
@@ -492,15 +442,7 @@ public class CardController {
 		operation_content.append("申请部门:"+applyDepartment+",");
 		operation_content.append("申请人:"+applyPerson+",");
 		operation_content.append("申请日期:"+applyDate+",");
-		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("提醒");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("审核万方卡");
-		log.setOperation_content(operation_content.toString());
+		Log log=new Log("审核万方卡","提醒",operation_content.toString(),request);
 		logService.addLog(log);
 
 		return flag;
@@ -519,14 +461,7 @@ public class CardController {
 	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) throws Exception {
 		
 		
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().toString());
-		log.setModule("审核万方卡");
-		log.setOperation_content("");
+		Log log=new Log("审核万方卡","导出","",request);
 		logService.addLog(log);
 
 		ExportExcel exc= new ExportExcel();

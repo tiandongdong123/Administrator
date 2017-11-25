@@ -102,7 +102,7 @@
   
   <!-- 查询机构账号下机构子账号 -->
   <select id="sonAccountNumber" resultMap="BaseResultMap3" parameterType="java.util.Map">
-	select user_id,password,registration_time from user where pid = #{userId} and userType = '3'
+	select user_id,password,registration_time from user where pid = #{userId} and userType =3
 	<if test="sonId != null and sonId != ''">
 		and user_id = #{sonId}
 	</if>
@@ -117,195 +117,231 @@
   
   <!-- 通过机构名称查询所属管理员 -->
   <select id="findInstitutionAdmin" resultMap="BaseResultMap2" parameterType="java.lang.String">
-	select adm.*,(select COUNT(*) from user where pid = adm.user_id and userType = '2') as num
-	from (select u.user_id,u.password,admin_email from user u where u.institution = #{institution} and u.userType = '1') as adm
+	select adm.*,(select COUNT(*) from user where pid = adm.user_id and userType = 2) as num
+	from (select u.user_id,u.password,admin_email from user u where u.institution = #{institution} and u.userType = 1) as adm
   </select>  
   
     <!-- 查询机构管理员信息 -->
-    <select id="findadmin" resultMap="BaseResultMap2" parameterType="java.lang.String">
-        select user_id from user where userType = '1' and user_id like CONCAT('%',#{userId},'%') limit 0,5
-    </select>
-
-    <!-- 查询相似机构ID -->
-    <select id="queryAdminName" resultType="java.lang.String" parameterType="java.lang.String">
-        select user_id from user where userType = '1' and user_id like CONCAT(#{userId},'%') limit 0,5
-    </select>
-
-    <!-- 查询相似机构名称 -->
-    <select id="queryInstitution" resultType="java.lang.String" parameterType="java.lang.String">
-        select institution from user where userType = '2' and institution like CONCAT('%',#{institution},'%') limit 0,5
-    </select>
-
-    <!-- 通过主键ID查询用户信息 -->
-    <select id="queryPersonInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select * from user where user_id = #{userId}
-    </select>
-
-    <!-- 机构账号注册 -->
-    <insert id="addRegisterInfo" parameterType="com.wf.bean.Person">
-        insert into user(institution,user_id,login_mode,password,userType,pid,is_freeze,registration_time)
-        values(#{institution},#{userId},#{loginMode},#{password},#{usertype},#{pid},#{isFreeze},now())
-    </insert>
-
-    <!-- 机构管理员账号注册 -->
-    <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
-        insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time)
-        values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now())
-    </insert>
-
-    <delete id="deleteUser" parameterType="java.lang.String">
-        delete from user where user_id = #{userId}
-    </delete>
-
-    <!-- 移除机构账号管理员 -->
-    <update id="updatePid" parameterType="java.util.Map">
-        update user set pid = #{pid} where user_id = #{userId}
-    </update>
-
-
-    <!-- 更新机构账号 -->
-    <update id="updateRegisterInfo" parameterType="com.wf.bean.Person">
-        update user
-        <set>
-            <if test="institution != null and institution !=''">
-                institution = #{institution},
-            </if>
-            <if test="password != null and password !=''">
-                password = #{password},
-            </if>
-            <if test="pid != null" >
-                pid = #{pid},
-            </if>
-            <if test="userRealname != null and userRealname !=''" >
-                user_realname = #{userRealname},
-            </if>
-            login_mode = #{loginMode},
-        </set>
-        where user_id = #{userId}
-    </update>
-
-    <!-- 冻结/解冻 -->
-    <update id="updateUserFreeze" parameterType="java.util.Map">
-        update user
-        <set>
-            <if test="isFreeze != null and isFreeze !=''" >
-                is_freeze = #{isFreeze},
-            </if>
-        </set>
-        where user_id = #{userId}
-    </update>
-
-    <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
-        select u.user_id,u.password,u.admin_email from user u WHERE u.user_id = #{pid}
-    </select>
-
-    <update id="updateAllInstitution" parameterType="java.util.Map">
-        update user
-        <set>
-            <if test="institution != null and institution !=''" >
-                institution = #{institution},
-            </if>
-        </set>
-        where institution = #{oldins}
-    </update>
-
-
-    <update id="updateAllPid" parameterType="java.util.Map">
-        update user
-        <set>
-            <if test="pid != null" >
-                pid = #{pid},
-            </if>
-        </set>
-        where pid = #{old_pid}
-    </update>
-
-    <!-- 账号修改返显查询的用户信息 -->
-    <select id="findListInfoById" resultMap="BaseResultMap2" parameterType="java.lang.String">
-        select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,
-        uar.upperlimit,uar.p_concurrentnumber,uar.s_concurrentnumber,uar.chargebacks,uar.downloadUpperLimit
-        from user u LEFT JOIN user_account_restriction uar ON u.user_id=uar.user_id WHERE u.user_id = #{userId}
-    </select>
-
-    <select id="findListIns" resultMap="BaseResultMap2">
-        select user_id,institution from user WHERE userType = '2'
-    </select>
-
-
-    <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
-        select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-        from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
-        <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-            and ((u.user_id = #{userId} and u.userType = '2') or
-            (u.user_id = (select pid from user where user_id = #{userId} and userType = '3')) or
-            (u.pid = #{userId} and u.userType = '2'))
-        </if>
-        <if test="institution != null and institution != ''"><!-- 模糊查询 -->
-            and u.institution like #{institution} and u.userType = '2'
-        </if>
-        <if test="ipSegment != null and ipSegment != ''">
-            and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType = '2'
-        </if>
-        <if test="adminname != null and adminname != ''">
-            and u.pid = #{adminname} and u.userType = '2'
-        </if>
-        GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
-    </select>
-
-    <select id="findListCount" resultType="int" parameterType="java.util.Map">
-        select count(1) from (select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
-        <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-            and ((u.user_id = #{userId} and userType = '2') or
-            (u.user_id = (select pid from user where user_id = #{userId} and userType = '3')) or
-            (u.pid = #{userId} and userType = '2'))
-        </if>
-        <if test="institution != null and institution != ''"><!-- 模糊查询 -->
-            and u.institution like #{institution} and userType = '2'
-        </if>
-        <if test="ipSegment != null and ipSegment != ''">
-            and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType = '2'
-        </if>
-        <if test="adminname != null and adminname != ''">
-            and u.pid = #{adminname} and userType = '2'
-        </if>
-        GROUP BY u.user_id) count
-    </select>
-    <select id="getEducations" resultType="java.lang.String" parameterType="java.lang.String">
-        select education from identify_scholar
-        where user_id=#{userId}
-    </select>
-
-    <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
-        select user_id,institution from user where userType='1'
-        <if test="null!=institution and ''!=institution">
-            and institution = #{institution}
-        </if>
-    </select>
-
-    <select id="getUserTypeByUserId"  resultType="java.lang.String">
-        SELECT userType FROM user WHERE user_id=#{userId}
-    </select>
-
-    <select id="countUser" resultType="java.lang.Integer">
-        select count(1) from user
-    </select>
-
-    <!-- 通过多个主键ID查询用户信息 -->
-    <select id="queryPersonInId" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select user_id,user_realname,`password`,is_freeze,login_mode,userType,extend from user where user_id in
-        <foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">
-            #{userId}
-        </foreach>
-    </select>
-
-    <select id="getAllInstitution" resultType="java.lang.String">
-        select DISTINCT TRIM(institution) from user  where institution <![CDATA[ <> ]]> ''
-        and institution like CONCAT('%',#{institution},'%') and userType=2
-        limit 0,10
-    </select>
+  <select id="findadmin" resultMap="BaseResultMap2" parameterType="java.lang.String">
+		select user_id from user where userType = 1 and user_id like CONCAT('%',#{userId},'%') limit 0,5
+  </select>
+  
+  <!-- 查询相似机构ID -->
+  <select id="queryAdminName" resultType="java.lang.String" parameterType="java.lang.String">
+		select user_id from user where userType = 1 and user_id like CONCAT(#{userId},'%') limit 0,5
+  </select>
+  
+  <!-- 查询相似机构名称 -->
+  <select id="queryInstitution" resultType="java.lang.String" parameterType="java.lang.String">
+	select institution from user where userType = 2 and institution like CONCAT('%',#{institution},'%') limit 0,5
+  </select>
+  
+  <!-- 通过主键ID查询用户信息 -->
+  <select id="queryPersonInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from user where user_id = #{userId}
+  </select>
+  
+  <!-- 机构账号注册 -->
+  <insert id="addRegisterInfo" parameterType="com.wf.bean.Person">
+	insert into user(institution,user_id,login_mode,password,userType,pid,is_freeze,registration_time)
+    values(#{institution},#{userId},#{loginMode},#{password},#{usertype},#{pid},#{isFreeze},now())
+  </insert>
+  
+  <!-- 机构管理员账号注册 -->
+  <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
+	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time)
+     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now())
+  </insert>
+  
+  <delete id="deleteUser" parameterType="java.lang.String">
+  	delete from user where user_id = #{userId}
+  </delete>
+ 
+  <!-- 移除机构账号管理员 -->
+ <update id="updatePid" parameterType="java.util.Map">
+    update user set pid = #{pid} where user_id = #{userId}
+  </update>
+ 
+ 
+ <!-- 更新机构账号 -->
+ <update id="updateRegisterInfo" parameterType="com.wf.bean.Person">
+    update user
+    <set>
+      <if test="institution != null and institution !=''">
+        institution = #{institution},
+      </if>
+      <if test="password != null and password !=''">
+        password = #{password},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid},
+      </if>
+      <if test="userRealname != null and userRealname !=''" >
+        user_realname = #{userRealname},
+      </if>
+      login_mode = #{loginMode},
+    </set>
+    where user_id = #{userId}
+  </update>
+  
+   <!-- 冻结/解冻 -->
+ <update id="updateUserFreeze" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="isFreeze != null and isFreeze !=''" >
+        is_freeze = #{isFreeze},
+      </if>
+    </set>
+    where user_id = #{userId}
+ </update>
+ 
+  <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
+   select u.user_id,u.password,u.admin_email from user u WHERE u.user_id = #{pid}
+  </select>
+  
+ <update id="updateAllInstitution" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="institution != null and institution !=''" >
+        institution = #{institution},
+      </if>
+    </set>
+    where institution = #{oldins}
+ </update>
+  
+  
+   <update id="updateAllPid" parameterType="java.util.Map">
+    update user
+    <set>
+      <if test="pid != null" >
+        pid = #{pid},
+      </if>
+    </set>
+    where pid = #{old_pid}
+ </update>
+ 
+ <!-- 账号修改返显查询的用户信息 -->
+  <select id="findListInfoById" resultMap="BaseResultMap2" parameterType="java.lang.String">
+	select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,
+	uar.upperlimit,uar.p_concurrentnumber,uar.s_concurrentnumber,uar.chargebacks,uar.downloadUpperLimit
+	from user u LEFT JOIN user_account_restriction uar ON u.user_id=uar.user_id WHERE u.user_id = #{userId}
+  </select>
+ 
+ <select id="findListIns" resultMap="BaseResultMap2">
+   select user_id,institution from user WHERE userType =2
+ </select>
+ 
+ <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
+    from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
+        and ((u.user_id = #{userId} and u.userType = 2) or
+        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
+        (u.pid = #{userId} and u.userType = 2))
+    </if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and u.userType =2  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType =2
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and u.userType =2
+	</if>
+	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
+  </select>
+  
+  <select id="findListCount" resultType="int" parameterType="java.util.Map">
+	select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
+        and ((u.user_id = #{userId} and u.userType = 2) or
+        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
+        (u.pid = #{userId} and u.userType = 2))
+    </if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and userType =2  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType =2
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and userType =2
+	</if>
+  </select>
+  
+   <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
+    from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
+         and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
+    </if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and u.userType =2  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType =2
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and u.userType =2
+	</if>
+	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
+  </select>
+  
+  <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
+	select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
+        and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
+    </if>
+	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
+		and u.institution like #{institution} and userType =2  
+	</if>
+	<if test="ipSegment != null and ipSegment != ''">
+		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType =2
+	</if>
+	<if test="adminname != null and adminname != ''">
+		and u.pid = #{adminname} and userType =2
+	</if>
+  </select>
+  
+  <select id="findUserById" resultMap="BaseResultMap2" parameterType="java.lang.String">
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze from user u WHERE u.user_id=#{userId}
+  </select>
+  
+  <select id="getEducations" resultType="java.lang.String" parameterType="java.lang.String">
+  	select education from identify_scholar
+  	where user_id=#{userId}
+  </select>
+    
+  <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
+  	select user_id,institution from user where userType=1
+  	<if test="null!=institution and ''!=institution">
+  		and institution = #{institution}
+  	</if>
+  </select>
+  
+  <select id="getUserTypeByUserId"  resultType="java.lang.String">
+  	SELECT userType FROM user WHERE user_id=#{userId}
+  </select>
+  
+  <select id="countUser" resultType="java.lang.Integer">
+  	select count(1) from user
+  </select>
+  
+	<!-- 通过多个主键ID查询用户信息 -->
+  <select id="queryPersonInId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select user_id,user_realname,`password`,is_freeze,login_mode,userType,extend from user where user_id in
+   		<foreach collection="userIds" index="index" item="userId" open="(" separator="," close=")">  
+            #{userId}   
+    	</foreach>
+  </select>
+  
+   <select id="getAllInstitution" resultType="java.lang.String">
+  	select DISTINCT TRIM(institution) from user  where institution <![CDATA[ <> ]]> ''
+  	and institution like CONCAT('%',#{institution},'%') and userType=2
+  	limit 0,10
+  </select>
 
     <select id="getInstitutionUser" resultType="java.lang.String">
         select user_id from user  where  userType in (2,3) and institution = #{institutionName}
     </select>
-
 </mapper>
