@@ -120,6 +120,10 @@ public interface PersonMapper {
 	 * @return
 	 */
 	List<String> getAllInstitution(@Param("institution")String institution);
+	/**
+	 *获取机构下所有账号
+	 */
+	List<String> getInstitutionUser(@Param("institutionName")String institutionName);
     
 	
 }

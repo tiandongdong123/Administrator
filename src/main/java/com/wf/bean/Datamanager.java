@@ -24,14 +24,24 @@ public class Datamanager {
     private String dbtype;
     
     private Integer status;
+
+    private Integer state;
     
     private String sourceUrl;
     
     private String sourceType="zy";
     
     private String addTime;
-    
-	public Integer getStatus() {
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public Integer getStatus() {
 		return status;
 	}
 

@@ -60,7 +60,7 @@ public class DatabaseAnalysisController {
 	
 	@Autowired
 	LogService logService;
-	
+
 	/**
 	* @Title: databaseAnalysis
 	* @Description: TODO(数据库分析页面) 
@@ -74,9 +74,12 @@ public class DatabaseAnalysisController {
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		map.put("yesterday", yesterday);
+		//所有数据库名称
 		map.put("allData",dataManagerService.selectAll());
+		//所有数据来源
+		map.put("allDataSource",db_SourceService.selectAll());
 		return "/page/othermanager/data_use_manager";
-	}
+		}
 	
 	@ResponseBody
 	@RequestMapping("getDatabaseBySourceCode")
@@ -96,17 +99,14 @@ public class DatabaseAnalysisController {
 	* @return
 	* @return List 返回类型 
 	* @author LiuYong 
-	 * @param request 
 	 * @throws Exception 
 	* @date 13 Dis 2016 4:26:24 PM
 	 */
 	@RequestMapping("getPage")
 	@ResponseBody
-	public PageList getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize, HttpServletRequest request) throws Exception{
-		
+	public Map getPage(DatabaseUseDaily databaseUseDaily, String startTime,String endTime,Integer pagenum,Integer pagesize,HttpServletRequest request) throws Exception{
 		//列表展示		
-		PageList pl=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
-
+		Map map=databaseAnalysisService.getDatabaseAnalysisList(databaseUseDaily, startTime, endTime, pagenum, pagesize);
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -119,10 +119,10 @@ public class DatabaseAnalysisController {
 				",用户ID:"+databaseUseDaily.getUser_id()+",数据来源:"+databaseUseDaily.getSource_db()+
 				",数据库名称:"+databaseUseDaily.getProduct_source_code()+
 				"统计时间:"+startTime+"-"+endTime);
-		
+
 		logService.addLog(log);
-		
-		return pl;
+
+		return map;
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class DatabaseAnalysisController {
 		
 		//图表展示
 		Map<String,Object> map=databaseAnalysisService.DatabaseAnalysisStatistics(databaseUseDaily,startTime,endTime,urlType,databaseNames);
-				
+
 		return map;
 	}
 	
@@ -156,22 +156,20 @@ public class DatabaseAnalysisController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportDatabase")
-	public void exportDatabase(HttpServletResponse response,DatabaseUseDaily databaseUseDaily, String startTime,String endTime) throws Exception{
+	public void exportDatabase(HttpServletRequest request, HttpServletResponse response, DatabaseUseDaily databaseUseDaily, String startTime, String endTime) throws Exception{
 		
 		String time1="";
 		String time2="";
 		
 		//标题拼装
-		StringBuffer sb=new StringBuffer("标题:");
-		
+		StringBuffer sb=new StringBuffer("");
+
 		if(StringUtils.isNotBlank(databaseUseDaily.getInstitution_name())){
-			sb.append(databaseUseDaily.getInstitution_name()+"_");
+			String name = java.net.URLDecoder.decode(request.getParameter("institution_name"), "utf-8");
+			databaseUseDaily.setInstitution_name(name);
+			sb.append(name);
 		}
-		
-		if(StringUtils.isNotBlank(databaseUseDaily.getUser_id())){
-			sb.append(databaseUseDaily.getUser_id()+"_");
-		}
-		
+
 		if(StringUtils.isNotBlank(databaseUseDaily.getDate())){
 			time1=time2=databaseUseDaily.getDate();
 			String[]day=databaseUseDaily.getDate().split("-");
@@ -200,14 +198,13 @@ public class DatabaseAnalysisController {
 		namelist.add("合计");
 		
 		//数据包装
-		List<Map<String, String>> listmap=new ArrayList<Map<String,String>>();
-		listmap=databaseAnalysisService.exportDatabase(databaseUseDaily, startTime, endTime);
-		Map<String,List<Map<String,String>>> data=DataUtil.ListToMap(listmap,"database_name");
+
+		Map<String,List<Map<String,String>>> data=databaseAnalysisService.exportDatabase(databaseUseDaily, startTime, endTime);
 		for (Entry<String, List<Map<String, String>>> entry : data.entrySet()) {
 			
-			Double downloadSum=0.0;
-			Double searchSum=0.0;
-			Double browseSum=0.0;
+			Integer downloadSum = 0;
+			Integer searchSum = 0;
+			Integer browseSum = 0;
 			
 			//循环一次创建一个模块的统计数据
 			String title=entry.getKey();
@@ -222,23 +219,31 @@ public class DatabaseAnalysisController {
 					Map<String,String> tjMap=tjList.get(m);
 					String tjStr=String.valueOf(tjMap.get("year"))+"-"+String.valueOf(tjMap.get("month"));
 					if(monStr.equals(tjStr)){
-						tempMap.put("downloadNum", String.valueOf(tjMap.get("downloadNum")));
-						tempMap.put("searchNum", String.valueOf(tjMap.get("searchNum")));
-						tempMap.put("browseNum", String.valueOf(tjMap.get("browseNum")));
+						String downloadNum = String.valueOf(tjMap.get("downloadNum"));
+						String searchNum =  String.valueOf(tjMap.get("searchNum"));
+						String browseNum = String.valueOf(tjMap.get("browseNum"));
+						tempMap.put("downloadNum",downloadNum.substring(0,downloadNum.length()-2) );
+						tempMap.put("searchNum",searchNum.substring(0,searchNum.length()-2));
+						tempMap.put("browseNum", browseNum.substring(0,browseNum.length()-2));
 						tempMap.put("time", monStr);
 						flag=true;
 						break;
 					}
 				}
 				if(!flag){
-					tempMap.put("downloadNum", "0.0");
-					tempMap.put("searchNum", "0.0");
-					tempMap.put("browseNum","0.0");
+					tempMap.put("downloadNum", "0");
+					tempMap.put("searchNum", "0");
+					tempMap.put("browseNum","0");
 				}
-				
-				downloadSum+=Double.valueOf(tempMap.get("downloadNum"));
-				searchSum+=Double.valueOf(tempMap.get("searchNum"));
-				browseSum+=Double.valueOf(tempMap.get("browseNum"));
+
+				Double downloadsum = Double.valueOf(tempMap.get("downloadNum"));
+				Double searchsum = Double.valueOf(tempMap.get("searchNum"));
+				Double browsesum = Double.valueOf(tempMap.get("browseNum"));
+
+				downloadSum = downloadsum.intValue();
+				searchSum = searchsum.intValue();
+				browseSum = browsesum.intValue();
+
 				tempList.add(tempMap);
 			}
 			Map<String,String> sum=new HashMap<String, String>();
@@ -286,11 +291,12 @@ public class DatabaseAnalysisController {
 					row=sheet.createRow(i+r+2);
 					row.createCell(0).setCellValue(title);
 					row.createCell(1).setCellValue(type[r]);
-					for (int j =0; j <resultList.size(); j++) {
-						row.createCell(j+2).setCellValue(resultList.get(j).get(type2[r]));
-						row.createCell(namelist.size()-1).setCellValue(resultList.get(j).get(type3[r]));
+					int sum = 0 ;
+					for (int j =1; j <resultList.size(); j++) {
+						row.createCell(j+1).setCellValue(resultList.get(j-1).get(type2[r]));
+						sum+=Integer.parseInt(resultList.get(j-1).get(type2[r]));
 					}
-					
+					row.createCell(namelist.size()-1).setCellValue(sum);
 					if(r==type.length-1){
 						sheet.addMergedRegion(new CellRangeAddress(i+r,i+r+2,0,0));
 					}
@@ -329,5 +335,5 @@ public class DatabaseAnalysisController {
 	public List<DB_Source> getDB_SourceByInstitution(String institution){
 		return db_SourceService.getInstitutionDB_Source(institution);
 	}
-	
+
 }

@@ -1,5 +1,4 @@
 package com.wf.Setting;
-
 import com.wanfangdata.setting.Setting;
 import com.wf.bean.ResourceType;
 import net.sf.json.JSONArray;
@@ -9,18 +8,14 @@ import org.dom4j.*;
 
 
 import java.util.*;
-
-
-
 /**
  * Created by syl on 2017/9/13.
  */
-public class ResourceTypeSetting {
 
+public class ResourceTypeSetting {
     private static final Logger log = LogManager.getLogger(ResourceTypeSetting.class);
     private static final String path = "/ResourceType";
     private static final String XPath =  "/ResourceTypes/ResourceType";
-
     /**
      * 解析资源类型管理的xml文件并得到所有资源类型
      */
@@ -28,25 +23,28 @@ public class ResourceTypeSetting {
         Map<String, ResourceType> resources = new LinkedHashMap<>();
          String xml = Setting.get(path);
         try{
-            //解析商品配置
+            //解析资源类型
             Document document = DocumentHelper.parseText(xml);
-            //获取根
+            //获取根（ResourceTypes）
             Element root = document.getRootElement();
+            //获取根的所有子节点（ResourceType）
             List<Element> list = root.elements();
             //遍历节点
             for(Element element : list){
-                ResourceType rt = new ResourceType();
-                rt.setId(element.attributeValue("id"));
-                rt.setTypeName(element.elementText("name"));
-                rt.setTypedescri(element.elementText("describe"));
-                rt.setTypeCode(element.elementText("code"));
-                rt.setTypeState(element.elementText("state"));
-                resources.put(rt.getId(),rt);
+                ResourceType resourceType = new ResourceType();
+                //获取节点id属性
+                resourceType.setId(element.attributeValue("id"));
+                //获取节点文本
+                resourceType.setTypeName(element.elementText("name"));
+                resourceType.setTypedescri(element.elementText("describe"));
+                resourceType.setTypeCode(element.elementText("code"));
+                resourceType.setTypeState(element.elementText("state"));
+                resources.put(resourceType.getId(),resourceType);
             }
             return resources;
         }catch (DocumentException e) {
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -54,7 +52,7 @@ public class ResourceTypeSetting {
         String xml = Setting.get(path);
         List<ResourceType> resources = new ArrayList<>();
         try {
-            //解析商品配置
+            //解析资源类型
             Document document = DocumentHelper.parseText(xml);
             //获取根
             Element root = document.getRootElement();
@@ -62,13 +60,13 @@ public class ResourceTypeSetting {
             //遍历节点
             for(Element element : list){
                 if(element.elementText("state").equals("1")){
-                    ResourceType rt = new ResourceType();
-                    rt.setId(element.attributeValue("id"));
-                    rt.setTypeName(element.elementText("name"));
-                    rt.setTypedescri(element.elementText("describe"));
-                    rt.setTypeCode(element.elementText("code"));
-                    rt.setTypeState(element.elementText("state"));
-                    resources.add(rt);
+                    ResourceType resourceType = new ResourceType();
+                    resourceType.setId(element.attributeValue("id"));
+                    resourceType.setTypeName(element.elementText("name"));
+                    resourceType.setTypedescri(element.elementText("describe"));
+                    resourceType.setTypeCode(element.elementText("code"));
+                    resourceType.setTypeState(element.elementText("state"));
+                    resources.add(resourceType);
                 }
             }
             JSONArray jsonArray =JSONArray.fromObject(resources);
@@ -76,8 +74,8 @@ public class ResourceTypeSetting {
             return jsonArray;
 
         }catch (DocumentException  e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -107,8 +105,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
 
     }
@@ -128,8 +126,8 @@ public class ResourceTypeSetting {
             }
             Setting.set(path, document.asXML());
         } catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
     }
 
 
@@ -143,19 +141,23 @@ public class ResourceTypeSetting {
         try{
             Document document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
+            //路径
             String xpath = "/ResourceTypes/ResourceType[@id='" + resourceType.getId()+ "']";
+            //通过路径找到节点
             Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
+            List list = document.selectNodes(XPath);
+            //获取子节点
             Element nameElem = resourceTypeEmlem.element("name");
             Element descirElem = resourceTypeEmlem.element("describe");
             Element codeElem = resourceTypeEmlem.element("code");
-
+            //修改文本内容
             nameElem.setText(resourceType.getTypeName());
             descirElem.setText(resourceType.getTypedescri());
             codeElem.setText(resourceType.getTypeCode());
             Setting.set(path, document.asXML());
         } catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
     /**
@@ -182,8 +184,8 @@ public class ResourceTypeSetting {
             return resourceType;
 
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
     /**
@@ -203,9 +205,9 @@ public class ResourceTypeSetting {
                    resourceType.setTypeName(element.elementText("name"));
                    resourceType.setTypedescri(element.elementText("describe"));
                    resourceType.setTypeCode(element.elementText("code"));
-                       resourceType.setTypeState(element.elementText("state"));
-                       resource.put(resourceType.getId(),resourceType);
-                       break;
+                   resourceType.setTypeState(element.elementText("state"));
+                   resource.put(resourceType.getId(),resourceType);
+                    break;
                }
 
            }
@@ -262,8 +264,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -314,8 +316,8 @@ public class ResourceTypeSetting {
             Setting.set(path, document.asXML());
             return true;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -336,8 +338,8 @@ public class ResourceTypeSetting {
             }
             return true;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -357,8 +359,8 @@ public class ResourceTypeSetting {
             }
             return true;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
 
     }
@@ -374,17 +376,17 @@ public class ResourceTypeSetting {
             Element root = document.getRootElement();
             List<Element> list  =  root.selectNodes(XPath);
             for(Element element : list){
-                ResourceType rt = new ResourceType();
-                rt.setId(element.attributeValue("id"));
-                rt.setTypeName(element.elementText("name"));
-                rt.setTypedescri(element.elementText("describe"));
-                rt.setTypeCode(element.elementText("code"));
-                resourceType.add(rt);
+                ResourceType resourcetype = new ResourceType();
+                resourcetype.setId(element.attributeValue("id"));
+                resourcetype.setTypeName(element.elementText("name"));
+                resourcetype.setTypedescri(element.elementText("describe"));
+                resourcetype.setTypeCode(element.elementText("code"));
+                resourceType.add(resourcetype);
             }
             return resourceType;
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
 
@@ -402,8 +404,8 @@ public class ResourceTypeSetting {
             resourceTypeEmlem.element("state").setText(String.valueOf(typeState));
             Setting.set(path, document.asXML());
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
     /**
@@ -425,9 +427,8 @@ public class ResourceTypeSetting {
             return true;
 
         }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+            log.error("解析配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析配置出错");
         }
     }
-
 }

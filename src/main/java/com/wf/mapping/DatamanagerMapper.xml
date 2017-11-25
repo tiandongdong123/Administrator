@@ -14,6 +14,7 @@
     <result column="custom_policy" property="customPolicy" jdbcType="VARCHAR" />
     <result column="dbtype" property="dbtype" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
     <result column="source_url" property="sourceUrl" jdbcType="VARCHAR" />
     <result column="source_type" property="sourceType" jdbcType="VARCHAR" />
     <result column="add_time" property="addTime" jdbcType="VARCHAR" />
@@ -57,7 +58,15 @@
  <delete id="deleteData" >
  	delete from datamanager  where id=#{id}
  </delete>
- 
+
+    <update id="releaseData" >
+        update  datamanager set state=1  where id=#{id}
+    </update>
+
+    <update id="descendData" >
+        update  datamanager set state=0  where id=#{id}
+    </update>
+
   <update id="closeData" >
  	update  datamanager set status=0  where id=#{id}
  </update>
@@ -111,6 +120,9 @@
       <if test="dbtype != null" >
         dbtype,
       </if>
+      <if test="state != null" >
+        state,
+      </if>
       <if test="sourceType != null" >
         source_type,
       </if>
@@ -149,6 +161,9 @@
       <if test="dbtype != null" >
         #{dbtype,jdbcType=VARCHAR},
       </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
       <if test="sourceType != null" >
         #{sourceType,jdbcType=VARCHAR},
       </if>
@@ -175,8 +190,7 @@
       res_type = #{resType,jdbcType=VARCHAR},
       language = #{language,jdbcType=VARCHAR},
       source_db = #{sourceDb,jdbcType=VARCHAR},
-      dbtype = #{dbtype,jdbcType=VARCHAR} ,
-      status = #{status,jdbcType=VARCHAR} 
+      dbtype = #{dbtype,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   
@@ -194,5 +208,15 @@
 	select product_source_code as productSourceCode, table_name as tableName
 	    from datamanager where status = '1' and source_db = #{productSourceCode}
  </select>
-  
+  <select id="getdatabseName" resultMap="BaseResultMap" >
+      select table_name,product_source_code from datamanager
+      where 1=1
+      <if test="productSourceCode!=null and productSourceCode !=''">
+          and product_source_code IN
+          <foreach collection="productSourceCode" item="item" open="(" separator="," close=")">
+              #{item}
+          </foreach>
+      </if>
+      group by product_source_code
+  </select>
 </mapper>

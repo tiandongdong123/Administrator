@@ -9,139 +9,128 @@ import com.wf.bean.ResourceStatisticsHour;
 
 public interface ResourceStatisticsHourMapper {
 
-	List<ResourceStatisticsHour> getLine(@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLine(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> getLine_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> gethourtable(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> gethourtable_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineAll(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res);
 
-	List<ResourceStatisticsHour> gethouronetable(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineAllById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res);
 
-	List<ResourceStatisticsHour> gethouronetable_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineAllByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users);
 
-	List<ResourceStatisticsHour> getLineMore(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("urls") Integer[] urls, @Param("date") String date);
 
-	List<ResourceStatisticsHour> getLineMore_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("urls") Integer[] urls, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineMore(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> getLineMoreByCheckMore(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("urls") Integer[] urls, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineMoreById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> getLineMoreByCheckMore_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("urls") Integer[] urls, @Param("date") String date);
+    List<ResourceStatisticsHour> getLineMoreByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users,
+            @Param("pageNum") Integer pageNum,
+            @Param("pageSize") Integer pageSize);
 
-	List<ResourceStatisticsHour> getLineByCheckMore(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("date") String date);
+    List<ResourceStatisticsHour> getLineMoreAll(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res);
 
-	List<ResourceStatisticsHour> getLineByCheckMore_IsInstitution(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("date") String date);
+    List<ResourceStatisticsHour> getLineMoreAllById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res);
 
-	// =================================按天查询=================================
+    List<ResourceStatisticsHour> getLineMoreAllByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users);
 
-	List<ResourceStatisticsHour> gettable_day(@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
+    List<ResourceStatisticsHour> getChart(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("urls") Integer[] urls,
+            @Param("singmore") Integer singmore,
+            @Param("database_name") String[] database_name);
 
-	List<ResourceStatisticsHour> gettable_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
+    List<ResourceStatisticsHour> getChartById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("urls") Integer[] urls,
+            @Param("singmore") Integer singmore,
+            @Param("database_name") String[] database_name);
 
-	List<ResourceStatisticsHour> getonetable_day(@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
+    List<ResourceStatisticsHour> getChartByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users,
+            @Param("urls") Integer[] urls,
+            @Param("singmore") Integer singmore,
+            @Param("database_name") String[] database_name);
 
-	List<ResourceStatisticsHour> getonetable_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
+    List<ResourceStatisticsHour> getChartMore(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("urls") Integer[] urls,
+            @Param("database_name") String[] database_name);
 
-	List<ResourceStatisticsHour> getLine_day(@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
+    List<ResourceStatisticsHour> getChartMoreById(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("urls") Integer[] urls,
+            @Param("database_name") String[] database_name);
 
-	List<ResourceStatisticsHour> getLine_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res);
-
-	List<ResourceStatisticsHour> getLineMore_day(@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("urls") Integer[] urltype);
-
-	List<ResourceStatisticsHour> getLineMore_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("urls") Integer[] urltype);
-
-	List<ResourceStatisticsHour> getLineMoreByCheckMore_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("urls") Integer[] urltype);
-
-	List<ResourceStatisticsHour> getLineMoreByCheckMore_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName,
-			@Param("urls") Integer[] urltype);
-
-	List<ResourceStatisticsHour> getLineByCheckMore_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName);
-
-	List<ResourceStatisticsHour> getLineByCheckMore_IsInstitution_day(
-			@Param("starttime") String starttime,
-			@Param("endtime") String endtime,
-			@Param("res") ResourceStatistics res,
-			@Param("sourceTypeName") String[] sourceTypeName);
+    List<ResourceStatisticsHour> getChartMoreByIds(
+            @Param("startTime") String starttime,
+            @Param("endTime") String endtime,
+            @Param("res") ResourceStatistics res,
+            @Param("users") List users,
+            @Param("urls") Integer[] urls,
+            @Param("database_name") String[] database_name);
 
 }

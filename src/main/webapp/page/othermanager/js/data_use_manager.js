@@ -1,13 +1,15 @@
+var pagesize=10;
+
+$.ajaxSetup({
+	async: false
+});
 $(function(){
-	
 	tabulation(1);
 	moreOrSimple();
 	keyword();
-	
 	$(document).click(function(){
 	    $("#searchsug").hide();
 	});
-	
 })
 
 var date="";
@@ -18,177 +20,320 @@ var user_id;
 var restype;
 var dbname;
 var pagenum;
+var urlType;
+var database_name;
+var datas;
 /**查询执行方法*/
 function query(){
 	tabulation(1);
-	moreOrSimple();
+
 }
 
 
 /**
  * 加载列表数据--liuYong
  */
+$(function(){
+	$('#pageChange').change(function(){
+			institution_name=$("#institution_name").val();
+			user_id=$("#user_id").val();
+			restype=$("#restype").val();
+			dbname=$("#database").val();
+			var $number=pagesize*(parseInt($('.laypage_curr').text())-1)+1;
+			pagesize=parseInt($(this).find('option:selected').val());
+			pagenum=curr=parseInt($number/pagesize)+1;
+			$.ajax({
+				type : "POST",
+				url : "../databaseAnalysis/getPage.do",
+				data : {
+					'institution_name' : institution_name,
+					'user_id' : user_id,
+					'date' : date,
+					'source_db':restype,
+					'product_source_code':dbname,
+					'startTime' : startTime,
+					'endTime' : endTime,
+					'pagenum' : curr,//向服务端传的参数
+					'pagesize' : pagesize
+				},
+				dataType : "json",
+				success : function(datas) {
+					var data=datas.pageRow;
+					var totalRow = datas.totalRow;
+					var pageSize = datas.pageSize;
+					var html="";
+					var id;
+					for(var i=0;i<data.length;i++){
+						id=pageSize*(curr-1)+i+1;
+						html+="<tr><td><input type='checkbox' name='checkOne';' value='"+data[i].product_source_code+"'></td>" +
+							"<td>"+id+"</td>" +
+							"<td>"+data[i].database_name+"</td>" +
+							"<td>"+data[i].sum1+"</td>" +
+							"<td>"+data[i].sum2+"</td>" +
+							"<td>"+data[i].sum3+"</td>" +
+							"</tr>";
+					}
+					document.getElementById('tbody').innerHTML = html;
+					var pages;
+					var groups;
+					if(totalRow%pageSize==0)
+					{
+						pages = parseInt(totalRow/pageSize);
+					}else
+					{
+						pages = parseInt(totalRow/pageSize+1);
+					}
+					if(pages>=4)
+					{
+						groups=4;
+					}else
+					{
+						groups=pages;
+					}
+					//显示分页
+					laypage({
+						cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+						pages: pages, //通过后台拿到的总页数
+						curr: curr, //当前页
+						skip: true, //是否开启跳页
+						skin: 'molv',//当前页颜色，可16进制
+						groups: groups, //连续显示分页数
+						first: '首页', //若不显示，设置false即可
+						last: '尾页', //若不显示，设置false即可
+						prev: '上一页', //若不显示，设置false即可
+						next: '下一页', //若不显示，设置false即可
+						jump: function(obj, first){ //触发分页后的回调
+							if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+								tabulation(obj.curr);
+							}
+						}
+					});
+				}
+			})
+    })
+})
 function tabulation(curr){
-	pagenum=curr;
-	getTime();
-	institution_name=$("#institution_name").val();
-	user_id=$("#user_id").val();
-	restype=$("#restype").val();
-	dbname=$("#database").val();
-	$.ajax({
-		type : "POST",
-		url : "../databaseAnalysis/getPage.do",
-		data : {
-			'institution_name' : institution_name,
-			'user_id' : user_id,
-			'date' : date,
-			'source_db':restype,
-			'product_source_code':dbname,
-			'startTime' : startTime,
-			'endTime' : endTime,
-			'pagenum' : curr,//向服务端传的参数
-	        'pagesize' : 10
-		},
-		dataType : "json",
-		success : function(datas) {
-			var data=datas.pageRow;
-//			alert("查询成功~~~~~~~~~~~~~");
-			var html="";
-			var id;
-			for(var i=0;i<data.length;i++){
-				id=10*(curr-1)+i+1;
-				html+="<tr><td><input type='checkbox' name='checkOne' onclick='checkOne();' value='"+data[i].product_source_code+"'></td>" +
-						"<td>"+id+"</td>" +
-						"<td>"+data[i].database_name+"</td>" +
-						"<td>"+data[i].sum1+"</td>" +
-						"<td>"+data[i].sum2+"</td>" +
-						"<td>"+data[i].sum3+"</td>" +
-						"</tr>";
+	if($("#startTime").val() == ''|| $("#endTime").val() == '' || $("#startTime").val() == null || $("#endTime").val() ==  null) {
+		layer.msg("请选择前后统计时间!",{icon: 2});
+	}
+	else{
+		pagenum=curr;
+		getTime();
+		institution_name=$("#institution_name").val();
+		user_id=$("#user_id").val();
+		restype=$("#restype").val();
+		dbname=$("#database").val();
+		$.ajax({
+			type : "POST",
+			url : "../databaseAnalysis/getPage.do",
+			data : {
+				'institution_name' : institution_name,
+				'user_id' : user_id,
+				'date' : date,
+				'source_db':restype,
+				'product_source_code':dbname,
+				'startTime' : startTime,
+				'endTime' : endTime,
+				'pagenum' : curr,//向服务端传的参数
+				'pagesize' : pagesize
+			},
+			dataType : "json",
+			success : function(datas) {
+				var data=datas.pageRow;
+				var totalRow = datas.totalRow;
+				var pageSize = datas.pageSize;
+				var html="";
+				var id;
+				if(data.length>0){
+					$(".showPage").css("display","block");
+					for(var i=0;i<data.length;i++){
+						id=pageSize*(curr-1)+i+1;
+						html+="<tr><td><input type='checkbox' class='rui' name='checkOne' onclick='checkOne()' value='"+data[i].product_source_code+"'></td>" +
+								//onclick='checkOne()'
+							"<td>"+id+"</td>" +
+							"<td class='a'>"+data[i].database_name+"</td>" +
+							"<td>"+data[i].sum1+"</td>" +
+							"<td>"+data[i].sum2+"</td>" +
+							"<td>"+data[i].sum3+"</td>" +
+							"</tr>";
+
+					}
+					document.getElementById('tbody').innerHTML = html;
+					var pages;
+					var groups;
+					if(totalRow%pageSize==0)
+					{
+						pages = parseInt(totalRow/pageSize);
+					}else
+					{
+						pages = parseInt(totalRow/pageSize+1);
+					}
+					if(pages>=4)
+					{
+						groups=4;
+					}else
+					{
+						groups=pages;
+					}
+
+				}else{
+					$(".showPage").css("display","none");
+					$("#tbody").html("");
+				}
+				//显示分页
+				laypage({
+					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+					pages: pages, //通过后台拿到的总页数
+					curr: curr, //当前页
+					skip: true, //是否开启跳页
+					skin: 'molv',//当前页颜色，可16进制
+					groups: groups, //连续显示分页数
+					first: '首页', //若不显示，设置false即可
+					last: '尾页', //若不显示，设置false即可
+					prev: '上一页', //若不显示，设置false即可
+					next: '下一页', //若不显示，设置false即可
+					jump: function(obj, first){ //触发分页后的回调
+						if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+							tabulation(obj.curr);
+						}
+					}
+				});
+
+				$(".rui:first").prop("checked",true);
+				$("#simple").hide();
+				$("#more").show();
+				$("input[name=item]").prop("checked",true);
+				$("#checkallsource").prop("checked",true);
 			}
-			document.getElementById('tbody').innerHTML = html;
-			var totalRow = datas.totalRow;
-	        var pageSize = datas.pageSize;
-//	        alert("totalRow~~~~~"+totalRow);
-	        var pages;
-	        var groups;
-	        if(totalRow%pageSize==0)
-	        {	
-	        	 pages = totalRow/pageSize; 
-	        }else
-	        {
-	        	pages = totalRow/pageSize+1;
-	        }
-	        if(pages>=4)
-	        {
-	        groups=4;
-	        }else
-	        {
-	        	groups=pages;
-	        }
-	      //显示分页
-	        laypage({
-		    	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-		        pages: pages, //通过后台拿到的总页数
-		        curr: curr, //当前页
-		        skip: true, //是否开启跳页
-			    skin: 'molv',//当前页颜色，可16进制
-			    groups: groups, //连续显示分页数
-			    first: '首页', //若不显示，设置false即可
-			    last: '尾页', //若不显示，设置false即可
-			    prev: '上一页', //若不显示，设置false即可
-			    next: '下一页', //若不显示，设置false即可
-	            jump: function(obj, first){ //触发分页后的回调
-	                if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-	                	tabulation(obj.curr);
-	            		
-	                }
-	            }
-	        });
-		}
-	});
-	
+		})
+	}
 }
 
+
+//
 /**
  * 加载图表数据--liuYong
  */
 function line(urlType,database_name,datas){
-	institution_name=$("#institution_name").val();
-	user_id=$("#user_id").val();
-	restype=$("#restype").val();
-	dbname=$("#database").val();
-	getTime();
-	
-	$.ajax({
-		type : "POST",
-		url : "../databaseAnalysis/getChart.do",
-		data : {
-			'institution_name' : institution_name,
-			'user_id' : user_id,
-			'date' : date,
-			'source_db':restype,
-			'product_source_code':dbname,
-			'startTime' : startTime,
-			'endTime' : endTime,
-			'urlType':urlType,
-			'databaseNames':database_name,
-		},
-		dataType : "json",
-		success : function(data) {
-	
-	    var myChart = echarts.init(document.getElementById('main')); 
-	    option = {
-	    	    tooltip : {
-	    	        trigger: 'axis'
-	    	    },
-	    	    legend: {
-	    	        data:datas,
-	    	    },
-	    	    toolbox: {
-	    	        show : true,
-	    	        feature : {
-	    	            mark : {show: true},
-	    	            dataView : {show: true, readOnly: false},
-	    	            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-	    	            restore : {show: true},
-	    	            saveAsImage : {show: true}
-	    	        }
-	    	    },
-	    	    calculable : true,
-	    	    xAxis : [
-	    	        {
-	    	            type : 'category',
-	    	            boundaryGap : false,
-	    	            data : data.timeArr
-	    	        }
-	    	    ],
-	    	    yAxis : [
-	    	        {
-	    	            type : 'value'
-	    	        }
-	    	    ],
-	    	    series : [
-	    	        {
-	    	            name:'检索数',
-	    	            type:'line',
-	    	            data:data.searchArr
-	    	        },
-	    	        {
-	    	            name:'浏览数',
-	    	            type:'line',
-	    	            data:data.browseArr
-	    	        },
-	    	        {
-	    	            name:'下载数',
-	    	            type:'line',
-	    	            data:data.downloadArr
-	    	        }
-	    	    ]
-	    	};
-	    	myChart.setOption(option);
-    
-		}
-	});
+	if($("#startTime").val() == ''|| $("#endTime").val() == '') {
+		layer.msg("请选择前后统计时间!",{icon: 2});
+	}
+	else{
+		institution_name=$("#institution_name").val();
+		user_id=$("#user_id").val();
+		restype=$("#restype").val();
+		dbname=$("#database").val();
+		getTime();
+		$.ajax({
+			type : "POST",
+			url : "../databaseAnalysis/getChart.do",
+			data : {
+				'institution_name' : institution_name,
+				'user_id' : user_id,
+				'date' : date,
+				'source_db':restype,
+				'product_source_code':dbname,
+				'startTime' : startTime,
+				'endTime' : endTime,
+				'urlType':urlType,
+				'databaseNames':database_name,
+			},
+			dataType : "json",
+			success : function(data) {
+				if(database_name.length>1){
+					var myChart = echarts.init(document.getElementById('main'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:data.title
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.timeArr
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
+
+						]
+					};
+					for(var i =0;i<database_name.length;i++){
+						var name = data.title[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
+				}else {
+					var myChart = echarts.init(document.getElementById('main'));
+					option = {
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							data:datas,
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								saveAsImage : {show: true}
+							}
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'category',
+								boundaryGap : false,
+								data : data.timeArr
+							}
+						],
+						yAxis : [
+							{
+								type : 'value'
+							}
+						],
+						series : [
+
+						]
+					};
+					for(var i =0;i<datas.length;i++){
+						var name = datas[i];
+						var num=new Array();
+						num =data.content[name];
+						option.series.push(
+							{
+								name:name,
+								type:'line',
+								data:num
+							}
+						)
+					}
+					myChart.setOption(option);
+				}
+			}
+		});
+	}
 }
 
 /**判断是否用小时为统计单位*/
@@ -203,28 +348,29 @@ function getTime(){
 		if(between<=0){
 			date=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();
 			startTime=0;
-			endTime=24; 	
-//			alert("type:"+type+"date:"+date+"startTime:"+startTime+"endTime:"+endTime);
+			endTime=24;
 		}else{
 			date="";
 		}
 	}else{
 		date="";
 	}
-
-	
 }
 
 //导出
 function exportDatabase(){
-	
 	if(''!=$("#startTime").val() && ''!=$("#endTime").val()){
 		getTime();
-		window.location.href="../databaseAnalysis/exportDatabase.do?" +
-				"institution_name="+institution_name+"&user_id="+user_id+
-				"&source_db="+restype+
-				"&product_source_code="+dbname+
-				"&date="+date+"&startTime="+startTime+"&endTime="+endTime;
+		institution_name=$("#institution_name").val();
+		user_id=$("#user_id").val();
+		restype=$("#restype").val();
+		dbname=$("#database").val();
+		var url="../databaseAnalysis/exportDatabase.do?" +
+			"institution_name="+institution_name +"&user_id="+user_id+
+			"&source_db="+restype+
+			"&product_source_code="+dbname+
+			"&date="+date+"&startTime="+startTime+"&endTime="+endTime;
+		window.location.href=encodeURI(encodeURI(url));
 	}else{
 		layer.msg("请选择前后统计时间!",{icon: 2});
 	}
@@ -233,30 +379,50 @@ function exportDatabase(){
 //数据库选择  全选 全不选
 function checkAll(){
 	$("input[name='checkOne']").prop("checked",$("#checkAll").prop("checked"));
-	moreOrSimple();
+
 }
 
 //单选
 function checkOne(){
-	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
-	moreOrSimple();
-}
+if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+ 		$("#simple").show();
+ 		$("#more").hide();
+ 	}else{
+ 		$("#simple").hide();
+ 		$("#more").show();
+ 		$("input[name=item]").prop("checked",true);
+ 		$("#checkallsource").prop("checked",true);
+ 	}
+ }
 
 //根据数据库选择情况  展示指标数量
 function moreOrSimple(){
+	$("#checkAll").prop("checked",$("input[name='checkOne']").length==$("input[name='checkOne']:checked").length);
 	if($("input[name='checkOne']:checked").length>1 || $("input[name='checkOne']:checked").length==0){
+
 		$("#simple").show();
 		$("#more").hide();
-		
-		checkitem();
-		
+		 checkitem();
+
 	}else{
 		$("#simple").hide();
 		$("#more").show();
-		
-		checkitem_more();
+		 checkitem_more();
 	}
 } 
+//数据库名称选择
+function mySelect(){
+	if( $("#database").val() == "" || $("#database").val() == null){
+		$("#simple").show();
+		$("#more").hide();
+	}else {
+		$("#simple").hide();
+		$("#more").show();
+		$("input[name=item]").prop("checked",true);
+		$("#checkallsource").prop("checked",true);
+	}
+}
+
 
 //指标单选
 function checkitem(){
@@ -265,7 +431,7 @@ function checkitem(){
 	var datas=new Array();
 	var url=$("#urltype").val();
 	urlType.push(url);
-	
+
 	if(url==1){
 		datas.push("浏览数");
 	}else if(url==2){
@@ -273,29 +439,22 @@ function checkitem(){
 	}else if(url==3){
 		datas.push("检索数");
 	}
-	
-	
-	$("input[name='checkOne']:checked").each(function(){
+	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	
-	
 	line(urlType,database_name,datas);
 }
 
 //多选指标  全部
 function checksource(){
 	$("input[name='item']").prop("checked",$("#checkallsource").prop("checked"));
-	checkitem_more();
 }
 
 //指标多选
 function checkitem_more(){
-	
 	var urlType=new Array();
 	var database_name=new Array();
 	var datas=new Array();
-	
 	$("#checkallsource").prop("checked",$("input[name='item']").length==$("input[name='item']:checked").length);
 	$("input[name='item']:checked").each(function(){
 		urlType.push($(this).val());
@@ -309,19 +468,15 @@ function checkitem_more(){
 		}
 		
 	});
-	$("input[name='checkOne']:checked").each(function(){
+	$("input[class='rui']:checked").each(function(){
 		database_name.push($(this).val());
 	});
-	
 	line(urlType,database_name,datas);
 }
 
-
 function getDatabaseBySourceCode(code){
-	
 	$("#database").empty();
 	$("#database").append("<option value=''>--请选择数据库名称--</option>");
-	
 	if(""!=code && null!=code && undefined!=code){
 		$.ajax({
 			type : "POST",
@@ -335,7 +490,6 @@ function getDatabaseBySourceCode(code){
 			}
 		});
 	}
-	
 }
 
 

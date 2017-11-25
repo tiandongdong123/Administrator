@@ -21,7 +21,7 @@ public interface DatabaseAnalysisService {
 	* @author LiuYong 
 	* @date 13 Dis 2016 2:53:14 PM
 	 */
-	PageList 	getDatabaseAnalysisList(DatabaseUseDaily databaseAnalysis,String startTime,String endTime,Integer pagenum,Integer pagesize);
+	Map 	getDatabaseAnalysisList(DatabaseUseDaily databaseAnalysis,String startTime,String endTime,Integer pagenum,Integer pagesize);
 
 	/**
 	* @Title: DatabaseAnalysisStatistics
@@ -34,8 +34,8 @@ public interface DatabaseAnalysisService {
 	* @date 13 Dis 2016 2:54:38 PM
 	 */
 	Map<String, Object> DatabaseAnalysisStatistics(DatabaseUseDaily databaseAnalysis,String startTime,String endTime,Integer[]utlType,String[]database_name);
-	
-	
-	List<Map<String, String>> exportDatabase(DatabaseUseDaily databaseUseDaily,String startTime,String endTime);
+
+
+	Map<String,List<Map<String,String>>> exportDatabase(DatabaseUseDaily databaseUseDaily,String startTime,String endTime);
 	
 }

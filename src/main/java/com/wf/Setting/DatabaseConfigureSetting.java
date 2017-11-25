@@ -9,6 +9,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.dom4j.*;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.*;
 
@@ -43,10 +44,11 @@ public class DatabaseConfigureSetting {
                 db.setResType(element.elementText("resourceType"));
                 db.setLanguage(element.elementText("language"));
                 db.setCustomPolicy(element.elementText("customPolicy"));
-                if(element.elementText("state").equals("")){
+                db.setState(Integer.parseInt(element.elementText("state")));
+                if(element.elementText("status").equals("")){
                     db.setStatus(null);
                 }else {
-                    db.setStatus(Integer.valueOf(element.elementText("state")));
+                    db.setStatus(Integer.valueOf(element.elementText("status")));
                 }
                 database.add(db);
             }
@@ -66,10 +68,10 @@ public class DatabaseConfigureSetting {
         try{
             Document document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
-            Datamanager db = new Datamanager();
             List<Element> list  =  root.selectNodes(XPath);
             for(Element element : list){
-                if(element.elementText("name").equals(dataName)){
+                if(element.elementText("name").contains(dataName)&&dataName!=""){
+                    Datamanager db = new Datamanager();
                     db.setId(element.attributeValue("id"));
                     db.setTableName(element.elementText("name"));
                     db.setTableDescribe(element.elementText("describe"));
@@ -78,13 +80,13 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    if(element.elementText("state").equals("")){
+                    db.setState(Integer.parseInt(element.elementText("state")));
+                    if(element.elementText("status").equals("")){
                         db.setStatus(null);
                     }else {
-                        db.setStatus(Integer.valueOf(element.elementText("state")));
+                        db.setStatus(Integer.valueOf(element.elementText("status")));
                     }
                     database.add(db);
-                    break;
                 }
 
             }
@@ -118,7 +120,9 @@ public class DatabaseConfigureSetting {
             Element languageElem = newElem.addElement("language");
             Element customPolicyElem = newElem.addElement("customPolicy");
             Element codeElem = newElem.addElement("code");
-            Element stateElem = newElem.addElement("state");
+            Element stateElem = newElem.addElement("status");
+            Element statusElem = newElem.addElement("state");
+
             //设置子节点的文本内容
             nameElem.setText(data.getTableName());
             abbElem.setText(data.getAbbreviation());
@@ -128,6 +132,7 @@ public class DatabaseConfigureSetting {
             resourceTypeElem.setText(data.getResType());
             languageElem.setText(data.getLanguage());
             codeElem.setText(data.getProductSourceCode());
+            statusElem.setText("0");
             //指定文件输出的位置
             Setting.set(path, document.asXML());
 
@@ -215,6 +220,7 @@ public class DatabaseConfigureSetting {
                     String language1 = element1.elementText("language");
                     String customPolicy1 = element1.elementText("customPolicy");
                     String code1 = element1.elementText("code");
+                    String status1 = element1.elementText("status");
                     String state1 = element1.elementText("state");
                     //找出element2的所有属性和节点
                     Attribute attr2 = element2.attribute("id");
@@ -228,6 +234,7 @@ public class DatabaseConfigureSetting {
                     String language2 = element2.elementText("language");
                     String customPolicy2 = element2.elementText("customPolicy");
                     String code2 = element2.elementText("code");
+                    String status2 = element1.elementText("status");
                     String state2 = element2.elementText("state");
                     //交换属性和节点
                     attr1.setValue(id2);
@@ -240,6 +247,7 @@ public class DatabaseConfigureSetting {
                     element1.element("language").setText(language2);
                     element1.element("customPolicy").setText(customPolicy2);
                     element1.element("code").setText(code2);
+                    element1.element("status").setText(status2);
                     element1.element("state").setText(state2);
 
                     attr2.setValue(id1);
@@ -252,6 +260,7 @@ public class DatabaseConfigureSetting {
                     element2.element("language").setText(language1);
                     element2.element("customPolicy").setText(customPolicy1);
                     element2.element("code").setText(code1);
+                    element2.element("status").setText(status1);
                     element2.element("state").setText(state1);
                     break;
                 }
@@ -290,6 +299,7 @@ public class DatabaseConfigureSetting {
                     String language1 = element1.elementText("language");
                     String customPolicy1 = element1.elementText("customPolicy");
                     String code1 = element1.elementText("code");
+                    String status1 = element1.elementText("status");
                     String state1 = element1.elementText("state");
                     //找出element2的所有属性和节点
                     Attribute attr2 = element2.attribute("id");
@@ -303,6 +313,7 @@ public class DatabaseConfigureSetting {
                     String language2 = element2.elementText("language");
                     String customPolicy2 = element2.elementText("customPolicy");
                     String code2 = element2.elementText("code");
+                    String status2 = element1.elementText("status");
                     String state2 = element2.elementText("state");
                     //交换属性和节点
                     attr1.setValue(id2);
@@ -315,6 +326,7 @@ public class DatabaseConfigureSetting {
                     element1.element("language").setText(language2);
                     element1.element("customPolicy").setText(customPolicy2);
                     element1.element("code").setText(code2);
+                    element1.element("status").setText(status2);
                     element1.element("state").setText(state2);
 
                     attr2.setValue(id1);
@@ -327,6 +339,7 @@ public class DatabaseConfigureSetting {
                     element2.element("language").setText(language1);
                     element2.element("customPolicy").setText(customPolicy1);
                     element2.element("code").setText(code1);
+                    element2.element("status").setText(status1);
                     element2.element("state").setText(state1);
                     break;
                 }
@@ -360,18 +373,37 @@ public class DatabaseConfigureSetting {
             throw new IllegalArgumentException("加载setting配置出错，path:" + path);
         }
     }
+
     /**
-     * 更新资源类型状态
+     * 更新数据库状态
      */
 
-    public void updateDatabaseState(int typeState,String id){
+    public void updateDatabaseState(int state,String id){
         String xml = Setting.get(path);
         try{
             Document document = DocumentHelper.parseText(xml);
             Element root = document.getRootElement();
             String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
             Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            databaseEmlem.element("state").setText(String.valueOf(typeState));
+            databaseEmlem.element("state").setText(String.valueOf(state));
+            Setting.set(path, document.asXML());
+        }catch (Exception e){
+            log.error("加载setting配置出错，path:" + path, e);
+            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+        }
+    }
+    /**
+     * 更新数据库权限
+     */
+
+    public void updateDatabaseStatus(int status,String id){
+        String xml = Setting.get(path);
+        try{
+            Document document = DocumentHelper.parseText(xml);
+            Element root = document.getRootElement();
+            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
+            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
+            databaseEmlem.element("status").setText(String.valueOf(status));
             Setting.set(path, document.asXML());
         }catch (Exception e){
             log.error("加载setting配置出错，path:" + path, e);
@@ -400,10 +432,11 @@ public class DatabaseConfigureSetting {
                     db.setResType(element.elementText("resourceType"));
                     db.setLanguage(element.elementText("language"));
                     db.setCustomPolicy(element.elementText("customPolicy"));
-                    if(element.elementText("state").equals("")){
+                    db.setState(Integer.parseInt(element.elementText("state")));
+                    if(element.elementText("status").equals("")){
                         db.setStatus(null);
                     }else {
-                        db.setStatus(Integer.valueOf(element.elementText("state")));
+                        db.setStatus(Integer.valueOf(element.elementText("status")));
                     }
                     database.add(db);
                 }
@@ -417,7 +450,7 @@ public class DatabaseConfigureSetting {
     }
 
     /**
-     * 判断资源类型是否已发布
+     * 判断数据库state
      */
     public boolean checkResourceForOne(String id){
         String xml = Setting.get(path);
@@ -438,4 +471,25 @@ public class DatabaseConfigureSetting {
         }
     }
 
+    /**
+     * 判断数据库status
+     */
+    public boolean checkStatus(String id){
+        String xml = Setting.get(path);
+        try{
+            Document  document = DocumentHelper.parseText(xml);
+            Element root = document.getRootElement();
+            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
+            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
+            if ("1".equals(databaseEmlem.elementText("status"))){
+                return true;
+            }else {
+                return false;
+            }
+
+        }catch (Exception e){
+            log.error("解析商品配置出错, xml:" + xml, e);
+            throw new IllegalArgumentException("解析商品配置出错");
+        }
+    }
 }

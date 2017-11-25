@@ -42,7 +42,10 @@
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">数据来源：</label>
                   <select id="source_db" onchange="getDatabaseBySourceCode(this.value)">
-                  	<option value="">--请选择数据来源--</option>
+                      <option value="">--请选择数据来源--</option>
+                      <?for(var item in allDataSource){?>
+                      <option value="${item.dbSourceCode}">${item.dbSourceName}</option>
+                      <?}?>
                   </select>
                 </div>
                 <div class="form-group input_block">
@@ -69,42 +72,66 @@
 	              -<input type="text" class="form-control input_time" value="${yesterday}" onclick="WdatePicker()" id="endtime" name="end_time" />
 	         	</div>
 	         	<div class="form-group input_block" style="text-align:center;">
-					<button type='button' class='btn btn-primary' onclick="getline(),gettable(1)">查询</button>
+					<button type='button' class='btn btn-primary' onclick="gettable(1)">查询</button>
 		           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportresource();">导出</button>
              	</div>
-	         	<table  class="table table-bordered table-striped">
-                <tbody id="databody">
-                
-                </tbody>
-                
-              </table>
-              <div id="page"></div>
+
+                  <div style="overflow-y:scroll; height:300px;">
+                      <table  class="table table-bordered table-striped" >
+                          <tbody id="databody"></tbody>
+                      </table>
+                      <div class="pageAll" style="overflow: hidden;">
+                          <div class="showPage" style="font-size: 12px;font-family: 微软雅黑; padding:3px;margin-left: 33%;float: left;line-height: 30px;display: none;">
+                              每页显示：
+                              <select name="" id="pageChange" style="height: 24px;display: inline-block;">
+                                  <option value="10" selected="selected">10</option>
+                                  <option value="20">20</option>
+                                  <option value="30">30</option>
+                                  <option value="50">50</option>
+                              </select>
+                              条数据
+                          </div>
+                          <div id="page" style="float: left"></div>
+                      </div>
+                  </div>
+
+
+
 	             分析指标：
-             	<div id="single">
-	              <select id="urltype" onchange="checkitem()">
-	              <option value="1">浏览数</option>
-	              <option value="2">下载数</option>
-	              <option selected="selected" value="3">检索数</option>
-	              <option value="4">分享数</option>
-	              <option value="5">收藏数</option>
-	              <option value="6">导出数</option>
-	              <option value="7">笔记数</option>
-	              <option value="8">订阅数</option>
+             	<div id="single" style="display: none">
+	              <select id="urltype" >
+                      <!--onchange="checkitem()"-->
+                      <option selected="selected" value="3">检索数</option>
+                      <option value="1">浏览数</option>
+                      <option value="2">下载数</option>
+                      <option value="8">跳转数</option>
+                      <option value="9">订阅数</option>
+                      <option value="5">收藏数</option>
+                      <option value="7">笔记数</option>
+                      <option value="4">分享数</option>
+                      <option value="6">导出数</option>
 	              </select>
              	</div>
              	
-             	<div id="more">
-             	<input type="checkbox"  style="margin-left: 10px; margin-right: 0px;" id="checkallsource" onclick="checksource(),checkitem()">全部
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="1" type="checkbox" onclick="checkitem()">浏览数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;"  value="2" type="checkbox" onclick="checkitem()">下载数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;"  value="3" type="checkbox" onclick="checkitem()">检索数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="4" type="checkbox" onclick="checkitem()">分享数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="5" type="checkbox" onclick="checkitem()">收藏数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="6" type="checkbox" onclick="checkitem()">导出数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="7" type="checkbox" onclick="checkitem()">笔记数
-             	<input name="item" style="margin-left: 10px; margin-right: 0px;" value="8" type="checkbox" onclick="checkitem()">订阅数
+             	<div id="more" style="display: none;">
+             	<input type="checkbox"  style="margin-left: 10px; margin-right: 0px; " id="checkallsource" onclick="checksource()">全部
+                    <!--onclick="checksource(),checkitem()"-->
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="3" type="checkbox" >检索数
+                    <!--onclick="checkitem()"-->
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="1" type="checkbox" >浏览数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="2" type="checkbox" >下载数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="8" type="checkbox" >跳转数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="9" type="checkbox" >订阅数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="5" type="checkbox" >收藏数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="7" type="checkbox" >笔记数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="4" type="checkbox" >分享数
+                    <input name="item" style="margin-left: 10px; margin-right: 0px;" value="6" type="checkbox" >导出数
              	
              	</div>
+                  <div style="width: 200px;margin:0 auto;">
+                      <button type='button' class='btn btn-primary' onclick="getline(),checkitem()">提交</button>
+                  </div>
+
 				<div class="form-group input_block">
 				  <div class="col-md-5">
                       <div class="form-group input_block">

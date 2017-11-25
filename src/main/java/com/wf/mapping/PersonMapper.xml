@@ -85,7 +85,7 @@
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
-  
+
  <!-- 更新管理员的机构名称与密码 -->
  <update id="updateRegisterAdmin" parameterType="com.wf.bean.Person">
     update user
@@ -340,5 +340,8 @@
   	and institution like CONCAT('%',#{institution},'%') and userType=2
   	limit 0,10
   </select>
-  
+
+    <select id="getInstitutionUser" resultType="java.lang.String">
+        select user_id from user  where  userType in (2,3) and institution = #{institutionName}
+    </select>
 </mapper>

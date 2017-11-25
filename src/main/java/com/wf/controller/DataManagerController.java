@@ -19,6 +19,7 @@ import com.utils.JsonUtil;
 import com.wf.Setting.DatabaseConfigureSetting;
 
 import net.sf.json.JSONArray;
+import org.dom4j.DocumentException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,7 +44,7 @@ public class DataManagerController {
 
 	@Autowired
 	LogService logService;
-	
+
 	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
 	/**
 	 * 获取数据库
@@ -53,7 +54,7 @@ public class DataManagerController {
 	@RequestMapping("getdata")
 	@ResponseBody
 	public PageList getData(Integer pagenum,Integer pagesize,String dataname,HttpServletRequest request) throws Exception {
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -64,7 +65,7 @@ public class DataManagerController {
 		log.setModule("数据库配置管理");
 		log.setOperation_content("数据库名称:"+dataname);
 		logService.addLog(log);
-		
+
 		if(dataname==null){
 			PageList p = this.data.getData(pagenum,pagesize);
 			return p;
@@ -74,14 +75,13 @@ public class DataManagerController {
 		}
 
 	}
-
 	/**
 	 * 资源类型上移
 	 */
 	@RequestMapping("/moveUpDatabase")
 	public void moveUpDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -109,7 +109,7 @@ public class DataManagerController {
 	public void moveDownDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveDownDatabase(id);
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -120,7 +120,7 @@ public class DataManagerController {
 		log.setModule("数据库配置管理");
 		log.setOperation_content("资源类型ID:"+id);
 		logService.addLog(log);
-		
+
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
@@ -134,13 +134,13 @@ public class DataManagerController {
 	 * 删除数据库
 	 * @param id
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("deletedata")
 	@ResponseBody
 	public boolean deleteData(String id,HttpServletRequest request) throws Exception{
 		boolean a = this.data.deleteData(id);
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -155,13 +155,50 @@ public class DataManagerController {
 		return a;
 	}
 	/**
-	 *判断资源类型是否发布
+	 *判断数据库state
 	 */
 	@RequestMapping("/checkResourceForOne")
 	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean result = this.data.checkResourceForOne(id);
 		JsonUtil.toJsonHtml(response, result);
 	}
+	/**
+	 *判断数据库status
+	 */
+	@RequestMapping("/checkStatus")
+	public void checkStatus(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
+		boolean result = this.data.checkStatus(id);
+		JsonUtil.toJsonHtml(response, result);
+	}
+	/**
+	 * 发布数据库
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("releaseData")
+	@ResponseBody
+	public boolean releaseData(String id) throws InterruptedException {
+		boolean result = this.data.releaseData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
+	}
+	/**
+	 * 下撤数据库
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("descendData")
+	@ResponseBody
+	public boolean descendData(String id) throws InterruptedException {
+		boolean result = this.data.descendData(id);
+		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+		Thread.sleep(100);
+		this.data.selectZY();
+		return result;
+	}
+
 	/**
 	 * 解冻数据库
 	 * @param id
@@ -170,7 +207,7 @@ public class DataManagerController {
 	@RequestMapping("opendata")
 	@ResponseBody
 	public boolean openData(String id,HttpServletRequest request) throws Exception {
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -181,7 +218,7 @@ public class DataManagerController {
 		log.setModule("数据库配置管理");
 		log.setOperation_content("解冻资源类型ID:"+id);
 		logService.addLog(log);
-		
+
 		boolean result = this.data.openData(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
@@ -196,7 +233,7 @@ public class DataManagerController {
 	@RequestMapping("closedata")
 	@ResponseBody
 	public boolean closeData(String id,HttpServletRequest request) throws Exception {
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -207,7 +244,7 @@ public class DataManagerController {
 		log.setModule("数据库配置管理");
 		log.setOperation_content("冻结资源类型ID:"+id);
 		logService.addLog(log);
-		
+
 		boolean result = this.data.closeData(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
@@ -301,14 +338,14 @@ public class DataManagerController {
 	 * @param customs
 	 * @param data
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("doadddata")
 	@ResponseBody
 	public boolean doAddData(@RequestParam(value="customs[]",required=false) String[] customs,@ModelAttribute Datamanager data,
 			HttpServletRequest request) throws Exception{
 		boolean rt = this.data.doAddData(customs,data);
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -319,7 +356,7 @@ public class DataManagerController {
 		log.setModule("数据库配置管理");
 		log.setOperation_content("增加数据库信息:"+data.toString());
 		logService.addLog(log);
-		
+
 		return rt;
 	}
 	/**
@@ -357,14 +394,14 @@ public class DataManagerController {
 	 * @param customs
 	 * @param data
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("doupdatedata")
 	@ResponseBody
 	public boolean doUpdateData(@RequestParam(value="customs[]",required=false) String[] customs,@ModelAttribute Datamanager data,
 			HttpServletRequest request) throws Exception{
 		boolean rt = this.data.doUpdateData(customs,data);
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -391,11 +428,11 @@ public class DataManagerController {
 	 * 配置管理  数据库导出
 	 * @param response
 	 * @param dataname 数据库名称
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping("exportData")
 	public void exportData(HttpServletRequest request,HttpServletResponse response,String dataname) throws Exception{
-		
+
 		//记录日志
 		Log log=new Log();
 		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -413,7 +450,7 @@ public class DataManagerController {
 		}else{
 			list=data.exportData(dataname);
 		}
-		
+
 		List<String> names=Arrays.asList(new String[]{"序号","数据库名称","数据库描述","数据库类型","数据库来源","资源类型","语种","自定义策略","状态"});
 		JSONArray array=JSONArray.fromObject(list);
 		ExportExcel excel=new ExportExcel();
