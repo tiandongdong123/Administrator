@@ -131,23 +131,12 @@ public class LogController {
 	 * @param startTime
 	 * @param endTime
 	 * @param request 
+	 * @throws ParseException 
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportLog")
 	public void exportLog(HttpServletResponse response, String username,
-			String ip,String module,String behavior, String startTime, String endTime, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("后台日志管理");
-		log.setOperation_content("导出条件:操作用户："+username+",操作IP:"+ip+","
-				+ "操作模块:"+module+",操作类型:"+behavior+",操作时间:"+startTime+"-"+"endTime");
-		logService.addLog(log);
+			String ip,String module,String behavior, String startTime, String endTime, HttpServletRequest request) throws ParseException{
 		
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 		Calendar  calendar=new  GregorianCalendar(); 
@@ -290,19 +279,7 @@ public class LogController {
 	@RequestMapping("deleteLog")
 	@ResponseBody
 	public Integer deleteLog(HttpServletResponse response,@RequestParam(value="ids[]",required=false)Integer[]ids,
-			HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("后台日志管理");
-		log.setOperation_content("删除日志ID:"+(ids==null?"":Arrays.asList(ids)));
-		logService.addLog(log);
-
+			HttpServletRequest request){
 		return logService.deleteLogByID(ids);
 	}
 	

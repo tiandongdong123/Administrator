@@ -69,18 +69,7 @@ public class PageAnalysisController {
 	
 	@RequestMapping("getdataSource")
 	@ResponseBody
-	public Object datasource(HttpServletRequest request) throws Exception {
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("页面分析");
-		log.setOperation_content("");
-		logService.addLog(log);
+	public Object datasource(HttpServletRequest request){
 		
 		String age=request.getParameter("age");
 		String title=request.getParameter("title");
@@ -93,6 +82,11 @@ public class PageAnalysisController {
 		String type="123456789";
 //		PageAnalysisService pass=new  PageAnalysisServiceImpl();
 		Object json= pageAnalysisService.getdatasource(title, age, exlevel, datetype, reserchdomain, type, pageName, starttime, endtime);
+		
+		//记录日志
+		Log log=new Log("页面分析","查询","",request);
+		logService.addLog(log);
+		
 		return json;
 	}
 	

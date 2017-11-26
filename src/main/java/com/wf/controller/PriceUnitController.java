@@ -39,18 +39,11 @@ public class PriceUnitController {
 	@RequestMapping("getunit")
 	@ResponseBody
 	public PageList getUnit(@RequestParam("pagenum") Integer pagenum,
-			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request) throws Exception{
+			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request){
 		PageList  pl = this.unit.getUnit(pagenum, pagesize);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("单位设置");
-		log.setOperation_content("");
+		Log log=new Log("单位设置","查询","",request);
 		logService.addLog(log);
 
 		return pl;
@@ -64,18 +57,11 @@ public class PriceUnitController {
 	 */
 	@RequestMapping("deleteunit")
 	@ResponseBody
-	public boolean deleteAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
+	public boolean deleteAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		boolean rt = this.unit.deleteUnit(ids);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("单位设置");
-		log.setOperation_content("删除的资源单位ID:"+(ids==null?"":Arrays.asList(ids)));
+		Log log=new Log("单位设置","删除","删除的资源单位ID:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -102,18 +88,11 @@ public class PriceUnitController {
 	 */
 	@RequestMapping("doaddunit")
 	@ResponseBody
-	public boolean doAddUnit(String unitname,String unitcode, HttpServletRequest request) throws Exception{
+	public boolean doAddUnit(String unitname,String unitcode, HttpServletRequest request){
 		boolean rt = this.unit.doAddUnit(unitname,unitcode);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("单位设置");
-		log.setOperation_content("增加的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode);
+		Log log=new Log("单位设置","增加","增加的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode,request);
 		logService.addLog(log);
 
 		return rt;
@@ -121,18 +100,11 @@ public class PriceUnitController {
 	
 	@RequestMapping("doupdateunit")
 	@ResponseBody
-	public boolean doUpdateUnit(String unitname,String unitcode,Integer id, HttpServletRequest request) throws Exception{
+	public boolean doUpdateUnit(String unitname,String unitcode,Integer id, HttpServletRequest request){
 		boolean rt = this.unit.doUpdateUnit(unitname,unitcode,id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("单位设置");
-		log.setOperation_content("修改后的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode);
+		Log log=new Log("单位设置","修改","修改后的资源单位信息:unitname:"+unitname+"unitcode:"+unitcode,request);
 		logService.addLog(log);
 
 		return rt ;

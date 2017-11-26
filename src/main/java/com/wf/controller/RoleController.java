@@ -42,18 +42,11 @@ public class RoleController {
 	 */
 	@RequestMapping("getrole")
 	@ResponseBody
-	public PageList getRole(Integer pagesize,Integer pagenum,HttpServletRequest request) throws Exception{
+	public PageList getRole(Integer pagesize,Integer pagenum,HttpServletRequest request){
 		PageList pl = this.role.getRole(pagenum, pagesize);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("角色管理");
-		log.setOperation_content("");
+		Log log=new Log("角色管理","查询","",request);
 		logService.addLog(log);
 
 		return pl;
@@ -106,18 +99,11 @@ public class RoleController {
 	 */
 	@RequestMapping("doaddrole")
 	@ResponseBody
-	public boolean doAddRole(@ModelAttribute Role role,HttpServletRequest request) throws Exception{
+	public boolean doAddRole(@ModelAttribute Role role,HttpServletRequest request){
 		boolean rt = this.role.doAddRole(role);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("角色管理");
-		log.setOperation_content("增加角色信息:"+role.toString());
+		Log log=new Log("角色管理","增加",role.toString(),request);
 		logService.addLog(log);
 		
 		return rt ;
@@ -146,18 +132,11 @@ public class RoleController {
 	 */
 	@RequestMapping("doupdaterole")
 	@ResponseBody
-	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request) throws Exception{
+	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request){
 		boolean rt = this.role.doUpdateRole(role);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("角色管理");
-		log.setOperation_content("修改角色后信息:"+role.toString());
+		Log log=new Log("角色管理","修改",role.toString(),request);
 		logService.addLog(log);
 
 		return rt ;
@@ -165,18 +144,11 @@ public class RoleController {
 	
 	@RequestMapping("deleterole")
 	@ResponseBody
-	public boolean deleteRole(String id,HttpServletRequest request) throws Exception{
+	public boolean deleteRole(String id,HttpServletRequest request){
 		boolean rt = this.role.deleteRole(id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("角色管理");
-		log.setOperation_content("删除角色ID:"+id);
+		Log log=new Log("角色管理","删除","删除角色ID:"+id,request);
 		logService.addLog(log);
 		
 		return rt;

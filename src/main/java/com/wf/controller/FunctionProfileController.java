@@ -50,20 +50,14 @@ public class FunctionProfileController {
 	
 	@RequestMapping("gettable")
 	@ResponseBody
-	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,Integer type,String starttime,String endtime,String domain,Integer property, HttpServletRequest request) throws Exception{
+	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,Integer type,String starttime,String endtime,String domain,Integer property, HttpServletRequest request){
+		
+		PageList rs = this.function.gettable(pagesize,pagenum,title, age, exlevel, datetype, type, starttime, endtime, domain, property);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能概况");
-		log.setOperation_content("");
+		Log log=new Log("功能概况","查询","",request);
 		logService.addLog(log);
-
-		PageList rs = this.function.gettable(pagesize,pagenum,title, age, exlevel, datetype, type, starttime, endtime, domain, property);
+		
 		return rs;
 	}
 	

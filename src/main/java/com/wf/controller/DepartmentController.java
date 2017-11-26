@@ -35,18 +35,12 @@ public class DepartmentController {
 	@ResponseBody
 	public PageList getDept(Integer pagenum,Integer pagesize,HttpServletRequest request) throws Exception{
 		
+		PageList pl = this.dept.getDept(pagenum, pagesize);
+		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("部门管理");
-		log.setOperation_content("");
+		Log log=new Log("部门管理","查询","",request);
 		logService.addLog(log);
 		
-		PageList pl = this.dept.getDept(pagenum, pagesize);
 		return pl;
 	}
 	
@@ -57,18 +51,11 @@ public class DepartmentController {
 	
 	@RequestMapping("doadddept")
 	@ResponseBody
-	public boolean doAddDept(@ModelAttribute Department dept,HttpServletRequest request) throws Exception{
+	public boolean doAddDept(@ModelAttribute Department dept,HttpServletRequest request){
 		boolean rt = this.dept.doAddDept(dept);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("部门管理");
-		log.setOperation_content("增加部门信息:"+dept.toString());
+		Log log=new Log("部门管理","增加",dept.toString(),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -83,18 +70,11 @@ public class DepartmentController {
 	
 	@RequestMapping("doupdatedept")
 	@ResponseBody
-	public boolean doUpdateDept(@ModelAttribute Department dept,HttpServletRequest request) throws Exception{
+	public boolean doUpdateDept(@ModelAttribute Department dept,HttpServletRequest request){
 		boolean rt = this.dept.doUpdateDept(dept);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("部门管理");
-		log.setOperation_content("修改部门后信息:"+dept.toString());
+		Log log=new Log("部门管理","修改",dept.toString(),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -102,18 +82,11 @@ public class DepartmentController {
 	
 	@RequestMapping("deletedept")
 	@ResponseBody
-	public boolean deleteDept(Integer id,HttpServletRequest request) throws  Exception{
+	public boolean deleteDept(Integer id,HttpServletRequest request){
 		boolean rt = this.dept.deleteDept(id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("部门管理");
-		log.setOperation_content("删除部门ID:"+id);
+		Log log=new Log("部门管理","删除","删除部门ID:"+id,request);
 		logService.addLog(log);
 		
 		return rt;

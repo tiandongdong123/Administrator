@@ -42,21 +42,14 @@ public class ResourcePriceController {
 	@RequestMapping("getprice")
 	@ResponseBody
 	public PageList getPrice(@RequestParam(value="Rname",required =false) String  name,
-			Integer pagesize,Integer pagenum,HttpServletRequest request) throws Exception{
+			Integer pagesize,Integer pagenum,HttpServletRequest request){
 		if(name!=null&&name!=""){
 			name="%"+name+"%";
 		}
 		PageList Rnamelist  = this.Pservice.getPrice(name,pagesize,pagenum);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源单价配置管理");
-		log.setOperation_content("资源单价配置管理条件:产品名称:"+name);
+		Log log=new Log("资源单价配置管理","查询","资源单价配置管理条件:产品名称:"+name,request);
 		logService.addLog(log);
 		
 		return Rnamelist;
@@ -69,18 +62,11 @@ public class ResourcePriceController {
 	 */
 	@RequestMapping("deleteprice")
 	@ResponseBody
-	public boolean delectPrice(@RequestParam(value="ids[]",required =false) String[] ids,HttpServletRequest request) throws Exception{
+	public boolean delectPrice(@RequestParam(value="ids[]",required =false) String[] ids,HttpServletRequest request){
 		boolean re = this.Pservice.delectPrice(ids);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源单价配置管理");
-		log.setOperation_content("删除的产品ID:"+(ids==null?"":Arrays.asList(ids)));
+		Log log=new Log("资源单价配置管理","删除","删除的产品ID:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
 
 		return re;
@@ -117,18 +103,11 @@ public class ResourcePriceController {
 	 */
 	@RequestMapping("doaddprice")
 	@ResponseBody
-	public boolean doAddPrice(@ModelAttribute ResourcePrice rp,HttpServletRequest request) throws Exception{
+	public boolean doAddPrice(@ModelAttribute ResourcePrice rp,HttpServletRequest request){
 		boolean rt = this.Pservice.doAddPrice(rp);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源单价配置管理");
-		log.setOperation_content("增加的产品定价信息:"+rp.toString());
+		Log log=new Log("资源单价配置管理","增加",rp.toString(),request);
 		logService.addLog(log);
 
 		return rt;
@@ -143,18 +122,11 @@ public class ResourcePriceController {
 	
 	@RequestMapping("doupdateprice")
 	@ResponseBody
-	public boolean doUpdatePrice(@ModelAttribute ResourcePrice rp,HttpServletRequest request) throws Exception{
+	public boolean doUpdatePrice(@ModelAttribute ResourcePrice rp,HttpServletRequest request){
 		boolean rt = this.Pservice.doUpdatePrice(rp);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源单价配置管理");
-		log.setOperation_content("修改后的产品定价信息:"+rp.toString());
+		Log log=new Log("资源单价配置管理","修改",rp.toString(),request);
 		logService.addLog(log);
 
 		return rt;

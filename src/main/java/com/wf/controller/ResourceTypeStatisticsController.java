@@ -79,28 +79,13 @@ public class ResourceTypeStatisticsController {
 	
 	@RequestMapping("gettable")
 	@ResponseBody
-	public Map getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res, HttpServletRequest request) throws UnknownHostException {
+	public Map getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res, HttpServletRequest request){
 		Map map  = this.resource.gettable(num,starttime,endtime, res,pagenum, pagesize);
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型使用分析");
-
-		log.setOperation_content("查询条件:机构名称:"+res.getInstitutionName()+
-				",用户ID:"+res.getUserId()+",数据来源:"+res.getSource_db()+
-				",数据库名称:"+res.getProduct_source_code()+
-				"统计时间:"+starttime+"-"+endtime);
-
-		logService.addLog(log);
 		return map;
 	}
 	
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
-	public void exportresourceType(HttpServletRequest request,HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res) throws UnsupportedEncodingException, UnknownHostException {
+	public void exportresourceType(HttpServletRequest request,HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res) throws UnsupportedEncodingException{
 		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
 		if(StringUtils.isNotBlank(res.getInstitutionName())){
 			String name = java.net.URLDecoder.decode(request.getParameter("institutionName"), "utf-8");
@@ -151,22 +136,6 @@ public class ResourceTypeStatisticsController {
 				paramter.add("统计日期： "+"--"+endtime);
 			}
 		}
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型使用分析");
-
-		log.setOperation_content("导出条件:机构名称:"+res.getInstitutionName()+
-				",用户ID:"+res.getUserId()+",数据来源:"+res.getSource_db()+
-				",数据库名称:"+res.getProduct_source_code()+
-				"统计时间:"+starttime+"-"+endtime);
-
-		logService.addLog(log);
 
 		ExportExcel excel=new ExportExcel();
 		excel.exportresourceType(response, array, names, restype,paramter);

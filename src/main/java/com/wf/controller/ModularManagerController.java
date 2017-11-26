@@ -64,19 +64,11 @@ public class ModularManagerController {
 	
 	@RequestMapping("doAddModular")
 	@ResponseBody
-	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request) throws Exception{
+	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request){
 		boolean rt = modularService.doAddModular(md);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能模块管理");
-		
-		log.setOperation_content("添加功能模块信息:"+md.toString());
+		Log log=new Log("功能模块管理","增加",md.toString(),request);
 		logService.addLog(log);
 
 		return rt;
@@ -91,19 +83,11 @@ public class ModularManagerController {
 	
 	@RequestMapping("doUpdateModular")
 	@ResponseBody
-	public boolean doUpdateModular(@ModelAttribute Modular md, HttpServletRequest request) throws Exception{
+	public boolean doUpdateModular(@ModelAttribute Modular md, HttpServletRequest request){
 		boolean bl = modularService.doUpdateModular(md);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能模块管理");
-		
-		log.setOperation_content("修改功能模块信息:"+md.toString());
+		Log log=new Log("功能模块管理","修改",md.toString(),request);
 		logService.addLog(log);
 		
 		return bl;
@@ -111,19 +95,11 @@ public class ModularManagerController {
 	
 	@RequestMapping("deleteModular")
 	@ResponseBody
-	public boolean deleteModular(String id, HttpServletRequest request) throws Exception{
+	public boolean deleteModular(String id, HttpServletRequest request){
 		boolean rt = modularService.deleteModular(id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能模块管理");
-		
-		log.setOperation_content("删除功能模块ID:"+id);
+		Log log=new Log("功能模块管理","删除","删除功能模块ID:"+id,request);
 		logService.addLog(log);
 
 		return rt;
@@ -150,22 +126,11 @@ public class ModularManagerController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportmodular")
-	public void  exportmodular(HttpServletResponse response,String[] ids, HttpServletRequest request) throws Exception{
+	public void  exportmodular(HttpServletResponse response,String[] ids, HttpServletRequest request){
 			List<Object> list=new ArrayList<Object>();
 			
 			if(ids.length==0) ids=null;
 			
-			//记录日志
-			Log log=new Log();
-			log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-			log.setBehavior("导出");
-			log.setUrl(request.getRequestURL().toString());
-			log.setTime(DateTools.getSysTime());
-			log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-			log.setModule("功能模块管理");
-			
-			log.setOperation_content("导出条件:功能模块:"+ids.toString());
-			logService.addLog(log);
 			
 			list= modularService.exportmodular(ids);
 			JSONArray array=JSONArray.fromObject(list);
@@ -175,6 +140,10 @@ public class ModularManagerController {
 			ExportExcel excel=new ExportExcel();
 			excel.exportModular(response, array, names);
 		
+			//记录日志
+			Log log=new Log("功能模块管理","导出","导出条件:功能模块:"+ids.toString(),request);
+			logService.addLog(log);
+
 	}
 	
 }

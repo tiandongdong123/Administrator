@@ -39,18 +39,11 @@ public class WebControlController {
 	 */
 	@RequestMapping("getcontorl")
 	@ResponseBody
-	public List<Control> getControl(HttpServletRequest request) throws Exception{
+	public List<Control> getControl(HttpServletRequest request){
 		List<Control> li = this.control.getControl();
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站监控管理");
-		log.setOperation_content("");
+		Log log=new Log("网站监控管理","查询","",request);
 		logService.addLog(log);
 
 		return li;
@@ -78,18 +71,11 @@ public class WebControlController {
 	 */
 	@RequestMapping("doupdatecontorl")
 	@ResponseBody
-	public boolean doUpdateControl(String id,String ip, HttpServletRequest request) throws  Exception{
+	public boolean doUpdateControl(String id,String ip, HttpServletRequest request){
 		boolean rt = this.control.doUpdateControl(id,ip);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站监控管理");
-		log.setOperation_content("修改后的站点信息:{id:"+id+",ip:"+ip+"}");
+		Log log=new Log("网站监控管理","修改","修改后的站点信息:{id:"+id+",ip:"+ip+"}",request);
 		logService.addLog(log);
 
 		return rt;
@@ -103,18 +89,11 @@ public class WebControlController {
 	 */
 	@RequestMapping("dodeletecontrol")
 	@ResponseBody
-	public boolean doDeleteControl(String id, HttpServletRequest request) throws Exception{
+	public boolean doDeleteControl(String id, HttpServletRequest request){
 		boolean rt = this.control.doDeleteControl(id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站监控管理");
-		log.setOperation_content("删除的站点ID:"+id);
+		Log log=new Log("网站监控管理","删除","删除的站点ID:"+id,request);
 		logService.addLog(log);
 
 		return rt ;
@@ -141,18 +120,11 @@ public class WebControlController {
 	 */
 	@RequestMapping("doaddcontrol")
 	@ResponseBody
-	public boolean doaddcontrol(@ModelAttribute Control c, HttpServletRequest request) throws Exception{
+	public boolean doaddcontrol(@ModelAttribute Control c, HttpServletRequest request){
 		boolean rt = this.control.doAddControl(c);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站监控管理");
-		log.setOperation_content("增加的站点信息"+c.toString());
+		Log log=new Log("网站监控管理","增加","增加的站点信息"+c.toString(),request);
 		logService.addLog(log);
 
 		return rt ;

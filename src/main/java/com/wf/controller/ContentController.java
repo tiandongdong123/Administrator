@@ -668,15 +668,7 @@ public class ContentController{
 		if(StringUtils.isEmpty(ids))ids=null;
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("删除的资源类型ID:"+ids);
+		Log log=new Log("资源类型管理","删除","删除的资源类型ID:"+ids,request);
 		logService.addLog(log);
 
 		Boolean b=resourceTypeService.deleteResourceType(ids);
@@ -725,7 +717,7 @@ public class ContentController{
 	@RequestMapping("/shareTemplate")
 	public String getShareTemplate(
 			@RequestParam(value="shareType",required=false) String shareType,
-			HttpServletRequest request,Model model) throws Exception{
+			HttpServletRequest request,Model model){
 		int pageNum=1;
 		int pageSize=10;
 		PageList p=shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
@@ -735,15 +727,7 @@ public class ContentController{
 		model.addAttribute("templates", list);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("查询条件:分享类型:"+shareType);
+		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
 		logService.addLog(log);
 
 		return "/page/contentmanage/shareTemplate";
@@ -761,15 +745,7 @@ public class ContentController{
 			HttpServletResponse response,HttpServletRequest request) throws Exception{
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("查询条件:分享类型:"+shareType);
+		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
 		logService.addLog(log);
 		
 		int pageSize=10;
@@ -808,15 +784,7 @@ public class ContentController{
 		boolean b=shareTemplateService.addShareTemplate(shareTemplate);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("新增分享模块信息:"+shareTemplate.toString());
+		Log log=new Log("分享模板管理","增加","新增分享模块信息:"+shareTemplate.toString(),request);
 		logService.addLog(log);
 		
 		JsonUtil.toJsonHtml(response,b);
@@ -826,15 +794,7 @@ public class ContentController{
 	public void deleteShareTemplate(HttpServletResponse response,String ids, HttpServletRequest request) throws Exception{
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("删除的分享模块ID:"+ids);
+		Log log=new Log("分享模板管理","删除","删除的分享模块ID:"+ids,request);
 		logService.addLog(log);
 
 		boolean b =shareTemplateService.deleteShareTemplate(ids);
@@ -875,15 +835,7 @@ public class ContentController{
 		boolean b =shareTemplateService.updateShareTemplate(shareTemplate);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("修改后的分享模板信息:"+shareTemplate.toString());
+		Log log=new Log("分享模板管理","修改","修改后的分享模板信息:"+shareTemplate.toString(),request);
 		logService.addLog(log);
 
 		JsonUtil.toJsonHtml(response, b);
@@ -976,20 +928,11 @@ public class ContentController{
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
 		
-		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记管理");
-		
-		log.setOperation_content("笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
+		Log log=new Log("笔记管理","查询","笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
 				+",资源名称:"+resourceName+",笔记日期:"+startTime+"-"+endTime
 				+ ",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))+","
-				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)));
+				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)),request);
 		logService.addLog(log);
 		
 	}
@@ -1023,19 +966,12 @@ public class ContentController{
 	public void updateNotes(Notes notes,HttpServletResponse response, HttpServletRequest request) throws Exception{
 		notes.setHandlingStatus(3);
 		boolean b=notesService.updateNotes(notes);
+		JsonUtil.toJsonHtml(response, b);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记管理");
-		log.setOperation_content("修改后的笔记信息:"+notes.toString());
+		Log log=new Log("笔记管理","修改","修改后的笔记信息:"+notes.toString(),request);
 		logService.addLog(log);
 
-		JsonUtil.toJsonHtml(response, b);
 	}
 	@RequestMapping("/stick")
 	public void stick(Message message,@RequestParam("colums")String colums,HttpServletResponse response) throws Exception{
@@ -1565,23 +1501,8 @@ public class ContentController{
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记审核管理");
-		
-		log.setOperation_content("导出条件:用户ID:"+userName+",笔记编号:"+noteNum+",资源名称:"+resourceName
-				+",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))
-				+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))
-				+",申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus))
-				+",开始时间:"+startTime+",结束时间:"+endTime);
-
+			String[] complaintStatus,String startTime,String endTime){
+				
 		ExportExcel excel=new ExportExcel();
 	
 		if(StringUtils.isEmpty(userName)) userName=null;
@@ -1599,6 +1520,14 @@ public class ContentController{
 		List<String> names=Arrays.asList(new String[]{"序号","笔记编号","资源编号","资源类型","资源类型","笔记内容","处理意见","用户ID","笔记日期","数据状态","申诉状态"});		
 
 		excel.ExportNotes(response, array, names);
+		
+		//记录日志
+		Log log=new Log("笔记审核管理","导出","导出条件:用户ID:"+userName+",笔记编号:"+noteNum+",资源名称:"+resourceName
+				+",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))
+				+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))
+				+",申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)),request);
+		logService.addLog(log);		
+				
 	}
 
 	/**
@@ -1620,20 +1549,6 @@ public class ContentController{
 	public void exportVolumeDocu(String startTime,String endTime,String searchWord,String volumeType,String volumeState,
 			String sortColumn,String sortWay,HttpServletResponse response, HttpServletRequest request) throws Exception{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("文辑管理");
-		
-		log.setOperation_content("文辑管理:导出条件:开始时间"+startTime+",结束时间:"+endTime+
-				",关键字:"+searchWord+",文辑类型:"+volumeType+",文辑状态:"+volumeState+
-				"排序列:"+sortColumn+",顺序:"+sortWay);
-		logService.addLog(log);
-		
 		List<Object> list=new ArrayList<Object>();
 		list= volumeService.exportVolumeDocu(startTime, endTime, searchWord, volumeType, volumeState, sortColumn,sortWay);
 		JSONArray array=JSONArray.fromObject(list);
@@ -1644,6 +1559,13 @@ public class ContentController{
 		
 		ExportExcel excel=new ExportExcel();
 		excel.exportVolumeDocu(response, array, names,volumeType);
+		
+		//记录日志
+		Log log=new Log("文辑管理","导出","文辑管理:导出条件:开始时间"+startTime+",结束时间:"+endTime+
+				",关键字:"+searchWord+",文辑类型:"+volumeType+",文辑状态:"+volumeState+
+				"排序列:"+sortColumn+",顺序:"+sortWay,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -1654,19 +1576,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportshareTemplate")
-	public void exportshareTemplate(HttpServletResponse response,String shareType, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("导出条件:分享类型:"+shareType);
-		logService.addLog(log);
+	public void exportshareTemplate(HttpServletResponse response,String shareType, HttpServletRequest request){
 
 		List<Object> list=new ArrayList<Object>();
 		
@@ -1689,19 +1599,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportResource")
-	public void exportResource(HttpServletResponse response,String resouceType, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("导出条件:资源类型:"+resouceType);
-		logService.addLog(log);
+	public void exportResource(HttpServletResponse response,String resouceType, HttpServletRequest request){
 		
 		List<Object> list=new ArrayList<Object>();
 		
@@ -1719,6 +1617,10 @@ public class ContentController{
 			
 			ExportExcel excel=new ExportExcel();
 			excel.exportResource(response, array, names);
+
+			//记录日志
+			Log log=new Log("资源类型管理","导出","导出条件:资源类型:"+resouceType,request);
+			logService.addLog(log);
 			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -1736,19 +1638,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportSubject")
-	public void exportSubject(HttpServletResponse response,Integer pageNum,String level,String classNum,String className, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("导出条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
-		logService.addLog(log);
+	public void exportSubject(HttpServletResponse response,Integer pageNum,String level,String classNum,String className, HttpServletRequest request){
 		
 		List<Object> list=new ArrayList<Object>();
 		list=subjectService.exportSubject(level,classNum,className);
@@ -1759,6 +1649,10 @@ public class ContentController{
 		ExportExcel excel=new ExportExcel();
 		excel.exportSubject(response, array, names);
 		
+		//记录日志
+		Log log=new Log("学科分类管理","导出","导出条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -1809,26 +1703,19 @@ public class ContentController{
 	 */
 	@RequestMapping("exportMessage")
 	public void exportMessage(HttpServletResponse response,String branch,String colums,
-				String human,String startTime,String endTime, HttpServletRequest request) throws Exception{
+				String human,String startTime,String endTime, HttpServletRequest request){
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("导出条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
-		logService.addLog(log);
-
 		List<Object> list=new ArrayList<>();
 		list= messageService.exportMessage(branch,colums,human,startTime,endTime);
 		JSONArray array=JSONArray.fromObject(list);
 		List<String> names=Arrays.asList(new String[]{"序号","栏目","标题","原文链接","添加人","添加日期"});
 		ExportExcel excel=new ExportExcel();
 		excel.exportMessage(response, array, names);
+		
+		//记录日志
+		Log log=new Log("资讯管理","导出","导出条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
