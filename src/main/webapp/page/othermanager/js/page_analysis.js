@@ -143,11 +143,9 @@ $(function() {
 			$("input[name=ex_level]").prop("checked", false);
 		}
 		
-		if($("#checkallage").is(':checked')&&$("#checkallexlevel").is(':checked')&&$("#checkalltenure").is(':checked'))
-		{
+		if($("#checkallage").is(':checked')&&$("#checkallexlevel").is(':checked')&&$("#checkalltenure").is(':checked')){
 			$("#checkallbox").prop("checked", true);		
-		}	
-		else{
+		}else{
 			$("#checkallbox").prop("checked", false);
 		}
 	
@@ -168,8 +166,7 @@ $(function() {
 			$("input[name=age]").prop("checked", false);
 		}
 			
-		if($("#checkallage").is(':checked')&&$("#checkallexlevel").is(':checked')&&$("#checkalltenure").is(':checked'))
-		{
+		if($("#checkallage").is(':checked')&&$("#checkallexlevel").is(':checked')&&$("#checkalltenure").is(':checked')){
 			$("#checkallbox").prop("checked", true);		
 		}	
 		else{
@@ -382,11 +379,9 @@ $(function() {
 				$("#checkalltenure").prop("checked", false);
 			}
 			
-			if(i==5&&j==6 &&k==5)
-				{
+			if(i==5&&j==6 &&k==5){
 				$("#checkallbox").prop("checked", true);
-				}
-			else{
+			}else{
 				$("#checkallbox").prop("checked", false);
 			}
 	}

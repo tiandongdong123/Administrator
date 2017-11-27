@@ -7,56 +7,95 @@
       <div class="row" ">
       	<table class="table table-bordered">
       		<tr>
-	      		<td>期刊id</td>
+      		<td>点评ID</td>
+      			<td>${info.id}</td>
+      		</tr>
+      		<tr>
+	      		<td>期刊名称</td>
 	      		<td>
-	      		<input type="hidden" id="noteid" value="${info.perioId}"/>
-	      		${info.perioId}
+	      		${info.perio_name}
 	      		</td>
       		</tr>
       		<tr>
-      			<td>期刊点评详情</td>
+      			<td>发文学科</td>
+      			<td>${info.publishing_discipline}</td>
+      		</tr>
+      		<tr>
+      			<td>录用情况</td>
+      			<td>${info.hire_con}</td>
+      		</tr>
+      		<tr>
+      			<td>审稿周期</td>
       			<td>
-      			${info.commentContent}			
+      			<?if(info.submit_period==12){?>
+      			1年内
+      			<?}else if(info.submit_period==24){?>
+      			2年内
+      			<?}else if(info.submit_period==25){?>
+      			大于2年
+      			<?}else{?>
+      			${info.submit_period}个月内
+      			<?}?>
 				</td>
       		</tr>
       		<tr>
-      			<td>初步意见</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${info.preliminaryOpinions}">  
-      			</td>
-      		</tr>
-      		<tr>
-      			<td>申诉理由</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="appealReason" type="text" value="${info.appealReason}">     	
-      			</td>
-      		</tr>
-      		<tr>
-      			<td>最终意见</td>
+      			<td>审稿费</td>
       			<td>
-                 	<?if(info.finalOpinion=='经审核你的笔记已通过！'){?>
-                 	<input type="radio" checked='checked'  name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
-      				<input type="radio"  name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
-      				<input type="radio" id="san" onclick="showone();"  name="finalOpinion" value="自定义">自定义<br/>
-      				<input type="text"  id="zdy">
-               		<?}else if(info.finalOpinion=='您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。'){?>
-               		<input type="radio"  name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
-      				<input type="radio"  checked='checked' name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
-      				<input type="radio"  id="san" onclick="showone();"   name="finalOpinion" value="自定义">自定义<br/>
-      				<input type="text"  id="zdy" >
-      				<?}else if(info.finalOpinion==''){?>
-      				<input type="radio"   name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
-      				<input type="radio"   name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
-      				<input type="radio" id="san" onclick="showone();"  checked='checked' name="finalOpinion" value="自定义">自定义<br/>
-      				<input type="text"  id="zdy">
-      				<?}else{?>
-               		<input type="radio"   name="finalOpinion" value="经审核你的笔记已通过！">经审核你的笔记已通过！<br/>
-      				<input type="radio"   name="finalOpinion" value="您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。">您的笔记中含有敏感词汇，不符合相关法律法规和政策，未予显示。<br/>
-      				<input type="radio" id="san" onclick="showone();"  checked='checked' name="finalOpinion" value="自定义">自定义<br/>
-      				<input type="text"  id="zdy" value="${info.finalOpinion}" >
-      				<?}?>
+      			${info.audit_money}元			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>版面费</td>
+      			<td>
+      			${info.layout_money}元			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>点评用户ID</td>
+      			<td>
+      			${info.user_id}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>点评时间</td>
+      			<td>
+      			${info.update_date}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>点赞数</td>
+      			<td>
+      			${info.goods}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>执行操作</td>
+      			<td>
+      			${info.executive_operation}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>点评内容</td>
+      			<td>
+      			${info.comment_content}			
+				</td>
+      		</tr>
+      		<tr>
+      			<td>机器审核意见</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${info.preliminary_opinions}">  
+      			</td>
+      		</tr>
+      		<tr>
+      			<td>*人工处理意见</td><td><input style="width: 100%;height:40px;" id="appealReason" value="${info.final_opinion}" type="text" >     	
       			</td>
       		</tr>
       	</table>
       	<br/>
-      	<button type="submit" class="btn btn-primary" onclick="revocation('${info.id}');">撤销禁用</button>
-      	<button type="submit" class="btn btn-primary" onclick="maintain('${info.id}')">维持禁用</button>
+      	<?if(info.data_state=='0'){?>
+      	<button type="submit" class="btn btn-primary" onclick="revocation(${info.id});">撤销禁用</button>
+      	<?}else{?>
+      	<button type="submit" class="btn btn-primary" onclick="maintain(${info.id});">禁用</button>
+      	<?}?>
+      	<button type="submit" class="btn btn-primary" onclick="coloseLayer()" >取消</button>
       </div>
     </section>
 

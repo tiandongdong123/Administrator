@@ -29,6 +29,14 @@ function commentpage(curr){
 	 subtime=$("#subtime").find("option:selected").text();
 	if(subtime=='请选择'){
 		subtime='';
+	}else if(subtime=='1年内'){
+		subtime=12;
+	}else if(subtime=='2年内'){
+		subtime=24;
+	}else if(subtime=='大于2年'){
+		subtime=25;
+	}else{
+		subtime=subtime.split("个月内")[0];
 	}
 	
 	if(startTime!=null&&endTime!=null){
@@ -39,7 +47,6 @@ function commentpage(curr){
 			 return false;
 		 }
 	}
-	subtime=subtime.replace("个月","");
 	sauditm = $("#sauditm").val();
 	eauditm = $("#eauditm").val();
 	slayoutm = $("#slayoutm").val();
@@ -60,7 +67,7 @@ function commentpage(curr){
         pagenum: curr,//向服务端传的参数
         pagesize :10,
         authorName:username,
-        perioName : perioname,
+        perio_name : perioname,
         startTime :startTime,
         endTime:endTime,
         subTime:subtime,
@@ -71,23 +78,18 @@ function commentpage(curr){
         dataStateArr:dataState,
         complaintStatusArr:complaintStatus
     }, function(res){
-    	
     	var totalRow = res.pageTotal;
         var pageSize = res.pageSize;
         var pages;
         var groups;
-        if(totalRow%pageSize==0)
-        {	
+        if(totalRow%pageSize==0) {	
         	 pages = totalRow/pageSize; 
-        }else
-        {
+        }else {
         	pages = totalRow/pageSize+1;
         }
-        if(pages>=4)
-        {
+        if(pages>=4) {
         groups=4;
-        }else
-        {
+        }else {
         	groups=pages;
         }
         //显示分页
@@ -126,170 +128,81 @@ function commentpage(curr){
 				num=$(".laypage_curr").text();
 			}		
 			var buttonval="";
-			if(rows.dataState=='1'){
+			if(rows.data_state=='1'){
 				datast="正常";
 			}else{
 				datast="禁用"
 			}
-			if(rows.complaintStatus=='1'){
-				compst="正常";
-			}else{
-				compst="<span style='color:red'>申诉</span>";
+			if(rows.executive_operation=='1'){
+				compst="新增";
+			}else if(rows.executive_operation=='2'){
+				compst="修改";
+			}else if(rows.executive_operation=='3'){
+				compst="删除";
 			}
-				if(rows.handlingStatus==0){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" type='button' onclick=\"benSHOW('"+rows.id+"_"+rows.userId+"')\">禁用</button>";
-				}else if(rows.handlingStatus==1){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" onclick=\"findNote('"+rows.id+"_"+rows.userId+"');\" type='button'>待处理</button>";
-				}else if(rows.handlingStatus==2){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" onclick=\"findNotes('"+rows.id+"_"+rows.userId+"');\" type='button'>处理中</button>";
-				}else if(rows.handlingStatus==3){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" type='button' onclick=\"chechPerio('"+rows.id+"_"+rows.userId+"')\">已处理</button>";
-				}else if(rows.handlingStatus==4){
-					buttonval="<button id='"+rows.id+"_"+rows.userId+"' style=\"width: 65px\" onclick=\"openSHOW('"+rows.id+"_"+rows.userId+"')\" type='button'>解禁</button>";
-				}
 					
 			html+=" <tr>"; 
-					if(index<=9)
-						{
+					if(index<=9){
 						html+="<td>"+(num-1)+""+index+"</td>";
-						}
-					else if(index==10)
-						{
+					}else if(index==10){
 						html+="<td>"+num+"0</td>";
-						}					
-			html+=" <td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.perioName+"</td>"+
-					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hireCon+"</td>";
-					if(rows.subTime==0){
-						html+= "<td >其他</td>";
+					}					
+			html+="<td>"+rows.id+"</td>"+
+					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;' >"+rows.perio_name+"</td>"+
+			 		"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.publishing_discipline+"</td>"+
+					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.hire_con+"</td>";
+					if(rows.submit_period==12){
+						html+= "<td >1年</td>";
+					}else if(rows.submit_period==24){
+						html+= "<td >2年</td>";
+					}else if(rows.submit_period==25){
+						html+= "<td >大于2年</td>";
 					}else{
-						html+= "<td >"+rows.subTime+"个月</td>";
+						html+= "<td >"+rows.submit_period+"个月</td>";
 					}
-					html+="<td>"+rows.auditMoney+"</td>"+
-	                "<td>"+rows.layoutMoney+"</td>"+
-	                "<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.commentContent+"</td>"+
-	                "<td>"+rows.authorName+"</td>"+
+					html+="<td style='text-align: center' >"+(rows.audit_money==null?"":rows.audit_money)+"</td>"+
+	                "<td style='text-align: center'  >"+(rows.layout_money==null?"":rows.layout_money)+"</td>"+
+	                "<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.comment_content+"</td>"+
+	                "<td>"+rows.user_id+"</td>"+
+	                "<td>"+rows.creat_date+"</td>"+
+	                "<td>"+rows.goods+"</td>"+
 	                "<td>"+datast+"</td>"+
 	                "<td>"+compst+"</td>"+
-					"<td>" +buttonval +
-					"</td>"+
-		            "</tr>";
+	                "<td>"+(rows.auditor==null?"":rows.auditor)+"</td>"+
+	                "<td>"+(rows.audit_time==null?"":rows.audit_time)+"</td>";
+					if(rows.auditor==null){
+						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.id+");'>详情</a></td>"+
+			            "</tr>";
+					}else{
+						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.id+");'>已处理</a></td>"+
+			            "</tr>";
+					}
+					
 	    
     }
 	    $("#commentbody").html(html);
-  }else
-	  {
+  }else {
 	  layer.msg("没有检索到信息！请重新检索！");
 	  }
     });
 
 };
 
-function closenote(data)
-{	
-	var list=data.split("_");
-	var userid=list[1];
-	var id=list[0];
-	if($("#"+data).text()=='禁用'){
-		$.post("controltype.do",{userId : userid,id : id,dataState:'0',handlingStatus:'3'},function(data)
-				{
-				if(data=='ok'){
-					 window.location.reload();
-					}					
-				});
-	}
-}
-
-function benSHOW(data){
-	  layer.open({
-	        type: 1
-	        ,title: false //不显示标题栏
-	        ,closeBtn: false
-	        ,area: '300px;'
-	        ,shade: 0.8
-	        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-	        ,btn: ['禁用', '取消']
-	        ,moveType: 1 //拖拽模式，0或者1
-	        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">*禁用后数据将不会在前台显示</div>'
-	        ,success: function(layero){
-	          var btn = layero.find('.layui-layer-btn0');
-	          btn.css('text-align', 'center').on("click",function(){
-	        	  closenote(data);
-	          });
-	        }
-	      });
-}
-
-
-function opennote(data){
-	var list=data.split("_");
-	var userid=list[1];
-	var id=list[0];
-	if($("#"+data).text()=='解禁'){
-		$.post("controltype.do",{userId : userid,id : id,dataState:'1',handlingStatus:'3'},function(data){
-				if(data=='ok'){
-					 window.location.reload();
-					}					
-				});
-	}
-}
-
-function openSHOW(data){
-	  layer.open({
-	        type: 1
-	        ,title: false //不显示标题栏
-	        ,closeBtn: false
-	        ,area: '300px;'
-	        ,shade: 0.8
-	        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-	        ,btn: ['解禁', '取消']
-	        ,moveType: 1 //拖拽模式，0或者1
-	        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">*解禁后数据将会在前台显示</div>'
-	        ,success: function(layero){
-	          var btn = layero.find('.layui-layer-btn0');
-	          btn.css('text-align', 'center').on("click",function(){
-	        	  opennote(data);
-	          });
-	        }
-	      });
-}
 
 function findNote(data){
-	var list=data.split("_");
-	var userid=list[1];
-	var id=list[0];
+	var id=data;
 	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['60%', '90%'],
-	    title: '详细内容',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "findNote.do?id="+id,
-	}); 
+		  type: 2,//page层 1div，2页面
+		  area: ['60%', '90%'],
+		  fixed: false, //不固定
+		  title: '期刊点评详情',
+		  maxmin: true,
+		  moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		  content: "findNote.do?id="+id,
+		});
 }
 
 
-function findNotes(data){
-	var list=data.split("_");
-	var userid=list[1];
-	var id=list[0];
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['60%', '90%'],
-	    title: '详细内容',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "findNotes.do?id="+id,
-	}); 
-}
-
-function chechPerio(id)
-{
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['60%', '90%'],
-	    title: '详细内容',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "findNotes.do?id="+id,
-	}); 
-}
 
 //导出期刊
 function exportPerio(){
@@ -310,4 +223,24 @@ function exportPerio(){
 }
 
 
-
+function chekbox(data){
+	var tal= $(data).val();
+	if(tal=="all"){
+		if ($("#check1").is(':checked')) {  
+			$("input[name='complaintStatus']").prop("checked",true);
+	   }else{
+		   $("input[name='complaintStatus']").prop("checked",false);
+	   }
+	}
+	var i=0;
+	$("input[name='complaintStatus']").each(function() {
+		if ($(this).is(':checked')) {
+			i++;
+		}
+	});	
+	if(i==3){
+		$("input[name='complaintStatus1']").prop("checked",true);
+	}else{
+		 $("input[name='complaintStatus1']").prop("checked",false);
+	}
+}

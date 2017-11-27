@@ -4,199 +4,164 @@ import java.util.Date;
 
 public class CommentInfo {
 	
-    private String id;
-
-    private String perioId;
-
-    private String userId;
-
-    private String perioName;
-
-    private String authorName;
-
-    private String subTime;
-
-    private String auditMoney;
-
-    private String layoutMoney;
-
-    private Date creatDate;
-
-    private String hireCon;
-
-    private String dataState;
-
-    private String complaintStatus;
-   
-	private int handlingStatus;
-
-    private int isSubmit;
-
-    private String commentContent;
-
-    private String preliminaryOpinions;
-
-    private String appealReason;
-
-    private String finalOpinion;
-    
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
-    }
-
-    public String getPerioId() {
-        return perioId;
-    }
-
-    public void setPerioId(String perioId) {
-        this.perioId = perioId == null ? null : perioId.trim();
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
-    }
-
-    public String getPerioName() {
-        return perioName;
-    }
-
-    public void setPerioName(String perioName) {
-        this.perioName = perioName == null ? null : perioName.trim();
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName == null ? null : authorName.trim();
-    }
-
-    public String getSubTime() {
-        return subTime;
-    }
-
-    public void setSubTime(String subTime) {
-        this.subTime = subTime == null ? null : subTime.trim();
-    }
-
-    public String getAuditMoney() {
-        return auditMoney;
-    }
-
-    public void setAuditMoney(String auditMoney) {
-        this.auditMoney = auditMoney == null ? null : auditMoney.trim();
-    }
-
-    public String getLayoutMoney() {
-        return layoutMoney;
-    }
-
-    public void setLayoutMoney(String layoutMoney) {
-        this.layoutMoney = layoutMoney == null ? null : layoutMoney.trim();
-    }
-
-    public Date getCreatDate() {
-        return creatDate;
-    }
-
-    public void setCreatDate(Date creatDate) {
-        this.creatDate = creatDate;
-    }
-
-    public String getHireCon() {
-        return hireCon;
-    }
-
-    public void setHireCon(String hireCon) {
-        this.hireCon = hireCon == null ? null : hireCon.trim();
-    }
-
-    public String getDataState() {
-        return dataState;
-    }
-
-    public void setDataState(String dataState) {
-        this.dataState = dataState == null ? null : dataState.trim();
-    }
-
-    public String getComplaintStatus() {
-        return complaintStatus;
-    }
-
-    public void setComplaintStatus(String complaintStatus) {
-        this.complaintStatus = complaintStatus == null ? null : complaintStatus.trim();
-    }
-
-    public int getHandlingStatus() {
-		return handlingStatus;
+	private String	id;
+	private String	perio_id;
+	private String	perio_name;
+	private String	user_id;
+	private String	author_name;
+	private String	submit_period;
+	private String	audit_money;
+	private String	layout_money;
+	private String	creat_date;
+	private String	hire_con;
+	private String	comment_content;
+	private String	data_state;
+	private String	preliminary_opinions;
+	private String	final_opinion;
+	private String	publishing_discipline;
+	private String	update_date;
+	private String	executive_operation;
+	private String	auditor;
+	private String	audit_time;
+	private String  goods;
+	
+	
+	public String getGoods() {
+		return goods;
 	}
-
-	public void setHandlingStatus(int handlingStatus) {
-		this.handlingStatus = handlingStatus;
+	public void setGoods(String goods) {
+		this.goods = goods;
 	}
-
-	public int getIsSubmit() {
-		return isSubmit;
+	public String getId() {
+		return id;
 	}
-
-	public void setIsSubmit(int isSubmit) {
-		this.isSubmit = isSubmit;
+	public void setId(String id) {
+		this.id = id;
 	}
-
-	public String getCommentContent() {
-		return commentContent;
+	public String getPerio_id() {
+		return perio_id;
 	}
-
-	public void setCommentContent(String commentContent) {
-		this.commentContent = commentContent;
+	public void setPerio_id(String perio_id) {
+		this.perio_id = perio_id;
 	}
-
-	public String getPreliminaryOpinions() {
-		return preliminaryOpinions;
+	public String getPerio_name() {
+		return perio_name;
 	}
-
-	public void setPreliminaryOpinions(String preliminaryOpinions) {
-		this.preliminaryOpinions = preliminaryOpinions;
+	public void setPerio_name(String perio_name) {
+		this.perio_name = perio_name;
 	}
-
-	public String getAppealReason() {
-		return appealReason;
+	public String getUser_id() {
+		return user_id;
 	}
-
-	public void setAppealReason(String appealReason) {
-		this.appealReason = appealReason;
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
-
-	public String getFinalOpinion() {
-		return finalOpinion;
+	public String getAuthor_name() {
+		return author_name;
 	}
-
-	public void setFinalOpinion(String finalOpinion) {
-		this.finalOpinion = finalOpinion;
+	public void setAuthor_name(String author_name) {
+		this.author_name = author_name;
 	}
-
+	public String getSubmit_period() {
+		return submit_period;
+	}
+	public void setSubmit_period(String submit_period) {
+		this.submit_period = submit_period;
+	}
+	public String getAudit_money() {
+		return audit_money;
+	}
+	public void setAudit_money(String audit_money) {
+		this.audit_money = audit_money;
+	}
+	public String getLayout_money() {
+		return layout_money;
+	}
+	public void setLayout_money(String layout_money) {
+		this.layout_money = layout_money;
+	}
+	public String getCreat_date() {
+		return creat_date;
+	}
+	public void setCreat_date(String creat_date) {
+		this.creat_date = creat_date;
+	}
+	public String getHire_con() {
+		return hire_con;
+	}
+	public void setHire_con(String hire_con) {
+		this.hire_con = hire_con;
+	}
+	public String getComment_content() {
+		return comment_content;
+	}
+	public void setComment_content(String comment_content) {
+		this.comment_content = comment_content;
+	}
+	public String getData_state() {
+		return data_state;
+	}
+	public void setData_state(String data_state) {
+		this.data_state = data_state;
+	}
+	public String getPreliminary_opinions() {
+		return preliminary_opinions;
+	}
+	public void setPreliminary_opinions(String preliminary_opinions) {
+		this.preliminary_opinions = preliminary_opinions;
+	}
+	public String getFinal_opinion() {
+		return final_opinion;
+	}
+	public void setFinal_opinion(String final_opinion) {
+		this.final_opinion = final_opinion;
+	}
+	public String getPublishing_discipline() {
+		return publishing_discipline;
+	}
+	public void setPublishing_discipline(String publishing_discipline) {
+		this.publishing_discipline = publishing_discipline;
+	}
+	public String getUpdate_date() {
+		return update_date;
+	}
+	public void setUpdate_date(String update_date) {
+		this.update_date = update_date;
+	}
+	public String getExecutive_operation() {
+		return executive_operation;
+	}
+	public void setExecutive_operation(String executive_operation) {
+		this.executive_operation = executive_operation;
+	}
+	public String getAuditor() {
+		return auditor;
+	}
+	public void setAuditor(String auditor) {
+		this.auditor = auditor;
+	}
+	public String getAudit_time() {
+		return audit_time;
+	}
+	public void setAudit_time(String audit_time) {
+		this.audit_time = audit_time;
+	}
+	
 	@Override
 	public String toString() {
-		return "CommentInfo [id=" + id + ", perioId=" + perioId + ", userId="
-				+ userId + ", perioName=" + perioName + ", authorName="
-				+ authorName + ", subTime=" + subTime + ", auditMoney="
-				+ auditMoney + ", layoutMoney=" + layoutMoney + ", creatDate="
-				+ creatDate + ", hireCon=" + hireCon + ", dataState="
-				+ dataState + ", complaintStatus=" + complaintStatus
-				+ ", handlingStatus=" + handlingStatus + ", isSubmit="
-				+ isSubmit + ", commentContent=" + commentContent
-				+ ", preliminaryOpinions=" + preliminaryOpinions
-				+ ", appealReason=" + appealReason + ", finalOpinion="
-				+ finalOpinion + "]";
+		return "CommentInfo [id=" + id + ", perio_id=" + perio_id
+				+ ", perio_name=" + perio_name + ", user_id=" + user_id
+				+ ", author_name=" + author_name + ", submit_period="
+				+ submit_period + ", audit_money=" + audit_money
+				+ ", layout_money=" + layout_money + ", creat_date="
+				+ creat_date + ", hire_con=" + hire_con + ", comment_content="
+				+ comment_content + ", data_state=" + data_state
+				+ ", preliminary_opinions=" + preliminary_opinions
+				+ ", final_opinion=" + final_opinion
+				+ ", publishing_discipline=" + publishing_discipline
+				+ ", update_date=" + update_date + ", executive_operation="
+				+ executive_operation + ", auditor=" + auditor
+				+ ", audit_time=" + audit_time + "]";
 	}
 	
 }

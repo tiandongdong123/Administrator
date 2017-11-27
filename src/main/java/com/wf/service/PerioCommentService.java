@@ -17,10 +17,14 @@ public interface PerioCommentService {
 	CommentInfo findNotes(CommentInfo info);
 
 	CommentInfo findNote(CommentInfo info);
+	
+	CommentInfo  getcommentByid(String id);
 
-	Boolean updateNotes(CommentInfo info);
+	Boolean updateNotes(String id ,String dataState,String appealReason,String user_id,String date);
 
 	Boolean handlingStatus(CommentInfo info);
+	
+	Integer getGoodForCommont(String commontid);
 
 	List<Object> exportPerio(CommentInfo info, String[] dataState,
 			String[] complaintStatus, String startTime, String endTime,
