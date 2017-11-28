@@ -22,17 +22,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
+
+
+
 import com.utils.CookieUtil;
 import com.utils.DateTools;
 import com.utils.KylinJDBC;
 import com.wf.bean.Log;
+import com.wf.bean.PageList;
 import com.wf.dao.PageManagerMapper;
 import com.wf.service.LogService;
 import com.wf.service.PageAnalysisService;
 import com.wf.service.impl.PageAnalysisServiceImpl;
 
 @Controller
-@RequestMapping("pageAnalysis")
+@RequestMapping("pageAnalysis") 
 public class PageAnalysisController {
 
 //	@Autowired
@@ -63,37 +67,32 @@ public class PageAnalysisController {
 		String type=request.getParameter("type");
 		String starttime=request.getParameter("starttime");
 		String endtime=request.getParameter("endtime");
-//		PageAnalysisService pah=new PageAnalysisServiceImpl();
-		return pageAnalysisService.foemat(age, title, exlevel, reserchdomain, pageName, datetype, type, starttime, endtime);
+		Integer property=Integer.valueOf(request.getParameter("property"));
+		return pageAnalysisService.foemat(age, title, exlevel, reserchdomain, pageName, datetype, type, starttime, endtime,property);
 	}
 	
 	@RequestMapping("getdataSource")
 	@ResponseBody
-	public Object datasource(HttpServletRequest request){
+	public PageList datasource(Integer pagesize,Integer pagenum,String title,
+			String age,String exlevel,String datetype,
+			String starttime,String pageName,
+			String endtime,String domain,Integer property, 
+			HttpServletRequest request){
 		
-		String age=request.getParameter("age");
-		String title=request.getParameter("title");
-		String exlevel=request.getParameter("exlevel");
-		String reserchdomain=request.getParameter("reserchdomain");
-		String pageName=request.getParameter("pageName");
-		String datetype=request.getParameter("datetype");
-		String starttime=request.getParameter("starttime");
-		String endtime=request.getParameter("endtime");
-		String type="123456789";
-//		PageAnalysisService pass=new  PageAnalysisServiceImpl();
-		Object json= pageAnalysisService.getdatasource(title, age, exlevel, datetype, reserchdomain, type, pageName, starttime, endtime);
+		PageList pageList= pageAnalysisService.getdatasource(pagesize,pagenum,title, age, exlevel, datetype, domain, pageName, starttime, endtime, property);
+		
 		
 		//记录日志
 		Log log=new Log("页面分析","查询","",request);
 		logService.addLog(log);
 		
-		return json;
+		return pageList;
 	}
 	
 	@RequestMapping("getonedataSource")
 	@ResponseBody
 	public Object onedataSource(HttpServletRequest request) {
-		String age=request.getParameter("age");
+		/*String age=request.getParameter("age");
 		String title=request.getParameter("title");
 		String exlevel=request.getParameter("exlevel");
 		String reserchdomain=request.getParameter("reserchdomain");
@@ -104,14 +103,16 @@ public class PageAnalysisController {
 		String type="12345678";
 //		PageAnalysisService pass=new  PageAnalysisServiceImpl();
 		Object json=pageAnalysisService.getonedatasource(title, age, exlevel, datetype, reserchdomain, type, pageName, starttime, endtime);	
-		return json;
+		return json;*/
+		
+		return null;
 	}
 	
 	
 	@RequestMapping("head_word")
 	@ResponseBody
 	public Object head_word(HttpServletRequest request) {
-		String head_word=request.getParameter("head_word");
+		/*String head_word=request.getParameter("head_word");
 		
 		String regEx="[\\s~·`!！@#￥$%^……&*（()）\\-——\\-_=+【\\[\\]】｛{}｝\\|、\\\\；;：:‘'“”\"，,《<。.》>、/？?]";  
         Pattern p = Pattern.compile(regEx);  
@@ -159,13 +160,13 @@ public class PageAnalysisController {
 			}
 		}
 		return word;
-	}
+*/	return null;}
 	
 
 	@RequestMapping("html_word")
 	@ResponseBody
 	public Object html_word(HttpServletRequest request) {
-		String html_word=request.getParameter("html_word");
+		/*String html_word=request.getParameter("html_word");
 		String regEx="[\\s~·`!！@#￥$%^……&*（()）\\-——\\-_=+【\\[\\]】｛{}｝\\|、\\\\；;：:‘'“”\"，,《<。.》>、/？?]";  
         Pattern p = Pattern.compile(regEx);  
         Matcher m = p.matcher(html_word);  
@@ -182,7 +183,7 @@ public class PageAnalysisController {
 			{
 				word.remove(i);
 			}
-		}       
+		}       */
 		/*String sql="select mokuai from kylin_analysis where mokuai like '%"+m.replaceAll("")+"%' group by mokuai";
 		KylinJDBC kdbc=new KylinJDBC();
 		JSONArray json =JSONArray.fromObject(kdbc.findToList(sql));
@@ -217,6 +218,6 @@ public class PageAnalysisController {
 			}
 		
 		}*/
-		return word;
+		return null;
 	}
 }

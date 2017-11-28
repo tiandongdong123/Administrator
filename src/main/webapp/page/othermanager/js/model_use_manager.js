@@ -47,7 +47,7 @@ function gettable(curr,num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -103,15 +103,15 @@ function gettable(curr,num){
     	
     	for(var i =0;res.pageRow[i];i++){
     		html+="<tr>" +
-    				"<td>"+res.pageRow[i].modelname+"</td>" +
-    				"<td>"+res.pageRow[i].modelPV+"</td>" +
-    				"<td>"+res.pageRow[i].modelVV+"</td>" +
-    				"<td>"+res.pageRow[i].modelUV+"</td>" +
-    				"<td>0</td>" +
-    				"<td>"+res.pageRow[i].modelUV+"</td>" +
-    				"<td>"+res.pageRow[i].modeAUP+"</td>" +
-    				"<td></td>" +
-    			  "</tr>  "
+    				"<td>"+res.pageRow[i].classify+"</td>" +
+    				"<td>"+res.pageRow[i].sum1+"</td>" +
+    				"<td>"+res.pageRow[i].sum2+"</td>" +
+    				"<td>"+res.pageRow[i].sum3+"</td>" +
+    				"<td>"+res.pageRow[i].sum4+"</td>" +
+    				"<td>"+res.pageRow[i].sum3+"</td>" +
+    				"<td>"+res.pageRow[i].sum6+"</td>" +
+    				"<td>"+res.pageRow[i].sum6+"</td>" +
+    			  "</tr>";
     	}
     	$("#tablebody").html(html);
         var totalRow = res.pageTotal;
@@ -298,8 +298,8 @@ function getline(num){
 	    	option.series.push({
 	    		name:name,
 	    		type:'line',
-	    		data:num
-	    	})
+	    		data:num,
+	    	});
 	    }
 	    myChart.setOption(option); 
 	}

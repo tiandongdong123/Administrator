@@ -37,15 +37,14 @@ public class FunctionProfileController {
 	@RequestMapping("getline")
 	@ResponseBody
 	public Map<String,Object> getline(String title,String age,String exlevel,String datetype,Integer type,String starttime,String endtime,String domain,Integer property){
-		Map<String,Object> map  = this.function.getline(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
-		return map;
+		return this.function.getline(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
 	}
 	
 	@RequestMapping("indexanalysis")
 	@ResponseBody
 	public Map<String,Object> indexanalysis(String title,String age,String exlevel,String datetype,String type,String starttime,String endtime,String domain,Integer property){
 		Map<String,Object> map  = this.function.indexanalysis(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
-		return map;
+		return null;
 	}
 	
 	@RequestMapping("gettable")

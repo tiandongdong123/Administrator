@@ -200,9 +200,8 @@ function tree(data){
     	{
     		name:name,
     		type:'line',
-    		data:num
-    	}
-    	)
+    		data:num,
+    	});
     }
     myChart.setOption(option); 
 }
@@ -237,7 +236,7 @@ function gettable(curr,num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -289,12 +288,13 @@ function gettable(curr,num){
 				+"<th>笔记数</th>" 
 				+"<th>分享数</th>" 
 				+"<th>导出数</th>" 
+				+"<th>跳转数</th>" 
 				+"<th>订阅数</th>" 
 				+"</tr>";
     	
     	for(var i =0;res.pageRow[i];i++){
     		if(property!=0){
-        		htmltitleval="<td>"+res.pageRow[i].sourceName+"</td>"
+        		htmltitleval="<td>"+res.pageRow[i].classify+"</td>";
     		}
     		
     		html+="<tr>" +htmltitleval
@@ -305,8 +305,9 @@ function gettable(curr,num){
 					+"<td>"+(res.pageRow[i].noteNum==null?0:res.pageRow[i].noteNum)+"</td>" 
 					+"<td>"+(res.pageRow[i].shareNum==null?0:res.pageRow[i].shareNum)+"</td>" 
 					+"<td>"+(res.pageRow[i].exportNum==null?0:res.pageRow[i].exportNum)+"</td>" 
-					+"<td>"+(res.pageRow[i].exportNum==null?0:res.pageRow[i].exportNum)+"</td>" 
-					+"</tr>"
+					+"<td>"+(res.pageRow[i].breakNum==null?0:res.pageRow[i].breakNum)+"</td>" 
+					+"<td>"+(res.pageRow[i].subscriptionNum==null?0:res.pageRow[i].subscriptionNum)+"</td>" 
+					+"</tr>";
     	}
     	$("#tablebody").html(ht+html);
         var totalRow = res.pageTotal;
@@ -560,7 +561,7 @@ function Indexanalysis(indexType){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -590,7 +591,7 @@ function Indexanalysis(indexType){
 	
 	$.ajax( {  
 		type : "POST",  
-		url : "../functionProfile/indexanalysis.do",
+		url : "../functionProfile/getline.do",
 		data : {
 			age:age,
 			title:title,

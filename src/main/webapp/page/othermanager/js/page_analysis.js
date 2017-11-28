@@ -1,6 +1,6 @@
 $(function() {
 		getline(1);
-		getdataSource(1);
+		getdataSource(1,1);
 		keyword();
 		$("input[type=checkbox]").prop("checked",true);
 		$(document).click(function(){
@@ -9,6 +9,133 @@ $(function() {
 		});
 		
 	});
+
+function getdataSource(curr,num){
+	var age ="";
+	var title="";
+	var exlevel="";
+	var model="";
+	var starttime = $("#starttime").val();
+	var endtime = $("#endtime").val();
+	var domain =$("#reserchdomain").val();
+	var pagename=$("#pagename").val();
+	
+	var property=url_show();
+	if(starttime!=''&&endtime!=''){
+		num = 4;
+	}
+	$("input[name=age]").each(function() {  
+        if ($(this).is(':checked')) {  
+        	age+=$(this).val()+",";  
+        } 
+	});
+	if(age!=""){
+		age=age.substring(0,age.length-1);
+	}
+	
+	$("input[name=tenure]").each(function() {  
+        if ($(this).is(':checked')) {  
+        	title+=$(this).val()+",";
+        } 
+	});
+	if(title!=""){
+		title=title.substring(0,title.length-1);
+	}
+	
+	$("input[name=ex_level]").each(function() {  	
+        if ($(this).is(':checked')) {  
+        	exlevel+=$(this).val()+",";  
+        } 
+	});
+	if(exlevel!=""){
+		exlevel=exlevel.substring(0,exlevel.length-1);
+	}
+	
+	
+    $.getJSON("../pageAnalysis/getdataSource.do",{
+        pagenum:curr,//向服务端传的参数
+        pagesize :10,
+        age:age,
+		title:title,
+		exlevel:exlevel,
+		datetype:num,
+		starttime:starttime,
+		endtime:endtime,
+		domain:domain,
+		pageName:pagename,
+		property:property,
+    }, function(res){
+    	
+    	if(property==1){
+    		$("#analysis_property").text("学历");
+    	}else if(property==2){
+    		$("#analysis_property").text("年龄");
+    	}else if(property==3){
+    		$("#analysis_property").text("职称");
+    	}else if(property==4){
+    		$("#analysis_property").text("感兴趣的主题");
+    	}
+    	
+    	var html = "";
+    	for(var i =0;res.pageRow[i];i++){
+    		html+="<tr>" +
+    				"<td>"+res.pageRow[i].classify+"</td>" +
+    				"<td>"+pagename+"</td>" +
+    				"<td>"+res.pageRow[i].PV+"</td>" +
+    				"<td>"+res.pageRow[i].pageNum+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].pageAccessAvg+"</td>" +
+    				"<td>"+res.pageRow[i].contributionNum+"</td>" +
+    				"<td>"+res.pageRow[i].logoutNum+"</td>" +
+    				"<td>"+res.pageRow[i].logoutNumP+"</td>" +
+    				"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"+
+					"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"+
+    			  "</tr>";
+    	}
+    	
+    	$("#tablebody").html(html);
+        var totalRow = res.pageTotal;
+        var pageSize = res.pageSize;
+        var pages;
+        var groups;
+        if(totalRow%pageSize==0)
+        {	
+        	 pages = totalRow/pageSize; 
+        }else
+        {
+        	pages = totalRow/pageSize+1;
+        }
+        if(pages>=4)
+        {
+        groups=4;
+        }else
+        {
+        	groups=pages;
+        }
+        //显示分页
+        laypage({
+        	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+            pages: pages, //通过后台拿到的总页数
+            curr: curr, //当前页
+            skip: true, //是否开启跳页
+    	      skin: 'molv',//当前页颜色，可16进制
+    	      groups: groups, //连续显示分页数
+    	      first: '首页', //若不显示，设置false即可
+    	      last: '尾页', //若不显示，设置false即可
+    	      prev: '上一页', //若不显示，设置false即可
+    	      next: '下一页', //若不显示，设置false即可
+            jump: function(obj, first){ //触发分页后的回调
+                if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+                	datapage(obj.curr);
+                }
+            }
+        });
+    });
+
+}
+
+
 
 	function keyword(){
 			
@@ -58,6 +185,7 @@ $(function() {
 	};
 	function tree(data) {
 		var list=eval(data);
+		console.info(data);
 		var node=eval(list[0]);
 		var type = $("#type").find("option:selected").text();
 		var format="";
@@ -200,10 +328,10 @@ $(function() {
 		$("#time").val(num);
 		removetime();
 		getline(num);
-		getdataSource(num);
+		getdataSource(1,num);
 		$("button[name=time]").each(function() {
 			$(this).removeClass("btn-success");
-		})
+		});
 		$(obj).addClass("btn-success");
 	}
 	
@@ -215,12 +343,12 @@ $(function() {
 			num = 4;
 			$("button[name=time]").each(function() {
 			$(this).removeClass("btn-success");
-		})
+		});
 		}else{
 			num = $("#time").val();
 		}
 		getline(num);
-		getdataSource(num)
+		getdataSource(1,num);
 	}
 	
 	
@@ -230,7 +358,6 @@ $(function() {
 	
 	
 	function getline(num) {
-		var num = num;
 		var age = "";//年龄
 		var title = "";//职称
 		var exlevel = "";//学历
@@ -238,6 +365,7 @@ $(function() {
 		var reserchdomain = "";//感兴趣主题
 		var starttime = $("#starttime").val();
 		var endtime = $("#endtime").val();
+		var property=url_show();
 		if (starttime != '' && endtime != '') {
 			num = 4;
 		}
@@ -252,7 +380,7 @@ $(function() {
 
 		$("input[name=tenure]").each(function() {
 			if ($(this).is(':checked')) {
-				title += $(this).val() + ","
+				title += $(this).val() + ",";
 			}
 		});
 		if (title != "") {
@@ -297,7 +425,8 @@ $(function() {
 				datetype : num,
 				type : type,
 				starttime : starttime,
-				endtime : endtime
+				endtime : endtime,
+				property:property,
 			},
 			dataType : "json",
 			success : function(data) {							    
@@ -335,647 +464,35 @@ $(function() {
 		}); */
 	}
 		
-	function html_show(data)
-	{
+	function html_show(data){
 	$("#pagename").val($(data).text());
 	$("#searchsug2").css("display","none");
 /* 	$("#pagename").blur(function(){
 		$("#searchsug2").hide();
 		}); */
 	}
-	function exlevel_check(){
-		var i=0;
-		$("input[name=ex_level]").each(function() {
-			if ($(this).is(':checked')) {
-				i++;
-			}
-		});	
-		var j=0;
-		$("input[name=age]").each(function() {
-			if ($(this).is(':checked')) {
-				j++;
-			}
-		});
-		var k=0;
-		$("input[name=tenure]").each(function() {
-			if ($(this).is(':checked')) {
-				k++;
-			}
-		});
-		if (i==5) {
-			$("#checkallexlevel").prop("checked", true);
-		} else {
-			$("#checkallexlevel").prop("checked", false);
-		}		
-			if (j==6) {
-				$("#checkallage").prop("checked", true);
-			} else {
-				$("#checkallage").prop("checked", false);
-			}	
-			
-			if (k==5) {
-				$("#checkalltenure").prop("checked", true);
-			} else {
-				$("#checkalltenure").prop("checked", false);
-			}
-			
-			if(i==5&&j==6 &&k==5){
-				$("#checkallbox").prop("checked", true);
-			}else{
-				$("#checkallbox").prop("checked", false);
-			}
+	
+	function url_show(){
+		var rt = 0;
+		var checkEx_levelCount=$("input[type=checkbox][name='ex_level']").is(':checked');
+		var checkAgeCount=$("input[type=checkbox][name='age']").is(':checked');
+		var checkTenureCount=$("input[type=checkbox][name='tenure']").is(':checked');
+		var domain=$("#reserchdomain").val();
+		
+		if(checkEx_levelCount && !checkAgeCount && !checkTenureCount &&  ""==domain){
+			rt = 1;
+		}else if(checkAgeCount && !checkEx_levelCount && !checkTenureCount && ""==domain){
+			rt = 2;
+		}else if(checkTenureCount && !checkEx_levelCount && !checkAgeCount && ""==domain){
+			rt = 3;
+		}else if(""!=domain && !checkTenureCount && !checkEx_levelCount && !checkAgeCount){
+			rt = 4;
+		}
+		
+		return rt;
 	}
 
-	function getdataSource(num){
-	
-		var num = num;
-		var age = "";//年龄
-		var title = "";//职称
-		var exlevel = "";//学历
-		var pagename = "";//页面名称
-		var reserchdomain = "";//感兴趣主题
-		var starttime = $("#starttime").val();
-		var endtime = $("#endtime").val();
-		if (starttime != '' && endtime != '') {
-			num = 4;
-		}
-		$("input[name=age]").each(function() {
-			if ($(this).is(':checked')) {
-				age += $(this).val() + ",";
-			}
-		});
-		if (age != "") {
-			age = age.substring(0, age.length - 1);
-		}
-
-		$("input[name=tenure]").each(function() {
-			if ($(this).is(':checked')) {
-				title += $(this).val() + ","
-			}
-		});
-		if (title != "") {
-			title = title.substring(0, title.length - 1);
-		}
-	
-		$("input[name=ex_level]").each(function() {
-			if ($(this).is(':checked')) {
-				exlevel += $(this).val() + ",";
-			}
-		});
-		if (exlevel != "") {
-			exlevel = exlevel.substring(0, exlevel.length - 1);
-		}
-		
-		if($("#reserchdomain").val() != ""){
-			var reserchdomain = $("#reserchdomain").val();
-			}
-			if($("#pagename").val() != ""){
-			 var pagename = $("#pagename").val();
-			}
-		
-		if(age.length==0&&exlevel.length==0&&title.length!=0 && ""==reserchdomain)
-		{	
-			$.ajax({
-				type : "POST",
-				url : "../pageAnalysis/getdataSource.do",
-				data : {
-					age : 'null',
-					title : title,
-					exlevel : 'null',
-					//model : model,
-					reserchdomain : reserchdomain,//感兴趣主题
-					pageName : pagename,//页面名称
-					datetype : num,
-					starttime : starttime,
-					endtime : endtime
-				},
-				dataType : "json",
-				success : function(data) {							    
-					titlelist(data);
-				}
-			});
-		}
-		else if(age.length!=0&&exlevel.length==0&&title.length==0 && ""==reserchdomain)
-		{	
-			$.ajax({
-				type : "POST",
-				url : "../pageAnalysis/getdataSource.do",
-				data : {
-					age : age,
-					title : 'null',
-					exlevel : 'null',
-					//model : model,
-					reserchdomain : reserchdomain,//感兴趣主题
-					pageName : pagename,//页面名称
-					datetype : num,
-					starttime : starttime,
-					endtime : endtime
-				},
-				dataType : "json",
-				success : function(data) {							    
-					agelist(data);
-				}
-			});
-		}
-		else if(age.length==0&&exlevel.length!=0&&title.length==0 && ""==reserchdomain)
-		{	
-			$.ajax({
-				type : "POST",
-				url : "../pageAnalysis/getdataSource.do",
-				data : {
-					age : 'null',
-					title : 'null',
-					exlevel : exlevel ,
-					//model : model,
-					reserchdomain : reserchdomain,//感兴趣主题
-					pageName : pagename,//页面名称
-					datetype : num,		
-					starttime : starttime,
-					endtime : endtime
-				},
-				dataType : "json",
-				success : function(data) {							    
-					exlevellist(data);
-				}
-			});
-		}else if(""!=reserchdomain && age.length==0 && exlevel.length==0 && title.length==0 ){
-			$.ajax({
-				type : "POST",
-				url : "../pageAnalysis/getdataSource.do",
-				data : {
-					age : age,
-					title : title,
-					exlevel : exlevel,
-					//model : model,
-					reserchdomain : reserchdomain,//感兴趣主题
-					pageName : pagename,//页面名称
-					datetype : num,
-					starttime : starttime,
-					endtime : endtime
-				},
-				dataType : "json",
-				success : function(data) {							    
-					reserchdomainlist(data);
-				}
-			});
-		}else {
-			$.ajax({
-				type : "POST",
-				url : "../pageAnalysis/getonedataSource.do",
-				data : {
-					age : age,
-					title : title,
-					exlevel : exlevel,
-					//model : model,
-					reserchdomain : reserchdomain,//感兴趣主题
-					pageName : pagename,//页面名称
-					datetype : num,
-					starttime : starttime,
-					endtime : endtime
-				},
-				dataType : "json",
-				success : function(data) {							    
-					otherlist(data);
-				}
-			});
-		}	
-	}
-	
-	function reserchdomainlist(data){
-		
-		
-		$("#titleName").text("主题");
-		$("#tabulation tr:not( tr:first)").remove();
-		var pagename=$("#pagename").val();
-		var regu = "^[ ]+$";
-		var re = new RegExp(regu);
-		if(pagename==""||pagename==undefined||re.test(pagename))
-			{
-			pagename="全部";
-			}
-		var list=eval(data);
-		var json=list[0];
-		
-		var tr="<tr>"
-			+"<td>"+json["value"]+"</td>"
-			+"<td>"+pagename+"</td>"
-			+"<td>"+json["value1"]+"</td>"
-			+"<td>"+json["value2"]+"</td>"
-			+"<td>"+json["value3"]+"</td>"
-			+"<td>"+json["value4"]+"</td>"
-			+"<td>"+json["value5"]+"</td>"
-			+"<td>"+json["value6"]+"</td>"
-			+"<td>"+json["value7"]+"</td>"
-			+"<td>"+json["value8"]+"%</td>"
-			+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-			+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-			+"</tr>";
-			$("#tabulation tbody").append(tr);
-		
-		
-	}
 	
 	
-	function titlelist(data)
-	{		
-		$("#titleName").text("职称");
-		$("#tabulation tr:not( tr:first)").remove();
-		var pagename=$("#pagename").val();
-		var regu = "^[ ]+$";
-		var re = new RegExp(regu);
-		if(pagename==""||pagename==undefined||re.test(pagename))
-			{
-			pagename="全部";
-			}
-		var list=eval(data);
-		for(var i=0;i<list.length;i++)
-		{
-			if(list[i].type=="0")
-			{	
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>初级</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="1")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>中级</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="2")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>副高级</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="3")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>正高级</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="4")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>其他</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}		
-		}
-		
-	}
 	
-	function otherlist(data)
-	{	
-		$("#tabulation tr:not( tr:first)").remove();
-		var pagename=$("#pagename").val();
-		var regu = "^[ ]+$";
-		var re = new RegExp(regu);
-		if(pagename==""||pagename==undefined||re.test(pagename))
-			{
-			pagename="全部";
-			}
-		var list=eval(data);
-		var json= eval(list[0].value);
-		var tr="<tr>"
-		+"<td>全部</td>"
-		+"<td>"+pagename+"</td>"
-		+"<td>"+json[0].value+"</td>"
-		+"<td>"+json[1].value+"</td>"
-		+"<td>"+json[2].value+"</td>"
-		+"<td>"+json[3].value+"</td>"
-		+"<td>"+json[4].value+"</td>"
-		+"<td>"+json[5].value+"</td>"
-		+"<td>"+json[6].value+"</td>"
-		+"<td>"+json[7].value+"%</td>"	
-		+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-		+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-		+"</tr>";
-		$("#tabulation tbody").append(tr);
-	}
 	
-	function agelist(data)
-	{	
-		$("#titleName").text("年龄");
-		$("#tabulation tr:not( tr:first)").remove();
-		var pagename=$("#pagename").val();
-		var regu = "^[ ]+$";
-		var re = new RegExp(regu);
-		if(pagename==""||pagename==undefined||re.test(pagename))
-			{
-			pagename="全部";
-			}
-		var list=eval(data);
-		for(var i=0;i<list.length;i++)
-		{	
-			if(list[i].type=='1')
-			{	
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>20岁以下</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="2")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>20岁至29岁</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="3")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>30岁至39岁</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="4")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>40岁至49岁</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="5")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>50岁至59岁</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="6")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>60岁以上</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="7")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>其他</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-		}
-	}
-	
-	function  exlevellist(data)
-	{
-		$("#titleName").text("学历");
-		$("#tabulation tr:not( tr:first)").remove();
-		var pagename=$("#pagename").val();
-		var regu = "^[ ]+$";
-		var re = new RegExp(regu);
-		if(pagename==""||pagename==undefined||re.test(pagename))
-			{
-			pagename="全部";
-			}
-		var list=eval(data);
-		for(var i=0;i<list.length;i++)
-		{
-			if(list[i].type=="0")
-			{	   
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>大专</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="1")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>本科</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="2")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>硕士</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="3")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>博士</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}
-			else if(list[i].type=="4")
-			{
-				var json=eval(list[i].value);
-				var tr="<tr>"
-					+"<td>其他</td>"
-					+"<td>"+pagename+"</td>"
-					+"<td>"+json[0].value+"</td>"
-					+"<td>"+json[1].value+"</td>"
-					+"<td>"+json[2].value+"</td>"
-					+"<td>"+json[3].value+"</td>"
-					+"<td>"+json[4].value+"</td>"
-					+"<td>"+json[5].value+"</td>"
-					+"<td>"+json[6].value+"</td>"
-					+"<td>"+json[7].value+"%</td>"	
-					+"<td><a href=\"javaScript:void(0);\">查看热力图</a></td>"
-					+"<td><a href=\"javaScript:void(0);\">查看链接点击图</a></td>"
-					+"</tr>";
-					$("#tabulation tbody").append(tr);
-			}			
-		}
-	}
