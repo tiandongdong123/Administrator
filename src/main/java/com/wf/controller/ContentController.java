@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URLDecoder;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.storage.Hash;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
@@ -856,7 +853,7 @@ public class ContentController{
 	public String notes(Model model){
 		int pageNum=1;
 		int pageSize=10;
-		PageList pageList =notesService.getNotes(pageNum, pageSize,null, null, null, null, null, null, null, null);
+		PageList pageList =notesService.getNotes(pageNum, pageSize,null, null, null, null, null, null, null, null,null,null);
 		model.addAttribute("pageList",pageList);
 		model.addAttribute("res",resourceTypeService.getAll());
 		return "/page/contentmanage/notes";
@@ -903,6 +900,8 @@ public class ContentController{
 			@RequestParam(value="complaintStatus[]",required=false) String[] complaintStatus,
 			@RequestParam(value="startTime",required=false) String startTime,
 			@RequestParam(value="endTime",required=false) String endTime,
+			@RequestParam(value="noteProperty[]",required=false) String[] noteProperty,
+			@RequestParam(value="performAction[]",required=false) String[] performAction,
 			@RequestParam(value="page",required=false) int pageNum, HttpServletRequest request
 			) throws Exception{
 		
@@ -923,7 +922,7 @@ public class ContentController{
 		}
 		
 		int pageSize=10;
-		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
 		JSONObject json=JSONObject.fromObject(NotepageList);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
@@ -941,6 +940,7 @@ public class ContentController{
 	public String findNote(Model model,@RequestParam(value="id",required=false) String id){
 	
 		boolean b=notesService.handlingNote(id);
+
 		Notes notes =notesService.findNotes(id);
 		model.addAttribute("notes", notes);
 		return "/page/contentmanage/notes_detail";
@@ -963,15 +963,18 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/updateNotes")
-	public void updateNotes(Notes notes,HttpServletResponse response, HttpServletRequest request) throws Exception{
-		notes.setHandlingStatus(3);
-		boolean b=notesService.updateNotes(notes);
+	public void updateNotes(Notes notes,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+		notes.setAuditTime(dateString);//审核日期
+		Wfadmin admin = CookieUtil.getWfadmin(request);
+		notes.setAuditId(admin.getWangfang_admin_id());//审核人ID
+		Boolean b = notesService.updateNotes(notes);
 		JsonUtil.toJsonHtml(response, b);
-		
 		//记录日志
 		Log log=new Log("笔记管理","修改","修改后的笔记信息:"+notes.toString(),request);
 		logService.addLog(log);
-
 	}
 	@RequestMapping("/stick")
 	public void stick(Message message,@RequestParam("colums")String colums,HttpServletResponse response) throws Exception{
@@ -1515,10 +1518,9 @@ public class ContentController{
 		if(complaintStatus.length==0) complaintStatus=null;
 		
 		
-		List<Object> list=notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
 		JSONArray array=JSONArray.fromObject(list);
-		List<String> names=Arrays.asList(new String[]{"序号","笔记编号","资源编号","资源类型","资源类型","笔记内容","处理意见","用户ID","笔记日期","数据状态","申诉状态"});		
-
+		List<String> names=Arrays.asList(new String[]{"序号","笔记ID","文献标题","资源类型","笔记内容","笔记用户ID","笔记时间","执行操作","笔记性质","数据状态","审核人","审核时间"});		
 		excel.ExportNotes(response, array, names);
 		
 		//记录日志

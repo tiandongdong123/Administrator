@@ -20,10 +20,7 @@ public class NotesServiceImpl implements NotesService {
 	@Autowired
 	ResourceTypeMapper resource;
 	@Override
-	public PageList getNotes(int pageNum, int pageSize, String userName,
-			String noteNum, String resourceName, String[] resourceType,
-			String[] dataState, String[] complaintStatus, String startTime,
-			String endTime) {
+	public PageList getNotes(int pageNum, int pageSize, String userName, String noteNum, String resourceName, String[] resourceType, String[] dataState, String[] complaintStatus, String startTime,String endTime, String[] noteProperty, String[] performAction) {
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
 		int pagen=(pageNum-1)*pageSize;
@@ -37,6 +34,8 @@ public class NotesServiceImpl implements NotesService {
 		mp.put("complaintStatus", complaintStatus);
 		mp.put("startTime", startTime);
 		mp.put("endTime", endTime);
+		mp.put("noteProperty", noteProperty);
+		mp.put("performAction", performAction);
 		List<Object> pageRow= dao.selectNotesInfor(mp);
 		if(pageRow.size()>0){
 			for(int i=0;i<pageRow.size();i++){
@@ -108,7 +107,6 @@ public class NotesServiceImpl implements NotesService {
 	}
 	@Override
 	public Boolean handlingNote(String id) {
-		// TODO Auto-generated method stub
 		boolean rt=dao.handlingNote(id);
 		return rt;
 	}
@@ -117,16 +115,16 @@ public class NotesServiceImpl implements NotesService {
 			String resourceName, String[] resourceType, String[] dataState,
 			String[] complaintStatus, String startTime,String endTime) {
 		
-		Map<String,Object> mpPara=new HashMap<String, Object>();
-		mpPara.put("userName", userName);
-		mpPara.put("noteNum", noteNum);
-		mpPara.put("resourceName", resourceName);
-		mpPara.put("resourceType", resourceType);
-		mpPara.put("dataState", dataState);
-		mpPara.put("complaintStatus", complaintStatus);
-		mpPara.put("startTime", startTime);
-		mpPara.put("endTime", endTime);
-		List<Object> pageRowAll= dao.selectNotesInforAll(mpPara);
+		Map<String,Object> mp=new HashMap<String, Object>();
+		mp.put("userName", userName);
+		mp.put("noteNum", noteNum);
+		mp.put("resourceName", resourceName);
+		mp.put("resourceType", resourceType);
+		mp.put("dataState", dataState);
+		mp.put("complaintStatus", complaintStatus);
+		mp.put("startTime", startTime);
+		mp.put("endTime", endTime);
+		List<Object> pageRowAll= dao.selectNotesInfor(mp);
 		
 		if(pageRowAll.size()>0){
 			for(int i=0;i<pageRowAll.size();i++){

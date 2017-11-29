@@ -3,85 +3,91 @@
 			title:'笔记管理'
 		}){
 ?>
-	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
-	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
-	<script type="text/javascript" src="../page/contentmanage/js/notes.js"></script>
- <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-          	笔记审核管理</h1>
-      <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-        <li class="active">笔记审核管理</li>
-      </ol>-->
-    </section> 
+<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+<script type="text/javascript" src="../page/contentmanage/js/notes.js"></script>
+<div class="content-wrapper">
+	<section class="content-header"><h1>笔记审核管理</h1></section> 
 	<input type="hidden" id="pageNum" value="${pageList.pageNum}">
   	<input type="hidden" id="pageTotal" value="${pageList.pageTotal}">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="box box-primary">
-			<div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name">用户ID：</label>
-              <input type="text" class="form-control input_width" id="username">
-             </div>
-             <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name">笔记编号：</label>
-              <input type="text" class="form-control input_width" id="noteNum">
-             </div>
-             <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name">资源名称：</label>
-              <input  type="text" class="form-control input_width" id="resourceName">
-             </div>
-             <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name"> 笔记日期：</label>
-				<input onclick="WdatePicker()" placeholder="请选择起始时间"  type="text" class="Wdate" id="startTime">—<input onclick="WdatePicker()"  placeholder="请选择结束时间" class="Wdate" type="text" id="endTime">
-             </div>
-              <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name"> 资源类型：</label>
-				<input type="checkbox" checked="checked" onclick="checkAllText()" id="resourType">全选
-				<?for(var a in res){?>
-				<input type="checkbox" checked="checked" value="${a.typeCode}" name="resourceType"> ${a.typeName}
-				<?}?>
-             </div>
-              <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
-				<input type="checkbox" checked="checked" name="dataState" value="1">正常
-				<input type="checkbox" checked="checked" name="dataState" value="0" >禁用
-             </div>
-              <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name">申诉状态：</label>
-				<input type="checkbox" name="complaintStatus" value="1">正常
-				<input type="checkbox" name="complaintStatus" checked="checked" value="0" >申诉
-             </div>
-             <div class="form-group input_block" style="text-align:center;">
-				<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
-	           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportNotes();">导出</button>
-             </div>
-              <table id="example1" style="table-layout:fixed" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th style="width: 3%">序号</th>
-                  <th style="width: 25%">笔记编号</th>
-                  <th style="width: 15%">资源编号</th>
-                  <th style="width: 15%">资源名称</th>
-                  <th style="width: 5%">资源类型</th>
-                  <th style="width: 12%">笔记内容</th>
-                  <th style="width: 7%">用户ID</th>
-                  <th style="width: 7%">笔记日期</th>
-                  <th style="width: 7%">数据状态</th>
-                  <th style="width: 7%">申诉状态</th>
-                  <th style="width: 7%">操作</th>
-                </tr>
-                </thead>
-                <tbody id="notebody">
-               
-                </tbody>
-              </table>
-               <div id="page"></div>
+    <div class="row">
+    	<div class="col-md-6">
+        	<div class="box box-primary">
+				<div class="form-group input_block">
+              		<label for="exampleInputEmail1" class="input_name">用户ID：</label>
+              		<input type="text" class="form-control input_width" id="username">
+             	</div>
+             	<div class="form-group input_block">
+              		<label for="exampleInputEmail1" class="input_name">文献标题：</label>
+              		<input  type="text" class="form-control input_width" id="resourceName">
+             	</div>
+             	<div class="form-group input_block">
+              		<label for="exampleInputEmail1" class="input_name"> 笔记日期：</label>
+					<input onclick="WdatePicker()" placeholder="请选择起始时间"  type="text" class="Wdate" id="startTime">—<input onclick="WdatePicker()"  placeholder="请选择结束时间" class="Wdate" type="text" id="endTime">
+             	</div>
+              	<div class="form-group input_block">
+              		<label for="exampleInputEmail1" class="input_name"> 资源类型：</label>
+					<input type="checkbox" checked="checked" onclick="checkAllText()" id="resourType">全选
+					<?for(var a in res){?>
+					<input type="checkbox" checked="checked" onclick="resourType()" value="${a.typeCode}" name="resourceType"> ${a.typeName}
+					<?}?>
+             	</div>
+             	<div class="form-group input_block">
+             		<label for="exampleInputEmail1" class="input_name"> 笔记性质：</label>
+					<input type="checkbox" checked="checked" onclick="checkAllNoteProperty()" id="noteProperty">全部
+					<input type="checkbox" checked="checked" onclick="noteProperty()" name="noteProperty" value="0" >私有
+					<input type="checkbox" checked="checked" onclick="noteProperty()" name="noteProperty" value="1" >公开
+             	</div>
+             	<div class="form-group input_block">
+             		<label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
+					<input type="checkbox" checked="checked" name="dataState" value="1">正常
+					<input type="checkbox" checked="checked" name="dataState" value="0" >禁用
+             	</div>
+             	<div>
+             		<label for="exampleInputEmail1" class="input_name">执行操作：</label>
+             		<input type="checkbox" checked="checked" onclick="checkAllPerformAction()" id="performAction" >全部
+             		<input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="0">新增
+             		<input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="1">修改
+             		<input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="2">删除
+             	</div>
+            	<div class="form-group input_block" style="text-align:center;">
+					<button type="submit" class="btn btn-primary" onclick="paging()">查询</button>
+	           		<button type="button" style="float:right;" class="btn btn-primary" onclick="exportNotes();">导出</button>
+             	</div>
+              	<table id="example1" style="table-layout:fixed" class="table table-bordered table-striped">
+                	<thead>
+                		<tr>
+							<th style="width: 4%">序号</th>
+                  			<th style="width: 9%">笔记ID</th>
+		                  	<th style="width: 15%">文献标题</th>
+		                 	<th style="width: 5%">资源类型</th>
+		                  	<th style="width: 12%">笔记内容</th>
+		                  	<th style="width: 7%">笔记用户ID</th>
+		                  	<th style="width: 7%">笔记时间</th>
+		                  	<th style="width: 7%">执行操作</th>
+		                  	<th style="width: 7%">笔记性质</th>
+		                  	<th style="width: 7%">数据状态</th>
+		                  	<th style="width: 7%">审核人</th>
+		                  	<th style="width: 7%">审核时间</th>
+		                  	<th style="width: 7%">操作</th>
+		                  	<!-- <th>序号</th>
+                  			<th>笔记ID</th>
+		                  	<th>文献标题</th>
+		                 	<th>资源类型</th>
+		                  	<th>笔记内容</th>
+		                  	<th>笔记用户ID</th>
+		                  	<th>笔记时间</th>
+		                  	<th>执行操作</th>
+		                  	<th>数据状态</th>
+		                  	<th>审核人</th>
+		                  	<th>审核时间</th> -->
+                		</tr>
+                	</thead>
+                	<tbody id="notebody"></tbody>
+              	</table>
+               	<div id="page"></div>
             </div>
-          </div>
-      	 </div>
-</section>
+		</div>
+	</div>
 </div>	
 <?}?>

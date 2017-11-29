@@ -1,37 +1,11 @@
 /*撤销禁用*/
-function revocation(){
-	var id=$("#noteid").val();
-	var preliminaryOpinions=$("#preliminaryOpinions").val();
-	var finalOpinion=$("input:radio[name='finalOpinion']:checked").val();
-	if(finalOpinion=='自定义'){
-		finalOpinion=$("#zdy").val();
+function disableNootes(dataState){
+	var finalOpinion = $("#finalOpinion").val();
+	if(null == finalOpinion || '' == finalOpinion.replace(/(^\s*)|(\s*$)/g, '')){
+		layer.msg("人工处理意见不能为空");
+		return;
 	}
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/updateNotes.do",
-		dataType : "json",
-		data : {
-			"id":id,
-			"dataState":"1",
-			"complaintStatus":"1",
-			"preliminaryOpinions":preliminaryOpinions,
-			"finalOpinion":finalOpinion,
-			"handlingStatus":3
-			},
-		success : updatedata,
-		error: function(XmlHttpRequest, textStatus, errorThrown){  
-            layer.msg("失败");
-        }
-	});
-}
-
-/*维持禁用*/
-function maintain(){
 	var id=$("#noteid").val();
-	var dataState="0";
-	var preliminaryOpinions=$("#preliminaryOpinions").val();
-	var finalOpinion=$("input:radio[name='finalOpinion']:checked").val();
 	$.ajax({
 		type : "post",
 		async:false,
@@ -40,36 +14,13 @@ function maintain(){
 		data : {
 			"id":id,
 			"dataState":dataState,
-			"complaintStatus":"1",
-			"preliminaryOpinions":preliminaryOpinions,
 			"finalOpinion":finalOpinion,
-			"handlingStatus":3
 			},
 		success : updatedata,
 		error: function(XmlHttpRequest, textStatus, errorThrown){  
-            layer.msg("失败！")
+            layer.msg("失败");
         }
 	});
-}
-
-/*禁用*/
-function closenote(id){
-	var id=$("#noteid").val();
-	var finalOpinion=$("input:radio[name='finalOpinion']:checked").val();
-	if(finalOpinion=='自定义'){
-		finalOpinion=$("#zdy").val();
-	}
-	
-	$.ajax( {  
-		type : "POST",  
-		url : "../content/closenote.do",
-			data : {
-				'id' : id,
-				'finalOpinion':finalOpinion,
-			},
-			dataType : "json",
-			success :updatedata,
-		});
 }
 
 function updatedata(){

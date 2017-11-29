@@ -1,20 +1,7 @@
-
-var types;
-var dataState;
-var complaintStatus;
-var username;
-var noteNum;
-var resourceName;
-var startTime;
-var endTime;
-
 $(function(){
 	paging();
 });
-/*分页显示*/
-function findOne(){
-	paging();
-}
+
 function showPage(){
 	//显示分页
 	var pageNum = $("#pageNum").val();
@@ -43,14 +30,18 @@ function showPage(){
  * 分页事件
  */
 function paging(curr){
-	types=new Array();
-	dataState=new Array();
-	complaintStatus=new Array();
-	username=$("#username").val();
-	noteNum=$("#noteNum").val();
-	resourceName=$("#resourceName").val();
-	startTime=$("#startTime").val();
-	endTime=$("#endTime").val();
+	alert(0);
+	var types=new Array();
+	var dataState=new Array();
+	var complaintStatus=new Array();
+	var noteProperty=new Array();
+	var performAction=new Array();
+	
+	var username=$("#username").val();//用户ID
+	var noteNum=$("#noteNum").val();
+	var resourceName=$("#resourceName").val();//文献标题
+	var startTime=$("#startTime").val();//开始时间
+	var endTime=$("#endTime").val();//结束时间
 	$("input:checkbox[name='resourceType']:checked").each(function(){
 		types.push($(this).val());
 	});
@@ -63,6 +54,12 @@ function paging(curr){
 		complaintStatus.push($(this).val());
 	});
 	
+	$("input:checkbox[name='noteProperty']:checked").each(function(){
+		noteProperty.push($(this).val());
+	});
+	$("input:checkbox[name='performAction']:checked").each(function(){
+		performAction.push($(this).val());
+	});
 	$.ajax({
 		type : "post",
 		async:false,
@@ -77,11 +74,13 @@ function paging(curr){
 			"dataState":dataState,
 			"complaintStatus":complaintStatus,
 			"startTime":startTime,
-			"endTime":endTime
+			"endTime":endTime,
+			"noteProperty":noteProperty,
+			"performAction":performAction
 			},
 		success : serachdata,
 		error: function(XmlHttpRequest, textStatus, errorThrown){  
-            alert("失败！");
+            alert("请求失败，请刷新页面！");
         }
 	});
 }
@@ -98,43 +97,56 @@ function serachdata(data){
 			var index = 1+i;
 			var rows = pageRow[i];
 			var datast ="";
-			var compst="";
-			var buttonval="";
+			var name = "";
 			if(rows.dataState=='1'){
 				datast="正常";
 			}else if(rows.dataState=='0'){
-				datast="禁用"
+				datast="禁用";
 			}
-			if(rows.complaintStatus=='1'){
-				compst="正常";
-			}else if(rows.complaintStatus=='0'){
-				compst="<span style='color:red'>申诉</span>";
+			if(null != rows.userRealname && '' != rows.userRealname){
+				name = rows.userRealname;
+			}else if(null != rows.userNickname && '' != rows.userNickname){
+				name = rows.userNickname;
+			}else {
+				name = rows.auditId;
 			}
-			if(rows.handlingStatus==0){
-				buttonval="<button id=\"statudiv\" type='button' onclick=\"benSHOW('"+rows.id+"')\">禁用</button>";
-			}else if(rows.handlingStatus==1){
-				buttonval="<button id=\"statudiv\" onclick=\"findNote('"+rows.id+"')\" type='button'>待处理</button>";
-			}else if(rows.handlingStatus==2){
-				buttonval="<button id=\"statudiv\" onclick=\"findNotes('"+rows.id+"')\" type='button'>处理中</button>";
-			}else if(rows.handlingStatus==3){
-				buttonval="<button id=\"statudiv\" onclick=\"findNotes('"+rows.id+"')\"   type='button'>已处理</button>";
-			}else if(rows.handlingStatus==4){
-				buttonval="<button id=\"statudiv\" onclick=\"opennote('"+rows.id+"')\" type='button'>解禁</button>";
+			resHtml+="<tr>";
+			resHtml+="<td>"+index+"</td>";
+			resHtml+="<td>"+rows.noteNum+"</td>";
+			resHtml+="<td >"+rows.resourceName+"</td>";
+			resHtml+="<td>"+rows.resourceType+"</td>";
+			resHtml+="<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.noteContent+"</td>";
+			resHtml+="<td>"+rows.userId+"</td>";
+			if(rows.noteDate.indexOf('.') != -1){				
+				resHtml+="<td>"+rows.noteDate.substring(0,rows.noteDate.indexOf('.'))+"</td>";
+			}else{
+				resHtml+="<td></td>";
 			}
-			resHtml+=" <tr>" +
-				"<td>"+index+"</td>"+
-				"<td>"+rows.noteNum+"</td>"+
-				"<td>"+rows.resourceNum+"</td>"+
-                "<td >"+rows.resourceName+"</td>"+
-                "<td>"+rows.resourceType+"</td>"+
-                "<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;' onclick=\"NotesTextShow('"+rows.id+"')\"><a href=\"javascript:void(0)\">"+rows.noteContent+"</a></td>"+
-                "<td>"+rows.userId+"</td>"+
-                "<td>"+rows.noteDate.substring(0, rows.noteDate.length-2)+"</td>"+
-                "<td>"+datast+"</td>"+
-                "<td>"+compst+"</td>"+
-				"<td>" +buttonval +
-				"</td>"+
-	            "</tr>";
+			var performAction = "";
+			if(rows.performAction == 0){
+				performAction = "新增";
+			}else if(rows.performAction == 1){
+				performAction = "修改";
+			}else if(rows.performAction == 2){
+				performAction = "删除";
+			}
+			resHtml+="<td>" + performAction + "</td>";	
+			var noteProperty = "";
+			if(rows.noteProperty == 0){
+				noteProperty = "私有";
+			}else if(rows.noteProperty == 1){
+				noteProperty = "公开";
+			}
+			resHtml+="<td>" + noteProperty + "</td>";	
+			resHtml+="<td>"+datast+"</td>";
+			resHtml+="<td>" + name + "</td>";
+			if(rows.auditTime.indexOf('.') != -1){	
+				resHtml+="<td>"+ rows.auditTime.substring(0,rows.auditTime.indexOf('.')) + "</td>";
+			}else{
+				resHtml+="<td></td>";
+			}
+			resHtml+="<td><a  id=\"statudiv\" href=\"javascript:void(0);\" onclick=\"findNote('"+rows.id+"')\">详情</a></td>";
+			resHtml+="</tr>";
 			}
 		$("#notebody").html(resHtml);
 		//显示分页
@@ -163,16 +175,6 @@ function serachdata(data){
 	}
 }
 
-function findNotes(id){
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['60%', '90%'],
-	    title: '详细内容',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/findNote.do?id="+id,
-	}); 
-}
-
 function findNote(id){
 	layer.open({
 	    type: 2, //page层 1div，2页面
@@ -183,8 +185,52 @@ function findNote(id){
 	}); 
 }
 
+//笔记导出
+function exportNotes(){
+	var types=new Array();
+	var dataState=new Array();
+	var complaintStatus=new Array();
+	var noteProperty=new Array();
+	var performAction=new Array();
+	
+	var username=$("#username").val();//用户ID
+	var noteNum=$("#noteNum").val();
+	var resourceName=$("#resourceName").val();//文献标题
+	var startTime=$("#startTime").val();//开始时间
+	var endTime=$("#endTime").val();//结束时间
+	$("input:checkbox[name='resourceType']:checked").each(function(){
+		types.push($(this).val());
+	});
+	
+	$("input:checkbox[name='dataState']:checked").each(function(){
+		dataState.push($(this).val());
+	});
+	
+	$("input:checkbox[name='complaintStatus']:checked").each(function(){
+		complaintStatus.push($(this).val());
+	});
+	
+	$("input:checkbox[name='noteProperty']:checked").each(function(){
+		noteProperty.push($(this).val());
+	});
+	
+	$("input:checkbox[name='performAction']:checked").each(function(){
+		performAction.push($(this).val());
+	});
+	window.location.href="../content/exportNotes.do?" +
+			"&userName="+username+
+			"&noteNum="+noteNum+
+			"&resourceName="+resourceName+
+			"&resourceType="+types+
+			"&dataState="+dataState+
+			"&complaintStatus="+complaintStatus+
+			"&startTime="+startTime+
+			"&endTime="+endTime+
+			"noteProperty="+noteProperty +
+			"performAction=" + performAction;
+}
 
-/*全选与全不选*/
+/*资源类型全选与全不选*/
 function checkAllText(){
 	if($("#resourType").is(':checked')){
 		$("input[name=resourceType]").each(function(){
@@ -197,130 +243,72 @@ function checkAllText(){
 	}
 }
 
-/*全选与全不选*/
-function checkAll(){
-	if($(".allId").is(':checked')){
-		$("input[name=commonid]").each(function(){
+/*笔记性质全选与全不选*/
+function checkAllNoteProperty(){
+	if($("#noteProperty").is(':checked')){
+		$("input[name=noteProperty]").each(function(){
 			$(this).prop("checked", "checked");
 		});
 	}else{
-		$("input[name=commonid]").each(function(){
+		$("input[name=noteProperty]").each(function(){
 			$(this).removeAttr("checked");
 		});
 	}
 }
 
-
-function selectValue(id,val){
-	for(var i=0;i<document.getElementById(id).options.length;i++)
-    {
-        if(document.getElementById(id).options[i].value == val)
-        {
-            document.getElementById(id).options[i].selected=true;
-            break;
-        }
-    }
-}
-
-function refresh(){
-	window.location.href="../content/message.do";
-}
-
-function benSHOW(data){
-	  /*layer.open({
-	        type: 1
-	        ,title: false //不显示标题栏
-	        ,closeBtn: false
-	        ,area: '300px;'
-	        ,shade: 0.8
-	        ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-	        ,btn: ['禁用', '取消']
-	        ,moveType: 1 //拖拽模式，0或者1
-	        ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">*禁用后数据将不会在前台显示</div>'
-	        ,success: function(layero){
-	        	 var btn = layero.find('.layui-layer-btn0');
-		          btn.css('text-align', 'center').on("click",function(){
-		        	  closenote(data);
-		          });
-	        }
-	      });*/
-	
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['60%', '90%'],
-	    title: '笔记内容',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/findNotes_close_note.do?id="+data+"&type=禁用",
-	}); 
-	
-	
-}
-
-function buttonStyle(){
-	var sty= $("#statudiv").text();
-	if(sty=="待处理"){
-		$("#statudiv").css('background','red');
-	}else if(sty=="已处理"){
-		$("#statudiv").css('background','green');
+/*执行操作全选与全不选*/
+function checkAllPerformAction(){
+	if($("#performAction").is(':checked')){
+		$("input[name=performAction]").each(function(){
+			$(this).prop("checked", "checked");
+		});
+	}else{
+		$("input[name=performAction]").each(function(){
+			$(this).removeAttr("checked");
+		});
 	}
 }
 
-function closenote(id){
-	$.ajax( {  
-		type : "POST",  
-		url : "../content/closenote.do",
-			data : {
-				'id' : id
-			},
-			dataType : "json",
-			success : function(data) {
-				layer.msg("修改成功！",{icon: 1});
-				paging($(".laypage_curr").text());
-			}
-		});
+function resourType(){
+	var state = true;
+	$('input[name="resourceType"]').each(function(){
+		if(state&&!$(this).is(':checked')){
+			state = false;
+		}
+	});
+	if(state){
+		$('#resourType').prop("checked", "checked");
+	}else{
+		$('#resourType').removeAttr('checked');
+	}
 }
 
-function opennote(id){
-	$.ajax( {  
-		type : "POST",  
-		url : "../content/opennote.do",
-			data : {
-				'id' : id
-			},
-			dataType : "json",
-			success : function(data) {
-				layer.msg("修改成功！",{icon: 1});
-				paging($(".laypage_curr").text());
-			}
-		});
+function noteProperty(){
+	var state = true;
+	$('input[name=noteProperty]').each(function(){
+		if(state&&!$(this).is(':checked')){
+			state = false;
+		}
+	});
+	if(state){
+		$('#noteProperty').prop("checked", "checked");
+	}else{
+		$('#noteProperty').removeAttr('checked');
+	}
 }
 
-function NotesTextShow(data){
-	 layer.open({
-	        type: 2 //此处以iframe举例
-	        ,title: '笔记详情信息'
-	        ,area: ['50%', '50%']
-	        ,shade: 0
-	        ,maxmin: true
-	        ,content: '../content/noteShow.do?id='+data
-	        ,btn: ['关闭'] //只是为了演示
-	        ,yes: function(){
-	        	layer.closeAll();
-	        }
-	      })
+function performAction(){
+	var state = true;
+	$('input[name=performAction]').each(function(){
+		if(state&&!$(this).is(':checked')){
+			state = false;
+		}
+	});
+	if(state){
+		$('#performAction').prop("checked", "checked");
+	}else{
+		$('#performAction').removeAttr('checked');
+	}
 }
 
-
-//笔记导出
-function exportNotes(){
-	window.location.href="../content/exportNotes.do?" +
-			"&userName="+username+
-			"&noteNum="+noteNum+
-			"&resourceName="+resourceName+
-			"&resourceType="+types+
-			"&dataState="+dataState+
-			"&complaintStatus="+complaintStatus+
-			"&startTime="+startTime+
-			"&endTime="+endTime;
-}
 
