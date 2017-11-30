@@ -215,5 +215,5 @@ function doupdateunit(unitname,unitcode,id){
 }
 
 function goback(){
-	window.history.go(-1);
+	window.location.href=document.referrer;
 }
