@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.utils.KylinJDBC;
 import com.wf.bean.PageList;
 import com.wf.dao.FunctionPageDailyMapper;
+import com.wf.dao.FunctionPageMapper;
 import com.wf.dao.ModularMapper;
 import com.wf.dao.PageManagerMapper;
 import com.wf.service.FormatPageAnalysis;
@@ -34,7 +35,10 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 	@Autowired
 	private PageManagerMapper pageManagerMapper;
 	@Autowired
-	private FunctionPageDailyMapper dailyMapper;
+	private FunctionPageMapper functionPageMapper;
+	@Autowired
+	private FunctionPageDailyMapper functionPageDailyMapper;
+
 	
 	
 	
@@ -349,10 +353,11 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		map.put("education_level", exlevel);
 		map.put("age", agestr);
 		map.put("topic",reserchdomain);
+		map.put("pageName",pageName);
 		map.put("property",property);
 		map.put("type",type);
 		
-		List<Object> list=dailyMapper.pageAnalysis_view(map);
+		List<Object> list=functionPageDailyMapper.pageAnalysis_view(map);
 		
 		List<Object> jsonp=new ArrayList<>();
 		List<Object> date=new ArrayList<>();
@@ -396,11 +401,17 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		map.put("education_level", exlevel);
 		map.put("age", agestr);
 		map.put("topic",reserchdomain);
+		map.put("pageName",pageName);
 		map.put("property",property);
 		
-		list=dailyMapper.pageAnalysis_table(map);
-		count=dailyMapper.pageAnalysis_count(map).size();
-		
+		if(datetype.equals("1") ||(starttime.equals(endtime) && StringUtils.isNotBlank(starttime)  && StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.pageAnalysis_table(map);
+			count=functionPageMapper.pageAnalysis_table(map).size();
+		}else{
+			list=functionPageDailyMapper.pageAnalysis_table(map);
+			count=functionPageDailyMapper.pageAnalysis_table(map).size();
+		}
+
 		pageList.setPageNum(pagenum);
 		pageList.setPageNum(pagesize);
 		pageList.setTotalRow(count);
@@ -754,6 +765,11 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		}
 		
 		return agestr;
+	}
+
+	@Override
+	public List<String> getAllTopic(String topic) {
+		return functionPageDailyMapper.getAllTopic(topic);
 	}
 
 	

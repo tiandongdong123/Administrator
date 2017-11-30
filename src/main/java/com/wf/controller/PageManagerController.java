@@ -39,7 +39,7 @@ public class PageManagerController {
 	PageManagerService pageManagerService;
 	@Autowired
 	ModularService modularService;
-	
+	@Autowired
 	LogService logService;
 	/**
 	 * 分析页面管理页面

@@ -14,10 +14,10 @@ function getdataSource(curr,num){
 	var age ="";
 	var title="";
 	var exlevel="";
-	var model="";
 	var starttime = $("#starttime").val();
 	var endtime = $("#endtime").val();
 	var domain =$("#reserchdomain").val();
+	var linkaddress=$("#linkaddress").val();
 	var pagename=$("#pagename").val();
 	
 	var property=url_show();
@@ -62,7 +62,7 @@ function getdataSource(curr,num){
 		starttime:starttime,
 		endtime:endtime,
 		domain:domain,
-		pageName:pagename,
+		pageName:linkaddress,
 		property:property,
     }, function(res){
     	
@@ -78,11 +78,12 @@ function getdataSource(curr,num){
     	
     	var html = "";
     	for(var i =0;res.pageRow[i];i++){
+    		console.info(res.pageRow[i]);
     		html+="<tr>" +
     				"<td>"+res.pageRow[i].classify+"</td>" +
     				"<td>"+pagename+"</td>" +
     				"<td>"+res.pageRow[i].PV+"</td>" +
-    				"<td>"+res.pageRow[i].pageNum+"</td>" +
+    				"<td>"+res.pageRow[i].VV+"</td>" +
     				"<td>"+res.pageRow[i].UV+"</td>" +
     				"<td>"+res.pageRow[i].UV+"</td>" +
     				"<td>"+res.pageRow[i].pageAccessAvg+"</td>" +
@@ -172,7 +173,7 @@ function getdataSource(curr,num){
 					  $("#searchsug2 ul li").remove();
 					var list=eval(data);
 					for(var i=0;i<list.length;i++){
-						var li="<li data-key=\""+list[i]+"\" style=\"line-height: 14px;text-align:left;\" onclick=\"html_show(this);\" ><span>"+list[i]+"</span></li>";
+						var li="<li data-key=\""+list[i].linkAddress+"\" style=\"line-height: 14px;text-align:left;\" onclick=\"html_show(this);\" ><span>"+list[i].pageName+"</span></li>";
 						$("#searchsug2 ul").append(li);			
 						$("#searchsug2 ul li").mouseover(function(){
 							$("#searchsug2 ul li").removeAttr("class");
@@ -185,7 +186,6 @@ function getdataSource(curr,num){
 	};
 	function tree(data) {
 		var list=eval(data);
-		console.info(data);
 		var node=eval(list[0]);
 		var type = $("#type").find("option:selected").text();
 		var format="";
@@ -361,8 +361,8 @@ function getdataSource(curr,num){
 		var age = "";//年龄
 		var title = "";//职称
 		var exlevel = "";//学历
-		var pagename = "";//页面名称
-		var reserchdomain = "";//感兴趣主题
+		var pagename=$("#linkaddress").val();//页面名称
+		var reserchdomain =$("#reserchdomain").val();//感兴趣主题
 		var starttime = $("#starttime").val();
 		var endtime = $("#endtime").val();
 		var property=url_show();
@@ -395,22 +395,7 @@ function getdataSource(curr,num){
 		if (exlevel != "") {
 			exlevel = exlevel.substring(0, exlevel.length - 1);
 		}
-
-		/* $("input[name=model]").each(function() {
-			if ($(this).is(':checked')) {
-				model += $(this).val() + ",";
-			}
-		});
-		if (model != "") {
-			model = model.substring(0, model.length - 1);
-		} */
-		if($("#reserchdomain").val() != ""){
-		var reserchdomain = $("#reserchdomain").val();
-		}
-		if($("#pagename").val() != ""){
-		 var pagename = $("#pagename").val();
-		}
-
+		
 		var type = $("#type").find("option:selected").val();
 		$.ajax({
 			type : "POST",
@@ -434,29 +419,23 @@ function getdataSource(curr,num){
 				totalRow = data.pageTotal;
 			    var pageSize = data.pageSize;
 			    
-			        if(totalRow%pageSize==0)
-			        {	
+			        if(totalRow%pageSize==0){	
 			        	 pages = totalRow/pageSize; 
-			        }else
-			        {
+			        }else{
 			        	pages = totalRow/pageSize+1;
 			        }
-			        if(pages>=4)
-			        {
+			        
+			        if(pages>=4){
 			        groups=4;
-			        }else
-			        {
+			        }else{
 			        	groups=pages;
 			        }
-				
-				
 			}
 		});
 	}
 	
 	
-	function text_show(data)
-	{
+	function text_show(data){
 	$("#reserchdomain").val($(data).text());
 	$("#searchsug1").css("display","none");
 	/* $("#reserchdomain").blur(function(){
@@ -465,11 +444,12 @@ function getdataSource(curr,num){
 	}
 		
 	function html_show(data){
-	$("#pagename").val($(data).text());
-	$("#searchsug2").css("display","none");
-/* 	$("#pagename").blur(function(){
-		$("#searchsug2").hide();
-		}); */
+		$("#pagename").val($(data).text());
+		$("#linkaddress").val($(data).attr("data-key"));
+		$("#searchsug2").css("display","none");
+	/* 	$("#pagename").blur(function(){
+			$("#searchsug2").hide();
+			}); */
 	}
 	
 	function url_show(){

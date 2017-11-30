@@ -104,13 +104,13 @@ function gettable(curr,num){
     	for(var i =0;res.pageRow[i];i++){
     		html+="<tr>" +
     				"<td>"+res.pageRow[i].classify+"</td>" +
-    				"<td>"+res.pageRow[i].sum1+"</td>" +
-    				"<td>"+res.pageRow[i].sum2+"</td>" +
-    				"<td>"+res.pageRow[i].sum3+"</td>" +
-    				"<td>"+res.pageRow[i].sum4+"</td>" +
-    				"<td>"+res.pageRow[i].sum3+"</td>" +
-    				"<td>"+res.pageRow[i].sum6+"</td>" +
-    				"<td>"+res.pageRow[i].sum6+"</td>" +
+    				"<td>"+res.pageRow[i].PV+"</td>" +
+    				"<td>"+res.pageRow[i].VV+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].NV+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].AR+"</td>" +
+    				"<td>"+res.pageRow[i].AR+"</td>" +
     			  "</tr>";
     	}
     	$("#tablebody").html(html);
@@ -291,16 +291,20 @@ function getline(num){
 	    	    ]
 	    	};
 	   
-	    for(var i =0;i<data.title.length;i++){
-	    	var name = data.title[i];
-	    	var num=new Array();
-	    	num =data.content[name];
-	    	option.series.push({
-	    		name:name,
-	    		type:'line',
-	    		data:num,
-	    	});
+
+	    if(null!=data.title){
+		    for(var i =0;i<data.title.length;i++){
+		    	var name = data.title[i];
+		    	var num=new Array();
+		    	num =data.content[name];
+		    	option.series.push({
+		    		name:name,
+		    		type:'line',
+		    		data:num,
+		    	});
+		    }
 	    }
+	    
 	    myChart.setOption(option); 
 	}
 	

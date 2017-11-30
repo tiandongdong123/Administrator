@@ -20,6 +20,7 @@ import com.utils.KylinJDBC;
 import com.wf.bean.ModelTable;
 import com.wf.bean.PageList;
 import com.wf.dao.FunctionPageDailyMapper;
+import com.wf.dao.FunctionPageMapper;
 import com.wf.dao.ModularMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.service.ModelAnalysisService;
@@ -32,28 +33,14 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 	private PersonMapper personMapper;
 	
 	@Autowired
-	private FunctionPageDailyMapper dailyMapper;
-	
+	private FunctionPageDailyMapper functionPageDailyMapper;
+	@Autowired
+	private FunctionPageMapper functionPageMapper;
 	
 	@Override
 	public Map<String,Object> getline(String title,String age,String exlevel,String datetype,String model,Integer type,String starttime,String endtime,String domain,Integer property) {
-		Map<String,Object> map = new HashMap<String, Object>();
-		map = this.getViews(title, age, exlevel, datetype, model,starttime,endtime,type,domain,property);
-		return map;
-	}
-
-	@Override
-	public List<String> getmodular() {
-		List<String> namelist = new ArrayList<String>();
-		try {
-			namelist = this.modular.getModularNameList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return namelist;
-	}
-	
-	public Map<String,Object> getViews(String title,String age,String exlevel,String datetype,String model,String starttime,String endtime,Integer type,String domain,Integer property){
+		Map<String, Object> datamap = new HashMap<String, Object>();
+		
 		String days=getDayByDateType(datetype, starttime, endtime);
 		String agestr=getAges(age);
 		String modelstr=getModels(model);
@@ -69,8 +56,15 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		map.put("property",property);
 		map.put("type",type);
 
-		List<Object> list=dailyMapper.getView(map);
-		Map<String, Object> datamap = new HashMap<String, Object>();
+		List<Object> list=new ArrayList<>();
+		
+/*		if(datetype.equals("1") || starttime.equals(endtime)){
+			list=functionPageMapper.modelanalysis_view(map);
+		}else{
+			list=functionPageDailyMapper.modelanalysis_view(map);
+		}
+*/		
+		list=functionPageDailyMapper.modelanalysis_view(map);
 		List<String> reslistnames=new ArrayList<>();
 		List<String> reslistname=new ArrayList<>();
 		List<String> alldate = new ArrayList<String>();
@@ -160,6 +154,17 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		}		
 		return datamap;
 	}
+
+	@Override
+	public List<String> getmodular() {
+		List<String> namelist = new ArrayList<String>();
+		try {
+			namelist = this.modular.getModularNameList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return namelist;
+	}
 	
 	@Override
 	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,String model,String starttime,String endtime,Integer type,String domain,Integer property){
@@ -168,8 +173,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		List<Object> list=new ArrayList<>();
 		int count=0;
 		Integer COUNT_USER=personMapper.countUser();
-		String modelstr="";
-		String agestr = "";
+		String modelstr=this.getModels(model);
+		String agestr =this.getAges(age);
 		
 		String days = getDayByDateType(datetype,starttime,endtime);
 		
@@ -185,13 +190,21 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		map.put("model",modelstr);
 		map.put("property",property);
 		
-		list=dailyMapper.getTable(map);
-		count=dailyMapper.getCount(map).size();
+		if(datetype.equals("1") ||
+				(starttime.equals(endtime) 
+					&&StringUtils.isNotBlank(starttime)
+					&& StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.modelanalysis_table(map);
+			count=functionPageMapper.modelanalysis_count(map).size();
+		}else{
+			list=functionPageDailyMapper.modelanalysis_table(map);
+			count=functionPageDailyMapper.modelanalysis_count(map).size();
+		}
 		
 		for (Object object : list) {
 		     Map<String, Object> item=(Map<String, Object>)object;
-		     double sum3=Double.valueOf(item.get("sum3").toString());
-		     item.put("sum6",(((int)sum3)/COUNT_USER*100)+"%");
+		     double UV=Double.valueOf(item.get("UV")+"");
+		     item.put("AR",(((int)UV)/COUNT_USER*100)+"%");
 		}
 		
 		

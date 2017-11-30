@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ecs.xhtml.map;
+import org.apache.ibatis.annotations.Param;
 
 public interface FunctionPageDailyMapper {
 	
-	List<Object> getTable(Map<String, Object> map);
-	List<Object> getCount(Map<String,Object> map);
-	List<Object> getView(Map<String,Object> map);
+	
+	List<String> getAllTopic(@Param("topic")String topic);
+	
+	List<Object> modelanalysis_table(Map<String, Object> map);
+	List<Object> modelanalysis_count(Map<String,Object> map);
+	List<Object> modelanalysis_view(Map<String,Object> map);
 	
 	List<Object> pageAnalysis_table(Map<String, Object> map);
 	List<Object> pageAnalysis_count(Map<String, Object> map);

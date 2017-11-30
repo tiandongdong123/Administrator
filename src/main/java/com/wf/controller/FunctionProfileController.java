@@ -36,7 +36,7 @@ public class FunctionProfileController {
 	
 	@RequestMapping("getline")
 	@ResponseBody
-	public Map<String,Object> getline(String title,String age,String exlevel,String datetype,Integer type,String starttime,String endtime,String domain,Integer property){
+	public Map<String,Object> getline(String title,String age,String exlevel,String datetype,String type,String starttime,String endtime,String domain,Integer property){
 		return this.function.getline(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
 	}
 	

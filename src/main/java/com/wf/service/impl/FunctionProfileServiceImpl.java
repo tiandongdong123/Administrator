@@ -20,6 +20,7 @@ import com.utils.KylinJDBC;
 import com.wf.bean.PageList;
 import com.wf.bean.ResourceTableBean;
 import com.wf.dao.FunctionPageDailyMapper;
+import com.wf.dao.FunctionPageMapper;
 import com.wf.service.FunctionProfileService;
 
 
@@ -27,12 +28,14 @@ import com.wf.service.FunctionProfileService;
 public class FunctionProfileServiceImpl implements FunctionProfileService {
 
 	@Autowired
-	private FunctionPageDailyMapper dailyMapper;
+	private FunctionPageMapper functionPageMapper;
+	@Autowired
+	private FunctionPageDailyMapper functionPageDailyMapper;
 
 	
 	@Override
 	public Map<String, Object> getline(String title, String age,
-			String exlevel, String datetype, Integer type,
+			String exlevel, String datetype, String type,
 			String starttime, String endtime, String domain, Integer property) {
 		
 		String agestr =this.getAges(age);
@@ -47,7 +50,7 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 		map.put("property",property);
 		map.put("result",type);
 		
-		List<Object> list=dailyMapper.functionProfile_view(map);
+		List<Object> list=functionPageDailyMapper.functionProfile_view(map);
 		Map<String, Object> datamap = new HashMap<String, Object>();
 		
 		List<String> reslistnames=new ArrayList<>();
@@ -106,10 +109,13 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 			for (String name : reslistname) {
 				for (String d : alldate) {
 					for (Object l : list) {
-						if (((Map<String, Object>)l).get("classify").equals(name)
-								&& ((Map<String, Object>)l).get("date").equals(d)) {
-							rt = false;
-						}
+						if(null==((Map<String, Object>)l).get("classify"))
+							continue;
+							if (((Map<String, Object>)l).get("classify").equals(name)
+									&& ((Map<String, Object>)l).get("date").equals(d)) {
+								rt = false;
+							}
+						
 					}
 					if (rt) {
 						Map<String,String> item = new HashMap<String, String>();
@@ -125,6 +131,8 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 			list.addAll(obj);
 			Map<String, List<String>> m = new HashMap<String, List<String>>();
 			for (Object l : list) {
+				if(null==((Map<String,Object>)l).get("classify"))
+					continue;
 				String typename =((Map<String,Object>)l).get("classify").toString();
 				if (m.get(typename) != null) {
 					m.get(typename).add(((Map<String,Object>)l).get("number").toString());
@@ -169,9 +177,17 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 		map.put("age", agestr);
 		map.put("topic",domain);
 		map.put("property",property);
-
-		list=dailyMapper.functionProfile_table(map);
-		count=dailyMapper.functionProfile_count(map).size();
+		
+		if(datetype.equals("1") ||
+				(starttime.equals(endtime)
+					&&StringUtils.isNotBlank(starttime)
+					&& StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.functionProfile_table(map);
+			count=functionPageMapper.functionProfile_count(map).size();
+		}else{
+			list=functionPageDailyMapper.functionProfile_table(map);
+			count=functionPageDailyMapper.functionProfile_count(map).size();
+		}
 		
 		pageList.setPageNum(pagenum);
 		pageList.setPageSize(pagesize);

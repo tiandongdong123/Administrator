@@ -13,6 +13,8 @@ public interface PageAnalysisService {
 	
 	List<Object> findAllPages();
 	
+	List<String> getAllTopic(String topic);
+	
 	Object foemat(String age,String title,String exlevel,String reserchdomain,String pageName,String datetype,String type,String starttime,String endtime,Integer property);
 	
 	PageList getdatasource(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,String reserchdomain,String pageName,String starttime,String endtime,Integer property);

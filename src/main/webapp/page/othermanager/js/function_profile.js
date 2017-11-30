@@ -11,7 +11,7 @@ $(function(){
 	    $("#searchsug1").hide();
 	});
 	
-})
+});
 
 
 
@@ -72,28 +72,29 @@ function pie(data){
 			};
 			            
 	 
-	 for(var i =0;i<data.title.length;i++){
-	    	var name = data.title[i];
-	    	var num=new Array();
-	    	num =data.content[name];
-	    	var val = 0;
-	    	for(var k =0;k<num.length;k++){
-	    		val=val+parseInt(num[k]);
-	    	}
-	    	option.series[0].data.push(
-	    	{
-	    		value:val,
-	    		name:name
-	    	}
-	    	)
-	    }
-	 
+	if(null!=data.title){
+		 for(var i =0;i<data.title.length;i++){
+		    	var name = data.title[i];
+		    	var num=new Array();
+		    	num =data.content[name];
+		    	var val = 0;
+		    	for(var k =0;k<num.length;k++){
+		    		val=val+parseInt(num[k]);
+		    	}
+		    	option.series[0].data.push(
+		    	{
+		    		value:val,
+		    		name:name
+		    	}
+		    	);
+		    }
+
+	}	 
 	 
 	 myChart.setOption(option); 
 }
 
 function getline(num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -117,7 +118,7 @@ function getline(num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -192,17 +193,22 @@ function tree(data){
     	    ]
     	};
    
-    for(var i =0;i<data.title.length;i++){
-    	var name = data.title[i];
-    	var num=new Array();
-    	num =data.content[name];
-    	option.series.push(
-    	{
-    		name:name,
-    		type:'line',
-    		data:num,
-    	});
+    
+    if(null!=data.title){
+        for(var i =0;i<data.title.length;i++){
+        	var name = data.title[i];
+        	var num=new Array();
+        	num =data.content[name];
+        	option.series.push({
+        		name:name,
+        		type:'line',
+        		data:num,
+        	});
+        }
+
     }
+
+    
     myChart.setOption(option); 
 }
 
@@ -212,7 +218,6 @@ function tree(data){
  */
 //分页显示
 function gettable(curr,num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -443,9 +448,9 @@ function querytime(obj,num){
 	 $("#endtime").val("");
 	$("button[name=time]").each(function(){
 		$(this).removeClass("btn-success");
-	})
+	});
 	$(obj).addClass("btn-success");
-	gettable(1,nums)
+	gettable(1,nums);
 }
 
 function checkallbox(){
@@ -493,7 +498,7 @@ function checkall(obj,id){
 		if (!$(this).is(':checked')) {  
 	   	 	rt = false;
 	   }
-	})
+	});
 	if(rt){
 		$("#"+id).prop("checked",true);
 	}else{
@@ -584,7 +589,6 @@ function Indexanalysis(indexType){
 			type+=$(this).val()+",";
 		});
 	}
-	
 	if(type!=""){
 		type=type.substring(0,type.length-1);
 	}
