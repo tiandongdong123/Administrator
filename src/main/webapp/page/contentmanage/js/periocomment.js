@@ -18,6 +18,75 @@ $(function(){
 		 window.location.reload();
 	});
 });
+(function () {
+    var getPager = function (url, $container) {
+        // $.get(url, function (html) {
+        //     $container.replaceWith(html);
+        // });
+        $container.find('.loadingPic').show();
+        $.ajax({
+            url:url,
+            success:function (html) {
+                $container.replaceWith(html);
+                $container.find('.loadingPic').hide();
+            },
+            error:function () {
+                $container.find('.loadingPic').hide();
+            }
+        });
+    };
+    //page-a异步跳转
+    $(document).on('click', '.sync-html .page a', function () {
+        var $this = $(this);
+        // $this.closest('.sync-html').empty('');
+        var href = $this.attr('href');
+        $this.removeAttr('href');
+        $this.closest('.sync-html').find('.loadingPic').show();
+        // $.get(href, function (html) {
+        //     $this.closest('.sync-html').html(html);
+        //     $this.closest('.sync-html').find('.loadingPic').hide();
+        // })
+        $.ajax({
+            url:href,
+            success:function (html) {
+                $this.closest('.sync-html').replaceWith(html);
+                $this.closest('.sync-html').find('.loadingPic').hide();
+            },
+            error:function () {
+                $this.closest('.sync-html').find('.loadingPic').hide();
+            }
+        });
+    });
+    //page-form异步跳转
+    $(document).on('submit', '.sync-html .page form', function () {
+        var $this = $(this);
+        var action = $this.attr('action');
+        var inputPage = parseInt($this.find('.laypage_skip').last().val());
+        var allPage = $this.attr('data-all');
+        if (inputPage > 0 && inputPage <= allPage) {
+            var href = action + inputPage;
+            getPager(href, $this.closest('.sync-html'));
+        } else {
+            alert('请输入正确页码');
+        }
+        return false;
+    });
+    //page-form同步跳转
+    $(document).on('submit', '.no-sync .page form', function () {
+        var $this = $(this);
+        var action = $this.attr('action');
+        var inputPage = parseInt($this.find('.laypage_skip').last().val());
+        var allPage = $this.attr('data-all');
+        if (inputPage > 0 && inputPage <= allPage) {
+            window.location.href = action + encodeURIComponent(inputPage);
+        } else {
+            alert('请输入正确页码');
+        }
+        return false;
+    });
+})();
+
+
 //分页显示
 function commentpage(curr){
 	
@@ -70,7 +139,7 @@ function commentpage(curr){
         perio_name : perioname,
         startTime :startTime,
         endTime:endTime,
-        subTime:subtime,
+        submit_period:subtime,
         sauditm:sauditm,
         eauditm:eauditm,
         slayoutm:slayoutm,
@@ -155,6 +224,8 @@ function commentpage(curr){
 						html+= "<td >1年</td>";
 					}else if(rows.submit_period==24){
 						html+= "<td >2年</td>";
+					}else if(rows.submit_period==null){
+						html+="<td ></td>";
 					}else if(rows.submit_period==25){
 						html+= "<td >大于2年</td>";
 					}else{

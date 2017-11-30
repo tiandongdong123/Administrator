@@ -31,6 +31,7 @@
       			1年内
       			<?}else if(info.submit_period==24){?>
       			2年内
+      			<?}else if(info.submit_period==null){?>
       			<?}else if(info.submit_period==25){?>
       			大于2年
       			<?}else{?>
@@ -41,13 +42,19 @@
       		<tr>
       			<td>审稿费</td>
       			<td>
-      			${info.audit_money}元			
+      			<?if(info.audit_money!=null){?>
+      			${info.audit_money}元
+      			<?}else{?>
+      			<?}?>	
 				</td>
       		</tr>
       		<tr>
       			<td>版面费</td>
       			<td>
-      			${info.layout_money}元			
+      			<?if(info.layout_money!=null){?>
+      			${info.layout_money}元
+      			<?}else{?>
+      			<?}?>			
 				</td>
       		</tr>
       		<tr>
