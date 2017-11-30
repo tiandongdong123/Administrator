@@ -33,6 +33,7 @@ public class SonSystemController {
 	@Autowired
 	DataManagerService data;
 	
+	@Autowired
 	LogService logService;
 	
 	@RequestMapping("getson")
