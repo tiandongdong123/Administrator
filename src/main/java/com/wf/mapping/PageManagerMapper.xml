@@ -52,7 +52,7 @@
   </select>
   
    <select id="getKeyword" resultMap="BaseResultMap">
-   select * from pagemanager where page_name like #{0}
+   select * from pagemanager where page_name like concat('%',#{pageName},'%')
   </select>
   
   

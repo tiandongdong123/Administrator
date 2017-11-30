@@ -416,15 +416,38 @@ public class ExportExcel {
 						row=sheet.createRow(i+1);
 						row.createCell(0).setCellValue(i+1);
 						row.createCell(1).setCellValue(array.getJSONObject(i).get("noteNum").toString());
-						row.createCell(2).setCellValue(array.getJSONObject(i).get("resourceNum").toString());
-						row.createCell(3).setCellValue(array.getJSONObject(i).get("resourceName").toString());
-						row.createCell(4).setCellValue(array.getJSONObject(i).get("resourceType").toString());
-						row.createCell(5).setCellValue(array.getJSONObject(i).get("noteContent").toString());
-						row.createCell(6).setCellValue(array.getJSONObject(i).get("finalOpinion").toString());
-						row.createCell(7).setCellValue(array.getJSONObject(i).get("userId").toString());
-						row.createCell(8).setCellValue(array.getJSONObject(i).get("noteDate").toString());
+						row.createCell(2).setCellValue(array.getJSONObject(i).get("resourceName").toString());
+						row.createCell(3).setCellValue(array.getJSONObject(i).get("resourceType").toString());
+						row.createCell(4).setCellValue(array.getJSONObject(i).get("noteContent").toString());
+						row.createCell(5).setCellValue(array.getJSONObject(i).get("userId").toString());
+						row.createCell(6).setCellValue(array.getJSONObject(i).get("noteDate").toString());
+						String performAction = "";
+						if(array.getJSONObject(i).get("performAction").equals(0)){
+							performAction = "新增";
+						}else if(array.getJSONObject(i).get("performAction").equals(1)){
+							performAction = "修改";
+						}else if(array.getJSONObject(i).get("performAction").equals(2)){
+							performAction = "删除";
+						}
+						row.createCell(7).setCellValue(performAction);
+						String noteProperty = "";
+						if(array.getJSONObject(i).get("noteProperty").equals(0)){
+							noteProperty = "私有";
+						}else if(array.getJSONObject(i).get("noteProperty").equals(1)){
+							noteProperty = "公开";
+						}
+						row.createCell(8).setCellValue(noteProperty);
 						row.createCell(9).setCellValue(array.getJSONObject(i).get("dataState").toString().equals("1")?"正常":"禁用");
-						row.createCell(10).setCellValue(array.getJSONObject(i).get("complaintStatus").toString().equals("1")?"正常":"申诉");
+						String name = "";
+						if(!"".equals(array.getJSONObject(i).get("userRealname"))){
+							name = array.getJSONObject(i).get("userRealname").toString();
+						}else if(!"".equals(array.getJSONObject(i).get("userNickname"))){
+							name = array.getJSONObject(i).get("userNickname").toString();;
+						}else {
+							name = array.getJSONObject(i).get("auditId").toString();
+						}
+						row.createCell(10).setCellValue(name);
+						row.createCell(11).setCellValue(array.getJSONObject(i).get("auditTime").toString());
 					}
 					
 					//设置Content-Disposition  

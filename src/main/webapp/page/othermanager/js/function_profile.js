@@ -11,7 +11,7 @@ $(function(){
 	    $("#searchsug1").hide();
 	});
 	
-})
+});
 
 
 
@@ -72,28 +72,29 @@ function pie(data){
 			};
 			            
 	 
-	 for(var i =0;i<data.title.length;i++){
-	    	var name = data.title[i];
-	    	var num=new Array();
-	    	num =data.content[name];
-	    	var val = 0;
-	    	for(var k =0;k<num.length;k++){
-	    		val=val+parseInt(num[k]);
-	    	}
-	    	option.series[0].data.push(
-	    	{
-	    		value:val,
-	    		name:name
-	    	}
-	    	)
-	    }
-	 
+	if(null!=data.title){
+		 for(var i =0;i<data.title.length;i++){
+		    	var name = data.title[i];
+		    	var num=new Array();
+		    	num =data.content[name];
+		    	var val = 0;
+		    	for(var k =0;k<num.length;k++){
+		    		val=val+parseInt(num[k]);
+		    	}
+		    	option.series[0].data.push(
+		    	{
+		    		value:val,
+		    		name:name
+		    	}
+		    	);
+		    }
+
+	}	 
 	 
 	 myChart.setOption(option); 
 }
 
 function getline(num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -117,7 +118,7 @@ function getline(num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -192,18 +193,22 @@ function tree(data){
     	    ]
     	};
    
-    for(var i =0;i<data.title.length;i++){
-    	var name = data.title[i];
-    	var num=new Array();
-    	num =data.content[name];
-    	option.series.push(
-    	{
-    		name:name,
-    		type:'line',
-    		data:num
-    	}
-    	)
+    
+    if(null!=data.title){
+        for(var i =0;i<data.title.length;i++){
+        	var name = data.title[i];
+        	var num=new Array();
+        	num =data.content[name];
+        	option.series.push({
+        		name:name,
+        		type:'line',
+        		data:num,
+        	});
+        }
+
     }
+
+    
     myChart.setOption(option); 
 }
 
@@ -213,7 +218,6 @@ function tree(data){
  */
 //分页显示
 function gettable(curr,num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -237,7 +241,7 @@ function gettable(curr,num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -289,12 +293,13 @@ function gettable(curr,num){
 				+"<th>笔记数</th>" 
 				+"<th>分享数</th>" 
 				+"<th>导出数</th>" 
+				+"<th>跳转数</th>" 
 				+"<th>订阅数</th>" 
 				+"</tr>";
     	
     	for(var i =0;res.pageRow[i];i++){
     		if(property!=0){
-        		htmltitleval="<td>"+res.pageRow[i].sourceName+"</td>"
+        		htmltitleval="<td>"+res.pageRow[i].classify+"</td>";
     		}
     		
     		html+="<tr>" +htmltitleval
@@ -305,8 +310,9 @@ function gettable(curr,num){
 					+"<td>"+(res.pageRow[i].noteNum==null?0:res.pageRow[i].noteNum)+"</td>" 
 					+"<td>"+(res.pageRow[i].shareNum==null?0:res.pageRow[i].shareNum)+"</td>" 
 					+"<td>"+(res.pageRow[i].exportNum==null?0:res.pageRow[i].exportNum)+"</td>" 
-					+"<td>"+(res.pageRow[i].exportNum==null?0:res.pageRow[i].exportNum)+"</td>" 
-					+"</tr>"
+					+"<td>"+(res.pageRow[i].breakNum==null?0:res.pageRow[i].breakNum)+"</td>" 
+					+"<td>"+(res.pageRow[i].subscriptionNum==null?0:res.pageRow[i].subscriptionNum)+"</td>" 
+					+"</tr>";
     	}
     	$("#tablebody").html(ht+html);
         var totalRow = res.pageTotal;
@@ -442,9 +448,9 @@ function querytime(obj,num){
 	 $("#endtime").val("");
 	$("button[name=time]").each(function(){
 		$(this).removeClass("btn-success");
-	})
+	});
 	$(obj).addClass("btn-success");
-	gettable(1,nums)
+	gettable(1,nums);
 }
 
 function checkallbox(){
@@ -492,7 +498,7 @@ function checkall(obj,id){
 		if (!$(this).is(':checked')) {  
 	   	 	rt = false;
 	   }
-	})
+	});
 	if(rt){
 		$("#"+id).prop("checked",true);
 	}else{
@@ -560,7 +566,7 @@ function Indexanalysis(indexType){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -583,14 +589,13 @@ function Indexanalysis(indexType){
 			type+=$(this).val()+",";
 		});
 	}
-	
 	if(type!=""){
 		type=type.substring(0,type.length-1);
 	}
 	
 	$.ajax( {  
 		type : "POST",  
-		url : "../functionProfile/indexanalysis.do",
+		url : "../functionProfile/getline.do",
 		data : {
 			age:age,
 			title:title,

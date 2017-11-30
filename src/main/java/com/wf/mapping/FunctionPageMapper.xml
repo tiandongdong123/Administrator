@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.FunctionPageMapper" >
+
+	<sql id="education_level">
+		case
+		when education_level=0 then '大专'
+		when education_level=1 then '本科'
+		when education_level=2 then '硕士'
+		when education_level=3 then '博士'
+		when education_level=6 then '其他'
+		end
+	</sql>
+
+	<sql id="title">
+		case
+		when title=4 then '其他'
+		when title=0 then '初级'
+		when title=1 then '中级'
+		when title=2 then '副高级'
+		when title=3 then '正高级'
+		end
+	</sql>
+	
+	<sql id="result">
+		case
+		when result=1 then '浏览'
+		when result=2 then '下载'
+		when result=3 then '检索'
+		when result=4 then '分享'
+		when result=5 then '收藏'
+		when result=6 then '导出'
+		when result=7 then '笔记'
+		when result=8 then '跳转'
+		when result=9 then '订阅'
+		end
+	</sql>
+	
+	<!--功能模块分析表格展示数据 -->
+	<!--type:1 浏览量(PV),2 访问次数(VV),3 独立访客数(也是活跃用户数)(UV),4 新访客数(NV),5 活跃率(AR) -->
+	<select id="modelanalysis_table" resultType="map" parameterType="java.util.Map">
+		select
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,
+		sum(CASE type when 1 then numbers else 0 end) as PV,
+		sum(CASE type when 2 then numbers else 0 end) as VV,
+		sum(CASE type when 3 then numbers else 0 end) as UV,
+		sum(CASE type when 4 then numbers else 0 end) as NV,
+		sum(CASE type when 5 then numbers else 0 end) as AR
+		from rs_function_page_daily
+		where type <![CDATA[ < ]]>10
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="model!=null  and model!=''">
+			and result in (${model})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+
+		limit ${pageNum},${pageSize}
+	</select>
+
+	<!--功能模块分析表格展示数据总条数 -->
+	<select id="modelanalysis_count" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,
+		sum(CASE type when 1 then numbers else 0 end) as PV,
+		sum(CASE type when 2 then numbers else 0 end) as VV,
+		sum(CASE type when 3 then numbers else 0 end) as UV,
+		sum(CASE type when 4 then numbers else 0 end) as NV,
+		sum(CASE type when 5 then numbers else 0 end) as AR
+		from rs_function_page_daily
+		where type <![CDATA[ < ]]>10
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="model!=null  and model!=''">
+			and result in (${model})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+	</select>
+
+	<!--功能模块分析图形展示数据 -->
+<!-- 	<select id="modelanalysis_view" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,sum(numbers) as number,date
+		from rs_function_page_daily
+		where type =${type}
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="model!=null  and model!=''">
+			and result in (${model})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		,date
+	</select>
+ -->
+
+   <!--type:11 页面浏览量(PV),12 页面访问次数(VV),13 独立访客数(也是 活跃用户数)(UV),
+   		14 退出页次数(logoutNum),15 贡献下游流量(contributionNum),16 页面平均访问时长(pageAccessAvg),17 退出率(logoutNumP) -->
+	<select id="pageAnalysis_table" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==0">
+			'全部' as classify,
+		</if>
+		<if test="property==1">
+			<include refid="education_level" /> as classify,
+		</if>
+		<if test="property==2">
+			age as classify,
+		</if>
+		<if test="property==3">
+			<include refid="title" /> as classify,
+		</if>
+		<if test="property==4">
+			topic as classify,
+		</if>
+		sum(CASE type when 11 then numbers else 0 end) as PV,
+		sum(CASE type when 12 then numbers else 0 end) as VV,
+		sum(CASE type when 13 then numbers else 0 end) as UV,
+		sum(CASE type when 16 then numbers else 0 end) as pageAccessAvg,
+		sum(CASE type when 15 then numbers else 0 end) as contributionNum,
+		sum(CASE type when 14 then numbers else 0 end) as logoutNum,
+		sum(CASE type when 17 then numbers else 0 end) as logoutNumP
+		from rs_function_page_daily
+		where type  <![CDATA[ > ]]> 10 and type <![CDATA[ < ]]> 20
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="pageName!=null and pageName!=''">
+			and result=#{pageName}
+		</if>
+
+		<if test="property==1">
+			group by
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			group by age
+		</if>
+		<if test="property==3">
+			group by
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			group by topic
+		</if>
+		limit ${pageNum},${pageSize}
+	</select>
+
+	<select id="pageAnalysis_count" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==0">
+			'全部' as classify,
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+			as classify,
+		</if>
+		<if test="property==2">
+			age as classify,
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+			as classify,
+		</if>
+		<if test="property==4">
+			topic as classify,
+		</if>
+		sum(CASE type when 11 then numbers else 0 end) as PV,
+		sum(CASE type when 12 then numbers else 0 end) as VV,
+		sum(CASE type when 13 then numbers else 0 end) as UV,
+		sum(CASE type when 16 then numbers else 0 end) as pageAccessAvg,
+		sum(CASE type when 15 then numbers else 0 end) as contributionNum,
+		sum(CASE type when 14 then numbers else 0 end) as logoutNum,
+		sum(CASE type when 17 then numbers else 0 end) as logoutNumP
+		from rs_function_page_daily
+		where type  <![CDATA[ > ]]> 10 and type <![CDATA[ < ]]> 20
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="pageName!=null and pageName!=''">
+			and result=#{pageName}
+		</if>
+		
+
+		<if test="property==1">
+			group by <include refid="education_level" />
+		</if>
+		<if test="property==2">
+			group by age
+		</if>
+		<if test="property==3">
+			group by <include refid="title" />
+		</if>
+		<if test="property==4">
+			group by topic
+		</if>
+	</select>
+
+<!-- 	<select id="pageAnalysis_view" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==1">
+			<include refid="education_level" />
+			as classify,
+		</if>
+		<if test="property==2">
+			age as classify,
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+			as classify,
+		</if>
+		sum(numbers) as number,date
+		from rs_function_page_daily
+		where 1=1
+		<if test="type!=null  and type!=''">
+			and type=${type}
+		</if>
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="pageName!=null and pageName!=''">
+			and result=#{pageName}
+		</if>
+		
+		group by
+
+		<if test="property==1">
+			<include refid="education_level" />
+			,
+		</if>
+		<if test="property==2">
+			age,
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+			,
+		</if>
+		date
+	</select>
+ -->	
+												
+	<!--result:1-浏览(browseNum),2-下载(downloadNum),3-检索(searchNum),4-分享(shareNum),
+		5-收藏(collectNum),6-导出(exportNum),7-笔记(noteNum),8-跳转(breakNum),9-订阅(subscriptionNum)-->
+	<select id="functionProfile_table" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==1">
+			<include refid="education_level" /> as classify,
+		</if>
+		<if test="property==2">
+			age as classify,
+		</if>
+		<if test="property==3">
+			<include refid="title" /> as classify,
+		</if>
+		<if test="property==4">
+			topic as classify,
+		</if>
+		sum(CASE result when 1 then numbers else 0 end) as browseNum,
+		sum(CASE result when 2 then numbers else 0 end) as downloadNum,
+		sum(CASE result when 3 then numbers else 0 end) as searchNum,
+		sum(CASE result when 4 then numbers else 0 end) as shareNum,
+		sum(CASE result when 5 then numbers else 0 end) as collectNum,
+		sum(CASE result when 6 then numbers else 0 end) as exportNum,
+		sum(CASE result when 7 then numbers else 0 end) as noteNum,
+		sum(CASE result when 8 then numbers else 0 end) as breakNum,
+		sum(CASE result when 9 then numbers else 0 end) as subscriptionNum
+		from rs_function_page_daily
+		where type = 20
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+
+		<if test="property==1">
+			group by <include refid="education_level" />
+		</if>
+		<if test="property==2">
+			group by age
+		</if>
+		<if test="property==3">
+			group by <include refid="title" />
+		</if>
+		<if test="property==4">
+			group by topic
+		</if>
+		limit ${pageNum},${pageSize}
+	</select>
+
+	<select id="functionProfile_count" resultType="map" parameterType="java.util.Map">
+		select
+		sum(CASE result when 1 then numbers else 0 end) as browseNum,
+		sum(CASE result when 2 then numbers else 0 end) as downloadNum,
+		sum(CASE result when 3 then numbers else 0 end) as searchNum,
+		sum(CASE result when 4 then numbers else 0 end) as shareNum,
+		sum(CASE result when 5 then numbers else 0 end) as collectNum,
+		sum(CASE result when 6 then numbers else 0 end) as exportNum,
+		sum(CASE result when 7 then numbers else 0 end) as noteNum,
+		sum(CASE result when 8 then numbers else 0 end) as breakNum,
+		sum(CASE result when 9 then numbers else 0 end) as subscriptionNum
+		from rs_function_page_daily
+		where type =20
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+
+		<if test="property==1">
+			group by
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			group by age
+		</if>
+		<if test="property==3">
+			group by
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			group by topic
+		</if>
+	</select>
+
+ <!--    <select id="functionProfile_view" resultType="map" parameterType="java.util.Map">
+		select
+		<if test="property==0">
+			<include refid="result" />
+		</if>
+		<if test="property==1">
+			<include refid="education_level"/>
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title"/>
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,sum(numbers) as number,date
+		from rs_function_page_daily
+		where type =20
+		<if test="days!=null  and day!=''">
+			and date in (${days})
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="result!=null and result!=''">
+			and result in (${result})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			<include refid="result" />
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		,date
+	</select>-->	
+
+</mapper>
