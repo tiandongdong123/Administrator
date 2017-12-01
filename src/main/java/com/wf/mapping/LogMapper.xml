@@ -34,7 +34,7 @@
 		<if test="null!=endTime and ''!=endTime">
 			and time <![CDATA[   <=  ]]>#{endTime}
 		</if>
-		order by time
+		order by time desc
 		limit #{pageNum},#{pageSize}
 	</select>
 
