@@ -13,12 +13,11 @@ public interface NotesMapper {
 	 */
 	public List<Object>  selectNotesInfor(Map<String,Object> map);
 	/**
-	 * 笔记管理
+	 * 查询笔记总数
 	 * @param map
 	 * @return
 	 */
-	public List<Object>  selectNotesInforAll(Map<String,Object> map);
-	
+	public int selectNotesInforCount(Map<String,Object> map);
 	
 	public Notes  findNotes(String id);
 	

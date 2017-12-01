@@ -45,19 +45,9 @@ public class NotesServiceImpl implements NotesService {
 				}
 			}
 		}
-		Map<String,Object> mpPara=new HashMap<String, Object>();
-		mpPara.put("userName", userName);
-		mpPara.put("noteNum", noteNum);
-		mpPara.put("resourceName", resourceName);
-		mpPara.put("resourceType", resourceType);
-		mpPara.put("dataState", dataState);
-		mpPara.put("complaintStatus", complaintStatus);
-		mpPara.put("startTime", startTime);
-		mpPara.put("endTime", endTime);
-		List<Object> pageRowAll= dao.selectNotesInforAll(mpPara);
-		int pageTotal=0;
-		int b =pageRowAll.size()%pageSize;
-		pageTotal=pageRowAll.size()!=0 && b !=0?pageRowAll.size()/pageSize+1:pageRowAll.size()/pageSize;
+		int pageTotal= dao.selectNotesInforCount(mp);
+		int b =pageTotal%pageSize;
+		pageTotal= b!=0?pageTotal/pageSize+1:pageTotal/pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);
@@ -111,9 +101,9 @@ public class NotesServiceImpl implements NotesService {
 		return rt;
 	}
 	@Override
-	public List<Object> exportNotes(String userName, String noteNum,
-			String resourceName, String[] resourceType, String[] dataState,
-			String[] complaintStatus, String startTime,String endTime) {
+	public List<Object> exportNotes(String userName, String noteNum, String resourceName, 
+			String[] resourceType, String[] dataState,String[] complaintStatus, String startTime,
+			String endTime, String[] noteProperty, String[] performAction) {
 		
 		Map<String,Object> mp=new HashMap<String, Object>();
 		mp.put("userName", userName);
@@ -124,6 +114,8 @@ public class NotesServiceImpl implements NotesService {
 		mp.put("complaintStatus", complaintStatus);
 		mp.put("startTime", startTime);
 		mp.put("endTime", endTime);
+		mp.put("noteProperty", noteProperty);
+		mp.put("performAction", performAction);
 		List<Object> pageRowAll= dao.selectNotesInfor(mp);
 		
 		if(pageRowAll.size()>0){

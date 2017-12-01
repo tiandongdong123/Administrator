@@ -44,7 +44,6 @@ function paging(curr){
 	$("input:checkbox[name='resourceType']:checked").each(function(){
 		types.push($(this).val());
 	});
-	
 	$("input:checkbox[name='dataState']:checked").each(function(){
 		dataState.push($(this).val());
 	});
@@ -93,7 +92,7 @@ function serachdata(data){
 	if(pageRow.length>0){
 		var resHtml ="";
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i;
+			var index = 1 + i + (pageNum-1)*10;
 			var rows = pageRow[i];
 			var datast ="";
 			var name = "";
@@ -144,7 +143,7 @@ function serachdata(data){
 			}else{
 				resHtml+="<td></td>";
 			}
-			resHtml+="<td><a  id=\"statudiv\" href=\"javascript:void(0);\" onclick=\"findNote('"+rows.id+"')\">详情</a></td>";
+			resHtml+="<td><a  id=\"statudiv\" href=\"javascript:void(0);\" onclick=\"findNote('"+rows.recordId+"')\">详情</a></td>";
 			resHtml+="</tr>";
 			}
 		$("#notebody").html(resHtml);
@@ -225,8 +224,8 @@ function exportNotes(){
 			"&complaintStatus="+complaintStatus+
 			"&startTime="+startTime+
 			"&endTime="+endTime+
-			"noteProperty="+noteProperty +
-			"performAction=" + performAction;
+			"&noteProperty="+noteProperty +
+			"&performAction=" + performAction;
 }
 
 /*资源类型全选与全不选*/

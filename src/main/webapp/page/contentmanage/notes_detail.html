@@ -8,7 +8,7 @@
       	<table class="table table-bordered">
       		<tr>
 	      		<td>笔记ID</td>
-	      		<td><input type="hidden" id="noteid" value="${notes.id}"/>${notes.noteNum}</td>
+	      		<td><input type="hidden" id="recordId" value="${notes.recordId}"/>${notes.noteNum}</td>
       		</tr>
       		<tr>
 	      		<td>文献标题</td>
@@ -62,6 +62,9 @@
       		<tr>
       			<td><span style="color:#F00">*</span>人工处理意见</td>
       			<td><textarea rows="4" cols="70%" id="finalOpinion">${notes.finalOpinion}</textarea></td>
+      		</tr>
+      		<tr id ="finalOpinionPrompt"   style="display:none;">
+      			<td colspan="2" style="color:#F00">请填写处理意见！</td>
       		</tr>
       	</table>
       	<br/>

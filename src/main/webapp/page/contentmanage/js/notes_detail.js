@@ -2,17 +2,18 @@
 function disableNootes(dataState){
 	var finalOpinion = $("#finalOpinion").val();
 	if(null == finalOpinion || '' == finalOpinion.replace(/(^\s*)|(\s*$)/g, '')){
-		layer.msg("人工处理意见不能为空");
+//		layer.msg("人工处理意见不能为空");
+		$('#finalOpinionPrompt').show();
 		return;
 	}
-	var id=$("#noteid").val();
+	var id=$("#recordId").val();
 	$.ajax({
 		type : "post",
 		async:false,
 		url : "../content/updateNotes.do",
 		dataType : "json",
 		data : {
-			"id":id,
+			"recordId":id,
 			"dataState":dataState,
 			"finalOpinion":finalOpinion,
 			},
@@ -35,4 +36,3 @@ function close_(){
 	var index = parent.layer.getFrameIndex(window.name);
 	parent.layer.close(index);
 }
-

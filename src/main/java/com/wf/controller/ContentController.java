@@ -1504,7 +1504,7 @@ public class ContentController{
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime){
+			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction){
 				
 		ExportExcel excel=new ExportExcel();
 	
@@ -1516,9 +1516,11 @@ public class ContentController{
 		if(resourceType.length==0) resourceType=null;
 		if(dataState.length==0) dataState=null;
 		if(complaintStatus.length==0) complaintStatus=null;
+		if(noteProperty.length==0) noteProperty=null;
+		if(performAction.length==0) performAction=null;
 		
 		
-		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,  noteProperty, performAction);
 		JSONArray array=JSONArray.fromObject(list);
 		List<String> names=Arrays.asList(new String[]{"序号","笔记ID","文献标题","资源类型","笔记内容","笔记用户ID","笔记时间","执行操作","笔记性质","数据状态","审核人","审核时间"});		
 		excel.ExportNotes(response, array, names);

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Notes implements Serializable{
+	private int recordId;
 	private String id;
 	private String noteNum;
 	private String resourceNum;
@@ -25,7 +26,18 @@ public class Notes implements Serializable{
 	private String userNickname;
 	private Integer performAction;
 	private Integer noteProperty;
+
 	
+	public int getRecordId() {
+		return recordId;
+	}
+
+
+	public void setRecordId(int recordId) {
+		this.recordId = recordId;
+	}
+
+
 	public String getId() {
 		return id;
 	}
@@ -238,7 +250,7 @@ public class Notes implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Notes [id=" + id + ", noteNum=" + noteNum + ", resourceNum="
+		return "Notes [recordId="+recordId+", id=" + id + ", noteNum=" + noteNum + ", resourceNum="
 				+ resourceNum + ", resourceName=" + resourceName
 				+ ", resourceType=" + resourceType + ", noteContent="
 				+ noteContent + ", userName=" + userName + ", userId=" + userId

@@ -31,6 +31,6 @@ public interface NotesService {
 	
 	Boolean handlingNote(String id);
 	
-	List<Object> exportNotes(String userName, String noteNum, String resourceName,String[] resourceType,String[] dataState, String[] complaintStatus,String startTime,String endTime);
+	List<Object> exportNotes(String userName, String noteNum, String resourceName,String[] resourceType,String[] dataState, String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction);
 	
 }
