@@ -30,7 +30,6 @@ function showPage(){
  * 分页事件
  */
 function paging(curr){
-	alert(0);
 	var types=new Array();
 	var dataState=new Array();
 	var complaintStatus=new Array();
