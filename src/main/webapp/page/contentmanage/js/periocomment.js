@@ -200,7 +200,7 @@ function commentpage(curr){
 			if(rows.data_state=='1'){
 				datast="正常";
 			}else{
-				datast="禁用"
+				datast="<span style='color:red;'>禁用</span>"
 			}
 			if(rows.executive_operation=='1'){
 				compst="新增";
