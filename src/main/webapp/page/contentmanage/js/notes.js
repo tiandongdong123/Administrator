@@ -1,31 +1,31 @@
 $(function(){
 	paging();
 });
-
-function showPage(){
-	//显示分页
-	var pageNum = $("#pageNum").val();
-	var pageTotal = $("#pageTotal").val();
-	laypage({
-    	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-        pages: pageTotal, //通过后台拿到的总页数
-        curr: pageNum || 1, //当前页
-        skip: true, //是否开启跳页
-	      skin: '#367fa9',//当前页颜色，可16进制
-	      groups: 4, //连续显示分页数
-	      first: '首页', //若不显示，设置false即可
-	      last: '尾页', //若不显示，设置false即可
-	      prev: '上一页', //若不显示，设置false即可
-	      next: '下一页', //若不显示，设置false即可
-	      jump: function(obj, first){ //触发分页后的回调
-	        if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-	            paging(obj.curr);
-	        }else{
-	        	paging(obj.curr);
-	        }
-       }
-    });
-}
+//
+//function showPage(){
+//	//显示分页
+//	var pageNum = $("#pageNum").val();
+//	var pageTotal = $("#pageTotal").val();
+//	laypage({
+//    	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+//        pages: pageTotal, //通过后台拿到的总页数
+//        curr: pageNum || 1, //当前页
+//        skip: true, //是否开启跳页
+//	      skin: '#367fa9',//当前页颜色，可16进制
+//	      groups: 4, //连续显示分页数
+//	      first: '首页', //若不显示，设置false即可
+//	      last: '尾页', //若不显示，设置false即可
+//	      prev: '上一页', //若不显示，设置false即可
+//	      next: '下一页', //若不显示，设置false即可
+//	      jump: function(obj, first){ //触发分页后的回调
+//	        if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
+//	            paging(obj.curr);
+//	        }else{
+//	        	paging(obj.curr);
+//	        }
+//       }
+//    });
+//}
 /**
  * 分页事件
  */
@@ -99,7 +99,7 @@ function serachdata(data){
 			if(rows.dataState=='1'){
 				datast="正常";
 			}else if(rows.dataState=='0'){
-				datast="禁用";
+				datast="<span style='color:red;'>禁用</span>";
 			}
 			if(null != rows.userRealname && '' != rows.userRealname){
 				name = rows.userRealname;
