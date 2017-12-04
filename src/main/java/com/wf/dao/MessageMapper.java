@@ -5,15 +5,17 @@ import java.util.Map;
 
 import com.wf.bean.Message;
 public interface MessageMapper {
+	
 	/**
 	 * 查询学科分类信息
 	 * @return
 	 */
 	public List<Object>  selectMessageInfor(Map<String,Object> map);
+	
 	/**
-	 * 根据咨询类型查所有
+	 * 根据咨询类型查前5行
 	 */
-	public List<Object>  selectBycolums(String colums);
+	public List<Object>  selectByFivecolums(String colums);
 	/**
 	 * 查询所有的资讯信息
 	 * @param map

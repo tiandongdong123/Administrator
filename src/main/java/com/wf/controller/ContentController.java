@@ -976,11 +976,12 @@ public class ContentController{
 		Log log=new Log("笔记管理","修改","修改后的笔记信息:"+notes.toString(),request);
 		logService.addLog(log);
 	}
+	
 	@RequestMapping("/stick")
-	public void stick(Message message,@RequestParam("colums")String colums,HttpServletResponse response) throws Exception{
+	public void stick(Message message,HttpServletResponse response) throws Exception{
 		String stick=DateTools.getSysTime();
 		message.setStick(stick);
-		boolean b =messageService.updataMessageStick(message, colums);
+		boolean b =messageService.updataMessageStick(message);
 		JsonUtil.toJsonHtml(response, b);
 	}
 	
@@ -1729,18 +1730,15 @@ public class ContentController{
 	 */
 	@RequestMapping("/oneKeyDeploy")
 	@ResponseBody
-	public Boolean oneKeyDeploy(HttpServletRequest request,HttpServletResponse response){
-		  boolean isOK=true;
+	public Boolean oneKeyDeploy(HttpServletRequest request, HttpServletResponse response) {
+		boolean isOK = true;
 		try {
-			Map<String, Object> map=new HashMap<String, Object>();
-			map.put("issue_state",2);
-			List<Object> list=messageService.getAllMessage(map);
-			for(Object obj:list){
-				Message mm=(Message) obj;
-					messageService.updateIssue(String.valueOf(mm.getId()),mm.getColums(),"2");
-			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("issue_state", 2);
+			List<Object> list = messageService.getAllMessage(map);
+			messageService.updateBatch(list);
 		} catch (Exception e) {
-			isOK=false;
+			isOK = false;
 			e.printStackTrace();
 		}
 		return isOK;
