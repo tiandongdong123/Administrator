@@ -55,6 +55,9 @@ public class CommonEntity implements Serializable {
     private Integer chargebacks;
 
     private Integer downloadupperlimit;
+    
+    //统计分析
+    private String tongji;
 	
     private List<ResourceDetailedDTO> rdlist;
 
@@ -209,6 +212,14 @@ public class CommonEntity implements Serializable {
 
 	public void setCheckuser(String checkuser) {
 		this.checkuser = checkuser;
+	}
+
+	public String getTongji() {
+		return tongji;
+	}
+
+	public void setTongji(String tongji) {
+		this.tongji = tongji;
 	}
 
 	@Override

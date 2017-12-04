@@ -96,6 +96,13 @@
 	                  </select>
 	               	</div>
                 </div>
+	            <div class="form-group input_block">
+	            <input type="hidden" name="tongji" id="tongji" value="AB">
+                  <label class="input_name">统计分析</label>
+				 <input type="checkbox" id="statistics1" onclick="checkTj('all')" checked="checked">全部&nbsp;&nbsp;
+				 <input type="checkbox" id="statistics2" onclick="checkTj('database_statistics')" checked="checked">数据库使用分析&nbsp;&nbsp;
+				 <input type="checkbox" id="statistics3" onclick="checkTj('resource_type_statistics')" checked="checked">资源类型使用分析&nbsp;&nbsp;
+               	</div>
                 <div class="checkbox input_block block_left">
                   <label><input type="checkbox" name="resetMoney" value="true">金额重置</label>
 	            </div>

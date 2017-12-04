@@ -35,8 +35,36 @@ $(function(e){
 			$("#sconcurrent_div").hide();
 		}
 	});
-	
+	//是否开通统计分析
+	$("#tongji").click(function(){
+		if($(this).is(':checked')){
+			$("#tongjifenxi_div").show();
+		}else{
+			$("#tongjifenxi_div")
+			$("#tongjifenxi_div").hide();
+		}
+	});
 });
+
+//统计分析
+function checkTj(value){
+	if(value=="all"){
+		var bool=$("#statistics1").is(':checked');
+		$("#tongji").val(bool?"A:B":"");
+		$("#statistics2").prop('checked',bool);
+		$("#statistics3").prop('checked',bool);
+	}else{
+		var statistics2=$("#statistics2").is(':checked');
+		var statistics3=$("#statistics3").is(':checked');
+		if(statistics2&&statistics3){
+			$("#tongji").val("A:B");
+		}else if(statistics2){
+			$("#tongji").val("A");
+		}else if(statistics3){
+			$("#tongji").val("B");
+		}
+	}
+}
 
 //标准
 function standardShow(count,i,id){
