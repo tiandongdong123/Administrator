@@ -979,8 +979,7 @@ public class ContentController{
 	
 	@RequestMapping("/stick")
 	public void stick(Message message,HttpServletResponse response) throws Exception{
-		String stick=DateTools.getSysTime();
-		message.setStick(stick);
+		message.setStick(DateTools.getSysTime());
 		boolean b =messageService.updataMessageStick(message);
 		JsonUtil.toJsonHtml(response, b);
 	}

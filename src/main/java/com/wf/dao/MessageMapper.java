@@ -7,10 +7,16 @@ import com.wf.bean.Message;
 public interface MessageMapper {
 	
 	/**
-	 * 查询学科分类信息
+	 * 查询学科分类信息(分页数据)
 	 * @return
 	 */
-	public List<Object>  selectMessageInfor(Map<String,Object> map);
+	public List<Object> getMessageList(Map<String,Object> map);
+	
+	/**
+	 * 查询学科分类信息(分页计数)
+	 * @return
+	 */
+	public int getMessageCount(Map<String,Object> map);
 	
 	/**
 	 * 根据咨询类型查前5行
@@ -45,18 +51,6 @@ public interface MessageMapper {
 	 * @return
 	 */
 	public int insertMessage(Message message);
-	/**
-	 * 更新
-	 * @param message
-	 * @return
-	 */
-	public int updateMessageStick(Message message);
-	/**
-	 * 查询
-	 * @param param
-	 * @return
-	 */
-	public Message findMessageParam(String title);
 	/**
 	 *  发布/下撤/再发布
 	 * @param map

@@ -45,17 +45,9 @@ public class MessageServiceImpl implements MessageService {
 		mp.put("colums", colums);
 		mp.put("startTime", startTime);
 		mp.put("endTime", endTime);
-		List<Object> pageRow= dao.selectMessageInfor(mp);
-		Map<String,Object> mpPara=new HashMap<String, Object>();
-		mpPara.put("branch", branch);
-		mpPara.put("human", human);
-		mpPara.put("colums", colums);
-		mpPara.put("startTime", startTime);
-		mpPara.put("endTime", endTime);
-		List<Object> pageRowAll= dao.selectMessageInforAll(mpPara);
-		int pageTotal=0;
-		int b =pageRowAll.size()%pageSize;
-		pageTotal=pageRowAll.size()!=0 && b !=0?pageRowAll.size()/pageSize+1:pageRowAll.size()/pageSize;
+		List<Object> pageRow = dao.getMessageList(mp);
+		int num = dao.getMessageCount(mp);
+		int pageTotal = num != 0 && num % pageSize != 0 ? num / pageSize + 1 : num / pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);
@@ -92,6 +84,7 @@ public class MessageServiceImpl implements MessageService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("id", message.getId());
 		map.put("issueState", 2);
+		map.put("stick", new Date());
 		int num = dao.updateIssue(map);
 		if(num > 0){
 			flag = true;

@@ -89,7 +89,7 @@ function serachdata(data){
     "</tr>";
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i;
+			var index = 1+i+10*(pageNum-1);
 			var rows = pageRow[i];
 			var issue = rows.issueState;
 			var issueNum = 1;
