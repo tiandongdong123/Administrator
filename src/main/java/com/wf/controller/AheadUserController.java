@@ -1104,7 +1104,7 @@ public class AheadUserController {
 	private void getTongInstitution(String userId,Map<String, Object> map){
 		UserInstitution ins=aheadUserService.getUserInstitution(userId);
 		if(ins==null){
-			map.put("tongji", "AB");//暂时先设置定值
+			map.put("tongji", "");//权限的就设置为空
 		}else{
 			String analysis = ins.getStatisticalAnalysis();
 			JSONObject obj = JSONObject.fromObject(analysis);

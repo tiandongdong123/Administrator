@@ -10,8 +10,7 @@
     <result column="downloadUpperLimit" property="downloadupperlimit" jdbcType="INTEGER" />
   </resultMap>
   <delete id="deleteAccountRestriction" parameterType="java.lang.String" >
-    delete from user_account_restriction
-    where user_id = #{userId}
+    delete from user_account_restriction where user_id = #{userId}
   </delete>
   
   <insert id="insert" parameterType="com.wf.bean.UserAccountRestriction" >
