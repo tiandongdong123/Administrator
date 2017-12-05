@@ -27,11 +27,16 @@ $(function(e){
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
+			$("#upperlimit").val("100");
+			$("#sConcurrentcountber").val("1");
+			$("#downloadupperlimit").val("30");
+			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("1000");
-			$("#sConcurrentcountber").val("1");
-			$("#chargebacks").val("0");
+			$("#upperlimit").val("");
+			$("#sConcurrentcountber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
 		}
 	});
