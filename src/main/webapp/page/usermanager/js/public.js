@@ -28,7 +28,7 @@ $(function(e){
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
 			$("#upperlimit").val("100");
-			$("#sConcurrentcountber").val("1");
+			$("#sConcurrentnumber").val("1");
 			$("#downloadupperlimit").val("30");
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
@@ -38,15 +38,6 @@ $(function(e){
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
-		}
-	});
-	//是否开通统计分析
-	$("#tongji").click(function(){
-		if($(this).is(':checked')){
-			$("#tongjifenxi_div").show();
-		}else{
-			$("#tongjifenxi_div")
-			$("#tongjifenxi_div").hide();
 		}
 	});
 });
