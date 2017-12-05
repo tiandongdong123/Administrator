@@ -55,14 +55,14 @@ $(function(e){
 function checkTj(value){
 	if(value=="all"){
 		var bool=$("#statistics1").is(':checked');
-		$("#tongji").val(bool?"A:B":"");
+		$("#tongji").val(bool?"AB":"");
 		$("#statistics2").prop('checked',bool);
 		$("#statistics3").prop('checked',bool);
 	}else{
 		var statistics2=$("#statistics2").is(':checked');
 		var statistics3=$("#statistics3").is(':checked');
 		if(statistics2&&statistics3){
-			$("#tongji").val("A:B");
+			$("#tongji").val("AB");
 		}else if(statistics2){
 			$("#tongji").val("A");
 		}else if(statistics3){
