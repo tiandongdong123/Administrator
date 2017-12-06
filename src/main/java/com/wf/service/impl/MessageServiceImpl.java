@@ -328,7 +328,6 @@ public class MessageServiceImpl implements MessageService {
 			newMap.put("type", type);
 			newMap.put("auto_stringITS_abstracts", abstracts);
 			//处理特殊字符
-			content =toNoHtml((String)content);
 			newMap.put("auto_stringITS_content", content);
 			newMap.put("auto_stringITS_title", title);
 			newMap.put("stringIS_author", author);
