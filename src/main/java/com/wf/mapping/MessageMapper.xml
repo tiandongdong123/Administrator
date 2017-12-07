@@ -19,7 +19,7 @@
     <result column="is_top" property="isTop" jdbcType="VARCHAR" />
   </resultMap>
 	<sql id="Base_Column_List" >
-		id,colums,title,abstract,link_address,create_time,author,organ_name,branch,image_url,human,issue_state,is_top
+		id,colums,title,abstract,link_address,date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,author,organ_name,branch,image_url,human,date_format(stick,'%Y-%m-%d %H:%i:%s') stick,issue_state,is_top
 	</sql>
   
 	<!-- 查询学科分类信息分页 -->
