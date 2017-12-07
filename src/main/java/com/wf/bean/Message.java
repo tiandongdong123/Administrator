@@ -17,6 +17,7 @@ public class Message implements Serializable{
 	private String human;
 	private String stick;
 	private Integer issueState;
+	private String isTop;
 	public String getStick() {
 		return stick;
 	}
@@ -31,7 +32,7 @@ public class Message implements Serializable{
 				+ ", linkAddress=" + linkAddress + ", createTime=" + createTime
 				+ ", author=" + author + ", organName=" + organName
 				+ ", imageUrl=" + imageUrl + ", branch=" + branch + ", human="
-				+ human + ", stick=" + stick + ", issueState=" + issueState
+				+ human + ", stick=" + stick + ", issueState=" + issueState+", isTop="+isTop
 				+ "]";
 	}
 	public Integer getIssueState() {
@@ -111,6 +112,12 @@ public class Message implements Serializable{
 	}
 	public void setHuman(String human) {
 		this.human = human;
+	}
+	public String getIsTop() {
+		return isTop;
+	}
+	public void setIsTop(String isTop) {
+		this.isTop = isTop;
 	}
 	
 }
