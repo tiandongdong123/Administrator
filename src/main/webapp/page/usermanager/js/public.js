@@ -23,7 +23,12 @@ $(function(e){
 			$("#pconcurrent_div").hide();
 		}
 	});
-	
+	//机构管理员校验
+	$("#adminIP").keyup(function(){
+		this.value=this.value.replace(/[^.0-9\r\n-]/g,'');
+	}).keydown(function(){
+		this.value=this.value.replace(/[^.0-9\r\n-]/g,'');
+	});
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
@@ -58,6 +63,8 @@ function checkTj(value){
 			$("#tongji").val("A");
 		}else if(statistics3){
 			$("#tongji").val("B");
+		}else{
+			$("#tongji").val("");
 		}
 	}
 }

@@ -1833,15 +1833,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 添加统计分析
 		String tongji = com.getTongji();
 		userInstitutionMapper.deleteUserIns(com.getUserId());
-		if (!StringUtils.isEmpty(tongji)) {
-			UserInstitution ins = new UserInstitution();
-			ins.setUserId(com.getUserId());
-			JSONObject obj=new JSONObject();
-			obj.put("database_statistics", tongji.contains("A")?1:0);
-			obj.put("resource_type_statistics", tongji.contains("B")?1:0);
-			ins.setStatisticalAnalysis(obj.toString());
-			userInstitutionMapper.addUserIns(ins);
+		if (tongji == null) {
+			tongji = "";
 		}
+		UserInstitution ins = new UserInstitution();
+		ins.setUserId(com.getUserId());
+		JSONObject obj=new JSONObject();
+		obj.put("database_statistics", tongji.contains("A")?1:0);
+		obj.put("resource_type_statistics", tongji.contains("B")?1:0);
+		ins.setStatisticalAnalysis(obj.toString());
+		userInstitutionMapper.addUserIns(ins);
 	}
 
 	@Override
