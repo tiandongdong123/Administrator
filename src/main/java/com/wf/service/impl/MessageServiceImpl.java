@@ -98,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	/**
-	 * 发布/下撤/再发布/置顶发布
+	 * 发布/下撤/再发布
 	 * @param id
 	 * @param issueState
 	 * @return
@@ -111,11 +111,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("id", id);
 		map.put("issueState", issue);
 		map.put("stick", new Date());
-		if(issue==2){
-			map.put("isTop", "1");
-		}else{
-			map.put("isTop", "0");
-		}
+		map.put("isTop", "0");
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
