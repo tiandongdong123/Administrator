@@ -287,9 +287,9 @@ public class ContentController{
 		message.setHuman(admin.getUser_realname());
 		message.setBranch(admin.getDept().getDeptName());
 		message.setIssueState(1);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		message.setCreateTime(sdf.format(new Date()));
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		message.setCreateTime(sdf1.format(new Date()));
 		message.setStick(sdf1.format(new Date()));
 		boolean b =messageService.insertMessage(message);
 		JsonUtil.toJsonHtml(response, b);

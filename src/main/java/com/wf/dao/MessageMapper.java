@@ -63,4 +63,11 @@ public interface MessageMapper {
 	 * @return
 	 */
 	int updateIssue(Map<String,Object> map);
+	
+	/**
+	 * 重置置顶
+	 * @param colums
+	 * @return
+	 */
+	int updateIsTop(String colums);
 }

@@ -86,6 +86,9 @@ public class MessageServiceImpl implements MessageService {
 		map.put("issueState", 2);
 		map.put("stick", new Date());
 		map.put("isTop", "1");
+		if ("专题聚焦".equals(message.getColums())) {
+			dao.updateIsTop(message.getColums());
+		}
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
@@ -151,7 +154,11 @@ public class MessageServiceImpl implements MessageService {
 		List<Object> list = new ArrayList<Object>();
 		Map<String,Object> topMap=new HashMap<String,Object>();
 		topMap.put("colums", colums);
-		topMap.put("size", 10);
+		if("专题聚焦".equals(colums)){
+			topMap.put("size", 1);
+		}else{
+			topMap.put("size", 3);
+		}
 		list = dao.selectIsTop(topMap);//获取
 		int topSize=list.size();
 		Map<String,Object> map=new HashMap<String,Object>();
@@ -161,11 +168,9 @@ public class MessageServiceImpl implements MessageService {
 			//清空redis中对应的key
 			redis.del("ztID");
 			redis.del("special");
-			if(topSize<10){
-				map.put("size", 10-topSize);
-				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);
-			}
+			map.put("size", 10-topSize);
+			List<Object> ls = dao.selectBycolums(map);
+			list.addAll(ls);
 			for(int i = 0;i < list.size();i++){
 				Message m = (Message) list.get(i);
 				m.setContent("");
