@@ -42,7 +42,7 @@
       		<tr>
       			<td>审稿费</td>
       			<td>
-      			<?if(info.audit_money!=null){?>
+      			<?if(info.audit_money!=null&&info.audit_money!=''){?>
       			${info.audit_money}元
       			<?}else{?>
       			<?}?>	
@@ -51,7 +51,7 @@
       		<tr>
       			<td>版面费</td>
       			<td>
-      			<?if(info.layout_money!=null){?>
+      			<?if(info.layout_money!=null&&info.layout_money!=''){?>
       			${info.layout_money}元
       			<?}else{?>
       			<?}?>			
@@ -78,7 +78,13 @@
       		<tr>
       			<td>执行操作</td>
       			<td>
-      			${info.executive_operation}			
+      			<?if(info.executive_operation=='1'){?>
+      				新增
+      			<?}else if(info.executive_operation=='2'){?>
+      				修改
+      			<?}else if(info.executive_operation=='3'){?>
+      				删除
+      			<?}?>		
 				</td>
       		</tr>
       		<tr>
@@ -91,11 +97,15 @@
       			<td>机器审核意见</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${info.preliminary_opinions}">  
       			</td>
       		</tr>
-      		<tr>
-      			<td>*人工处理意见</td><td><input style="width: 100%;height:40px;" id="appealReason" value="${info.final_opinion}" type="text" >     	
+      		<tr style="height: 200px;">
+      			<td>* 人工处理意见</td>
+      			<td style="height: 200px;">
+      			<textarea rows="10" cols="" style="width: 100%;height:200px;" id="appealReason" value="${info.final_opinion}"></textarea>
       			</td>
       		</tr>
       	</table>
+      	<input type="hidden" id="isget" value="${info.isget}" />
+      	<input type="hidden" id="rand_id" value="${info.rand_id}" />
       	<br/>
       	<?if(info.data_state=='0'){?>
       	<button type="submit" class="btn btn-primary" onclick="revocation(${info.id});">撤销禁用</button>

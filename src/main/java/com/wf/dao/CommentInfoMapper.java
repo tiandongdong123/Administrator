@@ -32,7 +32,7 @@ public interface CommentInfoMapper {
 
 	Boolean updateNotes(@Param("id")String id ,@Param("dataState")String dataState,@Param("appealReason")String appealReason,@Param("user_id")String user_id,@Param("date")String date);
 	
-	Boolean handlingStatus(@Param("info")CommentInfo info);
+	Integer updateInfo(@Param("id")String id,@Param("dataState")String dataState);
 	
 	Integer getGoodForCommont(@Param("id") String commontid);
 }

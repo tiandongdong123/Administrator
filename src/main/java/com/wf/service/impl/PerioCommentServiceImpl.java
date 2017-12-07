@@ -65,13 +65,6 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 	}
 
 	@Override
-	public Boolean handlingStatus(CommentInfo info) {
-		// TODO Auto-generated method stub
-		Boolean i=ci.handlingStatus(info);
-		return i;
-	}
-
-	@Override
 	public List<Object> exportPerio(CommentInfo info, String[] dataState,
 			String[] complaintStatus, String startTime, String endTime,
 			String sauditm, String eauditm, String slayoutm, String elayoutm) {
@@ -97,6 +90,12 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 	public CommentInfo getcommentByid(String id) {
 		// TODO Auto-generated method stub
 		return ci.getcommentByid(id);
+	}
+
+	@Override
+	public Integer updateInfo(String id, String dataState) {
+		// TODO Auto-generated method stub
+		return ci.updateInfo(id, dataState);
 	}
 
 }

@@ -87,7 +87,9 @@ public class PerioCommentController {
 		for(int i=0;i<json.size();i++){
 			CommentInfo com=(CommentInfo)json.get(i);
 			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
-			com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
 			if(StringUtils.isNotEmpty(com.getAuditor())){
 				com.setAuditor(adminS.getAdminById(com.getAuditor()).getUser_realname());
 			}
@@ -123,7 +125,9 @@ public class PerioCommentController {
 			getClcFromRedis clc=new getClcFromRedis();
 			CommentInfo com=this.pc.getcommentByid(id);
 			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
-			com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
 			model.addAttribute("info", com);
 		return "/page/contentmanage/periocom";
 	}
@@ -141,13 +145,18 @@ public class PerioCommentController {
 		String id = request.getParameter("id");
 		String dataState = request.getParameter("dataState");
 		String appealReason = request.getParameter("appealReason");
+		String isupdata=request.getParameter("isupdata");
+		String rand_id=request.getParameter("rand_id");
 		
 		Wfadmin admin =CookieUtil.getWfadmin(request);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		String user_id=admin.getId();
 		String date=sdf.format(new Date());
 		
-		boolean b=this.pc.updateNotes(id,dataState,appealReason,user_id,date);
+		boolean b=this.pc.updateNotes(rand_id,dataState,appealReason,user_id,date);
+		if(isupdata.equals("1")){
+			this.pc.updateInfo(id, dataState);
+		}
 		return b;
 	}
 	

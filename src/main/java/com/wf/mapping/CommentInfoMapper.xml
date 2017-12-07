@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wf.dao.CommentInfoMapper" >
   <resultMap id="BaseResultMap" type="com.wf.bean.CommentInfo" >
-    <id column="id" property="id"  jdbcType="VARCHAR" />
+  	<id column="rand_id" property="rand_id"  jdbcType="VARCHAR" />
+    <result column="id" property="id" jdbcType="VARCHAR" />
     <result column="perio_id" property="perio_id" jdbcType="VARCHAR" />
     <result column="perio_name" property="perio_name" jdbcType="VARCHAR" />
     <result column="user_id" property="user_id" jdbcType="VARCHAR" />
@@ -21,6 +22,8 @@
     <result column="executive_operation" property="executive_operation" jdbcType="VARCHAR" />
     <result column="auditor" property="auditor" jdbcType="VARCHAR" />
     <result column="audit_time" property="audit_time" jdbcType="VARCHAR" />
+    <result column="isget" property="isget" jdbcType="VARCHAR" />
+    <result column="goods" property="goods" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="sqllist" >
    id,perio_id,perio_name,user_id,author_name,submit_period,audit_money,layout_money,creat_date,hire_con,
@@ -29,7 +32,7 @@
   </sql>
   
   <select id="getComment" resultMap="BaseResultMap" >
-  select * from comment_info where 1=1
+  select * from comment_admin where 1=1
    <if test="info.user_id!=null and info.user_id !=''">
   	and user_id=#{info.user_id}
   </if>
@@ -74,7 +77,7 @@
   </select>
   
    <select id="getCommentCount" resultType="int" >
-	  select count(1) from comment_info where 1=1
+	  select count(1) from comment_admin where 1=1
 	   <if test="info.user_id!=null and info.user_id !=''">
 	  	and user_id=#{info.user_id}
 	  </if>
@@ -118,26 +121,26 @@
   </select>
   
  <update id="changetype" >
- 	update  comment_info set data_state=#{info.dataState},handling_status=#{info.handlingStatus}   where user_id=#{info.userId} and id=#{info.id}
+ 	update  comment_admin set data_state=#{info.dataState},handling_status=#{info.handlingStatus}   where user_id=#{info.userId} and rand_id=#{info.id}
  </update>
 
   <update id="updateNotes" >
- 	update  comment_info set data_state=#{dataState},final_opinion =#{appealReason},auditor =#{user_id},audit_time=#{date}  where  id=#{id}
+ 	update  comment_admin set data_state=#{dataState},final_opinion =#{appealReason},auditor =#{user_id},audit_time=#{date}  where  rand_id=#{id}
  </update>
  
- <update id="handlingStatus" >
- 	update  comment_info set handling_status=#{info.handlingStatus}  where  id=#{info.id}
+ <update id="updateInfo" >
+ 	update  comment_info set data_state=#{dataState}  where  id=#{id}
  </update>
  <select id="findNote" resultMap="BaseResultMap" >
- select * from comment_info where id=#{info.id}
+ select * from comment_admin where rand_id=#{info.id}
  </select>
  
   <select id="findNotes" resultMap="BaseResultMap" >
- select * from comment_info where id=#{info.id}
+ select * from comment_admin where rand_id=#{info.id}
  </select>
  
   <select id="getCommentAll" resultMap="BaseResultMap" >
-  	select * from comment_info where 1=1
+  	select * from comment_admin where 1=1
    <if test="info.userId!=null and info.userId !=''">
   	and user_id=#{info.userId}
   </if>
@@ -187,7 +190,7 @@
  </select>
  	
  <select id="getcommentByid" resultMap="BaseResultMap">
- 	select * from comment_info where id=#{id}
+ 	select * from comment_admin where rand_id=#{id}
  </select>
  	
 </mapper>
