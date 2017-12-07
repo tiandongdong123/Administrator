@@ -155,9 +155,9 @@ public class MessageServiceImpl implements MessageService {
 		Map<String,Object> topMap=new HashMap<String,Object>();
 		topMap.put("colums", colums);
 		if("专题聚焦".equals(colums)){
-			topMap.put("size", 10);
-		}else{
 			topMap.put("size", 1);
+		}else{
+			topMap.put("size", 3);
 		}
 		list = dao.selectIsTop(topMap);//获取
 		int topSize=list.size();
