@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -342,7 +344,6 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 			String type, String starttime, String endtime,Integer property) {
 		
 		
-		
 		String days = getDayByDateType(datetype,starttime,endtime);
 		String agestr =getAges(age);
 		
@@ -357,7 +358,22 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		map.put("property",property);
 		map.put("type",type);
 		
-		List<Object> list=functionPageDailyMapper.pageAnalysis_view(map);
+		List<Object> list=new ArrayList<>();
+		
+		
+		if(datetype.equals("1") ||(starttime.equals(endtime) 
+				&& StringUtils.isNotBlank(starttime)  && StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.pageAnalysis_view(map);
+		}else{
+			list=functionPageDailyMapper.pageAnalysis_view(map);
+		}
+		
+		
+		Map<String, Object> datamap = new HashMap<String, Object>();
+		
+		List<String> reslistnames=new ArrayList<>();
+		List<String> reslistname=new ArrayList<>();
+		List<String> alldate = new ArrayList<String>();
 		
 		List<Object> jsonp=new ArrayList<>();
 		List<Object> date=new ArrayList<>();
@@ -376,10 +392,6 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 	}
 
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.wf.service.PageAnalysisService#getdatasource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public  PageList getdatasource(Integer pagesize,Integer pagenum,String title, String age,
 			String exlevel, String datetype, String reserchdomain,
@@ -413,7 +425,7 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		}
 
 		pageList.setPageNum(pagenum);
-		pageList.setPageNum(pagesize);
+		pageList.setPageSize(pagesize);
 		pageList.setTotalRow(count);
 		pageList.setPageRow(list);
 		
@@ -767,6 +779,53 @@ public class PageAnalysisServiceImpl implements PageAnalysisService {
 		return agestr;
 	}
 
+	private List<String> getMonthList(String datetype,String starttime,String endtime){
+		
+		List<String> alldate=new ArrayList<>();
+		
+		if(datetype.equals("1")){
+			for (int i = 0; i <=23; i++) {
+				if(i<10){
+					alldate.add("0"+i);
+				}else{
+					alldate.add(""+i);
+				}
+			}
+		}else if(datetype.equals("2")||datetype.equals("3")){
+			int num =datetype.equals("2")?6:29;
+			for(int k=num;k>0;k--){
+				Calendar   cal   =   Calendar.getInstance();
+				cal.add(Calendar.DATE,   -k);
+				String day = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+				alldate.add(day);
+			}
+		}else{
+			if(starttime.equals(endtime)){
+				for (int i = 0; i <=23; i++) {
+					if(i<10){
+						alldate.add("0"+i);
+					}else{
+						alldate.add(""+i);
+					}
+				}
+			}else {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date sd = format.parse(starttime);
+					Date ed = format.parse(endtime);
+					List<Date> date = this.getDate(sd, ed);
+					for(Date d : date){
+						alldate.add(format.format(d));
+					}	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return alldate;
+	}
+	
 	@Override
 	public List<String> getAllTopic(String topic) {
 		return functionPageDailyMapper.getAllTopic(topic);

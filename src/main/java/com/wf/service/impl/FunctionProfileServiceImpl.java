@@ -50,7 +50,17 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 		map.put("property",property);
 		map.put("result",type);
 		
-		List<Object> list=functionPageDailyMapper.functionProfile_view(map);
+		List<Object> list=new ArrayList<>();
+		
+		if(datetype.equals("1") ||
+				(starttime.equals(endtime)
+					&&StringUtils.isNotBlank(starttime)
+					&& StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.functionProfile_view(map);
+		}else{
+			list=functionPageDailyMapper.functionProfile_view(map);
+		}
+		
 		Map<String, Object> datamap = new HashMap<String, Object>();
 		
 		List<String> reslistnames=new ArrayList<>();
@@ -70,39 +80,7 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 					reslistname.add(name);
 				}
 			}
-			
-			if(datetype.equals("1")){
-				Calendar   cal   =   Calendar.getInstance();
-				cal.add(Calendar.DATE,   -1);
-				alldate.add(new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime()));
-			}else if(datetype.equals("2")||datetype.equals("3")){
-				int num =datetype.equals("2")?6:29;
-				for(int k=num;k>0;k--){
-					Calendar   cal   =   Calendar.getInstance();
-					cal.add(Calendar.DATE,   -k);
-					String day = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
-					alldate.add(day);
-				}
-			}else{
-				
-				if(starttime.equals(endtime)){
-					alldate.add(endtime);
-				}else {
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-					try {
-						Date sd = format.parse(starttime);
-						Date ed = format.parse(endtime);
-						List<Date> date = this.getDate(sd, ed);
-						for(Date d : date){
-							alldate.add(format.format(d));
-							
-						}	
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
+			alldate=this.getMonthList(datetype, starttime, endtime);
 			
 			List<Map<String,String>> obj = new ArrayList<Map<String,String>>();
 			boolean rt = true;
@@ -129,6 +107,53 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 			}
 			
 			list.addAll(obj);
+			
+			if(datetype.equals("1") ||
+					(starttime.equals(endtime) 
+							&&StringUtils.isNotBlank(starttime)
+							&& StringUtils.isNotBlank(endtime))){
+				
+				Collections.sort(list, new Comparator<Object>() {
+					@Override
+					public int compare(Object arg0, Object arg1) {
+						String hits0 = ((Map<String, Object>)arg0).get("date").toString();
+						String hits1 = ((Map<String, Object>)arg1).get("date").toString();
+						if (Integer.parseInt(hits1) < Integer.parseInt(hits0)) {
+							return 1;
+						} else if (hits1.equals(hits0) ) {
+							return 0;
+						} else {
+							return -1;
+						}
+					}
+				});
+
+			}else{
+				Collections.sort(list, new Comparator<Object>() {
+					@Override
+					public int compare(Object arg0, Object arg1) {
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						Date hits0 = new Date();
+						Date hits1 = new Date();
+						try {
+							
+							hits0=format.parse(((Map<String, Object>)arg0).get("date").toString());
+							hits1 = format.parse(((Map<String, Object>)arg1).get("date").toString());
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						if ( hits1.getTime() < hits0.getTime()) {
+							return 1;
+						} else if (hits1 .equals(hits0) ) {
+							return 0;
+						} else {
+							return -1;
+						}
+					}
+				});
+
+			}
+			
 			Map<String, List<String>> m = new HashMap<String, List<String>>();
 			for (Object l : list) {
 				if(null==((Map<String,Object>)l).get("classify"))
@@ -1327,6 +1352,54 @@ public class FunctionProfileServiceImpl implements FunctionProfileService {
 		}
 		
 		return agestr;
+	}
+
+	
+	private List<String> getMonthList(String datetype,String starttime,String endtime){
+		
+		List<String> alldate=new ArrayList<>();
+		
+		if(datetype.equals("1")){
+			for (int i = 0; i <=23; i++) {
+				if(i<10){
+					alldate.add("0"+i);
+				}else{
+					alldate.add(""+i);
+				}
+			}
+		}else if(datetype.equals("2")||datetype.equals("3")){
+			int num =datetype.equals("2")?6:29;
+			for(int k=num;k>0;k--){
+				Calendar   cal   =   Calendar.getInstance();
+				cal.add(Calendar.DATE,   -k);
+				String day = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+				alldate.add(day);
+			}
+		}else{
+			if(starttime.equals(endtime)){
+				for (int i = 0; i <=23; i++) {
+					if(i<10){
+						alldate.add("0"+i);
+					}else{
+						alldate.add(""+i);
+					}
+				}
+			}else {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date sd = format.parse(starttime);
+					Date ed = format.parse(endtime);
+					List<Date> date = this.getDate(sd, ed);
+					for(Date d : date){
+						alldate.add(format.format(d));
+					}	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return alldate;
 	}
 
 	

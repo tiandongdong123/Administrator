@@ -1,5 +1,6 @@
 package com.wf.service.impl;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.xhtml.address;
 import org.apache.ecs.xhtml.map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,16 +60,29 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 
 		List<Object> list=new ArrayList<>();
 		
-/*		if(datetype.equals("1") || starttime.equals(endtime)){
-			list=functionPageMapper.modelanalysis_view(map);
-		}else{
-			list=functionPageDailyMapper.modelanalysis_view(map);
-		}
-*/		
-		list=functionPageDailyMapper.modelanalysis_view(map);
 		List<String> reslistnames=new ArrayList<>();
 		List<String> reslistname=new ArrayList<>();
 		List<String> alldate = new ArrayList<String>();
+		
+		if(datetype.equals("1") ||
+				(starttime.equals(endtime) 
+						&&StringUtils.isNotBlank(starttime)
+						&& StringUtils.isNotBlank(endtime))){
+			list=functionPageMapper.modelanalysis_view(map);
+
+			for (int i = 0; i <=23; i++) {
+				if(i<10){
+					alldate.add("0"+i);
+				}else{
+					alldate.add(i+"");
+				}
+				
+			}
+		}else{
+			list=functionPageDailyMapper.modelanalysis_view(map);
+			alldate=this.getMonthList(datetype, starttime, endtime,"yyyy-MM-dd");
+		}
+		
 		
 		if(list.size()>0){
 
@@ -80,39 +95,6 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					reslistname.add(name);
 				}
 			}
-			
-			if(datetype.equals("1")){
-				Calendar   cal   =   Calendar.getInstance();
-				cal.add(Calendar.DATE,   -1);
-				alldate.add(new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime()));
-			}else if(datetype.equals("2")||datetype.equals("3")){
-				int num =datetype.equals("2")?6:29;
-				for(int k=num;k>0;k--){
-					Calendar   cal   =   Calendar.getInstance();
-					cal.add(Calendar.DATE,   -k);
-					String day = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
-					alldate.add(day);
-				}
-			}else{
-				
-				if(starttime.equals(endtime)){
-					alldate.add(endtime);
-				}else {
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-					try {
-						Date sd = format.parse(starttime);
-						Date ed = format.parse(endtime);
-						List<Date> date = this.getDate(sd, ed);
-						for(Date d : date){
-							alldate.add(format.format(d));
-							
-						}	
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
 			
 			List<Map<String,String>> obj = new ArrayList<Map<String,String>>();
 			boolean rt = true;
@@ -136,6 +118,53 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 			}
 			
 			list.addAll(obj);
+			
+			if(datetype.equals("1") ||
+					(starttime.equals(endtime) 
+							&&StringUtils.isNotBlank(starttime)
+							&& StringUtils.isNotBlank(endtime))){
+				
+				Collections.sort(list, new Comparator<Object>() {
+					@Override
+					public int compare(Object arg0, Object arg1) {
+						String hits0 = ((Map<String, Object>)arg0).get("date").toString();
+						String hits1 = ((Map<String, Object>)arg1).get("date").toString();
+						if (Integer.parseInt(hits1) < Integer.parseInt(hits0)) {
+							return 1;
+						} else if (hits1.equals(hits0) ) {
+							return 0;
+						} else {
+							return -1;
+						}
+					}
+				});
+
+			}else{
+				Collections.sort(list, new Comparator<Object>() {
+					@Override
+					public int compare(Object arg0, Object arg1) {
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						Date hits0 = new Date();
+						Date hits1 = new Date();
+						try {
+							
+							hits0=format.parse(((Map<String, Object>)arg0).get("date").toString());
+							hits1 = format.parse(((Map<String, Object>)arg1).get("date").toString());
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						if ( hits1.getTime() < hits0.getTime()) {
+							return 1;
+						} else if (hits1 .equals(hits0) ) {
+							return 0;
+						} else {
+							return -1;
+						}
+					}
+				});
+
+			}
+			
 			Map<String, List<String>> m = new HashMap<String, List<String>>();
 			for (Object l : list) {
 				String typename =((Map<String,Object>)l).get("classify").toString();
@@ -154,30 +183,19 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		}		
 		return datamap;
 	}
-
-	@Override
-	public List<String> getmodular() {
-		List<String> namelist = new ArrayList<String>();
-		try {
-			namelist = this.modular.getModularNameList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return namelist;
-	}
 	
 	@Override
 	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,String model,String starttime,String endtime,Integer type,String domain,Integer property){
 		
 		PageList pageList=new PageList();
 		List<Object> list=new ArrayList<>();
+		List<Object> l=new ArrayList<>();
 		int count=0;
-		Integer COUNT_USER=personMapper.countUser();
+		double COUNT_USER=personMapper.countUser();
 		String modelstr=this.getModels(model);
 		String agestr =this.getAges(age);
 		
 		String days = getDayByDateType(datetype,starttime,endtime);
-		
 		
 		Map<String , Object> map=new HashMap<String, Object>();
 		map.put("pageNum", (pagenum-1)*pagesize);
@@ -189,6 +207,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		map.put("topic",domain);
 		map.put("model",modelstr);
 		map.put("property",property);
+		map.put("date",this.getMonthList(datetype,starttime,endtime,"yyyy-MM"));
 		
 		if(datetype.equals("1") ||
 				(starttime.equals(endtime) 
@@ -196,15 +215,30 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 					&& StringUtils.isNotBlank(endtime))){
 			list=functionPageMapper.modelanalysis_table(map);
 			count=functionPageMapper.modelanalysis_count(map).size();
+			l=functionPageMapper.getMAU(map);
 		}else{
 			list=functionPageDailyMapper.modelanalysis_table(map);
 			count=functionPageDailyMapper.modelanalysis_count(map).size();
+			l=functionPageDailyMapper.getMAU(map);
 		}
 		
 		for (Object object : list) {
 		     Map<String, Object> item=(Map<String, Object>)object;
 		     double UV=Double.valueOf(item.get("UV")+"");
-		     item.put("AR",(((int)UV)/COUNT_USER*100)+"%");
+		     item.put("AR",(((int)(UV/COUNT_USER))*100)+"%");
+		     
+		     for (Object object2 : l) {
+		    	 Map<String, Object> item2=(Map<String, Object>)object2;
+				if(item2.get("classify").toString().equals(item.get("classify").toString())){
+					
+					float num= (float)(UV/Double.valueOf(item2.get("UV")+""));   
+					DecimalFormat df = new DecimalFormat("0.00");//格式化小数   
+					String s = df.format(num);
+					item.put("VI",(Float.valueOf(s)*100)+"%");
+					break;
+				}
+			}
+		     
 		}
 		
 		
@@ -214,414 +248,18 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		pageList.setPageRow(list);
 		
 		return pageList;
-		
-		/*List<String> alldate = new ArrayList<String>();
-		KylinJDBC  kylin = new KylinJDBC();
-		List<Map<String, String>> listpv= new ArrayList<Map<String,String>>();
-		List<Map<String, String>> listvv= new ArrayList<Map<String,String>>();
-		List<Map<String, String>> listuv= new ArrayList<Map<String,String>>();
-		String titlestr="";
-		String agestr="";
-		String exlevelstr="";
-		String modelstr="";
-		String domainstr = "";
-		String sqlpv="";
-		String sqlvv="";
-		String sqluv="";
-		String days = "";
-		
-		Integer COUNT_USER=personMapper.countUser();
-		
-		if(title!=null&&!"".equals(title)){
-			titlestr=" and title in("+title+")";
+	}
+	
+	
+	@Override
+	public List<String> getmodular() {
+		List<String> namelist = new ArrayList<String>();
+		try {
+			namelist = this.modular.getModularNameList();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		if(exlevel!=null&&!"".equals(exlevel)){
-			exlevelstr=" and education_level in("+exlevel+")";
-		}
-		if(domain!=null&&!"".equals(domain)){
-			domainstr=" and reserch_domain ='"+domain+"' ";
-		}
-		if(model!=null&&!"".equals(model)){
-			String str = "";
-			String[] mo = model.split(",");
-			for(String m : mo){
-				str=str+"'"+m+"'"+",";
-			}
-			str = str.substring(0,str.length()-1);
-			modelstr=" and mokuai in("+str+")";
-		}
-		
-		if(age!=null&&!"".equals(age)){
-			String[] ages = age.split(",");
-			
-			for(int i = 0 ;i<ages.length;i++){
-				String[] a = ages[i].split("-");
-				if(a.length==2){
-					agestr=agestr+"  (age>="+a[0]+" and  age<="+a[1]+") or";
-				}else{
-					if(ages[i].equals("60")){
-						agestr=agestr+"(age>=60) or";
-					}else{
-						agestr=agestr+"(age is null) or";
-					}
-				}
-			}
-			agestr = " and ("+agestr;
-			agestr = agestr.substring(0,agestr.length()-2)+")";
-		}
-		
-		
-		if(datetype.equals("1")){
-			Calendar   cal   =   Calendar.getInstance();
-			cal.add(Calendar.DATE,   -1);
-			days= "'"+new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime())+"'";
-			
-		}else if(datetype.equals("2")||datetype.equals("3")){
-				
-			int num = 0;
-			
-			if(datetype.equals("2")){
-				num = 6;
-			}else if(datetype.equals("3")){
-				num = 29;
-			}
-			
-			for(int k=num;k>0;k--){
-			Calendar   cal   =   Calendar.getInstance();
-			cal.add(Calendar.DATE,   -k);
-			String day = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
-			alldate.add(day);
-			days = days+"'"+day+"'"+",";
-			}
-			days=days+"'"+new SimpleDateFormat( "yyyy-MM-dd").format(new Date())+"'"+",";
-			days=days.substring(0,days.length()-1);
-			
-		}else{
-			
-			if(starttime.equals(endtime)){
-				days="'"+endtime+"'";
-			}else {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-				try {
-					Date sd = format.parse(starttime);
-					Date ed = format.parse(endtime);
-					List<Date> date = this.getDate(sd, ed);
-					for(Date d : date){
-						alldate.add(format.format(d));
-						days = days+"'"+format.format(d)+"'"+",";
-					}
-					days=days.substring(0,days.length()-1);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		switch(property){
-		case 0:
-			sqlpv = "select MOKUAI as label,count(user_id) as numbers from kylin_analysis where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr+" group by MOKUAI";
-			sqlvv = "select MOKUAI as label,count(user_id) as numbers from kylin_analysis where is_online=1 and d in("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr+" group by MOKUAI";
-			sqluv = "select MOKUAI as label,count(distinct user_id) as numbers from kylin_analysis where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr+" group by MOKUAI";
-			break;
-		case 1:
-			sqlpv="select case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end";
-			sqlvv="select case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end";
-			sqluv="select case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end as label,count(distinct user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when education_level=0 then '大专' "
-					+ "when education_level=1 then '本科' "
-					+ "when education_level=2 then '硕士' "
-					+ "when education_level=3 then '博士' "
-					+ "when education_level=4 then '其他' "
-					+ "end";
-			break;
-		case 2:
-			sqlpv="select case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end";
-			sqlvv="select case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end";
-			sqluv="select case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end as label,count(distinct user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when age>=0 and age<=19 then '0-19岁' "
-					+ "when age>=20 and age<=29 then '20-29岁' "
-					+ "when age>=30 and age<=39 then '30-39岁' "
-					+ "when age>=40 and age<=49 then '40-49岁' "
-					+ "when age>=50 and age<=59 then '50-59岁' "
-					+ "when age>=60 then '60岁以上' "
-					+ "else '其他' "
-					+ "end";
-			break;
-		case 3:
-			sqlpv="select case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end";
-			sqlvv="select case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end";
-			sqluv="select case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end as label,count(distinct user_id) as numbers "
-					+ "from kylin_analysis "
-					+ "where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by case "
-					+ "when title=4 then '其他' "
-					+ "when title=0 then '初级' "
-					+ "when title=1 then '中级' "
-					+ "when title=2 then '副高级' "
-					+ "when title=3 then '正高级' "
-					+ "end";
-			break;
-		case 4:
-			sqlpv="select reserch_domain as label,count(user_id) as numbers "
-					+ "from kylin_analysis " 
-					+ "where d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ "group by reserch_domain";
-			
-			sqlvv="select reserch_domain as label,count(user_id) as numbers "
-					+ "from kylin_analysis "
-					+ " where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ " group by reserch_domain";
-			sqluv="select reserch_domain as label,count(distinct user_id) as numbers "
-					+ " from kylin_analysis "
-					+ " where is_online=1 and d in ("+days+")"+titlestr+exlevelstr+agestr+modelstr+domainstr
-					+ " group by reserch_domain";
-			break;
-		}
-		
-		
-		listuv=kylin.findToListMap(sqluv);
-		listpv = kylin.findToListMap(sqlpv);
-		listvv = kylin.findToListMap(sqlvv);
-		
-		List<String> modelname =new ArrayList<String>();
-		List<Object> listmodel = new ArrayList<Object>();
-		for(Map<String,String> pvname : listpv){
-			if(StringUtils.isNotBlank(pvname.get("LABEL"))){
-				String name = pvname.get("LABEL");
-				if(!modelname.contains(name)){
-					modelname.add(name);
-				}
-			}
-		}
-		
-		for(Map<String,String>vvname : listvv){
-			if(StringUtils.isNotBlank(vvname.get("LABEL"))){
-				String name = vvname.get("LABEL");
-				if(!modelname.contains(name)){
-					modelname.add(name);
-				}
-			}
-		}
-		
-		for(Map<String,String>uvname : listuv){
-			if(StringUtils.isNotBlank(uvname.get("LABEL"))){
-				String name = uvname.get("LABEL");
-				if(!modelname.contains(name)){
-					modelname.add(name);
-				}
-			}
-		}
-		
-		for(String name : modelname){
-			ModelTable mt = new ModelTable();
-			mt.setModelname(name);
-			boolean pvrt  = false;
-			for(Map<String,String> pv : listpv){
-				if(StringUtils.isNoneBlank(pv.get("LABEL"))){
-					if(name.contains(pv.get("LABEL"))){
-						pvrt = true;
-					}
-					if(pvrt){
-						mt.setModelPV(pv.get("NUMBERS"));
-					}
-				}
-				pvrt = false;
-			}
-			
-			if(mt.getModelPV()==null||"".equals(mt.getModelPV())){
-				mt.setModelPV("0");
-			}
-			
-			boolean vvrt = false;
-			for(Map<String,String> vv : listvv){
-				if(StringUtils.isNoneBlank(vv.get("LABEL"))){
-					if(name.contains(vv.get("LABEL"))){
-						vvrt = true;
-					}
-					if(vvrt){
-						mt.setModelVV(vv.get("NUMBERS"));
-					}
-				}
-				vvrt = false;
-			}
-			
-			if(mt.getModelVV()==null||"".equals(mt.getModelVV())){
-				mt.setModelVV("0");
-			}
-			
-			boolean uvrt = false;
-			for(Map<String,String> uv : listuv){
-				if(StringUtils.isNoneBlank(uv.get("LABEL"))){
-					if(name.contains(uv.get("LABEL"))){
-						uvrt = true;
-					}
-					if(uvrt){
-						mt.setModelUV(uv.get("NUMBERS"));
-						mt.setModelAU(uv.get("NUMBERS"));
-						mt.setModeAUP(Integer.valueOf(uv.get("NUMBERS"))/COUNT_USER*100+"%");
-					}
-				}
-				
-				uvrt = false;
-			}
-			
-			if(mt.getModelAU()==null||"".equals(mt.getModelAU())){
-				mt.setModelUV("0");
-				mt.setModelAU("0");
-				mt.setModeAUP("0%");
-			}
-			
-			listmodel.add(mt);
-		}
-		
-		int s = (pagenum-1)*pagesize;
-		int n = pagenum*pagesize-1;
-		
-		List<Object> pageobject = new ArrayList<Object>();
-		
-		if(n<=listmodel.size()){
-			for (int i = s;i<=n;i++){
-				pageobject.add(listmodel.get(i));
-			}
-		}else{
-			for (int i = s;i<listmodel.size();i++){
-				pageobject.add(listmodel.get(i));
-			}
-		}
-		
-		
-		PageList pl = new PageList();
-			pl.setPageNum(pagenum);
-			pl.setPageSize(pagesize);
-			pl.setPageTotal(listmodel.size());
-			pl.setPageRow(listmodel);
-		
-		return pl;*/
+		return namelist;
 	}
 	
 	public List<Date> getDate(Date sd,Date ed){
@@ -659,10 +297,10 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 			int num =datetype.equals("2")?6:29;
 			
 			for(int k=num;k>0;k--){
-			Calendar   cal   =   Calendar.getInstance();
-			cal.add(Calendar.DATE,   -k);
-			String day = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
-			days = days+"'"+day+"'"+",";
+				Calendar   cal   =   Calendar.getInstance();
+				cal.add(Calendar.DATE,   -k);
+				String day = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
+				days = days+"'"+day+"'"+",";
 			}
 			days=days+"'"+new SimpleDateFormat( "yyyy-MM-dd").format(new Date())+"'"+",";
 			days=days.substring(0,days.length()-1);
@@ -691,6 +329,44 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 		return days;
 	}
 	
+	private List<String> getMonthList(String datetype,String starttime,String endtime,String formatstr){
+		
+		List<String> alldate=new ArrayList<>();
+		
+		if(datetype.equals("1")){
+			Calendar   cal   =   Calendar.getInstance();
+			cal.add(Calendar.DATE,   -1);
+			alldate.add(new SimpleDateFormat(formatstr).format(cal.getTime()));
+		}else if(datetype.equals("2")||datetype.equals("3")){
+			int num =datetype.equals("2")?6:29;
+			for(int k=num;k>0;k--){
+				Calendar   cal   =   Calendar.getInstance();
+				cal.add(Calendar.DATE,   -k);
+				String day = new SimpleDateFormat(formatstr).format(cal.getTime());
+				alldate.add(day);
+			}
+		}else{
+			
+			if(starttime.equals(endtime)){
+				alldate.add(endtime);
+			}else {
+				SimpleDateFormat format = new SimpleDateFormat(formatstr);
+				try {
+					Date sd = format.parse(starttime);
+					Date ed = format.parse(endtime);
+					List<Date> date = this.getDate(sd, ed);
+					for(Date d : date){
+						alldate.add(format.format(d));
+					}	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return alldate;
+	}
+
 	public String getModels(String model){
 		
 		String modelstr="";		

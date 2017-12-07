@@ -8,7 +8,7 @@ $(function(){
 	    $("#searchsug1").hide();
 	});
 	
-})
+});
 
 function querytime(obj,num){
 	var nums  = num;
@@ -17,14 +17,13 @@ function querytime(obj,num){
 	 
 	$("button[name=time]").each(function(){
 		$(this).removeClass("btn-success");
-	})
+	});
 	$(obj).addClass("btn-success");
-	gettable(1,nums)
+	gettable(1,nums);
 }
 
 //分页显示
 function gettable(curr,num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -110,7 +109,7 @@ function gettable(curr,num){
     				"<td>"+res.pageRow[i].NV+"</td>" +
     				"<td>"+res.pageRow[i].UV+"</td>" +
     				"<td>"+res.pageRow[i].AR+"</td>" +
-    				"<td>"+res.pageRow[i].AR+"</td>" +
+    				"<td>"+res.pageRow[i].VI+"</td>" +
     			  "</tr>";
     	}
     	$("#tablebody").html(html);
@@ -155,7 +154,6 @@ function gettable(curr,num){
 };
 
 function getline(num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -177,7 +175,7 @@ function getline(num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){

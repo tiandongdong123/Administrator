@@ -62,7 +62,7 @@
 		sum(CASE type when 3 then numbers else 0 end) as UV,
 		sum(CASE type when 4 then numbers else 0 end) as NV,
 		sum(CASE type when 5 then numbers else 0 end) as AR
-		from rs_function_page_daily
+		from rs_function_page
 		where type <![CDATA[ < ]]>10
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -128,7 +128,7 @@
 		sum(CASE type when 3 then numbers else 0 end) as UV,
 		sum(CASE type when 4 then numbers else 0 end) as NV,
 		sum(CASE type when 5 then numbers else 0 end) as AR
-		from rs_function_page_daily
+		from rs_function_page
 		where type <![CDATA[ < ]]>10
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -169,7 +169,7 @@
 	</select>
 
 	<!--功能模块分析图形展示数据 -->
-<!-- 	<select id="modelanalysis_view" resultType="map" parameterType="java.util.Map">
+    <select id="modelanalysis_view" resultType="map" parameterType="java.util.Map">
 		select
 		<if test="property==0">
 			result
@@ -186,8 +186,8 @@
 		<if test="property==4">
 			topic
 		</if>
-		as classify,sum(numbers) as number,date
-		from rs_function_page_daily
+		as classify,sum(numbers) as number,hour as date
+		from rs_function_page
 		where type =${type}
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -225,9 +225,8 @@
 		<if test="property==4">
 			topic
 		</if>
-		,date
+		,hour
 	</select>
- -->
 
    <!--type:11 页面浏览量(PV),12 页面访问次数(VV),13 独立访客数(也是 活跃用户数)(UV),
    		14 退出页次数(logoutNum),15 贡献下游流量(contributionNum),16 页面平均访问时长(pageAccessAvg),17 退出率(logoutNumP) -->
@@ -255,7 +254,7 @@
 		sum(CASE type when 15 then numbers else 0 end) as contributionNum,
 		sum(CASE type when 14 then numbers else 0 end) as logoutNum,
 		sum(CASE type when 17 then numbers else 0 end) as logoutNumP
-		from rs_function_page_daily
+		from rs_function_page
 		where type  <![CDATA[ > ]]> 10 and type <![CDATA[ < ]]> 20
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -319,7 +318,7 @@
 		sum(CASE type when 15 then numbers else 0 end) as contributionNum,
 		sum(CASE type when 14 then numbers else 0 end) as logoutNum,
 		sum(CASE type when 17 then numbers else 0 end) as logoutNumP
-		from rs_function_page_daily
+		from rs_function_page
 		where type  <![CDATA[ > ]]> 10 and type <![CDATA[ < ]]> 20
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -355,7 +354,7 @@
 		</if>
 	</select>
 
-<!-- 	<select id="pageAnalysis_view" resultType="map" parameterType="java.util.Map">
+    <select id="pageAnalysis_view" resultType="map" parameterType="java.util.Map">
 		select
 		<if test="property==1">
 			<include refid="education_level" />
@@ -368,8 +367,8 @@
 			<include refid="title" />
 			as classify,
 		</if>
-		sum(numbers) as number,date
-		from rs_function_page_daily
+		sum(numbers) as number,hour as date
+		from rs_function_page
 		where 1=1
 		<if test="type!=null  and type!=''">
 			and type=${type}
@@ -406,9 +405,8 @@
 			<include refid="title" />
 			,
 		</if>
-		date
-	</select>
- -->	
+		hour
+	</select>	
 												
 	<!--result:1-浏览(browseNum),2-下载(downloadNum),3-检索(searchNum),4-分享(shareNum),
 		5-收藏(collectNum),6-导出(exportNum),7-笔记(noteNum),8-跳转(breakNum),9-订阅(subscriptionNum)-->
@@ -435,7 +433,7 @@
 		sum(CASE result when 7 then numbers else 0 end) as noteNum,
 		sum(CASE result when 8 then numbers else 0 end) as breakNum,
 		sum(CASE result when 9 then numbers else 0 end) as subscriptionNum
-		from rs_function_page_daily
+		from rs_function_page
 		where type = 20
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -479,7 +477,7 @@
 		sum(CASE result when 7 then numbers else 0 end) as noteNum,
 		sum(CASE result when 8 then numbers else 0 end) as breakNum,
 		sum(CASE result when 9 then numbers else 0 end) as subscriptionNum
-		from rs_function_page_daily
+		from rs_function_page
 		where type =20
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -513,7 +511,7 @@
 		</if>
 	</select>
 
- <!--    <select id="functionProfile_view" resultType="map" parameterType="java.util.Map">
+    <select id="functionProfile_view" resultType="map" parameterType="java.util.Map">
 		select
 		<if test="property==0">
 			<include refid="result" />
@@ -530,8 +528,8 @@
 		<if test="property==4">
 			topic
 		</if>
-		as classify,sum(numbers) as number,date
-		from rs_function_page_daily
+		as classify,sum(numbers) as number,hour as date
+		from rs_function_page
 		where type =20
 		<if test="days!=null  and day!=''">
 			and date in (${days})
@@ -569,7 +567,73 @@
 		<if test="property==4">
 			topic
 		</if>
-		,date
-	</select>-->	
+		,hour
+	</select>
+
+
+	<select id="getMAU" resultType="map" parameterType="java.util.Map">
+	  	select
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,
+		sum(CASE type when 3 then numbers else 0 end) as UV
+		from rs_function_page
+		where type <![CDATA[ < ]]>10
+		<if test="date!=null  and date!=''">
+		    and
+		    <foreach collection="date" index="index" item="item" open="(" separator="or" close=")">
+			   date like concat(#{item},'%') 
+			</foreach>
+			
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="model!=null  and model!=''">
+			and result in (${model})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+
+		limit ${pageNum},${pageSize}
+	</select>
 
 </mapper>

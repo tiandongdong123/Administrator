@@ -204,9 +204,9 @@ function getdataSource(curr,num){
 			tooltip : {
 				formatter:format
 			},
-			/* legend : {
+			 legend : {
 				data : data.date
-			}, */
+			}, 
 			
 			toolbox: {
     	        show : true,
@@ -242,17 +242,19 @@ function getdataSource(curr,num){
 			]
 		};
 
-		/* for ( var i = 0; i < data.title.length; i++) {
-			var name = data.title[i];
-			var num = new Array();
-			num = data.content[name];
-			option.series.push({
-				name : name,
-				type : 'line',
-				data : num
-			})
-		} */
-		myChart.setOption(option);
+		 if(null!=data.title){
+			 for ( var i = 0; i < data.title.length; i++) {
+				var name = data.title[i];
+				var num = new Array();
+				num = data.content[name];
+				option.series.push({
+					name : name,
+					type : 'line',
+					data : num
+				});
+			} 
+		}
+	myChart.setOption(option);
 		window.onresize = myChart.resize;//echar 自适应屏幕
 	}
 

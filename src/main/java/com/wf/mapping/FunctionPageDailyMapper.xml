@@ -580,4 +580,71 @@
 		,date
 	</select>
 	
+	<select id="getMAU" resultType="map" parameterType="java.util.Map">
+	  	select
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+		as classify,
+		sum(CASE type when 3 then numbers else 0 end) as UV
+		from rs_function_page_daily
+		where type <![CDATA[ < ]]>10
+		<if test="date!=null  and date!=''">
+		    and
+		    <foreach collection="date" index="index" item="item" open="(" separator="or" close=")">
+			   date like concat(#{item},'%') 
+			</foreach>
+			
+		</if>
+		<if test="education_level!=null  and education_level!=''">
+			and education_level in (${education_level})
+		</if>
+		<if test="age!=null  and age!=''">
+			and age in (${age})
+		</if>
+		<if test="title!=null  and title!=''">
+			and title in (${title})
+		</if>
+		<if test="topic!=null and topic!=''">
+			and topic=#{topic}
+		</if>
+		<if test="model!=null  and model!=''">
+			and result in (${model})
+		</if>
+
+		group by
+
+		<if test="property==0">
+			result
+		</if>
+		<if test="property==1">
+			<include refid="education_level" />
+		</if>
+		<if test="property==2">
+			age
+		</if>
+		<if test="property==3">
+			<include refid="title" />
+		</if>
+		<if test="property==4">
+			topic
+		</if>
+
+		limit ${pageNum},${pageSize}
+	</select>
+	
+	
+	
 </mapper>

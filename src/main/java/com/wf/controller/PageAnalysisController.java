@@ -93,26 +93,6 @@ public class PageAnalysisController {
 		return pageList;
 	}
 	
-	@RequestMapping("getonedataSource")
-	@ResponseBody
-	public Object onedataSource(HttpServletRequest request) {
-		/*String age=request.getParameter("age");
-		String title=request.getParameter("title");
-		String exlevel=request.getParameter("exlevel");
-		String reserchdomain=request.getParameter("reserchdomain");
-		String pageName=request.getParameter("pageName");
-		String datetype=request.getParameter("datetype");
-		String starttime=request.getParameter("starttime");
-		String endtime=request.getParameter("endtime");
-		String type="12345678";
-//		PageAnalysisService pass=new  PageAnalysisServiceImpl();
-		Object json=pageAnalysisService.getonedatasource(title, age, exlevel, datetype, reserchdomain, type, pageName, starttime, endtime);	
-		return json;*/
-		
-		return null;
-	}
-	
-	
 	@RequestMapping("head_word")
 	@ResponseBody
 	public Object head_word(HttpServletRequest request) {
