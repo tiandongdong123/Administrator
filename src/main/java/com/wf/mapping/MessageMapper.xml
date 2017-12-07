@@ -121,4 +121,8 @@
 		<if test="isTop!=null">,is_top=#{isTop}</if>
 		where id=#{id}
 	</update>
+	<!-- 重置某一类型的置顶状态 -->
+	<update id="updateIsTop" parameterType="java.lang.String">
+		update message SET is_top='0' where colums=#{colums}
+	</update>
 </mapper>
