@@ -93,15 +93,12 @@ function serachdata(data){
 			var rows = pageRow[i];
 			var issue = rows.issueState;
 			var issueNum = 1;
-			if(issue == 1){
+			if(issue == 1||issue == 3){
 				issue = "发布";
 				issueNum = 2;
 			}if(issue == 2){
 				issue = "下撤";
 				issueNum = 3;
-			}if(issue == 3){
-				issue = "再发布";
-				issueNum = 2;
 			}
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
@@ -112,8 +109,8 @@ function serachdata(data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
             "<td class='mailbox-date'><div title='"+rows.createTime+"' style='width:70px;'>"+rows.createTime+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
-			if(rows.colums=='基金会议'){
-				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>置顶</button>&nbsp;";
+			if(issueNum!=3){
+				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
 			}
 			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
