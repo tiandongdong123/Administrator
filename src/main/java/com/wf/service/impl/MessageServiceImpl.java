@@ -263,7 +263,7 @@ public class MessageServiceImpl implements MessageService {
 		newMap.put("stringIS_organName", organName);
 		newMap.put("stringIS_stick", stick);
 		newMap.put("stringIS_isTop", isTop);
-		newMap.put("stringIS_sort", this.getLongSort(isTop, stick, createTime));
+		newMap.put("longIS_sort", this.getLongSort(isTop, stick, createTime));
 		list.add(newMap);
 		RedisUtil redisUtil = new RedisUtil();
 		String collection = redisUtil.get(core, 3);
@@ -275,7 +275,7 @@ public class MessageServiceImpl implements MessageService {
 		try{
 			if (isTop != null && "1".equals(isTop)) {
 				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				sort = sdf1.parse(stick.substring(0,20)).getTime() * 2;
+				sort = sdf1.parse(stick.substring(0,20)).getTime() * 10;
 				if(stick.length()>20){
 					stick=stick.substring(0,20);
 				}
@@ -375,7 +375,7 @@ public class MessageServiceImpl implements MessageService {
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_isTop", isTop);
-			newMap.put("stringIS_sort", this.getLongSort(isTop, stick, createTime));
+			newMap.put("longIS_sort", this.getLongSort(isTop, stick, createTime));
 			indexList.add(newMap);
 			if(indexList.size()==1000){
 				SolrService.createIndexFound(indexList);
