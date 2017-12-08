@@ -1,90 +1,62 @@
-var branch,clum,human,startTime,endTime;
+var branch,clum,human,startTime,endTime,isTop;
+var pageNum;
+var pageSize = 10;
 $(function(){
-	branch=$("#branchf").val();
-	clum=$("#columsf").val();
-	if(branch !=""){
-		selectValue("xjbm",branch);
-	}
-	if(clum !=""){
-		selectValue("clum",clum);
-	}
-	showPage();
+	showPage(1);
 });
 
 /*分页显示*/
-function findOne(pagenum){
-	findtext();
-	if(pagenum==undefined||pagenum==""){
-		lp=1;
-	}else{
-		lp=pagenum;
-	}
-	window.location.href="../content/message.do?branch="+branch+"&colums="+clum+"&human="+human+"&startTime="+startTime+"&endTime="+endTime+"&page="+lp;
-//	showPage();
+function findOne(){
+	showPage(1);
 }
 
-function showPage(){
-	//显示分页
-	var pageNum = $("#pageNum").val();
-	var pageTotal = $("#pageTotal").val();
-	laypage({
-    	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-        pages: pageTotal, //通过后台拿到的总页数
-        curr: pageNum, //当前页
-        skip: true, //是否开启跳页
-	      skin: '#367fa9',//当前页颜色，可16进制
-	      groups: 4, //连续显示分页数
-	      first: '首页', //若不显示，设置false即可
-	      last: '尾页', //若不显示，设置false即可
-	      prev: '上一页', //若不显示，设置false即可
-	      next: '下一页', //若不显示，设置false即可
-        jump: function(obj, first){ //触发分页后的回调
-        	if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-            	paging(obj.curr);
-        }else{
-        	paging(obj.curr);
-        }
-       }
-	});
-}
-/**
- * 分页事件
- */
-function paging(curr){
-	findtext();
+function showPage(curr){
+	branch=$("#xjbm").find("option:selected").text();
+	if(branch=='全部'){
+		branch="";
+	}
+	clum=$("#clum").find("option:selected").text();
+	if(clum=='全部'){
+		clum="";
+	}
+	human=$("#human").val();
+	startTime=$("#startTime").val();
+	endTime=$("#endTime").val();
+	isTop=$("#isTop").val();
 	$.ajax({
 		type : "post",
 		async:false,
 		url : "../content/messageJson.do",
 		dataType : "json",
 		data : {
-			"page":curr || 1,
+			"pageNum" : curr || 1,
+			"pageSize" : pageSize,
 			"branch":branch,
 			"colums":clum,
 			"human":human,
 			"startTime":startTime,
-			"endTime":endTime
+			"endTime":endTime,
+			"isTop":isTop
 			},
 		success : function (data){
-			serachdata(data);
+			serachdata(curr,data);
 		}
 	});
 }
 
-function serachdata(data){
+function serachdata(curr,data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
-	$("#pageNum").val(pageNum);
-	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
 	var resHtml = "<tbody><tr style='text-align: center;'>" +
 	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
 	"<td class='mailbox-star'>序号</td>" +
 	"<td class=\"mailbox-name\">栏目</td>"+
-    "<td class=\"mailbox-attachment\" style='width:40%'>标题</td>"+
+    "<td class=\"mailbox-attachment\" style='width:30%'>标题</td>"+
     "<td class=\"mailbox-name\">原文链接</td>"+
     "<td class=\"mailbox-name\">添加人</td>"+
     "<td class=\"mailbox-date\">添加日期</td>"+
+    "<td class=\"mailbox-date\">是否置顶</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
@@ -100,14 +72,21 @@ function serachdata(data){
 				issue = "下撤";
 				issueNum = 3;
 			}
+			var is_top = rows.isTop;
+			if(is_top=="1"){
+				is_top="是";
+			}else{
+				is_top="否";
+			}
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
-			resHtml+="<td class='mailbox-name'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
+			resHtml+="<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-            "<td class='mailbox-date'><div title='"+rows.createTime+"' style='width:70px;'>"+rows.createTime+"</td>"+
+            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
+            "<td class='mailbox-date'><div title='"+is_top+"' style='width:40px;'>"+is_top+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
 			if(issueNum!=3){
 				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
@@ -118,11 +97,29 @@ function serachdata(data){
 		}
 	}
 	resHtml+="</tbody>";
-	$(".table-striped").html(resHtml);
+	$("#list").html(resHtml);
+	layui.use(['laypage', 'layer'], function(){
+		var laypage = layui.laypage,layer = layui.layer;
+		laypage.render({
+			elem: 'divPager',
+			count: data.totalRow,
+			first: '首页',
+			last: '尾页',
+			curr: curr || 1,
+			page: Math.ceil(data.totalRow / pageSize),	//总页数
+			limit: pageSize,
+			layout: ['count', 'prev', 'page', 'next', 'skip'],
+			jump: function (obj, first) {
+	            if(!first){
+	            	showPage(obj.curr);
+	            }
+			}
+		});
+	});
 	document.getElementById("here").scrollIntoView();
 }
 
-/*置顶*/
+//置顶
 function stick(id,colums){
 	$.ajax({
 		type : "post",
@@ -146,23 +143,11 @@ function updateMessage(id,issueState){
 		layer.msg("请先下撤该数据再进行修改",{icon: 2});
 	}
 }
+
 function addMessage(){
 	window.location.href="../content/addMessage.do";
 }
 
-function findtext(){
-	branch=$("#xjbm").find("option:selected").text();
-	if(branch=='全部'){
-		branch="";
-	}
-	clum=$("#clum").find("option:selected").text();
-	if(clum=='全部'){
-		clum="";
-	}
-	human=$("#human").val();
-	startTime=$("#startTime").val();
-	endTime=$("#endTime").val();
-}
 //单条删除
 function removee(id){
 	$.ajax({
@@ -176,6 +161,7 @@ function removee(id){
 		error : function(data) {alert(data);}
 	});
 }
+
 // 多条删除
 function deleteMore(){
 	var issueNum = "";
@@ -216,45 +202,47 @@ function deleteMore(){
 
 // 删除回执
 function deleteCallback(data) {
-	if (data.flag=="true"){
-		layer.msg("删除成功！",{icon: 1});
+	if (data.flag == "true") {
+		layer.msg("删除成功！", {
+			icon : 1
+		});
 		showPage();
-		//window.location.href="../content/message.do";
-	}else{
-		layer.msg("删除失败!",{icon: 2});
+	} else {
+		layer.msg("删除失败!", {
+			icon : 2
+		});
 	}
 }
 
-/*全选与全不选*/
-function checkAll(){
-		if($(".allId").is(':checked')){
-			$("input[name=commonid]").each(function(){
-				$(this).prop("checked", "checked");
-			});
-		}else{
-			$("input[name=commonid]").each(function(){
-				$(this).removeAttr("checked");
-			});
+//全选与全不选
+function checkAll() {
+	if ($(".allId").is(':checked')) {
+		$("input[name=commonid]").each(function() {
+			$(this).prop("checked", "checked");
+		});
+	} else {
+		$("input[name=commonid]").each(function() {
+			$(this).removeAttr("checked");
+		});
+	}
+}
+
+//赋值
+function selectValue(id, val) {
+	for (var i = 0; i < document.getElementById(id).options.length; i++) {
+		if (document.getElementById(id).options[i].value == val) {
+			document.getElementById(id).options[i].selected = true;
+			break;
 		}
+	}
 }
 
-function selectValue(id,val){
-	for(var i=0;i<document.getElementById(id).options.length;i++)
-    {
-        if(document.getElementById(id).options[i].value == val)
-        {
-            document.getElementById(id).options[i].selected=true;
-            break;
-        }
-    }
-}
-
-/*刷新*/
-
+// 刷新
 function refresh(){
 	window.location.href="../content/message.do";
 }
-//----------------------------发布-------------------------------
+
+//发布
 function publish(that,obj,colums,issueState){
 	var value = "";
 	if(issueState=='3'){
@@ -283,9 +271,9 @@ function publish(that,obj,colums,issueState){
 	    		},
 	    		dataType : "json",
 	    		success : function(data){
+	    			layer.closeAll();
 	    			if(data){
-	    				var num=$(".laypage_curr").text();
-	    				findOne(num);
+	    				findOne();
 	    			}
 	    		},
 	    		error : function(data){
@@ -295,32 +283,17 @@ function publish(that,obj,colums,issueState){
 	  });
 }
 
+//详情页
 function turnHtml(type,id){
-	/*if(type=='专题聚焦'){
-		source='feature';
-	}else if(type=='万方资讯'){
-		source='activity';
-	}else if(type=='基金会议'){
-		source='fund';
-	}else if(type=='科技动态'){
-		source='conf';
-	}
-	url=ZSFX_URL+"/informationController/getDetails.do?type="+source+"&id="+id;*/
 	window.location.href="../content/getDetails.do?id="+id;
 }
 
-/**
-
- * 导出
- */
+//导出
 function exportexecl(){
-	window.location.href="../content/exportMessage.do?branch="+branch
-							+"&colums="+clum+"&human="+human
-							+"&startTime="+startTime+"&endTime="+endTime;
+	window.location.href="../content/exportMessage.do?branch="+branch+"&colums="+clum+"&human="+human+"&startTime="+startTime+"&endTime="+endTime;
 }
  
-/* 一键发布
- */
+//一键发布
 function oneKeyDeploy(){
 	var index = null;
 	$.ajax({

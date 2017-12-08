@@ -25,6 +25,9 @@
 	<!-- 查询学科分类信息分页 -->
 	<select id="getMessageList" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List" /> from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
@@ -45,6 +48,9 @@
 	</select>
 	<select id="getMessageCount" resultType="int" parameterType="java.util.Map">
     select count(1) from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
@@ -64,6 +70,9 @@
   
 	<select id="selectMessageInforAll" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select * from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
