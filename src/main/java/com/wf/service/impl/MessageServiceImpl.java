@@ -29,12 +29,13 @@ public class MessageServiceImpl implements MessageService {
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
 	
 	@Override
-	public PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime) {
+	public PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime,String isTop) {
 		if(StringUtils.isEmpty(branch)) branch=null;
 		if(StringUtils.isEmpty(human)) human=null;
 		if(StringUtils.isEmpty(colums)) colums=null;
 		if(StringUtils.isEmpty(startTime)) startTime=null;
 		if(StringUtils.isEmpty(endTime)) endTime=null;
+		if(StringUtils.isEmpty(isTop)) isTop=null;
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
 		int pagen=(pageNum-1)*pageSize;
@@ -45,15 +46,16 @@ public class MessageServiceImpl implements MessageService {
 		mp.put("colums", colums);
 		mp.put("startTime", startTime);
 		mp.put("endTime", endTime);
+		mp.put("isTop", isTop);
 		List<Object> pageRow = dao.getMessageList(mp);
 		int num = dao.getMessageCount(mp);
-		int pageTotal = num != 0 && num % pageSize != 0 ? num / pageSize + 1 : num / pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);
-		p.setPageTotal(pageTotal);
+		p.setTotalRow(num);
 		return p;
 	}
+	
 	@Override
 	public Message findMessage(String id) {
 		Message message =dao.findMessage(id);
@@ -146,15 +148,15 @@ public class MessageServiceImpl implements MessageService {
 		}
 	}
 	
+	/**
+	 * redis插入数据
+	 * @param colums
+	 */
 	private void setRedis(String colums){
 		List<Object> list = new ArrayList<Object>();
 		Map<String,Object> topMap=new HashMap<String,Object>();
 		topMap.put("colums", colums);
-		if("专题聚焦".equals(colums)){
-			topMap.put("size", 1);
-		}else{
-			topMap.put("size", 3);
-		}
+		topMap.put("size", 3);
 		list = dao.selectIsTop(topMap);//获取
 		int topSize=list.size();
 		Map<String,Object> map=new HashMap<String,Object>();
@@ -164,9 +166,11 @@ public class MessageServiceImpl implements MessageService {
 			//清空redis中对应的key
 			redis.del("ztID");
 			redis.del("special");
-			map.put("size", 10-topSize);
-			List<Object> ls = dao.selectBycolums(map);
-			list.addAll(ls);
+			if(topSize<3){
+				map.put("size", 10-topSize);
+				List<Object> ls = dao.selectBycolums(map);
+				list.addAll(ls);	
+			}
 			for(int i = 0;i < list.size();i++){
 				Message m = (Message) list.get(i);
 				m.setContent("");

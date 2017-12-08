@@ -9,7 +9,7 @@ public interface MessageService {
 	/**
 	 * 条件查询学科分类的信息
 	 */
-	PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime);
+	PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime,String isTop);
 	/**
 	 * 查询单条资讯
 	 * @param id 查询ID

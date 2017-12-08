@@ -309,41 +309,21 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("/message")
-	public String message(
-			@RequestParam(value="branch",required=false) String branch,
-			@RequestParam(value="human",required=false) String human,
-			@RequestParam(value="colums",required=false) String colums,
-			@RequestParam(value="startTime",required=false) String startTime,
-			@RequestParam(value="endTime",required=false) String endTime,
-			@RequestParam(value="page",required=false) String page,
-			HttpServletRequest request,Model model) throws Exception{
-		int pagenum=1;
-		if(page!=null&&page!=""){
-			pagenum=Integer.valueOf(page);
-		}
-		int pageSize=10;
-		PageList messageList=messageService.getMessage(pagenum, pageSize, branch, human, colums, startTime, endTime);
-		Map<String,Object> mp=new HashMap<String,Object>();
-		mp.put("branch",branch);
-		mp.put("human",human);
-		mp.put("colums",colums);
-		mp.put("startTime",startTime);
-		mp.put("endTime",endTime);
-		model.addAttribute("pageList",messageList);
+	public String message(HttpServletRequest request, Model model) throws Exception {
+		Map<String, Object> mp = new HashMap<String, Object>();
+		mp.put("startTime", "");
+		mp.put("endTime", "");
+		mp.put("branch", "");
+		mp.put("colums", "");
 		model.addAttribute("meaasgeMap", mp);
-		
-		List<String> deptList=new ArrayList<String>();
+		List<String> deptList = new ArrayList<String>();
 		for (Object department : departmentService.getAllDept()) {
-			deptList.add(((Department)department).getDeptName());
+			deptList.add(((Department) department).getDeptName());
 		}
-		
-		//记录日志
-		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
-		logService.addLog(log);
-		
-		model.addAttribute("deptList",deptList);
+		model.addAttribute("deptList", deptList);
 		return "/page/contentmanage/message";
 	}
+	
 	/**
 	 * 资讯查询分页
 	 * @param response
@@ -352,21 +332,13 @@ public class ContentController{
 	 */
 	@RequestMapping("/messageJson")
 	@ResponseBody
-	public Object getMessageJson(
-			@RequestParam(value="branch",required=false) String branch,
-			@RequestParam(value="human",required=false) String human,
-			String colums,
-			@RequestParam(value="startTime",required=false) String startTime,
-			@RequestParam(value="endTime",required=false) String endTime,
-			@RequestParam(value="page",required=false) int pageNum,
+	public Object getMessageJson(String branch,String human,String colums,String isTop,String startTime,String endTime,int pageNum,int pageSize,
 			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		int pageSize=10;
-		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime);
 		
+		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime,isTop);
 		//记录日志
 		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
 		logService.addLog(log);
-
 		return  messageList;
 	}
 	
