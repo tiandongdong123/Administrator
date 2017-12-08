@@ -14,6 +14,12 @@
 <!-- 根据条件查询下撤数据 -->
 <select id="queryArticle" resultMap="BaseResultMap" parameterType="java.lang.String">
 	select a.*,b.model_name from delete_article a left join delete_article_type b on a.model=b.model where 1=1
+	<if test="null!=id and id!=''">
+		and a.id like CONCAT('%',#{id},'%')
+	</if>
+	<if test="null!=model and model!=''">
+		and a.model =#{model}
+	</if>
 	<if test="null!=startTime and startTime!=''">
 		and a.create_time <![CDATA[   >=  ]]>#{startTime}
 	</if>
@@ -26,6 +32,12 @@
  <!-- 查询充值批次当前条件下所有记录 -->
  <select id="queryArticleSize" resultType="java.lang.Integer" parameterType="java.lang.String">
   	select count(1) from delete_article where 1=1
+	<if test="null!=id and id!=''">
+		and id like CONCAT('%',#{id},'%')
+	</if>
+	<if test="null!=model and model!=''">
+		and model =#{model}
+	</if>
 	<if test="null!=startTime and startTime!=''">
 		and create_time <![CDATA[   >=  ]]>#{startTime}
 	</if>
@@ -36,6 +48,12 @@
 <!-- 根据条件删除下撤数据 -->
 <delete id="deleteArticleList" parameterType="java.lang.String">
 	delete from delete_article where 1=1
+	<if test="null!=id and id!=''">
+		and id like CONCAT('%',#{id},'%')
+	</if>
+	<if test="null!=model and model!=''">
+		and model =#{model}
+	</if>
 	<if test="null!=startTime and startTime!=''">
 		and create_time <![CDATA[   >=  ]]>#{startTime}
 	</if>

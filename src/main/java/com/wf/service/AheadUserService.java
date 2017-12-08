@@ -19,6 +19,7 @@ import com.wf.bean.Person;
 import com.wf.bean.Project;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.WfksAccountidMapping;
@@ -197,4 +198,18 @@ public interface AheadUserService {
 	 * @return
 	 */
 	List<StandardUnit> findStandardUnit(String orgCode, String companySimp);
+	
+	/**
+	 * 添加用户机构权限
+	 * @param com
+	 */
+	void addUserIns(CommonEntity com);
+	
+	/**
+	 * 获取
+	 * @param userId
+	 * @return
+	 */
+	UserInstitution getUserInstitution(String userId);
+	
 }

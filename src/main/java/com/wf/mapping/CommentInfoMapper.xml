@@ -2,47 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wf.dao.CommentInfoMapper" >
   <resultMap id="BaseResultMap" type="com.wf.bean.CommentInfo" >
-    <id column="id" property="id" jdbcType="VARCHAR" />
-    <result column="perio_id" property="perioId" jdbcType="VARCHAR" />
-    <result column="user_id" property="userId" jdbcType="VARCHAR" />
-    <result column="perio_name" property="perioName" jdbcType="VARCHAR" />
-    <result column="author_name" property="authorName" jdbcType="VARCHAR" />
-    <result column="submit_period" property="subTime" jdbcType="VARCHAR" />
-    <result column="audit_money" property="auditMoney" jdbcType="VARCHAR" />
-    <result column="layout_money" property="layoutMoney" jdbcType="VARCHAR" />
-    <result column="creat_date" property="creatDate" jdbcType="DATE" />
-    <result column="hire_con" property="hireCon" jdbcType="VARCHAR" />
-    <result column="data_state" property="dataState" jdbcType="VARCHAR" />
-    <result column="complaint_status" property="complaintStatus" jdbcType="VARCHAR" />
-    <result column="handling_status" property="handlingStatus" jdbcType="INTEGER" />
-    <result column="comment_content" property="commentContent" jdbcType="LONGVARCHAR" />
-    <result column="preliminary_opinions" property="preliminaryOpinions" jdbcType="LONGVARCHAR" />
-    <result column="appeal_reason" property="appealReason" jdbcType="LONGVARCHAR" />
-    <result column="final_opinion" property="finalOpinion" jdbcType="LONGVARCHAR" />
-    <result column="is_submit" property="isSubmit" jdbcType="INTEGER" />
+  	<id column="rand_id" property="rand_id"  jdbcType="VARCHAR" />
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="perio_id" property="perio_id" jdbcType="VARCHAR" />
+    <result column="perio_name" property="perio_name" jdbcType="VARCHAR" />
+    <result column="user_id" property="user_id" jdbcType="VARCHAR" />
+    <result column="author_name" property="author_name" jdbcType="VARCHAR" />
+    <result column="submit_period" property="submit_period" jdbcType="VARCHAR" />
+    <result column="audit_money" property="audit_money" jdbcType="VARCHAR" />
+    <result column="layout_money" property="layout_money" jdbcType="VARCHAR" />
+    <result column="creat_date" property="creat_date" jdbcType="VARCHAR" />
+    <result column="hire_con" property="hire_con" jdbcType="VARCHAR" />
+    <result column="comment_content" property="comment_content" jdbcType="VARCHAR" />
+    <result column="data_state" property="data_state" jdbcType="VARCHAR" />
+    <result column="preliminary_opinions" property="preliminary_opinions" jdbcType="VARCHAR" />
+    <result column="final_opinion" property="final_opinion" jdbcType="VARCHAR" />
+    <result column="publishing_discipline" property="publishing_discipline" jdbcType="VARCHAR" />
+    <result column="update_date" property="update_date" jdbcType="VARCHAR" />
+    <result column="executive_operation" property="executive_operation" jdbcType="VARCHAR" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="audit_time" property="audit_time" jdbcType="VARCHAR" />
+    <result column="isget" property="isget" jdbcType="VARCHAR" />
+    <result column="goods" property="goods" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="sqllist" >
-    id, perio_id, user_id, perio_name, author_name, submit_period, audit_money, layout_money, 
-    creat_date, hire_con, data_state, complaint_status, handling_status, is_submit,comment_content,
-    preliminary_opinions, appeal_reason, final_opinion
+   id,perio_id,perio_name,user_id,author_name,submit_period,audit_money,layout_money,creat_date,hire_con,
+   comment_content,data_state,preliminary_opinions,final_opinion,publishing_discipline,
+   update_date,executive_operation,auditor,audit_time
   </sql>
   
   <select id="getComment" resultMap="BaseResultMap" >
-  select * from comment_info where 1=1
-   <if test="info.authorName!=null and info.authorName !=''">
-  	and author_name=#{info.authorName}
+  select * from comment_admin where 1=1
+   <if test="info.user_id!=null and info.user_id !=''">
+  	and user_id=#{info.user_id}
   </if>
-  <if test="info.perioName!=null and info.perioName !=''">
-  	and perio_name like CONCAT('%',#{info.perioName},'%')
+  <if test="info.perio_name!=null and info.perio_name !=''">
+  	and perio_name like CONCAT('%',#{info.perio_name},'%')
   </if>
     <if test="startTime!=null and startTime !=''">
-  	and creat_date &gt;= '${startTime}' 
+  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[>=]]> #{startTime}
   </if>
   <if test="endTime!=null and endTime !=''">
-  and creat_date &lt;= '${endTime}'
+  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[<=]]> #{endTime}
   </if>
-    <if test="info.subTime!=null and info.subTime!=''">
-  	and submit_period=#{info.subTime}
+    <if test="info.submit_period!=null and info.submit_period!=''">
+  	and submit_period=#{info.submit_period}
   </if>
    <if test="sauditm!=null and sauditm !='' ">
   	and audit_money &gt;= ${sauditm} 
@@ -63,79 +67,80 @@
   </foreach>
   </if>
   <if test="complaintStatus!=null">
-    and complaint_status in
+    and executive_operation in
      <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
       	#{item}
   	 </foreach>
   </if> 
+  order by update_date desc
    limit #{pagenum},#{pagesize}
   </select>
   
    <select id="getCommentCount" resultType="int" >
-  select count(1) from comment_info where 1=1
-  <if test="info.authorName!=null and info.authorName !=''">
-  	and author_name=#{info.authorName}
-  </if>
-  <if test="info.perioName!=null and info.perioName !=''">
-  	and perio_name like CONCAT('%',#{info.perioName},'%')
-  </if>
-   <if test="startTime!=null and startTime !=''">
-  	and creat_date 	&gt;= '${startTime}' 
-  </if>
-  <if test="endTime!=null and endTime !=''">
-  and creat_date  &lt;='${endTime}'
-  </if>
-  <if test="info.subTime!=null and info.subTime !=''">
-  	and submit_period=#{info.subTime}
-  </if>
-  <if test="sauditm!=null and sauditm !='' ">
-  	and audit_money &gt;= ${sauditm} 
-  </if >
-  <if test=" eauditm!=null and eauditm !=''">
-  and audit_money  &lt;= ${eauditm}
-  </if>
-   <if test="slayoutm!=null and slayoutm !=''">
-  	and layout_money &gt;= ${slayoutm} 
-  </if>
-  <if test=" elayoutm!=null and elayoutm !=''">
-  and layout_money &lt;= ${elayoutm}
-  </if>
-  
-  <if test="dataState!=null">
-    and data_state in
-  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-  </foreach>
-  </if>
-  <if test="complaintStatus!=null">
-    and complaint_status in
-     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
-      	#{item}
-  	 </foreach>
-  </if>
+	  select count(1) from comment_admin where 1=1
+	   <if test="info.user_id!=null and info.user_id !=''">
+	  	and user_id=#{info.user_id}
+	  </if>
+	  <if test="info.perio_name!=null and info.perio_name !=''">
+	  	and perio_name like CONCAT('%',#{info.perio_name},'%')
+	  </if>
+	    <if test="startTime!=null and startTime !=''">
+	  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[>=]]> #{startTime}
+	  </if>
+	  <if test="endTime!=null and endTime !=''">
+	  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[<=]]> #{endTime}
+	  </if>
+	    <if test="info.submit_period!=null and info.submit_period!=''">
+	  	and submit_period=#{info.submit_period}
+	  </if>
+	   <if test="sauditm!=null and sauditm !='' ">
+	  	and audit_money &gt;= ${sauditm} 
+	  </if>
+	  <if test="eauditm!=null and eauditm !=''">
+	  and audit_money  &lt;= ${eauditm}
+	  </if>
+	    <if test="slayoutm!=null and slayoutm !=''">
+	  	and layout_money &gt;= ${slayoutm} 
+	  </if>
+	  <if test=" elayoutm!=null and elayoutm !=''">
+	  and layout_money &lt;= ${elayoutm}
+	  </if>
+	  <if test="dataState!=null">
+	    and data_state in
+	  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+	      #{item}
+	  </foreach>
+	  </if>
+	  <if test="complaintStatus!=null">
+	    and executive_operation in
+	     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+	      	#{item}
+	  	 </foreach>
+	  </if> 
+	  order by update_date desc
   </select>
   
  <update id="changetype" >
- 	update  comment_info set data_state=#{info.dataState},handling_status=#{info.handlingStatus}   where user_id=#{info.userId} and id=#{info.id}
+ 	update  comment_admin set data_state=#{info.dataState},handling_status=#{info.handlingStatus}   where user_id=#{info.userId} and rand_id=#{info.id}
  </update>
 
   <update id="updateNotes" >
- 	update  comment_info set data_state=#{info.dataState},handling_status=#{info.handlingStatus},complaint_status=#{info.complaintStatus}, final_opinion = #{info.finalOpinion}  where  id=#{info.id}
+ 	update  comment_admin set data_state=#{dataState},final_opinion =#{appealReason},auditor =#{user_id},audit_time=#{date}  where  rand_id=#{id}
  </update>
  
- <update id="handlingStatus" >
- 	update  comment_info set handling_status=#{info.handlingStatus}  where  id=#{info.id}
+ <update id="updateInfo" >
+ 	update  comment_info set data_state=#{dataState}  where  id=#{id}
  </update>
  <select id="findNote" resultMap="BaseResultMap" >
- select * from comment_info where id=#{info.id}
+ select * from comment_admin where rand_id=#{info.id}
  </select>
  
   <select id="findNotes" resultMap="BaseResultMap" >
- select * from comment_info where id=#{info.id}
+ select * from comment_admin where rand_id=#{info.id}
  </select>
  
   <select id="getCommentAll" resultMap="BaseResultMap" >
-  	select * from comment_info where 1=1
+  	select * from comment_admin where 1=1
    <if test="info.userId!=null and info.userId !=''">
   	and user_id=#{info.userId}
   </if>
@@ -169,6 +174,9 @@
       #{item}
   </foreach>
   </if>
+   <if test="dataState==null">
+    and data_state =100
+  </if>
   <if test="complaintStatus!=null">
     and complaint_status in
      <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
@@ -177,5 +185,12 @@
   </if> 
  </select>
  
- 
+ <select id="getGoodForCommont" resultType="INTEGER" >
+ select count(1) from comment_zan where  comment_id=#{id}
+ </select>
+ 	
+ <select id="getcommentByid" resultMap="BaseResultMap">
+ 	select * from comment_admin where rand_id=#{id}
+ </select>
+ 	
 </mapper>

@@ -27,4 +27,6 @@ public interface PageManagerService {
 	boolean doAddPageManager(PageManager pm);
 
 	PageList exportpage(String[] ids, String pageName);
+	
+	List<Object> getKeyWord(String pageName);
 }

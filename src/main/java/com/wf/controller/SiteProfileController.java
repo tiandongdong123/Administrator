@@ -117,17 +117,10 @@ public class SiteProfileController {
 	@RequestMapping("basicIndexNum")
 	@ResponseBody
 	public PageList basicIndexNum(String dateType, Integer pagenum,
-			Integer pagesize, HttpServletRequest request) throws Exception {
+			Integer pagesize, HttpServletRequest request) {
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站概况");
-		log.setOperation_content("按天查询");
+		Log log=new Log("网站概况","查询","按天查询",request);
 		logService.addLog(log);
 
 		return webSiteDailyService.basicIndexNum(dateType, pagenum, pagesize);
@@ -145,17 +138,10 @@ public class SiteProfileController {
 	@RequestMapping("basicIndexNumHourly")
 	@ResponseBody
 	public PageList basicIndexNumHourly(String dateType, Integer pagenum,
-			Integer pagesize, HttpServletRequest request) throws Exception {
+			Integer pagesize, HttpServletRequest request) {
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("网站概况");
-		log.setOperation_content("按小时查询");
+		Log log=new Log("网站概况","查询","按小时查询",request);
 		logService.addLog(log);
 		
 		return webSiteHourlyService.basicIndexNumHourly(dateType, pagenum,

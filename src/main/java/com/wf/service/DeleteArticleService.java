@@ -14,7 +14,8 @@ public interface DeleteArticleService {
 	 * @param endTime
 	 * @return
 	 */
-	PageList getArticleList(String startTime,String endTime,int pageNum, int pageSize);
+	PageList getArticleList(String startTime, String endTime, String model, String id, int pageNum,
+			int pageSize);
 
 	/**
 	 * 添加一条下撤的数据
@@ -37,9 +38,11 @@ public interface DeleteArticleService {
 	 * 根据条件删除下撤的数据
 	 * @param startTime
 	 * @param endTime
+	 * @param model
+	 * @param id
 	 * @return
 	 */
-	Integer deleteArticleList(String startTime,String endTime);
+	Integer deleteArticleList(String startTime,String endTime,String model,String id);
 
 	/**
 	 * 根据id删除下撤数据

@@ -3,12 +3,8 @@
 ?>
 <script type="text/javascript" src="../page/othermanager/js/page_analysis.js"></script>
 <script type="text/javascript" src="../page/othermanager/js/echarts.js"></script>
-<script type="text/javascript">
-	
-	
-</script>
-	<input type="hidden" id="time" value="1">
-	<input type="hidden" id="reserch_domain" >
+<input type="hidden" id="time" value="1">
+<input type="hidden" id="reserch_domain" >
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -64,13 +60,13 @@
 						<div class="form-group input_block">
 							<label for="exampleInputEmail1" class="input_name">年龄：</label> <input
 								id="checkallage" onclick="checkallage()" type="checkbox">全部
-							<input name="age"  onclick="exlevel_check()" value="1" type="checkbox">20岁以前 <input
-								name="age"  onclick="exlevel_check()" value="2" type="checkbox">20-29岁 <input
-								name="age"  onclick="exlevel_check()" value="3" type="checkbox">30-39岁 <input
-								name="age"  onclick="exlevel_check()" value="4" type="checkbox">40-49岁 <input
-								name="age"  onclick="exlevel_check()" value="5" type="checkbox">50-59岁 <input
-								name="age"  onclick="exlevel_check()" value="6" type="checkbox">60岁以上
-								<input name="age" onclick="exlevel_check()" value="7" type="checkbox" >其他
+							<input name="age"  onclick="exlevel_check()" value="0-19岁" type="checkbox">20岁以前 <input
+								name="age"  onclick="exlevel_check()" value="20-19岁" type="checkbox">20-29岁 <input
+								name="age"  onclick="exlevel_check()" value="30-39岁" type="checkbox">30-39岁 <input
+								name="age"  onclick="exlevel_check()" value="40-49岁" type="checkbox">40-49岁 <input
+								name="age"  onclick="exlevel_check()" value="50-59岁" type="checkbox">50-59岁 <input
+								name="age"  onclick="exlevel_check()" value="60岁以上" type="checkbox">60岁以上
+								<input name="age" onclick="exlevel_check()" value=" " type="checkbox" >其他
 						</div>
 
 
@@ -97,8 +93,9 @@
 						<div class="form-group input_block" style="position: relative;">
 							<label for="exampleInputEmail1" class="input_name" >页面名称：</label>
 							<input type="text" id="pagename"  placeholder="请输入页面名称" style="width:170px">
+							<input type="hidden" id="linkaddress">
 							<div class="searchsug"  id="searchsug2" style="position: absolute;border-top:none;height: auto; text-align: left; top: 24px;left:19.3%; width: 170px; display: none;">
-					          <ul><ul>
+					          <ul></ul>
 						</div>
 						</div>
 
@@ -110,24 +107,23 @@
 						</div>
 						<div class="form-group input_block">
 							分析指标：<select id="type" onchange="getselectline()">
-								<option selected="selected" value="1" >页面浏览量</option>
-								<option value="2">页面访问次数</option>
-								<option value="3">独立访客数</option>
-								<option value="4">退出页次数</option>
-								<option value="5">贡献下游浏览量</option>
-								<option value="6">活跃用户数</option>
-								<option value="7">页面平均访问时长</option>
-								<option value="8">退出率</option>
+								<option selected="selected" value="11" >页面浏览量</option>
+								<option value="12">页面访问次数</option>
+								<option value="13">独立访客数</option>
+								<option value="14">退出页次数</option>
+								<option value="15">贡献下游浏览量</option>
+								<option value="13">活跃用户数</option>
+								<option value="16">页面平均访问时长</option>
+								<option value="17">退出率</option>
 							</select>
+							
 						</div>
-
 						<div class="col-md-12">
 							<div class="form-group input_block">
-								<div id="main" style="width: 100%; height: 300px;float:left"></div>
+								<div id="main" style="height: 400px;"></div>
 							</div>
 						</div>
-
-
+						
 						<div class="form-group input_block">
 							<table id="tabulation" class="table table-bordered table-striped">
 								<tr>
@@ -144,20 +140,7 @@
 									<th>热力图</th>
 									<th>点击链接图</th>
 								</tr>
-								<!-- <tr>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td>200</td>
-									<td><a href="">查看热力图</a></td>
-									<td><a href="">查看链接点击图</a></td>
-								</tr> -->
+								<tbody id="tablebody"></tbody>
 							</table>
 						</div>
 						<div id="page"></div>

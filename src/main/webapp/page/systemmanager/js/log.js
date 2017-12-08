@@ -166,7 +166,6 @@ function exportLog(){
 	behavior=$("#restype").find("option:selected").val();
 	startTime=$("#startTime").val();
 	endTime=$("#endTime").val();
-	alert(module);
 	window.location.href="../log/exportLog.do?" +
 			"username="+username+
 			"&module="+module+

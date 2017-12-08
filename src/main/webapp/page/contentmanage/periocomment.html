@@ -25,7 +25,7 @@
           <!-- general form elements -->
           <div class="box box-primary">
 			<div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name" >用户名：</label>
+              <label for="exampleInputEmail1" class="input_name" >用户ID：</label>
               <input type="text" id="username">
              </div>
              <div class="form-group input_block">
@@ -40,12 +40,12 @@
               <label for="exampleInputEmail1" class="input_name"> 审稿周期：</label>
               <select id="subtime">
               <option selected="selected">请选择</option>
-              <option>1个月</option>
-              <option>3个月</option>
-              <option>6个月</option>
-              <option>12个月</option>
-              <option>24个月</option>
-              <option>其他</option>
+              <option>1个月内</option>
+              <option>3个月内</option>
+              <option>6个月内</option>
+              <option>1年内</option>
+              <option>2年内</option>
+              <option>大于2年</option>
               </select>
              </div>
              <div class="form-group input_block">
@@ -63,35 +63,43 @@
 				<input type="checkbox" name="dataState" value="0" checked="checked">禁用
              </div>
               <div class="form-group input_block">
-              <label for="exampleInputEmail1" class="input_name">申诉状态：</label>
-				<input type="checkbox" name="complaintStatus" value="1">正常
-				<input type="checkbox" name="complaintStatus" value="0" checked="checked">申诉
+              <label for="exampleInputEmail1" class="input_name">执行操作：</label>
+				<input type="checkbox" name="complaintStatus1" id="check1" value="all" onclick="chekbox(this)" checked="checked">全部
+				<input type="checkbox" name="complaintStatus" value="1" onclick="chekbox(this)" checked="checked">新增
+				<input type="checkbox" name="complaintStatus" value="2" onclick="chekbox(this)" checked="checked">修改
+				<input type="checkbox" name="complaintStatus" value="3" onclick="chekbox(this)" checked="checked">删除
              </div>
              <div class="form-group input_block" style="text-align:center;">
 				<button type="submit" class="btn btn-primary"  onclick="commentpage(1)">查询</button>
 	           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportPerio();">导出</button>
              </div>
-             
-              <table id="example1" style="table-layout:fixed" class="table table-bordered table-striped">
+             <div style="width: 100%;overflow-x: auto;">
+              <table id="example1" style="table-layout:fixed;width:1700px;" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th style="width: 5%">序号</th>
-                  <th style="width: 15%">期刊名称</th>
+                  <th style="width: 10%">点评id</th>
+                  <th style="width: 10%">期刊名称</th>
+                  <th style="width: 8%">发文学科</th>
                   <th style="width: 10%">录用情况</th>
-                  <th style="width: 7%">审稿周期</th>
-                  <th style="width: 7%">审稿费</th>
-                  <th style="width: 7%">版面费</th>
-                  <th style="width: 15%">自定义点评</th>
-                  <th style="width: 8%">点评用户名</th>
+                  <th style="width: 7%;">审稿周期</th>
+                  <th style="width: 5%;">审稿费</th>
+                  <th style="width: 5%;">版面费</th>
+                  <th style="width: 10%">点评内容</th>
+                  <th style="width: 8%">点评用户id</th>
+                  <th style="width: 7%">点评时间</th>
+                  <th style="width: 7%">点赞数</th>
                   <th style="width: 7%">数据状态</th>
-                  <th style="width: 7%">申诉状态</th>
+                  <th style="width: 7%">执行操作</th>
+                  <th style="width: 7%">审核人</th>
+                  <th style="width: 7%">审核时间</th>
                   <th style="width: 10%">操作</th>
                 </tr>
                 </thead>
                 <tbody id="commentbody">
-               
                 </tbody>
               </table>
+              </div>
                <div id="page"></div>
             </div>
           </div>

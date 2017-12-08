@@ -44,6 +44,7 @@ import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.Wfadmin;
@@ -464,6 +465,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getChecks())){		
 			aheadUserService.addAccountRestriction(com);
 		}
+		aheadUserService.addUserIns(com);//统计分线权限
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			aheadUserService.addRegisterAdmin(com);
 			aheadUserService.addUserAdminIp(com);
@@ -613,6 +615,7 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
 			}
+			aheadUserService.addUserIns(com);//统计分线权限
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			for(ResourceDetailedDTO dto : list){
 				for(Map<String, Object> pro : lm) {
@@ -793,6 +796,8 @@ public class AheadUserController {
 			com.setUserId(map.get("userId").toString());
 			//更新机构账号
 			int resinfo = aheadUserService.updateRegisterInfo(com, ps.getPid(), adminId);
+			//统计分线权限
+			aheadUserService.addUserIns(com);
 			//未存在管理员添加新的
 			if(StringUtils.isBlank(ps.getPid())){
 				if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
@@ -1084,6 +1089,8 @@ public class AheadUserController {
 			map.put("adminIP", m.get("adminIP"));
 			map.put("adminEmail", m.get("adminEmail"));
 		}
+		//数据分析权限
+		getTongInstitution(userId,map);
 		aheadUserService.getprojectinfo(userId,map);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
@@ -1091,6 +1098,25 @@ public class AheadUserController {
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.setViewName("/page/usermanager/ins_numupdate");
 		return view;
+	}
+	
+	//获取机构用户权限表
+	private void getTongInstitution(String userId,Map<String, Object> map){
+		UserInstitution ins=aheadUserService.getUserInstitution(userId);
+		if(ins==null){
+			map.put("tongji", "");//权限的就设置为空
+		}else{
+			String analysis = ins.getStatisticalAnalysis();
+			JSONObject obj = JSONObject.fromObject(analysis);
+			String tongji = "";
+			if (obj.getInt("database_statistics") == 1) {
+				tongji += "A";
+			}
+			if (obj.getInt("resource_type_statistics") == 1) {
+				tongji += "B";
+			}
+			map.put("tongji", tongji);
+		}
 	}
 	
 	/**
@@ -1209,6 +1235,8 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getChecks())){			
 			aheadUserService.updateAccountRestriction(com);		
 		}
+		//统计分线权限
+		aheadUserService.addUserIns(com);
 		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){

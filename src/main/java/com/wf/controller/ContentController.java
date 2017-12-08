@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URLDecoder;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.storage.Hash;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
@@ -290,9 +287,9 @@ public class ContentController{
 		message.setHuman(admin.getUser_realname());
 		message.setBranch(admin.getDept().getDeptName());
 		message.setIssueState(1);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		message.setCreateTime(sdf.format(new Date()));
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		message.setCreateTime(sdf1.format(new Date()));
 		message.setStick(sdf1.format(new Date()));
 		boolean b =messageService.insertMessage(message);
 		JsonUtil.toJsonHtml(response, b);
@@ -312,41 +309,21 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("/message")
-	public String message(
-			@RequestParam(value="branch",required=false) String branch,
-			@RequestParam(value="human",required=false) String human,
-			@RequestParam(value="colums",required=false) String colums,
-			@RequestParam(value="startTime",required=false) String startTime,
-			@RequestParam(value="endTime",required=false) String endTime,
-			@RequestParam(value="page",required=false) String page,
-			HttpServletRequest request,Model model) throws Exception{
-		int pagenum=1;
-		if(page!=null&&page!=""){
-			pagenum=Integer.valueOf(page);
-		}
-		int pageSize=10;
-		PageList messageList=messageService.getMessage(pagenum, pageSize, branch, human, colums, startTime, endTime);
-		Map<String,Object> mp=new HashMap<String,Object>();
-		mp.put("branch",branch);
-		mp.put("human",human);
-		mp.put("colums",colums);
-		mp.put("startTime",startTime);
-		mp.put("endTime",endTime);
-		model.addAttribute("pageList",messageList);
+	public String message(HttpServletRequest request, Model model) throws Exception {
+		Map<String, Object> mp = new HashMap<String, Object>();
+		mp.put("startTime", "");
+		mp.put("endTime", "");
+		mp.put("branch", "");
+		mp.put("colums", "");
 		model.addAttribute("meaasgeMap", mp);
-		
-		List<String> deptList=new ArrayList<String>();
+		List<String> deptList = new ArrayList<String>();
 		for (Object department : departmentService.getAllDept()) {
-			deptList.add(((Department)department).getDeptName());
+			deptList.add(((Department) department).getDeptName());
 		}
-		
-		//记录日志
-		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
-		logService.addLog(log);
-		
-		model.addAttribute("deptList",deptList);
+		model.addAttribute("deptList", deptList);
 		return "/page/contentmanage/message";
 	}
+	
 	/**
 	 * 资讯查询分页
 	 * @param response
@@ -355,21 +332,13 @@ public class ContentController{
 	 */
 	@RequestMapping("/messageJson")
 	@ResponseBody
-	public Object getMessageJson(
-			@RequestParam(value="branch",required=false) String branch,
-			@RequestParam(value="human",required=false) String human,
-			String colums,
-			@RequestParam(value="startTime",required=false) String startTime,
-			@RequestParam(value="endTime",required=false) String endTime,
-			@RequestParam(value="page",required=false) int pageNum,
+	public Object getMessageJson(String branch,String human,String colums,String isTop,String startTime,String endTime,int pageNum,int pageSize,
 			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		int pageSize=10;
-		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime);
 		
+		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime,isTop);
 		//记录日志
 		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
 		logService.addLog(log);
-
 		return  messageList;
 	}
 	
@@ -668,15 +637,7 @@ public class ContentController{
 		if(StringUtils.isEmpty(ids))ids=null;
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("删除的资源类型ID:"+ids);
+		Log log=new Log("资源类型管理","删除","删除的资源类型ID:"+ids,request);
 		logService.addLog(log);
 
 		Boolean b=resourceTypeService.deleteResourceType(ids);
@@ -725,7 +686,7 @@ public class ContentController{
 	@RequestMapping("/shareTemplate")
 	public String getShareTemplate(
 			@RequestParam(value="shareType",required=false) String shareType,
-			HttpServletRequest request,Model model) throws Exception{
+			HttpServletRequest request,Model model){
 		int pageNum=1;
 		int pageSize=10;
 		PageList p=shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
@@ -735,15 +696,7 @@ public class ContentController{
 		model.addAttribute("templates", list);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("查询条件:分享类型:"+shareType);
+		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
 		logService.addLog(log);
 
 		return "/page/contentmanage/shareTemplate";
@@ -761,15 +714,7 @@ public class ContentController{
 			HttpServletResponse response,HttpServletRequest request) throws Exception{
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("查询条件:分享类型:"+shareType);
+		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
 		logService.addLog(log);
 		
 		int pageSize=10;
@@ -808,15 +753,7 @@ public class ContentController{
 		boolean b=shareTemplateService.addShareTemplate(shareTemplate);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("新增分享模块信息:"+shareTemplate.toString());
+		Log log=new Log("分享模板管理","增加","新增分享模块信息:"+shareTemplate.toString(),request);
 		logService.addLog(log);
 		
 		JsonUtil.toJsonHtml(response,b);
@@ -826,15 +763,7 @@ public class ContentController{
 	public void deleteShareTemplate(HttpServletResponse response,String ids, HttpServletRequest request) throws Exception{
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("删除的分享模块ID:"+ids);
+		Log log=new Log("分享模板管理","删除","删除的分享模块ID:"+ids,request);
 		logService.addLog(log);
 
 		boolean b =shareTemplateService.deleteShareTemplate(ids);
@@ -875,15 +804,7 @@ public class ContentController{
 		boolean b =shareTemplateService.updateShareTemplate(shareTemplate);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("修改后的分享模板信息:"+shareTemplate.toString());
+		Log log=new Log("分享模板管理","修改","修改后的分享模板信息:"+shareTemplate.toString(),request);
 		logService.addLog(log);
 
 		JsonUtil.toJsonHtml(response, b);
@@ -904,7 +825,7 @@ public class ContentController{
 	public String notes(Model model){
 		int pageNum=1;
 		int pageSize=10;
-		PageList pageList =notesService.getNotes(pageNum, pageSize,null, null, null, null, null, null, null, null);
+		PageList pageList =notesService.getNotes(pageNum, pageSize,null, null, null, null, null, null, null, null,null,null);
 		model.addAttribute("pageList",pageList);
 		model.addAttribute("res",resourceTypeService.getAll());
 		return "/page/contentmanage/notes";
@@ -951,6 +872,8 @@ public class ContentController{
 			@RequestParam(value="complaintStatus[]",required=false) String[] complaintStatus,
 			@RequestParam(value="startTime",required=false) String startTime,
 			@RequestParam(value="endTime",required=false) String endTime,
+			@RequestParam(value="noteProperty[]",required=false) String[] noteProperty,
+			@RequestParam(value="performAction[]",required=false) String[] performAction,
 			@RequestParam(value="page",required=false) int pageNum, HttpServletRequest request
 			) throws Exception{
 		
@@ -971,25 +894,16 @@ public class ContentController{
 		}
 		
 		int pageSize=10;
-		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
 		JSONObject json=JSONObject.fromObject(NotepageList);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
 		
-		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记管理");
-		
-		log.setOperation_content("笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
+		Log log=new Log("笔记管理","查询","笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
 				+",资源名称:"+resourceName+",笔记日期:"+startTime+"-"+endTime
 				+ ",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))+","
-				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)));
+				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)),request);
 		logService.addLog(log);
 		
 	}
@@ -998,6 +912,7 @@ public class ContentController{
 	public String findNote(Model model,@RequestParam(value="id",required=false) String id){
 	
 		boolean b=notesService.handlingNote(id);
+
 		Notes notes =notesService.findNotes(id);
 		model.addAttribute("notes", notes);
 		return "/page/contentmanage/notes_detail";
@@ -1020,28 +935,24 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/updateNotes")
-	public void updateNotes(Notes notes,HttpServletResponse response, HttpServletRequest request) throws Exception{
-		notes.setHandlingStatus(3);
-		boolean b=notesService.updateNotes(notes);
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记管理");
-		log.setOperation_content("修改后的笔记信息:"+notes.toString());
-		logService.addLog(log);
-
+	public void updateNotes(Notes notes,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateString = formatter.format(currentTime);
+		notes.setAuditTime(dateString);//审核日期
+		Wfadmin admin = CookieUtil.getWfadmin(request);
+		notes.setAuditId(admin.getWangfang_admin_id());//审核人ID
+		Boolean b = notesService.updateNotes(notes);
 		JsonUtil.toJsonHtml(response, b);
+		//记录日志
+		Log log=new Log("笔记管理","修改","修改后的笔记信息:"+notes.toString(),request);
+		logService.addLog(log);
 	}
+	
 	@RequestMapping("/stick")
-	public void stick(Message message,@RequestParam("colums")String colums,HttpServletResponse response) throws Exception{
-		String stick=DateTools.getSysTime();
-		message.setStick(stick);
-		boolean b =messageService.updataMessageStick(message, colums);
+	public void stick(Message message,HttpServletResponse response) throws Exception{
+		message.setStick(DateTools.getSysTime());
+		boolean b =messageService.updataMessageStick(message);
 		JsonUtil.toJsonHtml(response, b);
 	}
 	
@@ -1565,23 +1476,8 @@ public class ContentController{
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("笔记审核管理");
-		
-		log.setOperation_content("导出条件:用户ID:"+userName+",笔记编号:"+noteNum+",资源名称:"+resourceName
-				+",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))
-				+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))
-				+",申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus))
-				+",开始时间:"+startTime+",结束时间:"+endTime);
-
+			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction){
+				
 		ExportExcel excel=new ExportExcel();
 	
 		if(StringUtils.isEmpty(userName)) userName=null;
@@ -1592,13 +1488,22 @@ public class ContentController{
 		if(resourceType.length==0) resourceType=null;
 		if(dataState.length==0) dataState=null;
 		if(complaintStatus.length==0) complaintStatus=null;
+		if(noteProperty.length==0) noteProperty=null;
+		if(performAction.length==0) performAction=null;
 		
 		
-		List<Object> list=notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime);
+		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,  noteProperty, performAction);
 		JSONArray array=JSONArray.fromObject(list);
-		List<String> names=Arrays.asList(new String[]{"序号","笔记编号","资源编号","资源类型","资源类型","笔记内容","处理意见","用户ID","笔记日期","数据状态","申诉状态"});		
-
+		List<String> names=Arrays.asList(new String[]{"序号","笔记ID","文献标题","资源类型","笔记内容","笔记用户ID","笔记时间","执行操作","笔记性质","数据状态","审核人","审核时间"});		
 		excel.ExportNotes(response, array, names);
+		
+		//记录日志
+		Log log=new Log("笔记审核管理","导出","导出条件:用户ID:"+userName+",笔记编号:"+noteNum+",资源名称:"+resourceName
+				+",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))
+				+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))
+				+",申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)),request);
+		logService.addLog(log);		
+				
 	}
 
 	/**
@@ -1620,20 +1525,6 @@ public class ContentController{
 	public void exportVolumeDocu(String startTime,String endTime,String searchWord,String volumeType,String volumeState,
 			String sortColumn,String sortWay,HttpServletResponse response, HttpServletRequest request) throws Exception{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("文辑管理");
-		
-		log.setOperation_content("文辑管理:导出条件:开始时间"+startTime+",结束时间:"+endTime+
-				",关键字:"+searchWord+",文辑类型:"+volumeType+",文辑状态:"+volumeState+
-				"排序列:"+sortColumn+",顺序:"+sortWay);
-		logService.addLog(log);
-		
 		List<Object> list=new ArrayList<Object>();
 		list= volumeService.exportVolumeDocu(startTime, endTime, searchWord, volumeType, volumeState, sortColumn,sortWay);
 		JSONArray array=JSONArray.fromObject(list);
@@ -1644,6 +1535,13 @@ public class ContentController{
 		
 		ExportExcel excel=new ExportExcel();
 		excel.exportVolumeDocu(response, array, names,volumeType);
+		
+		//记录日志
+		Log log=new Log("文辑管理","导出","文辑管理:导出条件:开始时间"+startTime+",结束时间:"+endTime+
+				",关键字:"+searchWord+",文辑类型:"+volumeType+",文辑状态:"+volumeState+
+				"排序列:"+sortColumn+",顺序:"+sortWay,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -1654,19 +1552,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportshareTemplate")
-	public void exportshareTemplate(HttpServletResponse response,String shareType, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分享模板管理");
-		
-		log.setOperation_content("导出条件:分享类型:"+shareType);
-		logService.addLog(log);
+	public void exportshareTemplate(HttpServletResponse response,String shareType, HttpServletRequest request){
 
 		List<Object> list=new ArrayList<Object>();
 		
@@ -1689,19 +1575,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportResource")
-	public void exportResource(HttpServletResponse response,String resouceType, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资源类型管理");
-		
-		log.setOperation_content("导出条件:资源类型:"+resouceType);
-		logService.addLog(log);
+	public void exportResource(HttpServletResponse response,String resouceType, HttpServletRequest request){
 		
 		List<Object> list=new ArrayList<Object>();
 		
@@ -1719,6 +1593,10 @@ public class ContentController{
 			
 			ExportExcel excel=new ExportExcel();
 			excel.exportResource(response, array, names);
+
+			//记录日志
+			Log log=new Log("资源类型管理","导出","导出条件:资源类型:"+resouceType,request);
+			logService.addLog(log);
 			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -1736,19 +1614,7 @@ public class ContentController{
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportSubject")
-	public void exportSubject(HttpServletResponse response,Integer pageNum,String level,String classNum,String className, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("学科分类管理");
-		
-		log.setOperation_content("导出条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className);
-		logService.addLog(log);
+	public void exportSubject(HttpServletResponse response,Integer pageNum,String level,String classNum,String className, HttpServletRequest request){
 		
 		List<Object> list=new ArrayList<Object>();
 		list=subjectService.exportSubject(level,classNum,className);
@@ -1759,6 +1625,10 @@ public class ContentController{
 		ExportExcel excel=new ExportExcel();
 		excel.exportSubject(response, array, names);
 		
+		//记录日志
+		Log log=new Log("学科分类管理","导出","导出条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -1809,26 +1679,19 @@ public class ContentController{
 	 */
 	@RequestMapping("exportMessage")
 	public void exportMessage(HttpServletResponse response,String branch,String colums,
-				String human,String startTime,String endTime, HttpServletRequest request) throws Exception{
+				String human,String startTime,String endTime, HttpServletRequest request){
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("资讯管理");
-		
-		log.setOperation_content("导出条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums);
-		logService.addLog(log);
-
 		List<Object> list=new ArrayList<>();
 		list= messageService.exportMessage(branch,colums,human,startTime,endTime);
 		JSONArray array=JSONArray.fromObject(list);
 		List<String> names=Arrays.asList(new String[]{"序号","栏目","标题","原文链接","添加人","添加日期"});
 		ExportExcel excel=new ExportExcel();
 		excel.exportMessage(response, array, names);
+		
+		//记录日志
+		Log log=new Log("资讯管理","导出","导出条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
+		logService.addLog(log);
+
 	}
 	
 	/**
@@ -1838,18 +1701,15 @@ public class ContentController{
 	 */
 	@RequestMapping("/oneKeyDeploy")
 	@ResponseBody
-	public Boolean oneKeyDeploy(HttpServletRequest request,HttpServletResponse response){
-		  boolean isOK=true;
+	public Boolean oneKeyDeploy(HttpServletRequest request, HttpServletResponse response) {
+		boolean isOK = true;
 		try {
-			Map<String, Object> map=new HashMap<String, Object>();
-			map.put("issue_state",2);
-			List<Object> list=messageService.getAllMessage(map);
-			for(Object obj:list){
-				Message mm=(Message) obj;
-					messageService.updateIssue(String.valueOf(mm.getId()),mm.getColums(),"2");
-			}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("issue_state", 2);
+			List<Object> list = messageService.getAllMessage(map);
+			messageService.updateBatch(list);
 		} catch (Exception e) {
-			isOK=false;
+			isOK = false;
 			e.printStackTrace();
 		}
 		return isOK;

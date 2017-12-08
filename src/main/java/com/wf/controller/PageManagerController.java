@@ -39,7 +39,7 @@ public class PageManagerController {
 	PageManagerService pageManagerService;
 	@Autowired
 	ModularService modularService;
-	
+	@Autowired
 	LogService logService;
 	/**
 	 * 分析页面管理页面
@@ -79,15 +79,7 @@ public class PageManagerController {
 		}
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分析页面管理");
-		
-		log.setOperation_content("查询条件:页面名称:"+pageName+",功能模块:"+(ids==null?"":Arrays.asList(ids)));
+		Log log=new Log("分析页面管理","查询","查询条件:页面名称:"+pageName+",功能模块:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
 
 		return pl;
@@ -117,19 +109,11 @@ public class PageManagerController {
 	 */
 	@RequestMapping("doAddModular")
 	@ResponseBody
-	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request) throws Exception{
+	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request){
 		boolean rt = modularService.doAddModular(md);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能模块管理");
-		
-		log.setOperation_content("添加功能模块信息:"+md.toString());
+		Log log=new Log("功能模块管理","增加",md.toString(),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -160,19 +144,11 @@ public class PageManagerController {
 	 */
 	@RequestMapping("doAddPageManager")
 	@ResponseBody
-	public boolean doAddPageManager(@ModelAttribute PageManager pm, HttpServletRequest request) throws Exception{
+	public boolean doAddPageManager(@ModelAttribute PageManager pm, HttpServletRequest request){
 		boolean rt = pageManagerService.doAddPageManager(pm);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分析页面管理");
-		
-		log.setOperation_content("添加分析页面信息:"+pm.toString());
+		Log log=new Log("分析页面管理","增加",pm.toString(),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -209,19 +185,11 @@ public class PageManagerController {
 	 */
 	@RequestMapping("doUpdatePageManager")
 	@ResponseBody
-	public boolean doUpdatePageManager(@ModelAttribute PageManager pm, HttpServletRequest request) throws Exception{
+	public boolean doUpdatePageManager(@ModelAttribute PageManager pm, HttpServletRequest request){
 		boolean bl = pageManagerService.doUpdatePageManager(pm);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分析页面管理");
-		
-		log.setOperation_content("修改后分析页面信息:"+pm.toString());
+		Log log=new Log("分析页面管理","修改",pm.toString(),request);
 		logService.addLog(log);
 
 		return bl;
@@ -239,19 +207,11 @@ public class PageManagerController {
 	 */
 	@RequestMapping("deletePageManager")
 	@ResponseBody
-	public boolean deletePageManager(String id, HttpServletRequest request) throws Exception{
+	public boolean deletePageManager(String id, HttpServletRequest request) {
 		boolean rt = pageManagerService.deletePageManager(id);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分析页面管理");
-		
-		log.setOperation_content("删除分析页面ID:"+id);
+		Log log=new Log("分析页面管理","删除","删除分析页面ID:"+id,request);
 		logService.addLog(log);
 
 		return rt;
@@ -278,26 +238,14 @@ public class PageManagerController {
 	 * @param pageNum
 	 * @param ids
 	 * @param request 
+	 * @throws UnsupportedEncodingException 
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportpage")
-	public void exportpage(HttpServletResponse response,String pageName,String ids[], HttpServletRequest request) throws Exception{
+	public void exportpage(HttpServletResponse response,String pageName,String ids[], HttpServletRequest request) throws UnsupportedEncodingException {
 		if(ids.length==0) ids=null;
 		pageName=java.net.URLDecoder.decode(pageName,"UTF-8");
 		
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("分析页面管理");
-		
-		log.setOperation_content("导出条件:页面名称:"+pageName+",功能模块:"+ids.toString());
-		logService.addLog(log);
-
 		PageList pl = pageManagerService.exportpage(ids,pageName);
 		for(int i=0;i<pl.getPageRow().size();i++){
 			Modular mode=modularService.getModularById(JSONArray.fromObject(pl.getPageRow().get(i)).getJSONObject(0).get("modularId").toString());
@@ -310,6 +258,11 @@ public class PageManagerController {
 		
 		ExportExcel excel=new ExportExcel();
 		excel.exportPage(response, array, names);
+		
+		
+		//记录日志
+		Log log=new Log("分析页面管理","导出","导出条件:页面名称:"+pageName+",功能模块:"+ids.toString(),request);
+		logService.addLog(log);
 		
 	}
 	

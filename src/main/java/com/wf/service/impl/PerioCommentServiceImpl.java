@@ -51,9 +51,9 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 	}
 
 	@Override
-	public Boolean updateNotes(CommentInfo info) {
+	public Boolean updateNotes(String id ,String dataState,String appealReason,String user_id,String date) {
 		// TODO Auto-generated method stub
-		Boolean i=ci.updateNotes(info);
+		Boolean i=ci.updateNotes(id, dataState, appealReason,user_id,date);
 		return i;
 	}
 
@@ -62,13 +62,6 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		// TODO Auto-generated method stub
 		CommentInfo data=ci.findNote(info);
 		return data;
-	}
-
-	@Override
-	public Boolean handlingStatus(CommentInfo info) {
-		// TODO Auto-generated method stub
-		Boolean i=ci.handlingStatus(info);
-		return i;
 	}
 
 	@Override
@@ -84,6 +77,25 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public Integer getGoodForCommont(String commontid) {
+		// TODO Auto-generated method stub
+		
+		return ci.getGoodForCommont(commontid);
+	}
+
+	@Override
+	public CommentInfo getcommentByid(String id) {
+		// TODO Auto-generated method stub
+		return ci.getcommentByid(id);
+	}
+
+	@Override
+	public Integer updateInfo(String id, String dataState) {
+		// TODO Auto-generated method stub
+		return ci.updateInfo(id, dataState);
 	}
 
 }

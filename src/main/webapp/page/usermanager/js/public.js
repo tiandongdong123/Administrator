@@ -23,20 +23,51 @@ $(function(e){
 			$("#pconcurrent_div").hide();
 		}
 	});
-	
+	//机构管理员校验
+	$("#adminIP").keyup(function(){
+		this.value=this.value.replace(/[^.0-9\r\n-]/g,'');
+	}).keydown(function(){
+		this.value=this.value.replace(/[^.0-9\r\n-]/g,'');
+	});
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
+			$("#upperlimit").val("100");
+			$("#sConcurrentnumber").val("1");
+			$("#downloadupperlimit").val("30");
+			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("1000");
-			$("#sConcurrentcountber").val("1");
-			$("#chargebacks").val("0");
+			$("#upperlimit").val("");
+			$("#sConcurrentcountber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
 		}
 	});
-	
 });
+
+//统计分析
+function checkTj(value){
+	if(value=="all"){
+		var bool=$("#statistics1").is(':checked');
+		$("#tongji").val(bool?"AB":"");
+		$("#statistics2").prop('checked',bool);
+		$("#statistics3").prop('checked',bool);
+	}else{
+		var statistics2=$("#statistics2").is(':checked');
+		var statistics3=$("#statistics3").is(':checked');
+		if(statistics2&&statistics3){
+			$("#tongji").val("AB");
+		}else if(statistics2){
+			$("#tongji").val("A");
+		}else if(statistics3){
+			$("#tongji").val("B");
+		}else{
+			$("#tongji").val("");
+		}
+	}
+}
 
 //标准
 function standardShow(count,i,id){

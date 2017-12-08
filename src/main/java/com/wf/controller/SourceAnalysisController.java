@@ -59,19 +59,12 @@ public class SourceAnalysisController {
 	@ResponseBody
 	public Map<String, Object> getPageList(String flag,String date, String startTime,String endTime,Integer pageNum,Integer pageSize, HttpServletRequest request) throws Exception{
 		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("来源分析");
-		log.setOperation_content("");
-		logService.addLog(log);
-		
 		//列表展示		
 		Map<String, Object> map=sourceAnalysisService.SourceAnalysisList(flag, date, startTime, endTime, pageNum, pageSize);
+		
+		//记录日志
+		Log log=new Log("来源分析","查询","",request);
+		logService.addLog(log);
 		
 		return map;
 	}

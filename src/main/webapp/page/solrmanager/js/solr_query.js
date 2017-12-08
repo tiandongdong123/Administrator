@@ -6,14 +6,18 @@ var pageSize = 10;
 var curr=1;
 function Page(curr){
 	//序号
-	var startTime = $("#startTime").val();//开始时间
-	var endTime = $("#endTime").val();//结束时间
+	var startTime = $("#startTime").val();// 开始时间
+	var endTime = $("#endTime").val();// 结束时间
+	var id = $("#id").val();// id
+	var model = $("#model").val();// 模块名称
 	$.ajax({
 		type : "post",  
 		url : "../solr/solrList.do",
 		data :{
 			"startTime" : startTime,
 			"endTime" : endTime,
+			"id" : id,
+			"model" : model,
 			"pageNum" : curr || 1,
 			"pageSize" : pageSize,
 		},
@@ -91,8 +95,10 @@ function deleteArt(id){
 function deleteAll(){
 	var startTime=$("#startTime").val();
 	var endTime=$("#endTime").val();
-	if(startTime=='' ||endTime==''){
-		layer.alert("请添加要删除的时间段!");
+	var id = $("#id").val();// id
+	var model = $("#model").val();// 模块名称
+	if(startTime=='' &&endTime==''&&id==''&&model==''){
+		layer.alert("请选择删除的条件");
 		return;
 	}
 	layer.alert('确定要删除'+startTime+'到'+endTime+'的所有下撤数据吗？', {
@@ -104,11 +110,13 @@ function deleteAll(){
 	    	$.ajax({
 	    		type : "post",  
 	    		url : "../solr/deleteArticleList.do",
-	    		data :{ "startTime" : startTime,"endTime":endTime},
+	    		data :{ "startTime" : startTime,"endTime":endTime,"model":model,"id":id},
 	    		dataType : "json",
 	    		success : function(data){
-	    			if(data>0){
+	    			if(data=="true"){
 	    				Page(1);
+	    			}else if(data=="false"){
+	    				layer.alert("请选择删除的条件");
 	    			}
 	    		},
 	    		error : function(data){

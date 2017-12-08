@@ -120,5 +120,10 @@ public class PageManagerServiceImpl implements PageManagerService{
 		return p;
 	}
 
+	@Override
+	public List<Object> getKeyWord(String pageName) {
+		return pageManagerMapper.getKeyword(pageName);
+	}
+
 	
 }

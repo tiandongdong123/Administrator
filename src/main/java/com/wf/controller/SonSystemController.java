@@ -33,15 +33,15 @@ public class SonSystemController {
 	@Autowired
 	DataManagerService data;
 	
+	@Autowired
 	LogService logService;
 	
 	@RequestMapping("getson")
 	@ResponseBody
 	public PageList getProduct(@RequestParam("pagenum") Integer pagenum,
-			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request) throws Exception{
+			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request){
 		PageList  pl = this.pts.getSon(pagenum, pagesize);
-		for(int i=0;i<pl.getPageRow().size();i++)
-		{
+		for(int i=0;i<pl.getPageRow().size();i++){
 			SonSystem son=(SonSystem)pl.getPageRow().get(i);
 			String code =son.getProductResourceCode();
 			List<String> list=Arrays.asList(code.split(","));
@@ -57,21 +57,13 @@ public class SonSystemController {
 				}
 			}
 			son.setProductResourceCode(sourcedata);
-			
-			//记录日志
-			Log log=new Log();
-			log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-			log.setBehavior("查询");
-			log.setUrl(request.getRequestURL().toString());
-			log.setTime(DateTools.getSysTime());
-			log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-			log.setModule("平台配置管理");
-			log.setOperation_content("");
-			logService.addLog(log);
-			
 			pl.getPageRow().remove(i);
 			pl.getPageRow().add(i, son);
 		}
+		
+		//记录日志
+		Log log=new Log("平台配置管理","查询","",request);
+		logService.addLog(log);
 
 		return pl;
 	}
@@ -84,18 +76,11 @@ public class SonSystemController {
 	 */
 	@RequestMapping("deleteson")
 	@ResponseBody
-	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
+	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		boolean rt = this.pts.deleteSon(ids);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("平台配置管理");
-		log.setOperation_content("删除的平台ID:"+(ids==null?"":Arrays.asList(ids)));
+		Log log=new Log("平台配置管理","删除","删除的平台ID:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
 
 		return rt;
@@ -128,7 +113,7 @@ public class SonSystemController {
 	 */
 	@RequestMapping("doaddson")
 	@ResponseBody
-	public boolean doAddSon(HttpServletRequest request) throws Exception{
+	public boolean doAddSon(HttpServletRequest request){
 		SonSystem son=new SonSystem();
 		String source_code=request.getParameter("productResourceCode");
 		String name=request.getParameter("sonName");
@@ -139,14 +124,7 @@ public class SonSystemController {
 		boolean rt = this.pts.doAddSon(son);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("平台配置管理");
-		log.setOperation_content("增加的平台信息:"+son.toString());
+		Log log=new Log("平台配置管理","增加",son.toString(),request);
 		logService.addLog(log);
 
 		return rt;
@@ -159,7 +137,7 @@ public class SonSystemController {
 	 */
 	@RequestMapping("doupdateson")
 	@ResponseBody
-	public boolean doUpdateSon(HttpServletRequest request) throws Exception{
+	public boolean doUpdateSon(HttpServletRequest request){
 		SonSystem son=new SonSystem();
 		String id=request.getParameter("id");
 		String source_code=request.getParameter("productResourceCode");
@@ -172,14 +150,7 @@ public class SonSystemController {
 		boolean rt = this.pts.doUpdateSon(son);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("平台配置管理");
-		log.setOperation_content("修改后的平台信息:"+son.toString());
+		Log log=new Log("平台配置管理","修改",son.toString(),request);
 		logService.addLog(log);
 
 		return rt ;

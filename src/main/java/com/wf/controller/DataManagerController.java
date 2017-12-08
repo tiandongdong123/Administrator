@@ -19,8 +19,8 @@ import com.utils.JsonUtil;
 import com.wf.Setting.DatabaseConfigureSetting;
 
 import net.sf.json.JSONArray;
-import org.dom4j.DocumentException;
 
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -53,17 +53,10 @@ public class DataManagerController {
 	 */
 	@RequestMapping("getdata")
 	@ResponseBody
-	public PageList getData(Integer pagenum,Integer pagesize,String dataname,HttpServletRequest request) throws Exception {
+	public PageList getData(Integer pagenum,Integer pagesize,String dataname,HttpServletRequest request){
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("数据库名称:"+dataname);
+		Log log=new Log("数据库配置管理","查询","数据库名称:"+dataname,request);
 		logService.addLog(log);
 
 		if(dataname==null){
@@ -77,21 +70,11 @@ public class DataManagerController {
 	}
 	/**
 	 * 资源类型上移
+	 * @throws Exception 
 	 */
 	@RequestMapping("/moveUpDatabase")
 	public void moveUpDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("上移");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("资源类型ID:"+id);
-		logService.addLog(log);
 
 		boolean b=this.data.moveUpDatabase(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
@@ -101,6 +84,11 @@ public class DataManagerController {
 		redis.del("datamanager");
 		redis.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
+
+		//记录日志
+		Log log=new Log("数据库配置管理","上移","资源类型ID:"+id,request);
+		logService.addLog(log);
+
 	}
 	/**
 	 * 资源类型下移
@@ -109,18 +97,7 @@ public class DataManagerController {
 	public void moveDownDatabase(
 			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
 		boolean b=this.data.moveDownDatabase(id);
-
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("下移");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("资源类型ID:"+id);
-		logService.addLog(log);
-
+		
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
@@ -128,6 +105,11 @@ public class DataManagerController {
 		redis.del("datamanager");
 		redis.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
+		
+		//记录日志
+		Log log=new Log("数据库配置管理","下移","资源类型ID:"+id,request);
+		logService.addLog(log);
+
 	}
 
 	/**
@@ -138,18 +120,11 @@ public class DataManagerController {
 	 */
 	@RequestMapping("deletedata")
 	@ResponseBody
-	public boolean deleteData(String id,HttpServletRequest request) throws Exception{
+	public boolean deleteData(String id,HttpServletRequest request){
 		boolean a = this.data.deleteData(id);
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("资源类型ID:"+id);
+		Log log=new Log("数据库配置管理","删除","资源类型ID:"+id,request);
 		logService.addLog(log);
 
 		return a;
@@ -208,21 +183,15 @@ public class DataManagerController {
 	@ResponseBody
 	public boolean openData(String id,HttpServletRequest request) throws Exception {
 
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("解冻");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("解冻资源类型ID:"+id);
-		logService.addLog(log);
-
 		boolean result = this.data.openData(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		this.data.selectZY();
+		
+		//记录日志
+		Log log=new Log("数据库配置管理","解冻","解冻资源类型ID:"+id,request);
+		logService.addLog(log);
+		
 		return result;
 	}
 	/**
@@ -234,21 +203,14 @@ public class DataManagerController {
 	@ResponseBody
 	public boolean closeData(String id,HttpServletRequest request) throws Exception {
 
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("冻结");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("冻结资源类型ID:"+id);
-		logService.addLog(log);
-
 		boolean result = this.data.closeData(id);
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		this.data.selectZY();
+		
+		//记录日志
+		Log log=new Log("数据库配置管理","冻结","冻结资源类型ID:"+id,request);
+		logService.addLog(log);
 		return result;
 	}
 	
@@ -343,18 +305,11 @@ public class DataManagerController {
 	@RequestMapping("doadddata")
 	@ResponseBody
 	public boolean doAddData(@RequestParam(value="customs[]",required=false) String[] customs,@ModelAttribute Datamanager data,
-			HttpServletRequest request) throws Exception{
+			HttpServletRequest request){
 		boolean rt = this.data.doAddData(customs,data);
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("增加数据库信息:"+data.toString());
+		Log log=new Log("数据库配置管理","增加",data.toString(),request);
 		logService.addLog(log);
 
 		return rt;
@@ -403,14 +358,7 @@ public class DataManagerController {
 		boolean rt = this.data.doUpdateData(customs,data);
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("修改后数据库信息:"+data.toString());
+		Log log=new Log("数据库配置管理","修改","修改后数据库信息:"+data.toString(),request);
 		logService.addLog(log);
 
 		return rt;
@@ -431,17 +379,10 @@ public class DataManagerController {
 	 * @throws Exception
 	 */
 	@RequestMapping("exportData")
-	public void exportData(HttpServletRequest request,HttpServletResponse response,String dataname) throws Exception{
+	public void exportData(HttpServletRequest request,HttpServletResponse response,String dataname){
 
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("导出");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("数据库配置管理");
-		log.setOperation_content("导出查询条件数据库名称:"+dataname);
+		Log log=new Log("数据库配置管理","导出","导出查询条件数据库名称:"+dataname,request);
 		logService.addLog(log);
 
 		List<Object> list =data.exportData(dataname);

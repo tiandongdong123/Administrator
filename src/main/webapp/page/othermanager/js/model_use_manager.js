@@ -8,7 +8,7 @@ $(function(){
 	    $("#searchsug1").hide();
 	});
 	
-})
+});
 
 function querytime(obj,num){
 	var nums  = num;
@@ -17,14 +17,13 @@ function querytime(obj,num){
 	 
 	$("button[name=time]").each(function(){
 		$(this).removeClass("btn-success");
-	})
+	});
 	$(obj).addClass("btn-success");
-	gettable(1,nums)
+	gettable(1,nums);
 }
 
 //分页显示
 function gettable(curr,num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -47,7 +46,7 @@ function gettable(curr,num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -103,15 +102,15 @@ function gettable(curr,num){
     	
     	for(var i =0;res.pageRow[i];i++){
     		html+="<tr>" +
-    				"<td>"+res.pageRow[i].modelname+"</td>" +
-    				"<td>"+res.pageRow[i].modelPV+"</td>" +
-    				"<td>"+res.pageRow[i].modelVV+"</td>" +
-    				"<td>"+res.pageRow[i].modelUV+"</td>" +
-    				"<td>0</td>" +
-    				"<td>"+res.pageRow[i].modelUV+"</td>" +
-    				"<td>"+res.pageRow[i].modeAUP+"</td>" +
-    				"<td></td>" +
-    			  "</tr>  "
+    				"<td>"+res.pageRow[i].classify+"</td>" +
+    				"<td>"+res.pageRow[i].PV+"</td>" +
+    				"<td>"+res.pageRow[i].VV+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].NV+"</td>" +
+    				"<td>"+res.pageRow[i].UV+"</td>" +
+    				"<td>"+res.pageRow[i].AR+"</td>" +
+    				"<td>"+res.pageRow[i].VI+"</td>" +
+    			  "</tr>";
     	}
     	$("#tablebody").html(html);
         var totalRow = res.pageTotal;
@@ -155,7 +154,6 @@ function gettable(curr,num){
 };
 
 function getline(num){
-	var num = num;
 	var age ="";
 	var title="";
 	var exlevel="";
@@ -177,7 +175,7 @@ function getline(num){
 	
 	$("input[name=tenure]").each(function() {  
         if ($(this).is(':checked')) {  
-        	title+=$(this).val()+","
+        	title+=$(this).val()+",";
         } 
 	});
 	if(title!=""){
@@ -291,16 +289,20 @@ function getline(num){
 	    	    ]
 	    	};
 	   
-	    for(var i =0;i<data.title.length;i++){
-	    	var name = data.title[i];
-	    	var num=new Array();
-	    	num =data.content[name];
-	    	option.series.push({
-	    		name:name,
-	    		type:'line',
-	    		data:num
-	    	})
+
+	    if(null!=data.title){
+		    for(var i =0;i<data.title.length;i++){
+		    	var name = data.title[i];
+		    	var num=new Array();
+		    	num =data.content[name];
+		    	option.series.push({
+		    		name:name,
+		    		type:'line',
+		    		data:num,
+		    	});
+		    }
 	    }
+	    
 	    myChart.setOption(option); 
 	}
 	

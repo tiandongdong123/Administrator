@@ -18,7 +18,8 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
 	private DeleteArticleMapper deleteArticle;
 
 	@Override
-	public PageList getArticleList(String startTime, String endTime,int pageNum, int pageSize) {
+	public PageList getArticleList(String startTime, String endTime, String model, String id,
+			int pageNum, int pageSize) {
 		if(StringUtils.isEmpty(startTime)) startTime = null;
 		if(StringUtils.isEmpty(endTime)){
 			 endTime = null;
@@ -26,8 +27,9 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
 			endTime=endTime+" 23:59:59";
 		}
 		int pageStart = (pageNum-1)*pageSize;//当前页的第一条
-		List<Object> list = deleteArticle.queryArticle(startTime,endTime,pageStart,pageSize);
-		int size = deleteArticle.queryArticleSize(startTime,endTime);
+		List<Object> list = deleteArticle.queryArticle(startTime, endTime, model, id, pageStart,
+				pageSize);
+		int size = deleteArticle.queryArticleSize(startTime, endTime, model, id);
 		PageList pl = new PageList();
 		pl.setPageRow(list);//查询结果列表
 		pl.setTotalRow(size);//总条数
@@ -42,8 +44,8 @@ public class DeleteArticleServiceImpl implements DeleteArticleService {
 	}
 
 	@Override
-	public Integer deleteArticleList(String startTime, String endTime) {
-		return deleteArticle.deleteArticleList(startTime, endTime);
+	public Integer deleteArticleList(String startTime, String endTime, String model, String id) {
+		return deleteArticle.deleteArticleList(startTime, endTime, model, id);
 	}
 
 	@Override

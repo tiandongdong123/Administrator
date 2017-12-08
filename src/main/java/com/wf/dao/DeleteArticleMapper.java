@@ -28,9 +28,12 @@ public interface DeleteArticleMapper {
 	 * 根据条件删除下撤的数据
 	 * @param startTime
 	 * @param endTime
+	 * @param model
+	 * @param id
 	 * @return
 	 */
-	Integer deleteArticleList(@Param("startTime") String startTime,@Param("endTime") String endTime);
+	Integer deleteArticleList(@Param("startTime") String startTime,
+			@Param("endTime") String endTime, @Param("model") String model, @Param("id") String id);
 	
 	/**
 	 * 根据id删除下撤数据
@@ -42,26 +45,28 @@ public interface DeleteArticleMapper {
 	
 	/**
 	 * 根据条件查询下撤的数据
-	 * 
 	 * @param startTime
 	 * @param endTime
+	 * @param model
+	 * @param id
 	 * @param pageNum
 	 * @param pageSize
 	 * @return
 	 */
 	List<Object> queryArticle(@Param("startTime") String startTime,
-			@Param("endTime") String endTime, @Param("pageNum") int pageNum,
-			@Param("pageSize") int pageSize);
+			@Param("endTime") String endTime, @Param("model") String model, @Param("id") String id,
+			@Param("pageNum") int pageNum, @Param("pageSize") int pageSize);
 	
 	/**
 	 * 根据条件查询下撤的数据的总数
 	 * @param startTime
 	 * @param endTime
-	 * @param pageNum
-	 * @param pageSize
+	 * @param model
+	 * @param id
 	 * @return
 	 */
-	int queryArticleSize(@Param("startTime") String startTime, @Param("endTime") String endTime);
+	int queryArticleSize(@Param("startTime") String startTime, @Param("endTime") String endTime,
+			@Param("model") String model, @Param("id") String id);
 	
 	/**
 	 * 查询solr模块参数表

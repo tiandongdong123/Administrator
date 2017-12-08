@@ -49,20 +49,14 @@ public class ModelAnalysisController {
 	
 	@RequestMapping("gettable")
 	@ResponseBody
-	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,String model,Integer type,String starttime,String endtime,String domain,Integer property, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("功能模块分析");
-		log.setOperation_content("");
-		logService.addLog(log);
+	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,String model,Integer type,String starttime,String endtime,String domain,Integer property, HttpServletRequest request){
 		
 		PageList pl = this.model.gettable(pagesize, pagenum, title, age, exlevel, datetype, model, starttime, endtime, type, domain,property);
+		
+		//记录日志
+		Log log=new Log("功能模块分析","查询","",request);
+		logService.addLog(log);
+		
 		return pl;
 	}
 }

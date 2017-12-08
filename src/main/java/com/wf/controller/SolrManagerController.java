@@ -89,10 +89,7 @@ public class SolrManagerController {
 	@RequestMapping("solrQuery")
 	public ModelAndView solrQuery(Map<String, Object> model) {
 		ModelAndView mav = new ModelAndView();
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-		mav.addObject("startTime", fm.format(cal.getTime()));
-		mav.addObject("endTime", fm.format(cal.getTime()));
+		mav.addObject("typeList", deleteArticle.getTypeList());
 		mav.setViewName("/page/solrmanager/solr_query");
 		return mav;
 	}
@@ -105,8 +102,10 @@ public class SolrManagerController {
 	 */
 	@RequestMapping("solrList")
 	@ResponseBody
-	public PageList solrList(String startTime, String endTime, int pageNum, int pageSize) {
-		PageList page= deleteArticle.getArticleList(startTime, endTime, pageNum, pageSize);
+	public PageList solrList(String startTime, String endTime, String model, String id,
+			int pageNum, int pageSize) {
+		PageList page = deleteArticle.getArticleList(startTime, endTime, model, id, pageNum,
+				pageSize);
 		return page;
 	}
 
@@ -134,12 +133,13 @@ public class SolrManagerController {
 	 */
 	@RequestMapping("deleteArticleList")
 	@ResponseBody
-	public String deleteArticleList(String startTime,String endTime) {
-		int msg = deleteArticle.deleteArticleList(startTime,endTime);
-		if(msg>0){
-			return "true";
+	public String deleteArticleList(String startTime,String endTime, String model, String id) {
+		if (StringUtils.isEmpty(startTime) && StringUtils.isEmpty(endTime)
+				&& StringUtils.isEmpty(model) && StringUtils.isEmpty(id)) {
+			return "false";
 		}
-		return "";
+		deleteArticle.deleteArticleList(startTime,endTime,model,id);
+		return "true";
 	}
 	
 	@RequestMapping("deleteSolr")
@@ -270,7 +270,11 @@ public class SolrManagerController {
 			break;
 		case CONFERENCE: // 会议
 			map.put("id", id);
-			map.put("idType", "id");
+			if ("article_id".equals(param)) {
+				map.put("idType", "article_id");
+			} else {
+				map.put("idType", "conf_id");
+			}
 			map.put("model", model);
 			break;
 		case GAZETTEER_NEW: // 新方志

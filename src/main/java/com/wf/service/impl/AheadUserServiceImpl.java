@@ -72,6 +72,7 @@ import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
+import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.WfksAccountidMapping;
@@ -89,6 +90,7 @@ import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
 import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
+import com.wf.dao.UserInstitutionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
@@ -151,6 +153,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Autowired
 	private StandardUnitMapper standardUnitMapper;
+	@Autowired
+	private UserInstitutionMapper userInstitutionMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -1822,5 +1826,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			su.setOrgName(su.getOrgName().replace(SALEAGTID+"_", ""));
 		}
 		return list;
+	}
+
+	@Override
+	public void addUserIns(CommonEntity com) {
+		// 添加统计分析
+		String tongji = com.getTongji();
+		userInstitutionMapper.deleteUserIns(com.getUserId());
+		if (tongji == null) {
+			tongji = "";
+		}
+		UserInstitution ins = new UserInstitution();
+		ins.setUserId(com.getUserId());
+		JSONObject obj=new JSONObject();
+		obj.put("database_statistics", tongji.contains("A")?1:0);
+		obj.put("resource_type_statistics", tongji.contains("B")?1:0);
+		ins.setStatisticalAnalysis(obj.toString());
+		userInstitutionMapper.addUserIns(ins);
+	}
+
+	@Override
+	public UserInstitution getUserInstitution(String userId) {
+		return userInstitutionMapper.getUserIns(userId);
 	}
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.xhtml.object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.exportExcel.ExportExcel;
+import com.redis.getClcFromRedis;
+import com.utils.CookieUtil;
 import com.utils.JsonUtil;
 import com.wf.bean.CommentInfo;
 import com.wf.bean.PageList;
+import com.wf.bean.Wfadmin;
+import com.wf.service.AdminService;
 import com.wf.service.PerioCommentService;
 
 @Controller
@@ -33,6 +39,9 @@ public class PerioCommentController {
 
 	@Autowired
 	private PerioCommentService pc;
+	
+	@Autowired
+	private AdminService adminS;
 	
 	@RequestMapping("periocomment")
 	public String PerioComment(){
@@ -43,25 +52,53 @@ public class PerioCommentController {
 	@RequestMapping("getcomment")
 	@ResponseBody
 	public PageList getComment(CommentInfo info,
-			@RequestParam(value="dataStateArr[]",required=false)String[]dataState,
-			@RequestParam(value="complaintStatusArr[]",required=false)String[]complaintStatus,
+			@RequestParam(value="dataStateArr[]",required=false)String[] dataState,
+			@RequestParam(value="complaintStatusArr[]",required=false)String[] complaintStatus,
 			String startTime,String endTime,
 			String sauditm,String eauditm,String slayoutm,
 			String elayoutm,Integer pagenum,Integer pagesize,HttpServletRequest request ,HttpServletResponse response) throws Exception{
 		pagenum = (pagenum-1)*pagesize;
 		response.setContentType("text/html;charset=utf-8");
-		String name=request.getParameter("perioName");
-		info.setPerioName(name);
 		
-	/*	if(StringUtils.isEmpty(endTime)){
-			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-			Calendar  calendar=new  GregorianCalendar(); 
-			calendar.setTime(format.parse(endTime));
-			calendar.add(calendar.DATE,1);
-			endTime=format.format(calendar.getTime());
-		}*/
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+		if(StringUtils.isNotEmpty(startTime)&&StringUtils.isEmpty(endTime)){
+			startTime=startTime+" 00:00";
+		}else if(StringUtils.isNotEmpty(endTime)&&StringUtils.isEmpty(startTime)){
+			endTime=endTime+" 23:59";
+		}else if(StringUtils.isNotEmpty(endTime)&&StringUtils.isNotEmpty(startTime)){
+			Date dateTime1 = dateFormat.parse(startTime);
+			Date dateTime2 = dateFormat.parse(endTime);
+			int compare = dateTime1.compareTo(dateTime2); 
+			if(compare==0){
+				startTime=startTime+" 00:00";
+				endTime=endTime+" 23:59";
+			}else if(compare>0){
+				startTime=startTime+" 00:00";
+				endTime=endTime+" 23:59";
+			}else{
+				endTime=endTime+" 00:00";
+				startTime=startTime+" 23:59";
+			}
+		}
 		
 		PageList pl  = this.pc.getComment(info,dataState,complaintStatus,startTime, endTime, sauditm, eauditm, slayoutm, elayoutm, pagenum, pagesize);
+		getClcFromRedis clc=new getClcFromRedis();
+		List<Object> json=pl.getPageRow();
+		for(int i=0;i<json.size();i++){
+			CommentInfo com=(CommentInfo)json.get(i);
+			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
+			if(StringUtils.isNotEmpty(com.getAuditor())){
+				com.setAuditor(adminS.getAdminById(com.getAuditor()).getUser_realname());
+			}
+			json.remove(i);
+			json.add(i, com);
+		}
+		
+		pl.setPageRow(json);
+		
 		return pl;
 	}
 	
@@ -72,26 +109,26 @@ public class PerioCommentController {
 	
 		Boolean i=this.pc.changetype(info);
 		String key="";
-		if(i)
-		{
+		if(i){
 			key="ok";
-		}
-		else 
-		{
+		}else{
 			key="no";
 		}
 		return key;
 	}
 	
 	@RequestMapping("/findNote")
-	public String findNote(Model model,CommentInfo info){
-		info.setHandlingStatus(2);
-		boolean A=this.pc.handlingStatus(info);
-		if(A){
-			CommentInfo notes =this.pc.findNotes(info);
-			model.addAttribute("info", notes);
-		}
+	public String findNote(Model model,HttpServletRequest request){
+		//info.setHandlingStatus(2);
+		String id = request.getParameter("id");
 		
+			getClcFromRedis clc=new getClcFromRedis();
+			CommentInfo com=this.pc.getcommentByid(id);
+			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
+			model.addAttribute("info", com);
 		return "/page/contentmanage/periocom";
 	}
 	
@@ -104,9 +141,23 @@ public class PerioCommentController {
 	
 	@RequestMapping("/updateNotes")
 	@ResponseBody
-	public void updateNotes(Model model,CommentInfo info,HttpServletResponse response) throws Exception{
-		boolean b=this.pc.updateNotes(info);
-		JsonUtil.toJsonHtml(response, b);
+	public Object updateNotes(HttpServletRequest request) throws Exception{
+		String id = request.getParameter("id");
+		String dataState = request.getParameter("dataState");
+		String appealReason = request.getParameter("appealReason");
+		String isupdata=request.getParameter("isupdata");
+		String rand_id=request.getParameter("rand_id");
+		
+		Wfadmin admin =CookieUtil.getWfadmin(request);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		String user_id=admin.getId();
+		String date=sdf.format(new Date());
+		
+		boolean b=this.pc.updateNotes(rand_id,dataState,appealReason,user_id,date);
+		if(isupdata.equals("1")){
+			this.pc.updateInfo(id, dataState);
+		}
+		return b;
 	}
 	
 	

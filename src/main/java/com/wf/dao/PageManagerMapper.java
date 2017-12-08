@@ -22,7 +22,7 @@ public interface PageManagerMapper {
 	int doAddPageManager(PageManager pm);
 	
 	
-	List<Object> getKeyword(String pageName);
+	List<Object> getKeyword(@Param("pageName")String pageName);
 	
 	String getLink_Address(String pagename);
 	

@@ -41,7 +41,7 @@ public class ProuctTypeController {
 	@RequestMapping("getproduct")
 	@ResponseBody
 	public PageList getProduct(@RequestParam("pagenum") Integer pagenum,
-			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request) throws Exception{
+			@RequestParam("pagesize") Integer pagesize,HttpServletRequest request){
 		PageList  pl = this.pts.getProduct(pagenum, pagesize);
 		for(int i=0;i<pl.getPageRow().size();i++){
 			ProductType Product=(ProductType)pl.getPageRow().get(i);
@@ -55,14 +55,7 @@ public class ProuctTypeController {
 		}
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("查询");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("产品类型设置");
-		log.setOperation_content("");
+		Log log=new Log("产品类型设置","查询","",request);
 		logService.addLog(log);
 
 		return pl;
@@ -76,18 +69,11 @@ public class ProuctTypeController {
 	 */
 	@RequestMapping("deleteproduct")
 	@ResponseBody
-	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request) throws Exception{
+	public boolean deleteIds(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		boolean rt = this.pts.deleteProduct(ids);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("删除");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("产品类型设置");
-		log.setOperation_content("删除的产品类型ID"+(ids==null?"":Arrays.asList(ids)));
+		Log log=new Log("产品类型设置","删除","删除的产品类型ID"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -113,18 +99,11 @@ public class ProuctTypeController {
 	 */
 	@RequestMapping("doaddproduct")
 	@ResponseBody
-	public boolean doAddProduct(@ModelAttribute ProductType product,HttpServletRequest request) throws Exception{
+	public boolean doAddProduct(@ModelAttribute ProductType product,HttpServletRequest request){
 		boolean rt = this.pts.doAddProduct(product);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("增加");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("产品类型设置");
-		log.setOperation_content("增加的产品类型信息"+product.toString());
+		Log log=new Log("产品类型设置","增加",product.toString(),request);
 		logService.addLog(log);
 		
 		return rt;
@@ -132,18 +111,11 @@ public class ProuctTypeController {
 	
 	@RequestMapping("doupdateproduct")
 	@ResponseBody
-	public boolean doUpdateProduct(@ModelAttribute ProductType product,HttpServletRequest request) throws Exception{
+	public boolean doUpdateProduct(@ModelAttribute ProductType product,HttpServletRequest request){
 		boolean rt = this.pts.doUpdateProduct(product);
 		
 		//记录日志
-		Log log=new Log();
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		log.setBehavior("修改");
-		log.setUrl(request.getRequestURL().toString());
-		log.setTime(DateTools.getSysTime());
-		log.setIp(InetAddress.getLocalHost().getHostAddress().toString());
-		log.setModule("产品类型设置");
-		log.setOperation_content("修改后的产品类型信息"+product.toString());
+		Log log=new Log("产品类型设置","修改",product.toString(),request);
 		logService.addLog(log);
 		
 		return rt ;
