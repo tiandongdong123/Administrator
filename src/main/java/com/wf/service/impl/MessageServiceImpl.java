@@ -1,11 +1,11 @@
 package com.wf.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import net.sf.json.JSONObject;
 
@@ -226,7 +226,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 	}
 	
-	private void deployInformation(String core,String type,Message message) {
+	private void deployInformation(String core,String type,Message message){
 		Map<String,Object> newMap = new HashMap<>();
 		List<Map<String,Object>> list = new ArrayList<>();
 		String abstracts = message.getAbstracts();
@@ -243,6 +243,7 @@ public class MessageServiceImpl implements MessageService {
 		String organName = message.getOrganName();
 		String stick = message.getStick();
 		String title = message.getTitle();
+		String isTop=message.getIsTop();
 		
 		newMap.put("id", id);
 		newMap.put("type", type);
@@ -261,53 +262,40 @@ public class MessageServiceImpl implements MessageService {
 		newMap.put("stringIS_linkAddress", linkAddress);
 		newMap.put("stringIS_organName", organName);
 		newMap.put("stringIS_stick", stick);
-		
+		newMap.put("stringIS_isTop", isTop);
+		newMap.put("stringIS_sort", this.getLongSort(isTop, stick, createTime));
 		list.add(newMap);
 		RedisUtil redisUtil = new RedisUtil();
 		String collection = redisUtil.get(core, 3);
 		SolrService.getInstance(hosts+"/"+collection);
 		SolrService.createIndexFound(list);
 	}
-	
-	public static String toNoHtml(String inputString) {      
-        String htmlStr = inputString.replace("&nbsp;", "").replace("&ldquo;", "").replace("&rdquo;", "");    
-        htmlStr = StringUtils.deleteWhitespace(htmlStr);
-        String textStr ="";      
-        java.util.regex.Pattern p_script;      
-        java.util.regex.Matcher m_script;      
-        java.util.regex.Pattern p_style;      
-        java.util.regex.Matcher m_style;      
-        java.util.regex.Pattern p_html;      
-        java.util.regex.Matcher m_html;      
-        java.util.regex.Pattern p_html1;      
-        java.util.regex.Matcher m_html1;      
-       try {
-            String regEx_script = "<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>"; //定义script的正则表达式{或<script[^>]*?>[\\s\\S]*?<\\/script> }      
-            String regEx_style = "<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>"; //定义style的正则表达式{或<style[^>]*?>[\\s\\S]*?<\\/style> }      
-            String regEx_html = "<[^>]+>"; //定义HTML标签的正则表达式      
-            String regEx_html1 = "<[^>]+";      
-            p_script = Pattern.compile(regEx_script,Pattern.CASE_INSENSITIVE);      
-            m_script = p_script.matcher(htmlStr);      
-            htmlStr = m_script.replaceAll(""); //过滤script标签      
-  
-            p_style = Pattern.compile(regEx_style,Pattern.CASE_INSENSITIVE);      
-            m_style = p_style.matcher(htmlStr);      
-            htmlStr = m_style.replaceAll(""); //过滤style标签      
-            
-            p_html = Pattern.compile(regEx_html,Pattern.CASE_INSENSITIVE);      
-            m_html = p_html.matcher(htmlStr);      
-            htmlStr = m_html.replaceAll(""); //过滤html标签      
-                
-            p_html1 = Pattern.compile(regEx_html1,Pattern.CASE_INSENSITIVE);      
-            m_html1 = p_html1.matcher(htmlStr);      
-            htmlStr = m_html1.replaceAll(""); //过滤html标签      
-  
-            textStr = htmlStr;      
-        }catch(Exception e) {      
-              System.err.println("Html2Text: " + e.getMessage());      
-        }      
-        return textStr;//返回文本字符串      
-     }
+	private long getLongSort(String isTop,String stick,String createTime){
+		long sort=0;
+		try{
+			if (isTop != null && "1".equals(isTop)) {
+				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				sort = sdf1.parse(stick.substring(0,20)).getTime() * 2;
+				if(stick.length()>20){
+					stick=stick.substring(0,20);
+				}
+				sort = sdf1.parse(stick).getTime();
+			} else {
+				String pattern = "yyyy-MM-dd";
+				if (createTime.length() > 10) {
+					pattern = "yyyy-MM-dd HH:mm:ss";
+				}
+				SimpleDateFormat sdf1 = new SimpleDateFormat(pattern);
+				if(createTime.length()>20){
+					createTime=createTime.substring(0,20);
+				}
+				sort = sdf1.parse(createTime).getTime();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sort;
+	}
 	
 	@Override
 	public List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime) {
@@ -332,7 +320,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 	
 	@Override
-	public void updateBatch(List<Object> list) {
+	public void updateBatch(List<Object> list){
 		setRedis("专题聚焦");
 		setRedis("科技动态");
 		setRedis("基金会议");
@@ -357,6 +345,7 @@ public class MessageServiceImpl implements MessageService {
 			String organName = message.getOrganName();
 			String stick = message.getStick();
 			String title = message.getTitle();
+			String isTop=message.getIsTop();
 			String type="";
 			if("专题聚焦".equals(colums)){
 				type="special";
@@ -384,6 +373,9 @@ public class MessageServiceImpl implements MessageService {
 			newMap.put("stringIS_linkAddress", linkAddress);
 			newMap.put("stringIS_organName", organName);
 			newMap.put("stringIS_stick", stick);
+			newMap.put("stringIS_stick", stick);
+			newMap.put("stringIS_isTop", isTop);
+			newMap.put("stirngIS_sort", this.getLongSort(isTop, stick, createTime));
 			indexList.add(newMap);
 			if(indexList.size()==1000){
 				SolrService.createIndexFound(indexList);

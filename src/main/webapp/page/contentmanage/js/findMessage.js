@@ -271,9 +271,9 @@ function publish(that,obj,colums,issueState){
 	    		},
 	    		dataType : "json",
 	    		success : function(data){
+	    			layer.closeAll();
 	    			if(data){
-	    				var num=$(".laypage_curr").text();
-	    				findOne(num);
+	    				findOne();
 	    			}
 	    		},
 	    		error : function(data){
