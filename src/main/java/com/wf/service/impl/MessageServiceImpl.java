@@ -375,7 +375,7 @@ public class MessageServiceImpl implements MessageService {
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_isTop", isTop);
-			newMap.put("stirngIS_sort", this.getLongSort(isTop, stick, createTime));
+			newMap.put("stringIS_sort", this.getLongSort(isTop, stick, createTime));
 			indexList.add(newMap);
 			if(indexList.size()==1000){
 				SolrService.createIndexFound(indexList);
