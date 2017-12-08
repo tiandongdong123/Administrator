@@ -314,7 +314,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public List<Object> getAllMessage(Map<String, Object> map) {
-		return dao.selectMessageInforAll(new HashMap<String, Object>());
+		return dao.selectMessageInforAll(map);
 	}
 	
 	@Override
