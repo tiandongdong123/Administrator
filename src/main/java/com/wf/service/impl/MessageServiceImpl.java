@@ -249,18 +249,23 @@ public class MessageServiceImpl implements MessageService {
 		newMap.put("type", type);
 		newMap.put("auto_stringITS_abstracts", abstracts);
 		//处理特殊字符
-		//content =toNoHtml((String)content);
 		newMap.put("auto_stringITS_content", content);
 		newMap.put("auto_stringITS_title", title);
 		newMap.put("stringIS_author", author);
 		newMap.put("stringIS_branch", branch);
 		newMap.put("stringIS_colums", colums);
+		if(createTime.endsWith(".0")){
+			createTime=createTime.substring(0,createTime.length()-2);
+		}
 		newMap.put("stringIS_createTime", createTime);
 		newMap.put("stringIS_human", human);
 		newMap.put("stringIS_imageUrl", imageUrl);
 		newMap.put("intIS_issueState", issueState);
 		newMap.put("stringIS_linkAddress", linkAddress);
 		newMap.put("stringIS_organName", organName);
+		if(stick.endsWith(".0")){
+			stick=stick.substring(0,stick.length()-2);
+		}
 		newMap.put("stringIS_stick", stick);
 		newMap.put("stringIS_isTop", isTop);
 		newMap.put("longIS_sort", this.getLongSort(isTop, stick, createTime));
@@ -275,10 +280,6 @@ public class MessageServiceImpl implements MessageService {
 		try{
 			if (isTop != null && "1".equals(isTop)) {
 				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				sort = sdf1.parse(stick.substring(0,20)).getTime() * 10;
-				if(stick.length()>20){
-					stick=stick.substring(0,20);
-				}
 				sort = sdf1.parse(stick).getTime();
 			} else {
 				String pattern = "yyyy-MM-dd";
@@ -286,9 +287,6 @@ public class MessageServiceImpl implements MessageService {
 					pattern = "yyyy-MM-dd HH:mm:ss";
 				}
 				SimpleDateFormat sdf1 = new SimpleDateFormat(pattern);
-				if(createTime.length()>20){
-					createTime=createTime.substring(0,20);
-				}
 				sort = sdf1.parse(createTime).getTime();
 			}
 		}catch(Exception e){
@@ -366,12 +364,18 @@ public class MessageServiceImpl implements MessageService {
 			newMap.put("stringIS_author", author);
 			newMap.put("stringIS_branch", branch);
 			newMap.put("stringIS_colums", colums);
+			if(createTime.endsWith(".0")){
+				createTime=createTime.substring(0,createTime.length()-2);
+			}
 			newMap.put("stringIS_createTime", createTime);
 			newMap.put("stringIS_human", human);
 			newMap.put("stringIS_imageUrl", imageUrl);
 			newMap.put("intIS_issueState", issueState);
 			newMap.put("stringIS_linkAddress", linkAddress);
 			newMap.put("stringIS_organName", organName);
+			if(stick.endsWith(".0")){
+				stick=stick.substring(0,stick.length()-2);
+			}
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_stick", stick);
 			newMap.put("stringIS_isTop", isTop);
