@@ -828,7 +828,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}else{//网络包库调用接口
 					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
 					if(msg==1){
-						log.info(com.getUserId()+"包库注册/更新成功");
+						log.info(com.getUserId()+"包库接口调用成功");
 					}else{
 						log.info(com.getUserId()+"包库更新失败");
 					}

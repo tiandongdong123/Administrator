@@ -549,7 +549,7 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("standard")>-1){
 		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="form-group input_block">';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
-		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isZJ_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
+		// text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isZJ_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
 		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
