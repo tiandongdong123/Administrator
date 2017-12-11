@@ -101,6 +101,57 @@
               </table>
               </div>
                <div id="page"></div>
+                <style>
+              	#pages{
+              		text-align: center;	
+              		padding: 15px 0px;
+              		font-size: 14px;
+              	}
+              	#pages span{
+              		padding: 0px 5px;
+              		 vertical-align: middle;
+              	}
+              	#pages span u{
+              		text-decoration: none;
+				    padding: 0px 5px;
+				    color: #00CCFF;
+              	}
+              	#pages select{
+              		height:25px;
+              	}
+              	#pages input[type="text"]{
+              		width: 40px;
+					height: 25px;
+					text-align: center;
+              	}
+              	#pages a img{
+              		vertical-align: top;
+              	}
+              	#pages button{
+              	    width: 50px;
+				    height: 25px;
+				    border: 1px solid #ccc;
+				    background-color: #fff;
+              	}
+              </style>
+              <div id="pages">
+              	<span>每页显示:</span>
+              	<select>
+              		<option>10</option>
+              		<option>20</option>
+              		<option>30</option>
+              	</select>
+              	<span>条数据</span>
+              	<a href="#" class="first_page"><img src="../page/contentmanage/images/first_page.png"/></a>
+              	<a href="#" class="up_page"><img src="../page/contentmanage/images/up_page.png"/></a>
+              	<span>当前在第</span>
+              	<input type="text"/>
+              	<span>页</span>
+              	<a href="#" class="down_page"><img src="../page/contentmanage/images/down_page.png"/></a>
+              	<a href="#" class="last_page"><img src="../page/contentmanage/images/last_page.png"/></a>
+              	<span>共<u>6</u>条数据</span>
+              	<button>确定</button>
+              </div>
             </div>
           </div>
       	 </div>
