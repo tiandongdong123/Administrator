@@ -136,21 +136,25 @@
               </style>
               <div id="pages">
               	<span>每页显示:</span>
-              	<select>
-              		<option>10</option>
-              		<option>20</option>
-              		<option>30</option>
+              	<select id="pagesize" onchange="getAllpageNum(this);">
+              		<option value="10">10</option>
+              		<option value="20">20</option>
+              		<option value="30">30</option>
+              		<option value="50">50</option>
               	</select>
               	<span>条数据</span>
-              	<a href="#" class="first_page"><img src="../page/contentmanage/images/first_page.png"/></a>
-              	<a href="#" class="up_page"><img src="../page/contentmanage/images/up_page.png"/></a>
+              	<a href="javascript:void(0);" class="first_page" onclick="firstPage();"><img src="../page/contentmanage/images/first_page.png"/></a>
+              	<a href="javascript:void(0);" class="up_page" onclick="upPage();"><img src="../page/contentmanage/images/up_page.png"/></a>
               	<span>当前在第</span>
-              	<input type="text"/>
+              	<select id="pagenum">
+              		<option value="1">1</option>
+              	</select>
               	<span>页</span>
-              	<a href="#" class="down_page"><img src="../page/contentmanage/images/down_page.png"/></a>
-              	<a href="#" class="last_page"><img src="../page/contentmanage/images/last_page.png"/></a>
-              	<span>共<u>6</u>条数据</span>
-              	<button>确定</button>
+              	<a href="javascript:void(0);" class="down_page" onclick="downPage();"><img src="../page/contentmanage/images/down_page.png"/></a>
+              	<a href="javascript:void(0);" class="last_page" onclick="lastPage();"><img src="../page/contentmanage/images/last_page.png"/></a>
+              	<span>共<u id="totalRow"></u>条数据</span>
+              	<button onclick="paging();">确定</button>
+              	<input id="pageTotal" type="hidden">
               </div>
             </div>
           </div>

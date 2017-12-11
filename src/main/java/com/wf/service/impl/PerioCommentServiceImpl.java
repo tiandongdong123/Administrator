@@ -32,7 +32,8 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		pl.setPageNum(pagenum+1);
 		pl.setPageSize(pagesize);
 		pl.setPageRow(li);
-		pl.setPageTotal(count);
+		pl.setTotalRow(count);
+		pl.setPageTotal(count%pagesize==0?count/pagesize:count/pagesize+1);
 		return pl;
 	}
 
