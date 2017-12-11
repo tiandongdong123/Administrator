@@ -279,7 +279,7 @@ function findNote(data){
 function exportPerio(){
 	
 	window.location.href="../periocomment/exportPerio.do?" +
-			"userId="+username+
+			"authorName="+username+
 			"&perioName="+perioname+
 			"&startTime="+startTime+
 			"&endTime="+endTime+

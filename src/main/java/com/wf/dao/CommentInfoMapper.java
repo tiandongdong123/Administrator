@@ -17,6 +17,10 @@ public interface CommentInfoMapper {
 			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,
 			@Param("elayoutm")String elayoutm);
 	
+	List<Object> getComment_exprot(@Param("info")CommentInfo info,@Param("dataState")String[]dataState,@Param("complaintStatus")String[]complaintStatus,@Param("startTime")String startTime,@Param("endTime")String endTime,
+			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,
+			@Param("elayoutm")String elayoutm);
+	
 	
 	List<Object> getCommentAll(@Param("info")CommentInfo info,@Param("dataState")String[]dataState,@Param("complaintStatus")String[]complaintStatus,@Param("startTime")String startTime,@Param("endTime")String endTime,
 			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,

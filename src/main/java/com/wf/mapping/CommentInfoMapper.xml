@@ -120,6 +120,51 @@
 	  order by update_date desc
   </select>
   
+  
+  <select id="getComment_exprot" resultMap="BaseResultMap">
+   select * from comment_admin where 1=1
+   <if test="info.user_id!=null and info.user_id !=''">
+  	and user_id=#{info.user_id}
+  </if>
+  <if test="info.perio_name!=null and info.perio_name !=''">
+  	and perio_name like CONCAT('%',#{info.perio_name},'%')
+  </if>
+    <if test="startTime!=null and startTime !=''">
+  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[>=]]> #{startTime}
+  </if>
+  <if test="endTime!=null and endTime !=''">
+  	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[<=]]> #{endTime}
+  </if>
+    <if test="info.submit_period!=null and info.submit_period!=''">
+  	and submit_period=#{info.submit_period}
+  </if>
+   <if test="sauditm!=null and sauditm !='' ">
+  	and audit_money &gt;= ${sauditm} 
+  </if>
+  <if test="eauditm!=null and eauditm !=''">
+  and audit_money  &lt;= ${eauditm}
+  </if>
+    <if test="slayoutm!=null and slayoutm !=''">
+  	and layout_money &gt;= ${slayoutm} 
+  </if>
+  <if test=" elayoutm!=null and elayoutm !=''">
+  and layout_money &lt;= ${elayoutm}
+  </if>
+  <if test="dataState!=null">
+    and data_state in
+  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+  </foreach>
+  </if>
+  <if test="complaintStatus!=null">
+    and executive_operation in
+     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+      	#{item}
+  	 </foreach>
+  </if> 
+  	order by update_date desc
+  </select>
+  
  <update id="changetype" >
  	update  comment_admin set data_state=#{info.dataState},handling_status=#{info.handlingStatus}   where user_id=#{info.userId} and rand_id=#{info.id}
  </update>

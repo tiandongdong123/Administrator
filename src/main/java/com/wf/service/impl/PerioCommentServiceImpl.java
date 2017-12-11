@@ -79,7 +79,7 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		List<Object> list=new ArrayList<Object>();
 		
 		try {
-			list=ci.getCommentAll(info, dataState, complaintStatus, startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
+			list=ci.getComment_exprot(info, dataState, complaintStatus, startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
