@@ -27,12 +27,12 @@
       		<tr>
       			<td>审稿周期</td>
       			<td>
-      			<?if(info.submit_period==12){?>
+      			<?if(info.submit_period=='12'){?>
       			1年内
-      			<?}else if(info.submit_period==24){?>
+      			<?}else if(info.submit_period=='24'){?>
       			2年内
       			<?}else if(info.submit_period==null){?>
-      			<?}else if(info.submit_period==25){?>
+      			<?}else if(info.submit_period=='25'){?>
       			大于2年
       			<?}else{?>
       			${info.submit_period}个月内
@@ -78,7 +78,13 @@
       		<tr>
       			<td>执行操作</td>
       			<td>
-      			${info.executive_operation}			
+      			<?if(info.executive_operation=='1'){?>
+      			新增
+      			<?}else if(info.executive_operation=='2'){?>
+      			修改
+      			<?}else if(info.executive_operation=='3'){?>
+      			删除
+      			<?}?>		
 				</td>
       		</tr>
       		<tr>
@@ -91,16 +97,20 @@
       			<td>机器审核意见</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${info.preliminary_opinions}">  
       			</td>
       		</tr>
-      		<tr>
-      			<td>*人工处理意见</td><td><input style="width: 100%;height:40px;" id="appealReason" value="${info.final_opinion}" type="text" >     	
+      		<tr style="height:200px;">
+      			<td>*人工处理意见</td>
+      			<td>
+      			<textarea rows="10" style="width: 100%;height:200px;" cols="" id="appealReason" >${info.final_opinion}</textarea>
       			</td>
       		</tr>
       	</table>
       	<br/>
+      	<input id="isget" type="hidden" value="${info.isget}">
+      	<input id="id" type="hidden" value="${info.id}">
       	<?if(info.data_state=='0'){?>
-      	<button type="submit" class="btn btn-primary" onclick="revocation(${info.id});">撤销禁用</button>
+      	<button type="submit" class="btn btn-primary" onclick="revocation(${info.rand_id});">撤销禁用</button>
       	<?}else{?>
-      	<button type="submit" class="btn btn-primary" onclick="maintain(${info.id});">禁用</button>
+      	<button type="submit" class="btn btn-primary" onclick="maintain(${info.rand_id});">禁用</button>
       	<?}?>
       	<button type="submit" class="btn btn-primary" onclick="coloseLayer()" >取消</button>
       </div>

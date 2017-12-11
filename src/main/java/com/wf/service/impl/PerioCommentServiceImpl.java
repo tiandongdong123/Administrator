@@ -99,4 +99,10 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		return ci.getcommentByid(id);
 	}
 
+	@Override
+	public Integer updateInfo(String perioid, String dataState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

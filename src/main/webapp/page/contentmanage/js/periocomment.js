@@ -242,10 +242,10 @@ function commentpage(curr){
 	                "<td>"+(rows.auditor==null?"":rows.auditor)+"</td>"+
 	                "<td>"+(rows.audit_time==null?"":rows.audit_time)+"</td>";
 					if(rows.auditor==null){
-						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.id+");'>详情</a></td>"+
+						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.rand_id+");'>详情</a></td>"+
 			            "</tr>";
 					}else{
-						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.id+");'>已处理</a></td>"+
+						html+="<td><a href='javascript:void(0);' onclick='findNote("+rows.rand_id+");'>已处理</a></td>"+
 			            "</tr>";
 					}
 					

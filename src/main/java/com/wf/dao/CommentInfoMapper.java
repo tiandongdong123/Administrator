@@ -30,6 +30,8 @@ public interface CommentInfoMapper {
 	
 	CommentInfo getcommentByid(@Param("id") String id);
 
+	Integer updateInfo(@Param("id")String peroid,@Param("dataState")String dataState);
+	
 	Boolean updateNotes(@Param("id")String id ,@Param("dataState")String dataState,@Param("appealReason")String appealReason,@Param("user_id")String user_id,@Param("date")String date);
 	
 	Boolean handlingStatus(@Param("info")CommentInfo info);

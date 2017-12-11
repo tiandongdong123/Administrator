@@ -25,6 +25,8 @@ public interface PerioCommentService {
 	Boolean handlingStatus(CommentInfo info);
 	
 	Integer getGoodForCommont(String commontid);
+	
+	Integer updateInfo(String perioid,String dataState);
 
 	List<Object> exportPerio(CommentInfo info, String[] dataState,
 			String[] complaintStatus, String startTime, String endTime,

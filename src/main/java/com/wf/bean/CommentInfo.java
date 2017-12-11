@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class CommentInfo {
 	
+	private String	rand_id;
 	private String	id;
 	private String	perio_id;
 	private String	perio_name;
@@ -23,9 +24,23 @@ public class CommentInfo {
 	private String	executive_operation;
 	private String	auditor;
 	private String	audit_time;
+	private String  isget;
 	private String  goods;
 	
 	
+	
+	public String getRand_id() {
+		return rand_id;
+	}
+	public void setRand_id(String rand_id) {
+		this.rand_id = rand_id;
+	}
+	public String getIsget() {
+		return isget;
+	}
+	public void setIsget(String isget) {
+		this.isget = isget;
+	}
 	public String getGoods() {
 		return goods;
 	}

@@ -123,7 +123,9 @@ public class PerioCommentController {
 			getClcFromRedis clc=new getClcFromRedis();
 			CommentInfo com=this.pc.getcommentByid(id);
 			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
-			com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
 			model.addAttribute("info", com);
 		return "/page/contentmanage/periocom";
 	}
@@ -139,6 +141,8 @@ public class PerioCommentController {
 	@ResponseBody
 	public Object updateNotes(HttpServletRequest request) throws Exception{
 		String id = request.getParameter("id");
+		String isget=request.getParameter("isget");
+		String perioid=request.getParameter("perioid");
 		String dataState = request.getParameter("dataState");
 		String appealReason = request.getParameter("appealReason");
 		
