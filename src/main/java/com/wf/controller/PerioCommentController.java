@@ -148,7 +148,7 @@ public class PerioCommentController {
 		String appealReason = request.getParameter("appealReason");
 		
 		Wfadmin admin =CookieUtil.getWfadmin(request);
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String user_id=admin.getId();
 		String date=sdf.format(new Date());
 		
