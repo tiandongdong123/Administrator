@@ -153,6 +153,9 @@ public class PerioCommentController {
 		String date=sdf.format(new Date());
 		
 		boolean b=this.pc.updateNotes(id,dataState,appealReason,user_id,date);
+		if(StringUtils.isEmpty(isget)){
+			this.pc.updateInfo(perioid, dataState);
+		}
 		return b;
 	}
 	

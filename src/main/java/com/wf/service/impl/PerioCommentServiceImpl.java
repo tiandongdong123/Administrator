@@ -103,7 +103,7 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 	@Override
 	public Integer updateInfo(String perioid, String dataState) {
 		// TODO Auto-generated method stub
-		return null;
+		return ci.updateInfo(perioid, dataState);
 	}
 
 }
