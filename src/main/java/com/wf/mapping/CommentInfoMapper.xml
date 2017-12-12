@@ -60,19 +60,29 @@
   <if test=" elayoutm!=null and elayoutm !=''">
   and layout_money &lt;= ${elayoutm}
   </if>
-  <if test="dataState!=null">
-    and data_state in
-  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-  </foreach>
-  </if>
-  <if test="complaintStatus!=null">
-    and executive_operation in
-     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
-      	#{item}
-  	 </foreach>
-  </if> 
-  order by update_date desc
+   <choose>
+        <when test="dataState!=null and dataState!=''">
+               and data_state in
+			  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+			      #{item}
+			  </foreach>
+        </when>
+        <otherwise>
+            and data_state = 3
+        </otherwise>
+    </choose>
+    <choose>
+        <when test="complaintStatus!=null and complaintStatus!=''">
+             and executive_operation in
+		     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+		      	#{item}
+		  	 </foreach>
+        </when>
+        <otherwise>
+            and executive_operation = 4
+        </otherwise>
+    </choose>
+   order by update_date desc
    limit #{pagenum},#{pagesize}
   </select>
   
@@ -105,18 +115,28 @@
 	  <if test=" elayoutm!=null and elayoutm !=''">
 	  and layout_money &lt;= ${elayoutm}
 	  </if>
-	  <if test="dataState!=null">
-	    and data_state in
-	  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
-	      #{item}
-	  </foreach>
-	  </if>
-	  <if test="complaintStatus!=null">
-	    and executive_operation in
-	     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
-	      	#{item}
-	  	 </foreach>
-	  </if> 
+	   <choose>
+        <when test="dataState!=null and dataState!=''">
+               and data_state in
+			  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+			      #{item}
+			  </foreach>
+        </when>
+        <otherwise>
+            and data_state = 3
+        </otherwise>
+    </choose>
+    <choose>
+        <when test="complaintStatus!=null and complaintStatus!=''">
+             and executive_operation in
+		     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+		      	#{item}
+		  	 </foreach>
+        </when>
+        <otherwise>
+            and executive_operation = 4
+        </otherwise>
+    </choose>
 	  order by update_date desc
   </select>
   
@@ -150,18 +170,28 @@
   <if test=" elayoutm!=null and elayoutm !=''">
   and layout_money &lt;= ${elayoutm}
   </if>
-  <if test="dataState!=null">
-    and data_state in
-  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-  </foreach>
-  </if>
-  <if test="complaintStatus!=null">
-    and executive_operation in
-     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
-      	#{item}
-  	 </foreach>
-  </if> 
+   <choose>
+        <when test="dataState!=null and dataState!=''">
+               and data_state in
+			  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+			      #{item}
+			  </foreach>
+        </when>
+        <otherwise>
+            and data_state = 3
+        </otherwise>
+    </choose>
+    <choose>
+        <when test="complaintStatus!=null and complaintStatus!=''">
+             and executive_operation in
+		     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+		      	#{item}
+		  	 </foreach>
+        </when>
+        <otherwise>
+            and executive_operation = 4
+        </otherwise>
+    </choose>
   	order by update_date desc
   </select>
   
@@ -218,21 +248,28 @@
   <if test=" elayoutm!=null and elayoutm !=''">
   and layout_money &lt;= ${elayoutm}
   </if>
-  <if test="dataState!=null">
-    and data_state in
-  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-  </foreach>
-  </if>
-   <if test="dataState==null">
-    and data_state =100
-  </if>
-  <if test="complaintStatus!=null">
-    and complaint_status in
-     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
-      	#{item}
-  	 </foreach>
-  </if> 
+  <choose>
+        <when test="dataState!=null and dataState!=''">
+               and data_state in
+			  <foreach collection="dataState" index="index" item="item" open="(" separator="," close=")">
+			      #{item}
+			  </foreach>
+        </when>
+        <otherwise>
+            and data_state = 3
+        </otherwise>
+    </choose>
+    <choose>
+        <when test="complaintStatus!=null and complaintStatus!=''">
+             and executive_operation in
+		     <foreach collection="complaintStatus" index="index" item="item" open="(" separator="," close=")">
+		      	#{item}
+		  	 </foreach>
+        </when>
+        <otherwise>
+            and executive_operation = 4
+        </otherwise>
+    </choose>
  </select>
  
  <select id="getGoodForCommont" resultType="INTEGER" >

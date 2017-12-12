@@ -195,7 +195,7 @@ function paging(){
    $.post('../periocomment/getcomment.do', {
        pagenum: pagenum,//向服务端传的参数
        pagesize :pagesize,
-       authorName:username,
+       user_id:username,
        perio_name : perioname,
        startTime :startTime,
        endTime:endTime,
