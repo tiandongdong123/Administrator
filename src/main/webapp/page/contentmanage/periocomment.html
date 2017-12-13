@@ -59,15 +59,22 @@
               
               <div class="form-group input_block">
               <label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
-				<input type="checkbox" name="dataState" value="1" checked="checked">正常
-				<input type="checkbox" name="dataState" value="0" checked="checked">禁用
+              <select id="dataState" >
+              <option value="all" >全部</option>
+              <option value="1"  name="select_data" >正常</option>
+              <option value="0" name="select_data" >禁用</option>
+              </select>
+				<!-- <input type="checkbox" name="dataState" value="1" checked="checked">正常
+				<input type="checkbox" name="dataState" value="0" checked="checked">禁用 -->
              </div>
               <div class="form-group input_block">
               <label for="exampleInputEmail1" class="input_name">执行操作：</label>
-				<input type="checkbox" name="complaintStatus1" id="check1" value="all" onclick="chekbox(this)" checked="checked">全部
-				<input type="checkbox" name="complaintStatus" value="1" onclick="chekbox(this)" checked="checked">新增
-				<input type="checkbox" name="complaintStatus" value="2" onclick="chekbox(this)" checked="checked">修改
-				<input type="checkbox" name="complaintStatus" value="3" onclick="chekbox(this)" checked="checked">删除
+              <select id="complaintStatus">
+              <option value="all">全部</option>
+              <option value="1" name="select_Status" >新增</option>
+              <option value="2" name="select_Status" >修改</option>
+              <option value="3" name="select_Status" >删除</option>
+              </select>
              </div>
              <div class="form-group input_block" style="text-align:center;">
 				<button type="submit" class="btn btn-primary"  onclick="paging()">查询</button>

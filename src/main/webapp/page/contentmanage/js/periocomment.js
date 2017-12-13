@@ -184,13 +184,28 @@ function paging(){
 	dataState=new Array();
 	complaintStatus=new Array();
 	
-	$("input:checkbox[name='dataState']:checked").each(function(){
+/*	$("input:checkbox[name='dataState']:checked").each(function(){
 		dataState.push($(this).val());
-	});
+	});*/
 	
-	$("input:checkbox[name='complaintStatus']:checked").each(function(){
-		complaintStatus.push($(this).val());
-	});
+	var is_dataState=$("#dataState option:selected").val();
+	if(is_dataState=="all"){
+		var selectlist=$("select [name='select_data']");
+		for(var i=0;i<selectlist.length;i++){
+			dataState.push(selectlist.eq(i).val());
+		}
+	}else{
+		dataState.push(is_dataState);
+	}
+	var is_Status=$("#complaintStatus option:selected").val();
+	if(is_Status=="all"){
+		var selectlist=$("select [name='select_Status']");
+		for(var i=0;i<selectlist.length;i++){
+			complaintStatus.push(selectlist.eq(i).val());
+		}
+	}else{
+		complaintStatus.push(is_Status);
+	}
 	
    $.post('../periocomment/getcomment.do', {
        pagenum: pagenum,//向服务端传的参数
