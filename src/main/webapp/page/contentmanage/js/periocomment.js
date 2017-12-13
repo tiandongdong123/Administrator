@@ -147,7 +147,7 @@ function chekbox(data){
 
 function paging(){
 	
-	var pagenum=$("#pagenum").val();
+	var pagenum=$("#pagenum option:selected").val();
 	var pagesize=$("#pagesize").val();
 	
     $("#commentbody tr").remove();
@@ -277,53 +277,56 @@ function paging(){
 	    
    }
 	    $("#commentbody").html(html);
+	    $("#pagenum").find("option[value='"+pagenum+"']").attr("selected","selected");	    
  }else {
 	  layer.msg("没有检索到信息！请重新检索！");
 	  }
    });
-
-
 }
 
 function firstPage(){
-	var pagenum=Number($("#pagenum").val());
+	var pagenum=Number($("#pagenum option:selected").val());
 	if(pagenum==1){
 		layer.msg("已经是第一页了");
 	}else{
-		$("#pagenum").val(1);
+		$("#pagenum option[value='"+1+"']").attr("selected","selected");
+		$("#pagenum :not(option[value='"+1+"'])").removeAttr("selected");
 		paging();
 	}
 }
 
 
 function upPage(){
-	var pagenum=Number($("#pagenum").val())-1;
+	var pagenum=Number($("#pagenum option:selected").val())-1;
 	if(pagenum<1){
 		layer.msg("已经是第一页了");
 	}else{
-		$("#pagenum").val(pagenum);
+		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
+		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
 		paging();
 	}
 
 }
 
 function lastPage(){
-	var pagenum=$("#pagenum").val();
+	var pagenum=$("#pagenum option:selected").val();
 	if(pagenum==$("#pageTotal").val()){
 		layer.msg("已经是最后一页了");
 	}else{
-		$("#pagenum").val(Number($("#pageTotal").val()));
+		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
+		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
 		paging();
 	}
 
 }
 
 function downPage(){
-	var pagenum=Number($("#pagenum").val())+1;
+	var pagenum=Number($("#pagenum option:selected").val())+1;
 	if(pagenum>$("#pageTotal").val()){
 		layer.msg("已经是最后一页了");
 	}else{
-		$("#pagenum").val(pagenum);
+		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
+		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
 		paging();
 	}
 
