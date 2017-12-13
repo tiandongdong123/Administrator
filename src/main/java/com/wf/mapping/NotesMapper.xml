@@ -84,7 +84,7 @@
     order by n.note_date desc
     <if test="pageNum!=null and pageSize!=null">
     limit #{pageNum},#{pageSize}
-    </if>
+  	</if>
   </select>
   
   <select id="selectNotesInforCount" resultType="java.lang.Integer" parameterType="java.util.Map">

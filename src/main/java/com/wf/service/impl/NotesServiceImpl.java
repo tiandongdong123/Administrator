@@ -23,8 +23,8 @@ public class NotesServiceImpl implements NotesService {
 	public PageList getNotes(int pageNum, int pageSize, String userName, String noteNum, String resourceName, String[] resourceType, String[] dataState, String[] complaintStatus, String startTime,String endTime, String[] noteProperty, String[] performAction) {
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
-		int pagen=(pageNum-1)*pageSize;
-		mp.put("pageNum", pagen);
+		int page=(pageNum-1)*pageSize;
+		mp.put("pageNum", page);
 		mp.put("pageSize", pageSize);
 		mp.put("userName", userName);
 		mp.put("noteNum", noteNum);
@@ -45,9 +45,9 @@ public class NotesServiceImpl implements NotesService {
 				}
 			}
 		}
-		int pageTotal= dao.selectNotesInforCount(mp);
-		int b =pageTotal%pageSize;
-		pageTotal= b!=0?pageTotal/pageSize+1:pageTotal/pageSize;
+		int totalRow= dao.selectNotesInforCount(mp);
+		p.setTotalRow(totalRow);
+		int pageTotal= totalRow%pageSize!=0?totalRow/pageSize+1:totalRow/pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);

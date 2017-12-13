@@ -26,28 +26,41 @@
              	</div>
               	<div class="form-group input_block">
               		<label for="exampleInputEmail1" class="input_name"> 资源类型：</label>
-					<input type="checkbox" checked="checked" onclick="checkAllText()" id="resourType">全选
-					<?for(var a in res){?>
-					<input type="checkbox" checked="checked" onclick="resourType()" value="${a.typeCode}" name="resourceType"> ${a.typeName}
-					<?}?>
+              		<select id="resourceType" onchange="performAction();" style="width:148px;">
+						<option value="">全部</option>
+						<!-- <option value="0">新增</option> -->
+						<?	for(var a in res){?>
+						<option value="${a.typeCode}"> ${a.typeName}</option>
+						<?	}?>
+						<!-- <option value="1">公开</option> -->
+					</select>
              	</div>
              	<div class="form-group input_block">
              		<label for="exampleInputEmail1" class="input_name"> 笔记性质：</label>
-					<input type="checkbox" checked="checked" onclick="checkAllNoteProperty()" id="noteProperty">全部
-					<input type="checkbox" checked="checked" onclick="noteProperty()" name="noteProperty" value="0" >私有
-					<input type="checkbox" checked="checked" onclick="noteProperty()" name="noteProperty" value="1" >公开
+             		<select id="noteProperty" onchange="performAction();"  style="width:148px;">
+						<option value="">全部</option>
+						<!-- <option value="0">新增</option> -->
+						<option value="0">私有</option>
+						<option value="1">公开</option>
+					</select>
              	</div>
              	<div class="form-group input_block">
              		<label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
-					<input type="checkbox" checked="checked" name="dataState" value="1">正常
-					<input type="checkbox" checked="checked" name="dataState" value="0" >禁用
+             		<select id="dataState" onchange="performAction();"  style="width:148px;">
+						<option value="">全部</option>
+						<!-- <option value="0">新增</option> -->
+						<option value="1">正常</option>
+						<option value="0">禁用</option>
+					</select>
              	</div>
              	<div>
              		<label for="exampleInputEmail1" class="input_name">执行操作：</label>
-             		<input type="checkbox" checked="checked" onclick="checkAllPerformAction()" id="performAction" >全部
-             		<!-- <input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="0">新增 -->
-             		<input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="1">修改
-             		<input type="checkbox" checked="checked" onclick="performAction()" name="performAction" value="2">删除
+			        <select id="performAction" onchange="performAction();"  style="width:148px;">
+						<option value="">全部</option>
+						<!-- <option value="0">新增</option> -->
+						<option value="1">修改</option>
+						<option value="2">删除</option>
+					</select>
              	</div>
             	<div class="form-group input_block" style="text-align:center;">
 					<button type="submit" class="btn btn-primary" onclick="paging()">查询</button>
@@ -69,22 +82,44 @@
 		                  	<th style="width: 7%">审核人</th>
 		                  	<th style="width: 7%">审核时间</th>
 		                  	<th style="width: 7%">操作</th>
-		                  	<!-- <th>序号</th>
-                  			<th>笔记ID</th>
-		                  	<th>文献标题</th>
-		                 	<th>资源类型</th>
-		                  	<th>笔记内容</th>
-		                  	<th>笔记用户ID</th>
-		                  	<th>笔记时间</th>
-		                  	<th>执行操作</th>
-		                  	<th>数据状态</th>
-		                  	<th>审核人</th>
-		                  	<th>审核时间</th> -->
                 		</tr>
                 	</thead>
                 	<tbody id="notebody"></tbody>
               	</table>
-               	<div id="page"></div>
+              	<style>
+              	#pages{
+              		text-align: center;	
+              		padding: 15px 0px;
+              		font-size: 14px;
+              	}
+              	#pages span{
+              		padding: 0px 5px;
+              		 vertical-align: middle;
+              	}
+              	#pages span u{
+              		text-decoration: none;
+				    padding: 0px 5px;
+				    color: #00CCFF;
+              	}
+              	#pages select{
+              		height:25px;
+              	}
+              	#pages input[type="text"]{
+              		width: 40px;
+					height: 25px;
+					text-align: center;
+              	}
+              	#pages a img{
+              		vertical-align: top;
+              	}
+              	#pages button{
+              	    width: 50px;
+				    height: 25px;
+				    border: 1px solid #ccc;
+				    background-color: #fff;
+              	}
+              </style>
+              <div id="pages"></div>
             </div>
 		</div>
 	</div>

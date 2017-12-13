@@ -902,6 +902,7 @@ public class ContentController{
 			@RequestParam(value="endTime",required=false) String endTime,
 			@RequestParam(value="noteProperty[]",required=false) String[] noteProperty,
 			@RequestParam(value="performAction[]",required=false) String[] performAction,
+			@RequestParam(value="pagesize",required=false) int pagesize,
 			@RequestParam(value="page",required=false) int pageNum, HttpServletRequest request
 			) throws Exception{
 		
@@ -921,8 +922,7 @@ public class ContentController{
 			endTime=format.format(calendar.getTime());
 		}
 		
-		int pageSize=10;
-		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
+		PageList NotepageList =notesService.getNotes(pageNum, pagesize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
 		JSONObject json=JSONObject.fromObject(NotepageList);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
@@ -942,6 +942,11 @@ public class ContentController{
 		boolean b=notesService.handlingNote(id);
 
 		Notes notes =notesService.findNotes(id);
+		String noteDate = notes.getNoteDate();
+		if(!"".equals(noteDate)){
+			noteDate = noteDate.substring(0, 4) + "年" + noteDate.substring(5, 7) + "月" + noteDate.substring(8, 10) + "日" + noteDate.substring(10, 19);
+		}
+		notes.setNoteDate(noteDate);
 		model.addAttribute("notes", notes);
 		return "/page/contentmanage/notes_detail";
 	}
