@@ -147,7 +147,7 @@ function chekbox(data){
 
 function paging(){
 	
-	var pagenum=$("#pagenum option:selected").val();
+	var pagenum=$("#pagenum").val();
 	var pagesize=$("#pagesize").val();
 	
     $("#commentbody tr").remove();
@@ -210,14 +210,17 @@ function paging(){
    	   var totalRow = res.totalRow;
        var pageSize = res.pageSize;
        var pageTotal=res.pageTotal;
-       
-       $("#totalRow").text(totalRow);
-       $("#pageTotal").val(pageTotal);
-       $("#pagenum option:not(:first)").remove(); 
-       for(var i=2;i<=pageTotal;i++){
-    	   $("#pagenum").append("<option value='"+i+"'>"+i+"</option>");
+       var pageall;
+       if(totalRow%pageSize==0){
+    	   pageall=totalRow/pageSize;
+       }else{
+    	   pageall= parseInt(totalRow/pageSize)+1;
        }
-       
+       var maxLenght=(pageall+"").length;
+       $("#totalRow").text(totalRow);
+       $("#totalpage").text(pageall);
+       $("#pageTotal").val(pageTotal);
+       $("#pagenum").attr("maxlength",maxLenght); 
    	if(res.pageTotal>0){
    	html="";
 	    for(var i =0;i<res.pageRow.length;i++){
@@ -285,64 +288,65 @@ function paging(){
 }
 
 function firstPage(){
-	var pagenum=Number($("#pagenum option:selected").val());
+	var pagenum=Number($("#pagenum").val());
 	if(pagenum==1){
 		layer.msg("已经是第一页了");
 	}else{
-		$("#pagenum option[value='"+1+"']").attr("selected","selected");
-		$("#pagenum :not(option[value='"+1+"'])").removeAttr("selected");
+		$("#pagenum").val("1");
 		paging();
 	}
 }
 
 
 function upPage(){
-	var pagenum=Number($("#pagenum option:selected").val())-1;
+	var pagenum=Number($("#pagenum").val())-1;
 	if(pagenum<1){
 		layer.msg("已经是第一页了");
 	}else{
-		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
-		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
+		$("#pagenum").val(pagenum);
 		paging();
 	}
 
 }
 
 function lastPage(){
-	var pagenum=$("#pagenum option:selected").val();
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
 	if(pagenum==$("#pageTotal").val()){
 		layer.msg("已经是最后一页了");
 	}else{
-		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
-		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
+		$("#pagenum").val(total);
 		paging();
 	}
-
 }
 
 function downPage(){
-	var pagenum=Number($("#pagenum option:selected").val())+1;
+	var pagenum=Number($("#pagenum").val())+1;
 	if(pagenum>$("#pageTotal").val()){
 		layer.msg("已经是最后一页了");
 	}else{
-		$("#pagenum option[value='"+pagenum+"']").attr("selected","selected");
-		$("#pagenum :not(option[value='"+pagenum+"'])").removeAttr("selected");
+		$("#pagenum").val(pagenum);
 		paging();
 	}
-
 }
 
 
-function getAllpageNum(obj){
-	var pagesize=$(obj).val();
-	var totalRow=Number($("#totalRow").text());
-	var pagenum=totalRow%pagesize==0?(totalRow/pagesize):(totalRow/pagesize+1);
-	$("#pagenum option:not(:first)").remove(); 
-	for (var i =2; i <=pagenum; i++) {
-		$("#pagenum").append("<option value='"+i+"'>"+i+"</option>");
+function getAllpageNum(){
+	$("#pagenum").val("1");
+	paging();
+}
+
+function selectPage(){
+	var keyCode=event.keyCode;
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(keyCode==13){
+		if(pagenum>total){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum==0){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum<=total){
+			paging();
+		}
 	}
 }
-
-
-
-
