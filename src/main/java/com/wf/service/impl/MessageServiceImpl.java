@@ -88,9 +88,6 @@ public class MessageServiceImpl implements MessageService {
 		map.put("issueState", 2);
 		map.put("stick", new Date());
 		map.put("isTop", "1");
-		if ("专题聚焦".equals(message.getColums())) {
-			dao.updateIsTop(message.getColums());
-		}
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;

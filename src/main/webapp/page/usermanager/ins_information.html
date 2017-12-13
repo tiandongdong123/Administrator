@@ -345,7 +345,7 @@
 			<div class="tab-pane active" id="standard_${list.userId}_${payid}_${pscode}">
 				<div class="form-group input_block">
 					<label><input type="checkbox" name="standardTypes" value="WFLocal" <?if(array.contain(standard_types.Value,"WFLocal")){?>checked="checked"<?}?>>行业标准</label>
-					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label>
+					<!-- <label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label> -->
 					<label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(online_visitor.Value)){?>checked="checked"<?}?>>网络包库(质检)</label>
 				</div>
 				<div id="stand_div" <?if(isEmpty(reading_print.Value)&&isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
