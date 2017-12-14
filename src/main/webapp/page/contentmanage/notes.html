@@ -29,8 +29,18 @@
               		<select id="resourceType" onchange="performAction();" style="width:148px;">
 						<option value="">全部</option>
 						<!-- <option value="0">新增</option> -->
-						<?	for(var a in res){?>
-						<option value="${a.typeCode}"> ${a.typeName}</option>
+						<?	for(var a in res){
+							var type = a.typeCode;
+							if(type == "techResult"){
+								type = "tech_result";
+							}else if(type == "standard"){
+								type = "standards";
+							}else if(type == "local chronicles"){
+								type = "gazetteers";
+							}
+						?>
+						<!--  tech_result standards gazetteers -->
+						<option value="${type}"> ${a.typeName}</option>
 						<?	}?>
 						<!-- <option value="1">公开</option> -->
 					</select>
