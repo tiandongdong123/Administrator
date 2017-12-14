@@ -2,11 +2,6 @@ $(function(){
 	paging();
 });
 
-function select(){
-	$("#pagesize").val(10);//页面大小
-	paging();
-}
-
 function selectPage(e){
 	var keyCode=e.keyCode;
 	var pagenum=$("#pagenum").val();
@@ -101,7 +96,7 @@ function paging(curr){
 		dataType : "json",
 		data : {
 			"page":curr || 1,
-			"pagesize":pagesize || 10,
+			"pagesize":pagesize || 20,
 			"userName":username,
 			"noteNum":noteNum,
 			"resourceName":resourceName,

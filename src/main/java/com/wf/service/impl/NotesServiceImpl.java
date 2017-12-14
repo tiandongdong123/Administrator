@@ -128,7 +128,7 @@ public class NotesServiceImpl implements NotesService {
 		
 		if(pageRowAll.size()>0){
 			for(int i=0;i<pageRowAll.size();i++){
-				String  type =((Notes)pageRowAll.get(i)).getResourceType();
+				String  type = ((Notes)pageRowAll.get(i)).getResourceType();
 				if("tech_result".equals(type)){
 					type = "techResult";
 				}else if("standards".equals(type)){
@@ -139,6 +139,10 @@ public class NotesServiceImpl implements NotesService {
 				ResourceType res=resource.getOne(type);
 				if(null!=res){					
 					((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				}
+				String noteDate = ((Notes)pageRowAll.get(i)).getNoteDate();
+				if(noteDate.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setNoteDate(noteDate.substring(0, noteDate.indexOf(".")));
 				}
 			}
 		}
