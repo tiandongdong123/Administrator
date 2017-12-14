@@ -39,7 +39,15 @@ public class NotesServiceImpl implements NotesService {
 		List<Object> pageRow= dao.selectNotesInfor(mp);
 		if(pageRow.size()>0){
 			for(int i=0;i<pageRow.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRow.get(i)).getResourceType());
+				String type = ((Notes)pageRow.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
 				if(null!=res){
 					((Notes)pageRow.get(i)).setResourceType(res.getTypeName());	
 				}
@@ -120,8 +128,18 @@ public class NotesServiceImpl implements NotesService {
 		
 		if(pageRowAll.size()>0){
 			for(int i=0;i<pageRowAll.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRowAll.get(i)).getResourceType());
-				((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				String  type =((Notes)pageRowAll.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
+				if(null!=res){					
+					((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				}
 			}
 		}
 		

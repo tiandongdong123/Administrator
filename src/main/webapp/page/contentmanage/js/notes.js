@@ -2,6 +2,11 @@ $(function(){
 	paging();
 });
 
+function select(){
+	$("#pagesize").val(10);//页面大小
+	paging();
+}
+
 function selectPage(e){
 	var keyCode=e.keyCode;
 	var pagenum=$("#pagenum").val();
@@ -232,25 +237,51 @@ function exportNotes(){
 	var resourceName=$("#resourceName").val();//文献标题
 	var startTime=$("#startTime").val();//开始时间
 	var endTime=$("#endTime").val();//结束时间
-	$("input:checkbox[name='resourceType']:checked").each(function(){
-		types.push($(this).val());
-	});
-	
-	$("input:checkbox[name='dataState']:checked").each(function(){
-		dataState.push($(this).val());
-	});
-	
-	$("input:checkbox[name='complaintStatus']:checked").each(function(){
-		complaintStatus.push($(this).val());
-	});
-	
-	$("input:checkbox[name='noteProperty']:checked").each(function(){
-		noteProperty.push($(this).val());
-	});
-	
-	$("input:checkbox[name='performAction']:checked").each(function(){
-		performAction.push($(this).val());
-	});
+	if("" == $("#resourceType").val()){	
+		$("#resourceType option").each(function(){
+			if("" != $(this).val()){				
+				types.push($(this).val());
+			}
+		});
+	}else{
+		types.push($("#resourceType").val());
+	}
+	if("" == $("#dataState").val()){	
+		$("#dataState option").each(function(){
+			if("" != $(this).val()){				
+				dataState.push($(this).val());
+			}
+		});
+	}else{
+		dataState.push($("#dataState").val());
+	}
+	if("" == $("#complaintStatus").val()){	
+		$("#complaintStatus option").each(function(){
+			if("" != $(this).val()){				
+				complaintStatus.push($(this).val());
+			}
+		});
+	}else{
+		complaintStatus.push($("#complaintStatus").val());
+	}
+	if("" == $("#noteProperty").val()){	
+		$("#noteProperty option").each(function(){
+			if("" != $(this).val()){				
+				noteProperty.push($(this).val());
+			}
+		});
+	}else{
+		noteProperty.push($("#noteProperty").val());
+	}
+	if("" == $("#performAction").val()){	
+		$("#performAction option").each(function(){
+			if("" != $(this).val()){				
+				performAction.push($(this).val());
+			}
+		});
+	}else{
+		performAction.push($("#performAction").val());
+	}
 	window.location.href="../content/exportNotes.do?" +
 			"&userName="+username+
 			"&noteNum="+noteNum+
