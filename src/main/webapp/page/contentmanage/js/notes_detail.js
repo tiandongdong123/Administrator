@@ -2,7 +2,6 @@
 function disableNootes(dataState){
 	var finalOpinion = $("#finalOpinion").val();
 	if(null == finalOpinion || '' == finalOpinion.replace(/(^\s*)|(\s*$)/g, '')){
-//		layer.msg("人工处理意见不能为空");
 		$('#finalOpinionPrompt').show();
 		return;
 	}

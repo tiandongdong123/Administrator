@@ -1509,7 +1509,7 @@ public class ContentController{
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction){
+			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction)throws Exception{
 				
 		ExportExcel excel=new ExportExcel();
 	
@@ -1517,12 +1517,21 @@ public class ContentController{
 		if(StringUtils.isEmpty(noteNum)) noteNum=null;
 		if(StringUtils.isEmpty(resourceName)) resourceName=null;
 		if(StringUtils.isEmpty(startTime)) startTime=null;
-		if(StringUtils.isEmpty(endTime)) endTime=null;
 		if(resourceType.length==0) resourceType=null;
 		if(dataState.length==0) dataState=null;
 		if(complaintStatus.length==0) complaintStatus=null;
 		if(noteProperty.length==0) noteProperty=null;
 		if(performAction.length==0) performAction=null;
+		
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar  calendar=new  GregorianCalendar(); 
+		if(StringUtils.isEmpty(endTime)){
+			endTime=null;
+		}else{
+			calendar.setTime(format.parse(endTime));
+			calendar.add(calendar.DATE,1);
+			endTime=format.format(calendar.getTime());
+		}
 		
 		
 		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,  noteProperty, performAction);

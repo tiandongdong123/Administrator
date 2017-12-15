@@ -144,6 +144,10 @@ public class NotesServiceImpl implements NotesService {
 				if(noteDate.indexOf(".") != -1){
 					((Notes)pageRowAll.get(i)).setNoteDate(noteDate.substring(0, noteDate.indexOf(".")));
 				}
+				String auditTime = ((Notes)pageRowAll.get(i)).getAuditTime();
+				if(auditTime!=null && auditTime.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setAuditTime(auditTime.substring(0, auditTime.indexOf(".")));
+				}
 			}
 		}
 		
