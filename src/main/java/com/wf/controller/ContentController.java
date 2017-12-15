@@ -293,12 +293,10 @@ public class ContentController{
 		message.setStick(sdf1.format(new Date()));
 		boolean b =messageService.insertMessage(message);
 		JsonUtil.toJsonHtml(response, b);
-
 		//记录日志
-		Log log=new Log("资讯管理","增加",message.toString(),request);
-		log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		logService.addLog(log);
-		
+		//Log log=new Log("资讯管理","增加",message.toString(),request);
+		//log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+		//logService.addLog(log);
 	}
 	
 	/**
@@ -413,11 +411,9 @@ public class ContentController{
 		Wfadmin admin=CookieUtil.getWfadmin(request);
 		message.setHuman(admin.getUser_realname());
 		boolean b =messageService.updateMessage(message);
-		
 		//记录日志
-		Log log=new Log("资讯管理","修改",message.toString(),request);
-		logService.addLog(log);
-
+		//Log log=new Log("资讯管理","修改",message.toString(),request);
+		//logService.addLog(log);
 		JsonUtil.toJsonHtml(response, b);
 	}
 	/**
