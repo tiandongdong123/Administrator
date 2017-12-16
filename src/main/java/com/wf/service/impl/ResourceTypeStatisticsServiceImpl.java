@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wf.bean.PageList;
 import com.wf.bean.ResourceStatistics;
 import com.wf.bean.ResourceStatisticsHour;
-import com.wf.bean.ResourceTableBean;
 import com.wf.bean.ResourceType;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ResourceStatisticsHourMapper;
-import com.wf.dao.ResourceStatisticsMapper;
 import com.wf.dao.ResourceTypeMapper;
 import com.wf.service.ResourceTypeStatisticsService;
 
@@ -32,8 +27,6 @@ public class ResourceTypeStatisticsServiceImpl implements
 
 	@Autowired
 	private ResourceTypeMapper type;
-	//@Autowired
-	//private ResourceStatisticsMapper restatistics;
 	@Autowired
 	private ResourceStatisticsHourMapper hour;
 	@Autowired
