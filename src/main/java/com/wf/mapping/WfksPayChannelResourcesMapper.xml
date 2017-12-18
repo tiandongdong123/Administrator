@@ -139,4 +139,14 @@
   <select id="selectByChannelId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select pay_channelId,user_id from wfks_pay_channel_resources where pay_channelId = #{payChannelid,jdbcType=VARCHAR} GROUP BY user_id
   </select>
+  
+  <select id="getAllResourceByUserID" resultType="string" parameterType="string" >
+  	select resource_id from wfks_pay_channel_resources
+  		where user_id in
+		<foreach collection="users" item="item" open="("   separator="," close=")">
+			#{item}
+		</foreach>
+		GROUP BY resource_id			 
+  </select>
+  
 </mapper>

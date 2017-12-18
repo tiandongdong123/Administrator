@@ -19,6 +19,7 @@ import com.wf.bean.ResourceType;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ResourceStatisticsHourMapper;
 import com.wf.dao.ResourceTypeMapper;
+import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.service.ResourceTypeStatisticsService;
 
 @Service
@@ -33,6 +34,8 @@ public class ResourceTypeStatisticsServiceImpl implements
 	private PersonMapper personMapper;
 	@Autowired
 	private ResourceTypeMapper resourceTypeMapper;
+	@Autowired
+	private WfksPayChannelResourcesMapper wfksPayChannelResourcesMapper;
 	@Override
 	public List<ResourceType> getResourceType() {
 		List<ResourceType> listr = new ArrayList<ResourceType>();
@@ -83,11 +86,32 @@ public class ResourceTypeStatisticsServiceImpl implements
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				//按条件查询
 				list = this.hour.getChartById(starttime,endtime,res,urls,singmore,database_name);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> users1=new ArrayList<>();
+					users1.add(res.getUserId());
+					List<String> resources1=wfksPayChannelResourcesMapper.getAllResourceByUserID(users1);
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources1.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
 			} else {
 				//查处属于此机构的所有用户（包括机构账号和机构子账号）
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				//按条件查询
 				list=this.hour.getChartByIds(starttime, endtime,res,users,urls,singmore,database_name);
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> resources1=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources1.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+				}
+
 			}
 			//得到code
 			codes = resourceTypeMapper.getResourceByCode(database_name);
@@ -106,11 +130,32 @@ public class ResourceTypeStatisticsServiceImpl implements
 			} else if ( StringUtils.isNotBlank(res.getUserId())) {
 				//按条件查询
 				list = this.hour.getChartMoreById(starttime,endtime,res,urls,database_name);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> users1=new ArrayList<String>();
+					users1.add(res.getUserId());
+ 					List<String> resources1=wfksPayChannelResourcesMapper.getAllResourceByUserID(users1);
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources1.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+				}
+
 			} else {
 				//查处属于此机构的所有用户
 				users = personMapper.getInstitutionUser(res.getInstitutionName());
 				//按条件查询
 				list=this.hour.getChartMoreByIds(starttime, endtime,res,users,urls,database_name);
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+ 					List<String> resources1=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources1.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+				}
+
 			}
 		}
 		//处理按条件查的数据
@@ -586,6 +631,28 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rsourceList = this.hour.getLineById(starttime,endtime,res,startNum,pageSize);
 				//用于得到页面总数
 				list=this.hour.getLineAllById(starttime,endtime,res);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> users=new ArrayList<>();
+					users.add(res.getUserId());
+					List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					users.add(res.getProduct_source_code());
+					
+					for (int i = 0; i < rsourceList.size(); i++) {
+						if(!resources.contains(rsourceList.get(i).getProduct_source_code())){
+							rsourceList.remove(i);
+ 						}
+					}
+					
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
+				
+				
 			} else {
 				//得到此机构中所有的用户（包括机构账号和机构子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
@@ -593,6 +660,23 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rsourceList=this.hour.getLineByIds(starttime, endtime,res,users,startNum,pageSize);
 				//用于得到页面总数
 				list=this.hour.getLineAllByIds(starttime, endtime,res,users);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < rsourceList.size(); i++) {
+						if(!resources.contains(rsourceList.get(i).getProduct_source_code())){
+							rsourceList.remove(i);
+ 						}
+					}
+					
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
+				
 			}
 		}else {
 			/**
@@ -611,6 +695,25 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rsourceList = this.hour.getLineMoreById(starttime,endtime,res,startNum,pageSize);
 				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineMoreAllById(starttime,endtime,res);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> users=new ArrayList<>();
+					users.add(res.getUserId());
+					List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < rsourceList.size(); i++) {
+						if(!resources.contains(rsourceList.get(i).getProduct_source_code())){
+							rsourceList.remove(i);
+ 						}
+					}
+					
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
+				
 			} else {
 				//得到此机构中所有的用户（包括机构账号和机构子账号）
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
@@ -618,6 +721,24 @@ public class ResourceTypeStatisticsServiceImpl implements
 				rsourceList=this.hour.getLineMoreByIds(starttime, endtime,res,users,startNum,pageSize);
 				//按查询条件得到表格中的所有数据
 				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					users.add(res.getUserId());
+					List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < rsourceList.size(); i++) {
+						if(!resources.contains(rsourceList.get(i).getProduct_source_code())){
+							rsourceList.remove(i);
+ 						}
+					}
+					
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
+				
 			}
 		}
 		//定义一个空的数组
@@ -705,6 +826,17 @@ public class ResourceTypeStatisticsServiceImpl implements
 				List users = personMapper.getInstitutionUser(res.getInstitutionName());
 				//按查询条件得出结果
 				list=this.hour.getLineMoreAllByIds(starttime, endtime,res,users);
+				
+				if(StringUtils.isBlank(res.getProduct_source_code())){
+					List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+					for (int i = 0; i < list.size(); i++) {
+						if(!resources.contains(list.get(i).getProduct_source_code())){
+							list.remove(i);
+ 						}
+					}
+					
+				}
+
 			}
 		}
 		//定义一个空的数组
