@@ -23,8 +23,8 @@ public class NotesServiceImpl implements NotesService {
 	public PageList getNotes(int pageNum, int pageSize, String userName, String noteNum, String resourceName, String[] resourceType, String[] dataState, String[] complaintStatus, String startTime,String endTime, String[] noteProperty, String[] performAction) {
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
-		int pagen=(pageNum-1)*pageSize;
-		mp.put("pageNum", pagen);
+		int page=(pageNum-1)*pageSize;
+		mp.put("pageNum", page);
 		mp.put("pageSize", pageSize);
 		mp.put("userName", userName);
 		mp.put("noteNum", noteNum);
@@ -39,15 +39,23 @@ public class NotesServiceImpl implements NotesService {
 		List<Object> pageRow= dao.selectNotesInfor(mp);
 		if(pageRow.size()>0){
 			for(int i=0;i<pageRow.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRow.get(i)).getResourceType());
+				String type = ((Notes)pageRow.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
 				if(null!=res){
 					((Notes)pageRow.get(i)).setResourceType(res.getTypeName());	
 				}
 			}
 		}
-		int pageTotal= dao.selectNotesInforCount(mp);
-		int b =pageTotal%pageSize;
-		pageTotal= b!=0?pageTotal/pageSize+1:pageTotal/pageSize;
+		int totalRow= dao.selectNotesInforCount(mp);
+		p.setTotalRow(totalRow);
+		int pageTotal= totalRow%pageSize!=0?totalRow/pageSize+1:totalRow/pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);
@@ -120,8 +128,26 @@ public class NotesServiceImpl implements NotesService {
 		
 		if(pageRowAll.size()>0){
 			for(int i=0;i<pageRowAll.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRowAll.get(i)).getResourceType());
-				((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				String  type = ((Notes)pageRowAll.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
+				if(null!=res){					
+					((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				}
+				String noteDate = ((Notes)pageRowAll.get(i)).getNoteDate();
+				if(noteDate.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setNoteDate(noteDate.substring(0, noteDate.indexOf(".")));
+				}
+				String auditTime = ((Notes)pageRowAll.get(i)).getAuditTime();
+				if(auditTime!=null && auditTime.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setAuditTime(auditTime.substring(0, auditTime.indexOf(".")));
+				}
 			}
 		}
 		

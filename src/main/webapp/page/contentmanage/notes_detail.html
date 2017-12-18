@@ -54,7 +54,11 @@
       		</tr>
       		<tr>
       			<td>机器审核意见</td>
+      			<?if(notes.preliminaryOpinions == "禁用"){?>
+      			<td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="禁用！笔记中含有敏感词汇。"></td>
+      			<?}else{?>
       			<td><input style="width: 100%;height:40px;" disabled="disabled" id="preliminaryOpinions" type="text" value="${notes.preliminaryOpinions}"></td>
+      			<?}?>
       		</tr>
       		<!-- <tr style="display: none;">
       			<td>申诉理由</td><td><input style="width: 100%;height:40px;" disabled="disabled" id="appealReason" type="text" value="${notes.appealReason}"></td>
