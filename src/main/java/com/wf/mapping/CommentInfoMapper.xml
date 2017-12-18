@@ -46,7 +46,7 @@
   	and DATE_FORMAT(update_date,"%Y-%m-%d %H:%i") <![CDATA[<=]]> #{endTime}
   </if>
     <if test="info.submit_period!=null and info.submit_period!=''">
-  	and submit_period=#{info.submit_period}
+  	and submit_period = #{info.submit_period}
   </if>
    <if test="sauditm!=null and sauditm !='' ">
   	and audit_money &gt;= ${sauditm} 

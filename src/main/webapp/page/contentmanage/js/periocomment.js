@@ -103,26 +103,6 @@ function findNote(data){
 }
 
 
-
-//导出期刊
-function exportPerio(){
-	
-	window.location.href="../periocomment/exportPerio.do?" +
-			"authorName="+username+
-			"&perioName="+perioname+
-			"&startTime="+startTime+
-			"&endTime="+endTime+
-			"&subTime="+subtime+
-			"&sauditm="+sauditm+
-			"&eauditm="+eauditm+
-			"&slayoutm="+slayoutm+
-			"&elayoutm="+elayoutm+
-			"&dataStateArr="+dataState+
-			"&complaintStatusArr="+complaintStatus;
-	
-}
-
-
 function chekbox(data){
 	var tal= $(data).val();
 	if(tal=="all"){
@@ -364,4 +344,34 @@ function selectPage(){
 			paging();
 		}
 	}
+}
+
+//导出期刊
+function exportPerio(){
+	for(var i=0;i<dataState.length;i++){
+		if(i==0){
+			datas="&dataStateArr[]="+dataState[i]
+		}else{
+			datas=datas+"&dataStateArr[]="+dataState[i]
+		}
+	}
+	
+	for(var i=0;i<complaintStatus.length;i++){
+		if(i==0){
+			complain="&complaintStatusArr[]="+complaintStatus[i]
+		}else{
+			complain=complain+"&complaintStatusArr[]="+complaintStatus[i]
+		}
+	}
+	var  url="../periocomment/exportPerio.do?" +
+			"perio_name="+username +
+			"&perioName="+perioname +
+			"&startTime="+startTime +
+			"&endTime="+endTime +
+			"&submit_period="+subtime +
+			"&sauditm="+sauditm +
+			"&eauditm="+eauditm +
+			"&slayoutm="+slayoutm +
+			"&elayoutm="+elayoutm +datas+complain;
+	window.location.href=url;
 }
