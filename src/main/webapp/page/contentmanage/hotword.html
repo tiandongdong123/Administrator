@@ -1,0 +1,69 @@
+<?	
+	layout("/inc/layout.html",{
+			title:'热搜词管理'
+		}){
+?>
+	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../page/contentmanage/js/hotword.js"></script>
+<div class="content-wrapper">
+<section class="content-header">
+      <h1>热搜词管理</h1>
+</section> 
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+	  		<table id="messagetable">
+	  			<tr>
+	  				<td class="al">热搜词性质</td>
+	  				<td class="ar">
+	  					<select id="word_nature">
+	  						<option value="">全部</option>
+	  						<option value="前台获取">前台获取</option>
+	  						<option value="后台添加">后台添加</option>
+	  					</select>
+	  				</td>
+  				<td class="al">检索内容</td><td class="ar"><input type="text" id="word"></td>	
+	  			</tr>
+	  			<tr>
+	  				<td class="al">热搜词状态</td>
+	  				<td class="ar">
+	  					<select id="status">
+	  					 <option value="0">全部</option>
+	  					 <option value="2">已发布</option>
+	  					 <option value="1">待发布</option>
+	  					 <option value="3">已下撤</option>
+	  					</select>
+	  				</td>
+	
+	  			</tr>
+			</table>
+		
+		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
+		</div>
+		<br/><br/>
+		<div style="overflow-y :auto;position:relative">
+        <div class="col-md-12">
+          <div class="box box-primary">
+            <div  class="box-body no-padding">
+              <div class="mailbox-controls">
+                 	热搜词:<input type="text" id="word_content">
+                <button type="button" class="btn btn-primary" onclick="add_word();">添加热搜词</button>
+                <button type="button" class="btn btn-primary" onclick="hot_word_setting();">热搜词发布设置</button> 
+              </div>
+              
+			<div class="table-responsive mailbox-messages">
+               <table class="table table-bordered table-striped" id="list"></table></div>
+			</div>
+			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+
+          <!-- /. box -->
+        </div>
+        </div>
+        </div>
+	</div>
+</section>
+</div>	
+<?}?>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.HotWordMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.HotWord" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="word" property="word" jdbcType="VARCHAR" />
+    <result column="search_count" property="searchCount" jdbcType="INTEGER" />
+    <result column="word_nature" property="wordNature" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="VARCHAR" />
+    <result column="word_status" property="wordStatus" jdbcType="INTEGER" />
+    <result column="date_time" property="dateTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="getHotWordList" resultMap="BaseResultMap" parameterType="map">
+  	select * from  hot_search_word
+  	where 1=1 
+  	<if test="word!=null and word!=''">
+    	and word like CONCAT('%',#{word},'%')
+    </if>
+  	<if test="word_nature!=null and word_nature!=''">
+    	and word_nature=#{word_nature}
+    </if>
+  	<if test="status!=null and status!=''">
+    	and word_status =#{status}
+    </if>
+    
+  	limit #{pageNum},#{pageSize}
+  </select>
+  
+  <select id="getCount" resultMap="BaseResultMap" parameterType="map">
+  	select * from  hot_search_word
+  	  	where 1=1 
+  	<if test="word!=null and word!=''">
+    	and word like CONCAT('%',#{word},'%')
+    </if>
+  	<if test="word_nature!=null and word_nature!=''">
+    	and word_nature=#{word_nature}
+    </if>
+  	<if test="status!=null and status!=''">
+    	and word_status =#{status}
+    </if>
+  </select>
+  
+  <select id="checkWordExist" resultType="int" parameterType="string">
+  	select count(1) from hot_search_word where word=#{word_content}
+  </select>
+  
+   <insert id="addWord" parameterType="com.wf.bean.HotWord">
+    insert into hot_search_word
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="word != null">
+        word,
+      </if>
+      <if test="searchCount != null">
+        search_count,
+      </if>
+      <if test="wordNature != null">
+        word_nature,
+      </if>
+      <if test="wordStatus != null">
+        word_status,
+      </if>
+      <if test="dateTime != null">
+        date_time,
+      </if>
+      <if test="operationTime != null">
+        operation_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="word != null">
+        #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="searchCount != null">
+        #{searchCount,jdbcType=INTEGER},
+      </if>
+      <if test="wordNature != null">
+        #{wordNature,jdbcType=VARCHAR},
+      </if>
+      <if test="wordStatus != null">
+        #{wordStatus,jdbcType=INTEGER},
+      </if>
+      <if test="dateTime != null">
+      	date_format(now(),'%Y-%c-%d %h:%i:%s'),
+      </if>
+      <if test="operationTime != null">
+        date_format(now(),'%Y-%c-%d %h:%i:%s'),
+      </if>
+      
+    </trim>
+  </insert>
+  
+</mapper>
