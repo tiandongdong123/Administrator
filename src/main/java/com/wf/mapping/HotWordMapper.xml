@@ -9,6 +9,7 @@
     <result column="operation_time" property="operationTime" jdbcType="VARCHAR" />
     <result column="word_status" property="wordStatus" jdbcType="INTEGER" />
     <result column="date_time" property="dateTime" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="getHotWordList" resultMap="BaseResultMap" parameterType="map">
@@ -66,6 +67,9 @@
       <if test="operationTime != null">
         operation_time,
       </if>
+      <if test="operation!=null">
+        operation,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="word != null">
@@ -85,6 +89,9 @@
       </if>
       <if test="operationTime != null">
         date_format(now(),'%Y-%c-%d %h:%i:%s'),
+      </if>
+      <if test="operation!=null">
+        #{operation,jdbcType=INTEGER},
       </if>
       
     </trim>

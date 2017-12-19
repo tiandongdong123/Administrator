@@ -8,6 +8,7 @@ public class HotWord {
 	private String operationTime;
 	private Integer wordStatus;
 	private String dateTime;
+	private String operation;
 
 	public Integer getId() {
 		return id;
@@ -64,5 +65,14 @@ public class HotWord {
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
+	
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
+
 
 }

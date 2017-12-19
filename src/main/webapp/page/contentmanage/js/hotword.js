@@ -43,6 +43,7 @@ function serachdata(curr,data){
     "<td class=\"mailbox-attachment\"  style='width:20%'>检索量</td>"+
     "<td class=\"mailbox-name\">热搜词性质</td>"+
     "<td class=\"mailbox-name\">操作时间</td>"+
+    "<td class=\"mailbox-name\">操作人</td>"+
     "<td class=\"mailbox-date\">热搜词状态</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
@@ -80,6 +81,7 @@ function serachdata(curr,data){
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>";
 			resHtml+="<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</div></td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operationTime.substr(0,rows.operationTime.length-2)+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-date'><div title=''>"+word_status+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
 			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +

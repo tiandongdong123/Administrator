@@ -1761,7 +1761,7 @@ public class ContentController{
 	 */
 	@RequestMapping("/addWord")
 	@ResponseBody
-	public boolean addWord(String word_content){
+	public boolean addWord(HttpServletRequest request,String word_content){
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		HotWord hotWord=new HotWord();
@@ -1771,6 +1771,7 @@ public class ContentController{
 		hotWord.setOperationTime(df.format(new Date()));
 		hotWord.setWordStatus(1);
 		hotWord.setDateTime(df.format(new Date()));
+		hotWord.setOperation( CookieUtil.getWfadmin(request).getUser_realname());
 		return hotWordService.addWord(hotWord)>0;
 	}
 
