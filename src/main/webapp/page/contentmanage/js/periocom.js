@@ -25,7 +25,7 @@ function revocation(data){
 	        }
 	});
 	}else{
-		layer.msg("请输入人工审核建议！")
+		$("#showWords").text("请输入人工审核建议！")
 	}
 }
 
@@ -54,7 +54,7 @@ function maintain(data){
 	        }
 	});
 	}else{
-		layer.msg("请输入人工审核建议！")
+		$("#showWords").text("请输入人工审核建议！")
 	}
 }
 

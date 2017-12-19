@@ -107,12 +107,15 @@
       	<br/>
       	<input id="isget" type="hidden" value="${info.isget}">
       	<input id="id" type="hidden" value="${info.id}">
+      	<div style="text-align: center;">
+      	<div id="showWords" style="float: left;"></div>
       	<?if(info.data_state=='0'){?>
       	<button type="submit" class="btn btn-primary" onclick="revocation(${info.rand_id});">撤销禁用</button>
       	<?}else{?>
       	<button type="submit" class="btn btn-primary" onclick="maintain(${info.rand_id});">禁用</button>
       	<?}?>
       	<button type="submit" class="btn btn-primary" onclick="coloseLayer()" >取消</button>
+      	</div>
       </div>
     </section>
 
