@@ -1,5 +1,9 @@
 package com.wf.service.impl;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,7 @@ import com.wf.bean.ResourceType;
 import com.wf.dao.NotesMapper;
 import com.wf.dao.ResourceTypeMapper;
 import com.wf.service.NotesService;
+import com.xxl.conf.core.XxlConfClient;
 @Service
 public class NotesServiceImpl implements NotesService {
 	@Autowired
@@ -73,6 +78,10 @@ public class NotesServiceImpl implements NotesService {
 	@Override
 	public Boolean updateNotes(Notes notes) {
 		boolean f=dao.updateNotes(notes)>0?true:false;
+		Notes notesNO1 = dao.topNO1(notes.getNoteNum());
+		if(notesNO1.getPerformAction() == 1){
+			updateWork(notes.getNoteNum());
+		}
 		return f;
 	}
 	@Override
@@ -162,5 +171,49 @@ public class NotesServiceImpl implements NotesService {
 		return notes;
 	}
 	
-
+	public boolean updateWork(String noteNum){
+		Connection con = null;
+		PreparedStatement stmt = null;
+		try {
+			String sql = "UPDATE notes SET data_state = '1' WHERE note_num = '" + noteNum + "'";
+			con = getConnection();
+			stmt = con.prepareStatement(sql);
+			int num = stmt.executeUpdate();
+			if(num > 0){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt!=null){
+					stmt.close();					
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(con!=null){
+					con.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
+	public Connection getConnection() throws Exception{
+		try {
+			String url = XxlConfClient.get("wf-work.jdbc.url", null);
+			String username = XxlConfClient.get("wf-public.jdbc.username", null);
+			String password = XxlConfClient.get("wf-public.jdbc.password", null);
+			Class.forName("com.mysql.jdbc.Driver");
+			return DriverManager.getConnection(url, username, password);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 }

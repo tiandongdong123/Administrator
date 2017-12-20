@@ -6,6 +6,7 @@ function disableNootes(dataState){
 		return;
 	}
 	var id=$("#recordId").val();
+	var noteNum=$("#noteNum").val();
 	$.ajax({
 		type : "post",
 		async:false,
@@ -13,6 +14,7 @@ function disableNootes(dataState){
 		dataType : "json",
 		data : {
 			"recordId":id,
+			"noteNum":noteNum,
 			"dataState":dataState,
 			"finalOpinion":finalOpinion,
 			},
