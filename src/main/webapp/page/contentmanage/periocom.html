@@ -5,10 +5,30 @@
 <script type="text/javascript" src="../page/contentmanage/js/periocom.js"></script>
     <section class="content">
       <div class="row" ">
-      	<table class="table table-bordered">
+      <style>
+      	.content{
+      		min-height: 250px;
+		    padding: 0px;
+		    margin-right: auto;
+		    margin-left: auto;
+		    padding-left: 15px;
+		    padding-right: 15px;
+      	}
+      	.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th{
+      		padding: 4px 8px;
+      		font-size: 14px;
+      	}
+      	.table > tbody > tr > td:first-child{
+      		padding: 4px 15px;
+      	}
+      	.table{
+      		margin-bottom:0px;
+      	}
+      </style>
+      	<table style="padding: 0px;" class="table table-bordered">
       		<tr>
-      		<td>点评ID</td>
-      			<td>${info.id}</td>
+      		<td style="30px;">点评ID</td>
+      			<td style="30px;">${info.id}</td>
       		</tr>
       		<tr>
 	      		<td>期刊名称</td>
@@ -100,7 +120,7 @@
       		<tr style="height:200px;">
       			<td>*人工处理意见</td>
       			<td>
-      			<textarea rows="10" style="width: 100%;height:200px;" cols="" id="appealReason" >${info.final_opinion}</textarea>
+      			<textarea rows="8" style="width: 100%;height:190px;" cols="" id="appealReason" >${info.final_opinion}</textarea>
       			</td>
       		</tr>
       	</table>

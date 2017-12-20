@@ -25,7 +25,7 @@ function revocation(data){
 	        }
 	});
 	}else{
-		$("#showWords").text("请输入人工审核建议！")
+		$("#showWords").text("<div style='color:red;'>请输入人工审核建议</div>")
 	}
 }
 
@@ -54,7 +54,7 @@ function maintain(data){
 	        }
 	});
 	}else{
-		$("#showWords").text("请输入人工审核建议！")
+		$("#showWords").text("<div style='color:red;'>请输入人工审核建议</div>")
 	}
 }
 

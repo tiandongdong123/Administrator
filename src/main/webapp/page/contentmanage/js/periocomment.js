@@ -93,7 +93,7 @@ function findNote(data){
 	var id=data;
 	layer.open({
 		  type: 2,//page层 1div，2页面
-		  area: ['60%', '90%'],
+		  area: ['60%', '98%'],
 		  fixed: false, //不固定
 		  title: '期刊点评详情',
 		  maxmin: true,

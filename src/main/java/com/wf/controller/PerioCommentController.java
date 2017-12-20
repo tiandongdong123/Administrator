@@ -199,11 +199,11 @@ public class PerioCommentController {
 				startTime=startTime+" 00:00";
 				endTime=endTime+" 23:59";
 			}else if(compare>0){
-				startTime=startTime+" 00:00";
-				endTime=endTime+" 23:59";
-			}else{
-				endTime=endTime+" 00:00";
 				startTime=startTime+" 23:59";
+				endTime=endTime+" 00:00";
+			}else{
+				endTime=endTime+" 23:59";
+				startTime=startTime+" 00:00";
 			}
 		}
 		
