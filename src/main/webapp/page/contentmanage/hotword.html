@@ -13,6 +13,10 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
+		<?if(!isEmpty(item)){?>
+	      	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
+	      	<br/>下次发布数据统计时间:${item.next_publish_time_space!}</div>		
+		<?}?>
 	  		<table id="messagetable">
 	  			<tr>
 	  				<td class="al">热搜词性质</td>

@@ -9,4 +9,9 @@ public interface HotWordSettingDao {
 	Integer addWordSetting(HotWordSetting hotWordSetting);
 	List<Object> getHotWordSetting(Map map);
 	List<Object> getHotWordSettingCount(Map map);
+	HotWordSetting getOneHotWordSetting(Integer id);
+	Integer updateHotWordSetting(HotWordSetting hotWordSetting);
+	HotWordSetting getHotWordSettingTask();
+	List<Object> getHotWordTongJi(String sql);
+	
 }

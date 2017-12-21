@@ -81,6 +81,16 @@ public class HotWordServiceImpl implements HotWordService{
 				JSONObject json=JSONObject.fromObject(object);
 				json.put("theme", json.get("word"));
 				json.put("frequency",json.get("search_count"));
+				json.put("field","");
+				json.put("result","");
+				json.put("tableName","");
+				json.put("themeState","");
+				json.put("type","");
+				json.put("url","");
+				json.put("userId","");
+				json.put("userType","");
+				json.put("checkTime","");
+				json.put("createTime","");
 				array.add(json);
 			}
 			redis.set("theme",array.toString(),11);
@@ -89,6 +99,11 @@ public class HotWordServiceImpl implements HotWordService{
 		}
 		return success;
 
+	}
+
+	@Override
+	public Integer deleteHotWord() {
+		return hotWordMapper.deleteHotWord();
 	}
 
 }

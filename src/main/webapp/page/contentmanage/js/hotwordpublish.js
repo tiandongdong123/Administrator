@@ -2,6 +2,8 @@ var pageNum;
 var pageSize = 10;
 $(function(){
 	showPage(1);
+	selectValue("nature",$("#publish_strategy").val());
+	changenature("#nature");
 });
 
 /*分页显示*/
@@ -48,8 +50,8 @@ function serachdata(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
             "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>"+
-			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+rows.status+")\" class='btn btn-primary'>"+(rows.status==1?"已应用":"待应用")+"</button>&nbsp;" +
-			"<button type='button' onclick=\"update('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary'>修改</button></div></td>" +
+			 divShow(rows.id,rows.status)+"&nbsp;" +
+			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary'>修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -107,6 +109,29 @@ function doaddWordSetting(){
 		publish_date="";
 	}
 	
+	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
+		$("#checkfirst_publish_time").text("请填写首次发布日期！");
+		return;
+	} 
+
+	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
+		$("#checkpublish_cyc").text("请填写发布周期！");
+		return;
+	} 
+	if(time_slot=='' || time_slot==null || time_slot==undefined){
+		$("#checktime_slot").text("请填写数据统计时间段！");
+		return;
+	} 
+	if(publish_strategy=="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+		$("#checkpublish_date").text("请填写发布时间！");
+		return;
+	} 
+	if(get_time=='' || get_time==null || get_time==undefined){
+		$("#checkfirst_publish_time").text("请填写抓取时间！");
+		return;
+	} 
+
+	
 	$.ajax({
 		type : "post",
 		async:false,
@@ -128,10 +153,140 @@ function doaddWordSetting(){
 	
 	if(issuccess){
 		layer.msg("保存成功!",{icon: 1});
-		history.go(0);
+		parent.location.reload();
 	}else{
 		layer.msg("保存失败!",{icon: 2});
 	}
 	
 }
+
+function updateSetting(id,status){
+	
+	if(status==1){
+		layer.msg("请下撤应用后修改！",{icon: 2});
+		return;
+	}
+	
+	
+	layer.open({
+	    type: 2, //page层 1div，2页面
+	    area: ['50%', '70%'],
+	    title: '热搜词发布设置',
+	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+	    content: "../content/getHotWordSetting.do?id="+id,
+	}); 
+}
+
+
+function selectValue(id,val){
+	for(var i=0;i<document.getElementById(id).options.length;i++)
+    {
+        if(document.getElementById(id).options[i].value == val)
+        {
+            document.getElementById(id).options[i].selected=true;
+            break;
+        }
+    }
+}
+
+
+function doupdateWordSetting(){
+	var publish_cyc=$("#publish_cycle").val();
+	var time_slot=$("#time_quantum").val();
+	var publish_strategy=$("#nature").val();
+	var publish_date=$("#publish_date").val();
+	var first_publish_time=$("#first_publish_time").val();
+	var get_time=$("#get_time").val();
+	var id=$("#id").val();
+	var issuccess=false;
+	
+	if(publish_strategy=="手动发布"){
+		publish_date="";
+	}
+	
+	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
+		$("#checkfirst_publish_time").text("请填写首次发布日期！");
+		return;
+	} 
+
+	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
+		$("#checkpublish_cyc").text("请填写发布周期！");
+		return;
+	} 
+	if(time_slot=='' || time_slot==null || time_slot==undefined){
+		$("#checktime_slot").text("请填写数据统计时间段！");
+		return;
+	} 
+	if(publish_strategy=="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+		$("#checkpublish_date").text("请填写发布时间！");
+		return;
+	} 
+	if(get_time=='' || get_time==null || get_time==undefined){
+		$("#checkfirst_publish_time").text("请填写抓取时间！");
+		return;
+	} 
+
+	
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/doupdateWordSetting.do",
+		dataType : "json",
+		data : {
+			"publish_cyc" :publish_cyc,
+			"time_slot" :time_slot,
+			"publish_strategy" :publish_strategy,
+			"publish_date" :publish_date,
+			"first_publish_time" :first_publish_time,
+			"get_time" :get_time,
+			"id":id,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	
+	if(issuccess){
+		layer.msg("修改成功!",{icon: 1});
+		parent.location.reload();
+	}else{
+		layer.msg("修改失败!",{icon: 2});
+	}
+
+}
+
+function publish(id,status){
+	
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/updateWordSettingStatus.do",
+		dataType : "json",
+		data : {
+			"id":id,
+			"status":status,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	
+	if(issuccess){
+		layer.msg("修改成功!",{icon: 1});
+		parent.location.reload();
+	}else{
+		layer.msg("修改失败!",{icon: 2});
+	}
+
+
+}
+
+function  divShow(id,status){
+	var html="";
+	if(status==2){
+		html="<button type='button' onclick=\"publish(this,'"+id+"',"+status+")\" class='btn btn-primary'>应用</button>";
+	}
+	return html;
+}
+
 

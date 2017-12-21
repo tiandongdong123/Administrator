@@ -14,4 +14,5 @@ public interface HotWordMapper {
 	Integer checkWordExist(@Param("word_content") String word_content);
 	Integer addWord(HotWord hotWord);
 	Integer updateWord(HotWord hotWord);
+	Integer deleteHotWord();
 }

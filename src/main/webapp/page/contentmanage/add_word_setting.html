@@ -1,5 +1,5 @@
 	<?
-	  include("/inc/header.html") {}
+	  include("/inc/header.html",{title:'热搜词发布设置'}) {}
     ?>
 	<script type="text/javascript" src="../page/contentmanage/js/hotwordpublish.js"></script>
 <input type="hidden" id="checkname">
@@ -14,37 +14,46 @@
 			<div id="addadmin">
 			<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>首次发布时间：</label>
-             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time"><span id="checkadminid"></span>
+             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time" value="${item.first_publish_time!}"><span id="checkfirst_publish_time"></span>
          	</div>
 			<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布周期：</label>
-             <input type="text" id="publish_cycle" maxlength="16"  class="form-control input_width"><span id="checkadminid"></span>
+             <input type="text" id="publish_cycle" maxlength="16"  class="form-control input_width" value="${item.publish_cyc!}"><span id="checkpublish_cyc"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据统计时间段：</label>
-            	 近<input type="text" id="time_quantum"  class="form-control input_width">天<span id="checkpassword"></span>
+            	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}">天<span id="checktime_slot"></span>
          	</div>
          	 <div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布策略：</label>
+             <input type="hidden" value="${item.publish_strategy!}" id="publish_strategy"/>
              <select id="nature" onchange="changenature(this);">
               <option value="自动发布">自动发布</option>
               <option value="手动发布">手动发布</option>
              </select>
          	</div>
-         	<div class="form-group input_block" id="publish_time_div">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
-             <input onclick="WdatePicker({dateFmt:'HH:mm:ss'})" placeholder="请发布时间"  type="text" class="Wdate" id="publish_date">
-         	</div>
-         	<div class="form-group input_block">
+	         <div class="form-group input_block" id="publish_time_div">
+	           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
+	           <input onclick="WdatePicker({dateFmt:'HH:mm:ss'})" placeholder="请发布时间"  type="text" class="Wdate" id="publish_date" value="${item.publish_date!}"><span id="checkpublish_date"></span>
+	         </div>			
+        	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-             <input onclick="WdatePicker({dateFmt:'HH:mm:ss'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time">
+             <input onclick="WdatePicker({dateFmt:'HH:mm:ss'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time"></span>
          	</div>
 
          </div>		
-              <div class="box-footer" style="text-align:center;">
-               <button type="button" onclick="doaddWordSetting()" class="btn btn-primary">保存</button>
-               <button type="reset" class="btn btn-primary">重置</button>
-              </div>
+              <?if(isupdate=='add'){?>
+ 	              <div class="box-footer" style="text-align:center;">
+	               <button type="button" onclick="doaddWordSetting()" class="btn btn-primary">保存</button>
+	               <button type="reset" class="btn btn-primary">重置</button>
+	              </div>             
+			  <?}else{?>
+	              <div class="box-footer" style="text-align:center;">
+	               <input type="hidden" value="${item.id!}" id="id"/>
+	               <button type="button" onclick="doupdateWordSetting()" class="btn btn-primary">修改</button>
+	               <button type="reset" class="btn btn-primary">重置</button>
+	              </div>
+			  <?}?	  
               </form>
             </div>
           </div>

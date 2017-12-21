@@ -28,6 +28,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
+import org.bigdata.framework.forbidden.iservice.IForbiddenSerivce;
 import org.bigdata.framework.search.iservice.ISearchCoreResultService;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -121,6 +122,9 @@ public class ContentController{
 	
 	@Autowired
 	HotWordSettingService hotWordSettingService;
+	
+	@Autowired
+	IForbiddenSerivce forbiddenSerivce;
 	
 	@Autowired
 	LogService logService;
@@ -1724,7 +1728,10 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/hotword")
-	public String hotword(){
+	public String hotword(Model model){
+		Map map=new HashMap();
+		map.put("status",1);
+		model.addAttribute("item",hotWordSettingService.getOneHotWordSettingShow(map));
 		return "/page/contentmanage/hotword";
 	}
 	
@@ -1734,7 +1741,8 @@ public class ContentController{
 	}
 	
 	@RequestMapping("/addWordSetting")
-	public String addWordSetting(){
+	public String addWordSetting(Model model){
+		model.addAttribute("isupdate","add");
 		return "/page/contentmanage/add_word_setting";
 	}
 
@@ -1860,13 +1868,12 @@ public class ContentController{
 		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
-		 cal.add(Calendar.DATE,wordset.getPublish_cyc());
-		 String nextPublish=sdf.format(cal.getTime())+" "+wordset.getPublish_date();
+		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
 		 cal.add(Calendar.DATE,wordset.getTime_slot());
 		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"-"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
 		 wordset.setNext_publish_time(nextPublish);
 		 wordset.setNext_publish_time_space(next_publish_time_space);
-		 wordset.setStatus(1);
+		 wordset.setStatus(2);
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 wordset.setOperation_date(sdf.format(d));
@@ -1874,7 +1881,7 @@ public class ContentController{
 	}
 	
 	/**
-	 * \
+	 * 
 	 * @param response
 	 * @param request
 	 * @throws IOException
@@ -1889,6 +1896,56 @@ public class ContentController{
 		return  list;
 	}
 
+	/**
+	 * 
+	 * @param word
+	 * @return
+	 */
+	@RequestMapping("/checkForBiddenWord")
+	public boolean checkForBiddenWord(String word){
+		return forbiddenSerivce.CheckForBiddenWord(word)>0;
+	}
+	
+
+	/**
+	 * 
+	 * @param word
+	 * @return
+	 */
+	@RequestMapping("/getHotWordSetting")
+	public String getHotWordSetting(Integer id,Model model){
+		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);
+		model.addAttribute("item",item);
+		model.addAttribute("isupdate","update");
+		return "/page/contentmanage/add_word_setting";
+	}
+	
+	@RequestMapping("/doupdateWordSetting")
+	@ResponseBody
+	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request){
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		 Date d = new Date();
+		 Calendar cal = Calendar.getInstance();
+		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+		 cal.add(Calendar.DATE,wordset.getTime_slot());
+		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"-"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
+		 wordset.setNext_publish_time(nextPublish);
+		 wordset.setNext_publish_time_space(next_publish_time_space);
+		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		 wordset.setOperation_date(sdf.format(d));
+		 return hotWordSettingService.updateWordSetting(wordset)>0;
+	}
+
+	
+	@RequestMapping("/updateWordSettingStatus")
+	@ResponseBody
+	public boolean updateWordSettingStatus(Integer id,Integer status){
+		HotWordSetting wordset=new HotWordSetting();
+		wordset.setStatus(status);
+		wordset.setId(id);
+		return hotWordSettingService.updateWordSetting(wordset)>0;
+	}
 	
 	
 }

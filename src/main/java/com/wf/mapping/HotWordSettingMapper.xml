@@ -9,6 +9,10 @@
     <result column="remindemail" property="remindemail" jdbcType="VARCHAR" />
     <result column="countthreshold" property="countthreshold" jdbcType="VARCHAR" />
   </resultMap> -->
+	<resultMap id="userResultMap" type="java.util.Map">
+		<result property="theme" column="theme" jdbcType="VARCHAR" />
+		<result property="frequency" column="frequency" jdbcType="INTEGER" />
+	</resultMap>
  
  	<select id="getHotWordSetting"  resultType="map" parameterType="map">
  	  select * from hot_search_word_setting  order by status 
@@ -16,10 +20,17 @@
  	</select>
  	
  	<select id="getHotWordSettingCount" resultType="map" parameterType="map">
- 		select * from hot_search_word_setting  order by status
+ 		select * from hot_search_word_setting where 1=1
+	      <if test="status != null">
+	        and  status=#{status}
+	      </if>
+ 		order by status
  	</select>
- 
-  
+ 	
+ 	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
+ 		select * from hot_search_word_setting where id=#{id}
+ 	</select>
+ 	
      <insert id="addWordSetting" parameterType="com.wf.bean.HotWordSetting">
     insert into hot_search_word_setting
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -91,9 +102,59 @@
       <if test="next_publish_time_space!=null">
         #{next_publish_time_space,jdbcType=VARCHAR},
       </if>
-      
     </trim>
   </insert>
   
-  
+  <update id="updateHotWordSetting" parameterType="com.wf.bean.HotWordSetting">
+      update hot_search_word_setting
+    <set>
+      <if test="publish_cyc != null">
+        publish_cyc=#{publish_cyc,jdbcType=INTEGER},
+      </if>
+      <if test="time_slot != null">
+        time_slot=#{time_slot,jdbcType=INTEGER},
+      </if>
+      <if test="publish_strategy != null">
+        publish_strategy=#{publish_strategy,jdbcType=VARCHAR},
+      </if>
+      <if test="publish_date != null">
+        publish_date=#{publish_date,jdbcType=VARCHAR},
+      </if>
+      <if test="operation != null">
+      	 operation=#{operation,jdbcType=VARCHAR},
+      </if>
+      <if test="operation_date != null">
+         operation_date=#{operation_date,jdbcType=VARCHAR},
+      </if>
+      <if test="status!=null">
+        status=#{status,jdbcType=INTEGER},
+      </if>
+      <if test="first_publish_time!=null">
+        first_publish_time=#{first_publish_time,jdbcType=VARCHAR},
+      </if>
+      <if test="get_time!=null">
+        get_time=#{get_time,jdbcType=VARCHAR},
+      </if>
+      <if test="next_publish_time!=null">
+        next_publish_time=#{next_publish_time,jdbcType=VARCHAR},
+      </if>
+      <if test="next_publish_time_space!=null">
+        next_publish_time_space=#{next_publish_time_space,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+   	<select id="getHotWordSettingTask" resultMap="BaseResultMap">
+ 		select * from hot_search_word_setting where substr(next_publish_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='自动发布' and status=1 limit 0,1
+ 	</select>
+ 	<select id="getHotWordTongJi" resultMap="java.util.Map" parameterType="java.lang.String">
+ 		#{sql}
+ 	</select>
+ 	
+ 	<update id="updateHotWordSetting" parameterType="com.wf.bean.HotWordSetting">
+      update hot_search_word_setting
+   </update>
+ 
+ 	
+ 	
 </mapper>

@@ -14,4 +14,5 @@ public interface HotWordService {
 	Integer updateWordIssue(HotWord hotWord);
 	boolean checkRedisCount();
 	boolean publishToRedis();
+	Integer deleteHotWord();
 }

@@ -340,7 +340,22 @@ function checkWordExist(word){
 				isExist=data;
 			}
 		});
-return isExist;
+	return isExist;
+}
+
+function checkForBiddenWord(word){
+	 var isExist=false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../content/checkForBiddenWord.do",
+			dataType : "json",
+			data : {"word" :word},
+			success : function (data){
+				isExist=data;
+			}
+		});
+	return isExist;
 }
 
 
@@ -349,15 +364,23 @@ return isExist;
  */
 function add_word(){
  var word_content=$.trim($("#word_content").val());
- var isExist=checkWordExist(word_content);
  var success=false;
  
+ if(word_content=='' || word_content==null || word_content==undefined){
+	 layer.msg("请填写热搜词!",{icon: 2});
+	 return;
+ }
+ 
+ if(checkForBiddenWord(word_content)){
+	 layer.msg("含有敏感词,请重新填写!",{icon: 2});
+	 return;
+ }
+ 
+ var isExist=checkWordExist(word_content);
  if(isExist){
 	 layer.msg("该热搜词已存在!",{icon: 2});
 	 return;
  }
- 
- 
  
  $.ajax({
 		type : "post",
