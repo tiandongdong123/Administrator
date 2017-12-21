@@ -24,7 +24,7 @@
   	<if test="status!=null and status!=''">
     	and word_status =#{status}
     </if>
-    
+    order by word_status,search_count desc
   	limit #{pageNum},#{pageSize}
   </select>
   
@@ -40,6 +40,7 @@
   	<if test="status!=null and status!=''">
     	and word_status =#{status}
     </if>
+    order by word_status,search_count desc
   </select>
   
   <select id="checkWordExist" resultType="int" parameterType="string">
@@ -96,5 +97,24 @@
       
     </trim>
   </insert>
+  
+    <update id="updateWord" parameterType="com.wf.bean.HotWord">
+      update hot_search_word
+    <set >
+      <if test="word != null and word !=''" >
+        word = #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null and operationTime !=''" >
+        operation_time = date_format(now(),'%Y-%c-%d %h:%i:%s'),
+      </if>
+      <if test="wordStatus != null and wordStatus !=''" >
+        word_status = #{wordStatus,jdbcType=INTEGER},
+      </if>
+      <if test="operation != null and operation !=''" >
+        operation = #{operation,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   
 </mapper>

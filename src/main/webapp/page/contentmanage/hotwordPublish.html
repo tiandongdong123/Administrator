@@ -5,13 +5,37 @@
 ?>
 	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
 	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
-	<script type="text/javascript" src="../page/contentmanage/js/hotword.js"></script>
+	<script type="text/javascript" src="../page/contentmanage/js/hotwordpublish.js"></script>
 <div class="content-wrapper">
 <section class="content-header">
       <h1>热搜词发布设置</h1>
 </section> 
     <!-- Main content -->
 <section class="content">
+			<button type='button' class='btn btn-primary' onclick="addWordSetting();">添加热搜词发布设置</button>
+            <table style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>首次发布日期</th>
+                  <th>发布周期</th>
+                  <th>数据统计时间段</th>
+                  <th>发布策略</th>
+                  <th>发布时间</th>
+                  <th style="width: 140px;">数据抓取时间</th>
+                  <th>下次发布时间</th>
+                  <th>下次发布数据统计时间段</th>
+                  <th>操作人</th>
+                  <th>操作时间</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+              </table>
+
 </section>
 </div>	
 <?}?>

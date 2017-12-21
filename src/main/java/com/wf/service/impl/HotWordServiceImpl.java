@@ -1,11 +1,16 @@
 package com.wf.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.redis.RedisUtil;
 import com.wf.bean.HotWord;
 import com.wf.bean.PageList;
 import com.wf.dao.HotWordMapper;
@@ -41,6 +46,49 @@ public class HotWordServiceImpl implements HotWordService{
 	@Override
 	public Integer addWord(HotWord hotWord) {
 		return hotWordMapper.addWord(hotWord);
+	}
+
+	@Override
+	public Integer updateWord(HotWord hotWord) {
+		return hotWordMapper.updateWord(hotWord);
+	}
+
+	
+	@Override
+	public Integer updateWordIssue(HotWord hotWord) {
+		return hotWordMapper.updateWord(hotWord);
+	} 
+
+	@Override
+	public boolean checkRedisCount() {
+		RedisUtil redis=new RedisUtil();
+		String content=redis.get("theme",11);
+		JSONArray array=JSONArray.fromObject(content);
+		return array.size()>=20; 
+	}
+
+	@Override
+	public boolean publishToRedis() {
+		boolean success=true;
+		try {
+			RedisUtil redis=new RedisUtil();
+			//redis.del(11,"theme");
+			Map map=new HashMap();
+			map.put("status",1);
+			List<Object> list=hotWordMapper.getCount(map);
+			JSONArray array=new JSONArray();
+			for (Object object : list) {
+				JSONObject json=JSONObject.fromObject(object);
+				json.put("theme", json.get("word"));
+				json.put("frequency",json.get("search_count"));
+				array.add(json);
+			}
+			redis.set("theme",array.toString(),11);
+		} catch (Exception e) {
+			success=false;
+		}
+		return success;
+
 	}
 
 }

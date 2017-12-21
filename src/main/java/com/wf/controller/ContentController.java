@@ -33,6 +33,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.jboss.resteasy.plugins.server.sun.http.HttpServerRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +55,7 @@ import com.utils.JsonUtil;
 import com.utils.ParamUtils;
 import com.wf.bean.Department;
 import com.wf.bean.HotWord;
+import com.wf.bean.HotWordSetting;
 import com.wf.bean.Log;
 import com.wf.bean.Message;
 import com.wf.bean.Notes;
@@ -67,6 +69,7 @@ import com.wf.bean.Volume;
 import com.wf.bean.Wfadmin;
 import com.wf.service.DepartmentService;
 import com.wf.service.HotWordService;
+import com.wf.service.HotWordSettingService;
 import com.wf.service.LogService;
 import com.wf.service.MessageService;
 import com.wf.service.NotesService;
@@ -115,6 +118,9 @@ public class ContentController{
 	
 	@Autowired
 	HotWordService hotWordService;
+	
+	@Autowired
+	HotWordSettingService hotWordSettingService;
 	
 	@Autowired
 	LogService logService;
@@ -1727,6 +1733,11 @@ public class ContentController{
 		return "/page/contentmanage/hotWordPublish";
 	}
 	
+	@RequestMapping("/addWordSetting")
+	public String addWordSetting(){
+		return "/page/contentmanage/add_word_setting";
+	}
+
 	
 	/**
 	 * 资讯查询分页
@@ -1769,10 +1780,113 @@ public class ContentController{
 		hotWord.setSearchCount(0);
 		hotWord.setWordNature("后台添加");
 		hotWord.setOperationTime(df.format(new Date()));
-		hotWord.setWordStatus(1);
+		hotWord.setWordStatus(2);
 		hotWord.setDateTime(df.format(new Date()));
 		hotWord.setOperation( CookieUtil.getWfadmin(request).getUser_realname());
 		return hotWordService.addWord(hotWord)>0;
+	}
+
+	/**
+	 * @param word_content
+	 * @return
+	 */
+	@RequestMapping("/updateWord")
+	@ResponseBody
+	public boolean updateWord(HttpServletRequest request,String word_content,Integer id){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		HotWord hotWord=new HotWord();
+		hotWord.setId(id);
+		hotWord.setWord(word_content);
+
+		hotWord.setWordStatus(2);
+		hotWord.setOperationTime(df.format(new Date()));
+		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+		return hotWordService.updateWord(hotWord)>0;
+	}
+
+	/**
+	 * @param word_content
+	 * @return
+	 */
+	@RequestMapping("/updateWordIssue")
+	@ResponseBody
+	public boolean updateWordIssue(HttpServletRequest request,Integer issueState,Integer id){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		HotWord hotWord=new HotWord();
+		hotWord.setId(id);
+		hotWord.setOperationTime(df.format(new Date()));
+		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+		hotWord.setWordStatus(issueState);
+		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
+		isuccess=hotWordService.publishToRedis();
+		return isuccess;
+	}
+	
+	
+	/**
+	 * @param word_content
+	 * @return
+	 */
+	@RequestMapping("/batch")
+	@ResponseBody
+	public boolean batch(HttpServletRequest request,
+			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
+		HotWord hotWord=null;
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		int count=0;
+		for (int i = 0; i < ids.length; i++) {
+			hotWord=new HotWord();
+			hotWord.setId(ids[i]);
+			hotWord.setOperationTime(df.format(new Date()));
+			hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+			hotWord.setWordStatus(status);
+			count+=hotWordService.updateWordIssue(hotWord);
+		}
+		boolean isuccess=hotWordService.publishToRedis();
+		return count>0 && isuccess;
+	}
+	
+	
+	@RequestMapping("/checkCount")
+	@ResponseBody
+	public boolean checkCount(){
+		return hotWordService.checkRedisCount();
+		
+	}
+
+	@RequestMapping("/doaddWordSetting")
+	@ResponseBody
+	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request){
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		 Date d = new Date();
+		 Calendar cal = Calendar.getInstance();
+		 cal.add(Calendar.DATE,wordset.getPublish_cyc());
+		 String nextPublish=sdf.format(cal.getTime())+" "+wordset.getPublish_date();
+		 cal.add(Calendar.DATE,wordset.getTime_slot());
+		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"-"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
+		 wordset.setNext_publish_time(nextPublish);
+		 wordset.setNext_publish_time_space(next_publish_time_space);
+		 wordset.setStatus(1);
+		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		 wordset.setOperation_date(sdf.format(d));
+		 return hotWordSettingService.addWordSetting(wordset)>0;
+	}
+	
+	/**
+	 * \
+	 * @param response
+	 * @param request
+	 * @throws IOException
+	 */
+	@RequestMapping("/getHotWordSettingJson")
+	@ResponseBody
+	public Object getHotWordSettingJson(int pageNum,int pageSize,HttpServletResponse response,HttpServletRequest request) throws IOException{
+		Map<String, Object> map=new HashMap<String, Object>();
+		map.put("pageNum",(pageNum-1)*pageSize);
+		map.put("pageSize",pageSize);
+		PageList list=hotWordSettingService.getHotWordSetting(map);
+		return  list;
 	}
 
 	

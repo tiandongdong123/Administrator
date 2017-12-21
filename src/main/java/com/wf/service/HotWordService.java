@@ -10,4 +10,8 @@ public interface HotWordService {
 	PageList getHotWord(Map map);
 	Integer checkWordExist(String word_content);
 	Integer addWord(HotWord hotWord);
+	Integer updateWord(HotWord hotWord);
+	Integer updateWordIssue(HotWord hotWord);
+	boolean checkRedisCount();
+	boolean publishToRedis();
 }

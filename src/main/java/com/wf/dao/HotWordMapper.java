@@ -13,4 +13,5 @@ public interface HotWordMapper {
 	List<Object> getCount(Map map);
 	Integer checkWordExist(@Param("word_content") String word_content);
 	Integer addWord(HotWord hotWord);
+	Integer updateWord(HotWord hotWord);
 }
