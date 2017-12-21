@@ -80,7 +80,7 @@ public class NotesServiceImpl implements NotesService {
 		boolean f=dao.updateNotes(notes)>0?true:false;
 		Notes notesNO1 = dao.topNO1(notes.getNoteNum());
 		if(notesNO1.getPerformAction() == 1){
-			updateWork(notes.getNoteNum());
+			updateWork(notes.getNoteNum(),notes.getDataState());
 		}
 		return f;
 	}
@@ -171,11 +171,11 @@ public class NotesServiceImpl implements NotesService {
 		return notes;
 	}
 	
-	public boolean updateWork(String noteNum){
+	public boolean updateWork(String noteNum,String dataState){
 		Connection con = null;
 		PreparedStatement stmt = null;
 		try {
-			String sql = "UPDATE notes SET data_state = '1' WHERE note_num = '" + noteNum + "'";
+			String sql = "UPDATE notes SET data_state = '" + dataState + "' WHERE note_num = '" + noteNum + "'";
 			con = getConnection();
 			stmt = con.prepareStatement(sql);
 			int num = stmt.executeUpdate();
