@@ -4,11 +4,13 @@
 <link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
 <script type="text/javascript" src="../page/contentmanage/js/notes_detail.js"></script>
     <section class="content">
-      <div class="row" ">
+      <div class="row">
+      <input type="hidden" id="recordId" value="${notes.recordId}"/>
+      <input type="hidden" id="noteNum" value="${notes.noteNum}"/>
       	<table class="table table-bordered">
       		<tr>
 	      		<td>笔记ID</td>
-	      		<td><input type="hidden" id="recordId" value="${notes.recordId}"/>${notes.noteNum}</td>
+	      		<td>${notes.noteNum}</td>
       		</tr>
       		<tr>
 	      		<td>文献标题</td>
