@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.bigdata.framework.forbidden.iservice.IForbiddenSerivce;
@@ -76,9 +78,18 @@ public class HotWordJob {
 				String theme=map.get("theme").toString();
 				int count=Integer.parseInt(map.get("frequency").toString());
 				int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-				if(forbid>0){
+				if(forbid>0 || !isMessyCode(theme)){
 					continue;
 				}
+				
+				if(theme.indexOf(":")!=-1 || theme.indexOf("：")!=-1){
+					theme=theme.substring(theme.indexOf(":")+1, theme.length());
+				}
+				
+				if(theme.indexOf("：")!=-1){
+					theme=theme.substring(theme.indexOf("：")+1, theme.length());
+				}
+				
 				HotWord word=new HotWord();
 				word.setWord(theme);
 				word.setSearchCount(count);
@@ -106,4 +117,43 @@ public class HotWordJob {
 		}
 		log.info("完成热门文献的发布");
 	}
+	
+	 public  boolean isChinese(char c) {
+	        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+	        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+	                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+	                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+	                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+	                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+	                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+	            return true;
+	        }
+	        return false;
+	    }
+	 
+	 public  boolean isMessyCode(String strName) {
+	        Pattern p = Pattern.compile("\\s*|t*|r*|n*");
+	        Matcher m = p.matcher(strName);
+	        String after = m.replaceAll("");
+	        String temp = after.replaceAll("\\p{P}", "");
+	        char[] ch = temp.trim().toCharArray();
+	        float chLength = ch.length;
+	        float count = 0;
+	        for (int i = 0; i < ch.length; i++) {
+	            char c = ch[i];
+	            if (!Character.isLetterOrDigit(c)) {
+	                if (!isChinese(c)) {
+	                    count = count + 1;
+	                }
+	            }
+	        }
+	        float result = count / chLength;
+	        if (result > 0.4) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	 
+	    }
+	 
 }
