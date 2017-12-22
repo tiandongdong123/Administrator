@@ -3,6 +3,8 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.wf.bean.HotWordSetting;
 
 public interface HotWordSettingDao {
@@ -12,6 +14,6 @@ public interface HotWordSettingDao {
 	HotWordSetting getOneHotWordSetting(Integer id);
 	Integer updateHotWordSetting(HotWordSetting hotWordSetting);
 	HotWordSetting getHotWordSettingTask();
-	List<Object> getHotWordTongJi(String sql);
+	List<Map<String,Object>> getHotWordTongJi(@Param("sql")String sql);
 	Integer updateAllSetting();
 }

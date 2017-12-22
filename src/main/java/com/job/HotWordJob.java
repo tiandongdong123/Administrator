@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bigdata.framework.forbidden.iservice.IForbiddenSerivce;
@@ -34,7 +35,7 @@ public class HotWordJob {
 	
 	
 	//每凌晨1点执行(检查是否需要发送邮件)
-	@Scheduled(cron = "0 30 8 * * ?")
+	@Scheduled(cron = "0 0/2 * * * ?")
 	public void exechotWord() {
 		//首先考虑获取数据时间
 		try {
@@ -44,40 +45,42 @@ public class HotWordJob {
 				log.info("没有任务需要执行");
 				return;
 			}
-			Calendar cal=Calendar.getInstance();
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date query_start = df.parse(set.getNext_publish_time());//开始查询时间
-			cal.setTime(query_start);
-			cal.add(Calendar.DATE, -set.getTime_slot());
-			Date query_end=cal.getTime();//结束查询时间
-			//查数据库统计数据
-			int start_month=query_start.getMonth()+1;
-			int end_month=query_end.getMonth()+1;
-			cal.setTime(query_start);
-			StringBuffer sql=new StringBuffer("select e.theme,count(1) frequency from (");
-			for(int i=start_month;i<=end_month;i++){
-				if(i>start_month){
-					sql.append("UNION ALL ");
-				}
-				sql.append("select theme,count(1) frequency from ");
-				int month=Calendar.MONTH+1;
-				String str_month=month>9?String.valueOf(month):String.valueOf("0"+month);
-				sql.append("zsfx_res_table.AUTO_THEHE_"+Calendar.YEAR+"_"+str_month+" ");
-				sql.append("where create_time>='"+df.format(query_start)+"' and create_time<='"+df.format(query_end)+"' ");
-				cal.add(Calendar.MONTH, 1);
-			}
-			sql.append(") e group by e.theme order by frequency desc limit 100");
-			List<Object> list=hotWordSettingService.getHotWordTongJi(sql.toString());
 			//清理数据库，去除敏感词,插入数据
 			hotWordService.deleteHotWord();
 			log.info("清理热搜词完成");
+			//统计要插入的数据
+			Calendar cal=Calendar.getInstance();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date query_end = df.parse(set.getNext_publish_time());//开始查询时间
+			cal.setTime(query_end);
+			cal.add(Calendar.DATE, -set.getTime_slot());
+			Date query_start=cal.getTime();//结束查询时间
+			//查数据库统计数据
+			int start_month=query_start.getMonth()+1;
+			int end_month=query_end.getMonth()+1;
+			cal.setTime(query_end);
+			StringBuffer sql=new StringBuffer("");
+			for(int i=start_month;i<=end_month;i++){
+				if(i>start_month){
+					sql.append(" UNION ALL ");
+				}
+				sql.append("select theme from ");
+				int month=cal.get(Calendar.MONTH)+1;
+				String str_month=month>9?String.valueOf(month):String.valueOf("0"+month);
+				sql.append("zsfx_res_table.AUTO_THEHE_"+cal.get(Calendar.YEAR)+"_"+str_month+" ");
+				sql.append("where create_time BETWEEN '"+df.format(query_start)+"' and '"+df.format(query_end)+"'");
+				cal.add(Calendar.MONTH, 1);
+			}
+			//sql.append(") e group by e.theme order by frequency desc limit 100");
+			log.info("执行sql:"+sql.toString());
+			List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(sql.toString());
 			int index=1;
 			for(Object obj:list){
 				Map<String,Object> map=(Map<String, Object>) obj;
 				String theme=map.get("theme").toString();
 				int count=Integer.parseInt(map.get("frequency").toString());
 				int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-				if(forbid>0 || !isMessyCode(theme)){
+				if(forbid>0 || isMessyCode(theme)){
 					continue;
 				}
 				if(StringUtils.isBlank(theme)){
@@ -88,7 +91,7 @@ public class HotWordJob {
 					if(StringUtils.isBlank(word)){
 						continue;
 					}
-					if(theme.indexOf(":")!=-1 || theme.indexOf("：")!=-1){
+					if(theme.indexOf(":")!=-1){
 						theme=theme.substring(theme.indexOf(":")+1, theme.length());
 					}
 					

@@ -15,7 +15,7 @@
     <result column="next_publish_time" property="next_publish_time" jdbcType="VARCHAR" />
     <result column="next_publish_time_space" property="next_publish_time_space" jdbcType="VARCHAR" />
   </resultMap>
-	<resultMap id="BaseResultMap" type="java.util.Map">
+	<resultMap id="ThemeResultMap" type="java.util.Map">
 		<result property="theme" column="theme" jdbcType="VARCHAR" />
 		<result property="frequency" column="frequency" jdbcType="INTEGER" />
 	</resultMap>
@@ -153,8 +153,8 @@
    	<select id="getHotWordSettingTask" resultMap="TaskResultMap">
  		select * from hot_search_word_setting where substr(next_publish_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='自动发布' and status=1 limit 0,1
  	</select>
- 	<select id="getHotWordTongJi" resultType="java.util.Map" parameterType="java.lang.String">
- 		#{sql}
+ 	<select id="getHotWordTongJi" resultMap="ThemeResultMap" parameterType="java.lang.String">
+		select e.theme,count(1) frequency from (select theme from zsfx_res_table.AUTO_THEHE_2017_12 where create_time BETWEEN '2017-12-12 20:46:30' and '2017-12-22 20:46:30' limit 0,100) e group by e.theme order by frequency desc limit 100
  	</select>
  	
  	<update id="updateAllSetting">

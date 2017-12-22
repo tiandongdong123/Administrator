@@ -13,6 +13,6 @@ public interface HotWordSettingService {
 	HotWordSetting getOneHotWordSetting(Integer id);
 	Object getOneHotWordSettingShow(Map map);
 	HotWordSetting getHotWordSettingTask();
-	List<Object> getHotWordTongJi(String sql);
+	List<Map<String,Object>> getHotWordTongJi(String sql);
 	Integer updateAllSetting();
 }

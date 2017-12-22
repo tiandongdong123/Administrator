@@ -59,7 +59,7 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	}
 
 	@Override
-	public List<Object> getHotWordTongJi(String sql) {
+	public List<Map<String,Object>> getHotWordTongJi(String sql) {
 		return hotWordSettingDao.getHotWordTongJi(sql);
 	}
 
