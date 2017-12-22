@@ -150,11 +150,4 @@
  	<select id="getHotWordTongJi" resultMap="java.util.Map" parameterType="java.lang.String">
  		#{sql}
  	</select>
- 	
- 	<update id="updateHotWordSetting" parameterType="com.wf.bean.HotWordSetting">
-      update hot_search_word_setting
-   </update>
- 
- 	
- 	
 </mapper>
