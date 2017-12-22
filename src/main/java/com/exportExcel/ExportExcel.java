@@ -360,16 +360,22 @@ public class ExportExcel {
 						row=sheet.createRow(i+1);
 						//行内列赋值
 						row.createCell(0).setCellValue(i+1);
-						row.createCell(1).setCellValue(array.getJSONObject(i).get("perioName").toString());
-						row.createCell(2).setCellValue(array.getJSONObject(i).get("hireCon").toString());
-						row.createCell(3).setCellValue(array.getJSONObject(i).get("subTime").toString()+"个月");
-						row.createCell(4).setCellValue(array.getJSONObject(i).get("auditMoney").toString());
-						row.createCell(5).setCellValue(array.getJSONObject(i).get("layoutMoney").toString());
-						row.createCell(6).setCellValue(array.getJSONObject(i).get("commentContent").toString());
-						row.createCell(7).setCellValue(array.getJSONObject(i).get("finalOpinion").toString());
-						row.createCell(8).setCellValue(array.getJSONObject(i).get("authorName").toString()); 
-						row.createCell(9).setCellValue(array.getJSONObject(i).get("dataState").toString().equals("1")?"正常":"禁用");
-						row.createCell(10).setCellValue(array.getJSONObject(i).get("complaintStatus").toString().equals("1")?"正常":"申诉");
+						row.createCell(1).setCellValue(array.getJSONObject(i).get("id").toString());
+						row.createCell(2).setCellValue(array.getJSONObject(i).get("perio_name").toString());
+						row.createCell(3).setCellValue(array.getJSONObject(i).get("publishing_discipline").toString());
+						row.createCell(4).setCellValue(array.getJSONObject(i).get("hire_con").toString());
+						row.createCell(5).setCellValue(getStringBySubmit_period(array.getJSONObject(i).get("submit_period").toString()));
+						row.createCell(6).setCellValue(array.getJSONObject(i).get("audit_money")==null?"":array.getJSONObject(i).get("audit_money").toString());
+						row.createCell(7).setCellValue(array.getJSONObject(i).get("layout_money")==null?"":array.getJSONObject(i).get("layout_money").toString());
+						row.createCell(8).setCellValue(array.getJSONObject(i).get("comment_content").toString());
+						row.createCell(9).setCellValue(array.getJSONObject(i).get("user_id").toString()); 
+						row.createCell(10).setCellValue(array.getJSONObject(i).get("creat_date").toString());
+						row.createCell(11).setCellValue(array.getJSONObject(i).get("goods").toString());
+						row.createCell(12).setCellValue(array.getJSONObject(i).get("data_state").toString().equals("1")?"正常":"禁用");
+						row.createCell(13).setCellValue(getStringByExecutive_operation(array.getJSONObject(i).get("executive_operation").toString()));
+						row.createCell(14).setCellValue(array.getJSONObject(i).get("auditor")==null?"":array.getJSONObject(i).get("auditor").toString());
+						row.createCell(15).setCellValue(array.getJSONObject(i).get("audit_time")==null?"":array.getJSONObject(i).get("audit_time").toString());
+					
 					}
 					
 						//设置Content-Disposition  
@@ -383,6 +389,39 @@ public class ExportExcel {
 					e.printStackTrace();
 				}
 				
+			}
+			
+			private String getStringBySubmit_period(String submit_period){
+				String str="";
+				
+				if(submit_period.equals("12")){
+					str="1年";
+				}else if(submit_period.equals("24")){
+					str="1年";
+				}else if(submit_period.equals("25")){
+					str="大于2年";
+				}else{
+					str=submit_period+"个月";
+				}
+				
+				return str;
+			}
+			
+			
+			private String getStringByExecutive_operation(String executive_operation){
+				
+				String str="";
+				
+				if(executive_operation.equals("1")){
+					str="新增";
+				}else if(executive_operation.equals("2")){
+					str="修改";
+				}else if(executive_operation.equals("3")){
+					str="删除";
+				}
+				
+				return str;
+
 			}
 			
 			

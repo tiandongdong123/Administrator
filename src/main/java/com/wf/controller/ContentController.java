@@ -874,6 +874,7 @@ public class ContentController{
 			@RequestParam(value="endTime",required=false) String endTime,
 			@RequestParam(value="noteProperty[]",required=false) String[] noteProperty,
 			@RequestParam(value="performAction[]",required=false) String[] performAction,
+			@RequestParam(value="pagesize",required=false) int pagesize,
 			@RequestParam(value="page",required=false) int pageNum, HttpServletRequest request
 			) throws Exception{
 		
@@ -893,8 +894,7 @@ public class ContentController{
 			endTime=format.format(calendar.getTime());
 		}
 		
-		int pageSize=10;
-		PageList NotepageList =notesService.getNotes(pageNum, pageSize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
+		PageList NotepageList =notesService.getNotes(pageNum, pagesize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
 		JSONObject json=JSONObject.fromObject(NotepageList);
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
@@ -914,6 +914,11 @@ public class ContentController{
 		boolean b=notesService.handlingNote(id);
 
 		Notes notes =notesService.findNotes(id);
+		String noteDate = notes.getNoteDate();
+		if(!"".equals(noteDate)){
+			noteDate = noteDate.substring(0, 4) + "年" + noteDate.substring(5, 7) + "月" + noteDate.substring(8, 10) + "日" + noteDate.substring(10, 19);
+		}
+		notes.setNoteDate(noteDate);
 		model.addAttribute("notes", notes);
 		return "/page/contentmanage/notes_detail";
 	}
@@ -1476,7 +1481,7 @@ public class ContentController{
 	@RequestMapping("/exportNotes")
 	public void exportNotes(HttpServletRequest request,HttpServletResponse response,String userName,
 			String noteNum, String resourceName,String[] resourceType,String[] dataState,
-			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction){
+			String[] complaintStatus,String startTime,String endTime, String[] noteProperty, String[] performAction)throws Exception{
 				
 		ExportExcel excel=new ExportExcel();
 	
@@ -1484,12 +1489,21 @@ public class ContentController{
 		if(StringUtils.isEmpty(noteNum)) noteNum=null;
 		if(StringUtils.isEmpty(resourceName)) resourceName=null;
 		if(StringUtils.isEmpty(startTime)) startTime=null;
-		if(StringUtils.isEmpty(endTime)) endTime=null;
 		if(resourceType.length==0) resourceType=null;
 		if(dataState.length==0) dataState=null;
 		if(complaintStatus.length==0) complaintStatus=null;
 		if(noteProperty.length==0) noteProperty=null;
 		if(performAction.length==0) performAction=null;
+		
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar  calendar=new  GregorianCalendar(); 
+		if(StringUtils.isEmpty(endTime)){
+			endTime=null;
+		}else{
+			calendar.setTime(format.parse(endTime));
+			calendar.add(calendar.DATE,1);
+			endTime=format.format(calendar.getTime());
+		}
 		
 		
 		List<Object> list= notesService.exportNotes(userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,  noteProperty, performAction);

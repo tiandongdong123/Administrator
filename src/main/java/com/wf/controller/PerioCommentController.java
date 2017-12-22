@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.exportExcel.ExportExcel;
 import com.redis.getClcFromRedis;
 import com.utils.CookieUtil;
+import com.utils.ExcelUtil;
 import com.utils.JsonUtil;
 import com.wf.bean.CommentInfo;
 import com.wf.bean.PageList;
@@ -72,7 +73,7 @@ public class PerioCommentController {
 			if(compare==0){
 				startTime=startTime+" 00:00";
 				endTime=endTime+" 23:59";
-			}else if(compare>0){
+			}else if(compare<0){
 				startTime=startTime+" 00:00";
 				endTime=endTime+" 23:59";
 			}else{
@@ -143,19 +144,22 @@ public class PerioCommentController {
 	@ResponseBody
 	public Object updateNotes(HttpServletRequest request) throws Exception{
 		String id = request.getParameter("id");
+		String isget=request.getParameter("isget");
+		String perioid=request.getParameter("perioid");
 		String dataState = request.getParameter("dataState");
 		String appealReason = request.getParameter("appealReason");
 		String isupdata=request.getParameter("isupdata");
 		String rand_id=request.getParameter("rand_id");
 		
 		Wfadmin admin =CookieUtil.getWfadmin(request);
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String user_id=admin.getId();
 		String date=sdf.format(new Date());
 		
-		boolean b=this.pc.updateNotes(rand_id,dataState,appealReason,user_id,date);
-		if(isupdata.equals("1")){
-			this.pc.updateInfo(id, dataState);
+		boolean b=this.pc.updateNotes(id,dataState,appealReason,user_id,date);
+		if(StringUtils.isEmpty(isget)){
+			this.pc.updateInfo(perioid, dataState);
+
 		}
 		return b;
 	}
@@ -176,24 +180,56 @@ public class PerioCommentController {
 	 * @param elayoutm 版面费结束
 	 * @param request
 	 * @param response
+	 * @throws Exception 
 	 */
 	@RequestMapping("/exportPerio")
 	public void exportPerio(CommentInfo info,
-			String[]dataStateArr,String[]complaintStatusArr,
+			@RequestParam(value="dataStateArr[]",required=false)String[] dataState,
+			@RequestParam(value="complaintStatusArr[]",required=false)String[] complaintStatus,
 			String startTime,String endTime,
 			String sauditm,String eauditm,String slayoutm,
-			String elayoutm,HttpServletRequest request ,HttpServletResponse response){
+			String elayoutm,Integer pagenum,Integer pagesize,HttpServletRequest request ,HttpServletResponse response) throws Exception{
 		
-			if(dataStateArr.length==0) dataStateArr=null;
-			if(complaintStatusArr.length==0) complaintStatusArr=null;
 		
-		    ExportExcel exportExcel=new ExportExcel();
-		    List<Object> list=new ArrayList<Object>();
-			list= this.pc.exportPerio(info,dataStateArr,complaintStatusArr,startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
-			JSONArray array=JSONArray.fromObject(list);
-			List<String> names=Arrays.asList(new String[]{"序号","期刊名称","录用情况","审稿周期","审稿费","版面费","自定义点评","处理意见","点评用户名","数据状态","申诉状态"});
-			
-			exportExcel.exportPerio(response, array, names);
+		SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+		if(StringUtils.isNotEmpty(startTime)&&StringUtils.isEmpty(endTime)){
+			startTime=startTime+" 00:00";
+		}else if(StringUtils.isNotEmpty(endTime)&&StringUtils.isEmpty(startTime)){
+			endTime=endTime+" 23:59";
+		}else if(StringUtils.isNotEmpty(endTime)&&StringUtils.isNotEmpty(startTime)){
+			Date dateTime1 = dateFormat.parse(startTime);
+			Date dateTime2 = dateFormat.parse(endTime);
+			int compare = dateTime1.compareTo(dateTime2); 
+			if(compare==0){
+				startTime=startTime+" 00:00";
+				endTime=endTime+" 23:59";
+			}else if(compare>0){
+				startTime=startTime+" 23:59";
+				endTime=endTime+" 00:00";
+			}else{
+				endTime=endTime+" 23:59";
+				startTime=startTime+" 00:00";
+			}
+		}
+		
+		List<Object> list= this.pc.exportPerio(info,dataState,complaintStatus,startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
+		getClcFromRedis clc=new getClcFromRedis();
+		for(int i=0;i<list.size();i++){
+			CommentInfo com=(CommentInfo)list.get(i);
+			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
+			com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			if(StringUtils.isNotEmpty(com.getAuditor())){
+				com.setAuditor(adminS.getAdminById(com.getAuditor()).getUser_realname());
+			}
+			list.remove(i);
+			list.add(i, com);
+		}
+		
+																									
+		List<String> names=Arrays.asList(new String[]{"序号","点评id","期刊名称","发文学科","录用情况","审稿周期","审稿费","版面费","点评内容","点评用户id","点评时间","点赞数","数据状态","执行操作","审核人","审核时间"});
+		JSONArray array=JSONArray.fromObject(list);	
+		ExportExcel excel=new ExportExcel();
+		excel.exportPerio(response, array, names);
 		
 	}
 	

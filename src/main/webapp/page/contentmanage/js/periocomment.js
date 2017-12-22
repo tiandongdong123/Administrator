@@ -11,7 +11,7 @@ var dataState;
 var complaintStatus;
 
 $(function(){
-	commentpage(1);
+	paging();
 });
 $(function(){
 	$(".layui-layer-close1").on('click',function(){
@@ -87,8 +87,48 @@ $(function(){
 })();
 
 
-//分页显示
-function commentpage(curr){
+
+
+function findNote(data){
+	var id=data;
+	layer.open({
+		  type: 2,//page层 1div，2页面
+		  area: ['60%', '98%'],
+		  fixed: false, //不固定
+		  title: '期刊点评详情',
+		  maxmin: true,
+		  moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		  content: "findNote.do?id="+id,
+		});
+}
+
+
+function chekbox(data){
+	var tal= $(data).val();
+	if(tal=="all"){
+		if ($("#check1").is(':checked')) {  
+			$("input[name='complaintStatus']").prop("checked",true);
+	   }else{
+		   $("input[name='complaintStatus']").prop("checked",false);
+	   }
+	}
+	var i=0;
+	$("input[name='complaintStatus']").each(function() {
+		if ($(this).is(':checked')) {
+			i++;
+		}
+	});	
+	if(i==3){
+		$("input[name='complaintStatus1']").prop("checked",true);
+	}else{
+		 $("input[name='complaintStatus1']").prop("checked",false);
+	}
+}
+
+function paging(){
+	
+	var pagenum=$("#pagenum").val();
+	var pagesize=$("#pagesize").val();
 	
     $("#commentbody tr").remove();
 	 username = $("#username").val();
@@ -124,78 +164,64 @@ function commentpage(curr){
 	dataState=new Array();
 	complaintStatus=new Array();
 	
-	$("input:checkbox[name='dataState']:checked").each(function(){
+/*	$("input:checkbox[name='dataState']:checked").each(function(){
 		dataState.push($(this).val());
-	});
+	});*/
 	
-	$("input:checkbox[name='complaintStatus']:checked").each(function(){
-		complaintStatus.push($(this).val());
-	});
+	var is_dataState=$("#dataState option:selected").val();
+	if(is_dataState=="all"){
+		var selectlist=$("select [name='select_data']");
+		for(var i=0;i<selectlist.length;i++){
+			dataState.push(selectlist.eq(i).val());
+		}
+	}else{
+		dataState.push(is_dataState);
+	}
+	var is_Status=$("#complaintStatus option:selected").val();
+	if(is_Status=="all"){
+		var selectlist=$("select [name='select_Status']");
+		for(var i=0;i<selectlist.length;i++){
+			complaintStatus.push(selectlist.eq(i).val());
+		}
+	}else{
+		complaintStatus.push(is_Status);
+	}
 	
-    $.post('../periocomment/getcomment.do', {
-        pagenum: curr,//向服务端传的参数
-        pagesize :10,
-        authorName:username,
-        perio_name : perioname,
-        startTime :startTime,
-        endTime:endTime,
-        submit_period:subtime,
-        sauditm:sauditm,
-        eauditm:eauditm,
-        slayoutm:slayoutm,
-        elayoutm:elayoutm,
-        dataStateArr:dataState,
-        complaintStatusArr:complaintStatus
-    }, function(res){
-    	var totalRow = res.pageTotal;
-        var pageSize = res.pageSize;
-        var pages;
-        var groups;
-        if(totalRow%pageSize==0) {	
-        	 pages = totalRow/pageSize; 
-        }else {
-        	pages = totalRow/pageSize+1;
-        }
-        if(pages>=4) {
-        groups=4;
-        }else {
-        	groups=pages;
-        }
-        //显示分页
-        laypage({
-        	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-            pages: pages, //通过后台拿到的总页数
-            curr: curr, //当前页
-            skip: true, //是否开启跳页
-    	      skin: 'molv',//当前页颜色，可16进制
-    	      groups: groups, //连续显示分页数
-    	      first: '首页', //若不显示，设置false即可
-    	      last: '尾页', //若不显示，设置false即可
-    	      prev: '上一页', //若不显示，设置false即可
-    	      next: '下一页', //若不显示，设置false即可
-            jump: function(obj, first){ //触发分页后的回调
-                if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-                	commentpage(obj.curr);
-            		
-                }
-            }
-        });
-    	
-    	if(res.pageTotal>0){
-    	html="";
+   $.post('../periocomment/getcomment.do', {
+       pagenum: pagenum,//向服务端传的参数
+       pagesize :pagesize,
+       user_id:username,
+       perio_name : perioname,
+       startTime :startTime,
+       endTime:endTime,
+       submit_period:subtime,
+       sauditm:sauditm,
+       eauditm:eauditm,
+       slayoutm:slayoutm,
+       elayoutm:elayoutm,
+       dataStateArr:dataState,
+       complaintStatusArr:complaintStatus
+   }, function(res){
+   	   var totalRow = res.totalRow;
+       var pageSize = res.pageSize;
+       var pageTotal=res.pageTotal;
+       var pageall;
+       if(totalRow%pageSize==0){
+    	   pageall=totalRow/pageSize;
+       }else{
+    	   pageall= parseInt(totalRow/pageSize)+1;
+       }
+       var maxLenght=(pageall+"").length;
+       $("#totalRow").text(totalRow);
+       $("#totalpage").text(pageall);
+       $("#pageTotal").val(pageTotal);
+       $("#pagenum").attr("maxlength",maxLenght); 
+   	if(res.pageTotal>0){
+   	html="";
 	    for(var i =0;i<res.pageRow.length;i++){
-			var index = 1+i;
 			var rows = res.pageRow[i];
 			var datast ="";
-			var compst="";
-			var num="";
-			if($(".laypage_curr").text()=="")
-				{
-				num=1;
-				}
-			else{
-				num=$(".laypage_curr").text();
-			}		
+			var compst="";		
 			var buttonval="";
 			if(rows.data_state=='1'){
 				datast="正常";
@@ -211,11 +237,8 @@ function commentpage(curr){
 			}
 					
 			html+=" <tr>"; 
-					if(index<=9){
-						html+="<td>"+(num-1)+""+index+"</td>";
-					}else if(index==10){
-						html+="<td>"+num+"0</td>";
-					}					
+			
+			html+="<td>"+((1+i+(pagenum-1)*pagesize))+"</td>";
 			html+="<td>"+rows.id+"</td>"+
 					"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;' >"+rows.perio_name+"</td>"+
 			 		"<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'>"+rows.publishing_discipline+"</td>"+
@@ -250,68 +273,105 @@ function commentpage(curr){
 					}
 					
 	    
-    }
+   }
 	    $("#commentbody").html(html);
-  }else {
+	    $("#pagenum").find("option[value='"+pagenum+"']").attr("selected","selected");	    
+ }else {
 	  layer.msg("没有检索到信息！请重新检索！");
 	  }
-    });
+   });
+}
 
-};
-
-
-function findNote(data){
-	var id=data;
-	layer.open({
-		  type: 2,//page层 1div，2页面
-		  area: ['60%', '90%'],
-		  fixed: false, //不固定
-		  title: '期刊点评详情',
-		  maxmin: true,
-		  moveType: 1, //拖拽风格，0是默认，1是传统拖动
-		  content: "findNote.do?id="+id,
-		});
+function firstPage(){
+	var pagenum=Number($("#pagenum").val());
+	if(pagenum==1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val("1");
+		paging();
+	}
 }
 
 
+function upPage(){
+	var pagenum=Number($("#pagenum").val())-1;
+	if(pagenum<1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		paging();
+	}
+
+}
+
+function lastPage(){
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(pagenum==$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(total);
+		paging();
+	}
+}
+
+function downPage(){
+	var pagenum=Number($("#pagenum").val())+1;
+	if(pagenum>$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		paging();
+	}
+}
+
+
+function getAllpageNum(){
+	$("#pagenum").val("1");
+	paging();
+}
+
+function selectPage(){
+	var keyCode=event.keyCode;
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(keyCode==13){
+		if(pagenum>total){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum==0){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum<=total){
+			paging();
+		}
+	}
+}
 
 //导出期刊
 function exportPerio(){
-	
-	window.location.href="../periocomment/exportPerio.do?" +
-			"userId="+username+
-			"&perioName="+perioname+
-			"&startTime="+startTime+
-			"&endTime="+endTime+
-			"&subTime="+subtime+
-			"&sauditm="+sauditm+
-			"&eauditm="+eauditm+
-			"&slayoutm="+slayoutm+
-			"&elayoutm="+elayoutm+
-			"&dataStateArr="+dataState+
-			"&complaintStatusArr="+complaintStatus;
-	
-}
-
-
-function chekbox(data){
-	var tal= $(data).val();
-	if(tal=="all"){
-		if ($("#check1").is(':checked')) {  
-			$("input[name='complaintStatus']").prop("checked",true);
-	   }else{
-		   $("input[name='complaintStatus']").prop("checked",false);
-	   }
-	}
-	var i=0;
-	$("input[name='complaintStatus']").each(function() {
-		if ($(this).is(':checked')) {
-			i++;
+	for(var i=0;i<dataState.length;i++){
+		if(i==0){
+			datas="&dataStateArr[]="+dataState[i]
+		}else{
+			datas=datas+"&dataStateArr[]="+dataState[i]
 		}
-	});	
-	if(i==3){
-		$("input[name='complaintStatus1']").prop("checked",true);
-	}else{
-		 $("input[name='complaintStatus1']").prop("checked",false);
 	}
+	
+	for(var i=0;i<complaintStatus.length;i++){
+		if(i==0){
+			complain="&complaintStatusArr[]="+complaintStatus[i]
+		}else{
+			complain=complain+"&complaintStatusArr[]="+complaintStatus[i]
+		}
+	}
+	var  url="../periocomment/exportPerio.do?" +
+			"perio_name="+username +
+			"&perioName="+perioname +
+			"&startTime="+startTime +
+			"&endTime="+endTime +
+			"&submit_period="+subtime +
+			"&sauditm="+sauditm +
+			"&eauditm="+eauditm +
+			"&slayoutm="+slayoutm +
+			"&elayoutm="+elayoutm +datas+complain;
+	window.location.href=url;
 }

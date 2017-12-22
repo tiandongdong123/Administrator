@@ -59,18 +59,25 @@
               
               <div class="form-group input_block">
               <label for="exampleInputEmail1" class="input_name"> 数据状态：</label>
-				<input type="checkbox" name="dataState" value="1" checked="checked">正常
-				<input type="checkbox" name="dataState" value="0" checked="checked">禁用
+              <select id="dataState" >
+              <option value="all" >全部</option>
+              <option value="1"  name="select_data" >正常</option>
+              <option value="0" name="select_data" >禁用</option>
+              </select>
+				<!-- <input type="checkbox" name="dataState" value="1" checked="checked">正常
+				<input type="checkbox" name="dataState" value="0" checked="checked">禁用 -->
              </div>
               <div class="form-group input_block">
               <label for="exampleInputEmail1" class="input_name">执行操作：</label>
-				<input type="checkbox" name="complaintStatus1" id="check1" value="all" onclick="chekbox(this)" checked="checked">全部
-				<input type="checkbox" name="complaintStatus" value="1" onclick="chekbox(this)" checked="checked">新增
-				<input type="checkbox" name="complaintStatus" value="2" onclick="chekbox(this)" checked="checked">修改
-				<input type="checkbox" name="complaintStatus" value="3" onclick="chekbox(this)" checked="checked">删除
+              <select id="complaintStatus">
+              <option value="all">全部</option>
+              <option value="1" name="select_Status" >新增</option>
+              <option value="2" name="select_Status" >修改</option>
+              <option value="3" name="select_Status" >删除</option>
+              </select>
              </div>
              <div class="form-group input_block" style="text-align:center;">
-				<button type="submit" class="btn btn-primary"  onclick="commentpage(1)">查询</button>
+				<button type="submit" class="btn btn-primary"  onclick="paging()">查询</button>
 	           	<button type="button" style="float:right;" class="btn btn-primary" onclick="exportPerio();">导出</button>
              </div>
              <div style="width: 100%;overflow-x: auto;">
@@ -101,6 +108,59 @@
               </table>
               </div>
                <div id="page"></div>
+                <style>
+              	#pages{
+              		text-align: center;	
+              		padding: 15px 0px;
+              		font-size: 14px;
+              	}
+              	#pages span{
+              		padding: 0px 5px;
+              		 vertical-align: middle;
+              	}
+              	#pages span u{
+              		text-decoration: none;
+				    padding: 0px 5px;
+				    color: #00CCFF;
+              	}
+              	#pages select{
+              		height:25px;
+              	}
+              	#pages input[type="text"]{
+              		width: 40px;
+					height: 25px;
+					text-align: center;
+              	}
+              	#pages a img{
+              		vertical-align: top;
+              	}
+              	#pages button{
+              	    width: 50px;
+				    height: 25px;
+				    border: 1px solid #ccc;
+				    background-color: #fff;
+              	}
+              </style>
+              <div id="pages">
+              	<span>每页显示:</span>
+              	<select id="pagesize" onchange="getAllpageNum();">
+              		<option value="10">10</option>
+              		<option value="20" selected="selected">20</option>
+              		<option value="30">30</option>
+              		<option value="50">50</option>
+              	</select>
+              	<span>条数据</span>
+              	<a href="javascript:void(0);" class="first_page" onclick="firstPage();"><img src="../page/contentmanage/images/first_page.png"/></a>
+              	<a href="javascript:void(0);" class="up_page" onclick="upPage();"><img src="../page/contentmanage/images/up_page.png"/></a>
+              	<span>当前在第</span>
+              	<input id="pagenum" maxlength=""  style="width: 40px;" value="1" onkeydown="selectPage();" onkeypress="return event.keyCode>=48&&event.keyCode<=57" ng-pattern="/[^a-zA-Z]/"  />
+              	<span>页</span>
+              	<a href="javascript:void(0);" class="down_page" onclick="downPage();"><img src="../page/contentmanage/images/down_page.png"/></a>
+              	<a href="javascript:void(0);" class="last_page" onclick="lastPage();"><img src="../page/contentmanage/images/last_page.png"/></a>
+              	<span>共<u id="totalRow"></u>条数据</span>
+              	<span>共<u id="totalpage"></u>页</span>
+              	<input id="pageTotal" type="hidden">
+              </div>
             </div>
           </div>
       	 </div>
