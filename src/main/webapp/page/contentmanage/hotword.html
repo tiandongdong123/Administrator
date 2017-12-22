@@ -44,7 +44,7 @@
 			</table>
 		
 		<div style="text-align: center;width: 550px;margin-top: 2%;">
-		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
+		 	<button type="submit" class="btn btn-primary" onclick="findOne()" id="query">查询</button>
 		</div>
 		<br/><br/>
 		<div style="overflow-y :auto;position:relative">
@@ -55,7 +55,7 @@
               <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
               <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
                  	热搜词:<input type="text" id="word_content">
-                <button type="button" class="btn btn-primary" onclick="add_word();">添加热搜词</button> 
+                <button type="button" class="btn btn-primary" onclick="add_word();" id="add">添加热搜词</button> 
               </div>
               
 			<div class="table-responsive mailbox-messages">

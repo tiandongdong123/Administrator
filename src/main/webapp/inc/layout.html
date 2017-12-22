@@ -217,6 +217,7 @@
             <li <?if(!strutil.contain(session.purviews,"期刊点评审核管理")){?>style="display:none"<?}?>><a href="../periocomment/periocomment.do"><i class="fa fa-circle-o"></i>期刊点评审核管理</a></li>
            	<li <?if(!strutil.contain(session.purviews,"笔记审核管理")){?>style="display:none"<?}?><? if(session.menu_first=="notes.do"){ ?>class="active"<?}?>><a href="../content/notes.do"><i class="fa fa-circle-o"></i> 笔记审核管理</a></li>
            	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="hotword.do"){ ?>class="active"<?}?>><a href="../content/hotword.do"><i class="fa fa-circle-o"></i> 热搜词管理</a></li>
+           	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="content/hotWordPublish.do"){ ?>class="active"<?}?>><a href="../content/hotWordPublish.do"><i class="fa fa-circle-o"></i>热搜词发布设置</a></li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"其他管理")){?>style="display:none"<?}?>>

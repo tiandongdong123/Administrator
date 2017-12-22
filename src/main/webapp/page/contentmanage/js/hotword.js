@@ -84,8 +84,8 @@ function serachdata(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-date'><div title=''>"+word_status+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>";
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"update('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary'>修改</button></div></td>" +
+			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
+			"<button type='button' onclick=\"update('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -401,9 +401,6 @@ function add_word(){
 		
 }
 
-function hot_word_setting(str){
-	window.location.href="../content/hotWordPublish.do";
-}
 
 function batch(status){	
 	var str=status==3?"下撤":"发布";
@@ -450,4 +447,7 @@ function batch(status){
 	
 }
 
+function hot_word_setting(str){
+	window.location.href="../content/hotWordPublish.do";
+}
 
