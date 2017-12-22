@@ -1260,6 +1260,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public int updateAccountRestriction(CommonEntity com){
 		userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
+		if(StringUtils.isBlank(com.getChecks())){
+			return 0;
+		}
 		UserAccountRestriction acc = new UserAccountRestriction();
 		acc.setUserId(com.getUserId());
 		acc.setUpperlimit(com.getUpperlimit());
