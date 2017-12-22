@@ -80,7 +80,7 @@ public class HotWordServiceImpl implements HotWordService{
 			for (Object object : list) {
 				JSONObject json=JSONObject.fromObject(object);
 				json.put("theme", json.get("word"));
-				json.put("frequency",json.get("search_count"));
+				json.put("frequency",json.get("searchCount"));
 				json.put("field","");
 				json.put("result","");
 				json.put("tableName","");
