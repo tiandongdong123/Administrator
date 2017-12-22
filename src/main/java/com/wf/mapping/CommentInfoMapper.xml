@@ -202,7 +202,6 @@
   <update id="updateNotes" >
  	update  comment_admin set data_state=#{dataState},final_opinion =#{appealReason},auditor =#{user_id},audit_time=#{date}  where  rand_id=#{id}
  </update>
- 
   	
  <update id="updateInfo">
  	update  comment_info set data_state=#{dataState}  where  id=#{id}

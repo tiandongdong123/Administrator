@@ -88,7 +88,9 @@ public class PerioCommentController {
 		for(int i=0;i<json.size();i++){
 			CommentInfo com=(CommentInfo)json.get(i);
 			com.setPublishing_discipline(clc.getClcName(com.getPublishing_discipline()));
-			com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			if(StringUtils.isEmpty(com.getGoods())){
+				com.setGoods(pc.getGoodForCommont(com.getId())+"");
+			}
 			if(StringUtils.isNotEmpty(com.getAuditor())){
 				com.setAuditor(adminS.getAdminById(com.getAuditor()).getUser_realname());
 			}
@@ -146,6 +148,8 @@ public class PerioCommentController {
 		String perioid=request.getParameter("perioid");
 		String dataState = request.getParameter("dataState");
 		String appealReason = request.getParameter("appealReason");
+		String isupdata=request.getParameter("isupdata");
+		String rand_id=request.getParameter("rand_id");
 		
 		Wfadmin admin =CookieUtil.getWfadmin(request);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -155,6 +159,7 @@ public class PerioCommentController {
 		boolean b=this.pc.updateNotes(id,dataState,appealReason,user_id,date);
 		if(StringUtils.isEmpty(isget)){
 			this.pc.updateInfo(perioid, dataState);
+
 		}
 		return b;
 	}

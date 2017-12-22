@@ -28,7 +28,6 @@ public class CommentInfo {
 	private String  goods;
 	
 	
-	
 	public String getRand_id() {
 		return rand_id;
 	}

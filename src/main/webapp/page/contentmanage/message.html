@@ -6,19 +6,10 @@
 	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
 	<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
 	<script type="text/javascript" src="../page/contentmanage/js/findMessage.js"></script>
- <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-                     资讯管理
-      </h1>
-      <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 内容管理</a></li>
-        <li class="active">资讯管理</li>
-      </ol>-->
-    </section> 
-	<input type="hidden" id="pageNum" value="${pageList.pageNum}">
-  	<input type="hidden" id="pageTotal" value="${pageList.pageTotal}">
+<div class="content-wrapper">
+<section class="content-header">
+      <h1>资讯管理</h1>
+</section> 
   	<input type="hidden" id="branchf" value="${meaasgeMap.branch}">
   	<input type="hidden" id="columsf" value="${meaasgeMap.colums}">
     <!-- Main content -->
@@ -53,14 +44,18 @@
 		  					<option>万方资讯</option>
 		  				</select>
 	  				</td>
-	  				<td></td><td></td>
+	  				<td>是否置顶</td>
+	  				<td><select id="isTop">
+	  					<option value="">全部</option>
+	  					<option value="1">是</option>
+	  					<option value="0">否</option>
+	  				</select></td>
 	  			</tr>
 	  		</table>
 		
 		<div style="text-align: center;width: 550px;margin-top: 2%;">
 		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
 		</div>
-		
 		<br/><br/>
 		<div style="overflow-y :auto;position:relative">
         <div class="col-md-12">
@@ -70,31 +65,17 @@
                 <div class="btn-group">
                   <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                 </div>
-                <!-- /.btn-group -->
-
                 <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
                 <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="oneKeyDeploy();">重建索引</button>
-                 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a onclick="exportexecl();" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></button>
-                 <button type="button" style="float: right;margin-right: 5px;"  class="btn btn-default btn-sm"><a onclick="refresh();" href="javascript:void(0);"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+				<button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a onclick="exportexecl();" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></button>
+				<button type="button" style="float: right;margin-right: 5px;"  class="btn btn-default btn-sm"><a onclick="refresh();" href="javascript:void(0);"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
               </div>
               
-              <div class="table-responsive mailbox-messages">
-                <table class="table table-bordered table-striped">
-                  
-                </table>
-                <!-- /.table -->
-              </div>
-              <!-- /.mail-box-messages -->
-            </div>
-            <!-- /.box-body -->
-            
-            <div class="box-footer no-padding">
-              <div class="mailbox-controls">
-                <div id="page"></div>
-                <span style="display: none" id="here"></span>
-                <!-- /.pull-right -->
-              </div>
-            </div>
+			<div class="table-responsive mailbox-messages">
+               <table class="table table-bordered table-striped" id="list"></table></div>
+			</div>
+			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
             
           </div>
           <!-- /. box -->

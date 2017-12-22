@@ -828,7 +828,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}else{//网络包库调用接口
 					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
 					if(msg==1){
-						log.info(com.getUserId()+"包库注册/更新成功");
+						log.info(com.getUserId()+"包库接口调用成功");
 					}else{
 						log.info(com.getUserId()+"包库更新失败");
 					}
@@ -1833,15 +1833,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 添加统计分析
 		String tongji = com.getTongji();
 		userInstitutionMapper.deleteUserIns(com.getUserId());
-		if (!StringUtils.isEmpty(tongji)) {
-			UserInstitution ins = new UserInstitution();
-			ins.setUserId(com.getUserId());
-			JSONObject obj=new JSONObject();
-			obj.put("database_statistics", tongji.contains("A")?1:0);
-			obj.put("resource_type_statistics", tongji.contains("B")?1:0);
-			ins.setStatisticalAnalysis(obj.toString());
-			userInstitutionMapper.addUserIns(ins);
+		if (tongji == null) {
+			tongji = "";
 		}
+		UserInstitution ins = new UserInstitution();
+		ins.setUserId(com.getUserId());
+		JSONObject obj=new JSONObject();
+		obj.put("database_statistics", tongji.contains("A")?1:0);
+		obj.put("resource_type_statistics", tongji.contains("B")?1:0);
+		ins.setStatisticalAnalysis(obj.toString());
+		userInstitutionMapper.addUserIns(ins);
 	}
 
 	@Override

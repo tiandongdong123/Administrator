@@ -16,14 +16,18 @@
     <result column="human" property="human" jdbcType="VARCHAR" />
     <result column="stick" property="stick" jdbcType="VARCHAR" />
     <result column="issue_state" property="issueState" jdbcType="INTEGER" />
+    <result column="is_top" property="isTop" jdbcType="VARCHAR" />
   </resultMap>
 	<sql id="Base_Column_List" >
-		id,colums,title,abstract,link_address,create_time,author,organ_name,branch,image_url,human,issue_state
+		id,colums,title,abstract,link_address,date_format(create_time,'%Y-%m-%d %H:%i:%s') create_time,author,organ_name,branch,image_url,human,date_format(stick,'%Y-%m-%d %H:%i:%s') stick,issue_state,is_top
 	</sql>
   
 	<!-- 查询学科分类信息分页 -->
 	<select id="getMessageList" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List" /> from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
@@ -39,11 +43,14 @@
     	<if test="endTime!=null">
     		and create_time <![CDATA[ <= ]]> #{endTime}
     	</if>
-    	ORDER BY stick DESC
+    	ORDER BY create_time DESC
     	limit #{pageNum},#{pageSize}
 	</select>
 	<select id="getMessageCount" resultType="int" parameterType="java.util.Map">
     select count(1) from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
@@ -63,6 +70,9 @@
   
 	<select id="selectMessageInforAll" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select * from message where 1=1
+    	<if test="isTop!=null">
+    		and is_top=#{isTop}
+    	</if>
     	<if test="branch!=null">
     		and branch=#{branch}
     	</if>
@@ -87,8 +97,12 @@
 		select * from message where id=#{id}
 	</select>
 	<!-- 根据类型查询 -->
-	<select id="selectByFivecolums" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select * from message where colums=#{colums} and issue_state=2 ORDER BY stick desc limit 0,5
+	<select id="selectBycolums" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List" /> from message where is_top='0' and issue_state=2 and colums=#{colums} ORDER BY create_time DESC limit 0,#{size}
+	</select>
+	<!-- 查询置顶数据 -->
+	<select id="selectIsTop" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List" /> from message where is_top='1' and issue_state=2 and colums=#{colums} ORDER BY stick DESC limit 0,#{size}
 	</select>
   	<delete id="deleteMessage" parameterType="java.lang.String">
            delete from message where 
@@ -110,7 +124,14 @@
 		update message SET colums=#{colums},title=#{title},abstract=#{abstracts},link_address=#{linkAddress},
 		author=#{author},organ_name=#{organName},content=#{content},image_url=#{imageUrl},branch=#{branch},human=#{human},stick=now() where id=#{id}
 	</update>
+	<!-- 更改状态 -->
 	<update id="updateIssue" parameterType="java.util.Map">
-	update message SET issue_state=#{issueState},stick=#{stick} where id=#{id}
+		update message SET issue_state=#{issueState},stick=#{stick}
+		<if test="isTop!=null">,is_top=#{isTop}</if>
+		where id=#{id}
+	</update>
+	<!-- 重置某一类型的置顶状态 -->
+	<update id="updateIsTop" parameterType="java.lang.String">
+		update message SET is_top='0' where colums=#{colums}
 	</update>
 </mapper>

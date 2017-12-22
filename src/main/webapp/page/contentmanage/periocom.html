@@ -62,7 +62,7 @@
       		<tr>
       			<td>审稿费</td>
       			<td>
-      			<?if(info.audit_money!=null){?>
+      			<?if(info.audit_money!=null&&info.audit_money!=''){?>
       			${info.audit_money}元
       			<?}else{?>
       			<?}?>	
@@ -71,7 +71,7 @@
       		<tr>
       			<td>版面费</td>
       			<td>
-      			<?if(info.layout_money!=null){?>
+      			<?if(info.layout_money!=null&&info.layout_money!=''){?>
       			${info.layout_money}元
       			<?}else{?>
       			<?}?>			
@@ -99,11 +99,11 @@
       			<td>执行操作</td>
       			<td>
       			<?if(info.executive_operation=='1'){?>
-      			新增
+      				新增
       			<?}else if(info.executive_operation=='2'){?>
-      			修改
+      				修改
       			<?}else if(info.executive_operation=='3'){?>
-      			删除
+      				删除
       			<?}?>		
 				</td>
       		</tr>
@@ -124,6 +124,8 @@
       			</td>
       		</tr>
       	</table>
+      	<input type="hidden" id="isget" value="${info.isget}" />
+      	<input type="hidden" id="rand_id" value="${info.rand_id}" />
       	<br/>
       	<input id="isget" type="hidden" value="${info.isget}">
       	<input id="id" type="hidden" value="${info.id}">
