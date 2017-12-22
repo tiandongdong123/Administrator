@@ -1737,7 +1737,7 @@ public class ContentController{
 	
 	@RequestMapping("/hotWordPublish")
 	public String hotWordPublish(){
-		return "/page/contentmanage/hotWordPublish";
+		return "/page/contentmanage/hotwordPublish";
 	}
 	
 	@RequestMapping("/addWordSetting")

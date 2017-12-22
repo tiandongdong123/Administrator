@@ -27,7 +27,7 @@
 	  						<option value="后台添加">后台添加</option>
 	  					</select>
 	  				</td>
-  				<td class="al">检索内容</td><td class="ar"><input type="text" id="word"></td>	
+  				<td class="al">热搜词</td><td class="ar"><input type="text" id="word" ></td>	
 	  			</tr>
 	  			<tr>
 	  				<td class="al">热搜词状态</td>
@@ -54,16 +54,70 @@
               <div class="mailbox-controls">
               <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
               <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
-                 	热搜词:<input type="text" id="word_content">
+                 	热搜词:<input type="text" id="word_content" style="height:29px">
                 <button type="button" class="btn btn-primary" onclick="add_word();" id="add">添加热搜词</button> 
               </div>
               
 			<div class="table-responsive mailbox-messages">
                <table class="table table-bordered table-striped" id="list"></table></div>
 			</div>
-			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+               <div id="page"></div>
+                <style>
+              	#pages{
+              		text-align: center;	
+              		padding: 15px 0px;
+              		font-size: 14px;
+              	}
+              	#pages span{
+              		padding: 0px 5px;
+              		 vertical-align: middle;
+              	}
+              	#pages span u{
+              		text-decoration: none;
+				    padding: 0px 5px;
+				    color: #00CCFF;
+              	}
+              	#pages select{
+              		height:25px;
+              	}
+              	#pages input[type="text"]{
+              		width: 40px;
+					height: 25px;
+					text-align: center;
+              	}
+              	#pages a img{
+              		vertical-align: top;
+              	}
+              	#pages button{
+              	    width: 50px;
+				    height: 25px;
+				    border: 1px solid #ccc;
+				    background-color: #fff;
+              	}
+              </style>
+			
+              <div id="pages">
+              	<span>每页显示:</span>
+              	<select id="pagesize" onchange="getAllpageNum();">
+              		<option value="50" selected="selected">50</option>
+              	</select>
+              	<span>条数据</span>
+              	<a href="javascript:void(0);" class="first_page" onclick="firstPage();"><img src="../page/contentmanage/images/first_page.png"/></a>
+              	<a href="javascript:void(0);" class="up_page" onclick="upPage();"><img src="../page/contentmanage/images/up_page.png"/></a>
+              	<span>当前在第</span>
+              	<input id="pagenum" maxlength=""  style="width: 40px;" value="1" onkeydown="selectPage();" onkeypress="return event.keyCode>=48&&event.keyCode<=57" ng-pattern="/[^a-zA-Z]/"  />
+              	<span>页</span>
+              	<a href="javascript:void(0);" class="down_page" onclick="downPage();"><img src="../page/contentmanage/images/down_page.png"/></a>
+              	<a href="javascript:void(0);" class="last_page" onclick="lastPage();"><img src="../page/contentmanage/images/last_page.png"/></a>
+              	<span>共<u id="totalRow"></u>条数据</span>
+              	<span>共<u id="totalpage"></u>页</span>
+              	<input id="pageTotal" type="hidden">
+              </div>			
+			
+			
+<!-- 			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
   			</div>
-
+ -->
           <!-- /. box -->
         </div>
         </div>

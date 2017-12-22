@@ -34,7 +34,7 @@ public class HotWordServiceImpl implements HotWordService{
 		pagelist.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
 		pagelist.setPageRow(list);
 		pagelist.setTotalRow(count.size());
-		
+		pagelist.setPageTotal(count.size()%pagelist.getPageSize()==0?count.size()/pagelist.getPageSize():count.size()/pagelist.getPageSize()+1);
 		return pagelist;
 	}
 

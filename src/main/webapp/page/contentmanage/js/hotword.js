@@ -1,6 +1,6 @@
 var word_nature,word,status;
 var pageNum;
-var pageSize = 10;
+var pageSize;
 $(function(){
 	showPage(1);
 });
@@ -14,6 +14,7 @@ function showPage(curr){
 	word_nature=$("#word_nature").find("option:selected").val();
 	status=$("#status").find("option:selected").val();
 	word=$("#word").val();
+	pageSize=$("#pagesize").val();
 	$.ajax({
 		type : "post",
 		async:false,
@@ -36,20 +37,37 @@ function serachdata(curr,data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
 	var pageRow=data.pageRow;
+	var totalRow=data.totalRow;
+    var pageall;
+    if(totalRow%pageSize==0){
+ 	   pageall=totalRow/pageSize;
+    }else{
+ 	   pageall= parseInt(totalRow/pageSize)+1;
+    }
+    var maxLenght=(pageall+"").length;
+    $("#totalRow").text(totalRow);
+    $("#totalpage").text(pageall);
+    $("#pageTotal").val(pageTotal);
+    $("#pagenum").attr("maxlength",maxLenght); 
+    
+    if(totalRow<50){
+    	$("#pages").hide();
+    }
+    
 	var resHtml = "<tbody><tr style='text-align: center;'>" +
 	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
 	"<td class='mailbox-star'>序号</td>" +
-	"<td class=\"mailbox-name\"  style='width:30%'>热搜词</td>"+
-    "<td class=\"mailbox-attachment\"  style='width:20%'>检索量</td>"+
+	"<td class=\"mailbox-name\">热搜词</td>"+
+    "<td class=\"mailbox-name\">检索量</td>"+
     "<td class=\"mailbox-name\">热搜词性质</td>"+
     "<td class=\"mailbox-name\">操作时间</td>"+
     "<td class=\"mailbox-name\">操作人</td>"+
-    "<td class=\"mailbox-date\">热搜词状态</td>"+
+    "<td class=\"mailbox-name\">热搜词状态</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i+10*(pageNum);
+			var index = 1+i+pageNum;
 			var rows = pageRow[i];
 			var issue = rows.wordStatus;
 			var issueNum = 1;
@@ -77,21 +95,21 @@ function serachdata(curr,data){
 			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\"/>"+
 			"<button type='button' id=\""+rows.id+"_update_word\" onclick=\"update_word('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_cancel\" onclick=\"cancel('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
-			"</div></td>";
-			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>";
-			resHtml+="<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</div></td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operationTime.substr(0,rows.operationTime.length-2)+"</td>"+
+			"</div></td>"+
+			"<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
-            "<td class='mailbox-date'><div title=''>"+word_status+"</td>"+
-			"<td class='mailbox-name' style='width:350px;'><div>";
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
+			"<td class='mailbox-name' style='width:280px;'><div>"+
+			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"update('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
           "</tr>";
 		}
 	}
 	resHtml+="</tbody>";
 	$("#list").html(resHtml);
-	layui.use(['laypage', 'layer'], function(){
+/*	layui.use(['laypage', 'layer'], function(){
 		var laypage = layui.laypage,layer = layui.layer;
 		laypage.render({
 			elem: 'divPager',
@@ -108,7 +126,72 @@ function serachdata(curr,data){
 	            }
 			}
 		});
-	});
+	});*/
+}
+
+
+function firstPage(){
+	var pagenum=Number($("#pagenum").val());
+	if(pagenum==1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val("1");
+		showPage(pagenum);
+	}
+}
+
+
+function upPage(){
+	var pagenum=Number($("#pagenum").val())-1;
+	if(pagenum<1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		showPage(pagenum);
+	}
+
+}
+
+function lastPage(){
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(pagenum==$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(total);
+		showPage(pagenum);
+	}
+}
+
+function downPage(){
+	var pagenum=Number($("#pagenum").val())+1;
+	if(pagenum>$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		showPage(pagenum);
+	}
+}
+
+
+function getAllpageNum(){
+	$("#pagenum").val("1");
+	showPage(pagenum);
+}
+
+function selectPage(){
+	var keyCode=event.keyCode;
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(keyCode==13){
+		if(pagenum>total){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum==0){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum<=total){
+			showPage(pagenum);
+		}
+	}
 }
 
 
