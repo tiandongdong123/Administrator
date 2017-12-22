@@ -68,7 +68,7 @@ public class HotWordJob {
 			sql.append(") e group by e.theme order by frequency desc limit 100");
 			List<Object> list=hotWordSettingService.getHotWordTongJi(sql.toString());
 			//清理数据库，去除敏感词,插入数据
-			//hotWordService.deleteHotWord();
+			hotWordService.deleteHotWord();
 			log.info("清理热搜词完成");
 			int index=1;
 			for(Object obj:list){
