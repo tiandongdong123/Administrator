@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wf.dao.HotWordSettingDao" >
+  <resultMap id="TaskResultMap" type="com.wf.bean.HotWordSetting" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="publish_cyc" property="publish_cyc" jdbcType="INTEGER" />
+    <result column="time_slot" property="time_slot" jdbcType="INTEGER" />
+    <result column="publish_strategy" property="publish_strategy" jdbcType="VARCHAR" />
+    <result column="publish_date" property="publish_date" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+    <result column="operation_date" property="operation_date" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="first_publish_time" property="first_publish_time" jdbcType="VARCHAR" />
+    <result column="get_time" property="get_time" jdbcType="VARCHAR" />
+    <result column="next_publish_time" property="next_publish_time" jdbcType="VARCHAR" />
+    <result column="next_publish_time_space" property="next_publish_time_space" jdbcType="VARCHAR" />
+  </resultMap>
 	<resultMap id="BaseResultMap" type="java.util.Map">
 		<result property="theme" column="theme" jdbcType="VARCHAR" />
 		<result property="frequency" column="frequency" jdbcType="INTEGER" />
@@ -136,7 +150,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-   	<select id="getHotWordSettingTask" resultMap="BaseResultMap">
+   	<select id="getHotWordSettingTask" resultMap="TaskResultMap">
  		select * from hot_search_word_setting where substr(next_publish_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='自动发布' and status=1 limit 0,1
  	</select>
  	<select id="getHotWordTongJi" resultType="java.util.Map" parameterType="java.lang.String">

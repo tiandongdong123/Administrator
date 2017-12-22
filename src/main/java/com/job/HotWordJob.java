@@ -1,16 +1,14 @@
 package com.job;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bigdata.framework.forbidden.iservice.IForbiddenSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,9 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
+	
 	//每凌晨1点执行(检查是否需要发送邮件)
-	@Scheduled(cron = "0 0 19 * * ?")
+	@Scheduled(cron = "0 30 8 * * ?")
 	public void exechotWord() {
 		//首先考虑获取数据时间
 		try {
@@ -81,28 +80,36 @@ public class HotWordJob {
 				if(forbid>0 || !isMessyCode(theme)){
 					continue;
 				}
-				
-				if(theme.indexOf(":")!=-1 || theme.indexOf("：")!=-1){
-					theme=theme.substring(theme.indexOf(":")+1, theme.length());
+				if(StringUtils.isBlank(theme)){
+					continue;
 				}
-				
-				if(theme.indexOf("：")!=-1){
-					theme=theme.substring(theme.indexOf("：")+1, theme.length());
+				String[] words=theme.trim().split(" ");
+				for(String word:words){
+					if(StringUtils.isBlank(word)){
+						continue;
+					}
+					if(theme.indexOf(":")!=-1 || theme.indexOf("：")!=-1){
+						theme=theme.substring(theme.indexOf(":")+1, theme.length());
+					}
+					
+					if(theme.indexOf("：")!=-1){
+						theme=theme.substring(theme.indexOf("：")+1, theme.length());
+					}
+					HotWord hot=new HotWord();
+					hot.setWord(theme);
+					hot.setSearchCount(count);
+					hot.setWordNature("前台获取");
+					if(index>=20){
+						hot.setWordStatus(1);
+					}else{
+						hot.setWordStatus(2);
+					}
+					hotWordService.addWord(hot);
+					if(index>=50){
+						break;
+					}
+					index++;
 				}
-				
-				HotWord word=new HotWord();
-				word.setWord(theme);
-				word.setSearchCount(count);
-				word.setWordNature("前台获取");
-				if(index>=20){
-					word.setWordStatus(1);
-				}else{
-					word.setWordStatus(2);
-				}
-				if(index<=50){
-					hotWordService.addWord(word);
-				}
-				index++;
 			}
 			log.info("cha");
 			//发布redis
@@ -118,42 +125,42 @@ public class HotWordJob {
 		log.info("完成热门文献的发布");
 	}
 	
-	 public  boolean isChinese(char c) {
-	        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
-	        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-	                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-	                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-	                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
-	                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-	                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
-	            return true;
-	        }
-	        return false;
-	    }
+	public boolean isChinese(char c) {
+		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+		if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+				|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+				|| ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+				|| ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+				|| ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+				|| ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+			return true;
+		}
+		return false;
+	}
 	 
-	 public  boolean isMessyCode(String strName) {
-	        Pattern p = Pattern.compile("\\s*|t*|r*|n*");
-	        Matcher m = p.matcher(strName);
-	        String after = m.replaceAll("");
-	        String temp = after.replaceAll("\\p{P}", "");
-	        char[] ch = temp.trim().toCharArray();
-	        float chLength = ch.length;
-	        float count = 0;
-	        for (int i = 0; i < ch.length; i++) {
-	            char c = ch[i];
-	            if (!Character.isLetterOrDigit(c)) {
-	                if (!isChinese(c)) {
-	                    count = count + 1;
-	                }
-	            }
-	        }
-	        float result = count / chLength;
-	        if (result > 0.4) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	 
-	    }
+	public boolean isMessyCode(String strName) {
+		Pattern p = Pattern.compile("\\s*|t*|r*|n*");
+		Matcher m = p.matcher(strName);
+		String after = m.replaceAll("");
+		String temp = after.replaceAll("\\p{P}", "");
+		char[] ch = temp.trim().toCharArray();
+		float chLength = ch.length;
+		float count = 0;
+		for (int i = 0; i < ch.length; i++) {
+			char c = ch[i];
+			if (!Character.isLetterOrDigit(c)) {
+				if (!isChinese(c)) {
+					count = count + 1;
+				}
+			}
+		}
+		float result = count / chLength;
+		if (result > 0.4) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
 	 
 }
