@@ -24,11 +24,11 @@ public interface PerioCommentService {
 
 	Integer getGoodForCommont(String commontid);
 	
-	Integer updateInfo(String perioid,String dataState);
 
 	List<Object> exportPerio(CommentInfo info, String[] dataState,
 			String[] complaintStatus, String startTime, String endTime,
 			String sauditm, String eauditm, String slayoutm, String elayoutm);
 	
-	Integer updateInfo(String id,String dataState);
+	Integer updateInfo(String perioid,String dataState);
+
 }
