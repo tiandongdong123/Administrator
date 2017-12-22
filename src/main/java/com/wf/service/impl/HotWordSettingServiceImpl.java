@@ -62,4 +62,9 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	public List<Object> getHotWordTongJi(String sql) {
 		return hotWordSettingDao.getHotWordTongJi(sql);
 	}
+
+	@Override
+	public Integer updateAllSetting() {
+		return hotWordSettingDao.updateAllSetting();
+	}
 }

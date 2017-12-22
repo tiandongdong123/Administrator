@@ -284,7 +284,7 @@ function publish(id,status){
 function  divShow(id,status){
 	var html="";
 	if(status==2){
-		html="<button type='button' onclick=\"publish(this,'"+id+"',"+status+")\" class='btn btn-primary'>应用</button>";
+		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary'>应用</button>";
 	}
 	return html;
 }

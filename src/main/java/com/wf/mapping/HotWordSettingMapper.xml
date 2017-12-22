@@ -143,6 +143,8 @@
  		#{sql}
  	</select>
  	
- 	
+ 	<update id="updateAllSetting">
+ 	 	update hot_search_word_setting set status=2 
+ 	</update>
  	
 </mapper>

@@ -14,4 +14,5 @@ public interface HotWordSettingService {
 	Object getOneHotWordSettingShow(Map map);
 	HotWordSetting getHotWordSettingTask();
 	List<Object> getHotWordTongJi(String sql);
+	Integer updateAllSetting();
 }

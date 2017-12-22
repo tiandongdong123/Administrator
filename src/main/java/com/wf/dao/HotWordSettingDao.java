@@ -13,5 +13,5 @@ public interface HotWordSettingDao {
 	Integer updateHotWordSetting(HotWordSetting hotWordSetting);
 	HotWordSetting getHotWordSettingTask();
 	List<Object> getHotWordTongJi(String sql);
-	
+	Integer updateAllSetting();
 }

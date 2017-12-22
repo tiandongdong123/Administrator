@@ -1941,9 +1941,8 @@ public class ContentController{
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
+		hotWordSettingService.updateAllSetting();
 		HotWordSetting wordset=new HotWordSetting();
-		wordset.setStatus(2);
-		hotWordSettingService.updateWordSetting(wordset);
 		wordset=new HotWordSetting();
 		wordset.setStatus(status);
 		wordset.setId(id);
