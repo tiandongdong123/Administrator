@@ -256,29 +256,34 @@ function doupdateWordSetting(){
 }
 
 function publish(id,status){
+	layer.alert("确定要应用此数据吗?",{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定'], //按钮
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		async:false,
+	    		url : "../content/updateWordSettingStatus.do",
+	    		dataType : "json",
+	    		data : {
+	    			"id":id,
+	    			"status":status,
+	    			},
+	    		success : function (data){
+	    			issuccess=data;
+	    		}
+	    	});
+	    	
+	    	if(issuccess){
+	    		layer.msg("应用成功!",{icon: 1});
+	    		parent.location.reload();
+	    	}else{
+	    		layer.msg("应用失败!",{icon: 2});
+	    	}
+	    }
 	
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/updateWordSettingStatus.do",
-		dataType : "json",
-		data : {
-			"id":id,
-			"status":status,
-			},
-		success : function (data){
-			issuccess=data;
-		}
-	});
-	
-	if(issuccess){
-		layer.msg("修改成功!",{icon: 1});
-		parent.location.reload();
-	}else{
-		layer.msg("修改失败!",{icon: 2});
-	}
-
-
+	  });
 }
 
 function  divShow(id,status){
