@@ -1902,7 +1902,9 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/checkForBiddenWord")
+	@ResponseBody
 	public boolean checkForBiddenWord(String word){
+		System.out.println(forbiddenSerivce.CheckForBiddenWord(word));
 		return forbiddenSerivce.CheckForBiddenWord(word)>0;
 	}
 	
