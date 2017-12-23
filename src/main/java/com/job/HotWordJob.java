@@ -114,14 +114,14 @@ public class HotWordJob {
 					index++;
 				}
 			}
-			log.info("cha");
-			//发布redis
-			boolean flag=hotWordService.publishToRedis();
-			if(flag){
-				log.info("发布redis成功");
-			}else{
-				log.info("发布redis失败");
-			}
+			log.info("热搜词导入数据库完成");
+			//更新发布时间
+			query_end = df.parse(set.getNext_publish_time());//开始查询时间
+			cal.setTime(query_end);
+			cal.add(Calendar.DATE, set.getTime_slot());
+			String puublist_time=df.format(cal.getTime())+" "+set.getPublish_date();
+			set.setNext_publish_time(puublist_time);
+			hotWordSettingService.updateWordSetting(set);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
