@@ -60,11 +60,11 @@ public class HotWordServiceImpl implements HotWordService{
 	} 
 
 	@Override
-	public boolean checkRedisCount() {
+	public Integer checkRedisCount() {
 		RedisUtil redis=new RedisUtil();
 		String content=redis.get("theme",11);
 		JSONArray array=JSONArray.fromObject(content);
-		return array.size()>=20; 
+		return array.size(); 
 	}
 
 	@Override

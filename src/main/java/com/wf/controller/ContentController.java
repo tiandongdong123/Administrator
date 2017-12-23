@@ -1857,7 +1857,7 @@ public class ContentController{
 	
 	@RequestMapping("/checkCount")
 	@ResponseBody
-	public boolean checkCount(){
+	public Integer checkCount(){
 		return hotWordService.checkRedisCount();
 		
 	}
