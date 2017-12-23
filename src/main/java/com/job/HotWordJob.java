@@ -35,8 +35,6 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
-	
-	//每凌晨1点执行(检查是否需要发送邮件)
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWord() {
 		try {
@@ -44,7 +42,7 @@ public class HotWordJob {
 			InetAddress addr = InetAddress.getLocalHost();
 			String hostip = addr.getHostAddress();
 			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
-			if (!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
+			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
 				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
 				return;
 			}
