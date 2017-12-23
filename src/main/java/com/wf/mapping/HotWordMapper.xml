@@ -113,6 +113,10 @@
       <if test="operation != null and operation !=''" >
         operation = #{operation,jdbcType=VARCHAR},
       </if>
+      <if test="wordNature != null and wordNature !=''" >
+        word_nature = #{wordNature,jdbcType=VARCHAR},
+      </if>
+      
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>

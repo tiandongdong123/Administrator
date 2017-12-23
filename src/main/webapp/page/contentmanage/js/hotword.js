@@ -83,7 +83,7 @@ function serachdata(curr,data){
 			if(rows.wordStatus==1){
 				word_status="已发布";
 			}else if(rows.wordStatus==2){
-				word_status="未发布";
+				word_status="待发布";
 			}else{
 				word_status="已下撤";
 			}
