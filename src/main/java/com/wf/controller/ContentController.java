@@ -1790,7 +1790,7 @@ public class ContentController{
 		hotWord.setOperationTime(df.format(new Date()));
 		hotWord.setWordStatus(2);
 		hotWord.setDateTime(df.format(new Date()));
-		hotWord.setOperation( CookieUtil.getWfadmin(request).getUser_realname());
+		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		return hotWordService.addWord(hotWord)>0;
 	}
 
@@ -1805,7 +1805,8 @@ public class ContentController{
 		HotWord hotWord=new HotWord();
 		hotWord.setId(id);
 		hotWord.setWord(word_content);
-
+		hotWord.setSearchCount(0);
+		hotWord.setWordNature("后台添加");
 		hotWord.setWordStatus(2);
 		hotWord.setOperationTime(df.format(new Date()));
 		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());

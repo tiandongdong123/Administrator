@@ -13,7 +13,7 @@ function findOne(){
 function showPage(curr){
 	word_nature=$("#word_nature").find("option:selected").val();
 	status=$("#status").find("option:selected").val();
-	word=$("#word").val();
+	word=$.trim($("#word").val());
 	pageSize=$("#pagesize").val();
 	$.ajax({
 		type : "post",
@@ -136,7 +136,7 @@ function firstPage(){
 		layer.msg("已经是第一页了");
 	}else{
 		$("#pagenum").val("1");
-		showPage(pagenum);
+		showPage(1);
 	}
 }
 
@@ -159,7 +159,7 @@ function lastPage(){
 		layer.msg("已经是最后一页了");
 	}else{
 		$("#pagenum").val(total);
-		showPage(pagenum);
+		showPage(total);
 	}
 }
 
@@ -255,7 +255,7 @@ function update_word(id){
 	
 	if(success){
 		layer.msg("修改成功!",{icon: 1});
-		history.go(0);
+		setTimeout("window.location.reload()",2000);
 	}else{
 		layer.msg("修改失败!",{icon: 2});
 	}
@@ -321,9 +321,8 @@ function publish(that,obj,issueState){
 		value = '是否确定发布?';
 	}
 	layer.alert(value,{
-		icon: 1,
 	    skin: 'layui-layer-molv',
-	    btn: ['确定'], //按钮
+	    btn: ['确定','取消'], //按钮
 	    yes: function(){
 	    	$.ajax({
 	    		type : "post",  
@@ -336,7 +335,10 @@ function publish(that,obj,issueState){
 	    		success : function(data){
 	    			layer.closeAll();
 	    			if(data){
-	    				history.go(0);
+	    				layer.msg(value+"成功!",{icon: 1});
+	    				setTimeout("window.location.reload()",2000);
+	    			}else{
+	    				layer.msg(value+"失败!",{icon: 2});
 	    			}
 	    		},
 	    		error : function(data){
@@ -435,7 +437,8 @@ function add_word(){
   });
 	
   if(success){
-	history.go(0);
+	layer.msg("添加成功!",{icon: 1});
+	setTimeout("window.location.reload()",2000);
   }else{
 	layer.msg("添加失败!",{icon: 2});
   }
@@ -461,9 +464,8 @@ function batch(status){
 	}
 	
 	layer.alert('确定'+str+'该数据吗？',{
-		icon: 1,
 	    skin: 'layui-layer-molv',
-	    btn: ['确定'], //按钮
+	    btn: ['确定','取消'], //按钮
 	    yes: function(){
 			$.ajax({
 				type : "post",
@@ -474,8 +476,9 @@ function batch(status){
 				success :function(data){
 	    			layer.closeAll();
 	    			if(data){
-	    				history.go(0);
+	    				
 	    				layer.msg(str+"成功!",{icon: 1});
+	    				setTimeout("window.location.reload()",2000);
 	    			}else{
 	    				layer.msg(str+"失败!",{icon: 2});
 	    			}
