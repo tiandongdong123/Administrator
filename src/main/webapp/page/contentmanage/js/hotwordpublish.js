@@ -31,7 +31,6 @@ function serachdata(curr,data){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var resHtml ="";
-	console.info(pageRow);
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+10*(pageNum);
@@ -122,15 +121,14 @@ function doaddWordSetting(){
 		$("#checktime_slot").text("请填写数据统计时间段！");
 		return;
 	} 
-	if(publish_strategy=="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
 		$("#checkpublish_date").text("请填写发布时间！");
 		return;
 	} 
 	if(get_time=='' || get_time==null || get_time==undefined){
-		$("#checkfirst_publish_time").text("请填写抓取时间！");
+		$("#checkget_time").text("请填写抓取时间！");
 		return;
-	} 
-
+	}
 	
 	$.ajax({
 		type : "post",

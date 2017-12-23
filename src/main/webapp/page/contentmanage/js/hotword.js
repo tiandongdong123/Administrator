@@ -254,10 +254,10 @@ function update_word(id){
 	});
 	
 	if(success){
-		layer.msg("修改成功!",{icon: 1});
+		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		setTimeout("window.location.reload()",2000);
 	}else{
-		layer.msg("修改失败!",{icon: 2});
+		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
 
 }
@@ -316,10 +316,11 @@ function publish(that,obj,issueState){
 	
 	var value = "";
 	if(issueState=='3'){
-		value = '是否确定下撤?';
+		value = '下撤';
 	}else{
-		value = '是否确定发布?';
+		value = '发布';
 	}
+	var prompt="是否确定"+value+"?";
 	layer.alert(value,{
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
@@ -335,10 +336,10 @@ function publish(that,obj,issueState){
 	    		success : function(data){
 	    			layer.closeAll();
 	    			if(data){
-	    				layer.msg(value+"成功!",{icon: 1});
+	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				setTimeout("window.location.reload()",2000);
 	    			}else{
-	    				layer.msg(value+"失败!",{icon: 2});
+	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
 	    		},
 	    		error : function(data){
@@ -347,7 +348,6 @@ function publish(that,obj,issueState){
 	    }
 	  });
 }
-
 
 
 function checkWordExist(word){
@@ -437,14 +437,13 @@ function add_word(){
   });
 	
   if(success){
-	layer.msg("添加成功!",{icon: 1});
+	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
 	setTimeout("window.location.reload()",2000);
   }else{
-	layer.msg("添加失败!",{icon: 2});
+	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
   }
 		
 }
-
 
 function batch(status){	
 	var str=status==3?"下撤":"发布";
@@ -476,11 +475,10 @@ function batch(status){
 				success :function(data){
 	    			layer.closeAll();
 	    			if(data){
-	    				
-	    				layer.msg(str+"成功!",{icon: 1});
+	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
 	    				setTimeout("window.location.reload()",2000);
 	    			}else{
-	    				layer.msg(str+"失败!",{icon: 2});
+	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}
 	    		},
 				complete : function(XMLHttpRequest, textStatus) {},
