@@ -140,7 +140,7 @@ public class HotWordJob {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		log.info("完成热门文献的发布");
+		log.info("完成热搜词的发布");
 	}
 	
 	private boolean isChinese(char c) {

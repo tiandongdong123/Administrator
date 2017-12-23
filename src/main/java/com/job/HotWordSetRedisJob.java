@@ -36,7 +36,7 @@ public class HotWordSetRedisJob {
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void execHotWordSetRedis() {
 		try{
-			log.info("开始执行热门文献redis发布");
+			log.info("开始热搜词redis发布");
 			InetAddress addr = InetAddress.getLocalHost();
 			String hostip = addr.getHostAddress();
 			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
@@ -68,6 +68,7 @@ public class HotWordSetRedisJob {
 			}else{
 				log.info("发布redis失败");
 			}
+			log.info("热搜词redis发布结束");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
