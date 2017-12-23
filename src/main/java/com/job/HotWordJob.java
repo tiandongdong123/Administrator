@@ -25,6 +25,7 @@ import com.wf.service.HotWordSettingService;
 public class HotWordJob {
 	
 	private static Logger log = Logger.getLogger(HotWordJob.class);
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Autowired
 	private HotWordSettingService hotWordSettingService;
@@ -35,7 +36,7 @@ public class HotWordJob {
 	
 	
 	//每凌晨1点执行(检查是否需要发送邮件)
-	@Scheduled(cron = "0 0 8 * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWord() {
 		//首先考虑获取数据时间
 		try {
@@ -45,17 +46,26 @@ public class HotWordJob {
 				log.info("没有任务需要执行");
 				return;
 			}
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			int sys_hour = cal.get(Calendar.HOUR_OF_DAY);
+			String end_time = set.getNext_publish_time().substring(0, 10) + " " + set.getGet_time();
+			Date query_end = df.parse(end_time);// 开始查询时间
+			cal.setTime(query_end);
+			int task_hour = cal.get(Calendar.HOUR_OF_DAY);
+			if (sys_hour != task_hour) {
+				log.info("未到定时器执行时间");
+				return;
+			}
+			
 			//清理数据库，去除敏感词,插入数据
 			hotWordService.deleteHotWord();
 			log.info("清理热搜词完成");
+			
 			//统计要插入的数据
-			Calendar cal=Calendar.getInstance();
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date query_end = df.parse(set.getNext_publish_time());//开始查询时间
-			cal.setTime(query_end);
 			cal.add(Calendar.DATE, -set.getTime_slot());
 			Date query_start=cal.getTime();//结束查询时间
-			//查数据库统计数据
 			int start_month=query_start.getMonth()+1;
 			int end_month=query_end.getMonth()+1;
 			cal.setTime(query_end);
