@@ -321,7 +321,7 @@ function publish(that,obj,issueState){
 		value = '发布';
 	}
 	var prompt="是否确定"+value+"?";
-	layer.alert(value,{
+	layer.alert(prompt,{
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
 	    yes: function(){
