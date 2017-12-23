@@ -102,7 +102,7 @@ public class HotWordJob {
 					hot.setWord(theme);
 					hot.setSearchCount(count);
 					hot.setWordNature("前台获取");
-					if(index>=20){
+					if(index<=20){
 						hot.setWordStatus(1);
 					}else{
 						hot.setWordStatus(2);
@@ -119,7 +119,7 @@ public class HotWordJob {
 			query_end = df.parse(set.getNext_publish_time());//开始查询时间
 			cal.setTime(query_end);
 			cal.add(Calendar.DATE, set.getTime_slot());
-			String puublist_time=df.format(cal.getTime())+" "+set.getPublish_date();
+			String puublist_time=df.format(cal.getTime()).substring(0,10)+" "+set.getPublish_date();
 			set.setNext_publish_time(puublist_time);
 			hotWordSettingService.updateWordSetting(set);
 		} catch (ParseException e) {
@@ -128,7 +128,7 @@ public class HotWordJob {
 		log.info("完成热门文献的发布");
 	}
 	
-	public boolean isChinese(char c) {
+	private boolean isChinese(char c) {
 		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
 		if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
 				|| ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
@@ -141,7 +141,7 @@ public class HotWordJob {
 		return false;
 	}
 	 
-	public boolean isMessyCode(String strName) {
+	private boolean isMessyCode(String strName) {
 		Pattern p = Pattern.compile("\\s*|t*|r*|n*");
 		Matcher m = p.matcher(strName);
 		String after = m.replaceAll("");
@@ -157,8 +157,9 @@ public class HotWordJob {
 				}
 			}
 		}
+		System.out.println(strName);
 		float result = count / chLength;
-		if (result > 0.4) {
+		if (result > 0.1) {
 			return true;
 		} else {
 			return false;
