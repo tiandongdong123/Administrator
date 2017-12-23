@@ -12,7 +12,7 @@ public interface HotWordService {
 	Integer addWord(HotWord hotWord);
 	Integer updateWord(HotWord hotWord);
 	Integer updateWordIssue(HotWord hotWord);
-	boolean checkRedisCount();
+	Integer checkRedisCount();
 	boolean publishToRedis();
 	Integer deleteHotWord();
 }

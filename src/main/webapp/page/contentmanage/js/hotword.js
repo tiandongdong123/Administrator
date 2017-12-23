@@ -92,7 +92,7 @@ function serachdata(curr,data){
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><span id=\""+rows.id+"_span\">"+rows.word+"</span>"+
-			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\"/>"+
+			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\" onkeyup=\"enterUpdateWord('"+rows.id+"');\"/>"+
 			"<button type='button' id=\""+rows.id+"_update_word\" onclick=\"update_word('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_cancel\" onclick=\"cancel('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
 			"</div></td>"+
@@ -221,107 +221,48 @@ function update_word(id){
 	var isExist=false;
 	if(word==null || word=='' || word==undefined){
 		layer.msg("请填写热搜词!",{icon: 2});
-	}else{
-		
-		var spantext=$("#"+id+"_span").text();
-		
-		if(spantext==word){
-			layer.msg("未作修改,点击取消放弃修改!",{icon: 2});
-			return;
-		}
-		
-		isExist=checkWordExist(word);
-		if(isExist){
-			 layer.msg("该热搜词已存在!",{icon: 2});
-		 }else{
-				$.ajax({
-					type : "post",
-					async:false,
-					url : "../content/updateWord.do",
-					dataType : "json",
-					data : {"word_content" :word,"id":id},
-					success : function (data){
-						success=data;
-					}
-				});
-				if(success){
-					layer.msg("修改成功!",{icon: 1});
-					history.go(0);
-				}else{
-					layer.msg("修改失败!",{icon: 2});
-				}
-
-		 }
+		return;
 	}
-}
-
-
-
-//单条删除
-function removee(id){
+		
+	var spantext=$("#"+id+"_span").text();
+		
+	if(spantext==word){
+		layer.msg("未作修改,点击取消放弃修改!",{icon: 2});
+		return;
+	}
+		
+	isExist=checkWordExist(word);
+	if(isExist){
+		layer.msg("该热搜词已存在!",{icon: 2});
+		return;
+	}
+	
+	if(checkForBiddenWord(word)){
+		layer.msg("含有敏感词,请重新填写!",{icon: 2});
+		return;
+	}
+	
 	$.ajax({
 		type : "post",
-		data : {ids: id},
-		url :  "../content/deleteMessage.do",
+		async:false,
+		url : "../content/updateWord.do",
 		dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success : deleteCallback,
-		complete : function(XMLHttpRequest, textStatus) {},
-		error : function(data) {alert(data);}
+		data : {"word_content" :word,"id":id},
+		success : function (data){
+			success=data;
+		}
 	});
-}
-
-// 多条删除
-function deleteMore(){
-	var issueNum = "";
-	$("input:checkbox[name=commonid]:checked").each(function(){
-		issueNum += $(this).attr("id") + ",";
-	});
-	if(!$("input:checkbox[name=commonid]:checked").is(':checked')){
-		layer.msg("请选择删除内容！",{icon: 2});
-	}else if(issueNum.indexOf("下撤")>=0){
-		layer.msg("请先下撤数据再进行删除！",{icon: 2});
+	
+	if(success){
+		layer.msg("修改成功!",{icon: 1});
+		history.go(0);
 	}else{
-		layer.alert('确定删除该数据吗？',{
-			icon: 1,
-		    skin: 'layui-layer-molv',
-		    btn: ['确定'], //按钮
-		    yes: function(){
-				var ids = "";
-				$("input:checkbox[name=commonid]:checked").each(function(){
-					ids += "," + $(this).val();
-				});
-				if (ids != "")
-					ids = ids.substring(1);
-				$.ajax({
-					type : "post",
-					data : {ids: ids},
-					url :"../content/deleteMessage.do",
-					dataType : "json",
-					beforeSend : function(XMLHttpRequest) {},
-					success : deleteCallback,
-					complete : function(XMLHttpRequest, textStatus) {},
-					error : function(data) {alert(data);}
-				});
-		        layer.closeAll();
-		    }
-		});
+		layer.msg("修改失败!",{icon: 2});
 	}
+
 }
 
-// 删除回执
-function deleteCallback(data) {
-	if (data.flag == "true") {
-		layer.msg("删除成功！", {
-			icon : 1
-		});
-		showPage();
-	} else {
-		layer.msg("删除失败!", {
-			icon : 2
-		});
-	}
-}
+
 
 //全选与全不选
 function checkAll() {
@@ -346,13 +287,9 @@ function selectValue(id, val) {
 	}
 }
 
-// 刷新
-function refresh(){
-	window.location.href="../content/message.do";
-}
 
 function checkCount(){
-	var isCount=false;
+	var isCount=0;
 	$.ajax({
 		type : "post",  
 		async:false, 
@@ -372,7 +309,7 @@ function checkCount(){
 
 //发布
 function publish(that,obj,issueState){
-	if(issueState!='3' && checkCount()){
+	if(issueState!='3' && checkCount()>=20){
     	layer.msg("热搜词已满20条,请下撤后发布!",{icon: 2});
     	return;
 	}
@@ -443,6 +380,27 @@ function checkForBiddenWord(word){
 
 
 /**
+ * 回车添加热搜词
+ */
+function enterAddWord(){
+	var keyCode=event.keyCode;
+    if(keyCode==13) {
+        add_word();	    	
+     }
+}
+
+/**
+ * 回车修改热搜词
+ */
+function enterUpdateWord(id){
+	var keyCode=event.keyCode;
+    if(keyCode==13) {
+        	update_word(id);	    	
+     }
+}
+
+
+/**
  * 添加热搜词
  */
 function add_word(){
@@ -492,7 +450,12 @@ function batch(status){
 		layer.msg("请选择"+str+"内容！",{icon: 2});
 		return;
 	}
-	if(status!=3 && checkCount()){
+	
+	$("input:checkbox[name=commonid]:checked").each(function(){
+		ids.push($(this).val());
+	});
+	var count=ids.length+checkCount();
+	if(status!=3 && count>20){
 		layer.msg("热搜词已满20条,请下撤后发布!",{icon: 2});
     	return;
 	}
@@ -502,10 +465,6 @@ function batch(status){
 	    skin: 'layui-layer-molv',
 	    btn: ['确定'], //按钮
 	    yes: function(){
-			$("input:checkbox[name=commonid]:checked").each(function(){
-				ids.push($(this).val());
-			});
-			
 			$.ajax({
 				type : "post",
 				data : {ids: ids,"status":status},
@@ -530,7 +489,4 @@ function batch(status){
 	
 }
 
-function hot_word_setting(str){
-	window.location.href="../content/hotWordPublish.do";
-}
 
