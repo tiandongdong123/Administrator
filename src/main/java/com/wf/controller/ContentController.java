@@ -1865,12 +1865,12 @@ public class ContentController{
 	@RequestMapping("/doaddWordSetting")
 	@ResponseBody
 	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request){
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");  
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
 		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
 		 cal.add(Calendar.DATE,wordset.getTime_slot());
-		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"-"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
+		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"───"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
 		 wordset.setNext_publish_time(nextPublish);
 		 wordset.setNext_publish_time_space(next_publish_time_space);
 		 wordset.setStatus(2);
@@ -1902,6 +1902,7 @@ public class ContentController{
 	 * @return
 	 */
 	@RequestMapping("/checkForBiddenWord")
+	@ResponseBody
 	public boolean checkForBiddenWord(String word){
 		return forbiddenSerivce.CheckForBiddenWord(word)>0;
 	}
@@ -1923,12 +1924,12 @@ public class ContentController{
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
 	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request){
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日"); 
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
 		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
 		 cal.add(Calendar.DATE,wordset.getTime_slot());
-		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"-"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
+		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"───"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
 		 wordset.setNext_publish_time(nextPublish);
 		 wordset.setNext_publish_time_space(next_publish_time_space);
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
