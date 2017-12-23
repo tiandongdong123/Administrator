@@ -1,6 +1,6 @@
 package com.job;
 
-import java.text.ParseException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +20,7 @@ import com.wf.bean.HotWord;
 import com.wf.bean.HotWordSetting;
 import com.wf.service.HotWordService;
 import com.wf.service.HotWordSettingService;
+import com.xxl.conf.core.XxlConfClient;
 
 @Component
 public class HotWordJob {
@@ -38,9 +39,15 @@ public class HotWordJob {
 	//每凌晨1点执行(检查是否需要发送邮件)
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWord() {
-		//首先考虑获取数据时间
 		try {
-			log.info("开始执行热门文献的发布");
+			log.info("开始执行热门文献的统计");
+			InetAddress addr = InetAddress.getLocalHost();
+			String hostip = addr.getHostAddress();
+			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
+			if (!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
+				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
+				return;
+			}
 			HotWordSetting set = hotWordSettingService.getHotWordSettingTask();
 			if(set==null){
 				log.info("没有任务需要执行");
@@ -132,7 +139,7 @@ public class HotWordJob {
 			String puublist_time=df.format(cal.getTime()).substring(0,10)+" "+set.getPublish_date();
 			set.setNext_publish_time(puublist_time);
 			hotWordSettingService.updateWordSetting(set);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		log.info("完成热门文献的发布");
