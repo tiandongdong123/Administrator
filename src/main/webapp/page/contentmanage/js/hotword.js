@@ -50,7 +50,7 @@ function serachdata(curr,data){
     $("#pageTotal").val(pageTotal);
     $("#pagenum").attr("maxlength",maxLenght); 
     
-    if(totalRow<50){
+    if(totalRow<=50){
     	$("#pages").hide();
     }
     

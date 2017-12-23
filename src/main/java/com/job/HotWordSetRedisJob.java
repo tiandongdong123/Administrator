@@ -1,5 +1,6 @@
 package com.job;
 
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.wf.bean.HotWordSetting;
 import com.wf.service.HotWordService;
 import com.wf.service.HotWordSettingService;
+import com.xxl.conf.core.XxlConfClient;
 
 /**
  * 热搜词发送至redis
@@ -33,6 +35,14 @@ public class HotWordSetRedisJob {
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void execHotWordSetRedis() {
 		try{
+			log.info("开始执行热门文献redis发布");
+			InetAddress addr = InetAddress.getLocalHost();
+			String hostip = addr.getHostAddress();
+			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
+			if (!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
+				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
+				return;
+			}
 			HotWordSetting set = hotWordSettingService.getHotWordSettingTask();
 			if(set==null){
 				log.info("没有任务需要执行");
