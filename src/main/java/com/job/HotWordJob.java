@@ -35,7 +35,7 @@ public class HotWordJob {
 	
 	
 	//每凌晨1点执行(检查是否需要发送邮件)
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0 0 8 * * ?")
 	public void exechotWord() {
 		//首先考虑获取数据时间
 		try {
@@ -59,7 +59,7 @@ public class HotWordJob {
 			int start_month=query_start.getMonth()+1;
 			int end_month=query_end.getMonth()+1;
 			cal.setTime(query_end);
-			StringBuffer sql=new StringBuffer("");
+			StringBuffer sql=new StringBuffer("select e.theme,count(1) frequency from (");
 			for(int i=start_month;i<=end_month;i++){
 				if(i>start_month){
 					sql.append(" UNION ALL ");
@@ -71,7 +71,7 @@ public class HotWordJob {
 				sql.append("where create_time BETWEEN '"+df.format(query_start)+"' and '"+df.format(query_end)+"'");
 				cal.add(Calendar.MONTH, 1);
 			}
-			//sql.append(") e group by e.theme order by frequency desc limit 100");
+			sql.append(") e group by e.theme order by frequency desc limit 100");
 			log.info("执行sql:"+sql.toString());
 			List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(sql.toString());
 			int index=1;
