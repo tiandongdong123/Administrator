@@ -197,75 +197,6 @@ function selectPage(){
 }
 
 
-function update(id,issueState){
-	
-	if(issueState==1){
-		layer.msg("请先下撤该数据再进行修改",{icon: 2});
-		return;
-	}
-	
-	$("#"+id+"_span").hide();
-	$("#"+id+"_value").attr("type","text");
-	$("#"+id+"_update_word").show();
-	$("#"+id+"_cancel").show();
-}
-
-function cancel(id){
-	$("#"+id+"_span").show();
-	$("#"+id+"_value").attr("type","hidden");
-	$("#"+id+"_update_word").hide();
-	$("#"+id+"_cancel").hide();
-
-}
-
-function update_word(id){
-	var word=$("#"+id+"_value").val();
-	var isExist=false;
-	if(word==null || word=='' || word==undefined){
-		layer.msg("请填写热搜词!",{icon: 2});
-		return;
-	}
-		
-	var spantext=$("#"+id+"_span").text();
-		
-	if(spantext==word){
-		layer.msg("未作修改,点击取消放弃修改!",{icon: 2});
-		return;
-	}
-		
-	isExist=checkWordExist(word);
-	if(isExist){
-		layer.msg("该热搜词已存在!",{icon: 2});
-		return;
-	}
-	
-	if(checkForBiddenWord(word)){
-		layer.msg("含有敏感词,请重新填写!",{icon: 2});
-		return;
-	}
-	
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/updateWord.do",
-		dataType : "json",
-		data : {"word_content" :word,"id":id},
-		success : function (data){
-			success=data;
-		}
-	});
-	
-	if(success){
-		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
-		setTimeout("window.location.reload()",2000);
-	}else{
-		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
-	}
-
-}
-
-
-
 //全选与全不选
 function checkAll() {
 	if ($(".allId").is(':checked')) {
@@ -308,11 +239,189 @@ function checkCount(){
 }
 
 
+function checkWordExist(word){
+	 var isExist=false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../content/checkWordExist.do",
+			dataType : "json",
+			data : {"word_content" :word},
+			success : function (data){
+				isExist=data;
+			}
+		});
+	return isExist;
+}
+
+function checkForBiddenWord(word){
+	 var isExist=false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../content/checkForBiddenWord.do",
+			dataType : "json",
+			data : {"word" :word},
+			success : function (data){
+				isExist=data;
+			}
+		});
+	return isExist;
+}
+
+
+/**
+ * 添加热搜词
+ */
+function add_word(){
+ var word_content=$.trim($("#word_content").val());
+ var success=false;
+ 
+ if(word_content=='' || word_content==null || word_content==undefined){
+	 layer.msg("<div style=\"color:#8B0000;\">请填写热搜词!</div>",{icon: 2});
+	 return;
+ }
+ 
+ if(checkForBiddenWord(word_content)){
+	 layer.msg("<div style=\"color:#8B0000;\">含有敏感词,请重新填写!</div>",{icon: 2});
+	 return;
+ }
+ 
+ var isExist=checkWordExist(word_content);
+ if(isExist){
+	 layer.msg("<div style=\"color:#8B0000;\">该热搜词已存在</div>!",{icon: 2});
+	 return;
+ }
+ 
+ $.ajax({
+		type : "post",
+	async:false,
+	url : "../content/addWord.do",
+	dataType : "json",
+	data : {"word_content" :word_content},
+		success : function (data){
+			success=data;
+		}
+  });
+	
+  if(success){
+	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
+	setTimeout("window.location.reload()",2000);
+  }else{
+	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
+  }
+		
+}
+
+
+
+function update(id,issueState){
+	
+	if(issueState==1){
+		layer.msg("请先下撤该数据再进行修改",{icon: 2});
+		return;
+	}
+	
+	$("#"+id+"_span").hide();
+	$("#"+id+"_value").attr("type","text");
+	$("#"+id+"_update_word").show();
+	$("#"+id+"_cancel").show();
+}
+
+function cancel(id){
+	$("#"+id+"_span").show();
+	$("#"+id+"_value").attr("type","hidden");
+	$("#"+id+"_update_word").hide();
+	$("#"+id+"_cancel").hide();
+
+}
+
+function update_word(id){
+	var word=$("#"+id+"_value").val();
+	var isExist=false;
+	if(word==null || word=='' || word==undefined){
+		layer.msg("<div style=\"color:#8B0000;\">请填写热搜词!</div>",{icon: 2});
+		return;
+	}
+		
+	var spantext=$("#"+id+"_span").text();
+		
+	if(spantext==word){
+		//layer.msg("未作修改,点击取消放弃修改!",{icon: 2});
+		window.location.reload();
+		return;
+	}
+		
+	isExist=checkWordExist(word);
+	if(isExist){
+		layer.msg("<div style=\"color:#8B0000;\">该热搜词已存在!</div>",{icon: 2});
+		return;
+	}
+	
+	if(checkForBiddenWord(word)){
+		layer.msg("<div style=\"color:#8B0000;\">含有敏感词,请重新填写!</div>",{icon: 2});
+		return;
+	}
+	
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/updateWord.do",
+		dataType : "json",
+		data : {"word_content" :$.trim(word),"id":id},
+		success : function (data){
+			success=data;
+		}
+	});
+	
+	if(success){
+		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
+		setTimeout("window.location.reload()",2000);
+	}else{
+		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
+	}
+
+}
+
+
+/**
+ * 回车添加热搜词
+ */
+function enterAddWord(){
+	$("#word_content").keydown(function(e){
+		var curKey = e.which;
+		if(curKey == 13){
+			add_word();
+		return false;
+		}
+	});
+}
+
+
+
+/**
+ * 回车修改热搜词
+ */
+function enterUpdateWord(){
+	$("input[id$='_value']").keydown(function(e){
+		var curKey = e.which;
+		var id=$(this).attr('id');
+		var index=id.indexOf('_');
+		id=id.substr(0,index);
+		if(curKey == 13){
+			update_word(id);
+		return false;
+		}
+	});
+}
+
+
+
 
 //发布
 function publish(that,obj,issueState){
 	if(issueState!='3' && checkCount()>=20){
-    	layer.msg("热搜词已满20条,请下撤后发布!",{icon: 2});
+    	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
 	
@@ -352,109 +461,6 @@ function publish(that,obj,issueState){
 }
 
 
-function checkWordExist(word){
-	 var isExist=false;
-		$.ajax({
-			type : "post",
-			async:false,
-			url : "../content/checkWordExist.do",
-			dataType : "json",
-			data : {"word_content" :word},
-			success : function (data){
-				isExist=data;
-			}
-		});
-	return isExist;
-}
-
-function checkForBiddenWord(word){
-	 var isExist=false;
-		$.ajax({
-			type : "post",
-			async:false,
-			url : "../content/checkForBiddenWord.do",
-			dataType : "json",
-			data : {"word" :word},
-			success : function (data){
-				isExist=data;
-			}
-		});
-	return isExist;
-}
-
-
-/**
- * 回车添加热搜词
- */
-function enterAddWord(){
-	$("#word_content").keydown(function(e){
-		var curKey = e.which;
-		if(curKey == 13){
-			add_word();
-		return false;
-		}
-	});
-}
-
-/**
- * 回车修改热搜词
- */
-function enterUpdateWord(){
-	$("input[id$='_value']").keydown(function(e){
-		var curKey = e.which;
-		var id=$(this).attr('id');
-		var index=id.indexOf('_');
-		id=id.substr(0,index);
-		if(curKey == 13){
-			update_word(id);
-		return false;
-		}
-	});
-}
-
-
-/**
- * 添加热搜词
- */
-function add_word(){
- var word_content=$.trim($("#word_content").val());
- var success=false;
- 
- if(word_content=='' || word_content==null || word_content==undefined){
-	 layer.msg("请填写热搜词!",{icon: 2});
-	 return;
- }
- 
- if(checkForBiddenWord(word_content)){
-	 layer.msg("含有敏感词,请重新填写!",{icon: 2});
-	 return;
- }
- 
- var isExist=checkWordExist(word_content);
- if(isExist){
-	 layer.msg("该热搜词已存在!",{icon: 2});
-	 return;
- }
- 
- $.ajax({
-		type : "post",
-	async:false,
-	url : "../content/addWord.do",
-	dataType : "json",
-	data : {"word_content" :word_content},
-		success : function (data){
-			success=data;
-		}
-  });
-	
-  if(success){
-	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
-	setTimeout("window.location.reload()",2000);
-  }else{
-	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
-  }
-		
-}
 
 function batch(status){	
 	var str=status==3?"下撤":"发布";
@@ -469,7 +475,7 @@ function batch(status){
 	});
 	var count=ids.length+checkCount();
 	if(status!=3 && count>20){
-		layer.msg("热搜词已满20条,请下撤后发布!",{icon: 2});
+		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
 	
