@@ -289,7 +289,7 @@ function add_word(){
  
  var isExist=checkWordExist(word_content);
  if(isExist){
-	 layer.msg("<div style=\"color:#8B0000;\">该热搜词已存在</div>!",{icon: 2});
+	 layer.msg("<div style=\"color:#8B0000;\">该热搜词已存在!</div>",{icon: 2});
 	 return;
  }
  
@@ -306,7 +306,7 @@ function add_word(){
 	
   if(success){
 	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
-	setTimeout("window.location.reload()",2000);
+	setTimeout("window.location.reload()",1000);
   }else{
 	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
   }
@@ -343,14 +343,14 @@ function cancel(id){
 
 function update_word(id){
 	var word=$("#"+id+"_value").val();
+	var spantext=$("#"+id+"_span").text();
+	word=$.trim(word);
 	var isExist=false;
 	if(word==null || word=='' || word==undefined){
 		layer.msg("<div style=\"color:#8B0000;\">请填写热搜词!</div>",{icon: 2});
 		return;
 	}
-		
-	var spantext=$("#"+id+"_span").text();
-		
+	
 	if(spantext==word){
 		cancel(id);
 		return;
@@ -372,7 +372,7 @@ function update_word(id){
 		async:false,
 		url : "../content/updateWord.do",
 		dataType : "json",
-		data : {"word_content" :$.trim(word),"id":id},
+		data : {"word_content" :word,"id":id},
 		success : function (data){
 			success=data;
 		}
@@ -380,7 +380,7 @@ function update_word(id){
 	
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
-		setTimeout("window.location.reload()",2000);
+		setTimeout("window.location.reload()",1000);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -393,7 +393,7 @@ function update_word(id){
  */
 function enterAddWord(){
 	$("#word_content").keydown(function(e){
-		var curKey = e.which;
+		var curKey =e.keyCode ? e.keyCode : e.which ? e.which : e.charCode; //兼容IE 火狐 谷歌
 		if(curKey == 13){
 			add_word();
 		return false;
@@ -408,7 +408,7 @@ function enterAddWord(){
  */
 function enterUpdateWord(){
 	$("input[id$='_value']").keydown(function(e){
-		var curKey = e.which;
+		var curKey =e.keyCode ? e.keyCode : e.which ? e.which : e.charCode; //兼容IE 火狐 谷歌
 		var id=$(this).attr('id');
 		var index=id.indexOf('_');
 		id=id.substr(0,index);
@@ -452,7 +452,7 @@ function publish(that,obj,issueState){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
-	    				setTimeout("window.location.reload()",2000);
+	    				setTimeout("window.location.reload()",1000);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -497,7 +497,7 @@ function batch(status){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
-	    				setTimeout("window.location.reload()",2000);
+	    				setTimeout("window.location.reload()",1000);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}
