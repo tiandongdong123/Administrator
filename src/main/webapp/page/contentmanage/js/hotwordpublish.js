@@ -50,7 +50,7 @@ function serachdata(curr,data){
             "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>"+
 			 divShow(rows.id,rows.status)+"&nbsp;" +
-			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary'>修改</button></div></td>" +
+			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update\">修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -314,7 +314,7 @@ function publish(id,status){
 function  divShow(id,status){
 	var html="";
 	if(status==2){
-		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary'>应用</button>";
+		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application\">应用</button>";
 	}
 	return html;
 }
