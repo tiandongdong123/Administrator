@@ -3,6 +3,8 @@ var pageNum;
 var pageSize;
 $(function(){
 	showPage(1);
+	enterAddWord();
+	enterUpdateWord();
 });
 
 /*分页显示*/
@@ -92,7 +94,7 @@ function serachdata(curr,data){
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><span id=\""+rows.id+"_span\">"+rows.word+"</span>"+
-			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\" onkeyup=\"enterUpdateWord('"+rows.id+"');\"/>"+
+			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\"/>"+
 			"<button type='button' id=\""+rows.id+"_update_word\" onclick=\"update_word('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_cancel\" onclick=\"cancel('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
 			"</div></td>"+
@@ -385,20 +387,29 @@ function checkForBiddenWord(word){
  * 回车添加热搜词
  */
 function enterAddWord(){
-	var keyCode=event.keyCode;
-    if(keyCode==13) {
-        add_word();	    	
-     }
+	$("#word_content").keydown(function(e){
+		var curKey = e.which;
+		if(curKey == 13){
+			add_word();
+		return false;
+		}
+	});
 }
 
 /**
  * 回车修改热搜词
  */
-function enterUpdateWord(id){
-	var keyCode=event.keyCode;
-    if(keyCode==13) {
-        	update_word(id);	    	
-     }
+function enterUpdateWord(){
+	$("input[id$='_value']").keydown(function(e){
+		var curKey = e.which;
+		var id=$(this).attr('id');
+		var index=id.indexOf('_');
+		id=id.substr(0,index);
+		if(curKey == 13){
+			update_word(id);
+		return false;
+		}
+	});
 }
 
 
