@@ -111,24 +111,37 @@ function doaddWordSetting(){
 	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
 		$("#checkfirst_publish_time").text("请填写首次发布日期！");
 		return;
-	} 
+	}else{
+		$("#checkfirst_publish_time").text("");
+	}
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
 		return;
-	} 
+	}else{
+		$("#checkpublish_cyc").text("");
+	}
 	if(time_slot=='' || time_slot==null || time_slot==undefined){
 		$("#checktime_slot").text("请填写数据统计时间段！");
 		return;
-	} 
-	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
-		$("#checkpublish_date").text("请填写发布时间！");
-		return;
-	} 
+	}else{
+		$("#checktime_slot").text("");
+	}
+	
 	if(get_time=='' || get_time==null || get_time==undefined){
 		$("#checkget_time").text("请填写抓取时间！");
 		return;
+	}else{
+		$("#checkget_time").text("");		
 	}
+	
+	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+		$("#checkpublish_date").text("请填写发布时间！");
+		return;
+	}else{
+		$("#checkpublish_date").text("");		
+	} 
+
 	
 	$.ajax({
 		type : "post",
@@ -205,23 +218,37 @@ function doupdateWordSetting(){
 	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
 		$("#checkfirst_publish_time").text("请填写首次发布日期！");
 		return;
+	}else{
+		$("#checkfirst_publish_time").text("");
 	} 
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
 		return;
+	}else{
+		$("#checkpublish_cyc").text("");
 	} 
+	
 	if(time_slot=='' || time_slot==null || time_slot==undefined){
 		$("#checktime_slot").text("请填写数据统计时间段！");
 		return;
+	}else{
+		$("#checktime_slot").text("");
 	} 
-	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
-		$("#checkpublish_date").text("请填写发布时间！");
-		return;
-	} 
+	
 	if(get_time=='' || get_time==null || get_time==undefined){
 		$("#checkfirst_publish_time").text("请填写抓取时间！");
 		return;
+	}else{
+		$("#checkfirst_publish_time").text("");
+	} 
+
+	
+	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+		$("#checkpublish_date").text("请填写发布时间！");
+		return;
+	}else{
+		$("#checkpublish_date").text("");
 	} 
 
 	
