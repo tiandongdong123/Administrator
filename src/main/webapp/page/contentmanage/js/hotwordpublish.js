@@ -173,10 +173,10 @@ function doaddWordSetting(){
 
 function updateSetting(id,status){
 	
-	if(status==1){
+/*	if(status==1){
 		layer.msg("请下撤应用后修改！",{icon: 2});
 		return;
-	}
+	}*/
 	
 	
 	layer.open({
