@@ -941,7 +941,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param Terms
 	 */
 	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
-		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
 			if(standardtypes.contains("质检出版社")){
@@ -995,7 +995,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 */
 	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
 		com.alibaba.fastjson.JSONObject obj=null;
-		String standardtypes = dto.getStandardTypes()==null?"WFLocal":Arrays.toString(dto.getStandardTypes());
+		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(standardtypes.contains("质检出版社")){
 			obj=new com.alibaba.fastjson.JSONObject();
 			obj.put("UserId", com.getUserId());
