@@ -352,8 +352,7 @@ function update_word(id){
 	var spantext=$("#"+id+"_span").text();
 		
 	if(spantext==word){
-		//layer.msg("未作修改,点击取消放弃修改!",{icon: 2});
-		window.location.reload();
+		cancel(id);
 		return;
 	}
 		
