@@ -284,7 +284,7 @@ function publish(id,status){
 	layer.alert("确定要应用此数据吗?",{
 		icon: 1,
 	    skin: 'layui-layer-molv',
-	    btn: ['确定'], //按钮
+	    btn: ['确定','取消'], //按钮
 	    yes: function(){
 	    	$.ajax({
 	    		type : "post",
@@ -318,5 +318,11 @@ function  divShow(id,status){
 	}
 	return html;
 }
+
+function cancel(){
+	 var index = parent.layer.getFrameIndex(window.name);  
+	parent.layer.close(index);
+}
+
 
 

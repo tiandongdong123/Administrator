@@ -52,13 +52,13 @@
               <?if(isupdate=='add'){?>
  	              <div class="box-footer" style="text-align:center;">
 	               <button type="button" onclick="doaddWordSetting()" class="btn btn-primary" id="add_wordset">保存</button>
-	               <button type="reset" class="btn btn-primary" id="reset">重置</button>
+	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
 	              </div>             
 			  <?}else{?>
 	              <div class="box-footer" style="text-align:center;">
 	               <input type="hidden" value="${item.id!}" id="id"/>
 	               <button type="button" onclick="doupdateWordSetting()" class="btn btn-primary" id="update_wordset">修改</button>
-	               <button type="reset" class="btn btn-primary" id="reset">重置</button>
+	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
 	              </div>
 			  <?}?>  
               </form>
