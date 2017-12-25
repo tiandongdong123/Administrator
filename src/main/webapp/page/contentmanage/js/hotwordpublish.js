@@ -1,5 +1,5 @@
 var pageNum;
-var pageSize = 10;
+var pageSize = 30;
 $(function(){
 	showPage(1);
 	selectValue("nature",$("#publish_strategy").val());
@@ -150,10 +150,10 @@ function doaddWordSetting(){
 	
 	
 	if(issuccess){
-		layer.msg("保存成功!",{icon: 1});
-		parent.location.reload();
+		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
+		setTimeout("parent.location.reload();",2000);
 	}else{
-		layer.msg("保存失败!",{icon: 2});
+		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
 	}
 	
 }
@@ -215,7 +215,7 @@ function doupdateWordSetting(){
 		$("#checktime_slot").text("请填写数据统计时间段！");
 		return;
 	} 
-	if(publish_strategy=="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
 		$("#checkpublish_date").text("请填写发布时间！");
 		return;
 	} 
@@ -245,10 +245,10 @@ function doupdateWordSetting(){
 	});
 	
 	if(issuccess){
-		layer.msg("修改成功!",{icon: 1});
-		parent.location.reload();
+		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
+		setTimeout("parent.location.reload();",2000);
 	}else{
-		layer.msg("修改失败!",{icon: 2});
+		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
 
 }
@@ -274,10 +274,10 @@ function publish(id,status){
 	    	});
 	    	
 	    	if(issuccess){
-	    		layer.msg("应用成功!",{icon: 1});
-	    		parent.location.reload();
+	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
+	    		setTimeout("window.location.reload();",2000);
 	    	}else{
-	    		layer.msg("应用失败!",{icon: 2});
+	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
 	    	}
 	    }
 	
