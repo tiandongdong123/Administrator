@@ -94,7 +94,7 @@ function serachdata(curr,data){
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><span id=\""+rows.id+"_span\">"+rows.word+"</span>"+
-			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\"/>"+
+			"<input id=\""+rows.id+"_value\" type=\"hidden\" value=\""+rows.word+"\" style=\"height:29px;\"/>"+
 			"<button type='button' id=\""+rows.id+"_update_word\" onclick=\"update_word('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_cancel\" onclick=\"cancel('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
 			"</div></td>"+
@@ -321,6 +321,11 @@ function update(id,issueState){
 		layer.msg("请先下撤该数据再进行修改",{icon: 2});
 		return;
 	}
+	
+	$("[id$='_span']").show();
+	$("[id$='_value'").attr("type","hidden");
+	$("[id$='_update_word'").hide();
+	$("[id$='_cancel'").hide();
 	
 	$("#"+id+"_span").hide();
 	$("#"+id+"_value").attr("type","text");
