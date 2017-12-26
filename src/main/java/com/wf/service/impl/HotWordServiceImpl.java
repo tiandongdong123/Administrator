@@ -94,6 +94,7 @@ public class HotWordServiceImpl implements HotWordService{
 				array.add(json);
 			}
 			redis.set("theme",array.toString(),11);
+			System.out.println("发布到ridis的数据:  "+array.toString());
 		} catch (Exception e) {
 			success=false;
 		}

@@ -9,6 +9,7 @@ $(function(){
 
 /*分页显示*/
 function findOne(){
+	$("#pagenum").val(1);
 	showPage(1);
 }
 
@@ -51,9 +52,10 @@ function serachdata(curr,data){
     $("#totalpage").text(pageall);
     $("#pageTotal").val(pageTotal);
     $("#pagenum").attr("maxlength",maxLenght); 
-    
     if(totalRow<=50){
     	$("#pages").hide();
+    }else{
+    	$("#pages").show();
     }
     
 	var resHtml = "<tbody><tr style='text-align: center;'>" +

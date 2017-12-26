@@ -116,7 +116,7 @@
       <if test="wordNature != null and wordNature !=''" >
         word_nature = #{wordNature,jdbcType=VARCHAR},
       </if>
-      
+        search_count = #{searchCount,jdbcType=VARCHAR},  
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
