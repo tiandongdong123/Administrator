@@ -137,6 +137,10 @@ public class HotWordJob {
 			cal.add(Calendar.DATE, set.getPublish_cyc());
 			String puublist_time=df.format(cal.getTime()).substring(0,10)+" "+set.getPublish_date();
 			set.setNext_publish_time(puublist_time);
+			//判断是否是第一次
+			if(!StringUtils.isEmpty(set.getFirst_publish_time())){
+				set.setIs_first("1");
+			}
 			hotWordSettingService.updateWordSetting(set);
 			hotWordSettingService.updateAllSettingTime();
 			log.info("热搜词更新时间完成");

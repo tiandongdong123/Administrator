@@ -14,6 +14,7 @@ public class HotWordSetting {
 	private String get_time;
 	private String next_publish_time;
 	private String next_publish_time_space;
+	private String is_first;
 
 	public Integer getId() {
 		return id;
@@ -109,6 +110,14 @@ public class HotWordSetting {
 
 	public void setNext_publish_time_space(String next_publish_time_space) {
 		this.next_publish_time_space = next_publish_time_space;
+	}
+
+	public String getIs_first() {
+		return is_first;
+	}
+
+	public void setIs_first(String is_first) {
+		this.is_first = is_first;
 	}
 
 }

@@ -14,6 +14,7 @@
     <result column="get_time" property="get_time" jdbcType="VARCHAR" />
     <result column="next_publish_time" property="next_publish_time" jdbcType="VARCHAR" />
     <result column="next_publish_time_space" property="next_publish_time_space" jdbcType="VARCHAR" />
+    <result column="is_first" property="is_first" jdbcType="VARCHAR" />
   </resultMap>
 	<resultMap id="ThemeResultMap" type="java.util.Map">
 		<result property="theme" column="theme" jdbcType="VARCHAR" />
@@ -148,6 +149,9 @@
       </if>
       <if test="next_publish_time_space!=null">
         next_publish_time_space=#{next_publish_time_space,jdbcType=VARCHAR},
+      </if>
+      <if test="is_first!=null">
+        is_first=#{is_first,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
