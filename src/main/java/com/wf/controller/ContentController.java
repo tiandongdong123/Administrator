@@ -1916,8 +1916,26 @@ public class ContentController{
 	 */
 	@RequestMapping("/getHotWordSetting")
 	public String getHotWordSetting(Integer id,Model model){
+		boolean isFirst=false;
 		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);
+		
+		try {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+			Date dt1 = df.parse(df.format(new Date()));
+	        Date dt2 = df.parse(item.getFirst_publish_time());
+			
+	        if (dt1.getTime() > dt2.getTime()) {
+	        	isFirst=true;
+	        }else{
+	        	isFirst=false;
+	        }
+	 
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+       
 		model.addAttribute("item",item);
+		model.addAttribute("isFirst",isFirst);
 		model.addAttribute("isupdate","update");
 		return "/page/contentmanage/add_word_setting";
 	}
