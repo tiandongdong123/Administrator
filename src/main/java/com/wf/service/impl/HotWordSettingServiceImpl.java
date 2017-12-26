@@ -91,7 +91,19 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 			String ntime=this.getNextPublishTime();
 			String end_time = ntime.substring(0, 10);
 			List<HotWordSetting> list=hotWordSettingDao.getHotWordSettingList();
+			String isfirst="";
 			for(HotWordSetting set:list){
+				if(set.getIs_first()!=null&&"1".equals(set.getIs_first())){
+					isfirst="1";
+					break;
+				}
+			}
+			for(HotWordSetting set:list){
+				if("1".equals(isfirst)){
+					if(set.getIs_first()==null||"0".equals(set.getIs_first())){
+						set.setFirst_publish_time(null);
+					}
+				}
 				if ("2".equals(set.getStatus())) {
 					set.setNext_publish_time(end_time+" "+set.getPublish_date());
 				}
