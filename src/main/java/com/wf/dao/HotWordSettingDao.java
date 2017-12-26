@@ -18,5 +18,6 @@ public interface HotWordSettingDao {
 	Integer updateAllSetting();
 	Integer checkFirst();
 	String getNextPublishTime();
+	List<HotWordSetting> getHotWordSettingList();
 	
 }

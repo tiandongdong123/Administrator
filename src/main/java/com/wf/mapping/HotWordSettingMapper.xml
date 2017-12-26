@@ -19,7 +19,9 @@
 		<result property="theme" column="theme" jdbcType="VARCHAR" />
 		<result property="frequency" column="frequency" jdbcType="INTEGER" />
 	</resultMap>
- 
+ 	<select id="getHotWordSettingList" resultType="com.wf.bean.HotWordSetting">
+ 	  select * from hot_search_word_setting 
+ 	</select>
  	<select id="getHotWordSetting"  resultType="map" parameterType="map">
  	  select * from hot_search_word_setting  order by status 
  	  limit #{pageNum},#{pageSize}

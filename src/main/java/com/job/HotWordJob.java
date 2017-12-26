@@ -117,6 +117,7 @@ public class HotWordJob {
 					hot.setWord(theme);
 					hot.setSearchCount(count);
 					hot.setWordNature("前台获取");
+					hot.setOperationTime(set.getNext_publish_time());
 					if(index<=20){
 						hot.setWordStatus(1);
 					}else{
@@ -137,6 +138,8 @@ public class HotWordJob {
 			String puublist_time=df.format(cal.getTime()).substring(0,10)+" "+set.getPublish_date();
 			set.setNext_publish_time(puublist_time);
 			hotWordSettingService.updateWordSetting(set);
+			hotWordSettingService.updateAllSettingTime();
+			log.info("热搜词更新时间完成");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

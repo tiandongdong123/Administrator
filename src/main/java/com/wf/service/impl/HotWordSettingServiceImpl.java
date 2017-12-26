@@ -1,5 +1,7 @@
 package com.wf.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,9 @@ import com.wf.service.HotWordSettingService;
 
 @Service
 public class HotWordSettingServiceImpl implements HotWordSettingService {
+	
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	@Autowired
 	HotWordSettingDao hotWordSettingDao;
 
@@ -76,5 +81,34 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	@Override
 	public String getNextPublishTime() {
 		return hotWordSettingDao.getNextPublishTime();
+	}
+
+	@Override
+	public Integer updateAllSettingTime() {
+		int num=0;
+		try{
+			Calendar cal = Calendar.getInstance();
+			String next_time=this.getNextPublishTime();
+			next_time = next_time.substring(0, 10);
+			List<HotWordSetting> list=hotWordSettingDao.getHotWordSettingList();
+			for(HotWordSetting set:list){
+				if ("2".equals(set.getStatus())) {
+					set.setNext_publish_time(next_time);
+				}
+				cal.setTime(df.parse(next_time+ " " + set.getGet_time()));
+				cal.add(Calendar.DATE, -set.getTime_slot());
+				String start_time=df.format(cal.getTime());
+				StringBuffer sb=new StringBuffer("");
+				sb.append(start_time.replaceFirst("-", "年").replaceFirst("-", "月").replaceFirst("-", "日"));
+				sb.append("───");
+				sb.append(next_time.replaceFirst("-", "年").replaceFirst("-", "月").replaceFirst("-", "日"));
+				sb.append(" " + set.getGet_time());
+				set.setNext_publish_time_space(sb.toString());
+				num+=hotWordSettingDao.updateHotWordSetting(set);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return num;
 	}
 }
