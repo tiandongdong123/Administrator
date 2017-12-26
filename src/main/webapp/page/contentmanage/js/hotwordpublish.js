@@ -220,11 +220,11 @@ function doupdateWordSetting(){
 		publish_date="";
 	}
 	
-	if(isFirst=="true"){
+	if(isFirst!="true"){
 		first_publish_time=$("#first_publish_time").val();
 	}
 	
-	if(isFirst=="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
+	if(isFirst!="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
 		$("#checkfirst_publish_time").text("请填写首次发布日期！");
 		return;
 	}else{
@@ -275,6 +275,7 @@ function doupdateWordSetting(){
 			"get_time" :get_time,
 			"id":id,
 			"next_publish_time":$("#nextPublish").val(),
+			"isFirst":isFirst,
 			},
 		success : function (data){
 			issuccess=data;

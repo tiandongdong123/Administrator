@@ -168,7 +168,7 @@
  	</update>
  	
  	<select id="checkFirst" resultType="int">
- 		select count(1) from hot_search_word_setting where  first_publish_time <![CDATA[ <> ]]> ''
+ 		select count(1) from hot_search_word_setting where  first_publish_time <![CDATA[ <> ]]> '' and status=1 and is_first <![CDATA[ <> ]]> ''
  	</select>
  	
  	<select id="getNextPublishTime" resultType="String">

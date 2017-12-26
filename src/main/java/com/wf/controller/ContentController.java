@@ -1940,22 +1940,28 @@ public class ContentController{
 	public String getHotWordSetting(Integer id,Model model){
 		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);       
 		model.addAttribute("item",item);
-		model.addAttribute("isFirst",StringUtils.isNoneBlank(item.getFirst_publish_time()));
+		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		model.addAttribute("isupdate","update");
 		return "/page/contentmanage/add_word_setting";
 	}
 	
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
-	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request){
+	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
 		
 		try{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
-		 String nextPublish=wordset.getNext_publish_time();
-		 //cal.add(Calendar.DATE,wordset.getTime_slot());
+		 String nextPublish="";
+		if(isFirst.equals("true")){
+			nextPublish=wordset.getNext_publish_time();
+		}else{
+			nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+		}
+		
+		 wordset.setNext_publish_time(nextPublish);
 		 Date date =sd.parse(wordset.getNext_publish_time().substring(0, 10));
 		 cal.setTime(date); 
 		int day=cal.get(Calendar.DATE); 
