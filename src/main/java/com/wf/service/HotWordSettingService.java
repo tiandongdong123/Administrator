@@ -15,4 +15,6 @@ public interface HotWordSettingService {
 	HotWordSetting getHotWordSettingTask();
 	List<Map<String,Object>> getHotWordTongJi(String sql);
 	Integer updateAllSetting();
+	Integer checkFirst();
+	String getNextPublishTime();
 }

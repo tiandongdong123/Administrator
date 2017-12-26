@@ -100,15 +100,18 @@ function doaddWordSetting(){
 	var time_slot=$("#time_quantum").val();
 	var publish_strategy=$("#nature").val();
 	var publish_date=$("#publish_date").val();
-	var first_publish_time=$("#first_publish_time").val();
+	var first_publish_time="";
 	var get_time=$("#get_time").val();
 	var issuccess=false;
-	
+	var isFirst=$("#isFirst").val();
 	if(publish_strategy=="手动发布"){
 		publish_date="";
 	}
+	if(isFirst!="true"){
+		first_publish_time=$("#first_publish_time").val();
+	}
 	
-	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
+	if(isFirst!="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
 		$("#checkfirst_publish_time").text("请填写首次发布日期！");
 		return;
 	}else{
@@ -206,16 +209,21 @@ function doupdateWordSetting(){
 	var time_slot=$("#time_quantum").val();
 	var publish_strategy=$("#nature").val();
 	var publish_date=$("#publish_date").val();
-	var first_publish_time=$("#first_publish_time").val();
+	var first_publish_time="";
 	var get_time=$("#get_time").val();
 	var id=$("#id").val();
+	var isFirst=$("#isFirst").val();	
 	var issuccess=false;
 	
 	if(publish_strategy=="手动发布"){
 		publish_date="";
 	}
 	
-	if(first_publish_time=='' || first_publish_time==null || first_publish_time==undefined){
+	if(isFirst=="true"){
+		first_publish_time=$("#first_publish_time").val();
+	}
+	
+	if(isFirst=="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
 		$("#checkfirst_publish_time").text("请填写首次发布日期！");
 		return;
 	}else{

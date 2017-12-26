@@ -67,4 +67,14 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	public Integer updateAllSetting() {
 		return hotWordSettingDao.updateAllSetting();
 	}
+
+	@Override
+	public Integer checkFirst() {
+		return hotWordSettingDao.checkFirst();
+	}
+
+	@Override
+	public String getNextPublishTime() {
+		return hotWordSettingDao.getNextPublishTime();
+	}
 }

@@ -474,9 +474,6 @@ function batch(status){
 		return;
 	}
 	
-	$("input:checkbox[name=commonid]:checked").each(function(){
-		ids.push($(this).val());
-	});
 	var count=ids.length+checkCount();
 	if(status!=3 && count>20){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});

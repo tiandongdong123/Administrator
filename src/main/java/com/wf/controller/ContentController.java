@@ -1743,6 +1743,7 @@ public class ContentController{
 	@RequestMapping("/addWordSetting")
 	public String addWordSetting(Model model){
 		model.addAttribute("isupdate","add");
+		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}
 
@@ -1866,7 +1867,7 @@ public class ContentController{
 	@RequestMapping("/doaddWordSetting")
 	@ResponseBody
 	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request){
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");  
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");  
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
 		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
@@ -1916,26 +1917,9 @@ public class ContentController{
 	 */
 	@RequestMapping("/getHotWordSetting")
 	public String getHotWordSetting(Integer id,Model model){
-		boolean isFirst=false;
-		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);
-		
-		try {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-			Date dt1 = df.parse(df.format(new Date()));
-	        Date dt2 = df.parse(item.getFirst_publish_time());
-			
-	        if (dt1.getTime() > dt2.getTime()) {
-	        	isFirst=true;
-	        }else{
-	        	isFirst=false;
-	        }
-	 
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-       
+		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);       
 		model.addAttribute("item",item);
-		model.addAttribute("isFirst",isFirst);
+		model.addAttribute("isFirst",StringUtils.isNoneBlank(item.getFirst_publish_time()));
 		model.addAttribute("isupdate","update");
 		return "/page/contentmanage/add_word_setting";
 	}
