@@ -1866,20 +1866,41 @@ public class ContentController{
 
 	@RequestMapping("/doaddWordSetting")
 	@ResponseBody
-	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");  
-		 Date d = new Date();
-		 Calendar cal = Calendar.getInstance();
-		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
-		 cal.add(Calendar.DATE,wordset.getTime_slot());
-		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"───"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
-		 wordset.setNext_publish_time(nextPublish);
-		 wordset.setNext_publish_time_space(next_publish_time_space);
-		 wordset.setStatus(2);
-		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
-		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		 wordset.setOperation_date(sdf.format(d));
-		 return hotWordSettingService.addWordSetting(wordset)>0;
+	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
+		try {
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+			Date d = new Date();
+			Calendar cal = Calendar.getInstance();
+			String nextPublish="";
+			if(isFirst.equals("true")){
+				nextPublish=hotWordSettingService.getNextPublishTime();
+			}else{
+				nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+			}
+			
+			Date date =sdf.parse(nextPublish.substring(0, 10));
+			cal.setTime(date); 
+			int day=cal.get(Calendar.DATE); 
+			cal.set(Calendar.DATE,day-wordset.getTime_slot()); 
+			sdf=new SimpleDateFormat("yyyy年MM月dd日");
+			StringBuffer sb=new StringBuffer("");
+			String str=nextPublish.substring(0, 10);
+			sb.append(str.replaceFirst("-", "年").replaceFirst("-", "月"));
+			sb.append("日");
+			String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
+	 		wordset.setNext_publish_time(nextPublish);
+	 		wordset.setNext_publish_time_space(next_publish_time_space);
+	 		wordset.setStatus(2);
+	 		wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+	 		sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	 		wordset.setOperation_date(sdf.format(d));
+	 		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	
+	 		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
 	
 	/**
@@ -1927,17 +1948,30 @@ public class ContentController{
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
 	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request){
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日"); 
+		
+		try{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
-		 String nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
-		 cal.add(Calendar.DATE,wordset.getTime_slot());
-		 String next_publish_time_space=sdf.format(d)+" "+wordset.getGet_time()+"───"+sdf.format(cal.getTime())+" "+wordset.getGet_time();
-		 wordset.setNext_publish_time(nextPublish);
+		 String nextPublish=wordset.getNext_publish_time();
+		 //cal.add(Calendar.DATE,wordset.getTime_slot());
+		 Date date =sd.parse(wordset.getNext_publish_time().substring(0, 10));
+		 cal.setTime(date); 
+		int day=cal.get(Calendar.DATE); 
+		cal.set(Calendar.DATE,day-wordset.getTime_slot()); 
+		StringBuffer sb=new StringBuffer("");
+		String str=nextPublish.substring(0, 10);
+		sb.append(str.replaceFirst("-", "年").replaceFirst("-", "月"));
+		sb.append("日");
+		String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
 		 wordset.setNext_publish_time_space(next_publish_time_space);
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 wordset.setOperation_date(sdf.format(d));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		 return hotWordSettingService.updateWordSetting(wordset)>0;
 	}
 
@@ -1950,7 +1984,9 @@ public class ContentController{
 		wordset=new HotWordSetting();
 		wordset.setStatus(status);
 		wordset.setId(id);
-		return hotWordSettingService.updateWordSetting(wordset)>0;
+		Integer update=hotWordSettingService.updateWordSetting(wordset);
+		hotWordSettingService.updateAllSettingTime();
+		return update>0;
 	}
 	
 	

@@ -73,6 +73,7 @@
 	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
 	              </div>             
 			  <?}else{?>
+			  	  <input value="${item.next_publish_time!}" type="hidden" id="nextPublish"/>
 	              <div class="box-footer" style="text-align:center;">
 	               <input type="hidden" value="${item.id!}" id="id"/>
 	               <button type="button" onclick="doupdateWordSetting()" class="btn btn-primary" id="update_wordset">修改</button>

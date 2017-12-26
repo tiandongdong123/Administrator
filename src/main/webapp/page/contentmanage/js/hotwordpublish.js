@@ -158,6 +158,7 @@ function doaddWordSetting(){
 			"publish_date" :publish_date,
 			"first_publish_time" :first_publish_time,
 			"get_time" :get_time,
+			"isFirst":isFirst,
 			},
 		success : function (data){
 			issuccess=data;
@@ -273,6 +274,7 @@ function doupdateWordSetting(){
 			"first_publish_time" :first_publish_time,
 			"get_time" :get_time,
 			"id":id,
+			"next_publish_time":$("#nextPublish").val(),
 			},
 		success : function (data){
 			issuccess=data;
