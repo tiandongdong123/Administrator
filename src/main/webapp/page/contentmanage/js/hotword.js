@@ -395,10 +395,11 @@ function update_word(id){
  */
 function enterAddWord(){
 	$("#word_content").keydown(function(e){
-		var curKey =e.keyCode ? e.keyCode : e.which ? e.which : e.charCode; //兼容IE 火狐 谷歌
+		var curKey=0,e=e||event; 
+	  	curKey=e.keyCode||e.which||e.charCode; 
 		if(curKey == 13){
 			add_word();
-		return false;
+			return false;
 		}
 	});
 }
@@ -410,13 +411,14 @@ function enterAddWord(){
  */
 function enterUpdateWord(){
 	$("input[id$='_value']").keydown(function(e){
-		var curKey =e.keyCode ? e.keyCode : e.which ? e.which : e.charCode; //兼容IE 火狐 谷歌
+		var curKey=0,e=e||event; 
+	  	curKey=e.keyCode||e.which||e.charCode; 
 		var id=$(this).attr('id');
 		var index=id.indexOf('_');
 		id=id.substr(0,index);
 		if(curKey == 13){
 			update_word(id);
-		return false;
+			return false;
 		}
 	});
 }
