@@ -33,7 +33,7 @@ public class HotWordSetRedisJob {
 	private static Logger log = Logger.getLogger(HotWordSetRedisJob.class);
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/5 * * * ?")
 	public void execHotWordSetRedis() {
 		try{
 			log.info("开始热搜词redis发布");
@@ -44,7 +44,7 @@ public class HotWordSetRedisJob {
 				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
 				return;
 			}
-			HotWordSetting set = hotWordSettingService.getHotWordSettingTask();
+			HotWordSetting set = hotWordSettingService.getExecHotWordSetting(1);
 			if(set==null){
 				log.info("没有任务需要执行");
 				return;

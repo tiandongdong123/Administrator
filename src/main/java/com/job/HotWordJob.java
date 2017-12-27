@@ -2,10 +2,15 @@ package com.job;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +40,7 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/5 * * * ?")
 	public void exechotWord() {
 		try {
 			log.info("开始执行热门文献的统计");
@@ -86,50 +91,85 @@ public class HotWordJob {
 				sql.append("where create_time BETWEEN '"+df.format(query_start)+"' and '"+df.format(query_end)+"'");
 				cal.add(Calendar.MONTH, 1);
 			}
-			sql.append(") e group by e.theme order by frequency desc limit 100");
-			log.info("执行sql:"+sql.toString());
-			List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(sql.toString());
+			sql.append(") e group by e.theme order by frequency desc limit ");
 			int index=1;
-			for(Object obj:list){
-				Map<String,Object> map=(Map<String, Object>) obj;
-				String theme=map.get("theme").toString();
-				int count=Integer.parseInt(map.get("frequency").toString());
-				int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-				if(forbid>0 || isMessyCode(theme)){
-					continue;
-				}
-				if(StringUtils.isBlank(theme)){
-					continue;
-				}
-				String[] words=theme.trim().split(" ");
-				for(String word:words){
-					if(StringUtils.isBlank(word)){
+			int pageNum=0;
+			int pageSize=100;
+			Map<String,Integer> countMap=new LinkedHashMap<String,Integer>();
+			while(true){
+				String limit=pageNum*pageSize+","+pageSize;
+				String query=sql.toString()+limit;
+				log.info("执行sql:"+query);
+				List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(query);
+				for(Object obj:list){
+					Map<String,Object> map=(Map<String, Object>) obj;
+					String theme=map.get("theme").toString();
+					int count=Integer.parseInt(map.get("frequency").toString());
+					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
+					if(forbid>0 || isMessyCode(theme)){
 						continue;
 					}
-					if(theme.indexOf(":")!=-1){
-						theme=theme.substring(theme.indexOf(":")+1, theme.length());
+					if(StringUtils.isBlank(theme)){
+						continue;
 					}
-					
-					if(theme.indexOf("：")!=-1){
-						theme=theme.substring(theme.indexOf("：")+1, theme.length());
+					String[] words=theme.trim().split(" ");
+					for(String word:words){
+						if(StringUtils.isBlank(word)){
+							continue;
+						}
+						if(theme.indexOf(":")!=-1){
+							theme=theme.substring(theme.indexOf(":")+1, theme.length());
+						}
+						
+						if(theme.indexOf("：")!=-1){
+							theme=theme.substring(theme.indexOf("：")+1, theme.length());
+						}
+						if (countMap.get(theme) == null) {
+							countMap.put(theme, count);
+							index++;
+						} else {
+							countMap.put(theme, countMap.get(theme) + count);
+						}
+						if (index > 50) {
+							break;
+						}
 					}
-					HotWord hot=new HotWord();
-					hot.setWord(theme);
-					hot.setSearchCount(count);
-					hot.setWordNature("前台获取");
-					hot.setOperationTime(set.getNext_publish_time());
-					if(index<=20){
-						hot.setWordStatus(1);
-					}else{
-						hot.setWordStatus(2);
-					}
-					hotWordService.addWord(hot);
-					if(index>=50){
+					if (index > 50) {
 						break;
 					}
-					index++;
 				}
+				if (index > 50) {
+					break;
+				}
+				//下一页
+				pageNum++;
 			}
+			
+			// 然后通过比较器来实现排序
+			List<Map.Entry<String, Integer>> listmap = new ArrayList<Map.Entry<String, Integer>>(countMap.entrySet());
+			Collections.sort(listmap, new Comparator<Map.Entry<String, Integer>>() {
+				// 升序排序
+				public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+					return o2.getValue().compareTo(o1.getValue());
+				}
+			});
+			// 插入数据库
+			int status = 1;
+			for (Map.Entry<String,Integer> entry : listmap) {
+				HotWord hot = new HotWord();
+				hot.setWord(entry.getKey());
+				hot.setSearchCount(entry.getValue());
+				hot.setWordNature("前台获取");
+				hot.setOperationTime(set.getNext_publish_time());
+				if (status <= 20) {
+					hot.setWordStatus(1);
+				} else {
+					hot.setWordStatus(2);
+				}
+				hotWordService.addWord(hot);
+				status++;
+			}
+		
 			log.info("热搜词导入数据库完成");
 			//更新发布时间
 			query_end = df.parse(set.getNext_publish_time());//开始查询时间
@@ -147,7 +187,7 @@ public class HotWordJob {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		log.info("完成热搜词的发布");
+		log.info("完成热搜词的统计");
 	}
 	
 	private boolean isChinese(char c) {
