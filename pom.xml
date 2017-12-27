@@ -129,7 +129,7 @@
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-search-api</artifactId>
-			<version>1.2017.491-20171215.084934-1</version>
+			<version>1.2017.569</version>
 		</dependency>
 		<!-- 文辑推优 -->
 		<dependency>
