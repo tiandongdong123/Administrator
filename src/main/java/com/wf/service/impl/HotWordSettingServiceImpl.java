@@ -123,4 +123,9 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		}
 		return num;
 	}
+
+	@Override
+	public HotWordSetting getExecHotWordSetting(Integer status) {
+		return hotWordSettingDao.getExecHotWordSetting(status);
+	}
 }
