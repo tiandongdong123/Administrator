@@ -56,6 +56,7 @@ public class HotWordSetRedisJob {
 			//获取任务小时
 			Date query_end = df.parse(set.getNext_publish_time());// 开始查询时间
 			cal.setTime(query_end);
+			cal.add(Calendar.DATE, -set.getTime_slot());
 			int task_hour=cal.get(Calendar.HOUR_OF_DAY);
 			if(sys_hour!=task_hour){
 				log.info("未到定时器执行时间");
