@@ -39,6 +39,9 @@
  	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
  		select * from hot_search_word_setting where id=#{id}
  	</select>
+ 	<select id="getExecHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
+ 		select * from hot_search_word_setting where status=#{status}
+ 	</select>
  	
      <insert id="addWordSetting" parameterType="com.wf.bean.HotWordSetting">
     insert into hot_search_word_setting

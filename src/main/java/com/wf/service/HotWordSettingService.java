@@ -18,4 +18,5 @@ public interface HotWordSettingService {
 	Integer checkFirst();
 	String getNextPublishTime();
 	Integer updateAllSettingTime();
+	HotWordSetting getExecHotWordSetting(Integer status);
 }
