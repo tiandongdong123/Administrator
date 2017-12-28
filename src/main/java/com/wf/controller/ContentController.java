@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1993,6 +1994,27 @@ public class ContentController{
 		Integer update=hotWordSettingService.updateWordSetting(wordset);
 		hotWordSettingService.updateAllSettingTime();
 		return update>0;
+	}
+	
+	@RequestMapping("/compareGetTime")
+	@ResponseBody
+	public boolean compareGetTime(Integer id){		
+		boolean isGo=false;
+		try {
+			String nestPublishTime=hotWordSettingService.getNextPublishTime();
+			nestPublishTime=nestPublishTime.substring(11,nestPublishTime.length());
+			HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);
+			String getTime=item.getGet_time();
+			
+			DateFormat df = new SimpleDateFormat("HH:mm:ss");
+            Date dt1 = df.parse(nestPublishTime);//将字符串转换为date类型  
+            Date dt2 = df.parse(getTime);  
+			isGo=dt2.getTime()>dt1.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return isGo;
 	}
 	
 	

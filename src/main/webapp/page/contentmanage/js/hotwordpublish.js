@@ -292,6 +292,15 @@ function doupdateWordSetting(){
 }
 
 function publish(id,status){
+	
+	var issuccess=compareGetTime(id);
+	
+	if(issuccess){
+		layer.msg("<div style=\"color:#8B0000;\">抓取时间大于发布时间,请修改后应用!</div>",{icon: 2});
+		return;
+	}
+	
+	
 	layer.alert("确定要应用此数据吗?",{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -321,6 +330,26 @@ function publish(id,status){
 	
 	  });
 }
+
+function compareGetTime(id){
+	var issuccess=false;
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/compareGetTime.do",
+		dataType : "json",
+		data : {
+			"id":id,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	
+	return issuccess;
+
+}
+
 
 function  divShow(id,status){
 	var html="";
