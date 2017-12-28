@@ -89,7 +89,7 @@
       	date_format(now(),'%Y-%c-%d %H:%i:%s'),
       </if>
       <if test="operationTime != null">
-        date_format(now(),'%Y-%c-%d %H:%i:%s'),
+        #{operationTime},
       </if>
       <if test="operation!=null">
         #{operation,jdbcType=INTEGER},
