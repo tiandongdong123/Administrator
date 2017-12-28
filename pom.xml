@@ -778,7 +778,7 @@
 		</resources>
 
 		<finalName>wf-framework-adminManager-web</finalName>
-		<directory>../output/wf-framework-adminManager-web</directory>
+		<directory>output/wf-framework-adminManager-web</directory>
 
 		<pluginManagement>
 			<plugins>
