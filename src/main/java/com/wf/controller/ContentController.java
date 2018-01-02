@@ -1743,7 +1743,9 @@ public class ContentController{
 	
 	@RequestMapping("/addWordSetting")
 	public String addWordSetting(Model model){
+		String nextPublishTime=hotWordSettingService.getNextPublishTime();
 		model.addAttribute("isupdate","add");
+		model.addAttribute("get_time_cur",nextPublishTime.substring(11,nextPublishTime.length()));
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}

@@ -40,6 +40,7 @@
          	 <div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布策略：</label>
              <input type="hidden" value="${item.publish_strategy!}" id="publish_strategy"/>
+             <input type="hidden" value="${get_time_cur}" id="get_time_cur"/>
              <select id="nature" onchange="changenature(this);">
               <option value="自动发布">自动发布</option>
               <option value="手动发布">手动发布</option>
@@ -53,7 +54,7 @@
 
 	        	<div class="form-group input_block">
 	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'publish_date\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="09:00:00"><span id="checkget_time" style="color:red;"></span>
+	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="09:00:00"><span id="checkget_time" style="color:red;"></span>
 	         	</div>
 	
 			  <?}else{?>
