@@ -210,7 +210,7 @@ public class HotWordJob {
 			}
 		}
 		float result = count / chLength;
-		if (result > 0.1) {
+		if (result > 0) {
 			return true;
 		} else {
 			return false;
