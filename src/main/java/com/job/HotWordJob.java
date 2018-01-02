@@ -92,7 +92,6 @@ public class HotWordJob {
 				cal.add(Calendar.MONTH, 1);
 			}
 			sql.append(") e group by e.theme order by frequency desc limit ");
-			int index=1;
 			int pageNum=0;
 			int pageSize=100;
 			Map<String,Integer> countMap=new LinkedHashMap<String,Integer>();
@@ -120,28 +119,27 @@ public class HotWordJob {
 						if(StringUtils.isBlank(word)){
 							continue;
 						}
-						if(theme.indexOf(":")!=-1){
-							theme=theme.substring(theme.indexOf(":")+1, theme.length());
+						if(word.indexOf(":")!=-1){
+							word=word.substring(word.indexOf(":")+1, word.length());
 						}
 						
-						if(theme.indexOf("：")!=-1){
-							theme=theme.substring(theme.indexOf("：")+1, theme.length());
+						if(word.indexOf("：")!=-1){
+							word=word.substring(word.indexOf("：")+1, word.length());
 						}
-						if (countMap.get(theme) == null) {
-							countMap.put(theme, count);
-							index++;
+						if (countMap.get(word) == null) {
+							countMap.put(word, count);
 						} else {
-							countMap.put(theme, countMap.get(theme) + count);
+							countMap.put(word, countMap.get(word) + count);
 						}
-						if (index > 50) {
+						if (countMap.size() > 50) {
 							break;
 						}
 					}
-					if (index > 50) {
+					if (countMap.size() > 50) {
 						break;
 					}
 				}
-				if (index > 50) {
+				if (countMap.size() > 50) {
 					break;
 				}
 				//下一页
