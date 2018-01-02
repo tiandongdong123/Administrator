@@ -32,6 +32,7 @@ public class HotWordJob {
 	
 	private static Logger log = Logger.getLogger(HotWordJob.class);
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static List<HotWord> hotwordList=new ArrayList<HotWord>();
 	
 	@Autowired
 	private HotWordSettingService hotWordSettingService;
@@ -69,16 +70,15 @@ public class HotWordJob {
 				return;
 			}
 			
-			//清理数据库，去除敏感词,插入数据
-			hotWordService.deleteHotWord();
-			log.info("清理热搜词完成");
-			
 			//统计要插入的数据
 			cal.add(Calendar.DATE, -set.getTime_slot());
 			Date query_start=cal.getTime();//结束查询时间
 			int start_month=query_start.getMonth()+1;
 			int end_month=query_end.getMonth()+1;
-			cal.setTime(query_end);
+			if(start_month>end_month){
+				end_month=12+end_month;
+			}
+			cal.setTime(query_start);
 			StringBuffer sql=new StringBuffer("select e.theme,count(1) frequency from (");
 			for(int i=start_month;i<=end_month;i++){
 				if(i>start_month){
@@ -101,6 +101,9 @@ public class HotWordJob {
 				String query=sql.toString()+limit;
 				log.info("执行sql:"+query);
 				List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(query);
+				if(list.size()==0){
+					break;
+				}
 				for(Object obj:list){
 					Map<String,Object> map=(Map<String, Object>) obj;
 					String theme=map.get("theme").toString();
@@ -166,23 +169,10 @@ public class HotWordJob {
 				} else {
 					hot.setWordStatus(2);
 				}
-				hotWordService.addWord(hot);
+				//存入内存中，等待redis发布
+				hotwordList.add(hot);
 				status++;
 			}
-		
-			log.info("热搜词导入数据库完成");
-			//更新发布时间
-			query_end = df.parse(set.getNext_publish_time());//开始查询时间
-			cal.setTime(query_end);
-			cal.add(Calendar.DATE, set.getPublish_cyc());
-			String puublist_time=df.format(cal.getTime()).substring(0,10)+" "+set.getPublish_date();
-			set.setNext_publish_time(puublist_time);
-			//判断是否是第一次
-			if(!StringUtils.isEmpty(set.getFirst_publish_time())){
-				set.setIs_first("1");
-			}
-			hotWordSettingService.updateWordSetting(set);
-			hotWordSettingService.updateAllSettingTime();
 			log.info("热搜词更新时间完成");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -219,7 +209,6 @@ public class HotWordJob {
 				}
 			}
 		}
-		System.out.println(strName);
 		float result = count / chLength;
 		if (result > 0.1) {
 			return true;
@@ -228,5 +217,21 @@ public class HotWordJob {
 		}
 
 	}
-	 
+	
+	/**
+	 * 获取查询的热搜词
+	 * 
+	 * @return
+	 */
+	public static List<HotWord> getHotWordList() {
+		return hotwordList;
+	}
+
+	/**
+	 * 情况查询的热搜词
+	 */
+	public static void setHotWordClear() {
+		hotwordList.clear();
+	}
+
 }
