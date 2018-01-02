@@ -131,15 +131,15 @@ public class HotWordJob {
 						} else {
 							countMap.put(word, countMap.get(word) + count);
 						}
-						if (countMap.size() > 50) {
+						if (countMap.size() >= 50) {
 							break;
 						}
 					}
-					if (countMap.size() > 50) {
+					if (countMap.size() >= 50) {
 						break;
 					}
 				}
-				if (countMap.size() > 50) {
+				if (countMap.size() >= 50) {
 					break;
 				}
 				//下一页
