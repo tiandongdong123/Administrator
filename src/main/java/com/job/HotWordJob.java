@@ -69,7 +69,7 @@ public class HotWordJob {
 				log.info("未到定时器执行时间");
 				return;
 			}
-			
+			hotwordList.clear();
 			//统计要插入的数据
 			cal.add(Calendar.DATE, -set.getTime_slot());
 			Date query_start=cal.getTime();//结束查询时间
