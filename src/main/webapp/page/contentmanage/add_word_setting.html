@@ -40,7 +40,7 @@
          	 <div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布策略：</label>
              <input type="hidden" value="${item.publish_strategy!}" id="publish_strategy"/>
-             <input type="hidden" value="${get_time_cur}" id="get_time_cur"/>
+             <input type="hidden" value="${get_time_cur!}" id="get_time_cur"/>
              <select id="nature" onchange="changenature(this);">
               <option value="自动发布">自动发布</option>
               <option value="手动发布">手动发布</option>
