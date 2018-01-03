@@ -65,7 +65,7 @@
 
 	        	<div class="form-group input_block">
 	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'publish_date\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
+	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
 	         	</div>
 			  <?}?>
          </div>		

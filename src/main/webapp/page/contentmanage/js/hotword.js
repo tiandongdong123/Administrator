@@ -113,24 +113,7 @@ function serachdata(curr,data){
 	}
 	resHtml+="</tbody>";
 	$("#list").html(resHtml);
-/*	layui.use(['laypage', 'layer'], function(){
-		var laypage = layui.laypage,layer = layui.layer;
-		laypage.render({
-			elem: 'divPager',
-			count: data.totalRow,
-			first: '首页',
-			last: '尾页',
-			curr: curr || 1,
-			page: Math.ceil(data.totalRow / pageSize),	//总页数
-			limit: pageSize,
-			layout: ['count', 'prev', 'page', 'next', 'skip'],
-			jump: function (obj, first) {
-	            if(!first){
-	            	showPage(obj.curr);
-	            }
-			}
-		});
-	});*/
+	enterUpdateWord();
 }
 
 
@@ -278,7 +261,6 @@ function checkForBiddenWord(word){
 function add_word(){
  var word_content=$.trim($("#word_content").val());
  var success=false;
- 
  if(word_content=='' || word_content==null || word_content==undefined){
 	 layer.msg("<div style=\"color:#8B0000;\">请填写热搜词!</div>",{icon: 2});
 	 return;
@@ -308,7 +290,7 @@ function add_word(){
 	
   if(success){
 	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
-	setTimeout("window.location.reload()",1000);
+	showPage(1);
   }else{
 	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
   }
@@ -382,7 +364,7 @@ function update_word(id){
 	
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
-		setTimeout("window.location.reload()",1000);
+		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -456,7 +438,7 @@ function publish(that,obj,issueState){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
-	    				setTimeout("window.location.reload()",1000);
+	    				showPage(1);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -503,7 +485,7 @@ function batch(status){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
-	    				setTimeout("window.location.reload()",1000);
+	    				showPage(1);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}

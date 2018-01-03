@@ -24,7 +24,7 @@
  	  select * from hot_search_word_setting 
  	</select>
  	<select id="getHotWordSetting"  resultType="map" parameterType="map">
- 	  select * from hot_search_word_setting  order by status 
+ 	  select * from hot_search_word_setting  order by status,operation_date DESC
  	  limit #{pageNum},#{pageSize}
  	</select>
  	
@@ -33,7 +33,7 @@
 	      <if test="status != null">
 	        and  status=#{status}
 	      </if>
- 		order by status
+ 		order by status,operation_date DESC
  	</select>
  	
  	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">

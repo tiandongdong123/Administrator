@@ -168,7 +168,7 @@ function doaddWordSetting(){
 	
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
-		setTimeout("parent.location.reload();",1000);
+		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
 	}
@@ -284,7 +284,7 @@ function doupdateWordSetting(){
 	
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
-		setTimeout("parent.location.reload();",1000);
+		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -313,7 +313,7 @@ function publish(id,status){
 	    	
 	    	if(issuccess){
 	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
-	    		setTimeout("window.location.reload();",1000);
+	    		showPage(1);
 	    	}else{
 	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
 	    	}

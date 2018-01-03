@@ -1941,10 +1941,13 @@ public class ContentController{
 	 */
 	@RequestMapping("/getHotWordSetting")
 	public String getHotWordSetting(Integer id,Model model){
-		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id);       
+		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id); 
+		String nextPublishTime=hotWordSettingService.getNextPublishTime();
 		model.addAttribute("item",item);
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		model.addAttribute("isupdate","update");
+		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
+
 		return "/page/contentmanage/add_word_setting";
 	}
 	
@@ -1988,11 +1991,13 @@ public class ContentController{
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		hotWordSettingService.updateAllSetting();
 		HotWordSetting wordset=new HotWordSetting();
 		wordset=new HotWordSetting();
 		wordset.setStatus(status);
 		wordset.setId(id);
+		wordset.setOperation_date(sdf.format(new Date()));
 		Integer update=hotWordSettingService.updateWordSetting(wordset);
 		hotWordSettingService.updateAllSettingTime();
 		return update>0;
