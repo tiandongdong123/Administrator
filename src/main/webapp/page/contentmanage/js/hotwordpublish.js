@@ -168,7 +168,7 @@ function doaddWordSetting(){
 	
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
-		showPage(1);
+		setTimeout("parent.location.reload();",1000);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
 	}
@@ -284,7 +284,7 @@ function doupdateWordSetting(){
 	
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
-		showPage(1);
+		setTimeout("parent.location.reload();",1000);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -292,6 +292,15 @@ function doupdateWordSetting(){
 }
 
 function publish(id,status){
+	
+/*	var issuccess=compareGetTime(id);
+	
+	if(issuccess){
+		layer.msg("<div style=\"color:#8B0000;\">抓取时间大于发布时间,请修改后应用!</div>",{icon: 2});
+		return;
+	}
+*/	
+	
 	layer.alert("确定要应用此数据吗?",{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -313,7 +322,7 @@ function publish(id,status){
 	    	
 	    	if(issuccess){
 	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
-	    		showPage(1);
+	    		setTimeout("window.location.reload();",1000);
 	    	}else{
 	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
 	    	}
