@@ -290,6 +290,7 @@ function add_word(){
 	
   if(success){
 	layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
+	clear();
 	showPage(1);
   }else{
 	layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
@@ -364,6 +365,7 @@ function update_word(id){
 	
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
+		clear();
 		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
@@ -438,6 +440,7 @@ function publish(that,obj,issueState){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
+	    				clear();
 	    				showPage(1);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
@@ -485,6 +488,7 @@ function batch(status){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
+	    				clear();
 	    				showPage(1);
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
@@ -498,5 +502,13 @@ function batch(status){
 	});
 	
 }
+
+function clear(){
+	$("#word_content").val("");
+	$("#word").val("");
+	$("#status option:first").prop("selected", 'selected'); 
+	$("#word_nature option:first").prop("selected", 'selected'); 
+}
+
 
 
