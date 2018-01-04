@@ -89,7 +89,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -97,7 +97,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code=#{res.product_source_code}
+		</if>		
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -144,7 +147,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -156,7 +159,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -248,7 +254,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -256,7 +262,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -302,7 +311,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -314,7 +323,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -447,7 +459,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -455,7 +467,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id )
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="urls!=null and urls !=''">
 			and operate_type in
 			<foreach collection="urls"  item="item" open="("   separator="," close=")">
@@ -531,7 +546,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -543,7 +558,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>		
 		<if test="urls!=null and urls !=''">
 			and operate_type in
 			<foreach collection="urls"  item="item" open="("   separator="," close=")">
@@ -686,7 +704,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -694,7 +712,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="database_name!=null and database_name !=''">
 			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
@@ -764,7 +785,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -776,7 +797,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>		
 		<if test="database_name!=null and database_name !=''">
 			and source_type_name in
 			<foreach collection="database_name"  item="item" open="("   separator="," close=")">
@@ -883,7 +907,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -891,7 +915,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !='' ">
+			and product_source_code= #{res.product_source_code}
+		</if>		
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -936,7 +963,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -948,7 +975,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -1038,7 +1068,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -1046,7 +1076,10 @@
 				and product_source_code in(select resource_id
 				from wfks_pay_channel_resources wkfs where user_id = #{res.userId} GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!='' ">
 			and source_type_name=#{res.sourceTypeName}
 		</if>
@@ -1091,7 +1124,7 @@
 		<if test="res.source_db!=null and res.source_db!=''">
 			and source_db=#{res.source_db}
 		</if>
-		<choose>
+<!-- 		<choose>
 			<when test="res.product_source_code!=null and res.product_source_code !=''">
 				and product_source_code= #{res.product_source_code}
 			</when>
@@ -1103,7 +1136,10 @@
 				</foreach>
 				GROUP BY resource_id)
 			</otherwise>
-		</choose>
+		</choose> -->
+		<if test="res.product_source_code!=null and res.product_source_code !=''">
+			and product_source_code= #{res.product_source_code}
+		</if>		
 		<if test="res.sourceTypeName!=null and res.sourceTypeName!=''">
 			and source_type_name=#{res.sourceTypeName}
 		</if>

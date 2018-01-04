@@ -16,6 +16,7 @@ import com.wf.bean.DatabaseUseHourly;
 import com.wf.bean.PageList;
 import com.wf.dao.DatabaseUseHourlyMapper;
 import com.wf.dao.PersonMapper;
+import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.service.DatabaseAnalysisService;
 @Service
 public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
@@ -26,6 +27,8 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 	private PersonMapper personMapper;
 	@Autowired
 	private DatamanagerMapper datamanagerMapper;
+	@Autowired
+	private WfksPayChannelResourcesMapper wfksPayChannelResourcesMapper;
 	
 	@Override
 	public Map getDatabaseAnalysisList(DatabaseUseDaily databaseUseDaily,String startTime,String endTime,Integer pageNum,Integer pageSize){
@@ -38,6 +41,8 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		String date=databaseUseDaily.getDate();//日期（按小时查询用到）
 		String product_source_code=databaseUseDaily.getProduct_source_code();//数据库code
 		String source_db=databaseUseDaily.getSource_db();//数据来源
+		List<String> users=new ArrayList<>();
+		List<String> resources=new ArrayList<>();
 		/**
 		 * 分三种情况：
 		 * 1.机构名称和用户ID都为空时
@@ -54,13 +59,49 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 			dataList=databaseUseHourlyMapper.getDataById(userId,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
 			//按查询条件得到表格中的所有数据
 			list=databaseUseHourlyMapper.getDataAnalysisListsById(userId,product_source_code,source_db,date, startTime, endTime);
+			
+			if(StringUtils.isBlank(product_source_code)){
+				users.add(userId);
+				resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+				
+				for (int i = 0; i < dataList.size(); i++) {
+					if(!resources.contains(dataList.get(i).getProduct_source_code())){
+						dataList.remove(i);
+	 				}
+				}
+				
+				for (int i = 0; i < list.size(); i++) {
+					DatabaseUseHourly data=(DatabaseUseHourly)list.get(i);
+					if(!resources.contains(data.getProduct_source_code())){
+						list.remove(i);
+					}
+				}
+			}
+			
 		}else{
 			//得到此机构中所有的用户（包括账号和其子账号）
-			List users = personMapper.getInstitutionUser(institutionName);
+			users = personMapper.getInstitutionUser(institutionName);
 			//按查询条件得到表格中的分页后数据
 			dataList=databaseUseHourlyMapper.getDataByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime, startNum, pageSize);
 			//按查询条件得到表格中的所有数据
 			list=databaseUseHourlyMapper.getDataAnalysisListsByIds(institutionName,users,product_source_code,source_db,date, startTime, endTime);
+		
+			if(StringUtils.isBlank(product_source_code)){
+				resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+				for (int i = 0; i < dataList.size(); i++) {
+					if(!resources.contains(dataList.get(i).getProduct_source_code())){
+						dataList.remove(i);
+	 				}
+				}
+				
+				for (int i = 0; i < list.size(); i++) {
+					DatabaseUseHourly data=(DatabaseUseHourly)list.get(i);
+					if(!resources.contains(data.getProduct_source_code())){
+						list.remove(i);
+					}
+				}
+			}
+			
 		}
 		//定义一个空的数组
 		String[] database = null ;
@@ -370,11 +411,35 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		}else if(StringUtils.isNotBlank(databaseUseDaily.getUser_id())){
 			//获取导出的数据
 			listmap=databaseUseHourlyMapper.exportDatabaseOneDayById(databaseUseDaily, startTime, endTime);
+			
+			if(StringUtils.isBlank(databaseUseDaily.getProduct_source_code())){
+				List<String> users=new ArrayList<>();
+				users.add(databaseUseDaily.getUser_id());
+				List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+				for (int i = 0; i < listmap.size(); i++) {
+					if(!resources.contains(((DatabaseUseHourly)listmap.get(i)).getProduct_source_code())){
+						listmap.remove(i);
+	 				}
+				}
+			}
+			
 		}else{
 			//得到此机构中所有的用户（包括机构账号和机构子账号）
 			List users = personMapper.getInstitutionUser(databaseUseDaily.getInstitution_name());
 			//获取导出的数据
 			listmap=databaseUseHourlyMapper.exportDatabaseOneDayByIds(databaseUseDaily,users, startTime, endTime);
+			
+			if(StringUtils.isBlank(databaseUseDaily.getProduct_source_code())){
+				List<String> resources=wfksPayChannelResourcesMapper.getAllResourceByUserID(users);
+				
+				for (int i = 0; i < listmap.size(); i++) {
+					if(!resources.contains(((DatabaseUseHourly)listmap.get(i)).getProduct_source_code())){
+						listmap.remove(i);
+	 				}
+				}
+			}
+
+			
 		}
 		//定义一个空的数组
 		String[] database = null ;

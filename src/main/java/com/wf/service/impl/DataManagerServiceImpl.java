@@ -251,7 +251,6 @@ public class DataManagerServiceImpl implements DataManagerService {
 							if(list.get(j)!=""&&list.get(j)!=null){
 								DB_Source dbs = db.getOneSource(list.get(j));
 								if(j==0){
-
 									if(dbs!=null){
 										newword = dbs.getDbSourceName();
 									}
@@ -274,7 +273,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
 									Language lan=this.language.getOne(listlan.get(j));
 									if(j==0){
-										langude=lan.getLanguageName();
+										if(lan!=null){
+											langude=lan.getLanguageName();
+										}
 									}else{
 										langude=langude+","+lan.getLanguageName();
 									}
@@ -291,7 +292,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 								if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
 									ResourceType reso=this.type.getOne(listtyp.get(j));
 									if(j==0){
-										sources=reso.getTypeName();
+										if(reso!=null){
+											sources=reso.getTypeName();
+										}
 									}else{
 										sources=sources+","+reso.getTypeName();
 									}

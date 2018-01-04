@@ -1,52 +1,33 @@
 package com.wf.service.impl;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.xhtml.map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wf.bean.PageList;
-import com.wf.bean.SourceAnalysisLinkHostDaily;
 import com.wf.bean.SourceAnalysisLinkHostHourly;
-import com.wf.bean.SourceAnalysisSearchEngineDaily;
 import com.wf.bean.SourceAnalysisSearchEngineHourly;
-import com.wf.bean.SourceAnalysisSearchWordDaily;
 import com.wf.bean.SourceAnalysisSearchWordHourly;
-import com.wf.bean.SourceAnalysisSourceDaily;
 import com.wf.bean.SourceAnalysisSourceHourly;
-import com.wf.dao.SourceAnalysisLinkHostDailyMapper;
 import com.wf.dao.SourceAnalysisLinkHostHourlyMapper;
-import com.wf.dao.SourceAnalysisSearchEngineDailyMapper;
 import com.wf.dao.SourceAnalysisSearchEngineHourlyMapper;
-import com.wf.dao.SourceAnalysisSearchWordDailyMapper;
 import com.wf.dao.SourceAnalysisSearchWordHourlyMapper;
-import com.wf.dao.SourceAnalysisSourceDailyMapper;
 import com.wf.dao.SourceAnalysisSourceHourlyMapper;
 import com.wf.service.SourceAnalysisService;
 @Service
 public class SourceAnalysisServiceImpl implements SourceAnalysisService {
 
 
-	//@Autowired
-	//private SourceAnalysisSourceDailyMapper sourceAnalysisSourceDailyMapper;
 	@Autowired
 	private SourceAnalysisSourceHourlyMapper sourceAnalysisSourceHourlyMapper;
-	//@Autowired
-	//private SourceAnalysisSearchEngineDailyMapper sourceAnalysisSearchEngineDailyMapper;
 	@Autowired
 	private SourceAnalysisSearchEngineHourlyMapper sourceAnalysisSearchEngineHourlyMapper;
-	//@Autowired
-	//private SourceAnalysisSearchWordDailyMapper sourceAnalysisSearchWordDailyMapper;
 	@Autowired
 	private SourceAnalysisSearchWordHourlyMapper sourceAnalysisSearchWordHourlyMapper;
-	//@Autowired
-	//private SourceAnalysisLinkHostDailyMapper sourceAnalysisLinkHostDailyMapper;
 	@Autowired
 	private SourceAnalysisLinkHostHourlyMapper sourceAnalysisLinkHostHourlyMapper;
 	
