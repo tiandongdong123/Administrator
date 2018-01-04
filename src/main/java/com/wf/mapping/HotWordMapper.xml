@@ -127,4 +127,16 @@
     delete from hot_search_word
   </delete>
   
+  <select id="getHotWordByOrder" resultType="int" parameterType="map">
+  	select id from  hot_search_word where 1=1
+  	<if test="ids!= null">
+  	and id in 
+	  	<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+	           #{item}       
+	    </foreach>
+  	</if>
+  	order by search_count desc   
+  	limit 0,#{end}
+  </select>
+  
 </mapper>

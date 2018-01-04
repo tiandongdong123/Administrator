@@ -15,4 +15,5 @@ public interface HotWordMapper {
 	Integer addWord(HotWord hotWord);
 	Integer updateWord(HotWord hotWord);
 	Integer deleteHotWord();
+	Integer[] getHotWordByOrder(Map map); 
 }

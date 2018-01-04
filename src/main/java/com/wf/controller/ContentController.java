@@ -1844,6 +1844,16 @@ public class ContentController{
 	@ResponseBody
 	public boolean batch(HttpServletRequest request,
 			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
+		
+		if(status==1){
+			int c=20-hotWordService.checkRedisCount();
+			Map map=new HashMap();
+			map.put("ids", ids);
+			map.put("end", c);
+			Integer[] orderid=hotWordService.getHotWordByOrder(map);
+			ids=orderid;
+		}
+		
 		HotWord hotWord=null;
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		int count=0;

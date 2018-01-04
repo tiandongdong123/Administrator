@@ -107,4 +107,9 @@ public class HotWordServiceImpl implements HotWordService{
 		return hotWordMapper.deleteHotWord();
 	}
 
+	@Override
+	public Integer[] getHotWordByOrder(Map map) {
+		return hotWordMapper.getHotWordByOrder(map);
+	}
+
 }

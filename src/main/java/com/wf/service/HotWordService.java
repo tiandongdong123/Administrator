@@ -15,4 +15,5 @@ public interface HotWordService {
 	Integer checkRedisCount();
 	boolean publishToRedis();
 	Integer deleteHotWord();
+	Integer[] getHotWordByOrder(Map map);
 }

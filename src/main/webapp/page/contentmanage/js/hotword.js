@@ -463,13 +463,25 @@ function batch(status){
 		return;
 	}
 	
+	if(status==3){
+		str="下撤";
+		$("input:checkbox[name=commonid][id='下撤']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}else{
+		str="发布";
+		$("input:checkbox[name=commonid][id='发布']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}
 	
-	$("input:checkbox[name=commonid]:checked").each(function(){
-		ids.push($(this).val());
-	});
+	if(ids.length==0){
+		layer.msg("<div style=\"color:#8B0000;\">您选择的热搜词没有必要"+str+"!</div>",{icon: 2});
+		return;
+	}
 	
-	var count=ids.length+checkCount();
-	if(status!=3 && count>20){
+	var count=checkCount();
+	if(status!=3 && count>=20){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
