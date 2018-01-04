@@ -23,10 +23,12 @@ public interface PerioCommentService {
 	Boolean updateNotes(String id ,String dataState,String appealReason,String user_id,String date);
 
 	Integer getGoodForCommont(String commontid);
+	
 
 	List<Object> exportPerio(CommentInfo info, String[] dataState,
 			String[] complaintStatus, String startTime, String endTime,
 			String sauditm, String eauditm, String slayoutm, String elayoutm);
 	
-	Integer updateInfo(String id,String dataState);
+	Integer updateInfo(String perioid,String dataState);
+
 }

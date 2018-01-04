@@ -32,7 +32,8 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		pl.setPageNum(pagenum+1);
 		pl.setPageSize(pagesize);
 		pl.setPageRow(li);
-		pl.setPageTotal(count);
+		pl.setTotalRow(count);
+		pl.setPageTotal(count%pagesize==0?count/pagesize:count/pagesize+1);
 		return pl;
 	}
 
@@ -72,7 +73,7 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 		List<Object> list=new ArrayList<Object>();
 		
 		try {
-			list=ci.getCommentAll(info, dataState, complaintStatus, startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
+			list=ci.getComment_exprot(info, dataState, complaintStatus, startTime, endTime, sauditm, eauditm, slayoutm, elayoutm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -93,9 +94,10 @@ public class PerioCommentServiceImpl implements PerioCommentService {
 	}
 
 	@Override
-	public Integer updateInfo(String id, String dataState) {
+	public Integer updateInfo(String perioid, String dataState) {
 		// TODO Auto-generated method stub
-		return ci.updateInfo(id, dataState);
+		return ci.updateInfo(perioid, dataState);
+
 	}
 
 }

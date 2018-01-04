@@ -3,7 +3,7 @@ package com.wf.bean;
 
 public class AdminInfo {
 
-	private String adminId;
+	private String adminId; 
 	
 	private String adminpassword;
 	

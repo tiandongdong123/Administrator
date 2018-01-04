@@ -17,6 +17,10 @@ public interface CommentInfoMapper {
 			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,
 			@Param("elayoutm")String elayoutm);
 	
+	List<Object> getComment_exprot(@Param("info")CommentInfo info,@Param("dataState")String[]dataState,@Param("complaintStatus")String[]complaintStatus,@Param("startTime")String startTime,@Param("endTime")String endTime,
+			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,
+			@Param("elayoutm")String elayoutm);
+	
 	
 	List<Object> getCommentAll(@Param("info")CommentInfo info,@Param("dataState")String[]dataState,@Param("complaintStatus")String[]complaintStatus,@Param("startTime")String startTime,@Param("endTime")String endTime,
 			@Param("sauditm")String sauditm,@Param("eauditm")String eauditm,@Param("slayoutm")String slayoutm,
@@ -30,9 +34,9 @@ public interface CommentInfoMapper {
 	
 	CommentInfo getcommentByid(@Param("id") String id);
 
-	Boolean updateNotes(@Param("id")String id ,@Param("dataState")String dataState,@Param("appealReason")String appealReason,@Param("user_id")String user_id,@Param("date")String date);
+	Integer updateInfo(@Param("id")String perioid,@Param("dataState")String dataState);
 	
-	Integer updateInfo(@Param("id")String id,@Param("dataState")String dataState);
+	Boolean updateNotes(@Param("id")String id ,@Param("dataState")String dataState,@Param("appealReason")String appealReason,@Param("user_id")String user_id,@Param("date")String date);
 	
 	Integer getGoodForCommont(@Param("id") String commontid);
 }

@@ -3,7 +3,8 @@ package com.wf.bean;
 import java.util.Date;
 
 public class CommentInfo {
-	private String  rand_id;
+	
+	private String	rand_id;
 	private String	id;
 	private String	perio_id;
 	private String	perio_name;
