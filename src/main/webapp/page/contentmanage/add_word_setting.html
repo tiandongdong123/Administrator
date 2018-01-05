@@ -17,7 +17,7 @@
 			  	<?if(!isFirst){?>
 					<div class="form-group input_block">
 		             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>首次发布日期：</label>
-		             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate: '%y-%M-%d 00:00:00'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time" value="${item.first_publish_time!}"><span id="checkfirst_publish_time" style="color:red;"></span>
+		             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate: '%y-%M-%d 00:00:00'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time"><span id="checkfirst_publish_time" style="color:red;"></span>
 		         	</div>			  			  	
 			  	<?}?>
 			  <?}else{?>
@@ -27,6 +27,8 @@
 		             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>首次发布日期：</label>
 		             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate: '%y-%M-%d 00:00:00'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time" value="${item.first_publish_time!}"><span id="checkfirst_publish_time" style="color:red;"></span>
 		         	</div>			  			  	
+			  	<?}else{?>
+			  		<input type="hidden" id="first_publish_time" value="${item.first_publish_time!}">
 			  	<?}?>
 			  <?}?>  
 			<div class="form-group input_block">
@@ -49,23 +51,23 @@
 			  <?if(isupdate=='add'){?>
 		         <div class="form-group input_block" id="publish_time_div">
 		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
-		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请发布时间"  type="text" class="Wdate" id="publish_date" value="10:00:00"><span id="checkpublish_date" style="color:red;"></span>
+		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date"><span id="checkpublish_date" style="color:red;"></span>
 		         </div>						  
 
 	        	<div class="form-group input_block">
 	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="09:00:00"><span id="checkget_time" style="color:red;"></span>
+	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="get_time"><span id="checkget_time" style="color:red;"></span>
 	         	</div>
 	
 			  <?}else{?>
 		         <div class="form-group input_block" id="publish_time_div">
 		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
-		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请发布时间"  type="text" class="Wdate" id="publish_date" value="${item.publish_date!}"><span id="checkpublish_date" style="color:red;"></span>
+		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date" value="${item.publish_date!}"><span id="checkpublish_date" style="color:red;"></span>
 		         </div>						  
 
 	        	<div class="form-group input_block">
 	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请获取时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
+	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
 	         	</div>
 			  <?}?>
          </div>		
