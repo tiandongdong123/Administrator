@@ -242,10 +242,10 @@ function doupdateWordSetting(){
 	} 
 	
 	if(get_time=='' || get_time==null || get_time==undefined){
-		$("#checkfirst_publish_time").text("请填写抓取时间！");
+		$("#checkget_time").text("请填写抓取时间！");
 		return;
 	}else{
-		$("#checkfirst_publish_time").text("");
+		$("#checkget_time").text("");
 	} 
 
 	

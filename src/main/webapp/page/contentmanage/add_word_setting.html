@@ -49,26 +49,26 @@
              </select>
          	</div>
 			  <?if(isupdate=='add'){?>
-		         <div class="form-group input_block" id="publish_time_div">
-		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
-		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date"><span id="checkpublish_date" style="color:red;"></span>
-		         </div>						  
-
 	        	<div class="form-group input_block">
 	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
 	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="get_time"><span id="checkget_time" style="color:red;"></span>
-	         	</div>
-	
+	         	</div>			  
+
+		         <div class="form-group input_block" id="publish_time_div">
+		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
+		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date"><span id="checkpublish_date" style="color:red;"></span>
+		         </div>						  	
 			  <?}else{?>
+	        	<div class="form-group input_block">
+	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
+	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
+	         	</div>
+	         		
 		         <div class="form-group input_block" id="publish_time_div">
 		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间：</label>
 		           <input onclick="WdatePicker({dateFmt:'HH:mm:ss',minDate:'#F{$dp.$D(\'get_time\',{H:+1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date" value="${item.publish_date!}"><span id="checkpublish_date" style="color:red;"></span>
 		         </div>						  
 
-	        	<div class="form-group input_block">
-	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
-	             <input onclick="WdatePicker({dateFmt:'HH:mm:ss',maxDate:'#F{$dp.$D(\'get_time_cur\',{H:-1});}'})" placeholder="请选择时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
-	         	</div>
 			  <?}?>
          </div>		
               <?if(isupdate=='add'){?>
