@@ -210,7 +210,7 @@ function doupdateWordSetting(){
 	var time_slot=$("#time_quantum").val();
 	var publish_strategy=$("#nature").val();
 	var publish_date=$("#publish_date").val();
-	var first_publish_time="";
+	var first_publish_time=$("#first_publish_time").val();
 	var get_time=$("#get_time").val();
 	var id=$("#id").val();
 	var isFirst=$("#isFirst").val();	
@@ -218,10 +218,6 @@ function doupdateWordSetting(){
 	
 	if(publish_strategy=="手动发布"){
 		publish_date="";
-	}
-	
-	if(isFirst!="true"){
-		first_publish_time=$("#first_publish_time").val();
 	}
 	
 	if(isFirst!="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
@@ -246,10 +242,10 @@ function doupdateWordSetting(){
 	} 
 	
 	if(get_time=='' || get_time==null || get_time==undefined){
-		$("#checkfirst_publish_time").text("请填写抓取时间！");
+		$("#checkget_time").text("请填写抓取时间！");
 		return;
 	}else{
-		$("#checkfirst_publish_time").text("");
+		$("#checkget_time").text("");
 	} 
 
 	
