@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.utils.DateTools;
-import com.wf.dao.WebSiteAttributeMapper;
+import com.wf.dao2.WebSiteAttributeMapper;
 import com.wf.service.WebSiteAttributeService;
 
 
