@@ -35,7 +35,6 @@
 		<if test="type != null and type != '' ">
 			and type = #{type}
 		</if>
-		group by date
 		order by date
 	</select>
   
