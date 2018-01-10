@@ -129,7 +129,7 @@
   
   <!-- 查询来源分析当前条件下（搜索引擎、日期、指标类型）统计信息 -->
   <select id="getChart" resultMap="BaseResultMap">
-		SELECT engine_name,type,date,SUM(numbers)sum from rs_source_analysis_search_engines_hourly WHERE 1=1 
+		SELECT engine_name,SUM(numbers)sum from rs_source_analysis_search_engines_hourly WHERE 1=1 
 		<if test="type!=null and type !=''">
   		and type=#{type}
 	  	</if>
@@ -143,13 +143,13 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY ENGINE_name,type ORDER BY sum DESC;
+		GROUP BY ENGINE_name ORDER BY sum DESC;
   </select>
   
   
    <!-- 查询来源分析当前条件下（搜索引擎、日期、指标类型）统计信息 -->
   <select id="getChart_day" resultMap="BaseResultMap">
-		SELECT engine_name,type,date,SUM(numbers)sum from rs_source_analysis_search_engines_hourly WHERE 1=1 
+		SELECT engine_name,SUM(numbers)sum from rs_source_analysis_search_engines_hourly WHERE 1=1 
 		<if test="type!=null and type !=''">
   		and type=#{type}
 	  	</if>
@@ -160,7 +160,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY ENGINE_name,type ORDER BY sum DESC;
+		GROUP BY ENGINE_name ORDER BY sum DESC;
   </select>
   
   
@@ -299,7 +299,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY engine_name,hour,type;
+		GROUP BY engine_name,hour,type,numbers;
   </select>
   
   
@@ -320,7 +320,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY engine_name,date,type;
+		GROUP BY engine_name,date,type,numbers;
   </select>
   
   
@@ -344,7 +344,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY engine_name,hour,type;
+		GROUP BY engine_name,hour,type,numbers;
   </select>
   
     <select id="getLine1_day" resultType="map">
@@ -363,7 +363,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY engine_name,date,type;
+		GROUP BY engine_name,date,type,numbers;
   </select>
   
   <!-- 查询来源分析当前条件下（搜索引擎、日期、指标类型）折线图信息 -->
@@ -400,7 +400,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY hour;
+		GROUP BY date;
   </select>
   
   

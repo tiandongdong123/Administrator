@@ -127,7 +127,7 @@
   
   <!-- 查询来源分析当前条件下（检索词、日期、指标类型）统计信息 -->
   <select id="getChart" resultMap="BaseResultMap">
-		SELECT keyword,type,date,SUM(numbers)sum from rs_source_analysis_external_searchword_hourly WHERE 1=1 
+		SELECT keyword,SUM(numbers)sum from rs_source_analysis_external_searchword_hourly WHERE 1=1 
 		
 		<if test="type!=null and type !=''">
   		and type=#{type}
@@ -142,7 +142,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyword,type ORDER BY sum DESC;
+		GROUP BY keyword ORDER BY sum DESC;
   </select>
   
   
@@ -160,7 +160,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyword,type ORDER BY sum DESC;
+		GROUP BY keyword,type,date ORDER BY sum DESC;
   </select>
   
   
@@ -296,7 +296,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyWord,hour,type;
+		GROUP BY keyWord,hour,type,numbers;
   </select>
   
   
@@ -317,7 +317,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyWord,date,type;
+		GROUP BY keyWord,date,type,numbers;
   </select>
   
    <select id="getLine1" resultType="map">
@@ -339,7 +339,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyWord,hour,type;
+		GROUP BY keyWord,hour,type,numbers;
   </select>
   
   
@@ -359,7 +359,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY keyWord,date,type;
+		GROUP BY keyWord,date,type,numbers;
   </select>
   
   
@@ -397,7 +397,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY hour;
+		GROUP BY date;
   </select>
   
   

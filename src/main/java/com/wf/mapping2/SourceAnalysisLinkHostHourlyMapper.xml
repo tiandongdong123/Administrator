@@ -131,7 +131,7 @@
   
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）统计信息 -->
   <select id="getChart" resultMap="BaseResultMap">
-		SELECT link_host,type,date,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		SELECT link_host,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
 		and  link_host <![CDATA[<>]]> ''
 		<if test="type!=null and type !=''">
   		and type=#{type}
@@ -146,14 +146,14 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,type ORDER BY sum DESC;
+		GROUP BY link_host ORDER BY sum DESC;
   </select>
   
   
   
   <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）统计信息 -->
   <select id="getChart_day" resultMap="BaseResultMap">
-		SELECT link_host,type,date,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		SELECT link_host,SUM(numbers)sum from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
 		and  link_host <![CDATA[<>]]> ''
 		<if test="type!=null and type !=''">
   		and type=#{type}
@@ -165,7 +165,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,type ORDER BY sum DESC;
+		GROUP BY link_host ORDER BY sum DESC;
   </select>
   
   <!-- 查询来源分析当前条件下（外部链接、日期、平均指标类型）统计信息 -->
@@ -301,7 +301,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,hour,type;
+		GROUP BY link_host,hour,type,numbers;
   </select>
   
   
@@ -322,7 +322,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,date,type;
+		GROUP BY link_host,date,type,numbers;
   </select>
   
   
@@ -346,7 +346,7 @@
    		and hour <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,hour,type;
+		GROUP BY link_host,hour,type,numbers;
   </select>
   
   
@@ -367,7 +367,7 @@
    		and date <![CDATA[ <= ]]> #{endTime}
    		</if>
 	  	
-		GROUP BY link_host,date,type;
+		GROUP BY link_host,date,type,numbers;
   </select>
   
   
@@ -393,7 +393,7 @@
   
    <!-- 查询来源分析当前条件下（外部链接、日期、指标类型）折线图信息 -->
   <select id="getDateList_day" resultType="String">
-		SELECT hour from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
+		SELECT date from rs_source_analysis_external_linkhost_hourly WHERE 1=1 
 		and  link_host <![CDATA[<>]]> ''
 		<if test="type!=null and type !=''">
   		and type=#{type}
