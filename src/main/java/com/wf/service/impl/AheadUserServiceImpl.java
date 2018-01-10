@@ -184,7 +184,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");
+		String login=XxlConfClient.get("wf-uias.validate.register",null);
+		HttpPost httpPost = new HttpPost(login);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("userName", userName));
 		try {
