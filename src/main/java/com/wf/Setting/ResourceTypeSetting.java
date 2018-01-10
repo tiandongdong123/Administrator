@@ -36,7 +36,7 @@ public class ResourceTypeSetting {
 
     public JSONArray getResources1() {
         try {
-            List<com.wanfangdata.resourceupdatetools.model.ResourceType> resourceList = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.getResources1();
+            List<com.wanfangdata.resourceupdatetools.model.ResourceType> resourceList = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.getResourcesActivated();
             List<ResourceType> resources = new ArrayList<>();
             for (com.wanfangdata.resourceupdatetools.model.ResourceType resource : resourceList) {
                 resources.add(convertToResourceType(resource));

@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>resource-update-tools</artifactId>
-			<version>1.2017.8</version>
+			<version>1.2018.9</version>
 		</dependency>
 		<!-- db mysql -->
 		<dependency>
@@ -560,12 +560,12 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>zookeepertools</artifactId>
-			<version>1.2017.3</version>
+			<version>1.2017.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>setting</artifactId>
-			<version>1.2017.10</version>
+			<version>1.2018.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
