@@ -91,10 +91,6 @@ function addMessage(){
 	var title=$("#title").val();
 	var abstracts=document.getElementById("abstracts").value;
 	var content= ues.getContent();
-	if(content.length>16000){
-		layer.msg("最大允许输入16000字符",{icon: 2});
-		return false;
-	}
 	var imageUrl=$("#imageUrl").val();
 	var linkAddress=$("#linkAddress").val();
 	var author=$("#author").val();
@@ -147,10 +143,6 @@ function updateMessage(){
 	var title=$("#title").val();
 	var abstracts=document.getElementById("abstracts").value;
 	var content= ues.getContent();
-	if(content.length>16000){
-		layer.msg("最大允许输入16000字符",{icon: 2});
-		return false;
-	}
 	var imageUrl=$("#imageUrl").val();
 	var linkAddress=$("#linkAddress").val();
 	var author=$("#author").val();

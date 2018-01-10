@@ -233,7 +233,7 @@
  
  <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
    select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-    from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    from user u WHERE 1=1
     <if test="userId !=null and userId !=''"><!-- 精确查询 -->
         and ((u.user_id = #{userId} and u.userType = 2) or
         (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
@@ -243,7 +243,7 @@
 		and u.institution like #{institution} and u.userType =2  
 	</if>
 	<if test="ipSegment != null and ipSegment != ''">
-		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType =2
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
 	<if test="adminname != null and adminname != ''">
 		and u.pid = #{adminname} and u.userType =2
@@ -252,7 +252,7 @@
   </select>
   
   <select id="findListCount" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+	select count(1) from user u WHERE 1=1
     <if test="userId !=null and userId !=''"><!-- 精确查询 -->
         and ((u.user_id = #{userId} and u.userType = 2) or
         (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
@@ -262,7 +262,7 @@
 		and u.institution like #{institution} and userType =2  
 	</if>
 	<if test="ipSegment != null and ipSegment != ''">
-		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType =2
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
 	<if test="adminname != null and adminname != ''">
 		and u.pid = #{adminname} and userType =2
@@ -271,7 +271,7 @@
   
    <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
    select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-    from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+    from user u WHERE 1=1
     <if test="userId !=null and userId !=''"><!-- 精确查询 -->
          and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
     </if>
@@ -279,7 +279,7 @@
 		and u.institution like #{institution} and u.userType =2  
 	</if>
 	<if test="ipSegment != null and ipSegment != ''">
-		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and u.userType =2
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
 	<if test="adminname != null and adminname != ''">
 		and u.pid = #{adminname} and u.userType =2
@@ -288,7 +288,7 @@
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u left join user_ip up on u.user_id=up.user_id WHERE 1=1
+	select count(1) from user u WHERE 1=1
     <if test="userId !=null and userId !=''"><!-- 精确查询 -->
         and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
     </if>
@@ -296,7 +296,7 @@
 		and u.institution like #{institution} and userType =2  
 	</if>
 	<if test="ipSegment != null and ipSegment != ''">
-		and #{ipSegment} <![CDATA[>=]]> up.begin_ip_address_number and #{ipSegment} <![CDATA[<=]]> up.end_ip_address_number and userType =2
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
 	<if test="adminname != null and adminname != ''">
 		and u.pid = #{adminname} and userType =2

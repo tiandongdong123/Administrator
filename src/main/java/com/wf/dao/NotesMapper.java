@@ -28,4 +28,6 @@ public interface NotesMapper {
 	boolean handlingNote(@Param("id") String id);
 	
 	public int openNote(@Param("id") String id);
+	
+	public Notes  topNO1(@Param("noteNum") String noteNum);
 }

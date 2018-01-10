@@ -21,5 +21,7 @@
 						 value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCACO+cmFZNtWJSSZuYYIysAhTnpAl1vLfAgOB8+YK5FbwaR1ETU7a0T9okpVDJfctwU2vsRagVg0BufGv8yALR71Lk8Syp3TqJJQF9/qmXifqIRGzD1yRFw9N5su9g6mf9tnp1HWFyCSH46zVZK/PHgaJ8sYee9JxTJE0L5m/ctQIDAQAB" />
 		<constructor-arg name="transactionUrl" value="http://my.wanfangdata.com.cn/user/transaction" />
 	</bean>
-
+	
+	<!-- 敏感词 -->
+	<dubbo:reference interface="org.bigdata.framework.forbidden.iservice.IForbiddenSerivce" id="forbiddenService" check="false" />
 </beans>

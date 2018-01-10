@@ -3,6 +3,8 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.wf.bean.WfksPayChannelResources;
 
 public interface WfksPayChannelResourcesMapper {
@@ -28,4 +30,8 @@ public interface WfksPayChannelResourcesMapper {
     List<Map<String, Object>> selectProduct(Map<String, Object> map);
     /** 通过channelId查询详情限定列表 */
     List<WfksPayChannelResources> selectByChannelId(String channelId);
+    
+    /**通过userid获取所有的购买资源*/
+    List<String> getAllResourceByUserID(@Param("users")List<String> users);
+    
 }

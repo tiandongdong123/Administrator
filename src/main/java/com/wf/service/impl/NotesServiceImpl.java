@@ -1,5 +1,9 @@
 package com.wf.service.impl;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,7 @@ import com.wf.bean.ResourceType;
 import com.wf.dao.NotesMapper;
 import com.wf.dao.ResourceTypeMapper;
 import com.wf.service.NotesService;
+import com.xxl.conf.core.XxlConfClient;
 @Service
 public class NotesServiceImpl implements NotesService {
 	@Autowired
@@ -23,8 +28,8 @@ public class NotesServiceImpl implements NotesService {
 	public PageList getNotes(int pageNum, int pageSize, String userName, String noteNum, String resourceName, String[] resourceType, String[] dataState, String[] complaintStatus, String startTime,String endTime, String[] noteProperty, String[] performAction) {
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
-		int pagen=(pageNum-1)*pageSize;
-		mp.put("pageNum", pagen);
+		int page=(pageNum-1)*pageSize;
+		mp.put("pageNum", page);
 		mp.put("pageSize", pageSize);
 		mp.put("userName", userName);
 		mp.put("noteNum", noteNum);
@@ -39,15 +44,23 @@ public class NotesServiceImpl implements NotesService {
 		List<Object> pageRow= dao.selectNotesInfor(mp);
 		if(pageRow.size()>0){
 			for(int i=0;i<pageRow.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRow.get(i)).getResourceType());
+				String type = ((Notes)pageRow.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
 				if(null!=res){
 					((Notes)pageRow.get(i)).setResourceType(res.getTypeName());	
 				}
 			}
 		}
-		int pageTotal= dao.selectNotesInforCount(mp);
-		int b =pageTotal%pageSize;
-		pageTotal= b!=0?pageTotal/pageSize+1:pageTotal/pageSize;
+		int totalRow= dao.selectNotesInforCount(mp);
+		p.setTotalRow(totalRow);
+		int pageTotal= totalRow%pageSize!=0?totalRow/pageSize+1:totalRow/pageSize;
 		p.setPageNum(pageNum);
 		p.setPageSize(pageSize);
 		p.setPageRow(pageRow);
@@ -65,6 +78,10 @@ public class NotesServiceImpl implements NotesService {
 	@Override
 	public Boolean updateNotes(Notes notes) {
 		boolean f=dao.updateNotes(notes)>0?true:false;
+		Notes notesNO1 = dao.topNO1(notes.getNoteNum());
+		if(notesNO1.getPerformAction() == 1){
+			updateWork(notes.getNoteNum(),notes.getDataState());
+		}
 		return f;
 	}
 	@Override
@@ -120,8 +137,26 @@ public class NotesServiceImpl implements NotesService {
 		
 		if(pageRowAll.size()>0){
 			for(int i=0;i<pageRowAll.size();i++){
-				ResourceType res=resource.getOne(((Notes)pageRowAll.get(i)).getResourceType());
-				((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				String  type = ((Notes)pageRowAll.get(i)).getResourceType();
+				if("tech_result".equals(type)){
+					type = "techResult";
+				}else if("standards".equals(type)){
+					type = "standard";
+				}else if("gazetteers".equals(type)){
+					type = "local chronicles";
+				}
+				ResourceType res=resource.getOne(type);
+				if(null!=res){					
+					((Notes)pageRowAll.get(i)).setResourceType(res.getTypeName());
+				}
+				String noteDate = ((Notes)pageRowAll.get(i)).getNoteDate();
+				if(noteDate.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setNoteDate(noteDate.substring(0, noteDate.indexOf(".")));
+				}
+				String auditTime = ((Notes)pageRowAll.get(i)).getAuditTime();
+				if(auditTime!=null && auditTime.indexOf(".") != -1){
+					((Notes)pageRowAll.get(i)).setAuditTime(auditTime.substring(0, auditTime.indexOf(".")));
+				}
 			}
 		}
 		
@@ -136,5 +171,49 @@ public class NotesServiceImpl implements NotesService {
 		return notes;
 	}
 	
-
+	public boolean updateWork(String noteNum,String dataState){
+		Connection con = null;
+		PreparedStatement stmt = null;
+		try {
+			String sql = "UPDATE notes SET data_state = '" + dataState + "' WHERE note_num = '" + noteNum + "'";
+			con = getConnection();
+			stmt = con.prepareStatement(sql);
+			int num = stmt.executeUpdate();
+			if(num > 0){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt!=null){
+					stmt.close();					
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(con!=null){
+					con.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+	
+	public Connection getConnection() throws Exception{
+		try {
+			String url = XxlConfClient.get("wf-work.jdbc.url", null);
+			String username = XxlConfClient.get("wf-public.jdbc.username", null);
+			String password = XxlConfClient.get("wf-public.jdbc.password", null);
+			Class.forName("com.mysql.jdbc.Driver");
+			return DriverManager.getConnection(url, username, password);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 }

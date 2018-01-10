@@ -31,8 +31,8 @@
     SELECT n.record_id,n.id,n.note_num,n.user_id,n.user_name,n.resource_num,n.resource_name,n.resource_type,
     	n.note_content,n.note_location,n.note_date,n.data_state,n.complaint_status,
     	n.preliminary_opinions,n.appeal_reason,n.final_opinion,n.handling_status,n.audit_id,
-    	n.audit_time,n.perform_action,n.note_property,u.user_realname,u.user_nickname
-    FROM notes AS n LEFT JOIN user AS u ON n.audit_id = u.user_id  WHERE 1=1  
+    	n.audit_time,n.perform_action,n.note_property,a.user_realname
+    FROM notes AS n LEFT JOIN wfadmin AS a ON n.audit_id = a.wangfang_admin_id  WHERE 1=1  
     <if test="userName!=null">
     	and n.user_id=#{userName} 
     </if>
@@ -84,7 +84,7 @@
     order by n.note_date desc
     <if test="pageNum!=null and pageSize!=null">
     limit #{pageNum},#{pageSize}
-    </if>
+  	</if>
   </select>
   
   <select id="selectNotesInforCount" resultType="java.lang.Integer" parameterType="java.util.Map">
@@ -160,6 +160,13 @@
    		</if>
    		where 1=1 AND record_id=#{recordId}
     </update>
+    
+    <select id="topNO1" resultMap="BaseResultMap" parameterType="java.lang.String">
+    	SELECT * 
+    	FROM notes 
+    	WHERE note_num = #{noteNum}  AND (perform_action = '1' OR perform_action = '2')
+    	ORDER BY  note_date DESC limit 1
+    </select>
     
     <update id="closeNote">
     	update notes set data_state='0'

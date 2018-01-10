@@ -812,9 +812,7 @@ public class AheadUserController {
 					}
 				}
 			}
-			if(StringUtils.isNotBlank(com.getChecks())){			
-				aheadUserService.updateAccountRestriction(com);		
-			}
+			aheadUserService.updateAccountRestriction(com);
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
 				for(ResourceDetailedDTO dto : list){
@@ -1232,9 +1230,7 @@ public class AheadUserController {
 		}else{
 			aheadUserService.deleteUserIp(com.getUserId());
 		}
-		if(StringUtils.isNotBlank(com.getChecks())){			
-			aheadUserService.updateAccountRestriction(com);		
-		}
+		aheadUserService.updateAccountRestriction(com);
 		//统计分线权限
 		aheadUserService.addUserIns(com);
 		//修改项目
