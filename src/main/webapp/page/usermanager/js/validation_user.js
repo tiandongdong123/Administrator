@@ -63,6 +63,10 @@ $(function() {/* 文档加载，执行一个函数 */
                 validators: {
                     notEmpty: {
                         message: '请上传文件'
+                    },
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^.*\.(?:xlsx)$/,
+                        message: '附件必须是以xlsx结尾的excel'
                     }
                 }
 			},
