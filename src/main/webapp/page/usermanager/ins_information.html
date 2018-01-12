@@ -16,7 +16,7 @@
          <form action="../auser/information.do" method="post" id="fromList">
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
-                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}">
+                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)){?>&nbsp;&nbsp;<span style="color:red">${msg!}</span><?}?>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">IP</label>

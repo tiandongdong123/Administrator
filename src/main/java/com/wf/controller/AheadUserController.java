@@ -1055,6 +1055,27 @@ public class AheadUserController {
 			return view;
 		}
 		PageList pageList = aheadUserService.findListInfo(map);
+		if ((pageList == null || pageList.getTotalRow() == 0) && StringUtils.isNotEmpty(userId)) {
+			Person per = personservice.findById(userId);
+			if (per == null) {
+				view.addObject("msg", "查询无结果");
+				view.addObject("map", map);
+				view.setViewName("/page/usermanager/ins_information");
+				return view;
+			}
+			if (per.getUsertype() == 0) {
+				view.addObject("msg", "该用户ID是个人用户");
+				view.addObject("map", map);
+				view.setViewName("/page/usermanager/ins_information");
+				return view;
+			}else if(per.getUsertype()==4){//党建用户重新查关联机构
+				String json=per.getExtend();
+				JSONObject obj=JSONObject.fromObject(json);
+				map.put("userId", obj.get("RelatedGroupId"));
+				pageList = aheadUserService.findListInfo(map);
+				map.put("userId", userId);
+			}
+		}
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
 		if(!StringUtil.isEmpty(ipSegment)){
