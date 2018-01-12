@@ -1068,9 +1068,9 @@ public class AheadUserController {
 				view.addObject("map", map);
 				view.setViewName("/page/usermanager/ins_information");
 				return view;
-			}else if(per.getUsertype()==4){//党建用户重新查关联机构
-				String json=per.getExtend();
-				JSONObject obj=JSONObject.fromObject(json);
+			} else if (per.getUsertype() == 4) {// 党建用户重新查关联机构
+				String json = per.getExtend();
+				JSONObject obj = JSONObject.fromObject(json);
 				map.put("userId", obj.get("RelatedGroupId"));
 				pageList = aheadUserService.findListInfo(map);
 				map.put("userId", userId);
