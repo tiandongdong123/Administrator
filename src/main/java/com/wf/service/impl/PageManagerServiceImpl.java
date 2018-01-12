@@ -125,5 +125,10 @@ public class PageManagerServiceImpl implements PageManagerService{
 		return pageManagerMapper.getKeyword(pageName);
 	}
 
+	@Override
+	public Integer getCountBymodularId(String modelarId) {
+		return pageManagerMapper.getCountBymodularId(modelarId);
+ 	}
+
 	
 }

@@ -92,11 +92,30 @@ function updateModularManager(id){
 }
 
 function deleteModularManager(id){
+	var isdelete=false;
+	$.ajax( {  
+		type : "POST",  
+		async:false,
+		url : "../modular/getCountBymodularId.do",
+			data : {
+				'modularId' : id	
+			},
+			dataType : "json",
+			success : function(data) {
+				isdelete=data;
+			}
+		});
+	
+	if(isdelete){
+		layer.msg("该功能模块下还有页面在分析，不能删除!",{icon: 2});
+		return;
+	}
+	
 	$.ajax( {  
 		type : "POST",  
 		url : "../modular/deleteModular.do",
 			data : {
-				'id' : id	
+				'id' : id
 			},
 			dataType : "json",
 			success : function(data) {

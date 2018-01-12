@@ -121,4 +121,8 @@
   </select>
   
   
+  <select id="getCountBymodularId" resultType="int" parameterType="string">
+  	select count(1) from pagemanager where modular_id=#{modelarId}
+  </select>
+  
 </mapper>

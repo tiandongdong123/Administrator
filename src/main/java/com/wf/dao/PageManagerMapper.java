@@ -30,4 +30,6 @@ public interface PageManagerMapper {
 	
 	List<Object>  getAllPage(@Param("ids") String[] ids,@Param("pageName") String pageName);
     
+	Integer getCountBymodularId(@Param("modelarId")String modelarId);
+	
 }
