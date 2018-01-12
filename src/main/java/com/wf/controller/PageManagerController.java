@@ -259,11 +259,6 @@ public class PageManagerController {
 		ExportExcel excel=new ExportExcel();
 		excel.exportPage(response, array, names);
 		
-		
-		//记录日志
-		Log log=new Log("分析页面管理","导出","导出条件:页面名称:"+pageName+",功能模块:"+ids.toString(),request);
-		logService.addLog(log);
-		
 	}
 	
 	
