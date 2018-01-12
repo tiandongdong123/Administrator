@@ -15,7 +15,7 @@
          <form action="../auser/information.do" method="post" id="fromList">
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
-                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)){?>&nbsp;&nbsp;<span style="color:red">${msg!}</span><?}?>
+                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">IP</label>
@@ -430,6 +430,7 @@
 </div>
 </div>
 <?}?>
+<?if(!isEmpty(msg)&&msg=='0'){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <div id="page"></div>
 </div>
 </div>

@@ -1054,26 +1054,20 @@ public class AheadUserController {
 			view.setViewName("/page/usermanager/ins_information");
 			return view;
 		}
+		String msg="0";
 		PageList pageList = aheadUserService.findListInfo(map);
-		if ((pageList == null || pageList.getTotalRow() == 0) && StringUtils.isNotEmpty(userId)) {
+		if (pageList.getTotalRow() == 0 && StringUtils.isNotEmpty(userId)) {
 			Person per = personservice.findById(userId);
-			if (per == null) {
-				view.addObject("msg", "查询无结果");
-				view.addObject("map", map);
-				view.setViewName("/page/usermanager/ins_information");
-				return view;
-			}
-			if (per.getUsertype() == 0) {
-				view.addObject("msg", "该用户ID是个人用户");
-				view.addObject("map", map);
-				view.setViewName("/page/usermanager/ins_information");
-				return view;
-			} else if (per.getUsertype() == 4) {// 党建用户重新查关联机构
-				String json = per.getExtend();
-				JSONObject obj = JSONObject.fromObject(json);
-				map.put("userId", obj.get("RelatedGroupId"));
-				pageList = aheadUserService.findListInfo(map);
-				map.put("userId", userId);
+			if (per != null) {
+				if (per.getUsertype() == 0) {
+					msg="1";
+				} else if (per.getUsertype() == 4) {// 党建用户重新查关联机构
+					String json = per.getExtend();
+					JSONObject obj = JSONObject.fromObject(json);
+					map.put("userId", obj.get("RelatedGroupId"));
+					pageList = aheadUserService.findListInfo(map);
+					map.put("userId", userId);
+				}
 			}
 		}
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
@@ -1083,10 +1077,15 @@ public class AheadUserController {
 		}
 		map.put("pageList", pageList);
 		//获取权限列表
-		List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
+		if(pageList.getTotalRow()>0){
+			List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
+			view.addObject("settingList",settingList);
+			msg="2";
+		}
+		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
-		view.addObject("settingList",settingList);
+		
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
