@@ -143,6 +143,50 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
+			personalOnline:{
+				message : '请输入绑定个人上线',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定个人上线'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp:  /^[0-9]*$/,
+						message: '不能包含特殊字符'
+					},
+				}
+			},
+			termValidity:{
+				message : '请输入绑定个人账号有效期',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定个人账号有效期'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp:  /^[0-9]*$/,
+						message: '不能包含特殊字符'
+					},
+				}
+			},
+			capacityDownloading:{
+				message : '请输入绑定个人下载量上限',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定个人下载量上限'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp:  /^[0-9]*$/,
+						message: '不能包含特殊字符'
+					},
+				}
+			},
+			resourceType:{
+				message : '请输入绑定个人继承权限',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定个人继承权限'
+					},
+				}
+			},
 		}
 	})
 

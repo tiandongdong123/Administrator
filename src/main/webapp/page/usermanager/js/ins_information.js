@@ -1,4 +1,6 @@
 $(function(){
+	$("#user_dinding").prop("checked",true);
+	$("#dinding").css("display","block");
 	goPage();
 	
     $('.add_admin').click(function (e) {

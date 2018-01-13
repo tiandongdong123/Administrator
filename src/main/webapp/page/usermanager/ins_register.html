@@ -129,6 +129,12 @@
 				 <input type="checkbox" id="statistics2" onclick="checkTj('database_statistics')">数据库使用统计&nbsp;&nbsp;
 				 <input type="checkbox" id="statistics3" onclick="checkTj('resource_type_statistics')">资源类型使用统计&nbsp;&nbsp;
                	</div>
+				  <div class="checkbox input_block block_left">
+					  <label><input type="checkbox" id="user_dinding">开通个人绑定机构</label>
+				  </div>
+				  <?
+				      includeFileTemplate("/page/usermanager/userBinding.html",{}){}
+                ?>
                   <div class="box-footer block_left">
 	                <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>
 	                <button type="reset" class="btn btn-primary" onclick="location=location;">重置</button>

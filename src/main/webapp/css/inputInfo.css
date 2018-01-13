@@ -367,3 +367,14 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .info_jg_title{border-bottom: 1px solid #ddd; background: #DAEEF3; width: 100%;}
 .info_jg_title:after {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;} 
 .info_jg_title .info_num span{ background:#e1e1e1; line-height:35px; color:#000; display:inline-block; height:35px; }
+
+.mode_width{
+	width: 30%;
+	margin: 0 auto;
+	display: inline-block;
+}
+#dinding{
+	display: none;
+}
+
+

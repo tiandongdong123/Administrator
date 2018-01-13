@@ -13,7 +13,25 @@ $(function(e){
 			$("#administrator").hide();
 		}
 	});
-	
+	//是否开通个人绑定机构
+	$("#user_dinding").click(function(){
+		if($(this).is(':checked')){
+			$("#bindAuthority").val("resource");
+			$("#bindLimit").val("100");
+			$("#bindValidity").val("180");
+			$("#downlaodLimit").val("30");
+			$("#dinding").show();
+		}else{
+			$("#bindAuthority").val("");
+			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
+			$("#bindLimit").val("1");
+			$("#bindLimit").val("");
+			$("#bindValidity").val("");
+			$("#downlaodLimit").val("");
+			$("#dinding").hide();
+		}
+	})
+
 	//设置机构账号并发数
 	$("#checkp").click(function(){
 		if($(this).is(':checked')){
@@ -68,6 +86,33 @@ function checkTj(value){
 		}
 	}
 }
+//绑定个人继承权限
+function bindingInherited(value){
+	if(value=="all"){
+		var bool=$("#allInherited").is(':checked');
+		$("#bindAuthority").val(bool?"all":"");
+		$("#resourceInherited").prop('checked',bool);
+		$("#wanInherited").prop('checked',bool);
+	} else{
+		var resourceInherited=$("#resourceInherited").is(':checked');
+		var wanInherited=$("#wanInherited").is(':checked');
+		if(resourceInherited&&wanInherited){
+			$("#bindAuthority").val("all");
+		}else if(resourceInherited){
+			$("#bindAuthority").val("resource");
+		}else if(wanInherited){
+			$("#bindAuthority").val("wanfang");
+		}else{
+			$("#bindAuthority").val("");
+		}
+		if(resourceInherited&&wanInherited){
+			$("#allInherited").prop('checked',true);
+		}else{
+			$("#allInherited").prop('checked',false);
+		}
+	}
+}
+
 
 //标准
 function standardShow(count,i,id){
@@ -267,8 +312,7 @@ function openPurchaseItems(count,i,type){
 	}
 	if(type.indexOf("standard")>-1){
 		layer.open({
-		    type: 1, //page层 1div，2页面
-		    area: ['50%', '600px'],
+		    type: 1, //page层 1div，2页面submitForm()
 		    title: '详情',
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),

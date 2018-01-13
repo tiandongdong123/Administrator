@@ -65,6 +65,7 @@
      	<a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a>
         <a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a>
         <a href="../auser/groupOrder.do?userId=${list.userId}" class="add_admin">订单记录</a>
+		 <a href="#" class="add_admin">个人绑定机构列表</a>
 	    <?if(list.pid!=null&&list.pid!=""){?>
 			<a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
 	    <?}else{?>
