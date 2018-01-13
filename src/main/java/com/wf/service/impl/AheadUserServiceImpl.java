@@ -1132,9 +1132,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 							str = ExcelUtil.readExcelTitle(row);
 							continue;
 						}
-						map.put("institution", ExcelUtil.getValue(row.getCell(0)));
-						map.put("userId", ExcelUtil.getValue(row.getCell(1)));
-						map.put("password", ExcelUtil.getValue(row.getCell(2)));
+						map.put("institution", ExcelUtil.getValue(row.getCell(0)).trim());
+						map.put("userId", ExcelUtil.getValue(row.getCell(1)).trim());
+						map.put("password", ExcelUtil.getValue(row.getCell(2)).trim());
 						//循环列Cell
 						List<Map<String, String>> li = new ArrayList<Map<String, String>>();
 						for(int i = 3; i < str.length; i++){
