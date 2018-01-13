@@ -66,7 +66,7 @@ public class ResourceTypeSetting {
      */
     public void deleResourceType(String ids) {
         try {
-            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.deleResourceType(ids);
+            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.deleteResourceType(ids);
         } catch (Exception e) {
             log.error("deleResourceType出错, ids:" + ids, e);
             throw new IllegalArgumentException("deleResourceType出错");
@@ -78,7 +78,7 @@ public class ResourceTypeSetting {
      */
     public void updateResouceType(ResourceType resourceType) {
         try {
-            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.updateResouceType(convertToWFResourceType(resourceType));
+            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.updateResourceType(convertToWFResourceType(resourceType));
         } catch (Exception e) {
             log.error("updateResouceType出错, resourceType:" + resourceType, e);
             throw new IllegalArgumentException("updateResouceType出错");
