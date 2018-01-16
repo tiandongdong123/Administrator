@@ -217,10 +217,10 @@ function checkOrg(count,i){
 //登录方式切换
 function switchcs(obj){
 	$("#ipSegment").val("");
+	$("#password").val("");
 	if($(obj).val()=="1"){
 		$("#upass").show().siblings().hide();
 	}else if($(obj).val()=="0"){
-		$("#password").val("");
 		$("#ipvalue").show().siblings().hide();
 	}else{
 		$("#upass").show();

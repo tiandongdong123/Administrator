@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import com.utils.KylinJDBC;
 import com.wf.bean.PageList;
 import com.wf.bean.ResourceTableBean;
-import com.wf.dao.FunctionPageDailyMapper;
-import com.wf.dao.FunctionPageMapper;
+import com.wf.dao2.FunctionPageDailyMapper;
+import com.wf.dao2.FunctionPageMapper;
 import com.wf.service.FunctionProfileService;
 
 

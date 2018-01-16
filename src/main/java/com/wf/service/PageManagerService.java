@@ -2,6 +2,8 @@ package com.wf.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.wf.bean.PageList;
 import com.wf.bean.PageManager;
 
@@ -29,4 +31,6 @@ public interface PageManagerService {
 	PageList exportpage(String[] ids, String pageName);
 	
 	List<Object> getKeyWord(String pageName);
+
+	Integer getCountBymodularId(String modelarId);
 }

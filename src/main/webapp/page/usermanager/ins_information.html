@@ -2,7 +2,6 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-
 <script type="text/javascript" src="../page/usermanager/js/ins_information.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
   <div class="content-wrapper">
@@ -16,7 +15,7 @@
          <form action="../auser/information.do" method="post" id="fromList">
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
-                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}">
+                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">IP</label>
@@ -40,7 +39,7 @@
 	<div class="container01">
 	<div class="info_block info_block1">
 	<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
-	<ul class="info_list">
+	<ol class="info_list">
 	<li class="info_list_con">	      
 	<div class="info_box">
 	<div class="info_cont">
@@ -426,11 +425,12 @@
 </div>
 </div>
 </li>
-</ul>
+	</ol>
 <?}?>
 </div>
 </div>
 <?}?>
+<?if(!isEmpty(msg)&&msg=='0'){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <div id="page"></div>
 </div>
 </div>

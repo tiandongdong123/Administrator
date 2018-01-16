@@ -13,10 +13,10 @@ import com.wf.bean.SourceAnalysisLinkHostHourly;
 import com.wf.bean.SourceAnalysisSearchEngineHourly;
 import com.wf.bean.SourceAnalysisSearchWordHourly;
 import com.wf.bean.SourceAnalysisSourceHourly;
-import com.wf.dao.SourceAnalysisLinkHostHourlyMapper;
-import com.wf.dao.SourceAnalysisSearchEngineHourlyMapper;
-import com.wf.dao.SourceAnalysisSearchWordHourlyMapper;
-import com.wf.dao.SourceAnalysisSourceHourlyMapper;
+import com.wf.dao2.SourceAnalysisLinkHostHourlyMapper;
+import com.wf.dao2.SourceAnalysisSearchEngineHourlyMapper;
+import com.wf.dao2.SourceAnalysisSearchWordHourlyMapper;
+import com.wf.dao2.SourceAnalysisSourceHourlyMapper;
 import com.wf.service.SourceAnalysisService;
 @Service
 public class SourceAnalysisServiceImpl implements SourceAnalysisService {

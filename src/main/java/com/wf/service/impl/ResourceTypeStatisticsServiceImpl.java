@@ -17,7 +17,7 @@ import com.wf.bean.ResourceStatistics;
 import com.wf.bean.ResourceStatisticsHour;
 import com.wf.bean.ResourceType;
 import com.wf.dao.PersonMapper;
-import com.wf.dao.ResourceStatisticsHourMapper;
+import com.wf.dao2.ResourceStatisticsHourMapper;
 import com.wf.dao.ResourceTypeMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.service.ResourceTypeStatisticsService;

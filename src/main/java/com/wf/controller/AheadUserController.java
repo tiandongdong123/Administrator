@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +82,7 @@ public class AheadUserController {
 	private RedisUtil redis = new RedisUtil();
 	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
+	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
 	
 	/**
 	 *	判断ip段是否重复
@@ -535,9 +538,24 @@ public class AheadUserController {
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
 		for (int i = 0; i < listmap.size(); i++) {
 			Map<String, Object> map = listmap.get(i);
-			if ("".equals(map.get("userId")) && "".equals(map.get("institution"))) {
-				listmap.remove(i);
-				i--;
+			if ("".equals(map.get("userId"))) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail","用户ID不能为空");
+				return hashmap;
+			}
+			if("".equals(map.get("institution"))||"".equals(map.get("password"))){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "".equals(map.get("institution"))?"机构名称不能为空":"密码不能为空");
+				return hashmap;
+			}
+			Matcher m1 = pa.matcher(map.get("institution").toString());
+			Matcher m2 = pa.matcher(map.get("userId").toString());
+			boolean flag1 = m1.find();
+			boolean flag2 = m2.find();
+			if (flag1 || flag2) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", flag1 ? "机构名称不能包含特殊字符" : "用户ID不能包含特殊字符");
+				return hashmap;
 			}
 		}
 		List<ResourceDetailedDTO> list = com.getRdlist();
@@ -700,9 +718,19 @@ public class AheadUserController {
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
 		for (int i = 0; i < listmap.size(); i++) {
 			Map<String, Object> map = listmap.get(i);
-			if ("".equals(map.get("userId"))) {//institution不填写就默认不修改
-				listmap.remove(i);
-				i--;
+			if ("".equals(map.get("userId"))) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail","用户ID不能为空");
+				return hashmap;
+			}
+			Matcher m1 = pa.matcher(map.get("institution").toString());
+			Matcher m2 = pa.matcher(map.get("userId").toString());
+			boolean flag1 = m1.find();
+			boolean flag2 = m2.find();
+			if (flag1 || flag2) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", flag1 ? "机构名称不能包含特殊字符" : "用户ID不能包含特殊字符");
+				return hashmap;
 			}
 		}
 		List<ResourceDetailedDTO> list = com.getRdlist();
@@ -1054,7 +1082,22 @@ public class AheadUserController {
 			view.setViewName("/page/usermanager/ins_information");
 			return view;
 		}
+		String msg="0";
 		PageList pageList = aheadUserService.findListInfo(map);
+		if (pageList.getTotalRow() == 0 && StringUtils.isNotEmpty(userId)) {
+			Person per = personservice.findById(userId);
+			if (per != null) {
+				if (per.getUsertype() == 0) {
+					msg="1";
+				} else if (per.getUsertype() == 4) {// 党建用户重新查关联机构
+					String json = per.getExtend();
+					JSONObject obj = JSONObject.fromObject(json);
+					map.put("userId", obj.get("RelatedGroupId"));
+					pageList = aheadUserService.findListInfo(map);
+					map.put("userId", userId);
+				}
+			}
+		}
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
 		if(!StringUtil.isEmpty(ipSegment)){
@@ -1062,10 +1105,15 @@ public class AheadUserController {
 		}
 		map.put("pageList", pageList);
 		//获取权限列表
-		List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
+		if(pageList.getTotalRow()>0){
+			List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
+			view.addObject("settingList",settingList);
+			msg="2";
+		}
+		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
-		view.addObject("settingList",settingList);
+		
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;

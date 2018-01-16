@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.utils.DateTools;
 import com.wf.bean.PageList;
 import com.wf.bean.WebSiteHourly;
-import com.wf.dao.WebSiteHourlyMapper;
+import com.wf.dao2.WebSiteHourlyMapper;
 import com.wf.service.WebSiteHourlyService;
 
 

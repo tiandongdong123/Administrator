@@ -28,12 +28,16 @@ import com.wf.bean.Modular;
 import com.wf.bean.PageList;
 import com.wf.service.LogService;
 import com.wf.service.ModularService;
+import com.wf.service.PageManagerService;
 
 @Controller
 @RequestMapping("modular")
 public class ModularManagerController {
 	@Autowired
 	ModularService modularService;
+	
+	@Autowired
+	PageManagerService managerService;
 	
 	@Autowired
 	LogService logService;
@@ -145,5 +149,13 @@ public class ModularManagerController {
 			logService.addLog(log);
 
 	}
+	
+	
+	@RequestMapping("getCountBymodularId")
+	@ResponseBody
+	public boolean getCountBymodularId(String modularId){
+		return managerService.getCountBymodularId(modularId)>0;
+ 	}
+	
 	
 }
