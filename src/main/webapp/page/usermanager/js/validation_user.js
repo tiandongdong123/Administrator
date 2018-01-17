@@ -143,7 +143,7 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-			personalOnline:{
+			bindLimit:{
 				message : '请输入绑定个人上线',
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -155,7 +155,7 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			termValidity:{
+			bindValidity:{
 				message : '请输入绑定个人账号有效期',
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -167,7 +167,7 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			capacityDownloading:{
+			downlaodLimit:{
 				message : '请输入绑定个人下载量上限',
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -184,6 +184,14 @@ $(function() {/* 文档加载，执行一个函数 */
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '请输入绑定个人继承权限'
+					},
+				}
+			},
+			bindType:{
+				message : '请输入绑定模式',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定模式'
 					},
 				}
 			},
