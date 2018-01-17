@@ -144,10 +144,10 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			bindLimit:{
-				message : '请输入绑定个人上线',
+				message : '请输入绑定个人上限',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入绑定个人上线'
+						message : '请输入绑定个人上限'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
 						regexp:  /^[0-9]*$/,
