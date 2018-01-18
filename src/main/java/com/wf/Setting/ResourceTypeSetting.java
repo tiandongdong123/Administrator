@@ -1,4 +1,5 @@
 package com.wf.Setting;
+
 import com.wanfangdata.setting.Setting;
 import com.wf.bean.ResourceType;
 import net.sf.json.JSONArray;
@@ -8,264 +9,121 @@ import org.dom4j.*;
 
 
 import java.util.*;
+
 /**
  * Created by syl on 2017/9/13.
  */
 
 public class ResourceTypeSetting {
     private static final Logger log = LogManager.getLogger(ResourceTypeSetting.class);
-    private static final String path = "/ResourceType";
-    private static final String XPath =  "/ResourceTypes/ResourceType";
+
     /**
      * 解析资源类型管理的xml文件并得到所有资源类型
      */
-    public  Map<String, ResourceType> getResources(){
-        Map<String, ResourceType> resources = new LinkedHashMap<>();
-         String xml = Setting.get(path);
-        try{
-            //解析资源类型
-            Document document = DocumentHelper.parseText(xml);
-            //获取根（ResourceTypes）
-            Element root = document.getRootElement();
-            //获取根的所有子节点（ResourceType）
-            List<Element> list = root.elements();
-            //遍历节点
-            for(Element element : list){
-                ResourceType resourceType = new ResourceType();
-                //获取节点id属性
-                resourceType.setId(element.attributeValue("id"));
-                //获取节点文本
-                resourceType.setTypeName(element.elementText("name"));
-                resourceType.setTypedescri(element.elementText("describe"));
-                resourceType.setTypeCode(element.elementText("code"));
-                resourceType.setTypeState(element.elementText("state"));
-                resources.put(resourceType.getId(),resourceType);
+    public Map<String, ResourceType> getResources() {
+        try {
+            Map<String, com.wanfangdata.resourceupdatetools.model.ResourceType> resourceMap = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.getResources();
+            Map<String, ResourceType> resources = new LinkedHashMap<>();
+            for (Map.Entry<String, com.wanfangdata.resourceupdatetools.model.ResourceType> resource : resourceMap.entrySet()) {
+                resources.put(resource.getKey(), convertToResourceType(resource.getValue()));
             }
             return resources;
-        }catch (DocumentException e) {
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+        } catch (Exception e) {
+            log.error("getResources出错", e);
+            throw new IllegalArgumentException("getResources出错");
         }
     }
 
-    public JSONArray getResources1(){
-        String xml = Setting.get(path);
-        List<ResourceType> resources = new ArrayList<>();
+    public JSONArray getResources1() {
         try {
-            //解析资源类型
-            Document document = DocumentHelper.parseText(xml);
-            //获取根
-            Element root = document.getRootElement();
-            List<Element> list = root.elements();
-            //遍历节点
-            for(Element element : list){
-                if(element.elementText("state").equals("1")){
-                    ResourceType resourceType = new ResourceType();
-                    resourceType.setId(element.attributeValue("id"));
-                    resourceType.setTypeName(element.elementText("name"));
-                    resourceType.setTypedescri(element.elementText("describe"));
-                    resourceType.setTypeCode(element.elementText("code"));
-                    resourceType.setTypeState(element.elementText("state"));
-                    resources.add(resourceType);
-                }
+            List<com.wanfangdata.resourceupdatetools.model.ResourceType> resourceList = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.getResourcesActivated();
+            List<ResourceType> resources = new ArrayList<>();
+            for (com.wanfangdata.resourceupdatetools.model.ResourceType resource : resourceList) {
+                resources.add(convertToResourceType(resource));
             }
-            JSONArray jsonArray =JSONArray.fromObject(resources);
-
+            JSONArray jsonArray = JSONArray.fromObject(resources);
             return jsonArray;
-
-        }catch (DocumentException  e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+        } catch (Exception e) {
+            log.error("getResources1出错", e);
+            throw new IllegalArgumentException("getResources1出错");
         }
     }
 
     /**
      * 添加资源类型
      */
-    public  boolean addResourceType(ResourceType resourceType){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            //增加新节点
-            Element newElem=root.addElement("ResourceType");
-            //设置节点的id属性
-            newElem.addAttribute("id",resourceType.getId());
-            //增加子节点
-            Element nameElem = newElem.addElement("name");
-            Element descriElem = newElem.addElement("describe");
-            Element codeElem = newElem.addElement("code");
-            Element stateElem = newElem.addElement("state");
-            //设置resource子节点的文本内容
-            nameElem.setText(resourceType.getTypeName());
-            descriElem.setText(resourceType.getTypedescri());
-            codeElem.setText(resourceType.getTypeCode());
-
-            //指定文件输出的位置
-            Setting.set(path, document.asXML());
-            return true;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public boolean addResourceType(ResourceType resourceType) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.addResourceType(convertToWFResourceType(resourceType));
+        } catch (Exception e) {
+            log.error("addResourceType出错, resourceType:" + resourceType, e);
+            throw new IllegalArgumentException("addResourceType出错出错");
         }
-
     }
 
     /**
-     *删除资源类型
+     * 删除资源类型
      */
-    public  void deleResourceType(String ids) {
-        String xml = Setting.get(path);
-        String[] id = ids.split(",");
+    public void deleResourceType(String ids) {
         try {
-            Document document = DocumentHelper.parseText(xml);
-            Element root =document.getRootElement();
-            for (int i = 0;i<id.length;i++){
-                Element resourceTypeEmlem =(Element) root.selectSingleNode("/ResourceTypes/ResourceType[@id='"+id[i]+"']");
-                root.remove(resourceTypeEmlem);
-            }
-            Setting.set(path, document.asXML());
-        } catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
-    }
-
-
+            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.deleteResourceType(ids);
+        } catch (Exception e) {
+            log.error("deleResourceType出错, ids:" + ids, e);
+            throw new IllegalArgumentException("deleResourceType出错");
+        }
     }
 
     /**
      * 修改资源类型
      */
-    public  void updateResouceType(ResourceType resourceType) {
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            //路径
-            String xpath = "/ResourceTypes/ResourceType[@id='" + resourceType.getId()+ "']";
-            //通过路径找到节点
-            Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
-            List list = document.selectNodes(XPath);
-            //获取子节点
-            Element nameElem = resourceTypeEmlem.element("name");
-            Element descirElem = resourceTypeEmlem.element("describe");
-            Element codeElem = resourceTypeEmlem.element("code");
-            //修改文本内容
-            nameElem.setText(resourceType.getTypeName());
-            descirElem.setText(resourceType.getTypedescri());
-            codeElem.setText(resourceType.getTypeCode());
-            Setting.set(path, document.asXML());
-        } catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public void updateResouceType(ResourceType resourceType) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.updateResourceType(convertToWFResourceType(resourceType));
+        } catch (Exception e) {
+            log.error("updateResouceType出错, resourceType:" + resourceType, e);
+            throw new IllegalArgumentException("updateResouceType出错");
         }
     }
+
     /**
      * 根据id查找资源类型
      */
-    public  ResourceType findResourceTypeById(String id){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            ResourceType resourceType = new ResourceType();
-            Iterator it = root.elementIterator();
-            while (it.hasNext()){
-                Element element = (Element) it.next();
-                //通过id找到节点
-                if(element.attributeValue("id").equals(id)){
-                    resourceType.setId(id);
-                    resourceType.setTypeName(element.elementText("name"));
-                    resourceType.setTypedescri(element.elementText("describe"));
-                    resourceType.setTypeCode(element.elementText("code"));
-                    resourceType.setTypeState(element.elementText("state"));
-                }
-            }
-            return resourceType;
-
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public ResourceType findResourceTypeById(String id) {
+        try {
+            return convertToResourceType(com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.findResourceTypeById(id));
+        } catch (Exception e) {
+            log.error("findResourceTypeById出错, id:" + id, e);
+            throw new IllegalArgumentException("findResourceTypeById出错");
         }
     }
+
     /**
-     *根据name查找单个资源类型
+     * 根据name查找单个资源类型
      */
-    public  Map<String, ResourceType> findResourceTypeByName(String name){
-        Map<String, ResourceType> resource = new LinkedHashMap<>();
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            ResourceType resourceType = new ResourceType();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                   if(element.elementText("name").equals(name)){
-                   resourceType.setId(element.attributeValue("id"));
-                   resourceType.setTypeName(element.elementText("name"));
-                   resourceType.setTypedescri(element.elementText("describe"));
-                   resourceType.setTypeCode(element.elementText("code"));
-                   resourceType.setTypeState(element.elementText("state"));
-                   resource.put(resourceType.getId(),resourceType);
-                    break;
-               }
-
-           }
-            return resource;
-        }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+    public Map<String, ResourceType> findResourceTypeByName(String name) {
+        try {
+            Map<String, com.wanfangdata.resourceupdatetools.model.ResourceType> resourceMap = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.findResourceTypeByName(name);
+            Map<String, ResourceType> resources = new LinkedHashMap<>();
+            for (Map.Entry<String, com.wanfangdata.resourceupdatetools.model.ResourceType> resource : resourceMap.entrySet()) {
+                resources.put(resource.getKey(), convertToResourceType(resource.getValue()));
+            }
+            return resources;
+        } catch (Exception e) {
+            log.error("findResourceTypeByName出错, name:" + name, e);
+            throw new IllegalArgumentException("findResourceTypeByName出错");
         }
     }
+
     /**
      * 上移资源类型
      */
 
-    public  boolean  moveUpResource(String id){
-        String xml = Setting.get(path);
+    public boolean moveUpResource(String id) {
         try {
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(int i = 1 ; i<list.size();i++){
-                Element element = list.get(i);
-                if(element.attributeValue("id").equals(id)){
-                    Element element1 = (Element) root.selectSingleNode("/ResourceTypes/ResourceType[@id='" +id+ "']");
-                    Element element2 = list.get(i-1);
-                    //找出element1的所有属性和节点
-                    Attribute attr1 = element1.attribute("id");
-                    String id1 = attr1.getValue();
-                    String name1 = element1.elementText("name");
-                    String descri1 = element1.elementText("describe");
-                    String code1 = element1.elementText("code");
-                    String state1 = element1.elementText("state");
-                    //找出element2的所有属性和节点
-                    Attribute attr2 = element2.attribute("id");
-                    String id2 = attr2.getValue();
-                    String name2 = element2.elementText("name");
-                    String descri2 = element2.elementText("describe");
-                    String code2 = element2.elementText("code");
-                    String state2 = element2.elementText("state");
-                    //交换属性和节点
-                    attr1.setValue(id2);
-                    element1.element("name").setText(name2);
-                    element1.element("describe").setText(descri2);
-                    element1.element("code").setText(code2);
-                    element1.element("state").setText(state2);
-
-                    attr2.setValue(id1);
-                    element2.element("name").setText(name1);
-                    element2.element("describe").setText(descri1);
-                    element2.element("code").setText(code1);
-                    element2.element("state").setText(state1);
-                    break;
-                }
-            }
-            Setting.set(path, document.asXML());
-            return true;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.moveUpResource(id);
+        } catch (Exception e) {
+            log.error("moveUpResource出错, id:" + id, e);
+            throw new IllegalArgumentException("moveUpResource出错");
         }
     }
 
@@ -273,51 +131,12 @@ public class ResourceTypeSetting {
      * 下移资源类型
      */
 
-    public  boolean  moveDownResource(String id){
-        String xml = Setting.get(path);
+    public boolean moveDownResource(String id) {
         try {
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(int i = 0 ; i<list.size()-1;i++){
-                Element element = list.get(i);
-                if(element.attributeValue("id").equals(id)){
-                    Element element1 = (Element) root.selectSingleNode("/ResourceTypes/ResourceType[@id='" +id+ "']");
-                    Element element2 = list.get(i+1);
-                    //找出element1的所有属性和节点
-                    Attribute attr1 = element1.attribute("id");
-                    String id1 = attr1.getValue();
-                    String name1 = element1.elementText("name");
-                    String descri1 = element1.elementText("describe");
-                    String code1 = element1.elementText("code");
-                    String state1 = element1.elementText("state");
-                    //找出element2的所有属性和节点
-                    Attribute attr2 = element2.attribute("id");
-                    String id2 = attr2.getValue();
-                    String name2 = element2.elementText("name");
-                    String descri2 = element2.elementText("describe");
-                    String code2 = element2.elementText("code");
-                    String state2 = element2.elementText("state");
-                    //交换属性和节点
-                    attr1.setValue(id2);
-                    element1.element("name").setText(name2);
-                    element1.element("describe").setText(descri2);
-                    element1.element("code").setText(code2);
-                    element1.element("state").setText(state2);
-
-                    attr2.setValue(id1);
-                    element2.element("name").setText(name1);
-                    element2.element("describe").setText(descri1);
-                    element2.element("code").setText(code1);
-                    element2.element("state").setText(state1);
-                    break;
-                }
-            }
-            Setting.set(path, document.asXML());
-            return true;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.moveDownResource(id);
+        } catch (Exception e) {
+            log.error("moveDownResource出错, id:" + id, e);
+            throw new IllegalArgumentException("moveDownResource出错");
         }
     }
 
@@ -325,68 +144,41 @@ public class ResourceTypeSetting {
      * 检查资源code是否重复
      */
 
-    public boolean checkTypeCode(String code){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                if(element.elementText("code").equals(code)){
-                    return false;
-                }
-            }
-            return true;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public boolean checkTypeCode(String code) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.checkTypeCode(code);
+        } catch (Exception e) {
+            log.error("checkTypeCode出错, code:" + code, e);
+            throw new IllegalArgumentException("checkTypeCode出错");
         }
     }
 
     /**
      * 检查资源name是否重复
      */
-    public boolean checkTypeName(String name){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                if(element.elementText("name").equals(name)){
-                    return false;
-                }
-            }
-            return true;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public boolean checkTypeName(String name) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.checkTypeName(name);
+        } catch (Exception e) {
+            log.error("checkTypeName出错, name:" + name, e);
+            throw new IllegalArgumentException("checkTypeName出错");
         }
-
     }
 
     /**
      * 得到所有的资源类型（数据库配置中使用）
      */
-    public List<ResourceType> getAll(){
-        String xml = Setting.get(path);
-        List<ResourceType> resourceType = new ArrayList<>();
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                ResourceType resourcetype = new ResourceType();
-                resourcetype.setId(element.attributeValue("id"));
-                resourcetype.setTypeName(element.elementText("name"));
-                resourcetype.setTypedescri(element.elementText("describe"));
-                resourcetype.setTypeCode(element.elementText("code"));
-                resourceType.add(resourcetype);
+    public List<ResourceType> getAll() {
+        try {
+            List<com.wanfangdata.resourceupdatetools.model.ResourceType> resourceList = com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.getAll();
+            List<ResourceType> resourceType = new ArrayList<>();
+            for (com.wanfangdata.resourceupdatetools.model.ResourceType resource : resourceList) {
+                resourceType.add(convertToResourceType(resource));
             }
             return resourceType;
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+        } catch (Exception e) {
+            log.error("getAll出错", e);
+            throw new IllegalArgumentException("getAll出错");
         }
     }
 
@@ -394,41 +186,44 @@ public class ResourceTypeSetting {
      * 更新资源类型状态
      */
 
-    public void updateResourceTypeState(int typeState,String id){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/ResourceTypes/ResourceType[@id='" +id+ "']";
-            Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
-            resourceTypeEmlem.element("state").setText(String.valueOf(typeState));
-            Setting.set(path, document.asXML());
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+    public void updateResourceTypeState(int typeState, String id) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.updateResourceTypeState(typeState, id);
+        } catch (Exception e) {
+            log.error("updateResourceTypeState出错, typeState:" + typeState + " id:" + id, e);
+            throw new IllegalArgumentException("updateResourceTypeState出错");
         }
     }
+
     /**
      * 判断资源类型是否已发布
-    */
-    public boolean checkResourceForOne(String id){
-        String xml = Setting.get(path);
-        String[] ids = id.split(",");
-        try{
-            Document  document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            for (int i = 0;i<ids.length;i++){
-                String xpath = "/ResourceTypes/ResourceType[@id='" +ids[i]+ "']";
-                Element resourceTypeEmlem = (Element) root.selectSingleNode(xpath);
-                if ("1".equals(resourceTypeEmlem.elementText("state"))){
-                    return false;
-                }
-            }
-            return true;
-
-        }catch (Exception e){
-            log.error("解析配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析配置出错");
+     */
+    public boolean checkResourceForOne(String id) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.ResourceTypeSetting.checkResourceForOne(id);
+        } catch (Exception e) {
+            log.error("checkResourceForOne出错, id:" + id, e);
+            throw new IllegalArgumentException("checkResourceForOne出错");
         }
+    }
+
+    private static ResourceType convertToResourceType(com.wanfangdata.resourceupdatetools.model.ResourceType resourceType) {
+        ResourceType newType = new ResourceType();
+        newType.setId(resourceType.getId());
+        newType.setTypeCode(resourceType.getCode());
+        newType.setTypeName(resourceType.getName());
+        newType.setTypedescri(resourceType.getDescribe());
+        newType.setTypeState(resourceType.getState());
+        return newType;
+    }
+
+    private static com.wanfangdata.resourceupdatetools.model.ResourceType convertToWFResourceType(ResourceType resourceType) {
+        com.wanfangdata.resourceupdatetools.model.ResourceType newType = new com.wanfangdata.resourceupdatetools.model.ResourceType();
+        newType.setId(resourceType.getId());
+        newType.setCode(resourceType.getTypeCode());
+        newType.setName(resourceType.getTypeName());
+        newType.setDescribe(resourceType.getTypedescri());
+        newType.setState(resourceType.getTypeState());
+        return newType;
     }
 }

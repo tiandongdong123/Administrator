@@ -1,9 +1,10 @@
 package com.wf.Setting;
 
 
-
+import com.wanfangdata.resourceupdatetools.model.Database;
 import com.wanfangdata.setting.Setting;
 import com.wf.bean.Datamanager;
+import com.wf.bean.ResourceType;
 import net.sf.json.JSONArray;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -18,127 +19,50 @@ import java.util.*;
  */
 public class DatabaseConfigureSetting {
     private static final Logger log = LogManager.getLogger(DatabaseConfigureSetting.class);
-    private static final String path = "/databaseConfigure";
-    private static final String XPath =  "/databaseConfigures/databaseConfigure";
 
     /**
      * 解析资源类型管理的xml文件并得到所有数据库配置
      */
-    public  List  getDatabase(){
-        String xml = Setting.get(path);
-        List<Datamanager> database = new ArrayList<>();
-        try{
-            //解析商品配置
-            Document document = DocumentHelper.parseText(xml);
-            //获取根
-            Element root = document.getRootElement();
-            List<Element> list = root.elements();
-            //遍历节点
-            for(Element element : list){
-                Datamanager db = new Datamanager();
-                db.setId(element.attributeValue("id"));
-                db.setTableName(element.elementText("name"));
-                db.setTableDescribe(element.elementText("describe"));
-                db.setDbtype(element.elementText("dbType"));
-                db.setSourceDb(element.elementText("dbSource"));
-                db.setResType(element.elementText("resourceType"));
-                db.setLanguage(element.elementText("language"));
-                db.setCustomPolicy(element.elementText("customPolicy"));
-                db.setState(Integer.parseInt(element.elementText("state")));
-                if(element.elementText("status").equals("")){
-                    db.setStatus(null);
-                }else {
-                    db.setStatus(Integer.valueOf(element.elementText("status")));
-                }
-                database.add(db);
+    public List getDatabase() {
+        try {
+            List<Database> dbList = com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.getDatabase();
+            List<Datamanager> database = new ArrayList<>();
+            for (Database db : dbList) {
+                database.add(convertToDatamanager(db));
             }
             return database;
-        }catch (DocumentException e) {
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+        } catch (Exception e) {
+            log.error("getDatabase出错", e);
+            throw new IllegalArgumentException("getDatabase出错");
         }
     }
 
     /**
      * 通过name查找数据库配置
      */
-    public List findDatabaseByName(String dataName){
-        String xml = Setting.get(path);
-        List<Datamanager> database = new ArrayList<>();
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                if(element.elementText("name").contains(dataName)&&dataName!=""){
-                    Datamanager db = new Datamanager();
-                    db.setId(element.attributeValue("id"));
-                    db.setTableName(element.elementText("name"));
-                    db.setTableDescribe(element.elementText("describe"));
-                    db.setDbtype(element.elementText("dbType"));
-                    db.setSourceDb(element.elementText("dbSource"));
-                    db.setResType(element.elementText("resourceType"));
-                    db.setLanguage(element.elementText("language"));
-                    db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setState(Integer.parseInt(element.elementText("state")));
-                    if(element.elementText("status").equals("")){
-                        db.setStatus(null);
-                    }else {
-                        db.setStatus(Integer.valueOf(element.elementText("status")));
-                    }
-                    database.add(db);
-                }
-
+    public List findDatabaseByName(String dataName) {
+        try {
+            List<Database> dbList = com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.findDatabaseByName(dataName);
+            List<Datamanager> database = new ArrayList<>();
+            for (Database db : dbList) {
+                database.add(convertToDatamanager(db));
             }
             return database;
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+        } catch (Exception e) {
+            log.error("findDatabaseByName出错，dataName:" + dataName, e);
+            throw new IllegalArgumentException("findDatabaseByName出错，dataName:" + dataName);
         }
     }
+
     /**
      * 添加数据库配置
      */
     public void addDatabase(Datamanager data) {
-        String xml = Setting.get(path);
-        try{
-            //解析商品配置
-            Document document = DocumentHelper.parseText(xml);
-            //获取根
-            Element root = document.getRootElement();
-            //增加新节点
-            Element newElem=root.addElement("databaseConfigure");
-            //设置节点的id属性
-            newElem.addAttribute("id",data.getId());
-            //增加子节点
-            Element nameElem = newElem.addElement("name");
-            Element abbElem = newElem.addElement("abbreviation");
-            Element descriElem = newElem.addElement("describe");
-            Element dbtypeElem = newElem.addElement("dbType");
-            Element dbSourceElem = newElem.addElement("dbSource");
-            Element resourceTypeElem = newElem.addElement("resourceType");
-            Element languageElem = newElem.addElement("language");
-            Element customPolicyElem = newElem.addElement("customPolicy");
-            Element codeElem = newElem.addElement("code");
-            Element stateElem = newElem.addElement("status");
-            Element statusElem = newElem.addElement("state");
-
-            //设置子节点的文本内容
-            nameElem.setText(data.getTableName());
-            abbElem.setText(data.getAbbreviation());
-            descriElem.setText(data.getTableDescribe());
-            dbtypeElem.setText(data.getDbtype());
-            dbSourceElem.setText(data.getSourceDb());
-            resourceTypeElem.setText(data.getResType());
-            languageElem.setText(data.getLanguage());
-            codeElem.setText(data.getProductSourceCode());
-            statusElem.setText("0");
-            //指定文件输出的位置
-            Setting.set(path, document.asXML());
-
-        }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+        try {
+            com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.addDatabase(convertToDatabase(data));
+        } catch (Exception e) {
+            log.error("addDatabase出错, data:" + data, e);
+            throw new IllegalArgumentException("addDatabase出错");
         }
     }
 
@@ -146,231 +70,61 @@ public class DatabaseConfigureSetting {
      * 删除数据库配置
      */
 
-    public void deleteDatabase(String id){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root =document.getRootElement();
-            Element databaseEmlem =(Element) root.selectSingleNode("/databaseConfigures/databaseConfigure[@id='"+id+"']");
-            root.remove(databaseEmlem);
-            Setting.set(path, document.asXML());
-        }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+    public void deleteDatabase(String id) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.deleteDatabase(id);
+        } catch (Exception e) {
+            log.error("deleteDatabase出错, id:" + id, e);
+            throw new IllegalArgumentException("deleteDatabase出错");
         }
     }
+
     /**
      * 修改数据库配置
      */
 
-    public void updateDatabase(Datamanager data){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/databaseConfigures/databaseConfigure[@id='" + data.getId()+ "']";
-            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            Element nameElem = databaseEmlem.element("name");
-            Element abbElem = databaseEmlem.element("abbreviation");
-            Element descirElem = databaseEmlem.element("describe");
-            Element dbtypeElem = databaseEmlem.element("dbType");
-            Element dbSourceElem = databaseEmlem.element("dbSource");
-            Element resourceTypeElem = databaseEmlem.element("resourceType");
-            Element languageElem = databaseEmlem.element("language");
-            Element customPolicyElem = databaseEmlem.element("customPolicy");
-            Element codeElem = databaseEmlem.element("code");
-
-            nameElem.setText(data.getTableName());
-            abbElem.setText(data.getAbbreviation());
-            descirElem.setText(data.getTableDescribe());
-            dbtypeElem.setText(data.getDbtype());
-            dbSourceElem.setText(data.getSourceDb());
-            resourceTypeElem.setText(data.getResType());
-            languageElem.setText(data.getLanguage());
-            codeElem.setText(data.getProductSourceCode());
-            Setting.set(path, document.asXML());
-        } catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+    public void updateDatabase(Datamanager data) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.updateDatabase(convertToDatabase(data));
+        } catch (Exception e) {
+            log.error("updateDatabase出错，data:" + data, e);
+            throw new IllegalArgumentException("updateDatabase出错，data:" + data);
         }
     }
+
     /**
      * 上移资源类型
      */
-    public  boolean  moveUpDatabase(String id){
-        String xml = Setting.get(path);
+    public boolean moveUpDatabase(String id) {
         try {
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(int i = 1 ; i<list.size();i++){
-                Element element = list.get(i);
-                if(element.attributeValue("id").equals(id)){
-                    Element element1 = (Element) root.selectSingleNode("/databaseConfigures/databaseConfigure[@id='" +id+ "']");
-                    Element element2 = list.get(i-1);
-                    //找出element1的所有属性和节点
-                    Attribute attr1 = element1.attribute("id");
-                    String id1 = attr1.getValue();
-                    String name1 = element1.elementText("name");
-                    String abb1 = element1.elementText("abbreviation");
-                    String descri1 = element1.elementText("describe");
-                    String dbType1 = element1.elementText("dbType");
-                    String dbSource1 = element1.elementText("dbSource");
-                    String resourceType1 = element1.elementText("resourceType");
-                    String language1 = element1.elementText("language");
-                    String customPolicy1 = element1.elementText("customPolicy");
-                    String code1 = element1.elementText("code");
-                    String status1 = element1.elementText("status");
-                    String state1 = element1.elementText("state");
-                    //找出element2的所有属性和节点
-                    Attribute attr2 = element2.attribute("id");
-                    String id2 = attr2.getValue();
-                    String name2 = element2.elementText("name");
-                    String abb2 = element2.elementText("abbreviation");
-                    String descri2 = element2.elementText("describe");
-                    String dbType2 = element2.elementText("dbType");
-                    String dbSource2 = element2.elementText("dbSource");
-                    String resourceType2 = element2.elementText("resourceType");
-                    String language2 = element2.elementText("language");
-                    String customPolicy2 = element2.elementText("customPolicy");
-                    String code2 = element2.elementText("code");
-                    String status2 = element1.elementText("status");
-                    String state2 = element2.elementText("state");
-                    //交换属性和节点
-                    attr1.setValue(id2);
-                    element1.element("name").setText(name2);
-                    element1.element("abbreviation").setText(abb2);
-                    element1.element("describe").setText(descri2);
-                    element1.element("dbType").setText(dbType2);
-                    element1.element("dbSource").setText(dbSource2);
-                    element1.element("resourceType").setText(resourceType2);
-                    element1.element("language").setText(language2);
-                    element1.element("customPolicy").setText(customPolicy2);
-                    element1.element("code").setText(code2);
-                    element1.element("status").setText(status2);
-                    element1.element("state").setText(state2);
-
-                    attr2.setValue(id1);
-                    element2.element("name").setText(name1);
-                    element2.element("abbreviation").setText(abb1);
-                    element2.element("describe").setText(descri1);
-                    element2.element("dbType").setText(dbType1);
-                    element2.element("dbSource").setText(dbSource1);
-                    element2.element("resourceType").setText(resourceType1);
-                    element2.element("language").setText(language1);
-                    element2.element("customPolicy").setText(customPolicy1);
-                    element2.element("code").setText(code1);
-                    element2.element("status").setText(status1);
-                    element2.element("state").setText(state1);
-                    break;
-                }
-            }
-            Setting.set(path, document.asXML());
-            return true;
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            return com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.moveUpDatabase(id);
+        } catch (Exception e) {
+            log.error("moveUpDatabase出错，id:" + id, e);
+            throw new IllegalArgumentException("moveUpDatabase出错，id:" + id);
         }
     }
 
     /**
      * 下移资源类型
      */
-    public  boolean  moveDownDatabase(String id){
-        String xml = Setting.get(path);
+    public boolean moveDownDatabase(String id) {
         try {
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(int i = 0 ; i<list.size()-1;i++){
-                Element element = list.get(i);
-                if(element.attributeValue("id").equals(id)){
-                    Element element1 = (Element) root.selectSingleNode("/databaseConfigures/databaseConfigure[@id='" +id+ "']");
-                    Element element2 = list.get(i+1);
-                    //找出element1的所有属性和节点
-                    Attribute attr1 = element1.attribute("id");
-                    String id1 = attr1.getValue();
-                    String name1 = element1.elementText("name");
-                    String abb1 = element1.elementText("abbreviation");
-                    String descri1 = element1.elementText("describe");
-                    String dbType1 = element1.elementText("dbType");
-                    String dbSource1 = element1.elementText("dbSource");
-                    String resourceType1 = element1.elementText("resourceType");
-                    String language1 = element1.elementText("language");
-                    String customPolicy1 = element1.elementText("customPolicy");
-                    String code1 = element1.elementText("code");
-                    String status1 = element1.elementText("status");
-                    String state1 = element1.elementText("state");
-                    //找出element2的所有属性和节点
-                    Attribute attr2 = element2.attribute("id");
-                    String id2 = attr2.getValue();
-                    String name2 = element2.elementText("name");
-                    String abb2 = element2.elementText("abbreviation");
-                    String descri2 = element2.elementText("describe");
-                    String dbType2 = element2.elementText("dbType");
-                    String dbSource2 = element2.elementText("dbSource");
-                    String resourceType2 = element2.elementText("resourceType");
-                    String language2 = element2.elementText("language");
-                    String customPolicy2 = element2.elementText("customPolicy");
-                    String code2 = element2.elementText("code");
-                    String status2 = element1.elementText("status");
-                    String state2 = element2.elementText("state");
-                    //交换属性和节点
-                    attr1.setValue(id2);
-                    element1.element("name").setText(name2);
-                    element1.element("abbreviation").setText(abb2);
-                    element1.element("describe").setText(descri2);
-                    element1.element("dbType").setText(dbType2);
-                    element1.element("dbSource").setText(dbSource2);
-                    element1.element("resourceType").setText(resourceType2);
-                    element1.element("language").setText(language2);
-                    element1.element("customPolicy").setText(customPolicy2);
-                    element1.element("code").setText(code2);
-                    element1.element("status").setText(status2);
-                    element1.element("state").setText(state2);
-
-                    attr2.setValue(id1);
-                    element2.element("name").setText(name1);
-                    element2.element("abbreviation").setText(abb1);
-                    element2.element("describe").setText(descri1);
-                    element2.element("dbType").setText(dbType1);
-                    element2.element("dbSource").setText(dbSource1);
-                    element2.element("resourceType").setText(resourceType1);
-                    element2.element("language").setText(language1);
-                    element2.element("customPolicy").setText(customPolicy1);
-                    element2.element("code").setText(code1);
-                    element2.element("status").setText(status1);
-                    element2.element("state").setText(state1);
-                    break;
-                }
-            }
-            Setting.set(path, document.asXML());
-            return true;
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+            return com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.moveDownDatabase(id);
+        } catch (Exception e) {
+            log.error("moveDownDatabase出错，id:" + id, e);
+            throw new IllegalArgumentException("moveDownDatabase出错，id:" + id);
         }
     }
 
     /**
      * 检查name是否重复
      */
-    public boolean checkName(String name){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root =  document.getRootElement();
-            List<Element> list  =  root.selectNodes(XPath);
-            for(Element element : list){
-                if(element.elementText("name").equals(name)){
-                    return false;
-                }
-            }
-            return true;
-
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+    public boolean checkName(String name) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.checkName(name);
+        } catch (Exception e) {
+            log.error("checkName出错，name:" + name, e);
+            throw new IllegalArgumentException("checkName出错，name:" + name);
         }
     }
 
@@ -378,118 +132,98 @@ public class DatabaseConfigureSetting {
      * 更新数据库状态
      */
 
-    public void updateDatabaseState(int state,String id){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
-            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            databaseEmlem.element("state").setText(String.valueOf(state));
-            Setting.set(path, document.asXML());
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+    public void updateDatabaseState(int state, String id) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.updateDatabaseState(state, id);
+        } catch (Exception e) {
+            log.error("updateDatabaseState出错，state:" + state + " id:" + id, e);
+            throw new IllegalArgumentException("updateDatabaseState出错，state:" + state + " id:" + id);
         }
     }
+
     /**
      * 更新数据库权限
      */
 
-    public void updateDatabaseStatus(int status,String id){
-        String xml = Setting.get(path);
-        try{
-            Document document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
-            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            databaseEmlem.element("status").setText(String.valueOf(status));
-            Setting.set(path, document.asXML());
-        }catch (Exception e){
-            log.error("加载setting配置出错，path:" + path, e);
-            throw new IllegalArgumentException("加载setting配置出错，path:" + path);
+    public void updateDatabaseStatus(int status, String id) {
+        try {
+            com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.updateDatabaseStatus(status, id);
+        } catch (Exception e) {
+            log.error("updateDatabaseStatus出错，status:" + status + " id:" + id, e);
+            throw new IllegalArgumentException("updateDatabaseStatus出错，status:" + status + " id:" + id);
         }
     }
 
-    public JSONArray selectSitateFoOne(){
-        String xml = Setting.get(path);
-        List<Datamanager> database = new ArrayList<>();
-        try{
-            //解析商品配置
-            Document document = DocumentHelper.parseText(xml);
-            //获取根
-            Element root = document.getRootElement();
-            List<Element> list = root.elements();
-            //遍历节点
-            for(Element element : list){
-                if(element.elementText("state").equals("1")){
-                    Datamanager db = new Datamanager();
-                    db.setId(element.attributeValue("id"));
-                    db.setTableName(element.elementText("name"));
-                    db.setTableDescribe(element.elementText("describe"));
-                    db.setDbtype(element.elementText("dbType"));
-                    db.setSourceDb(element.elementText("dbSource"));
-                    db.setResType(element.elementText("resourceType"));
-                    db.setLanguage(element.elementText("language"));
-                    db.setCustomPolicy(element.elementText("customPolicy"));
-                    db.setState(Integer.parseInt(element.elementText("state")));
-                    if(element.elementText("status").equals("")){
-                        db.setStatus(null);
-                    }else {
-                        db.setStatus(Integer.valueOf(element.elementText("status")));
-                    }
-                    database.add(db);
-                }
+    public JSONArray selectSitateFoOne() {
+        try {
+            List<Database> dbList = com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.selectSitateFoOne();
+            List<Datamanager> database = new ArrayList<>();
+            for (Database db : dbList) {
+                database.add(convertToDatamanager(db));
             }
-            JSONArray jsonArray =JSONArray.fromObject(database);
+            JSONArray jsonArray = JSONArray.fromObject(database);
             return jsonArray;
-        }catch (DocumentException e) {
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+        } catch (Exception e) {
+            log.error("selectSitateFoOne出错", e);
+            throw new IllegalArgumentException("selectSitateFoOne出错");
         }
     }
 
     /**
      * 判断数据库state
      */
-    public boolean checkResourceForOne(String id){
-        String xml = Setting.get(path);
-        try{
-            Document  document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
-            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            if ("1".equals(databaseEmlem.elementText("state"))){
-                return false;
-            }else {
-                return true;
-            }
-
-        }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+    public boolean checkResourceForOne(String id) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.checkResourceForOne(id);
+        } catch (Exception e) {
+            log.error("checkResourceForOne出错, id:" + id, e);
+            throw new IllegalArgumentException("checkResourceForOne出错");
         }
     }
 
     /**
      * 判断数据库status
      */
-    public boolean checkStatus(String id){
-        String xml = Setting.get(path);
-        try{
-            Document  document = DocumentHelper.parseText(xml);
-            Element root = document.getRootElement();
-            String xpath = "/databaseConfigures/databaseConfigure[@id='" +id+ "']";
-            Element databaseEmlem = (Element) root.selectSingleNode(xpath);
-            if ("1".equals(databaseEmlem.elementText("status"))){
-                return true;
-            }else {
-                return false;
-            }
-
-        }catch (Exception e){
-            log.error("解析商品配置出错, xml:" + xml, e);
-            throw new IllegalArgumentException("解析商品配置出错");
+    public boolean checkStatus(String id) {
+        try {
+            return com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.checkStatus(id);
+        } catch (Exception e) {
+            log.error("checkStatus出错, id:" + id, e);
+            throw new IllegalArgumentException("checkStatus出错");
         }
+    }
+
+    private static Datamanager convertToDatamanager(Database database) {
+        Datamanager datamanager = new Datamanager();
+        datamanager.setId(database.getId());
+        datamanager.setAbbreviation(database.getAbbreviation());
+        datamanager.setCustomPolicy(database.getCustomPolicy());
+        datamanager.setDbtype(database.getDbType());
+        datamanager.setLanguage(database.getLanguage());
+        datamanager.setProductSourceCode(database.getProductSourceCode());
+        datamanager.setResType(database.getResourceType());
+        datamanager.setSourceDb(database.getDbSource());
+        datamanager.setState(database.getState());
+        datamanager.setStatus(database.getStatus());
+        datamanager.setTableName(database.getName());
+        datamanager.setTableDescribe(database.getDescribe());
+        return datamanager;
+    }
+
+    private static Database convertToDatabase(Datamanager datamanager) {
+        Database database = new Database();
+        database.setId(datamanager.getId());
+        database.setAbbreviation(datamanager.getAbbreviation());
+        database.setCustomPolicy(datamanager.getCustomPolicy());
+        database.setDbType(datamanager.getDbtype());
+        database.setLanguage(datamanager.getLanguage());
+        database.setProductSourceCode(datamanager.getProductSourceCode());
+        database.setResourceType(datamanager.getResType());
+        database.setDbSource(datamanager.getSourceDb());
+        database.setState(datamanager.getState());
+        database.setStatus(datamanager.getStatus());
+        database.setName(datamanager.getTableName());
+        database.setDescribe(datamanager.getTableDescribe());
+        return database;
     }
 }
