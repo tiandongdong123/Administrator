@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$("input[name='openState']").prop("checked",false);
 	$("input[name='resourceType']").prop("checked",false);
 	$("input[id='resourceInherited']").prop("checked",true);
+
 });
 //提交事件
 function submitForm(){
