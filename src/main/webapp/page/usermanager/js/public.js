@@ -1,6 +1,6 @@
 var perioZtr,degreeZtr,confZtr,patentZtr,bookZtr;var count = 0;
 $(function(e){
-	
+	$("input[name='quotaName']").prop("checked",true);
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
@@ -16,12 +16,14 @@ $(function(e){
 	//是否开通个人绑定机构
 	$("#user_dinding").click(function(){
 		if($(this).is(':checked')){
-			$("#bindAuthority").val("resource");
+			$("#user_dinding").val("true");
+			$("#bindAuthority").val("资源下载");
 			$("#bindLimit").val("100");
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
 		}else{
+			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
 			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
 			$("#bindLimit").val("1");
@@ -63,8 +65,66 @@ $(function(e){
 			$("#sconcurrent_div").hide();
 		}
 	});
+	//机构id点击全部
+	$(".tol_quota").click(function(){
+		$(".allSelectText").text("");
+		$("input[name='quotaName']").prop("checked",$(".tol_quota").prop("checked"));
+		if($(".tol_quota").is(":checked")){
+			$(".enshrine").text("全部");
+		}
+		else{
+			$(".enshrine").text("");
+		}
+	})
+	//机构id点击其他
+	$(".index").click(function(){
+		commonCaption($(this));
+	});
+	$(".mechanism_id").hover(function(){
+		if($(".enshrine").text()==''){
+			$(".show_mechanism").hide();
+		}else {
+			$(".show_mechanism").text($(".enshrine").text());
+			$(".show_mechanism").show();
+		}
+	},function(){
+		$(".show_mechanism").hide();
+	})
 });
 
+//机构id点击其他
+function commonCaption(e) {
+	var all_index= $('.index').length;
+	var num= $('.index:checked').length;
+	var curText = e.next().text();
+
+	if(all_index==num==0){
+		$(".tol_quota").prop("checked",false);
+		$(".allSelectText").text("");
+	}
+	if(e.is(':checked')){
+		$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
+		if(all_index==num){
+			$(".tol_quota").prop("checked",true);
+			$('.indexitemText').remove();
+			$(".enshrine").text("全部");
+		}
+
+	}else {
+		$('.tol_quota').prop("checked","");
+		$('.allSelectText').text('');
+		$('.enshrine span').each(function () {
+			if(curText == $(this).data('text')){
+				$(this).remove();
+			}
+		});
+		$('.enshrine').text('');
+		$('.index:checked').each(function(){
+			curText = $(this).next().text();
+			$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
+		});
+	}
+}
 //统计分析
 function checkTj(value){
 	if(value=="all"){
@@ -88,29 +148,22 @@ function checkTj(value){
 }
 //绑定个人继承权限
 function bindingInherited(value){
+	var all_index= $('.selFirst').length;
+	var num= $('.selFirst:checked').length;
+	var bindAuthority = new Array();
 	if(value=="all"){
-		var bool=$("#allInherited").is(':checked');
-		$("#bindAuthority").val(bool?"all":"");
-		$("#resourceInherited").prop('checked',bool);
-		$("#wanInherited").prop('checked',bool);
+		$("input[name='resourceType']").prop("checked",$("#allInherited").prop("checked"));
 	} else{
-		var resourceInherited=$("#resourceInherited").is(':checked');
-		var wanInherited=$("#wanInherited").is(':checked');
-		if(resourceInherited&&wanInherited){
-			$("#bindAuthority").val("all");
-		}else if(resourceInherited){
-			$("#bindAuthority").val("resource");
-		}else if(wanInherited){
-			$("#bindAuthority").val("wanfang");
-		}else{
-			$("#bindAuthority").val("");
-		}
-		if(resourceInherited&&wanInherited){
-			$("#allInherited").prop('checked',true);
-		}else{
-			$("#allInherited").prop('checked',false);
+		if(all_index==num){
+			$("#allInherited").prop("checked",true);
+		}else {
+			$("#allInherited").prop("checked",false);
 		}
 	}
+	$("input[class='selFirst']:checked").each(function () {
+		bindAuthority.push($(this).val());
+	});
+	$("#bindAuthority").val(bindAuthority);
 }
 
 
@@ -191,9 +244,9 @@ function validStandard(count,i){
 			layer.msg(" 机构名称不能为空",{icon: 2,time: 2000});
 			return false;
 		}else{
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){ 
+			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){
 				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 2000});
-				return false; 
+				return false;
 			}
 		}
 		if(companySimp==null||companySimp==""){
@@ -204,9 +257,9 @@ function validStandard(count,i){
 				layer.msg("机构单位简称的长度必须在5到30之间",{icon: 2,time: 2000});
 				return false;
 			}
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){ 
+			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){
 				layer.msg(" 机构单位简称不能包含汉字",{icon: 2,time: 2000});
-				return false; 
+				return false;
 			}
 		}
 	} else if (isBK) {// 2、包库
@@ -335,7 +388,7 @@ function openPurchaseItems(count,i,type){
 		        layer.closeAll();
 		    },
 		});
-	} 
+	}
 }
 
 //购买项目div样式切换
@@ -387,7 +440,7 @@ function selectProject(obj,flag,checked){
 						var type = data[i].resType;
 						var code = data[i].productSourceCode;
 						var rp = data[i].rp;
-						if(type.indexOf("perio")>-1||type.indexOf("degree")>-1||type.indexOf("conf")>-1||type.indexOf("patent")>-1||type.indexOf("books")>-1||type.indexOf("standard")>-1||type.indexOf("local chronicles")>-1){						
+						if(type.indexOf("perio")>-1||type.indexOf("degree")>-1||type.indexOf("conf")>-1||type.indexOf("patent")>-1||type.indexOf("books")>-1||type.indexOf("standard")>-1||type.indexOf("local chronicles")>-1){
 							text += '<li><input type="checkbox" '+checked+' value="'+code+'" onclick="checkRes('+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName" id="resourceid_'+count+'_'+i+'">';
 							if(rp.length > 0){
 								text += '<i onclick="showProduct(this,1)" class="icon_minus"></i>';
@@ -395,7 +448,7 @@ function selectProject(obj,flag,checked){
 							text += name;
 							text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
-							for(var n in rp){									
+							for(var n in rp){
 								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
@@ -404,12 +457,12 @@ function selectProject(obj,flag,checked){
 							}
 						}else{
 							text += '<li><input type="checkbox" '+checked+' value="'+code+'" onclick="checkRes('+count+','+i+')" name="rdlist['+count+'].rldto['+i+'].resourceid" class="rdlist['+count+'].tableName" id="resourceid_'+count+'_'+i+'">';
-							if(rp.length > 0){									
+							if(rp.length > 0){
 								text += '<i onclick="showProduct(this,2)" class="icon_minus"></i>';
 							}
 							text += name;
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
-							for(var n in rp){									
+							for(var n in rp){
 								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
@@ -454,7 +507,7 @@ function getData(){
 	var date = mydate.getDate();
 
 	var now = year+'-'+getFormatDate(month)+"-"+getFormatDate(date);
-	
+
 	return now;
 }
 
@@ -564,7 +617,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<select id="degreeEndtime_'+count+'_'+i+'" name="rdlist['+count+'].rldto['+i+'].degreeEndtime"></select>年';
 		text += '</div></div>';
 	}
-	if(type.indexOf("conf")>-1){		
+	if(type.indexOf("conf")>-1){
 		text += '<div class="tab-pane" id="conf_'+count+'_'+i+'">';
 		text += '<label>中图分类法</label><ul class="ztree" id="confZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist['+count+'].rldto['+i+'].conferenceClc" id="conferenceClc_'+count+'_'+i+'"></textarea>';
@@ -573,7 +626,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].conferenceNo" id="conferenceNo_'+count+'_'+i+'"></textarea>';
 		text += '</div></div>';
 	}
-	if(type.indexOf("patent")>-1){		
+	if(type.indexOf("patent")>-1){
 		text += '<div class="tab-pane" id="patent_'+count+'_'+i+'">';
 		text += '<div style="padding: 10px;">';
 		text += '<div class="wrap">';
@@ -581,7 +634,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist['+count+'].rldto['+i+'].patentIpc" id="patentIpc_'+count+'_'+i+'"></textarea>';
 		text += '</div></div></div>';
 	}
-	if(type.indexOf("books")>-1){		
+	if(type.indexOf("books")>-1){
 		text += '<div class="tab-pane" id="book_'+count+'_'+i+'">';
 		text += '<label>中图分类法</label><ul class="ztree" id="bookZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist['+count+'].rldto['+i+'].booksClc" id="booksClc_'+count+'_'+i+'"></textarea>';
@@ -645,7 +698,7 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("local chronicles")>-1){//添加地方志专辑分类和区域代码
 		initGazetteer(count,i);
 	}
-	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1){							
+	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1){
 		//加载详情限定时间
 		setDateList(count,i,type);
 	}
@@ -660,15 +713,15 @@ function setDateList(count,i,type){
 	var yearCount = curYear-startYear;
 	var startHtml = '<option value="">-请选择-</option>';
 	var endYearHtml = '<option value="">-请选择-</option>';
-	
+
 	for(var j=0;j <= yearCount;j++){
 		startHtml +='<option value="'+(startYear+j)+'">'+(startYear+j)+'</option>';
 		endYearHtml +='<option value="'+(curYear-j)+'">'+(curYear-j)+'</option>';
 	}
-	if(type.indexOf("perio")>-1){		
+	if(type.indexOf("perio")>-1){
 		$("#journal_startTime_"+count+"_"+i).html(startHtml);
 		$("#journal_endTime_"+count+"_"+i).html(endYearHtml);
-	}else if(type.indexOf("degree")>-1){		
+	}else if(type.indexOf("degree")>-1){
 		$("#degreeStarttime_"+count+"_"+i).html(startHtml);
 		$("#degreeEndtime_"+count+"_"+i).html(endYearHtml);
 	}
@@ -691,18 +744,18 @@ function gazetteerType(val,count,i){
 	if(val=="FZ_New" || val==""){//新方志
 		//datatype放开
 		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",false); 
+			$(this).attr("disabled",false);
 		});
 		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",false); 
+			$(this).attr("disabled",false);
 		});
 	}else if(val=="FZ_Old"){//旧方志
 		//datatype禁用
 		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",true); 
+			$(this).attr("disabled",true);
 		});
 		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",true); 
+			$(this).attr("disabled",true);
 		});
 	}
 }
@@ -830,7 +883,7 @@ function findShaiXuan(count,i){
 		$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
 	}
 	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",false);
-	
+
 	$("#sheng_"+count+"_"+i).attr("disabled",false);
 	$("#shi_"+count+"_"+i).attr("disabled",false);
 	$("#xian_"+count+"_"+i).attr("disabled",false);
@@ -845,7 +898,7 @@ function findSeftDefine(count,i){
 	$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",true);
 	$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
 	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",true);
-	
+
 	$("#sheng_"+count+"_"+i).attr("disabled",true);
 	$("#shi_"+count+"_"+i).attr("disabled",true);
 	$("#xian_"+count+"_"+i).attr("disabled",true);
@@ -996,7 +1049,7 @@ function findSubject(count,i){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -1065,7 +1118,7 @@ function findPatent(count,i){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -1121,7 +1174,7 @@ function validateUserId(){
 //校验IP是否存在交集
 function validateIp(ip,userId,object){
 	var loginMode = $("#loginMode").val();
-	if(loginMode==0){		
+	if(loginMode==0){
 		var bool = false;
 		$.ajax({
 			type : "post",
@@ -1151,7 +1204,7 @@ function IpFormat(str){
 	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
 	var ip = str.split("\n");
 	for(i in ip){
-		if(ip[i]!=""){			
+		if(ip[i]!=""){
 			if(ipLimigLineRegex.test(ip[i])){
 				continue;
 			}else{
@@ -1159,7 +1212,7 @@ function IpFormat(str){
 			}
 		}
 	}
-	return true;					
+	return true;
 }
 
 function validateFrom(){
@@ -1209,8 +1262,8 @@ function radioClick(addOrUpdate,isBatch){
 				}else{
 					$("#adminOldName option:not(:first)").remove();
 					for(var i in data){
-						if(isBatch!="batch"){							
-							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>"); 
+						if(isBatch!="batch"){
+							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
 						}else{
 							$("#adminOldName").append("<option value='"+data[i].userId+"/"+data[i].institution+"'>"+data[i].userId+"/"+data[i].institution+"</option>");
 						}
@@ -1222,8 +1275,8 @@ function radioClick(addOrUpdate,isBatch){
 						$("#adminEmail").val("");
 					}
 					$("#newManager").hide();
-					$("#oldManager").show();	
-				}	
+					$("#oldManager").show();
+				}
 			}
 		});
 	}
@@ -1294,3 +1347,20 @@ function getListNode(treeObj){
 	}
 	return text;
 }
+
+//点击箭头变化
+function icont(){
+	$(".arrow").css({"background-position-x":"-39px"});
+	$(".quota").toggle();
+	if($.trim($(".quota").css("display"))=="none"){
+		$(".arrow").css({"background-position-x":"-10px"});
+	}
+}
+
+$(document).on("click",function(e){
+	if($(e.target).parents(".userId").length==0){
+		$(".quota").css("display","none");
+		$(".arrow").css({"background-position-x":"-10px"});
+	}
+})
+
