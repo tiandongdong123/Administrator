@@ -19,6 +19,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.*;
+import com.wanfangdata.grpcconcfig.BindAuthorityChannel;
+import com.wanfangdata.rpc.bindauthority.*;
+import com.wanfangdata.setting.PersonAuthorityMapping;
+import com.wf.bean.*;
+import io.grpc.ManagedChannel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -48,37 +54,12 @@ import wfks.authentication.AccountId;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.utils.DateUtil;
-import com.utils.ExcelUtil;
-import com.utils.GetUuid;
-import com.utils.Getproperties;
-import com.utils.HttpClientUtil;
-import com.utils.IPConvertHelper;
-import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
 import com.webservice.WebServiceUtils;
-import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
-import com.wf.bean.CommonEntity;
-import com.wf.bean.PageList;
-import com.wf.bean.Person;
-import com.wf.bean.Project;
-import com.wf.bean.ProjectResources;
-import com.wf.bean.ResourceDetailedDTO;
-import com.wf.bean.ResourceLimitsDTO;
-import com.wf.bean.StandardUnit;
-import com.wf.bean.UserAccountRestriction;
-import com.wf.bean.UserInstitution;
-import com.wf.bean.UserIp;
-import com.wf.bean.WarningInfo;
-import com.wf.bean.WfksAccountidMapping;
-import com.wf.bean.WfksPayChannelResources;
-import com.wf.bean.WfksUserSetting;
-import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
 import com.wf.dao.AuthoritySettingMapper;
@@ -172,9 +153,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * */
     @Autowired
     private TransactionProcess accountingService;
-    
-    
-    /** 
+
+	@Autowired
+	private BindAuthorityChannel bindAuthorityChannel;
+	@Autowired
+	private PersonAuthorityMapping personAuthorityMapping;
+
+
+	/**
      * 调用接口验证老平台用户是否存在 
      */
     @Override
@@ -1846,6 +1832,75 @@ public class AheadUserServiceImpl implements AheadUserService{
 		obj.put("resource_type_statistics", tongji.contains("B")?1:0);
 		ins.setStatisticalAnalysis(obj.toString());
 		userInstitutionMapper.addUserIns(ins);
+	}
+	@Override
+	public void openBindAuthority(BindAuthority bindAuthority){
+		String[] userIds = bindAuthority.getUserId().split(",");
+		String[] authorityArray = bindAuthority.getBindAuthority().split(",");
+		for (String authority : authorityArray) {
+			OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
+					.setBindType(OpenBindRequest.BindType.forNumber(bindAuthority.getBindType()))
+					.setBindLimit(bindAuthority.getBindLimit())
+					.setBindValidity(bindAuthority.getBindValidity())
+					.setDownloadLimit(bindAuthority.getDownlaodLimit())
+					.setBindAuthority(personAuthorityMapping.getAuthorityName(authority));
+			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
+		}
+
+	}
+
+	@Override
+	public BindAuthority getBindAuthority(String userId) {
+		BindAuthority bindAuthority = new BindAuthority();
+		SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+		SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+		List<AccountAuthority> accountList = response.getItemsList();
+		if (accountList!=null&&accountList.size()>0){
+			bindAuthority.setOpenState(true);
+			List<String> authorityList = new ArrayList<>();
+			for (AccountAuthority accountAuthority : accountList) {
+				authorityList.add(accountAuthority.getBindAuthority());
+			}
+			bindAuthority.setBindType(response.getItems(0).getBindType().getNumber());
+			bindAuthority.setBindLimit(response.getItems(0).getBindLimit());
+			bindAuthority.setBindValidity(response.getItems(0).getBindValidity());
+			bindAuthority.setDownlaodLimit(response.getItems(0).getDownloadLimit());
+			bindAuthority.setBindAuthority(authorityList.toString());
+		}else {
+			bindAuthority.setOpenState(false);
+		}
+		return bindAuthority;
+	}
+	@Override
+	public int getBindAuthorityCount(String userId) {
+		SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+		SearchAccountAuthorityResponse response =bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+		List<AccountAuthority> accountList = response.getItemsList();
+		if (accountList!=null&&accountList.size()>0){
+			return accountList.size();
+		}else {
+			return 0;
+		}
+	}
+
+	@Override
+	public void editBindAuthority(BindAuthority bindAuthority){
+		String[] userIds = bindAuthority.getUserId().split(",");
+		EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
+				.setBindType(EditBindRequest.BindType.forNumber(bindAuthority.getBindType()))
+				.setBindLimit(bindAuthority.getBindLimit())
+				.setBindValidity(bindAuthority.getBindValidity())
+				.setDownloadLimit(bindAuthority.getDownlaodLimit())
+				.setBindAuthority(personAuthorityMapping.getAuthorityName(bindAuthority.getBindAuthority()));
+		bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
+	}
+
+	@Override
+	public void closeBindAuthority(BindAuthority bindAuthority){
+
+		String[] userIds = bindAuthority.getUserId().split(",");
+		CloseBindRequest.Builder request = CloseBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds));
+		bindAuthorityChannel.getBlockingStub().closeBindAuthority(request.build());
 	}
 
 	@Override

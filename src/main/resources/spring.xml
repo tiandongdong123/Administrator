@@ -88,7 +88,7 @@
       
 	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->  
 	<bean id="transactionManager"
-	    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+	    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 	    <property name="dataSource" ref="dataSource" />
 	</bean>
 	
@@ -99,4 +99,29 @@
     <context:component-scan base-package="com.job"/>  
 	<!-- dubbo配置文件 -->
 	<import resource="classpath:dubbo-admin-consumer.xml" />
+
+	<bean id="personAuthorityMapping" class="com.wanfangdata.setting.PersonAuthorityMapping">
+		<constructor-arg name="authority">
+			<map>
+				<entry key="资源下载" value="resource"/>
+				<entry key="万方分析" value="miner"/>
+			</map>
+		</constructor-arg>
+	</bean>
+
+	<!-- 加载配置文件 -->
+	<bean id="propertyConfigurer"
+		  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list><!-- windows配置 file:${user.dir}/../conf/db.properties -->
+				<!--<value>file:${user.dir}/conf/db.properties</value>-->
+				<value>classpath*:grpc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcconcfig.BindAuthorityChannel">
+		<constructor-arg name="host" value="127.0.0.1"/>
+		<constructor-arg name="port" value="5000"/>
+	</bean>
 </beans>  

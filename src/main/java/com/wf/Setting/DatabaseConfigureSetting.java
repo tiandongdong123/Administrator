@@ -234,7 +234,7 @@ public class DatabaseConfigureSetting {
                     String language2 = element2.elementText("language");
                     String customPolicy2 = element2.elementText("customPolicy");
                     String code2 = element2.elementText("code");
-                    String status2 = element1.elementText("status");
+                    String status2 = element2.elementText("status");
                     String state2 = element2.elementText("state");
                     //交换属性和节点
                     attr1.setValue(id2);

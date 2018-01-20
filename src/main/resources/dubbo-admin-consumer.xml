@@ -13,7 +13,8 @@
     <!-- 文辑推优 -->
     <dubbo:reference id="iVolume" interface="org.bigdata.framework.common.api.volume.IVolumeService"  check="false"/>
 	<dubbo:reference protocol="dubbo" id="accountingService" interface="wfks.accounting.transaction.TransactionProcess" check="false"/>
-	
+<!--	<dubbo:reference protocol="dubbo" check="false"
+					 id="userInfoDao" interface="wfks.authentication.account.userinfo.UserInfoDao"/>-->
 	<dubbo:reference id="accountDaoService"  protocol="dubbo" interface="wfks.accounting.account.AccountDao" check="false"/>
 
 	<bean id="setting" class="wfks.accounting.WebAccountingSetting">
@@ -23,5 +24,5 @@
 	</bean>
 	
 	<!-- 敏感词 -->
-	<dubbo:reference interface="org.bigdata.framework.forbidden.iservice.IForbiddenSerivce" id="forbiddenService" check="false" />
+	<dubbo:reference interface="org.bigdata.framework.forbidden.iservice.IForbiddenSerivce"  id="forbiddenService" check="false" />
 </beans>
