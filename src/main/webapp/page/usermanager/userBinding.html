@@ -21,10 +21,10 @@
         <input type="text" class="form-control mode_width" value="30" id="downlaodLimit" name="downlaodLimit">
     </div>
     <div class="form-group input_block">
-        <input type="hidden" name="bindAuthority" id="bindAuthority" value="resource">
+        <input type="hidden" name="bindAuthority" id="bindAuthority" value="资源下载">
         <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人继承权限</label>
         <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
-        <input type="checkbox"  checked="checked" name="resourceType" class="selFirst" id="resourceInherited" onclick="bindingInherited('resource')">资源下载&nbsp;&nbsp;
-        <input type="checkbox"  name="resourceType" class="selFirst" id="wanInherited" onclick="bindingInherited('wanfang')">万方分析
+        <input type="checkbox"  name="resourceType" checked="checked"  class="selFirst" id="resourceInherited" onclick="bindingInherited()" value="资源下载">资源下载&nbsp;&nbsp;
+        <input type="checkbox"  name="resourceType" class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
     </div>
 </div>

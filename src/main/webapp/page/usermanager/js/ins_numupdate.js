@@ -1,4 +1,10 @@
 //提交事件
+$(document).ready(function(){
+	$("input[name='openState']").prop("checked",true);
+	$("input[name='resourceType']").prop("checked",false);
+	$("input[id='resourceInherited']").prop("checked",true);
+});
+
 function submitForm(){
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();

@@ -413,13 +413,13 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .pop {
 	display: none;
-	width: 578px;
+	width: 770px;
 	height: 500px;
 	background: #ffffff;
 	border: 1px solid #ccc;
 	position: fixed;
 	top: 20%;
-	left: 38%;
+	left: 35%;
 	z-index: 1004;
 }
 .x{
@@ -445,6 +445,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	line-height: 35px;
 	background: #417dc9;
 	color: #fff;
+	margin-bottom: 30px;
 }
 .guide p {
 	width: 68px;
@@ -475,8 +476,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	width: 300px;
 	border: solid 1px #cccccc;
 	position: absolute;
-	margin-top: -1px;
-	margin-left: 278px;
+	margin-top: -3px;
+	margin-left: 214px;
 	z-index: 4;
 	background: #fff;
 }
@@ -492,10 +493,31 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	padding-right: 15px;
 	text-align: right;
 	display: inline-block;
-	width: 274px;
+	width: 210px;
 }
 .binding_button{
-	margin: 20px 0 0 146px;
+	margin: 20px 0 0 85px;
+}
+.enshrine{
+	line-height: 22px;
+	width:268px;
+	height: 22px;
+	position: absolute;
+	left: 12px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.show_mechanism{
+	display: none;
+	border: 1px solid #ccc;
+	position: absolute;
+	margin-top: 2px;
+	margin-left: 228px;
+	z-index: 5;
+	background: #fff;
+	font-size: 15px;
+	padding: 5px;
 }
 
 
