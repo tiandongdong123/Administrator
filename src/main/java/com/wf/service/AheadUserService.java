@@ -5,25 +5,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wf.bean.*;
 import net.sf.json.JSONObject;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.setting.PayChannelModel;
-
-import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
-import com.wf.bean.CommonEntity;
-import com.wf.bean.PageList;
-import com.wf.bean.Person;
-import com.wf.bean.Project;
-import com.wf.bean.ResourceDetailedDTO;
-import com.wf.bean.StandardUnit;
-import com.wf.bean.UserInstitution;
-import com.wf.bean.UserIp;
-import com.wf.bean.WarningInfo;
-import com.wf.bean.WfksAccountidMapping;
-import com.wf.bean.WfksUserSetting;
 
 public interface AheadUserService {
 	
@@ -204,7 +192,36 @@ public interface AheadUserService {
 	 * @param com
 	 */
 	void addUserIns(CommonEntity com);
-	
+
+
+	/**
+	 * 开通个人绑定机构权限
+	 * @param bindAuthority
+	 */
+	void openBindAuthority(BindAuthority bindAuthority);
+
+	/**
+	 * 查询是否开通个人绑定机构权限
+	 * @param userId
+	 * @return
+	 */
+	BindAuthority getBindAuthority(String userId);
+
+	/**
+	 * 根据id查询绑定数量
+	 * @param userId
+	 * @return
+	 */
+	int getBindAuthorityCount(String userId);
+
+	/**
+	 * 修改个人绑定机构权限
+	 * @param bindAuthority
+	 */
+	void editBindAuthority(BindAuthority bindAuthority);
+
+	void closeBindAuthority(BindAuthority bindAuthority);
+
 	/**
 	 * 获取
 	 * @param userId
