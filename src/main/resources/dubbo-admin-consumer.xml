@@ -13,10 +13,8 @@
     <!-- 文辑推优 -->
     <dubbo:reference id="iVolume" interface="org.bigdata.framework.common.api.volume.IVolumeService"  check="false"/>
 	<dubbo:reference protocol="dubbo" id="accountingService" interface="wfks.accounting.transaction.TransactionProcess" check="false"/>
-<!--	<dubbo:reference protocol="dubbo" check="false"
-					 id="userInfoDao" interface="wfks.authentication.account.userinfo.UserInfoDao"/>-->
 	<dubbo:reference id="accountDaoService"  protocol="dubbo" interface="wfks.accounting.account.AccountDao" check="false"/>
-
+	<dubbo:reference id="userinfoDao"  protocol="dubbo" interface="wfks.authentication.account.userinfo.UserInfoDao" check="false"/>
 	<bean id="setting" class="wfks.accounting.WebAccountingSetting">
 		<constructor-arg name="transactionPublicKey"
 						 value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCACO+cmFZNtWJSSZuYYIysAhTnpAl1vLfAgOB8+YK5FbwaR1ETU7a0T9okpVDJfctwU2vsRagVg0BufGv8yALR71Lk8Syp3TqJJQF9/qmXifqIRGzD1yRFw9N5su9g6mf9tnp1HWFyCSH46zVZK/PHgaJ8sYee9JxTJE0L5m/ctQIDAQAB" />

@@ -13,18 +13,18 @@
 	<repositories>
 		<repository>
 			<id>WF-repository</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-public</url>
+			<url>http://nexus.rd.wanfangdata.com.cn:8888/repository/maven-public</url>
 		</repository>
 	</repositories>
 	<!-- 上传至nexus服务器 -->
 	<distributionManagement>
 		<repository>
 			<id>local_nexus_releases</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-releases/</url>
+			<url>http://nexus.rd.wanfangdata.com.cn/repository:8888/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>local_nexus_snapshots</id>
-			<url>http://nexus.rd.wanfangdata.com.cn/repository/maven-snapshots/</url>
+			<url>http://nexus.rd.wanfangdata.com.cn/repository:8888/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<properties>
@@ -111,8 +111,23 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
+			<artifactId>usermanager-grpc-api</artifactId>
+			<version>1.2018.15-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-all</artifactId>
+				</exclusion></exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.wanfangdata</groupId>
 			<artifactId>encrypt</artifactId>
 			<version>1.2017.266</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wanfangdata</groupId>
+			<artifactId>userinfo-api</artifactId>
+			<version>1.2018.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.xuxueli</groupId>
@@ -555,12 +570,12 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>zookeepertools</artifactId>
-			<version>1.2017.3</version>
+			<version>1.2017.7</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>setting</artifactId>
-			<version>1.2017.3</version>
+			<version>1.2018.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -755,7 +770,6 @@
 		    <artifactId>pinyin4j</artifactId>
 		    <version>2.5.1</version>
 		</dependency>
-
 		<!--  grpc依赖  -->
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -766,14 +780,26 @@
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-protobuf</artifactId>
 			<version>1.8.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-stub</artifactId>
 			<version>1.8.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>20.0</version>
+		</dependency>
 	</dependencies>
 	<build>
+
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>

@@ -22,8 +22,6 @@ public class BindAuthority {
     private Integer downlaodLimit;
     //绑定个人继承权限
     private String bindAuthority;
-    //修改前继承的权限（仅用于修改权限）
-    private String previousAuthority;
 
     public Boolean getOpenState() {
         return openState;
@@ -81,14 +79,6 @@ public class BindAuthority {
         this.bindAuthority = bindAuthority;
     }
 
-    public String getPreviousAuthority() {
-        return previousAuthority;
-    }
-
-    public void setPreviousAuthority(String previousAuthority) {
-        this.previousAuthority = previousAuthority;
-    }
-
     @Override
     public String toString() {
         return "BindAuthority{" +
@@ -99,7 +89,6 @@ public class BindAuthority {
                 ", bindValidity=" + bindValidity +
                 ", downlaodLimit=" + downlaodLimit +
                 ", bindAuthority='" + bindAuthority + '\'' +
-                ", previousAuthority='" + previousAuthority + '\'' +
                 '}';
     }
 }

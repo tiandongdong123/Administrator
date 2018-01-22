@@ -218,7 +218,7 @@ public interface AheadUserService {
 	 * 修改个人绑定机构权限
 	 * @param bindAuthority
 	 */
-	void editBindAuthority(BindAuthority bindAuthority);
+	ServiceResponse editBindAuthority(BindAuthority bindAuthority);
 
 	void closeBindAuthority(BindAuthority bindAuthority);
 

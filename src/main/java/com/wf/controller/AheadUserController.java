@@ -416,6 +416,9 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String,String> registerInfo(CommonEntity com,BindAuthority bindAuthority,
 			ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
+		if (bindAuthority.getOpenState()){
+			aheadUserService.openBindAuthority(bindAuthority);
+		}
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -453,9 +456,7 @@ public class AheadUserController {
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分线权限
-		if (bindAuthority.getOpenState()){
-			aheadUserService.openBindAuthority(bindAuthority);
-		}
+
 		log.info("成功开通个人绑定机构权限");
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			aheadUserService.addRegisterAdmin(com);
@@ -799,16 +800,13 @@ public class AheadUserController {
 			//修改或开通个人绑定机构权限
 			bindAuthority.setUserId(map.get("userId").toString());
 			if(bindAuthority.getOpenState()){
-				int count = aheadUserService.getBindAuthorityCount(bindAuthority.getUserId());
-				//若之前开通过，则修改其权限
-				//若之前没开通过，则开通权限
-				if (count>0){
-					aheadUserService.editBindAuthority(bindAuthority);
-				}else {
-					aheadUserService.openBindAuthority(bindAuthority);
+				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthority);
+				if (response.getServiceResult()==false){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",response.getResultMessage());
+					return hashmap;
 				}
 			}else {
-				//判断之前知否开通过权限，若有则删除
 				int count = aheadUserService.getBindAuthorityCount(bindAuthority.getUserId());
 				if (count>0){
 					aheadUserService.closeBindAuthority(bindAuthority);
@@ -1105,8 +1103,9 @@ public class AheadUserController {
 		}
 		//数据分析权限
 		getTongInstitution(userId,map);
-		BindAuthority  bindAuthority = aheadUserService.getBindAuthority(userId);
-		view.addObject("bindAuthority",bindAuthority);
+		//个人绑定机构权限
+		BindAuthority  bindInformation = aheadUserService.getBindAuthority(userId);
+		view.addObject("bindInformation",bindInformation);
 		aheadUserService.getprojectinfo(userId,map);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
@@ -1253,59 +1252,18 @@ public class AheadUserController {
 		aheadUserService.addUserIns(com);
 		//修改或开通个人绑定机构权限
 		if(bindAuthority.getOpenState()){
-
-			//将之前开通过权限与现在修改后的权限做比较（分以下3种情况）
-			// 若之前已开通的权限，现在没有勾选，则删除此权限
-			//若之前已开通的，有勾选，则修改
-			//若之前未开通的权限，有勾选，则开通此权限
-			String[] authorityArray = bindAuthority.getBindAuthority().split(",");
-			String[] previousAuthority = bindAuthority.getPreviousAuthority().split(",");
-			//需要删除的权限
-			List<String> deleteAuthority = new ArrayList<>();
-			//需要修改的权限
-			List<String> editAuthority = new ArrayList<>();
-			//需要开通的权限
-			List<String> openAhthority = new ArrayList<>();
-			//添加需要删除和修改的权限
-			for (String previous : previousAuthority) {
-				for (String now : authorityArray) {
-					if (previous.equals(now)){
-						editAuthority.add(now);
-						break;
-					}
-				}
-				deleteAuthority.add(previous);
+			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthority);
+			if (response.getServiceResult()==false){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",response.getResultMessage());
+				return hashmap;
 			}
-			//添加需要新增的权限
-			for (String now : authorityArray) {
-				for (String previous : previousAuthority) {
-					if (now.equals(previous)){
-						break;
-					}
-				}
-				openAhthority.add(now);
-			}
-			if (deleteAuthority!=null&&deleteAuthority.size()>0){
-				bindAuthority.setBindAuthority(deleteAuthority.toString());
-				aheadUserService.closeBindAuthority(bindAuthority);
-			}
-			if (editAuthority!=null&&editAuthority.size()>0){
-				bindAuthority.setBindAuthority(editAuthority.toString());
-				aheadUserService.editBindAuthority(bindAuthority);
-			}
-			if(openAhthority!=null&&openAhthority.size()>0){
-				bindAuthority.setBindAuthority(openAhthority.toString());
-				aheadUserService.openBindAuthority(bindAuthority);
-			}
-
 		}else {
-			if (bindAuthority.getPreviousAuthority()!=null&&!"".equals(bindAuthority.getPreviousAuthority())){
-				bindAuthority.setBindAuthority(bindAuthority.getPreviousAuthority());
+			int count = aheadUserService.getBindAuthorityCount(bindAuthority.getUserId());
+			if (count>0){
 				aheadUserService.closeBindAuthority(bindAuthority);
 			}
-
 		}
-
 		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){

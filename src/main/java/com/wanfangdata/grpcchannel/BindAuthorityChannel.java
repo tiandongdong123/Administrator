@@ -1,13 +1,10 @@
-package com.wanfangdata.grpcconcfig;
+package com.wanfangdata.grpcchannel;
 
 import com.wanfangdata.rpc.bindauthority.BindAuthorityGrpc;
-import io.grpc.CallOptions;
-import io.grpc.Channel;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
-import io.grpc.stub.AbstractStub;
+
 
 /**
  * Created by 01 on 2018/1/17.

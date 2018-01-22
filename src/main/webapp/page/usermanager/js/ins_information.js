@@ -1,12 +1,8 @@
 $(function(){
-	$("#user_dinding").prop("checked",true);
-	$("#dinding").css("display","block");
 	goPage();
-	
     $('.add_admin').click(function (e) {
         preventBubble(e);
     });
-    
 });
 
 //全局点击事件(隐藏服务权限div)

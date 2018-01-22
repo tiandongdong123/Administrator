@@ -20,11 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utils.*;
-import com.wanfangdata.grpcconcfig.BindAuthorityChannel;
+import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.rpc.bindauthority.*;
 import com.wanfangdata.setting.PersonAuthorityMapping;
 import com.wf.bean.*;
-import io.grpc.ManagedChannel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -1836,17 +1835,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public void openBindAuthority(BindAuthority bindAuthority){
 		String[] userIds = bindAuthority.getUserId().split(",");
-		String[] authorityArray = bindAuthority.getBindAuthority().split(",");
-		for (String authority : authorityArray) {
+		String[] authoritys = bindAuthority.getBindAuthority().split(",");
+		List<String> authorityList = new ArrayList<>();
+		for (String authority : authoritys) {
+			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
+		}
 			OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
 					.setBindType(OpenBindRequest.BindType.forNumber(bindAuthority.getBindType()))
 					.setBindLimit(bindAuthority.getBindLimit())
 					.setBindValidity(bindAuthority.getBindValidity())
 					.setDownloadLimit(bindAuthority.getDownlaodLimit())
-					.setBindAuthority(personAuthorityMapping.getAuthorityName(authority));
+					.addAllBindAuthority(authorityList);
 			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
-		}
-
 	}
 
 	@Override
@@ -1884,15 +1884,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public void editBindAuthority(BindAuthority bindAuthority){
+	public ServiceResponse editBindAuthority(BindAuthority bindAuthority){
 		String[] userIds = bindAuthority.getUserId().split(",");
+		String[] authoritys = bindAuthority.getBindAuthority().split(",");
+		List<String> authorityList = new ArrayList<>();
+		for (String authority : authoritys) {
+			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
+		}
 		EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
 				.setBindType(EditBindRequest.BindType.forNumber(bindAuthority.getBindType()))
 				.setBindLimit(bindAuthority.getBindLimit())
 				.setBindValidity(bindAuthority.getBindValidity())
 				.setDownloadLimit(bindAuthority.getDownlaodLimit())
-				.setBindAuthority(personAuthorityMapping.getAuthorityName(bindAuthority.getBindAuthority()));
-		bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
+				.addAllBindAuthority(authorityList);
+		return bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
 	}
 
 	@Override
