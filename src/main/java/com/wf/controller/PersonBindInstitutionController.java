@@ -46,6 +46,7 @@ public class PersonBindInstitutionController {
         }
         return userIds;
     }
+
     @RequestMapping("/openAuthority")
     public String openAuthority(BindAuthority bindAuthority){
         String[] userIds = bindAuthority.getUserId().split(",");
