@@ -519,6 +519,40 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	font-size: 15px;
 	padding: 5px;
 }
+.qr{
+	display: none;
+	width: 250px;
+	height: 250px;
+	border:1px solid #ccc;
+	position: absolute;
+	background: #fff;
+	margin-left: 35%;
+}
+.reset{
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+.picture{
+	width: 200px;
+	height: 200px;
+	border:1px solid #ccc;
+	margin:12px 25px;
+}
+.wrong{
+	position: absolute;
+	display: inline-block;
+	background: url(../img/f.png) no-repeat;
+	width: 12px;
+	height: 12px;
+	margin-top: 12px;
+	margin-left: 7px;
+}
+.mistaken{
+	color: #dd4b39;
+	margin: 34px;
+	font-size: 12px;
+}
 
 
 

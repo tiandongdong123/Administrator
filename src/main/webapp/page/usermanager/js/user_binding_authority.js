@@ -2,19 +2,18 @@
  * Created by 01 on 2018/1/18.
  */
 $(document).ready(function(){
-
     $("#institution").blur(function(){
         var institution = $("#institution").val();
-        // $.ajax({
-        //     type : "post",
-        //     // url : "",
-        //     data:{
-        //         institution: institution,
-        //     },
-        //     success: function(data){
-        //
-        //     }
-        // });
+        $.ajax({
+            type : "post",
+            url : "../bindAuhtority/userId",
+            data:{
+                institution: institution,
+            },
+            success: function(data){
+
+            }
+        });
     })
 });
 function submitNew(){
@@ -38,7 +37,7 @@ function submitNew(){
     var bindAuthority = $("#bindAuthority").val();
     $.ajax({
         type : "post",
-         // url : "",
+         url : "../bindAuhtority/openAuthority",
         data:{
             institution:institution,
             mechanism_id:mechanism_id,

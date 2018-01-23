@@ -144,46 +144,46 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			bindLimit:{
-				message : '请输入绑定个人上限',
+				message : '绑定个人上限不能为空，请填写正确的数字',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入绑定个人上限'
+						message : '绑定个人上限不能为空，请填写正确的数字'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
 						regexp:  /^[0-9]*$/,
-						message: '不能包含特殊字符'
+						message: '绑定个人上限是大于0的整数，请填写正确的数字'
 					},
 				}
 			},
 			bindValidity:{
-				message : '请输入绑定个人账号有效期',
+				message : '绑定个人账号有效期不能为空，请填写正确的有效期',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入绑定个人账号有效期'
+						message : '绑定个人账号有效期不能为空，请填写正确的有效期'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
 						regexp:  /^[0-9]*$/,
-						message: '不能包含特殊字符'
+						message: '绑定个人账号有效期是大于0的整数，请填写正确的有效期'
 					},
 				}
 			},
 			downlaodLimit:{
-				message : '请输入绑定个人下载量上限',
+				message : '绑定个人下载量上限/天不能为空，请填写正确的数字',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入绑定个人下载量上限'
+						message : '绑定个人下载量上限/天不能为空，请填写正确的数字'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
 						regexp:  /^[0-9]*$/,
-						message: '不能包含特殊字符'
+						message: '绑定个人下载量上限/天是大于0的整数，请填写正确的数字'
 					},
 				}
 			},
 			resourceType:{
-				message : '请输入绑定个人继承权限',
+				message : '个人继承权限不能为空，请选择权限',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入绑定个人继承权限'
+						message : '个人继承权限不能为空，请选择权限'
 					},
 				}
 			},
@@ -192,6 +192,14 @@ $(function() {/* 文档加载，执行一个函数 */
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '请输入绑定模式'
+					},
+				}
+			},
+			mechanism_id:{
+				message : '请选择机构ID',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请选择机构ID'
 					},
 				}
 			},
