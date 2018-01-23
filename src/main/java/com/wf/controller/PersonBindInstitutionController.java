@@ -7,6 +7,7 @@ import com.wf.bean.BindAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import wfks.authentication.account.userinfo.UserInfoDao;
 
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class PersonBindInstitutionController {
         }
         return userIds;
     }
-
     @RequestMapping("/openAuthority")
     public String openAuthority(BindAuthority bindAuthority){
         String[] userIds = bindAuthority.getUserId().split(",");
@@ -62,6 +62,12 @@ public class PersonBindInstitutionController {
                 .setDownloadLimit(bindAuthority.getDownlaodLimit())
                 .addAllBindAuthority(authorityList);
         bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
-        return "";
+        return "/page/usermanager/user_binding_manager";
     }
+
+   /* public  List<String> seachBindInfo(String userId,String Institution,String startTime,String endTime){
+        if(userId!=null&&!"".equals(userId)){
+
+        }
+    }*/
 }

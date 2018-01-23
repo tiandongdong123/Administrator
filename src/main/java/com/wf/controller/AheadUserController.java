@@ -416,9 +416,7 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String,String> registerInfo(CommonEntity com,BindAuthority bindAuthority,
 			ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
-		if (bindAuthority.getOpenState()){
-			aheadUserService.openBindAuthority(bindAuthority);
-		}
+
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -456,7 +454,9 @@ public class AheadUserController {
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分线权限
-
+		if (bindAuthority.getOpenState()){
+			aheadUserService.openBindAuthority(bindAuthority);
+		}
 		log.info("成功开通个人绑定机构权限");
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			aheadUserService.addRegisterAdmin(com);
@@ -1255,7 +1255,7 @@ public class AheadUserController {
 			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthority);
 			if (response.getServiceResult()==false){
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",response.getResultMessage());
+				hashmap.put("fail",response.getResultMessage()+",请联系管理员解绑");
 				return hashmap;
 			}
 		}else {
