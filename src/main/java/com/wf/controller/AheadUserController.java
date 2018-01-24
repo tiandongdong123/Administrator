@@ -340,6 +340,28 @@ public class AheadUserController {
 	/**
 	 *	查询其他中图分类信息
 	 */
+	@RequestMapping("findPerioSubject")
+	@ResponseBody
+	public Map<String,Object> findPerioSubject(String num){
+		String str = redis.get("PerioInfoDic",13);
+		JSONArray array = JSONArray.fromObject(str);
+		for(int i = 0; i < array.size();i++){
+			JSONObject  obj = array.getJSONObject(i);
+			String name = obj.getString("name");
+			String id = obj.getString("value");
+			obj.element("name",id+"_"+name);
+			obj.put("num", num);
+			
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("ztreeJson", array);
+		map.put("number", num);
+		return map;
+	}
+	
+	/**
+	 *	查询其他中图分类信息
+	 */
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
@@ -468,7 +490,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getChecks())){		
 			aheadUserService.addAccountRestriction(com);
 		}
-		aheadUserService.addUserIns(com);//统计分线权限
+		aheadUserService.addUserIns(com);//统计分析权限
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			aheadUserService.addRegisterAdmin(com);
 			aheadUserService.addUserAdminIp(com);
@@ -633,7 +655,7 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
 			}
-			aheadUserService.addUserIns(com);//统计分线权限
+			aheadUserService.addUserIns(com);//统计分析权限
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			for(ResourceDetailedDTO dto : list){
 				for(Map<String, Object> pro : lm) {
@@ -824,7 +846,7 @@ public class AheadUserController {
 			com.setUserId(map.get("userId").toString());
 			//更新机构账号
 			int resinfo = aheadUserService.updateRegisterInfo(com, ps.getPid(), adminId);
-			//统计分线权限
+			//统计分析权限
 			aheadUserService.addUserIns(com);
 			//未存在管理员添加新的
 			if(StringUtils.isBlank(ps.getPid())){
@@ -1279,7 +1301,7 @@ public class AheadUserController {
 			aheadUserService.deleteUserIp(com.getUserId());
 		}
 		aheadUserService.updateAccountRestriction(com);
-		//统计分线权限
+		//统计分析权限
 		aheadUserService.addUserIns(com);
 		//修改项目
 		for(ResourceDetailedDTO dto : list){

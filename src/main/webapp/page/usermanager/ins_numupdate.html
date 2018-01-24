@@ -9,7 +9,6 @@
 <script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
   <div class="content-wrapper">
     <section class="content-header"><h1>账号修改</h1></section>
-
 <section class="content">
   <div class="row">
     <div class="col-md-6">
@@ -202,11 +201,13 @@
 			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))){ ?>
        			<a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
 				    <? if(!isEmpty(data.contract)){?>
-			    	<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
+			    	<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 					books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
 			    	for(var n=0;n<data.contract.~size;n++){
-						if("journal_CLC"==data.contract[n].Field){
+						if("perioInfo_CLC"==data.contract[n].Field){
+							perioInfo_CLC=data.contract[n];
+						}else if("journal_CLC"==data.contract[n].Field){
 							journal_CLC = data.contract[n];
 						}else if("journal_IDNo"==data.contract[n].Field){
 							journal_IDNo = data.contract[n];
@@ -283,17 +284,25 @@
 		            </ul>
 			         <div class="tab-content">
 			           <?if(strutil.contain(rt,"perio")){?>
-				          <!-- 期刊 -->
+						<!-- 期刊 -->
 			              <div class="tab-pane" id="perio_${i}_${j}">
-			              		<!-- 中图分类隐藏域 -->
+							<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>
+							<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm">选文献</button>
+				             <div id="perioInfoDiv_${i}_${j}">
+				             	<label>期刊分类法</label>
+								<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
+				              	<textarea placeholder="格式：[A,B,C]" placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}">${perioInfo_CLC.Value!}</textarea>
+				             </div>
+				             <div id="perioDiv_${i}_${j}" style="display:none;">
 			              		<label>中图分类法</label>
 								<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
 				              	<textarea placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}">${journal_CLC.Value!}</textarea>
-				              <div class="form-group" style="width:60%;">
+				             </div>
+				              <div style="width:60%;" id="journalIdno_${i}_${j}">
 		                	   	<label>期刊ID</label>
 		                	    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno">${journal_IDNo.Value!}</textarea>
 		               	   	  </div>
-		               	   	<label>期刊年限</label>
+		               	   	<label>年限</label>
 		               	   	<div class="time_block">
 		               	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
 		               	   		<option value="">-请选择-</option>
@@ -528,15 +537,23 @@
           <?if(strutil.contain(rt,"perio")){?>			           
            <!-- 期刊 -->
              <div class="tab-pane" id="perio_${i}_${j}">
-             	<!-- 中图分类隐藏域 -->
+             	<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>
+				<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm">选文献</button>
+             <div id="perioInfoDiv_${i}_${j}">
+             	<label>期刊分类法</label>
+				<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
+              	<textarea placeholder="格式：[A,B,C]" placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}"></textarea>
+             </div>
+             <div id="perioDiv_${i}_${j}" style="display:none;">
              	<label>中图分类法</label>
 				<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
               	<textarea placeholder="格式：[A,B,C]" placeholder="格式：[A,B,C]" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}"></textarea>
-              <div class="form-group" style="width:60%;">
+             </div>
+             <div style="width:60%;" id="journalIdno_${i}_${j}">
               	<label>期刊ID</label>
               	<textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno"></textarea>
              </div>
-       	   	<label>期刊年限</label>
+       	   	<label>年限</label>
        	   	<div class="time_block">
        	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
              	<option value="">-请选择-</option>

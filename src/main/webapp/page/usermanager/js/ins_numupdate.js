@@ -56,6 +56,7 @@ function openItems(count,i,type){
 	if(type.indexOf("perio")>-1){
 		$("a[href='#perio_"+count+"_"+i+"']").parent().addClass("active");
 		$("#perio_"+count+"_"+i).addClass("active").siblings().removeClass("active");
+		findPerioSubject(count+"_"+i);
 	}else if(type.indexOf("degree")>-1){
 		$("a[href='#degree_"+count+"_"+i+"']").parent().addClass("active");
 		$("#degree_"+count+"_"+i).addClass("active").siblings().removeClass("active");
@@ -65,6 +66,7 @@ function openItems(count,i,type){
 	}else if(type.indexOf("patent")>-1){
 		$("a[href='#patent_"+count+"_"+i+"']").parent().addClass("active");
 		$("#patent_"+count+"_"+i).addClass("active").siblings().removeClass("active");
+		findPatentEcho(count+"_"+i);
 	}else if(type.indexOf("books")>-1){
 		$("a[href='#book_"+count+"_"+i+"']").parent().addClass("active");
 		$("#book_"+count+"_"+i).addClass("active").siblings().removeClass("active");
@@ -79,8 +81,8 @@ function openItems(count,i,type){
 	if(type.indexOf("local chronicles")==-1){
 		//Ztree 返显
 		findSubjectEcho(count+"_"+i);
-		findPatentEcho(count+"_"+i);
 	}
+	
 	if(type.indexOf("standard")>-1){
 		layer.open({
 		    type: 1, //page层 1div，2页面
@@ -109,6 +111,50 @@ function openItems(count,i,type){
 		});
 	}
 }
+//期刊学科分类号
+function findPerioSubject(num){
+	$.ajax({
+		type : "post",
+		data : {num:num},
+		async:false,
+		url : "../auser/findPerioSubject.do",
+		beforeSend : function(XMLHttpRequest) {},
+		success:function(data){
+			var setting = {
+					view: {
+						dblClickExpand: false,
+					},
+					data: {
+						simpleData: { 
+				            enable:true,
+				            idKey:"id",
+				            pIdKey:"pid"
+				    	},
+				        key:{name:"name"}
+					},
+					check: {
+						enable: true,
+						chkStyle: "checkbox"
+					},
+					callback: {
+						onCheck: function(){
+							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
+							if(qk!=null){
+								var text = new Array();
+								text=getCheckNode(qk);
+								$("#perioInfoClc_"+data.number).val(text.length>0?"["+text+"]":"");
+							}
+						}
+					}
+				};
+			//期刊中途分类
+			$.fn.zTree.init($("#perioInfoZtree_"+data.number), setting, data.ztreeJson);
+			if($.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number)!=null){				
+				checkedZtree($("#perioInfoClc_"+data.number).text(),$.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number));
+			}
+		}
+	});
+}
 
 //学科中图分类树
 function findSubjectEcho(num){
@@ -134,8 +180,7 @@ function findSubjectEcho(num){
 					},
 					check: {
 						enable: true,
-						chkStyle: "checkbox",
-						//chkboxType:{"Y":"s","N":"s"}
+						chkStyle: "checkbox"
 					},
 					callback: {
 						onCheck: function(){

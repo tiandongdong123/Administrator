@@ -136,11 +136,13 @@
 	<?}?>
    <?if(!isEmpty(pldata.contract)){ var payid = pro.payChannelid; var pscode = pldata.productSourceCode;?>
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
-		<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
+		<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
 			for(var n=0;n<pldata.contract.~size;n++){
-				if("journal_CLC"==pldata.contract[n].Field){
+				if("perioInfo_CLC"==pldata.contract[n].Field){
+					perioInfo_CLC=pldata.contract[n];
+				}else if("journal_CLC"==pldata.contract[n].Field){
 					journal_CLC = pldata.contract[n];
 				}else if("journal_IDNo"==pldata.contract[n].Field){
 					journal_IDNo = pldata.contract[n];
@@ -219,13 +221,14 @@
 	        <!-- 期刊 -->
 	          <div class="tab-pane" id="perio_${list.userId}_${payid}_${pscode}">
 	           <div class="form-group" style="width:60%;">
-	          		<!-- 中图分类隐藏域 -->
+	          		<label>期刊分类法</label>
+	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioInfo_CLC.Value!}</textarea>
 	          		<label>中图分类法</label>
 	          		<textarea class="form-control" name="journalClc" id="journalClc">${journal_CLC.Value!}</textarea>
 	           	   	<label>期刊ID</label>
 	           	    <textarea class="form-control" rows="3" name="journalIdno" id="journalIdno">${journal_IDNo.Value!}</textarea>
 	          </div>
-	          	<label>期刊年限</label>
+	          	<label>年限</label>
               	<div class="time_block">
              	   	<select id="journal_startTime">
 						<?if(!isEmpty(journal_time.Value) && (journal_time.Verb=="LargerThanOrEqualTo" || journal_time.Verb=="WithIn")){?>

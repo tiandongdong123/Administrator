@@ -863,6 +863,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public static String getField(ResourceLimitsDTO dto){
 		JSONObject obj = new JSONObject();
 		JSONArray Terms	= new JSONArray();//Terms
+		if(dto.getPerioInfoClc()!=null && !dto.getPerioInfoClc().equals("") && !dto.getPerioInfoClc().equals(",")){
+			addStringToTerms("perioInfo_CLC", "In", dto.getPerioInfoClc(), Terms, "String[]");	    
+		}
 		if(dto.getJournalClc()!=null && !dto.getJournalClc().equals("") && !dto.getJournalClc().equals(",")){
 			addStringToTerms("journal_CLC", "In", dto.getJournalClc(), Terms, "String[]");	    
 		}
