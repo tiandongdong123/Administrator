@@ -196,16 +196,16 @@ public interface AheadUserService {
 
 	/**
 	 * 开通个人绑定机构权限
-	 * @param bindAuthority
+	 * @param bindAuthorityModel
 	 */
-	void openBindAuthority(BindAuthority bindAuthority);
+	void openBindAuthority(BindAuthorityModel bindAuthorityModel);
 
 	/**
 	 * 查询是否开通个人绑定机构权限
 	 * @param userId
 	 * @return
 	 */
-	BindAuthority getBindAuthority(String userId);
+	BindAuthorityModel getBindAuthority(String userId);
 
 	/**
 	 * 根据id查询绑定数量
@@ -216,11 +216,21 @@ public interface AheadUserService {
 
 	/**
 	 * 修改个人绑定机构权限
-	 * @param bindAuthority
+	 * @param bindAuthorityModel
 	 */
-	ServiceResponse editBindAuthority(BindAuthority bindAuthority);
+	ServiceResponse editBindAuthority(BindAuthorityModel bindAuthorityModel);
 
-	void closeBindAuthority(BindAuthority bindAuthority);
+	/**
+	 * 关闭个人绑定机构权限
+	 * @param bindAuthorityModel
+	 */
+	void closeBindAuthority(BindAuthorityModel bindAuthorityModel);
+
+	/**
+	 * 检验个人绑定数量是否大于修改后的数值（大于则返回此账号id）
+	 * @return
+	 */
+	List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit);
 
 	/**
 	 * 获取

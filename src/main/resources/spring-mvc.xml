@@ -74,7 +74,13 @@
 	<!-- 第一个GroupTemplate，模板放在Webapp下 -->
 	<bean name="beetlConfig" class="org.beetl.ext.spring.BeetlGroupUtilConfiguration" init-method="init">
 		<property name="configFileResource" value="classpath:beetl.properties"/>
+		<property name="functions">
+			<map>
+
+			</map>
+		</property>
 	</bean>
+
 		
 	<!-- Beetl视图解析器1 -->
 	<bean name="beetlViewResolver" class="org.beetl.ext.spring.BeetlSpringViewResolver">

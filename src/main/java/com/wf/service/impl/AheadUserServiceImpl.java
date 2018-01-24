@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utils.*;
+import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.rpc.bindauthority.*;
 import com.wanfangdata.setting.PersonAuthorityMapping;
@@ -152,9 +153,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * */
     @Autowired
     private TransactionProcess accountingService;
-
 	@Autowired
 	private BindAuthorityChannel bindAuthorityChannel;
+	@Autowired
+	private BindAccountChannel  bindAccountChannel;
 	@Autowired
 	private PersonAuthorityMapping personAuthorityMapping;
 
@@ -1833,43 +1835,43 @@ public class AheadUserServiceImpl implements AheadUserService{
 		userInstitutionMapper.addUserIns(ins);
 	}
 	@Override
-	public void openBindAuthority(BindAuthority bindAuthority){
-		String[] userIds = bindAuthority.getUserId().split(",");
-		String[] authoritys = bindAuthority.getBindAuthority().split(",");
+	public void openBindAuthority(BindAuthorityModel bindAuthorityModel){
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
+		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
 		List<String> authorityList = new ArrayList<>();
 		for (String authority : authoritys) {
 			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
 		}
 			OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
-					.setBindType(OpenBindRequest.BindType.forNumber(bindAuthority.getBindType()))
-					.setBindLimit(bindAuthority.getBindLimit())
-					.setBindValidity(bindAuthority.getBindValidity())
-					.setDownloadLimit(bindAuthority.getDownlaodLimit())
+					.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
+					.setBindLimit(bindAuthorityModel.getBindLimit())
+					.setBindValidity(bindAuthorityModel.getBindValidity())
+					.setDownloadLimit(bindAuthorityModel.getDownlaodLimit())
 					.addAllBindAuthority(authorityList);
 			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
 	}
 
 	@Override
-	public BindAuthority getBindAuthority(String userId) {
-		BindAuthority bindAuthority = new BindAuthority();
+	public BindAuthorityModel getBindAuthority(String userId) {
+		BindAuthorityModel bindAuthorityModel = new BindAuthorityModel();
 		SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
 		SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
 		List<AccountAuthority> accountList = response.getItemsList();
 		if (accountList!=null&&accountList.size()>0){
-			bindAuthority.setOpenState(true);
+			bindAuthorityModel.setOpenState(true);
 			List<String> authorityList = new ArrayList<>();
 			for (AccountAuthority accountAuthority : accountList) {
 				authorityList.add(accountAuthority.getBindAuthority());
 			}
-			bindAuthority.setBindType(response.getItems(0).getBindType().getNumber());
-			bindAuthority.setBindLimit(response.getItems(0).getBindLimit());
-			bindAuthority.setBindValidity(response.getItems(0).getBindValidity());
-			bindAuthority.setDownlaodLimit(response.getItems(0).getDownloadLimit());
-			bindAuthority.setBindAuthority(authorityList.toString());
+			bindAuthorityModel.setBindType(response.getItems(0).getBindType().getNumber());
+			bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
+			bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
+			bindAuthorityModel.setDownlaodLimit(response.getItems(0).getDownloadLimit());
+			bindAuthorityModel.setBindAuthority(authorityList.toString());
 		}else {
-			bindAuthority.setOpenState(false);
+			bindAuthorityModel.setOpenState(false);
 		}
-		return bindAuthority;
+		return bindAuthorityModel;
 	}
 	@Override
 	public int getBindAuthorityCount(String userId) {
@@ -1884,29 +1886,45 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public ServiceResponse editBindAuthority(BindAuthority bindAuthority){
-		String[] userIds = bindAuthority.getUserId().split(",");
-		String[] authoritys = bindAuthority.getBindAuthority().split(",");
+	public ServiceResponse editBindAuthority(BindAuthorityModel bindAuthorityModel){
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
+		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
 		List<String> authorityList = new ArrayList<>();
 		for (String authority : authoritys) {
 			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
 		}
 		EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
-				.setBindType(EditBindRequest.BindType.forNumber(bindAuthority.getBindType()))
-				.setBindLimit(bindAuthority.getBindLimit())
-				.setBindValidity(bindAuthority.getBindValidity())
-				.setDownloadLimit(bindAuthority.getDownlaodLimit())
+				.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
+				.setBindLimit(bindAuthorityModel.getBindLimit())
+				.setBindValidity(bindAuthorityModel.getBindValidity())
+				.setDownloadLimit(bindAuthorityModel.getDownlaodLimit())
 				.addAllBindAuthority(authorityList);
-		return bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
+		return  bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
 	}
 
 	@Override
-	public void closeBindAuthority(BindAuthority bindAuthority){
+	public void closeBindAuthority(BindAuthorityModel bindAuthorityModel){
 
-		String[] userIds = bindAuthority.getUserId().split(",");
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
 		CloseBindRequest.Builder request = CloseBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds));
 		bindAuthorityChannel.getBlockingStub().closeBindAuthority(request.build());
 	}
+
+	@Override
+	public List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit){
+		List<String> beyondId = new ArrayList<>();
+		for(Map<String, Object> map : listMap){
+			String userId = map.get("userId").toString();
+			SearchCountRequest request = SearchCountRequest.newBuilder().setBindId(userId).build();
+			SearchCountResponse response = bindAccountChannel.getBlockingStub().searchCountBindingByUserId(request);
+			int count = response.getTotalcount();
+			if (count>bindLimit){
+				beyondId.add(userId);
+			}
+		}
+		return  beyondId;
+	}
+
 
 	@Override
 	public UserInstitution getUserInstitution(String userId) {

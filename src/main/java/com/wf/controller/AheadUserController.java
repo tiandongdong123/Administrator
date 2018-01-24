@@ -414,7 +414,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("registerInfo")
 	@ResponseBody
-	public Map<String,String> registerInfo(CommonEntity com,BindAuthority bindAuthority,
+	public Map<String,String> registerInfo(CommonEntity com,BindAuthorityModel bindAuthorityModel,
 			ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
 
 		long time=System.currentTimeMillis();
@@ -454,8 +454,8 @@ public class AheadUserController {
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分线权限
-		if (bindAuthority.getOpenState()){
-			aheadUserService.openBindAuthority(bindAuthority);
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			aheadUserService.openBindAuthority(bindAuthorityModel);
 		}
 		log.info("成功开通个人绑定机构权限");
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
@@ -514,8 +514,8 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,BindAuthority bindAuthority,ModelAndView view,
-			HttpServletRequest req,HttpServletResponse res)throws Exception{
+	public Map<String,String> addbatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+											   HttpServletRequest req, HttpServletResponse res)throws Exception{
 
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
@@ -599,6 +599,7 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+
 		for(Map<String, Object> map : listmap){
 			//Excel表格中部分账号信息
 			com.setInstitution(map.get("institution").toString());
@@ -609,9 +610,9 @@ public class AheadUserController {
 				aheadUserService.addAccountRestriction(com);
 			}
 			aheadUserService.addUserIns(com);//统计分线权限
-			bindAuthority.setUserId(map.get("userId").toString());
-			if(bindAuthority.getOpenState()){
-				aheadUserService.openBindAuthority(bindAuthority);
+			bindAuthorityModel.setUserId(map.get("userId").toString());
+			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+				aheadUserService.openBindAuthority(bindAuthorityModel);
 			}
 			log.info("成功开通个人绑定机构权限");
 
@@ -681,8 +682,8 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,BindAuthority bindAuthority,ModelAndView view,
-			HttpServletRequest req,HttpServletResponse res)throws Exception{
+	public Map<String,String> updateBatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+												  HttpServletRequest req, HttpServletResponse res)throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
@@ -775,6 +776,14 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+		/*//检验个人绑定数量是否大于修改后的数值
+		List<String> userId = aheadUserService.checkBindLimit(listmap,bindAuthorityModel.getBindLimit());
+		if (userId!=null&&userId.size()>0){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", userId+"已绑定人数超过修改后的个人上限，请联系管理员解绑");
+			return hashmap;
+		}*/
+
 		for(Map<String, Object> map : listmap){
 			Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
 			//Excel表格中部分账号信息
@@ -798,18 +807,18 @@ public class AheadUserController {
 			//统计分线权限
 			aheadUserService.addUserIns(com);
 			//修改或开通个人绑定机构权限
-			bindAuthority.setUserId(map.get("userId").toString());
-			if(bindAuthority.getOpenState()){
-				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthority);
+			bindAuthorityModel.setUserId(map.get("userId").toString());
+			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
 				if (response.getServiceResult()==false){
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",response.getResultMessage());
 					return hashmap;
 				}
 			}else {
-				int count = aheadUserService.getBindAuthorityCount(bindAuthority.getUserId());
+				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 				if (count>0){
-					aheadUserService.closeBindAuthority(bindAuthority);
+					aheadUserService.closeBindAuthority(bindAuthorityModel);
 				}
 			}
 			//未存在管理员添加新的
@@ -1104,7 +1113,7 @@ public class AheadUserController {
 		//数据分析权限
 		getTongInstitution(userId,map);
 		//个人绑定机构权限
-		BindAuthority  bindInformation = aheadUserService.getBindAuthority(userId);
+		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
 		view.addObject("bindInformation",bindInformation);
 		aheadUserService.getprojectinfo(userId,map);
 		view.addObject("map",map);
@@ -1186,7 +1195,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,BindAuthority bindAuthority,HttpServletRequest req,HttpServletResponse res) throws Exception{
+	public Map<String,String> updateinfo(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, HttpServletRequest req, HttpServletResponse res) throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -1251,17 +1260,17 @@ public class AheadUserController {
 		//统计分线权限
 		aheadUserService.addUserIns(com);
 		//修改或开通个人绑定机构权限
-		if(bindAuthority.getOpenState()){
-			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthority);
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
 			if (response.getServiceResult()==false){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",response.getResultMessage()+",请联系管理员解绑");
 				return hashmap;
 			}
 		}else {
-			int count = aheadUserService.getBindAuthorityCount(bindAuthority.getUserId());
+			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 			if (count>0){
-				aheadUserService.closeBindAuthority(bindAuthority);
+				aheadUserService.closeBindAuthority(bindAuthorityModel);
 			}
 		}
 		//修改项目

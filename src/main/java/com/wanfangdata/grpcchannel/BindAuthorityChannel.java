@@ -9,59 +9,25 @@ import io.grpc.netty.NettyChannelBuilder;
 /**
  * Created by 01 on 2018/1/17.
  */
+
+/**
+ * 个人绑定机构权限channel类（机构权限：机构开通、修改、查询权限等）
+ * 主要用于依赖注入并调用grpc服务中的方法
+ */
 public class BindAuthorityChannel{
 
-
-
-    private ManagedChannel originChannel;
     private BindAuthorityGrpc.BindAuthorityBlockingStub blockingStub;
-    //访问地址
-    private String host;
-    //访问端口号
-    private Integer port;
 
     private BindAuthorityChannel(){
-    }
 
-    private BindAuthorityChannel(String host,Integer port){
-        originChannel = NettyChannelBuilder.forAddress(host,port)
-                .negotiationType(NegotiationType.PLAINTEXT)
-                .build();
-        this.blockingStub = BindAuthorityGrpc.newBlockingStub(originChannel);
     }
 
     public BindAuthorityGrpc.BindAuthorityBlockingStub getBlockingStub() {
-        return blockingStub;
+        return blockingStub = BindAuthorityGrpc.newBlockingStub(GrpcChannel.getInstance());
     }
 
     public void setBlockingStub(BindAuthorityGrpc.BindAuthorityBlockingStub blockingStub) {
 
       this.blockingStub = blockingStub;
     }
-
-    public ManagedChannel getOriginChannel() {
-
-        return originChannel;
-    }
-
-    public void setOriginChannel(ManagedChannel originChannel) {
-        this.originChannel = originChannel;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
 }

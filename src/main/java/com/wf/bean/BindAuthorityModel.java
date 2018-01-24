@@ -7,7 +7,7 @@ package com.wf.bean;
 /**
  * 个人绑定机构参数类
  */
-public class BindAuthority {
+public class BindAuthorityModel {
     //是否开通个人绑定机构状态
     private Boolean openState;
     //机构账号id
@@ -81,7 +81,7 @@ public class BindAuthority {
 
     @Override
     public String toString() {
-        return "BindAuthority{" +
+        return "BindAuthorityModel{" +
                 "openState=" + openState +
                 ", userId='" + userId + '\'' +
                 ", bindType=" + bindType +
