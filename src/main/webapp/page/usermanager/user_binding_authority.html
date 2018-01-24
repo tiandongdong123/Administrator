@@ -1,3 +1,4 @@
+<? directive dynamic map;?>
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
@@ -32,13 +33,13 @@
                                         <label><input type="checkbox"  value="全部"  name="quotaName" class="tol_quota" checked="checked"><span class="allSelect">全部</span></label>
                                     </li>
                                     <li>
-                                        <label><input type="checkbox"  value="检索量qqqqqqqqqqaaaaaaaaaaa" name="quotaName"  class="index" checked="checked"><span>检索量qqqqqqqqqqaaaaaaaaaaa</span></label>
+                                        <label><input type="checkbox"  value="检索量" name="quotaName"  class="index" checked="checked"><span>检索量</span></label>
                                     </li>
                                     <li>
-                                        <label><input type="checkbox"  value="浏览量qqqqqqqqaaaaaaaaaaaa" name="quotaName" class="index" checked="checked"><span>浏览量qqqqqqqqaaaaaaaaaaaa</span></label>
+                                        <label><input type="checkbox"  value="浏览量" name="quotaName" class="index" checked="checked"><span>浏览量</span></label>
                                     </li>
                                     <li>
-                                        <label><input type="checkbox"  value="下载量qqqqqqqqaaaaaa" name="quotaName"  class="index" checked="checked"><span>下载量qqqqqqqqaaaaaa</span></label>
+                                        <label><input type="checkbox"  value="下载量" name="quotaName"  class="index" checked="checked"><span>下载量</span></label>
                                     </li>
                                 </ul>
                                 <div class="show_mechanism"></div>
@@ -46,9 +47,9 @@
                             <div class="form-group input_block">
                                 <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
                                 <select class="form-control dinding_input"  id="bindType" name="bindType">
-                                    <option value="1" selected = "selected">机构个人同时登录</option>
-                                    <option value="2">机构登录</option>
-                                    <option value="3">线下扫描</option>
+                                    <option value="0" selected = "selected">机构个人同时登录</option>
+                                    <option value="1">机构登录</option>
+                                    <option value="2">线下扫描</option>
                                 </select>
                             </div>
                             <div class="form-group input_block">
@@ -76,10 +77,7 @@
                                 <button type="reset" class="btn btn-primary" onclick="abolish()">取消</button>
                             </div>
                         </div>
-                        <!-- 详情 -->
-                        <div id="detail_0"></div>
                     </form>
-                    <!--专利保护系统(机构版)结束 -->
                 </div>
             </div>
         </div>
