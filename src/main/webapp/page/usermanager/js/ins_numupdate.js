@@ -56,7 +56,7 @@ function openItems(count,i,type){
 	if(type.indexOf("perio")>-1){
 		$("a[href='#perio_"+count+"_"+i+"']").parent().addClass("active");
 		$("#perio_"+count+"_"+i).addClass("active").siblings().removeClass("active");
-		findPerioSubject(count+"_"+i);
+		perioSubject(count+"_"+i);
 	}else if(type.indexOf("degree")>-1){
 		$("a[href='#degree_"+count+"_"+i+"']").parent().addClass("active");
 		$("#degree_"+count+"_"+i).addClass("active").siblings().removeClass("active");
@@ -112,7 +112,7 @@ function openItems(count,i,type){
 	}
 }
 //期刊学科分类号
-function findPerioSubject(num){
+function perioSubject(num){
 	$.ajax({
 		type : "post",
 		data : {num:num},

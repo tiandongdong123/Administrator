@@ -225,8 +225,8 @@
 	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioInfo_CLC.Value!}</textarea>
 	          		<label>中图分类法</label>
 	          		<textarea class="form-control" name="journalClc" id="journalClc">${journal_CLC.Value!}</textarea>
-	           	   	<label>期刊ID</label>
-	           	    <textarea class="form-control" rows="3" name="journalIdno" id="journalIdno">${journal_IDNo.Value!}</textarea>
+	           	   	<label>期刊ID</label><? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+	           	    <textarea class="form-control" rows="3" name="journalIdno" id="journalIdno">${perNo}</textarea>
 	          </div>
 	          	<label>年限</label>
               	<div class="time_block">
@@ -285,8 +285,8 @@
 	         <label>中图分类法</label>
 	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conference_CLC.Value!}</textarea>
 	         <div class="form-group" style="width:60%;">
-	    	   <label>会议论文集馆藏号</label>
-	    	   <textarea class="form-control" rows="3" name="conferenceNo" id="conferenceNo">${conference_No.Value!}</textarea>
+	    	   <label>会议论文集馆藏号</label><? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+	    	   <textarea class="form-control" rows="3" name="conferenceNo" id="conferenceNo">${confNo!}</textarea>
 	   	   	 </div>
 	      </div>
 	        <?}?>
