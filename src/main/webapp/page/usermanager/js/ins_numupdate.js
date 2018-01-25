@@ -9,6 +9,7 @@ $(document).ready(function(){
 	//绑定个人上限的提示
 	$("#bindLimit").keyup(function(){
 		var userId = $("#userId").val();
+		var bindLimit = $("#bindLimit").val();
 		var already=1;
 		$.ajax({
 			url: '../bindAuhtority/checkBindLimit.do',
@@ -16,6 +17,7 @@ $(document).ready(function(){
 			dataType : "json",
 			data:{
 				userId: userId,
+				bindLimit:bindLimit,
 			},
 			success: function(data){
 				already = data;
