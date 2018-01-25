@@ -6,12 +6,20 @@ $(document).ready(function(){
         var institution = $("#institution").val();
         $.ajax({
             type : "post",
-            url : "../bindAuhtority/userId",
+            url : "../bindAuhtority/userId.do",
+            dataType : "json",
             data:{
-                institution: institution,
+                institutionName: institution,
             },
             success: function(data){
-
+                console.log(data);
+                var length = data.length;
+                for(var i=0;i<length;i++){
+                    var html = '<li><label><input value="'+data[i]+'" name="quotaName" class="index" checked="checked" type="checkbox"><span>data[i]</span></label></li>';
+                    $('.quota').apeend(html);
+                }
+            },
+            error:function () {
             }
         });
     })
