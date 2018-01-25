@@ -76,7 +76,8 @@
 		<property name="configFileResource" value="classpath:beetl.properties"/>
 		<property name="functions">
 			<map>
-
+				<entry key="institutionName" value-ref="institutionName"/>
+				<entry key="personPhoneNumber" value-ref="personPhoneNumber"/>
 			</map>
 		</property>
 	</bean>

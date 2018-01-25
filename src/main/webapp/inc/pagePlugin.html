@@ -1,0 +1,96 @@
+<div  class="page">
+	<div class="laypage_main laypageskin_molv">
+		<?if(pager.onlyOnePage==false){?>
+		<?
+		var beforePageNumber = 0;
+		var laterPageNumber = 0;
+
+		if (maxPageNumber % 2 == 0) {
+			beforePageNumber = maxPageNumber / 2;
+			laterPageNumber = maxPageNumber / 2 - 1;
+		} else {
+			beforePageNumber = (maxPageNumber - 1) / 2;
+			laterPageNumber = beforePageNumber;
+		}
+
+		var beforeCount = (pager.currentPage - beforePageNumber) > 0 ? beforePageNumber : pager.currentPage - 1;
+		var laterCount = (pager.currentPage + laterPageNumber) < pager.pageCount ? laterPageNumber : pager.pageCount - pager.currentPage;
+
+		if(pager.pageCount > maxPageNumber){
+		if(beforeCount < beforePageNumber){
+		laterCount = laterCount + (beforePageNumber - beforeCount);
+		}
+		if(laterCount < laterPageNumber){
+		beforeCount = beforeCount + (laterPageNumber - laterCount);
+		}
+		}else{
+		if(beforeCount < beforePageNumber){
+		laterCount = pager.pageCount - beforeCount - 1;
+		}
+		if(laterCount < laterPageNumber){
+		beforeCount = pager.pageCount - laterCount - 1;
+		}
+		}
+
+		if ((pager.currentPage - beforeCount) != 1)
+		{
+		?>
+		<span><a href="${ctxPath}${pager.url}1">首页</a></span>
+		<?
+		}
+		if(pager.hasPreviousPage == true)
+		{
+	?>
+		<a href="${ctxPath}${pager.url}${pager.currentPage-1 }"  class="laypage_prev">上一页</a>
+		<?
+		}
+	?>
+		<?
+		for (var i = beforeCount; i > 0; i--)
+		{
+		?>
+		<a href="${ctxPath}${pager.url}${pager.currentPage-i }">${pager.currentPage-i }</a>
+		<?
+		}
+	?>
+		<span class="laypage_curr">${pager.currentPage}</span>
+		<?
+		for(var i = 1; i <= laterCount; i++)
+		{
+	?>
+		<a href="${ctxPath}${pager.url}${pager.currentPage+i }">${pager.currentPage+i }</a>
+		<?
+		}
+	?>
+		<?
+		if(pager.hasNextPage == true){
+	?>
+		<a href="${ctxPath}${pager.url}${pager.currentPage+1 }" class="laypage_next">下一页</a>
+		<?
+		}
+
+
+
+		if(pager.currentPage + laterCount != pager.pageCount)
+		{
+	?>
+		<span><a href="${ctxPath}${pager.url}${pager.pageCount }">尾页</a></span>
+		<?
+		}
+	?>
+		<?}?>
+		<?
+	if( pager.pageCount > 1 ){
+		?>
+		<span>
+		<form action="${ctxPath}${pager.url}" method="get" class="laypage_total" data-action="${ctxPath}${pager.url}" data-all="${pager.pageCount}">
+		   <label>共<span class="allPage">${pager.pageCount }</span>页到第</label>
+		   <input name="page" type="number"  class="laypage_skip" autocomplete="off"/>
+		   <label>页</label>
+		   <button type="submit" class="laypage_btn">确定</button>
+		</form></span>
+		<?
+	}
+?>
+	</div>
+</div>

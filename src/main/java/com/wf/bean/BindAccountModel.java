@@ -6,11 +6,13 @@ public class BindAccountModel {
     //机构id
     private String institutionId;
     //绑定模式
-    private Integer bindType;
+    private String bindType;
     //绑定个人上限
+    private Integer bindLimit;
+    //绑定有效期
     private Integer bindValidity;
     //绑定个人下载量上限/天
-    private Integer bindLimit;
+    private Integer downloadLimit;
     //绑定个人继承权限
     private String authority;
     //绑定个人账号
@@ -20,6 +22,14 @@ public class BindAccountModel {
     //失效时间
     private Date invalidTime;
 
+    public Integer getDownloadLimit() {
+        return downloadLimit;
+    }
+
+    public void setDownloadLimit(Integer downloadLimit) {
+        this.downloadLimit = downloadLimit;
+    }
+
     public String getInstitutionId() {
         return institutionId;
     }
@@ -28,11 +38,11 @@ public class BindAccountModel {
         this.institutionId = institutionId;
     }
 
-    public Integer getBindType() {
+    public String getBindType() {
         return bindType;
     }
 
-    public void setBindType(Integer bindType) {
+    public void setBindType(String bindType) {
         this.bindType = bindType;
     }
 
@@ -88,9 +98,10 @@ public class BindAccountModel {
     public String toString() {
         return "BindAccountModel{" +
                 "institutionId='" + institutionId + '\'' +
-                ", bindType=" + bindType +
-                ", bindValidity=" + bindValidity +
+                ", bindType='" + bindType + '\'' +
                 ", bindLimit=" + bindLimit +
+                ", bindValidity=" + bindValidity +
+                ", downloadLimit=" + downloadLimit +
                 ", authority='" + authority + '\'' +
                 ", personId='" + personId + '\'' +
                 ", bindTime=" + bindTime +

@@ -19,7 +19,8 @@
 		http://www.springframework.org/schema/task/spring-task-3.1.xsd">
     
      
-	<context:component-scan base-package="com.wf"></context:component-scan>
+	<context:component-scan base-package="com.wf,com.wanfangdata"></context:component-scan>
+
 
     <!-- XXL-CONF配置解析器 --> 
     <bean id="xxlConfPropertyPlaceholderConfigurer" class="com.xxl.conf.core.spring.XxlConfPropertyPlaceholderConfigurer" />
