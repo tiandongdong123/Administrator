@@ -1079,7 +1079,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if (Verb.equals("Equal")) {
 			model.setValue(value);
 		} else if (Verb.equals("In")) {
-			value=value.replace("[", "").replace("]", "");
+			value=value.replace("[", "").replace("]", "").replaceAll("，", ",");
 			value=value.replaceAll("\"", "").replaceAll(" ", "").replaceAll("\r\n", ",");
 			List<String> ls = new ArrayList<String>();
 			String[] strs = value.split(",");
