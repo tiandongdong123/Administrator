@@ -225,8 +225,8 @@
 	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioInfo_CLC.Value!}</textarea>
 	          		<label>中图分类法</label>
 	          		<textarea class="form-control" name="journalClc" id="journalClc">${journal_CLC.Value!}</textarea>
-	           	   	<label>期刊ID</label><? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
-	           	    <textarea class="form-control" rows="3" name="journalIdno" id="journalIdno">${perNo}</textarea>
+	           	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label><? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+	           	    <textarea class="form-control" rows="10" name="journalIdno" id="journalIdno">${perNo}</textarea>
 	          </div>
 	          	<label>年限</label>
               	<div class="time_block">
@@ -282,11 +282,13 @@
 	      <?if(strutil.contain(pldata.resType,"conf")){?>
 	      <!-- 会议 -->
 	       <div class="tab-pane" id="conf_${list.userId}_${payid}_${pscode}">
+			<div class="form-group" style="width:60%;">
 	         <label>中图分类法</label>
 	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conference_CLC.Value!}</textarea>
+	         </div>
 	         <div class="form-group" style="width:60%;">
-	    	   <label>会议论文集馆藏号</label><? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
-	    	   <textarea class="form-control" rows="3" name="conferenceNo" id="conferenceNo">${confNo!}</textarea>
+	    	   <label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label><? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+	    	   <textarea class="form-control" rows="6" name="conferenceNo" id="conferenceNo">${confNo!}</textarea>
 	   	   	 </div>
 	      </div>
 	        <?}?>

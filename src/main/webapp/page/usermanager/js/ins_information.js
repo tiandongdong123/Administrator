@@ -206,7 +206,7 @@ function openPurchaseInfo(userId,payid,pscode,type){
 	}
 	layer.open({
 	    type: 1, //page层 1div，2页面
-	    area: ['50%', '700px'],
+	    area: ['40%', '700px'],
 	    title: '详情',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#open_"+userId+"_"+payid+"_"+pscode),

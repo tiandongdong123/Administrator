@@ -86,7 +86,7 @@ function openItems(count,i,type){
 	if(type.indexOf("standard")>-1){
 		layer.open({
 		    type: 1, //page层 1div，2页面
-		    area: ['50%', '600px'],
+		    area: ['40%', '90%'],
 		    title: '详情',
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),
@@ -100,7 +100,7 @@ function openItems(count,i,type){
 	}else{
 		layer.open({
 		    type: 1, //page层 1div，2页面
-		    area: ['50%', '600px'],
+		    area: ['40%', '90%'],
 		    title: '详情',
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),
