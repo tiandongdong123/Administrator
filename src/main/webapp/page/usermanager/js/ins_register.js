@@ -10,6 +10,7 @@ $(document).ready(function(){
 
 //提交事件
 function submitForm(){
+	check();
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
