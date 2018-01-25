@@ -6,9 +6,6 @@ $(document).ready(function(){
     else {
         $("#dinding").hide();
     }
-
-    $("input[name='resourceType']").prop("checked",false);
-	$("input[id='resourceInherited']").prop("checked",true);
 });
 
 function submitForm(){
