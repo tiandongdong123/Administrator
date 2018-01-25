@@ -205,6 +205,13 @@
 					}
 				}
 			}?>
+			<? var perioCLC;if(!isEmpty(perioInfo_CLC.Value)){ for(var co=0;co<perioInfo_CLC.Value.~size;co++){perioCLC=perioCLC+(isEmpty(perioCLC)?"":",")+perioInfo_CLC.Value[co];}}?>
+			<? var jourCLC;if(!isEmpty(journal_CLC.Value)){ for(var co=0;co<journal_CLC.Value.~size;co++){jourCLC=jourCLC+(isEmpty(jourCLC)?"":",")+journal_CLC.Value[co];}}?>
+			<? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+			<? var degCLC;if(!isEmpty(degree_CLC.Value)){ for(var co=0;co<degree_CLC.Value.~size;co++){degCLC=degCLC+(isEmpty(degCLC)?"":",")+degree_CLC.Value[co];}}?>
+			<? var conCLC;if(!isEmpty(conference_CLC.Value)){ for(var co=0;co<conference_CLC.Value.~size;co++){conCLC=conCLC+(isEmpty(conCLC)?"":",")+conference_CLC.Value[co];}}?>
+			<? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+			<? var patentIPC;if(!isEmpty(patent_IPC.Value)){ for(var co=0;co<patent_IPC.Value.~size;co++){patentIPC=patentIPC+(isEmpty(patentIPC)?"":",")+patent_IPC.Value[co];}}?>
 		<!-- 详情开始 -->
 	    <div class="nav-tabs-custom" id="open_${list.userId}_${payid}_${pscode}" style="display: none;">
 	        <ul class="nav nav-tabs">
@@ -222,11 +229,11 @@
 	          <div class="tab-pane" id="perio_${list.userId}_${payid}_${pscode}">
 	           <div class="form-group" style="width:60%;">
 	          		<label>期刊分类法</label>
-	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioInfo_CLC.Value!}</textarea>
+	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioCLC!}</textarea>
 	          		<label>中图分类法</label>
-	          		<textarea class="form-control" name="journalClc" id="journalClc">${journal_CLC.Value!}</textarea>
-	           	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label><? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
-	           	    <textarea class="form-control" rows="10" name="journalIdno" id="journalIdno">${perNo}</textarea>
+	          		<textarea class="form-control" name="journalClc" id="journalClc">${jourCLC!}</textarea>
+	           	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
+	           	    <textarea class="form-control" rows="10" name="journalIdno" id="journalIdno">${perNo!}</textarea>
 	          </div>
 	          	<label>年限</label>
               	<div class="time_block">
@@ -251,7 +258,7 @@
 	    	<!-- 学位 -->
 	       <div class="tab-pane" id="degree_${list.userId}_${payid}_${pscode}">
 			<label>中图分类法</label>
-			<textarea class="form-control" name="degreeClc" id="degreeClc">${degree_CLC.Value!}</textarea>
+			<textarea class="form-control" name="degreeClc" id="degreeClc">${degCLC!}</textarea>
 	           <div class="form-group" style="width:60%;">
 	   	   		<label>论文类型</label>
 	   	   		<div style="height:50px;border:1px solid #C6C6C6;">
@@ -284,10 +291,10 @@
 	       <div class="tab-pane" id="conf_${list.userId}_${payid}_${pscode}">
 			<div class="form-group" style="width:60%;">
 	         <label>中图分类法</label>
-	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conference_CLC.Value!}</textarea>
+	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conCLC!}</textarea>
 	         </div>
 	         <div class="form-group" style="width:60%;">
-	    	   <label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label><? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+	    	   <label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>
 	    	   <textarea class="form-control" rows="6" name="conferenceNo" id="conferenceNo">${confNo!}</textarea>
 	   	   	 </div>
 	      </div>
@@ -298,7 +305,7 @@
 	           <div style="padding: 10px;">
 				<div class="wrap">
 					<label>中图分类法</label>
-					<textarea class="form-control" name="patentIpc" id="patentIpc">${patent_IPC.Value!}</textarea>
+					<textarea class="form-control" name="patentIpc" id="patentIpc">${patentIPC!}</textarea>
 				</div>
 			 	</div>
 	         </div>

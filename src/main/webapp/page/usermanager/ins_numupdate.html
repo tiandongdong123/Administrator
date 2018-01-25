@@ -271,6 +271,13 @@
 							}
 						}
 					}?>
+			<? var perioCLC;if(!isEmpty(perioInfo_CLC.Value)){ for(var co=0;co<perioInfo_CLC.Value.~size;co++){perioCLC=perioCLC+(isEmpty(perioCLC)?"":",")+perioInfo_CLC.Value[co];}}?>
+			<? var jourCLC;if(!isEmpty(journal_CLC.Value)){ for(var co=0;co<journal_CLC.Value.~size;co++){jourCLC=jourCLC+(isEmpty(jourCLC)?"":",")+journal_CLC.Value[co];}}?>
+			<? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+			<? var degCLC;if(!isEmpty(degree_CLC.Value)){ for(var co=0;co<degree_CLC.Value.~size;co++){degCLC=degCLC+(isEmpty(degCLC)?"":",")+degree_CLC.Value[co];}}?>
+			<? var conCLC;if(!isEmpty(conference_CLC.Value)){ for(var co=0;co<conference_CLC.Value.~size;co++){conCLC=conCLC+(isEmpty(conCLC)?"":",")+conference_CLC.Value[co];}}?>
+			<? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+			<? var patentIPC;if(!isEmpty(patent_IPC.Value)){ for(var co=0;co<patent_IPC.Value.~size;co++){patentIPC=patentIPC+(isEmpty(patentIPC)?"":",")+patent_IPC.Value[co];}}?>
        			<!-- 详情开始 -->
 			      <div class="nav-tabs-custom" id="tabs_custom_${i}_${j}" style="display: none;">
 			        <ul class="nav nav-tabs">
@@ -291,15 +298,15 @@
 				             <div id="perioInfoDiv_${i}_${j}">
 				             	<label>期刊分类法</label>
 								<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
-				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}">${perioInfo_CLC.Value!}</textarea>
+				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}">${perioCLC!}</textarea>
 				             </div>
 				             <div id="perioDiv_${i}_${j}" style="display:none;">
 			              		<label>中图分类法</label>
 								<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
-				              	<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}">${journal_CLC.Value!}</textarea>
+				              	<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}">${jourCLC!}</textarea>
 				             </div>
 				              <div style="width:60%;" id="journalIdno_${i}_${j}">
-		                	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label><? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+		                	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
 		                	    <textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno">${perNo!}</textarea>
 		               	   	  </div>
 		               	   	<label>年限</label>
@@ -336,7 +343,7 @@
 			          <div class="tab-pane" id="degree_${i}_${j}">
 						<label>中图分类法</label>
 						<ul class="ztree" id="degreeZtree_${i}_${j}"></ul>
-						<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}">${degree_CLC.Value!}</textarea>
+						<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}">${degCLC!}</textarea>
 			              <div class="form-group" style="width:60%;">
                  	   		<label>论文类型</label>
                  	   		<div style="height:50px;border:1px solid #C6C6C6;">
@@ -379,9 +386,9 @@
 		             <div class="tab-pane" id="conf_${i}_${j}">
 					 <label>中图分类法</label>
 					 <ul class="ztree" id="confZtree_${i}_${j}"></ul>
-					 <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}">${conference_CLC.Value!}</textarea>
+					 <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}">${conCLC!}</textarea>
 						<div class="form-group" style="width:60%;">
-                	   		<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label><? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+                	   		<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>
                 	    	<textarea class="form-control" rows="6" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo">${confNo!}</textarea>
 						</div>
 		             </div>
@@ -425,7 +432,7 @@
 							<div class="wrap">
 								<label>中图分类法</label>
 								<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
-								<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}">${patent_IPC.Value!}</textarea>
+								<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}">${patentIPC!}</textarea>
 							</div>
 						 </div>
 		             </div>

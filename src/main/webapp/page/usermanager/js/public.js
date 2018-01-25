@@ -976,27 +976,19 @@ function findSubject(count,i){
 						onCheck: function(){
 							var pz = $.fn.zTree.getZTreeObj("perioZtree_"+data.number);
 							if(pz!=null){
-								var text = new Array();
-								text=getCheckNode(pz);
-								$("#journalClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#journalClc_"+data.number).val(getCheckNode(pz));
 							}
 							var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+data.number);
 							if(dz!=null){
-								var text = new Array();
-								text=getCheckNode(dz);
-								$("#degreeClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#degreeClc_"+data.number).val(getCheckNode(dz));
 							}
 							var cz = $.fn.zTree.getZTreeObj("confZtree_"+data.number);
 							if(cz!=null){
-								var text = new Array();
-								text=getCheckNode(cz);
-								$("#conferenceClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#conferenceClc_"+data.number).val(getCheckNode(cz));
 							}
 							var bz = $.fn.zTree.getZTreeObj("bookZtree_"+data.number);
 							if(bz!=null){
-								var text = new Array();
-								text=getCheckNode(bz);
-								$("#booksClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#booksClc_"+data.number).val(getCheckNode(bz));
 							}
 						}
 					}
@@ -1038,18 +1030,13 @@ function findPatent(count,i){
 					},
 					check: {
 						enable: true,
-						chkStyle: "checkbox",
-						//chkboxType:{"Y":"s","N":"s"}
+						chkStyle: "checkbox"
 					},
 					callback: {
 						onCheck: function(){
 							var pa = $.fn.zTree.getZTreeObj("patentZtree_"+data.number);
 							if(pa!=null){
-								var text = new Array();
-								text=getCheckNode(pa);
-								$("#patentIpc_"+data.number).val(text.length>0?"["+text+"]":"");
-							}else{
-								$("#patentIpc_"+data.number).val("");
+								$("#patentIpc_"+data.number).val(getCheckNode(pa));
 							}
 						}
 					}
@@ -1091,9 +1078,7 @@ function findPerioSubject(count,i){
 						onCheck: function(){
 							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
 							if(qk!=null){
-								var text = new Array();
-								text=getCheckNode(qk);
-								$("#perioInfoClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#perioInfoClc_"+data.number).val(getCheckNode(qk));
 							}
 						}
 					}
