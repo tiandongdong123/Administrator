@@ -18,21 +18,22 @@
                     <div class="box box-primary">
                         <div class="form-group input_block">
                             <label class="input_name">用户ID</label>
-                            <input type="text"  class="form-control input_width" >
+                            <input type="text"  class="form-control input_width" value="${map.userId!}">
                         </div>
                         <div class="form-group input_block">
                             <label class="input_name">机构名称</label>
-                            <input type="text"  class="form-control input_width" >
+                            <input type="text"  class="form-control input_width" value="${map.institutionName!}">
                         </div>
                         <div class="form-group input_block">
                             <label class="input_name">绑定日期</label>
-                            <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" value="" />
-                            - <input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" value=""/>
+                            <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" value="${map.startTime!}" />
+                            - <input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" value="${map.endTime!}"/>
                         </div>
                         <div class="pop_button" style="text-align:center;">
                             <button type="button" class="btn btn-primary">查询</button>
                         </div>
-                        <table  class="table table-bordered table-striped">
+
+                        <table  class="table table-bordered table-striped" >
                             <thead>
                             <tr>
                                 <th>序号</th>
@@ -48,62 +49,38 @@
                                 <th>绑定时间</th>
                                 <th>失效时间</th>
                             </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>北京大学</td>
-                                <td><a href="#" class="institutionId">bjdx</a></td>
-                                <td><a href="#" class="binding_type">机构个人同时登录</a></td>
-                                <td>100</td>
-                                <td>180<span>天</span></td>
-                                <td>30</td>
-                                <td>资源下载</td>
-                                <td>asdw2</td>
-                                <td>13847559588</td>
-                                <td>2014-11-15 15:45:51</td>
-                                <td>2014-11-15 15:45:51</td>
-                            </tr>
+                           <?
+                            if(pager.pageRecords != null){
+                           var i = (pager.currentPage-1)*pager.pageSize+1;
+                           for(receipt in pager.pageRecords){
 
+                            ?>
                             <tr>
-                                <td>2</td>
-                                <td>北京大学</td>
-                                <td><a href="#" class="institutionId">bjdx</a></td>
-                                <td><a href="#" class="binding_type">机构个人同时登录</a></td>
-                                <td>100</td>
-                                <td>180<span>天</span></td>
-                                <td>30</td>
-                                <td>资源下载</td>
-                                <td>asdw2</td>
-                                <td>13847559588</td>
-                                <td>2014-11-15 15:45:51</td>
-                                <td>2014-11-15 15:45:51</td>
+                                <td>${i++}</td>
+                                <? var institutionName =  institutionName()  ?>
+                                <td>${institutionName}</td>
+                                <td>${receipt.institutionId}</td>
+                                <td>>${receipt.bindType}</td>
+                                <td>>${receipt.bindLimit}</td>
+                                <td>>${receipt.bindValidity}</td>
+                                <td>${receipt.downloadLimit}</td>
+                                <td>${receipt.authority}</td>
+                                <td>${receipt.personId}</td>
+                                <? var phoneNumber = personPhoneNumber() ?>
+                                <td>${phoneNumber}</td>
+                                <td>${receipt.bindTime}</td>
+                                <td>${receipt.invalidTime}</td>
                             </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>北京大学</td>
-                                <td><a href="#" class="institutionId">bjdx</a></td>
-                                <td><a href="#" class="binding_type">机构个人同时登录</a></td>
-                                <td>100</td>
-                                <td>180<span>天</span></td>
-                                <td>30</td>
-                                <td>资源下载</td>
-                                <td>asdw2</td>
-                                <td>13847559588</td>
-                                <td>2014-11-15 15:45:51</td>
-                                <td>2014-11-15 15:45:51</td>
-                            </tr>
-                            <tr>
-                                <td>asdw2</td>
-                                <td>13847559588</td>
-                                <td>2014-11-15 15:45:51</td>
-                                <td>2014-11-15 15:45:51</td>
-                            </tr>
+                            <?}}?>
                             </thead>
                             <div class="qr"><div class="picture"></div><span class="reset">重置</span></div>
                         </table>
                         <div class="behind">
+                            <? if (upPage!=null){?>
                             <div class="return">
-                                <button type="button" class="btn btn-primary">返回</button>
+                                <button type="button" class="btn btn-primary" >返回</button>
                             </div>
+                            <?}?>
                             <div class="pageshow">
                                 <span>每页显示：</span>
                                 <select class="evey-page">
@@ -118,7 +95,7 @@
                                 共<span class="all_number">3</span>条数据 共<span class="all_page">15</span>页
                             </div>
                         </div>
-
+                        <?}?>
                         <div class="intermediary">
                             <div class="backdrop"></div>
                             <div class="pop">

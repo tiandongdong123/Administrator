@@ -5,10 +5,13 @@ import org.apache.log4j.Logger;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 获取个人手机号自定义方法
  */
+
+@Service
 public class PersonPhoneNumber implements Function {
 
     @Autowired
