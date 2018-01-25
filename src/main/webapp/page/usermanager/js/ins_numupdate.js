@@ -1,4 +1,6 @@
-$(function() {
+
+$(document).ready(function(){
+	//绑定个人上限权限
 	var all_index= $('.selFirst').length;
 	var num= $('.selFirst:checked').length;
 	var bindAuthority = new Array();
@@ -11,16 +13,13 @@ $(function() {
 		bindAuthority.push($(this).val());
 	});
 	$("#bindAuthority").val(bindAuthority);
-});
-//提交事件
-$(document).ready(function(){
-
+	//开通个人绑定机构
     if($("#user_dinding").is(':checked')){
         $("#dinding").show();
-    }
-    else {
+    }else {
         $("#dinding").hide();
     }
+
 	//绑定个人上限的提示
 	$("#bindLimit").keyup(function(){
 		var userId = $("#userId").val();
@@ -38,33 +37,35 @@ $(document).ready(function(){
 				already = data;
 			},
 		});
-		var reg = /^[1-9]\d*$/;
-		if($("#bindLimit").val()==""){
-			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
-			style();
-		}else if(!reg.test($("#bindLimit").val())){
-			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
-			style()
-		}else if(already!="1"){
-			$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
-			style()
-		}else {
-			$(".bind_num").css("color","#00a65a");
-			$("#bindLimit").css("border-color","#00a65a");
-			$(".wrong").css("background","url(../img/t.png)");
-			$(".wrong").css("display","inline");
-			$(".mistaken").css("display","none");
-		}
+		judge();
 	})
-
 });
 
+//验证绑定个人上线
+function judge(){
+	var reg = /^[1-9]\d*$/;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+}
+//提交事件
 function submitForm(){
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
 	$("#submit").attr({disabled: "disabled"});
+	judge();
 	if(!validateFrom()){
 		$("#submit").removeAttr("disabled");
 		return false;
