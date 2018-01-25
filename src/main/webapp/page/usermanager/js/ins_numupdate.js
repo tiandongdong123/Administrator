@@ -6,6 +6,39 @@ $(document).ready(function(){
     else {
         $("#dinding").hide();
     }
+	//绑定个人上限的提示
+	$("#bindLimit").keyup(function(){
+		var userId = $("#userId").val();
+		var already=1;
+		$.ajax({
+			url: '../bindAuhtority/checkBindLimit.do',
+			type: 'POST',
+			dataType : "json",
+			data:{
+				userId: userId,
+			},
+			success: function(data){
+				already = data;
+			},
+		});
+		var reg = /^[1-9]\d*$/;
+		if($("#bindLimit").val()==""){
+			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+			style();
+		}else if(!reg.test($("#bindLimit").val())){
+			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+			style()
+		}else if(already!="1"){
+			$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+			style()
+		}else {
+			$(".bind_num").css("color","#00a65a");
+			$("#bindLimit").css("border-color","#00a65a");
+			$(".wrong").css("background","url(../img/t.png)");
+			$(".wrong").css("display","inline");
+			$(".mistaken").css("display","none");
+		}
+	})
 });
 
 function submitForm(){

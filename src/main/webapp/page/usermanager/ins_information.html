@@ -41,7 +41,7 @@
 	<div class="info_block info_block1">
 	<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
 	<ul class="info_list">
-	<li class="info_list_con">	      
+	<li class="info_list_con">
 	<div class="info_box">
 	<div class="info_cont">
  	<div class="info_jg_title" <?if(i<6){?>onclick="unfolded(2,this,'show_${i}');"<?}else{?>onclick="unfolded(1,this,'show_${i}');"<?}?>>
@@ -91,13 +91,13 @@
 	<div id="show_${i}" <?if(i<6){?>style="display:black;"<?}else{?>style="display:none;"<?}?>>
 	<div class="user_info">
 		<span>${list.userId}</span>
-		<?if(list.loginMode!=0){?>						        					
+		<?if(list.loginMode!=0){?>
 			<span>${list.password}</span>
 		<?}?>
 		<span>${list.loginMode==0?'IP自动登录':(list.loginMode==2?'用户名密码+IP':'用户名密码')}</span>
 	</div>
 	<?if(!isEmpty(list.loginMode)&&list.loginMode!=1){?>
-		<? if(!isEmpty(list.list_ip)){ for(listIp in list.list_ip){ ?>			
+		<? if(!isEmpty(list.list_ip)){ for(listIp in list.list_ip){ ?>
 			<div class="ip_num">${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber}</div>
 		<?}}?>
 	<?}?>
@@ -107,13 +107,13 @@
 		<div class="List_head">
 			<span style="color: #0099ff">${pro.name}</span>
 			<div class="timeMoney">
-				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>				
+				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>
 					<span>${pro.beginDateTime}~${pro.endDateTime}</span>
 				<?}?>
-				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>								        				
+				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>
 					<span>${pro.balance}</span>
 				<?}?>
-				<?if(pro.payChannelid=='HistoryCheck'){?>								        				
+				<?if(pro.payChannelid=='HistoryCheck'){?>
 					<span>${pro.ViewHistoryCheck}</span>
 				<?}?>
 			</div>
@@ -140,7 +140,7 @@
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
 		<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
-		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
+		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id;
 			for(var n=0;n<pldata.contract.~size;n++){
 				if("journal_CLC"==pldata.contract[n].Field){
 					journal_CLC = pldata.contract[n];

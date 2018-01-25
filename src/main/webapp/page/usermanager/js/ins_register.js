@@ -2,6 +2,10 @@ $(document).ready(function(){
 	$("input[name='openState']").prop("checked",false);
 	$("input[name='resourceType']").prop("checked",false);
 	$("input[id='resourceInherited']").prop("checked",true);
+	//绑定个人上限的提示
+	$("#bindLimit").keyup(function(){
+		check();
+	})
 });
 
 //提交事件

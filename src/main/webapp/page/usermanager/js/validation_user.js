@@ -143,18 +143,7 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-			bindLimit:{
-				message : '绑定个人上限不能为空，请填写正确的数字',
-				validators : {
-					notEmpty : {/*非空提示*/
-						message : '绑定个人上限不能为空，请填写正确的数字'
-					},
-					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-						regexp:  /^\+?[1-9]\d*$/,
-						message: '绑定个人上限是大于0的整数，请填写正确的数字'
-					},
-				}
-			},
+
 			bindValidity:{
 				message : '绑定个人账号有效期不能为空，请填写正确的有效期',
 				validators : {
@@ -195,17 +184,8 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			mechanism_id:{
-				message : '请选择机构ID',
-				validators : {
-					notEmpty : {/*非空提示*/
-						message : '请选择机构ID'
-					},
-				}
-			},
 		}
 	})
-
 });
 
 function fieldsCheck() {

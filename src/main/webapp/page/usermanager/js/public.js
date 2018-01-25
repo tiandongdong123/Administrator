@@ -90,8 +90,33 @@ $(function(e){
 	},function(){
 		$(".show_mechanism").hide();
 	})
-});
 
+});
+//校验绑定个人上限
+function check(){
+	var reg = /^[1-9]\d*$/;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+}
+
+function style(){
+	$(".bind_num").css("color","#dd4b39");
+	$("#bindLimit").css("border-color","#dd4b39");
+	$(".wrong").css("background","url(../img/f.png)");
+	$(".mistaken").css("display","inline");
+	$(".wrong").css("display","inline");
+}
 //机构id点击其他
 function commonCaption(e) {
 	var all_index= $('.index').length;
