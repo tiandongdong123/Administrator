@@ -1,6 +1,5 @@
-
+var already=1;
 $(document).ready(function(){
-	//绑定个人上限权限
 	var all_index= $('.selFirst').length;
 	var num= $('.selFirst:checked').length;
 	var bindAuthority = new Array();
@@ -13,18 +12,15 @@ $(document).ready(function(){
 		bindAuthority.push($(this).val());
 	});
 	$("#bindAuthority").val(bindAuthority);
-	//开通个人绑定机构
     if($("#user_dinding").is(':checked')){
         $("#dinding").show();
     }else {
         $("#dinding").hide();
     }
-
 	//绑定个人上限的提示
 	$("#bindLimit").keyup(function(){
 		var userId = $("#userId").val();
 		var bindLimit = $("#bindLimit").val();
-		var already=1;
 		$.ajax({
 			url: '../bindAuhtority/checkBindLimit.do',
 			type: 'POST',
@@ -37,27 +33,26 @@ $(document).ready(function(){
 				already = data;
 			},
 		});
-		judge();
+		var reg = /^[1-9]\d*$/;
+		if($("#bindLimit").val()==""){
+			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+			style();
+		}else if(!reg.test($("#bindLimit").val())){
+			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+			style()
+		}else if(already!="1"){
+			$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+			style()
+		}else {
+			$(".bind_num").css("color","#00a65a");
+			$("#bindLimit").css("border-color","#00a65a");
+			$(".wrong").css("background","url(../img/t.png)");
+			$(".wrong").css("display","inline");
+			$(".mistaken").css("display","none");
+		}
 	})
-});
 
-//验证绑定个人上线
-function judge(){
-	var reg = /^[1-9]\d*$/;
-	if($("#bindLimit").val()==""){
-		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
-		style();
-	}else if(!reg.test($("#bindLimit").val())){
-		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
-		style()
-	}else {
-		$(".bind_num").css("color","#00a65a");
-		$("#bindLimit").css("border-color","#00a65a");
-		$(".wrong").css("background","url(../img/t.png)");
-		$(".wrong").css("display","inline");
-		$(".mistaken").css("display","none");
-	}
-}
+});
 //提交事件
 function submitForm(){
 	var ip = $("#ipSegment").val();
@@ -65,7 +60,30 @@ function submitForm(){
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
 	$("#submit").attr({disabled: "disabled"});
-	judge();
+	var reg = /^[1-9]\d*$/;
+	var bool = false;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+		bool = true;
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+		bool = true;
+	}else if(already!="1"){
+		$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+		style()
+		bool = true;
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+	if(bool){
+		return ;
+	}
 	if(!validateFrom()){
 		$("#submit").removeAttr("disabled");
 		return false;
@@ -82,13 +100,13 @@ function submitForm(){
 		return false;
 	}else{
 		var data = new FormData($('#fromList')[0]);
-		$.ajax({  
+		$.ajax({
 			url: '../auser/updateinfo.do',
 			type: 'POST',
 			data: data,
-			cache: false,  
+			cache: false,
 			processData: false,
-			contentType: false  
+			contentType: false
 		}).done(function(data){
 			if(data.flag=="success"){
 	    		layer.alert("更新成功", {
@@ -186,7 +204,7 @@ function findSubjectEcho(num){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -235,17 +253,17 @@ function findSubjectEcho(num){
 			$.fn.zTree.init($("#confZtree_"+data.number), setting, data.ztreeJson);
 			//图书中途分类
 			$.fn.zTree.init($("#bookZtree_"+data.number), setting, data.ztreeJson);
-			
-			if($.fn.zTree.getZTreeObj("perioZtree_"+data.number)!=null){				
+
+			if($.fn.zTree.getZTreeObj("perioZtree_"+data.number)!=null){
 				checkedZtree($("#journalClc_"+data.number).text(),$.fn.zTree.getZTreeObj("perioZtree_"+data.number));
 			}
 			if($.fn.zTree.getZTreeObj("degreeZtree_"+data.number)!=null){
 				checkedZtree($("#degreeClc_"+data.number).text(),$.fn.zTree.getZTreeObj("degreeZtree_"+data.number));
 			}
-			if($.fn.zTree.getZTreeObj("confZtree_"+data.number)!=null){				
+			if($.fn.zTree.getZTreeObj("confZtree_"+data.number)!=null){
 				checkedZtree($("#conferenceClc_"+data.number).text(),$.fn.zTree.getZTreeObj("confZtree_"+data.number));
 			}
-			if($.fn.zTree.getZTreeObj("bookZtree_"+data.number)!=null){				
+			if($.fn.zTree.getZTreeObj("bookZtree_"+data.number)!=null){
 				checkedZtree($("#booksClc_"+data.number).text(),$.fn.zTree.getZTreeObj("bookZtree_"+data.number));
 			}
 		}
@@ -300,7 +318,7 @@ function findPatentEcho(num){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
