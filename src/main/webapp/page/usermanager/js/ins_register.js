@@ -10,7 +10,26 @@ $(document).ready(function(){
 
 //提交事件
 function submitForm(){
-	check();
+	var reg = /^[1-9]\d*$/;
+	var bool = false;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+		bool = true;
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+		bool = true;
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+	if(bool){
+		return ;
+	}
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
