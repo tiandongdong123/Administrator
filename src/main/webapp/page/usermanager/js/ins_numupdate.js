@@ -1,5 +1,20 @@
+$(function() {
+	var all_index= $('.selFirst').length;
+	var num= $('.selFirst:checked').length;
+	var bindAuthority = new Array();
+	if(all_index==num){
+		$("#allInherited").prop("checked",true);
+	}else {
+		$("#allInherited").prop("checked",false);
+	}
+	$("input[class='selFirst']:checked").each(function () {
+		bindAuthority.push($(this).val());
+	});
+	$("#bindAuthority").val(bindAuthority);
+});
 //提交事件
 $(document).ready(function(){
+
     if($("#user_dinding").is(':checked')){
         $("#dinding").show();
     }
@@ -41,6 +56,7 @@ $(document).ready(function(){
 			$(".mistaken").css("display","none");
 		}
 	})
+
 });
 
 function submitForm(){
