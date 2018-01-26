@@ -1,4 +1,4 @@
-var already=1;
+var already = true;
 $(document).ready(function(){
 	var all_index= $('.selFirst').length;
 	var num= $('.selFirst:checked').length;
@@ -41,6 +41,7 @@ $(document).ready(function(){
                 }else if(!data){
                     $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
                     style()
+					already = false;
                 }else {
                     $(".bind_num").css("color","#00a65a");
                     $("#bindLimit").css("border-color","#00a65a");
@@ -70,7 +71,7 @@ function submitForm(){
 		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
 		style()
 		bool = true;
-	}else if(already!="1"){
+	}else if(!already){
 		$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
 		style()
 		bool = true;
