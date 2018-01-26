@@ -21,6 +21,14 @@ $(document).ready(function(){
 	$("#bindLimit").keyup(function(){
 		var userId = $("#userId").val();
 		var bindLimit = $("#bindLimit").val();
+		var reg = /^\+?[1-9]\d*$/;
+		if($("#bindLimit").val()==""){
+			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+			style();
+		}else if(!reg.test($("#bindLimit").val())){
+			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+			style()
+		}
 		$.ajax({
 			url: '../bindAuhtority/checkBindLimit.do',
 			type: 'POST',
@@ -31,14 +39,7 @@ $(document).ready(function(){
 				bindLimit:bindLimit,
 			},
 			success: function(data){
-                var reg = /^[1-9]\d*$/;
-                if($("#bindLimit").val()==""){
-                    $(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
-                    style();
-                }else if(!reg.test($("#bindLimit").val())){
-                    $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
-                    style()
-                }else if(!data){
+                if(!data){
                     $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
                     style()
 					already = false;
@@ -49,41 +50,45 @@ $(document).ready(function(){
                     $(".wrong").css("display","inline");
                     $(".mistaken").css("display","none");
                 }
-			},
+			}
 		});
 	})
 
 });
 //提交事件
 function submitForm(){
+
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
+	var userDinding = $("#user_dinding").prop('checked');
 	$("#submit").attr({disabled: "disabled"});
-	var reg = /^[1-9]\d*$/;
-	var bool = false;
-	if($("#bindLimit").val()==""){
-		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
-		style();
-		bool = true;
-	}else if(!reg.test($("#bindLimit").val())){
-		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
-		style()
-		bool = true;
-	}else if(!already){
-		$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
-		style()
-		bool = true;
-	}else {
-		$(".bind_num").css("color","#00a65a");
-		$("#bindLimit").css("border-color","#00a65a");
-		$(".wrong").css("background","url(../img/t.png)");
-		$(".wrong").css("display","inline");
-		$(".mistaken").css("display","none");
-	}
-	if(bool){
-		return ;
+	if(userDinding){
+		var reg = /^[1-9]\d*$/;
+		var bool = false;
+		if($("#bindLimit").val()==""){
+			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+			style();
+			bool = true;
+		}else if(!reg.test($("#bindLimit").val())){
+			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+			style()
+			bool = true;
+		}else if(!already){
+			$(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+			style()
+			bool = true;
+		}else {
+			$(".bind_num").css("color","#00a65a");
+			$("#bindLimit").css("border-color","#00a65a");
+			$(".wrong").css("background","url(../img/t.png)");
+			$(".wrong").css("display","inline");
+			$(".mistaken").css("display","none");
+		}
+		if(bool){
+			return ;
+		}
 	}
 	if(!validateFrom()){
 		$("#submit").removeAttr("disabled");
