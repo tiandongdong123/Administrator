@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>usermanager-grpc-api</artifactId>
-			<version>1.2018.24-SNAPSHOT</version>
+			<version>1.2018.27-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.grpc</groupId>
@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>userinfo-api</artifactId>
-			<version>1.2018.24-SNAPSHOT</version>
+			<version>1.2018.27-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.xuxueli</groupId>
