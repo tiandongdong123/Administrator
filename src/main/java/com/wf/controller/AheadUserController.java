@@ -776,13 +776,13 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
-		/*//检验个人绑定数量是否大于修改后的数值
+		//检验个人绑定数量是否大于修改后的数值
 		List<String> userId = aheadUserService.checkBindLimit(listmap,bindAuthorityModel.getBindLimit());
 		if (userId!=null&&userId.size()>0){
 			hashmap.put("flag", "fail");
 			hashmap.put("fail", userId+"已绑定人数超过修改后的个人上限，请联系管理员解绑");
 			return hashmap;
-		}*/
+		}
 
 		for(Map<String, Object> map : listmap){
 			Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());

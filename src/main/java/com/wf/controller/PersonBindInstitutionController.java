@@ -48,7 +48,6 @@ public class PersonBindInstitutionController {
     private static final Logger log = Logger.getLogger(PersonBindInstitutionController.class);
 
     @RequestMapping("/userId")
-    @ResponseBody
     public List<String> getUserIdByInstitutionName(String institutionName) {
         List<String> userIdList = userInfoDao.getUserIdByInstitutionName(institutionName);
 
@@ -57,7 +56,7 @@ public class PersonBindInstitutionController {
             SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
             SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
             List<AccountAuthority> accountList = response.getItemsList();
-            if (accountList == null && accountList.size() < 1) {
+            if (accountList == null || accountList.size() < 1) {
                 userIds.add(userId);
             }
         }
@@ -66,8 +65,7 @@ public class PersonBindInstitutionController {
 
     @RequestMapping("/bindInfo")
     public String toBindInfoManagement(String upPage,Model model) {
-        //返回空的model，仅用于导航栏跳转个人绑定机构信息管理
-        model.addAttribute("pager",null);
+
         model.addAttribute("upPage",upPage);
         return "/page/usermanager/user_binding_manager";
     }
@@ -169,14 +167,6 @@ public class PersonBindInstitutionController {
             bindModel.setInvalidTime(new Date(detail.getValidEnd().getSeconds()));
             modelList.add(bindModel);
         }
-        //查询条件回显值
-        Map<String,Object> map = new HashMap<>();
-        map.put("userId",parameter.getUserId());
-        map.put("institutionName",parameter.getInstitutionName());
-        map.put("startTime",parameter.getStartDay());
-        map.put("endTime",parameter.getEndDay());
-        model.addAttribute("map",map);
-        //表格数据
 
         int currentPage = parameter.getPageNum();
         int totalSize = modelList.size();
@@ -190,22 +180,23 @@ public class PersonBindInstitutionController {
     }
 
     @RequestMapping("/checkBindLimit")
-    public List<String> checkBindLimit(List<String> userIds, Integer bindLimit) {
+    @ResponseBody
+    public Boolean checkBindLimit(String userId, Integer bindLimit) {
 
+        if(userId==null||bindLimit==null){
+            return false;
+        }
         try {
             //已绑定人数超出修改上限账号集合
-            List<String> beyondId = new ArrayList<>();
-            for (String userId : userIds) {
                 SearchCountRequest request = SearchCountRequest.newBuilder().setBindId(userId).build();
                 SearchCountResponse response = bindAccountChannel.getBlockingStub().searchCountBindingByUserId(request);
                 int count = response.getTotalcount();
                 if (count > bindLimit) {
-                    beyondId.add(userId);
+                    return false;
                 }
-            }
-            return beyondId;
+            return true;
         } catch (Exception e) {
-            log.error("判断已绑定人数是否大于修改上限出错，账号：" + userIds, e);
+            log.error("判断已绑定人数是否大于修改上限出错，账号：" + userId, e);
             throw e;
         }
     }
