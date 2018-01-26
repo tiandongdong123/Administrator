@@ -21,13 +21,16 @@ $(document).ready(function(){
 	$("#bindLimit").keyup(function(){
 		var userId = $("#userId").val();
 		var bindLimit = $("#bindLimit").val();
-		var reg = /^\+?[1-9]\d*$/;
+		var reg = /^[1-9]\d*$/;
 		if($("#bindLimit").val()==""){
 			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
 			style();
-		}else if(!reg.test($("#bindLimit").val())){
+			return;
+		}
+		if(!reg.test($("#bindLimit").val())){
 			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
 			style()
+			return;
 		}
 		$.ajax({
 			url: '../bindAuhtority/checkBindLimit.do',
