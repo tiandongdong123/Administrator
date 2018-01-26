@@ -1373,15 +1373,6 @@ function getListNode(treeObj){
 	return text;
 }
 
-//点击箭头变化
-function icont(){
-	$(".arrow").css({"background-position-x":"-39px"});
-	$(".quota").toggle();
-	if($.trim($(".quota").css("display"))=="none"){
-		$(".arrow").css({"background-position-x":"-10px"});
-	}
-}
-
 $(document).on("click",function(e){
 	if($(e.target).parents(".userId").length==0){
 		$(".quota").css("display","none");
