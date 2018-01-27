@@ -58,39 +58,13 @@ $(function(e){
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("");
+			$("#upperlimit").val("100");
 			$("#sConcurrentcountber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
 		}
 	});
-	//机构id点击全部
-	$(".tol_quota").click(function(){
-		$(".allSelectText").text("");
-		$("input[name='quotaName']").prop("checked",$(".tol_quota").prop("checked"));
-		if($(".tol_quota").is(":checked")){
-			$(".enshrine").text("全部");
-		}
-		else{
-			$(".enshrine").text("");
-		}
-	})
-	//机构id点击其他
-	$(".index").click(function(){
-		commonCaption($(this));
-	});
-	$(".mechanism_id").hover(function(){
-		if($(".enshrine").text()==''){
-			$(".show_mechanism").hide();
-		}else {
-			$(".show_mechanism").text($(".enshrine").text());
-			$(".show_mechanism").show();
-		}
-	},function(){
-		$(".show_mechanism").hide();
-	})
-
 });
 //校验绑定个人上限
 function check(){
@@ -118,38 +92,7 @@ function style(){
 	$(".wrong").css("display","inline");
 }
 //机构id点击其他
-function commonCaption(e) {
-	var all_index= $('.index').length;
-	var num= $('.index:checked').length;
-	var curText = e.next().text();
 
-	if(all_index==num==0){
-		$(".tol_quota").prop("checked",false);
-		$(".allSelectText").text("");
-	}
-	if(e.is(':checked')){
-		$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
-		if(all_index==num){
-			$(".tol_quota").prop("checked",true);
-			$('.indexitemText').remove();
-			$(".enshrine").text("全部");
-		}
-
-	}else {
-		$('.tol_quota').prop("checked","");
-		$('.allSelectText').text('');
-		$('.enshrine span').each(function () {
-			if(curText == $(this).data('text')){
-				$(this).remove();
-			}
-		});
-		$('.enshrine').text('');
-		$('.index:checked').each(function(){
-			curText = $(this).next().text();
-			$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
-		});
-	}
-}
 //统计分析
 function checkTj(value){
 	if(value=="all"){
