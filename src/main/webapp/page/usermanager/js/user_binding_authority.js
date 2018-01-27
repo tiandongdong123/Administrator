@@ -180,16 +180,16 @@ function submitNew(){
                 bindAuthority:bindAuthority,
             },
             success: function(data){
-                // $("#institution").val("");
-                // $("input[name='quotaName']").prop("checked",true);
-                // $(".enshrine").text("全部");
-                // $("#bindType").val("1");
-                // $("#bindLimit").val("100");
-                // $("#bindValidity").val("180");
-                // $("#downlaodLimit").val("30");
-                // $("#bindAuthority").val("resource");
-                // $("input[name='resourceType']").prop("checked",false);
-                // $("#resourceInherited").prop("checked",true);
+                $("#institution").val("");
+                $("input[name='quotaName']").prop("checked",true);
+                $(".enshrine").text("全部");
+                $("#bindType").val("1");
+                $("#bindLimit").val("100");
+                $("#bindValidity").val("180");
+                $("#downlaodLimit").val("30");
+                $("#bindAuthority").val("resource");
+                $("input[name='resourceType']").prop("checked",false);
+                $("#resourceInherited").prop("checked",true);
                 window.location.reload();
             }
         });
@@ -231,8 +231,7 @@ function sunmit(){
     if(!validateFrom()){
         $("#submit").removeAttr("disabled");
         bool = true;
-    }
-    else{
+    }else{
         //机构ID
         var mechanism_id = new Array();
         $("input[class='index']:checked").each(function () {
@@ -263,6 +262,7 @@ function sunmit(){
                 bindAuthority:bindAuthority,
             },
             success: function(data){
+                console.log(111)
                 $("#institution").val("");
                 $("input[name='quotaName']").prop("checked",true);
                 $(".enshrine").text("全部");
