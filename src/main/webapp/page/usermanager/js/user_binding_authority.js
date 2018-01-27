@@ -23,11 +23,19 @@ $(document).ready(function(){
                 if(length==0){
                     $(".data_first").css("display","none");
                     $(".enshrine ").text(data[0]);
+                    $(".bind_numm").css("color","#dd4b39");
+                    $(".wrongm").css("background","url(../img/f.png)");
+                    $(".mistakenm").css("display","inline");
+                    $(".wrongm").css("display","inline");
+                    $(".mistakenm").text("无匹配机构ID");
                 }
                 else if(length==1){
                     $(".data_first").css("display","none");
                     $(".enshrine ").text(data[0]);
                 } else {
+                    $(".bind_numm").css("color","#333");
+                    $(".mistakenm").css("display","none");
+                    $(".wrongm").css("display","none");
                     $(".data_first").css("display","block");
                     $(".enshrine").text($(".quota li:first").text());
                     showFont();
@@ -42,11 +50,27 @@ $(document).ready(function(){
         $("input[name='quotaName']").prop("checked",$(".tol_quota").prop("checked"));
         if($(".tol_quota").is(":checked")){
             $(".enshrine").text("全部");
+            $(".bind_numm").css("color","#333");
+            $(".mistakenm").css("display","none");
+            $(".wrongm").css("display","none");
+            $(".data_first").css("display","block");
         }
         else{
             $(".enshrine").text("");
+            if($("enshrine").text()==""){
+                $(".bind_numm").css("color","#dd4b39");
+                $(".wrongm").css("background","url(../img/f.png)");
+                $(".mistakenm").css("display","inline");
+                $(".wrongm").css("display","inline");
+                $(".mistakenm").text("机构ID不能为空");
+            }else {
+                $(".bind_numm").css("color","#00a65a");
+                $(".wrongm").css("background","url(../img/t.png)");
+                $(".wrongm").css("display","inline");
+                $(".mistakenm").css("display","none");
+            }
         }
-    })
+    });
     //机构id点击其他
     $(".quota").on("click",".index",function(){
         commonCaption($(this));
@@ -54,7 +78,7 @@ $(document).ready(function(){
     //绑定个人上限的提示
     $("#bindLimit").keyup(function(){
         check();
-    })
+    });
 });
 //鼠标经过有提示
 function  showFont() {
@@ -73,6 +97,10 @@ function commonCaption(e) {
     var num= $('.index:checked').length;
     var curText = e.next().text();
     if(e.is(':checked')){
+        $(".bind_numm").css("color","#333");
+        $(".mistakenm").css("display","none");
+        $(".wrongm").css("display","none");
+        $(".data_first").css("display","block");
         $('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
         if(all_index==num){
             if(all_index==1){
@@ -92,10 +120,23 @@ function commonCaption(e) {
             }
         });
         $('.enshrine').text('');
+
         $('.index:checked').each(function(){
             curText = $(this).next().text();
             $('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
         });
+        if($(".enshrine").text()==""){
+            $(".bind_numm").css("color","#dd4b39");
+            $(".wrongm").css("background","url(../img/f.png)");
+            $(".mistakenm").css("display","inline");
+            $(".wrongm").css("display","inline");
+            $(".mistakenm").text("机构ID不能为空");
+        }else {
+            $(".bind_numm").css("color","#00a65a");
+            $(".wrongm").css("background","url(../img/t.png)");
+            $(".wrongm").css("display","inline");
+            $(".mistakenm").css("display","none");
+        }
     }
 }
 //点击箭头变化
@@ -170,9 +211,9 @@ function submitNew(){
         }
         $.ajax({
             type : "post",
-            url : "../bindAuhtority/openAuthority",
+            url : "../bindAuhtority/openAuthority.do",
             data:{
-                userId:mechanism_id,
+                userId:mechanism_id.join(),
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
@@ -252,9 +293,9 @@ function sunmit(){
         }
         $.ajax({
             type : "post",
-            url : "../bindAuhtority/openAuthority",
+            url : "../bindAuhtority/openAuthority.do",
             data:{
-                userId:mechanism_id,
+                userId:mechanism_id.join(),
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
