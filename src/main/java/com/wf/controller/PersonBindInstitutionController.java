@@ -48,6 +48,7 @@ public class PersonBindInstitutionController {
     private static final Logger log = Logger.getLogger(PersonBindInstitutionController.class);
 
     @RequestMapping("/userId")
+    @ResponseBody
     public List<String> getUserIdByInstitutionName(String institutionName) {
         List<String> userIdList = userInfoDao.getUserIdByInstitutionName(institutionName);
 
@@ -89,7 +90,7 @@ public class PersonBindInstitutionController {
                 .setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
                 .setBindLimit(bindAuthorityModel.getBindLimit())
                 .setBindValidity(bindAuthorityModel.getBindValidity())
-                .setDownloadLimit(bindAuthorityModel.getDownlaodLimit())
+                .setDownloadLimit(bindAuthorityModel.getDownloadLimit())
                 .addAllBindAuthority(authorityList);
         bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
         return "/page/usermanager/user_binding_manager";

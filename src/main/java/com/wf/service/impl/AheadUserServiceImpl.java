@@ -1846,7 +1846,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
 					.setBindLimit(bindAuthorityModel.getBindLimit())
 					.setBindValidity(bindAuthorityModel.getBindValidity())
-					.setDownloadLimit(bindAuthorityModel.getDownlaodLimit())
+					.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
 					.addAllBindAuthority(authorityList);
 			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
 	}
@@ -1863,10 +1863,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			for (AccountAuthority accountAuthority : accountList) {
 				authorityList.add(accountAuthority.getBindAuthority());
 			}
+			BindType a = response.getItems(0).getBindType();
+			int b = a.getNumber();
 			bindAuthorityModel.setBindType(response.getItems(0).getBindType().getNumber());
 			bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
 			bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
-			bindAuthorityModel.setDownlaodLimit(response.getItems(0).getDownloadLimit());
+			bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
 			bindAuthorityModel.setBindAuthority(authorityList.toString());
 		}else {
 			bindAuthorityModel.setOpenState(false);
@@ -1897,7 +1899,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
 				.setBindLimit(bindAuthorityModel.getBindLimit())
 				.setBindValidity(bindAuthorityModel.getBindValidity())
-				.setDownloadLimit(bindAuthorityModel.getDownlaodLimit())
+				.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
 				.addAllBindAuthority(authorityList);
 		return  bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
 	}

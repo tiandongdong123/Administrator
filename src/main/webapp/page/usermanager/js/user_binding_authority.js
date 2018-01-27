@@ -217,7 +217,7 @@ function submitNew(){
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
-                downlaodLimit:downlaodLimit,
+                downloadLimit:downlaodLimit,
                 bindAuthority:bindAuthority,
             },
             success: function(data){
@@ -278,6 +278,7 @@ function sunmit(){
         $("input[class='index']:checked").each(function () {
             mechanism_id.push($(this).val());
         });
+        var userId = mechanism_id.toString();
         //绑定模式
         var bindType = $("#bindType").val();
         //绑定个人上限
@@ -299,7 +300,7 @@ function sunmit(){
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
-                downlaodLimit:downlaodLimit,
+                downloadLimit:downlaodLimit,
                 bindAuthority:bindAuthority,
             },
             success: function(data){

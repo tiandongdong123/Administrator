@@ -19,7 +19,7 @@ public class BindAuthorityModel {
     //绑定个人账号有效期
     private Integer bindValidity;
     //绑定个人下载量上限/天
-    private Integer downlaodLimit;
+    private Integer downloadLimit;
     //绑定个人继承权限
     private String bindAuthority;
 
@@ -63,12 +63,12 @@ public class BindAuthorityModel {
         this.bindValidity = bindValidity;
     }
 
-    public Integer getDownlaodLimit() {
-        return downlaodLimit;
+    public Integer getDownloadLimit() {
+        return downloadLimit;
     }
 
-    public void setDownlaodLimit(Integer downlaodLimit) {
-        this.downlaodLimit = downlaodLimit;
+    public void setDownloadLimit(Integer downloadLimit) {
+        this.downloadLimit = downloadLimit;
     }
 
     public String getBindAuthority() {
@@ -87,7 +87,7 @@ public class BindAuthorityModel {
                 ", bindType=" + bindType +
                 ", bindLimit=" + bindLimit +
                 ", bindValidity=" + bindValidity +
-                ", downlaodLimit=" + downlaodLimit +
+                ", downloadLimit=" + downloadLimit +
                 ", bindAuthority='" + bindAuthority + '\'' +
                 '}';
     }

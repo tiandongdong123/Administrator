@@ -780,7 +780,7 @@ public class AheadUserController {
 		List<String> userId = aheadUserService.checkBindLimit(listmap,bindAuthorityModel.getBindLimit());
 		if (userId!=null&&userId.size()>0){
 			hashmap.put("flag", "fail");
-			hashmap.put("fail", userId+"已绑定人数超过修改后的个人上限，请联系管理员解绑");
+			hashmap.put("fail",StringUtils.strip(userId.toString(),"[]")+"已绑定人数超过修改后的个人上限，请联系管理员解绑");
 			return hashmap;
 		}
 
@@ -1264,7 +1264,7 @@ public class AheadUserController {
 			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
 			if (response.getServiceResult()==false){
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",response.getResultMessage()+",请联系管理员解绑");
+				hashmap.put("fail","修改个人绑定机构权限失败");
 				return hashmap;
 			}
 		}else {
