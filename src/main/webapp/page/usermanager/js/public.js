@@ -494,7 +494,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="tab-pane" id="perio_'+count+'_'+i+'">';
 		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>';
 		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm">选文献</button>';
-		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类法</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
+		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
         text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'"></textarea></div>';
 		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类法</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].journalClc" id="journalClc_'+count+'_'+i+'"></textarea></div>';
