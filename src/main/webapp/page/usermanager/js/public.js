@@ -498,7 +498,7 @@ function createDetail(count,i,resourceid,type){
         text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'"></textarea></div>';
 		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类法</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].journalClc" id="journalClc_'+count+'_'+i+'"></textarea></div>';
-		text += '<div style="width:60%;" id="journalIdno_'+count+'_'+i+'">';
+		text += '<div style="width:60%;" id="journalIdDiv_'+count+'_'+i+'">';
 		text += '<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>';
 		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'"></textarea></div>';
 		text += '<label>年限</label>';
@@ -1249,13 +1249,13 @@ function changePerioClc(obj,type){
 		$("#button0"+obj).addClass('btn-success');
 		$("#perioInfoDiv"+obj).show();
 		$("#perioDiv"+obj).hide();
-		$("#journalIdno"+obj).show();
+		$("#journalIdDiv"+obj).show();
 	}else if(type==1){
 		$("#button0"+obj).removeClass('btn-success');
 		$("#button1"+obj).addClass('btn-success');
 		$("#perioDiv"+obj).show();
 		$("#perioInfoDiv"+obj).hide();
-		$("#journalIdno"+obj).hide();
+		$("#journalIdDiv"+obj).hide();
 	}
 }
 
