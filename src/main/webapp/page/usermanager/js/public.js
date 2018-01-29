@@ -496,7 +496,7 @@ function createDetail(count,i,resourceid,type){
 		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm">选文献</button>';
 		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
         text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'"></textarea></div>';
-		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类法</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
+		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].journalClc" id="journalClc_'+count+'_'+i+'"></textarea></div>';
 		text += '<div style="width:60%;" id="journalIdDiv_'+count+'_'+i+'">';
 		text += '<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>';
@@ -509,7 +509,7 @@ function createDetail(count,i,resourceid,type){
 	}
 	if(type.indexOf("degree")>-1){
 		text += '<div class="tab-pane" id="degree_'+count+'_'+i+'">';
-		text += '<label>中图分类法</label><ul class="ztree" id="degreeZtree_'+count+'_'+i+'"></ul>	';
+		text += '<label>中图分类</label><ul class="ztree" id="degreeZtree_'+count+'_'+i+'"></ul>	';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].degreeClc" id="degreeClc_'+count+'_'+i+'"></textarea>';
 		text += '<div class="form-group" style="width:60%;">';
 		text += '<label>论文类型</label>';
@@ -526,7 +526,7 @@ function createDetail(count,i,resourceid,type){
 	}
 	if(type.indexOf("conf")>-1){
 		text += '<div class="tab-pane" id="conf_'+count+'_'+i+'">';
-		text += '<label>中图分类法</label><ul class="ztree" id="confZtree_'+count+'_'+i+'"></ul>';
+		text += '<label>中图分类</label><ul class="ztree" id="confZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].conferenceClc" id="conferenceClc_'+count+'_'+i+'"></textarea>';
 		text += '<div class="form-group" style="width:60%;">';
 		text += '<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>';
@@ -543,7 +543,7 @@ function createDetail(count,i,resourceid,type){
 	}
 	if(type.indexOf("books")>-1){
 		text += '<div class="tab-pane" id="book_'+count+'_'+i+'">';
-		text += '<label>中图分类法</label><ul class="ztree" id="bookZtree_'+count+'_'+i+'"></ul>';
+		text += '<label>中图分类</label><ul class="ztree" id="bookZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].booksClc" id="booksClc_'+count+'_'+i+'"></textarea>';
 		text += '<div class="form-group" style="width:60%;">';
 		text += '<label>图书ID</label>';
