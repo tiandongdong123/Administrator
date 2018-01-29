@@ -301,7 +301,7 @@
 				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}">${perioCLC!}</textarea>
 				             </div>
 				             <div id="perioDiv_${i}_${j}" style="display:none;">
-			              		<label>中图分类法</label>
+			              		<label>中图分类</label>
 								<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
 				              	<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}">${jourCLC!}</textarea>
 				             </div>
@@ -341,7 +341,7 @@
 			        <?if(strutil.contain(rt,"degree")){ ?>
 			        <!-- 学位 -->
 			          <div class="tab-pane" id="degree_${i}_${j}">
-						<label>中图分类法</label>
+						<label>中图分类</label>
 						<ul class="ztree" id="degreeZtree_${i}_${j}"></ul>
 						<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}">${degCLC!}</textarea>
 			              <div class="form-group" style="width:60%;">
@@ -384,7 +384,7 @@
 			        <?if(strutil.contain(rt,"conf")){?>
 			         <!--  会议 -->
 		             <div class="tab-pane" id="conf_${i}_${j}">
-					 <label>中图分类法</label>
+					 <label>中图分类</label>
 					 <ul class="ztree" id="confZtree_${i}_${j}"></ul>
 					 <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}">${conCLC!}</textarea>
 						<div class="form-group" style="width:60%;">
@@ -430,7 +430,7 @@
 		             <div class="tab-pane" id="patent_${i}_${j}">
 			              <div style="padding: 10px;">
 							<div class="wrap">
-								<label>中图分类法</label>
+								<label>中图分类</label>
 								<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
 								<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}">${patentIPC!}</textarea>
 							</div>
@@ -440,7 +440,7 @@
 			        <?if(strutil.contain(rt,"books")){?>
 			          <!-- 图书  -->
 		              <div class="tab-pane" id="book_${i}_${j}">
-		              	<label>中图分类法</label>
+		              	<label>中图分类</label>
 		              	<ul class="ztree" id="bookZtree_${i}_${j}"></ul>
 		              <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].booksClc" id="booksClc_${i}_${j}">${books_CLC.Value!}</textarea>
 			              <div class="form-group" style="width:60%;">
@@ -552,7 +552,7 @@
               	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}"></textarea>
              </div>
              <div id="perioDiv_${i}_${j}" style="display:none;">
-             	<label>中图分类法</label>
+             	<label>中图分类</label>
 				<ul class="ztree" id="perioZtree_${i}_${j}"></ul>
               	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].journalClc" id="journalClc_${i}_${j}"></textarea>
              </div>
@@ -578,7 +578,7 @@
        <?if(strutil.contain(rt,"degree")){?>
        <!-- 学位 -->
          <div class="tab-pane" id="degree_${i}_${j}">
-		<label>中图分类法</label>
+		<label>中图分类</label>
 		<ul class="ztree" id="degreeZtree_${i}_${j}"></ul>
 		<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].degreeClc" id="degreeClc_${i}_${j}"></textarea>
              <div class="form-group" style="width:60%;">
@@ -606,7 +606,7 @@
        <?if(strutil.contain(rt,"conf")){?>			        
         <!-- 会议 -->
           <div class="tab-pane" id="conf_${i}_${j}">
-           <label>中图分类法</label>
+           <label>中图分类</label>
 			<ul class="ztree" id="confZtree_${i}_${j}"></ul>
            <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}"></textarea>
 			<div class="form-group" style="width:60%;">
@@ -620,7 +620,7 @@
         <div class="tab-pane" id="patent_${i}_${j}">
           <div style="padding: 10px;">
 			<div class="wrap">
-				<label>中图分类法</label>
+				<label>中图分类</label>
 				<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
 				<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}"></textarea>
 			</div>
@@ -630,7 +630,7 @@
        <?if(strutil.contain(rt,"books")){?>
          <!-- 图书  -->
          <div class="tab-pane" id="book_${i}_${j}">
-         <label>中图分类法</label>
+         <label>中图分类</label>
          <ul class="ztree" id="bookZtree_${i}_${j}"></ul>
          <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].booksClc" id="booksClc_${i}_${j}"></textarea>
           <div class="form-group" style="width:60%;">

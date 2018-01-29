@@ -230,7 +230,7 @@
 	           <div class="form-group" style="width:60%;">
 	          		<label>期刊分类</label>
 	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioCLC!}</textarea>
-	          		<label>中图分类法</label>
+	          		<label>中图分类</label>
 	          		<textarea class="form-control" name="journalClc" id="journalClc">${jourCLC!}</textarea>
 	           	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
 	           	    <textarea class="form-control" rows="10" name="journalIdno" id="journalIdno">${perNo!}</textarea>
@@ -257,7 +257,7 @@
 	        <?if(strutil.contain(pldata.resType,"degree")){?>
 	    	<!-- 学位 -->
 	       <div class="tab-pane" id="degree_${list.userId}_${payid}_${pscode}">
-			<label>中图分类法</label>
+			<label>中图分类</label>
 			<textarea class="form-control" name="degreeClc" id="degreeClc">${degCLC!}</textarea>
 	           <div class="form-group" style="width:60%;">
 	   	   		<label>论文类型</label>
@@ -290,7 +290,7 @@
 	      <!-- 会议 -->
 	       <div class="tab-pane" id="conf_${list.userId}_${payid}_${pscode}">
 			<div class="form-group" style="width:60%;">
-	         <label>中图分类法</label>
+	         <label>中图分类</label>
 	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conCLC!}</textarea>
 	         </div>
 	         <div class="form-group" style="width:60%;">
@@ -304,7 +304,7 @@
 	         <div class="tab-pane" id="patent_${list.userId}_${payid}_${pscode}">
 	           <div style="padding: 10px;">
 				<div class="wrap">
-					<label>中图分类法</label>
+					<label>中图分类</label>
 					<textarea class="form-control" name="patentIpc" id="patentIpc">${patentIPC!}</textarea>
 				</div>
 			 	</div>
@@ -313,7 +313,7 @@
 	         <?if(strutil.contain(pldata.resType,"books")){?>
 	        <!-- 图书  -->
 	         <div class="tab-pane" id="book_${list.userId}_${payid}_${pscode}">
-	          	<label>中图分类法</label>
+	          	<label>中图分类</label>
 	          	<textarea class="form-control" name="booksClc" id="booksClc">${books_CLC.Value!}</textarea>
 	          <div class="form-group" style="width:60%;">
 	           	 <label>图书ID</label>
