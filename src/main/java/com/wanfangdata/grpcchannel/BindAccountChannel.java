@@ -2,9 +2,7 @@ package com.wanfangdata.grpcchannel;
 
 
 import com.wanfangdata.rpc.bindauthority.BindAccountGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.netty.NegotiationType;
-import io.grpc.netty.NettyChannelBuilder;
+
 
 /**
  * 个人绑定机构权限channel类（个人权限）

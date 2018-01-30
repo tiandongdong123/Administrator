@@ -164,8 +164,8 @@ public class PersonBindInstitutionController {
             bindModel.setBindLimit(detail.getDownloadLimit());
             bindModel.setDownloadLimit(detail.getDownloadLimit());
             bindModel.setPersonId(detail.getUser().getKey());
-            bindModel.setBindTime(new Date(detail.getCreateTime().getSeconds()));
-            bindModel.setInvalidTime(new Date(detail.getValidEnd().getSeconds()));
+            bindModel.setBindTime(new Date(Timestamps.toMillis(detail.getCreateTime())));
+            bindModel.setInvalidTime(new Date(Timestamps.toMillis(detail.getValidEnd())));
             modelList.add(bindModel);
         }
 
@@ -189,9 +189,12 @@ public class PersonBindInstitutionController {
         }
         try {
             //已绑定人数超出修改上限账号集合
-                SearchCountRequest request = SearchCountRequest.newBuilder().setBindId(userId).build();
-                SearchCountResponse response = bindAccountChannel.getBlockingStub().searchCountBindingByUserId(request);
-                int count = response.getTotalcount();
+            List<AccountId> accountIds = new ArrayList<>();
+            AccountId accountId = AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+            accountIds.add(accountId);
+            SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addAllRelatedid(accountIds).build();
+            SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
+                int count = countResponse.getTotalCount();
                 if (count > bindLimit) {
                     return false;
                 }

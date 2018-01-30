@@ -1,9 +1,7 @@
 package com.wanfangdata.grpcchannel;
 
 import com.wanfangdata.rpc.bindauthority.BindAuthorityGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.netty.NegotiationType;
-import io.grpc.netty.NettyChannelBuilder;
+
 
 
 /**
