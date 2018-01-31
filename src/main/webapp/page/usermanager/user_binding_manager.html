@@ -4,7 +4,6 @@
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/user_binding_manager.js"></script>
 <script type="text/javascript" src="../../page/usermanager/js/validation_user.js"></script>
-<link rel="stylesheet" type="text/css" 	href="../page/usermanager/css/user_binding_authoity"/>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -26,8 +25,8 @@
                         </div>
                         <div class="form-group input_block">
                             <label class="input_name">绑定日期</label>
-                            <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px; "/>
-                            - <input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px;"/>
+                            <input type="text" id="startDay" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px; "/>
+                            - <input type="text"id="endDay" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px;"/>
                         </div>
                         <div class="pop_button" style="text-align:center;">
                             <button type="button" class="btn btn-primary" onclick="inquiry()">查询</button>
@@ -95,6 +94,9 @@
                             </div>
                         </div>
                         <?}?>
+                            <?
+				      includeFileTemplate("/page/usermanager/user_binding_pop.html",{}){}
+                         ?>
                     </div>
                 </div>
             </div>
