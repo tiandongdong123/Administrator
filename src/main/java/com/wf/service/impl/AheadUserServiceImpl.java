@@ -1917,9 +1917,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 		List<String> beyondId = new ArrayList<>();
 		for(Map<String, Object> map : listMap){
 			String userId = map.get("userId").toString();
-			SearchCountRequest request = SearchCountRequest.newBuilder().setBindId(userId).build();
-			SearchCountResponse response = bindAccountChannel.getBlockingStub().searchCountBindingByUserId(request);
-			int count = response.getTotalcount();
+			List<com.wanfangdata.rpc.bindauthority.AccountId> accountIds = new ArrayList<>();
+			com.wanfangdata.rpc.bindauthority.AccountId accountId = com.wanfangdata.rpc.bindauthority.AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+			accountIds.add(accountId);
+			SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addAllRelatedid(accountIds).build();
+			SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
+			int count = countResponse.getTotalCount();
 			if (count>bindLimit){
 				beyondId.add(userId);
 			}
