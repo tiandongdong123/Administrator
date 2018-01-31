@@ -203,7 +203,7 @@ function submitNew(){
         //绑定个人下载量有效期
         var bindValidity = $("#bindValidity").val();
         //绑定个人下载量上限
-        var downlaodLimit = $("#downlaodLimit").val();
+        var downloadLimit = $("#downloadLimit").val();
         //绑定个人继承权限
         var bindAuthority = $("#bindAuthority").val();
         if(bool){
@@ -217,7 +217,7 @@ function submitNew(){
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
-                downloadLimit:downlaodLimit,
+                downloadLimit:downloadLimit,
                 bindAuthority:bindAuthority,
             },
             success: function(data){
@@ -227,7 +227,7 @@ function submitNew(){
                 $("#bindType").val("1");
                 $("#bindLimit").val("100");
                 $("#bindValidity").val("180");
-                $("#downlaodLimit").val("30");
+                $("#downloadLimit").val("30");
                 $("#bindAuthority").val("resource");
                 $("input[name='resourceType']").prop("checked",false);
                 $("#resourceInherited").prop("checked",true);
@@ -286,7 +286,7 @@ function sunmit(){
         //绑定个人下载量有效期
         var bindValidity = $("#bindValidity").val();
         //绑定个人下载量上限
-        var downlaodLimit = $("#downlaodLimit").val();
+        var downloadLimit = $("#downloadLimit").val();
         //绑定个人继承权限
         var bindAuthority = $("#bindAuthority").val();
         if(bool){
@@ -300,7 +300,7 @@ function sunmit(){
                 bindType:bindType,
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
-                downloadLimit:downlaodLimit,
+                downloadLimit:downloadLimit,
                 bindAuthority:bindAuthority,
             },
             success: function(data){
@@ -310,7 +310,7 @@ function sunmit(){
                 $("#bindType").val("1");
                 $("#bindLimit").val("100");
                 $("#bindValidity").val("180");
-                $("#downlaodLimit").val("30");
+                $("#downloadLimit").val("30");
                 $("#bindAuthority").val("resource");
                 $("input[name='resourceType']").prop("checked",false);
                 $("#resourceInherited").prop("checked",true);
