@@ -611,8 +611,8 @@ function createDetail(count,i,resourceid,type){
 	text += '</ul><div class="tab-content">';
 	if(type.indexOf("perio")>-1){
 		text += '<div class="tab-pane" id="perio_'+count+'_'+i+'">';
-		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>';
-		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm">选文献</button>';
+		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm">选刊</button>';
+		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm btn-success2">选文献</button>';
 		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
         text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
@@ -1366,14 +1366,14 @@ function getCheckNode(treeObj){
  */
 function changePerioClc(obj,type){
 	if(type==0){
-		$("#button1"+obj).removeClass('btn-success');
-		$("#button0"+obj).addClass('btn-success');
+		$("#button0"+obj).removeClass('btn-success2');
+		$("#button1"+obj).addClass('btn-success2');
 		$("#perioInfoDiv"+obj).show();
 		$("#perioDiv"+obj).hide();
 		$("#journalIdDiv"+obj).show();
 	}else if(type==1){
-		$("#button0"+obj).removeClass('btn-success');
-		$("#button1"+obj).addClass('btn-success');
+		$("#button1"+obj).removeClass('btn-success2');
+		$("#button0"+obj).addClass('btn-success2');
 		$("#perioDiv"+obj).show();
 		$("#perioInfoDiv"+obj).hide();
 		$("#journalIdDiv"+obj).hide();
