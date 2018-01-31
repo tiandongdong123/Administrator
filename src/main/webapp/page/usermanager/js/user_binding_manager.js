@@ -1,4 +1,5 @@
 $(function(){
+    noChoose();
     //弹出框
     $(".institutionId").click(function(){
         var h = $("body").height();  //获取当前浏览器界面的高度
@@ -12,16 +13,54 @@ $(function(){
         $(".pop").show();
     });
     $(".x").click(function(){
+        noChoose();
+        $(".revise").text("修改");
         $(".backdrop").hide();
         $(".pop").hide();
     });
 });
 
+function noChoose(){
+    $(".mechanism_id").attr("disabled",false);
+    $("#bindType").attr("disabled",false);
+    $("#bindType").attr("disabled",false);
+    $("#bindLimit").attr("disabled",false);
+    $("#bindValidity").attr("disabled",false);
+    $("#downloadLimit").attr("disabled",false);
+    $("resourceType").attr("disabled",false);
+}
+function yseChoose() {
+    $(".mechanism_id").attr("disabled",true);
+    $("#bindType").attr("disabled",true);
+    $("#bindType").attr("disabled",true);
+    $("#bindLimit").attr("disabled",true);
+    $("#bindValidity").attr("disabled",true);
+    $("#downloadLimit").attr("disabled",true);
+    $("resourceType").attr("disabled",true);
+}
+//修改
+function revise(){
+    if($(".revise").text()=="修改"){
+        noChoose();
+        $(".revise").text("提交");
+    }else {
+        yseChoose();
+        $(".revise").text("修改");
+    }
+}
+//取消
+function abolish(){
+    noChoose();
+    $(".revise").text("修改");
+    $(".backdrop").hide();
+    $(".pop").hide();
+}
+
 function inquiry(){
     var userId = $("#userId").val();
     var institutionName = $("#institutionName").val();
-    var startTime = $("#startTime").val();
-    var endTime = $("#endTime").val();
+    var startDay = $("#startDay").val();
+    var endDay = $("#endDay").val();
     var pageSize = $(".evey-page").val();
     if (pageSize == null) {
         pageSize = 20;
@@ -31,8 +70,8 @@ function inquiry(){
         data:{
             userId:userId,
             institutionName:institutionName,
-            startTime:startTime,
-            endTime:endTime,
+            startDay:startDay,
+            endDay:endDay,
             pageSize:pageSize,
             page: 1,
         },
