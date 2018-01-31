@@ -99,12 +99,13 @@ function standardShow(count,i,id){
 function checkPerio(count,i){
 	var value=$("#perioInfoClc_"+count+"_"+i).val();
 	if(value!=null&&value!=""){
+		value=value.toUpperCase();
 		var reg = /[A-Z0-9,]$/;
 		if(!reg.test(value)){
 			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊分类输入格式不正确</font>');
 			return false;
 		}else{
-			$(this).val(value.toUpperCase());
+			$("#perioInfoClc_"+count+"_"+i).val(value);
 		}
 	}
 	var value2=$("#journalIdno_"+count+"_"+i).val();
@@ -143,12 +144,13 @@ function checkPatent(count,i){
 		$("#patentMsg_"+count+"_"+i).html('');
 		return true;
 	}
+	value=value.toUpperCase();
 	var reg = /[A-Z0-9,]$/;
 	if(!reg.test(value)){
 		$("#patentMsg_"+count+"_"+i).html('<font style="color:red">IPC分类输入格式不正确</font>');
 		return false;
 	}else{
-		$(this).val(value.toUpperCase());
+		$("#patentIpc_"+count+"_"+i).val(value);
 		$("#patentMsg_"+count+"_"+i).html('');
 		return true;
 	}
