@@ -79,6 +79,7 @@ function check(){
 		$(".bind_num").css("color","#00a65a");
 		$("#bindLimit").css("border-color","#00a65a");
 		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("margin-left","10px");
 		$(".wrong").css("display","inline");
 		$(".mistaken").css("display","none");
 	}
@@ -88,6 +89,7 @@ function style(){
 	$(".bind_num").css("color","#dd4b39");
 	$("#bindLimit").css("border-color","#dd4b39");
 	$(".wrong").css("background","url(../img/f.png)");
+	$(".wrong").css("margin-left","5px");
 	$(".mistaken").css("display","inline");
 	$(".wrong").css("display","inline");
 }
