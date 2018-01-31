@@ -304,7 +304,6 @@ function sunmit(){
                 bindAuthority:bindAuthority,
             },
             success: function(data){
-                console.log(111)
                 $("#institution").val("");
                 $("input[name='quotaName']").prop("checked",true);
                 $(".enshrine").text("全部");
