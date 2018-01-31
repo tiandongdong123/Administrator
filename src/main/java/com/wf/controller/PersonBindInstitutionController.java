@@ -68,6 +68,7 @@ public class PersonBindInstitutionController {
     public String toBindInfoManagement(String upPage,Model model) {
 
         model.addAttribute("upPage",upPage);
+        model.addAttribute("pager",null);
         return "/page/usermanager/user_binding_manager";
     }
 

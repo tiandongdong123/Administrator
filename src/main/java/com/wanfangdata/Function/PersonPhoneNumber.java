@@ -24,10 +24,15 @@ public class PersonPhoneNumber implements Function {
         String userId = (String) objects[0];
         try {
             String institutionName = personMapper.getInstitutionByUserId(userId);
-            return institutionName;
+            if (institutionName!=null){
+                return institutionName;
+            }else {
+                return "";
+            }
+
         }catch (Exception e){
             log.error("查询个人手机号失败，个人ID"+userId);
-            throw  e;
+            return "";
         }
     }
 }

@@ -18,21 +18,26 @@
                     <div class="box box-primary">
                         <div class="form-group input_block">
                             <label class="input_name">用户ID</label>
-                            <input type="text"  class="form-control input_width" value="${map.userId!}">
+                            <input type="text"  class="form-control input_width" value="">
                         </div>
                         <div class="form-group input_block">
                             <label class="input_name">机构名称</label>
-                            <input type="text"  class="form-control input_width" value="${map.institutionName!}">
+                            <input type="text"  class="form-control input_width" value="">
                         </div>
                         <div class="form-group input_block">
                             <label class="input_name">绑定日期</label>
-                            <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" value="${map.startTime!}" />
-                            - <input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" value="${map.endTime!}"/>
+                            <input type="text" id="startTime" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="start_time" name="start_time" value="" />
+                            - <input type="text"id="endTime" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" id="end_time" name="end_time" value=""/>
                         </div>
                         <div class="pop_button" style="text-align:center;">
                             <button type="button" class="btn btn-primary">查询</button>
                         </div>
+                        <?
+                            if(pager != null){
+                           var i = (pager.currentPage-1)*pager.pageSize+1;
+                           for(receipt in pager.pageRecords){
 
+                            ?>
                         <table  class="table table-bordered table-striped" >
                             <thead>
                             <tr>
@@ -49,15 +54,9 @@
                                 <th>绑定时间</th>
                                 <th>失效时间</th>
                             </tr>
-                           <?
-                            if(pager.pageRecords != null){
-                           var i = (pager.currentPage-1)*pager.pageSize+1;
-                           for(receipt in pager.pageRecords){
-
-                            ?>
                             <tr>
                                 <td>${i++}</td>
-                                <? var institutionName =  institutionName()  ?>
+                                <? var institutionName =  institutionName();  ?>
                                 <td>${institutionName}</td>
                                 <td>${receipt.institutionId}</td>
                                 <td>>${receipt.bindType}</td>
@@ -66,12 +65,12 @@
                                 <td>${receipt.downloadLimit}</td>
                                 <td>${receipt.authority}</td>
                                 <td>${receipt.personId}</td>
-                                <? var phoneNumber = personPhoneNumber() ?>
+                                <? var phoneNumber = personPhoneNumber(); ?>
                                 <td>${phoneNumber}</td>
                                 <td>${receipt.bindTime}</td>
                                 <td>${receipt.invalidTime}</td>
                             </tr>
-                            <?}}?>
+                            <?}?>
                             </thead>
                             <div class="qr"><div class="picture"></div><span class="reset">重置</span></div>
                         </table>
@@ -96,74 +95,6 @@
                             </div>
                         </div>
                         <?}?>
-                        <div class="intermediary">
-                            <div class="backdrop"></div>
-                            <div class="pop">
-                                <span class="x">X</span>
-                                <div class="pop_guide">
-                                    <span>个人绑定机构权限设置</span>
-                                </div>
-                                <div class="form-group input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构名称</label>
-                                    <input type="text" class="form-control dinding_input" name="institution" id="institution" onfocus="input_onfocus(this);"/>
-                                </div>
-                                <div class="userId input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构ID</label>
-                                    <div class="form-control dinding_input mechanism_id" onclick="icont()" style="margin-bottom: -7px; position: relative;">
-                                        <div class="enshrine"><span class="allSelectText">全部</span></div>
-                                        <i class="arrow"></i>
-                                        <span style="display: none" id="disText"></span>
-                                    </div>
-                                    <ul class="quota">
-                                        <li class="data_first">
-                                            <label><input type="checkbox"  value="全部"  name="quotaName" class="tol_quota" checked="checked"><span class="allSelect">全部</span></label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox"  value="检索量" name="quotaName"  class="index" checked="checked"><span>检索量</span></label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox"  value="浏览量" name="quotaName" class="index" checked="checked"><span>浏览量</span></label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox"  value="下载量" name="quotaName"  class="index" checked="checked"><span>下载量</span></label>
-                                        </li>
-                                    </ul>
-                                    <div class="show_mechanism"></div>
-                                </div>
-                                <div class="form-group input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
-                                    <select class="form-control dinding_input"  id="bindType" name="bindType">
-                                        <option value="0" selected = "selected">机构个人同时登录</option>
-                                        <option value="1">机构登录</option>
-                                        <option value="2">线下扫描</option>
-                                    </select>
-                                </div>
-                                <div class="form-group input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人上限</label>
-                                    <input type="text" class="form-control dinding_input" value="100" id="bindLimit" name="bindLimit">
-                                </div>
-                                <div class="form-group input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人账号有效期(天)</label>
-                                    <input type="text" class="form-control dinding_input" value="180" id="bindValidity" name="bindValidity">
-                                </div>
-                                <div class="form-group input_block">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人下载量上限/天</label>
-                                    <input type="text" class="form-control dinding_input" value="30" id="downlaodLimit" name="downlaodLimit">
-                                </div>
-                                <div class="form-group input_block">
-                                    <input type="hidden" name="bindAuthority" id="bindAuthority" value="">
-                                    <label class="dinding_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人继承权限</label>
-                                    <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
-                                    <input type="checkbox"  checked="checked" name="resourceType" class="selFirst" id="resourceInherited" onclick="bindingInherited('resource')" value="资源下载">资源下载&nbsp;&nbsp;
-                                    <input type="checkbox"  name="resourceType" class="selFirst" id="wanInherited" onclick="bindingInherited('wanfang')" value="万方分析">万方分析
-                                </div>
-
-                                <div class="pop_button" style="text-align:center;">
-                                    <button type="button" class="btn btn-primary" style="margin-right: 40px">修改</button>
-                                    <button type="button" class="btn btn-primary">返回</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
