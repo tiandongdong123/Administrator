@@ -409,11 +409,11 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	position: absolute;
 	top: 0;
 	z-index: 1003;
-	display: none;
+	/*display: none;*/
 }
 .pop {
-	display: none;
-	width: 770px;
+	/*display: none;*/
+	width: 920px;
 	height: 500px;
 	background: #ffffff;
 	border: 1px solid #ccc;

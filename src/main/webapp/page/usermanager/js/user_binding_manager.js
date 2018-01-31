@@ -1,5 +1,5 @@
 $(function(){
-    noChoose();
+    yseChoose();
     //弹出框
     $(".institutionId").click(function(){
         var h = $("body").height();  //获取当前浏览器界面的高度
@@ -18,8 +18,40 @@ $(function(){
         $(".backdrop").hide();
         $(".pop").hide();
     });
+    $(".qqqqq").click(function(){
+        $(".jg_index").remove();
+        $(".enshrine").text("");
+        var institution = $("#institution").val();
+        $.ajax({
+            type : "post",
+            url : "../bindAuhtority/userId.do",
+            dataType : "json",
+            data:{
+                institutionName: institution,
+            },
+            success: function(data){
+                length = data.length;
+                for(var i=0;i<length;i++){
+                    var bindType = '<li class="jg_index"><label><input value='+data[i]+' name="quotaName" class="index" checked="checked" type="checkbox"><span>'+data[i]+'</span></label></li>';
+                    $(".quota").append(bindType);
+                }
+                if(length==1){
+                    $(".data_first").css("display","none");
+                    $(".enshrine ").text(data[0]);
+                }else {
+                    $(".data_first").css("display","block");
+                    $(".enshrine").text($(".quota li:first").text());
+                    showFont();
+                }
+             },
+         });
+    });
+    //绑定个人上限的提示
+    $("#bindLimit").keyup(function(){
+        check();
+    });
 });
-
+//移除disabled属性
 function noChoose(){
     $(".mechanism_id").attr("disabled",false);
     $("#bindType").attr("disabled",false);
@@ -27,8 +59,10 @@ function noChoose(){
     $("#bindLimit").attr("disabled",false);
     $("#bindValidity").attr("disabled",false);
     $("#downloadLimit").attr("disabled",false);
-    $("resourceType").attr("disabled",false);
+    $("#allInherited").attr("disabled",false);
+    $(".selFirst").attr("disabled",false);
 }
+//设置disabled属性
 function yseChoose() {
     $(".mechanism_id").attr("disabled",true);
     $("#bindType").attr("disabled",true);
@@ -36,7 +70,8 @@ function yseChoose() {
     $("#bindLimit").attr("disabled",true);
     $("#bindValidity").attr("disabled",true);
     $("#downloadLimit").attr("disabled",true);
-    $("resourceType").attr("disabled",true);
+    $("#allInherited").attr("disabled",true);
+    $(".selFirst").attr("disabled",true);
 }
 //修改
 function revise(){
@@ -46,6 +81,8 @@ function revise(){
     }else {
         yseChoose();
         $(".revise").text("修改");
+        $(".backdrop").hide();
+        $(".pop").hide();
     }
 }
 //取消

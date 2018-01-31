@@ -1323,3 +1323,52 @@ $(document).on("click",function(e){
 	}
 })
 
+//选择多少条数据
+function pageChange() {
+	changePage = $(".evey-page option:selected").text();
+
+	if(pageSize==null){
+		pageSize=20;
+	}
+	$.ajax({
+		type:"POST",
+		data:{
+			userId:userId,
+			institutionName:institutionName,
+			startTime:startTime,
+			endTime:endTime,
+			pageSize:pageSize,
+			page: 1,
+		},
+		url:"../bindAuhtority/searchBindInfo.do",
+		dataType:"json",
+		success:function(data){
+			// $('#database-table').html(data);
+			// 	$('.evey-page option').each(function(){
+			// 		var value = +$(this).val();
+			// 		if(value == changePage){
+			// 			$(this).attr('selected',true);
+			// 		}
+			// 	});
+		}
+	});
+
+
+	// $.post(ctxPath+"/statistics/databaseCount",
+	// 	{
+	// 		userId: userId,
+	// 		startDate: startTime,
+	// 		endDate: endTime,
+	// 		pageSize: pageSize,
+	// 		page: 1,
+	// 	},
+	// 	function (data) {
+	// 		$('#database-table').html(data);
+	// 		$('.evey-page option').each(function(){
+	// 			var value = +$(this).val();
+	// 			if(value == changePage){
+	// 				$(this).attr('selected',true);
+	// 			}
+	// 		});
+	// 	});
+}

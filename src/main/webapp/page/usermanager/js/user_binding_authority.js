@@ -32,6 +32,7 @@ $(document).ready(function(){
                 else if(length==1){
                     $(".data_first").css("display","none");
                     $(".enshrine ").text(data[0]);
+                    showFont();
                 } else {
                     $(".bind_numm").css("color","#333");
                     $(".mistakenm").css("display","none");
@@ -42,7 +43,6 @@ $(document).ready(function(){
                 }
             },
         });
-
     });
     //机构id点击全部
     $(".tol_quota").click(function(){
@@ -81,7 +81,7 @@ $(document).ready(function(){
     });
 });
 //鼠标经过有提示
-function  showFont() {
+function  showFont(){
     $(".mechanism_id").hover(function(){
         if($('.index:checked').length!=0){
             $(".show_mechanism").text($(".enshrine").text());
@@ -91,7 +91,6 @@ function  showFont() {
          $(".show_mechanism").hide();
     });
 }
-
 function commonCaption(e) {
     var all_index= $('.jg_index').length;
     var num= $('.index:checked').length;
