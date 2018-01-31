@@ -96,32 +96,27 @@ function standardShow(count,i,id){
 }
 
 //验证期刊分类号和期刊ID
-function checkPerio(num,count,i){
-	var value=$("perioInfoClc_"+count+"_"+i).val();
-	if(value==null||value==""){
-		$("#perioMsg_"+count+"_"+i).html("");
-		return true;
-	}
-	alert("==");
-	if(num==0){
-		var reg = /[a-zA-Z0-9\n\r,-]$/;
-		if(!reg.test(value)){
-			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊ID输入格式不正确</font>');
-			return false;
-		}else{
-			return true;
-		}
-	}else if(num==1){
+function checkPerio(count,i){
+	var value=$("#perioInfoClc_"+count+"_"+i).val();
+	if(value!=null&&value!=""){
 		var reg = /[A-Z0-9,]$/;
 		if(!reg.test(value)){
 			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊分类输入格式不正确</font>');
 			return false;
 		}else{
 			$(this).val(value.toUpperCase());
-			$("#perioMsg_"+count+"_"+i).html('');
-			return true;
 		}
 	}
+	var value2=$("#journalIdno_"+count+"_"+i).val();
+	if(value2!=null&&value2!=""){
+		var reg2 = /[a-zA-Z0-9\n\r,-]$/;
+		if(!reg2.test(value2)){
+			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊ID输入格式不正确</font>');
+			return false;
+		}
+	}
+	$("#perioMsg_"+count+"_"+i).html('');
+	return true;
 }
 
 //验证会议馆藏号
@@ -353,12 +348,12 @@ function openPurchaseItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-		    	if(checkPerio(0,count,i)&&checkPerio(1,count,i)){
+		    	if(checkPerio(count,i)){
 		    		layer.closeAll();
 		    	}
 		    },
 		    cancel: function(){
-		    	if(!checkPerio(0,count,i)||!checkPerio(1,count,i)){
+		    	if(!checkPerio(count,i)){
 		    		return false;
 		    	}
 		    }
@@ -619,12 +614,12 @@ function createDetail(count,i,resourceid,type){
 		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>';
 		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm">选文献</button>';
 		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
-        text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'" onblur="checkPerio(0,'+count+','+i+')"></textarea></div>';
+        text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].journalClc" id="journalClc_'+count+'_'+i+'"></textarea></div>';
 		text += '<div style="width:60%;" id="journalIdDiv_'+count+'_'+i+'">';
 		text += '<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>';
-		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'" onblur="checkPerio(1,'+count+','+i+')"></textarea></div>';
+		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<label>年限</label>';
 		text += '<div class="time_block">';
 		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_startTime" id="journal_startTime_'+count+'_'+i+'"></select>年——';

@@ -107,12 +107,12 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-		    	if(checkPerio(0,count,i)&&checkPerio(1,count,i)){
+		    	if(checkPerio(count,i)){
 		    		layer.closeAll();
 		    	}
 		    },
 		    cancel: function(){
-		    	if(!checkPerio(0,count,i)||!checkPerio(1,count,i)){
+		    	if(!checkPerio(count,i)){
 		    		return false;
 		    	}
 		    }

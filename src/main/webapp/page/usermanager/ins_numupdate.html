@@ -298,7 +298,7 @@
 				             <div id="perioInfoDiv_${i}_${j}">
 				             	<label>期刊分类</label>
 								<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
-				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(0,${i},${j})">${perioCLC!}</textarea>
+				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(${i},${j})">${perioCLC!}</textarea>
 				             </div>
 				             <div id="perioDiv_${i}_${j}" style="display:none;">
 			              		<label>中图分类</label>
@@ -307,7 +307,7 @@
 				             </div>
 				              <div style="width:60%;" id="journalIdDiv_${i}_${j}">
 		                	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
-		                	    <textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno" onblur="checkPerio(1,${i},${j})">${perNo!}</textarea>
+		                	    <textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno_${i}_${j}" onblur="checkPerio(${i},${j})">${perNo!}</textarea>
 		               	   	  </div>
 		               	   	<label>年限</label>
 		               	   	<div class="time_block">
@@ -552,7 +552,7 @@
              <div id="perioInfoDiv_${i}_${j}">
              	<label>期刊分类</label>
 				<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
-              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(0,${i},${j})"></textarea>
+              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(${i},${j})"></textarea>
              </div>
              <div id="perioDiv_${i}_${j}" style="display:none;">
              	<label>中图分类</label>
@@ -561,7 +561,7 @@
              </div>
              <div style="width:60%;" id="journalIdDiv_${i}_${j}">
               	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
-              	<textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno" onblur="checkPerio(1,${i},${j})"></textarea>
+              	<textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno_${i}_${j}" onblur="checkPerio(${i},${j})"></textarea>
              </div>
        	   	<label>年限</label>
        	   	<div class="time_block">
