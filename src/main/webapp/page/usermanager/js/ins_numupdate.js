@@ -52,6 +52,7 @@ $(document).ready(function(){
                     $(".wrong").css("background","url(../img/t.png)");
                     $(".wrong").css("display","inline");
                     $(".mistaken").css("display","none");
+					already = true;
                 }
 			}
 		});
