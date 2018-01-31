@@ -156,7 +156,7 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			downlaodLimit:{
+			downloadLimit:{
 				message : '绑定个人下载量上限/天不能为空，请填写正确的数字',
 				validators : {
 					notEmpty : {/*非空提示*/
