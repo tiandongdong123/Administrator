@@ -1,12 +1,5 @@
-var username;
-var ip;
-var module;
-var behavior;
-var startTime;
-var endTime;
-
 $(function(){
-    tabulation();
+    //弹出框
     $(".institutionId").click(function(){
         var h = $("body").height();  //获取当前浏览器界面的高度
         var backwidth = $("body").width();   //获取当前浏览器界面的宽度
@@ -24,75 +17,28 @@ $(function(){
     });
 });
 
-/**
- * 加载列表数据--liuYong
- */
-
-
-
-function tabulation(curr){
-    username=$("#user_id").val();
-    ip=$("#institution_name").val();
-    module=$("#model").find("option:selected").val();
-    behavior=$("#restype").find("option:selected").val();
-    startTime=$("#startTime").val();
-    endTime=$("#endTime").val();
+function inquiry(){
+    var userId = $("#userId").val();
+    var institutionName = $("#institutionName").val();
+    var startTime = $("#startTime").val();
+    var endTime = $("#endTime").val();
+    var pageSize = $(".evey-page").val();
+    if (pageSize == null) {
+        pageSize = 20;
+    }
     $.ajax({
         type:"POST",
         data:{
-            "username":username,
-            "ip":ip,
-            "module":module,
-            "behavior":behavior,
-            "startTime":startTime,
-            "endTime":endTime,
-            "pageNum":curr||1,
+            userId:userId,
+            institutionName:institutionName,
+            startTime:startTime,
+            endTime:endTime,
+            pageSize:pageSize,
+            page: 1,
         },
-        url:"../log/getLogJson.do",
+        url:"../bindAuhtority/searchBindInfo.do",
         dataType:"json",
         success:function(data){
-
-            var pagerow=data.pageRow;
-            var html="";
-
-            if("机构用户信息管理"==module){
-                $.each(pagerow, function(i, obj) {
-                    html+="<tr>" +
-                            "<td>"+(10*(curr||1-1)+i+1)+"</td>" +
-                            "<td>"+pagerow[i].username+"</td>" +
-                            "<td>"+pagerow[i].ip+"</td>" +
-                            "<td>"+timeStamp2String(pagerow[i].time)+"</td>" +
-                            "<td>"+pagerow[i].module+"</td>" +
-                            "<td>"+pagerow[i].behavior+"</td>" +
-                            "<td>"+pagerow[i].userId+"</td>" +
-                            "<td>"+pagerow[i].projectname+"</td>" +
-                            "<td>"+pagerow[i].totalMoney+"</td>" +
-                            "<td>"+pagerow[i].purchaseNumber+"</td>" +
-                            "<td>"+pagerow[i].validityStarttime+"</td>" +
-                            "<td>"+pagerow[i].validityEndtime+"</td>" +
-                            "</tr>";
-                });
-                $("#tbody_").html(html);
-            }else{
-                $.each(pagerow, function(i, obj) {
-                    html+="<tr>" +
-                            "<td>"+(10*(curr||1-1)+i+1)+"</td>" +
-                            "<td>"+pagerow[i].username+"</td>" +
-                            "<td>"+pagerow[i].ip+"</td>" +
-                            "<td>"+timeStamp2String(pagerow[i].time)+"</td>" +
-                            "<td>"+pagerow[i].module+"</td>" +
-                            "<td>"+pagerow[i].behavior+"</td>" +
-                            "<td>"+pagerow[i].operation_content+"</td>" +
-                            "</tr>";
-                });
-                $("#tbody").html(html);
-            }
-
-            var pageTotal=data.pageTotal;
-            var pageSize=data.pageSize;
-            var pages=pageTotal%pageSize==0?pageTotal/pageSize:pageTotal/pageSize+1;
-            var groups=pages>=4?4:pages;
-
             // 显示分页
             laypage({
                 cont: 'page', // 容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div
