@@ -1,9 +1,4 @@
 <div class="bind_table">
-    <?
-        if(pager != null){
-        var i = (pager.currentPage-1)*pager.pageSize+1;
-        for(receipt in pager.pageRecords){
-    ?>
     <table  class="table table-bordered table-striped" >
         <thead>
         <tr>
@@ -20,6 +15,11 @@
             <th>绑定时间</th>
             <th>失效时间</th>
         </tr>
+        <?
+            if(pager != null){
+            var i = (pager.currentPage-1)*pager.pageSize+1;
+            for(receipt in pager.pageRecords){
+        ?>
         <tr>
             <td>${i++}</td>
             <? var institutionName =  institutionName();  ?>
