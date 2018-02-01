@@ -1,5 +1,5 @@
 $(function(){
-    yseChoose();
+    yesChoose();
     //弹出框
     $(".institutionId").click(function(){
         var h = $("body").height();  //获取当前浏览器界面的高度
@@ -19,12 +19,12 @@ $(function(){
         $(".pop").hide();
     });
     //机构ID弹出框
-    $(".userID").click(function(){
+    $(".bind_table").on("click",".userID",function(){
         $(".backdrop").show();
         $(".pop").show();
-        $("#institution").val($(this).siblings(".username").val());
-        $(".enshrine").val($(this).val());
-        var bindtype = $(".bindtype").val();
+        $("#institution").val($(this).siblings(".username").text());
+        $(".enshrine").text($(this).text());
+        var bindtype = $(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType").val()=="0";
         }
@@ -33,10 +33,10 @@ $(function(){
         }else if(bindtype="线下扫描"){
             $("#bindType").val()=="2";
         }
-        $("#bindLimit").val($(this).siblings(".bindLimit").val());
-        $("#bindValidity").val($(this).siblings(".bindValidity").val());
-        $("#downloadLimit").val($(this).siblings(".downloadLimit").val());
-        var authority = $(".authority").val();
+        $("#bindLimit").val($(this).siblings(".bindLimit").text());
+        $("#bindValidity").val($(this).siblings(".bindValidity").text());
+        $("#downloadLimit").val($(this).siblings(".downloadLimit").text());
+        var authority = $(".authority").text();
         if(authority=="资源下载,万方分析"){
             $("#allInherited").prop("checked",true);
             $(".selFirst").prop("checked",true);
@@ -100,7 +100,7 @@ function noChoose(){
     $(".selFirst").attr("disabled",false);
 }
 //设置disabled属性
-function yseChoose() {
+function yesChoose() {
     $(".mechanism_id").attr("disabled",true);
     $("#bindType").attr("disabled",true);
     $("#bindType").attr("disabled",true);
@@ -208,7 +208,7 @@ function revise(){
                     bindAuthority:bindAuthority,
                 },
                 success: function(data){
-                    yseChoose();
+                    yesChoose();
                     $(".revise").text("修改");
                     $(".backdrop").hide();
                     $(".pop").hide();
@@ -219,10 +219,11 @@ function revise(){
 }
 //取消
 function abolish(){
-    noChoose();
+    yesChoose();
     $(".revise").text("修改");
     $(".backdrop").hide();
     $(".pop").hide();
+
 }
 
 function inquiry(){
@@ -247,6 +248,40 @@ function inquiry(){
         url:"../bindAuhtority/searchBindInfo.do",
         success:function(data){
             $('#bind_table').html(data)
+        }
+    });
+}
+//选择多少条数据
+function pageChange() {
+    var userId = $("#userId").val();
+    var institutionName = $("#institutionName").val();
+    var startDay = $("#startDay").val();
+    var endDay = $("#endDay").val();
+    var pageSize = $(".evey-page").val();
+    var changePage = $(".evey-page option:selected").text();
+    if(pageSize==null){
+        pageSize=20;
+    }
+    $.ajax({
+        type:"POST",
+        data:{
+            userId:userId,
+            institutionName:institutionName,
+            startDay:startDay,
+            endDay:endDay,
+            pageSize:pageSize,
+            page: 1,
+        },
+        url:"../bindAuhtority/searchBindInfo.do",
+        dataType:"json",
+        success:function(data){
+            $('#bind_table').html(data);
+            $('.evey-page option').each(function(){
+                var value = +$(this).val();
+                if(value == changePage){
+                    $(this).attr('selected',true);
+                }
+            });
         }
     });
 }

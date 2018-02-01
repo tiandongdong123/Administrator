@@ -92,21 +92,6 @@ function  showFont(){
     });
 }
 
-//点击箭头变化
-function icont(){
-    if(length==0){
-        $(".arrow").css({"background-position-x":"-10px"});
-        $(".quota").hide();
-    }
-    else {
-        $(".arrow").css({"background-position-x":"-39px"});
-        $(".quota").toggle();
-    }
-    if($.trim($(".quota").css("display"))=="none"){
-        $(".arrow").css({"background-position-x":"-10px"});
-    }
-}
-
 function submitNew(){
     var reg = /^[1-9]\d*$/;
     var bool = false;

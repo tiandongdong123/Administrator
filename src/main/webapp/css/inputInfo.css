@@ -326,6 +326,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 
 #page{
 	padding:5px;
+	float: left;
 }
 .prompt_box{
 	background: #fff;
@@ -399,7 +400,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	overflow: hidden;
 }
 .all_data{
-	margin: 6px 10px;
+	margin: 7px 10px;
 	display: inline-block;
 	float: left;
 }
@@ -433,7 +434,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	top: 5px;
 	cursor: pointer;
 	font-size: 18px;
-	color: #666;
+	color: #fff;
 }
 .x:hover{
 	background: red;
@@ -446,6 +447,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	background: #417dc9;
 	color: #fff;
 	margin-bottom: 30px;
+	padding-left: 20px;
 }
 .guide p {
 	width: 68px;
@@ -582,6 +584,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .userID{
 	color: #0c60c2;
+	curosr: pointer;
 }
 
 
