@@ -91,53 +91,7 @@ function  showFont(){
          $(".show_mechanism").hide();
     });
 }
-function commonCaption(e) {
-    var all_index= $('.jg_index').length;
-    var num= $('.index:checked').length;
-    var curText = e.next().text();
-    if(e.is(':checked')){
-        $(".bind_numm").css("color","#333");
-        $(".mistakenm").css("display","none");
-        $(".wrongm").css("display","none");
-        $(".data_first").css("display","block");
-        $('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
-        if(all_index==num){
-            if(all_index==1){
-                $(".enshrine ").text($(".quota li:first").text());
-            }else {
-                $(".tol_quota").prop("checked",true);
-                $('.indexitemText').remove();
-                $(".enshrine").text("全部");
-            }
-        }
-    }else {
-        $('.tol_quota').prop("checked","");
-        $('.allSelectText').text('');
-        $('.enshrine span').each(function () {
-            if(curText == $(this).data('text')){
-                $(this).remove();
-            }
-        });
-        $('.enshrine').text('');
 
-        $('.index:checked').each(function(){
-            curText = $(this).next().text();
-            $('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
-        });
-        if($(".enshrine").text()==""){
-            $(".bind_numm").css("color","#dd4b39");
-            $(".wrongm").css("background","url(../img/f.png)");
-            $(".mistakenm").css("display","inline");
-            $(".wrongm").css("display","inline");
-            $(".mistakenm").text("机构ID不能为空");
-        }else {
-            $(".bind_numm").css("color","#00a65a");
-            $(".wrongm").css("background","url(../img/t.png)");
-            $(".wrongm").css("display","inline");
-            $(".mistakenm").css("display","none");
-        }
-    }
-}
 //点击箭头变化
 function icont(){
     if(length==0){

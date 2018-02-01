@@ -24,13 +24,34 @@ $(function(){
         $(".pop").show();
         $("#institution").val($(this).siblings(".username").val());
         $(".enshrine").val($(this).val());
-        $(".bindtype").val();
-        $("").val();
+        var bindtype = $(".bindtype").val();
+        if(bindtype=="机构个人同时登录"){
+            $("#bindType").val()=="0";
+        }
+        else if(bindtype=="机构登陆"){
+            $("#bindType").val()=="1";
+        }else if(bindtype="线下扫描"){
+            $("#bindType").val()=="2";
+        }
         $("#bindLimit").val($(this).siblings(".bindLimit").val());
         $("#bindValidity").val($(this).siblings(".bindValidity").val());
         $("#downloadLimit").val($(this).siblings(".downloadLimit").val());
+        var authority = $(".authority").val();
+        if(authority=="资源下载,万方分析"){
+            $("#allInherited").prop("checked",true);
+            $(".selFirst").prop("checked",true);
+        }
+        else if(authority=="资源下载"){
+            $("#allInherited").prop("checked",false);
+            $("#wanInherited").prop("checked",false);
+            $("#resourceInherited").prop("checked",true);
+        }
+        else if(authority=="万方分析"){
+            $("#allInherited").prop("checked",false);
+            $("#wanInherited").prop("checked",true);
+            $("#resourceInherited").prop("checked",false);
+        }
     });
-
     //机构id点击全部
     $(".tol_quota").click(function(){
         $(".allSelectText").text("");
