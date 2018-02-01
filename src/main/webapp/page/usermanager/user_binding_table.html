@@ -22,7 +22,7 @@
         ?>
         <tr>
             <td>${i++}</td>
-            <? var institutionName =  institutionName();  ?>
+            <? var institutionName =  institutionName(receipt.institutionId);  ?>
             <td class="username">${institutionName}</td>
             <td class="userID">${receipt.institutionId}</td>
             <td class="bindtype">${receipt.bindType}</td>
@@ -31,7 +31,7 @@
             <td class="downloadLimit">${receipt.downloadLimit}</td>
             <td class="authority">${receipt.authority}</td>
             <td>${receipt.personId}</td>
-            <? var phoneNumber = personPhoneNumber(); ?>
+            <? var phoneNumber = personPhoneNumber(receipt.personId); ?>
             <td>${phoneNumber}</td>
             <td>${receipt.bindTime}</td>
             <td>${receipt.invalidTime}</td>
@@ -58,7 +58,7 @@
         </div>
         <div id="page"></div>
         <div class="all_data">
-            共<span class="all_number">3</span>条数据 共<span class="all_page">15</span>页
+            共<span class="all_number">${pager.total}</span>条数据 共<span class="all_page">${pager.pageCount}</span>页
         </div>
     </div>
     <?}?>

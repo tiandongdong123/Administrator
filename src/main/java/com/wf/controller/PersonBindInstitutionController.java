@@ -6,7 +6,7 @@ import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.model.BindSearchParameter;
 import com.wanfangdata.model.PagerModel;
 import com.wanfangdata.rpc.bindauthority.*;
-import com.wanfangdata.setting.PersonAuthorityMapping;
+import com.wanfangdata.setting.BindAuthorityMapping;
 import com.wf.bean.BindAccountModel;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.dao.PersonMapper;
@@ -40,7 +40,7 @@ public class PersonBindInstitutionController {
     @Autowired
     private BindAccountChannel bindAccountChannel;
     @Autowired
-    private PersonAuthorityMapping personAuthorityMapping;
+    private BindAuthorityMapping bindAuthorityMapping;
     @Autowired
     private PersonMapper personMapper;
 
@@ -85,7 +85,7 @@ public class PersonBindInstitutionController {
         String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
         List<String> authorityList = new ArrayList<>();
         for (String authority : authoritys) {
-            authorityList.add(personAuthorityMapping.getAuthorityName(authority));
+            authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
         }
         OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
                 .setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
@@ -112,7 +112,7 @@ public class PersonBindInstitutionController {
         }
 
         if (parameter.getUserId() != null && !"".equals(parameter.getUserId())) {
-            if (parameter.getInstitutionName() != null && "".equals(parameter.getInstitutionName())) {
+            if (parameter.getInstitutionName() != null &&!"".equals(parameter.getInstitutionName())) {
                 String groupName = personMapper.getInstitutionByUserId(parameter.getUserId());
                 if (parameter.getInstitutionName().equals(groupName)) {
                     return null;
@@ -141,19 +141,20 @@ public class PersonBindInstitutionController {
             request.addAllRelatedid(accountIds);
         }
         if (startTime!=null){
-            request.setValidStart(Timestamps.fromMillis((startTime.getTime())));
+            request.setStartAddTime(Timestamps.fromMillis((startTime.getTime())));
         }
        if(endTime!=null){
-           request.setValidEnd(Timestamps.fromMillis((endTime.getTime())));
+           request.setEndAddTime(Timestamps.fromMillis((endTime.getTime())));
        }
-       if (parameter.getPageNum()!=0){
-            int index = (parameter.getPageNum()-1)*parameter.getPageSize();
+       if (parameter.getPage()!=0){
+
+            int index = (parameter.getPage()-1)*parameter.getPageSize();
             request.setStartIndex(index);
        }
        if(parameter.getPageSize()!=0){
             request.setCount(parameter.getPageSize());
        }
-        SearchBindDetailsResponse response = bindAccountChannel.getBlockingStub().searchBindDetails(request.build());
+        SearchBindDetailsResponse response = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(request.build());
         List<BindDetail> bindDetail = response.getItemsList();
         //接收返回的数据
         List<BindAccountModel> modelList = new ArrayList<>();
@@ -161,24 +162,28 @@ public class PersonBindInstitutionController {
         for (BindDetail detail : bindDetail) {
             BindAccountModel bindModel = new BindAccountModel();
             bindModel.setInstitutionId(detail.getRelatedid().getKey());
+            bindModel.setBindType(bindAuthorityMapping.getBindTypeName(detail.getBindType().getNumber()));
             bindModel.setBindValidity(detail.getBindValidity());
             bindModel.setBindLimit(detail.getDownloadLimit());
             bindModel.setDownloadLimit(detail.getDownloadLimit());
             bindModel.setPersonId(detail.getUser().getKey());
-            bindModel.setBindTime(new Date(Timestamps.toMillis(detail.getCreateTime())));
-            bindModel.setInvalidTime(new Date(Timestamps.toMillis(detail.getValidEnd())));
+            Date bindTime = new Date(Timestamps.toMillis(detail.getValidStart()));
+            Date expireTime = new Date(Timestamps.toMillis(detail.getValidEnd()));
+            bindModel.setBindTime(transformDate(bindTime));
+            bindModel.setInvalidTime(transformDate(expireTime));
+            bindModel.setAuthority(detail.getAuthority());
             modelList.add(bindModel);
         }
 
-        int currentPage = parameter.getPageNum();
+        int currentPage = parameter.getPage();
         int totalSize = modelList.size();
         int pageSize = parameter.getPageSize();
         String actionUrl = "/bindAuhtority/searchBindInfo";
         PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(currentPage, totalSize, pageSize, modelList, actionUrl, parameter);
-        model.addAttribute("pager",modelList);
+        model.addAttribute("pager",formList);
         model.addAttribute("upPage",upPage);
 
-        return "/page/usermanager/user_binding_manager";
+        return "/page/usermanager/user_binding_table";
     }
 
     @RequestMapping("/checkBindLimit")
@@ -202,6 +207,30 @@ public class PersonBindInstitutionController {
             return true;
         } catch (Exception e) {
             log.error("判断已绑定人数是否大于修改上限出错，账号：" + userId, e);
+            throw e;
+        }
+    }
+
+    @RequestMapping("/allUserId")
+    @ResponseBody
+    public List<String> getAllUserIdByInstitutionName(String institutionName) {
+
+        return userInfoDao.getUserIdByInstitutionName(institutionName);
+
+    }
+
+    /**
+     * 转换时间（格式：yyyy-MM-dd hh:mm:ss ）
+     * @param date
+     * @return
+     */
+    public String transformDate(Date date) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String time = format.format(date);
+            return time;
+        } catch (Exception e) {
+            log.error("时间转换出错", e);
             throw e;
         }
     }
