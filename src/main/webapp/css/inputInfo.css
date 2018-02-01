@@ -409,11 +409,11 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	position: absolute;
 	top: 0;
 	z-index: 1003;
-	/*display: none;*/
+	display: none;
 }
 .pop {
-	/*display: none;*/
-	width: 920px;
+	display: none;
+	width: 875px;
 	height: 500px;
 	background: #ffffff;
 	border: 1px solid #ccc;
@@ -571,6 +571,16 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	margin-left: 34px;
 	margin-top: 9px;
 }
+
+.bind_width{
+	width: 24%;
+	margin: 0 auto;
+	display: inline-block;
+}
+.bind_name{
+	margin-left: 19%;
+}
+
 
 
 
