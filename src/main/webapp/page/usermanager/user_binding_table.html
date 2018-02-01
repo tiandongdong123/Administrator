@@ -1,9 +1,4 @@
 <div class="bind_table">
-    <?
-        if(pager != null){
-        var i = (pager.currentPage-1)*pager.pageSize+1;
-        for(receipt in pager.pageRecords){
-    ?>
     <table  class="table table-bordered table-striped" >
         <thead>
         <tr>
@@ -20,6 +15,11 @@
             <th>绑定时间</th>
             <th>失效时间</th>
         </tr>
+        <?
+        if(pager != null){
+        var i = (pager.currentPage-1)*pager.pageSize+1;
+        for(receipt in pager.pageRecords){
+    ?>
         <tr>
             <td>${i++}</td>
             <? var institutionName =  institutionName(receipt.institutionId);  ?>
@@ -36,7 +36,7 @@
             <td>${receipt.bindTime}</td>
             <td>${receipt.invalidTime}</td>
         </tr>
-        <?}?>
+        <?}}?>
         </thead>
         <div class="qr"><div class="picture"></div><span class="reset">重置</span></div>
     </table>
@@ -58,8 +58,10 @@
         </div>
         <div id="page"></div>
         <div class="all_data">
+            <?if(pager != null){?>
             共<span class="all_number">${pager.total}</span>条数据 共<span class="all_page">${pager.pageCount}</span>页
+            <?}?>
         </div>
     </div>
-    <?}?>
+
 </div>
