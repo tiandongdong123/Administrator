@@ -16,89 +16,25 @@
                 <div class="col-md-6">
                     <div class="box box-primary">
                         <div class="form-group input_block">
-                            <label class="input_name">用户ID</label>
-                            <input type="text"  class="form-control input_width" name="userId" id="userId">
+                            <label class="input_name" style="margin-left: 300px">用户ID</label>
+                            <input type="text"  class="form-control bind_width" name="userId" id="userId">
                         </div>
                         <div class="form-group input_block">
-                            <label class="input_name">机构名称</label>
-                            <input type="text"  class="form-control input_width" name="institutionName" id="institutionName">
+                            <label class="input_name" style="margin-left: 300px">机构名称</label>
+                            <input type="text"  class="form-control bind_width" name="institutionName" id="institutionName">
                         </div>
                         <div class="form-group input_block">
-                            <label class="input_name">绑定日期</label>
+                            <label class="input_name" style="margin-left: 300px">绑定日期</label>
                             <input type="text" id="startDay" name="startTime" class="form-control input_time"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px; "/>
                             - <input type="text"id="endDay" name="endTime" class="form-control input_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:186px;"/>
                         </div>
                         <div class="pop_button" style="text-align:center;">
                             <button type="button" class="btn btn-primary" onclick="inquiry()">查询</button>
                         </div>
+                        <div id="bind_table" class="bind_table"></div>
                         <?
-                        if(pager != null){
-                        var i = (pager.currentPage-1)*pager.pageSize+1;
-                        for(receipt in pager.pageRecords){
+				            includeFileTemplate("/page/usermanager/user_binding_pop.html",{}){}
                       ?>
-                        <table  class="table table-bordered table-striped" >
-                            <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>机构名称</th>
-                                <th>机构ID</th>
-                                <th>绑定模式</th>
-                                <th>绑定个人上限</th>
-                                <th>绑定个人账号有效期</th>
-                                <th>绑定个人下载量上限/天</th>
-                                <th>绑定个人继承权限</th>
-                                <th>绑定个人账号</th>
-                                <th>绑定手机号</th>
-                                <th>绑定时间</th>
-                                <th>失效时间</th>
-                            </tr>
-                            <tr>
-                                <td>${i++}</td>
-                                <? var institutionName =  institutionName();  ?>
-                                <td>${institutionName}</td>
-                                <td>${receipt.institutionId}</td>
-                                <td>>${receipt.bindType}</td>
-                                <td>>${receipt.bindLimit}</td>
-                                <td>>${receipt.bindValidity}</td>
-                                <td>${receipt.downloadLimit}</td>
-                                <td>${receipt.authority}</td>
-                                <td>${receipt.personId}</td>
-                                <? var phoneNumber = personPhoneNumber(); ?>
-                                <td>${phoneNumber}</td>
-                                <td>${receipt.bindTime}</td>
-                                <td>${receipt.invalidTime}</td>
-                            </tr>
-                            <?}?>
-                            </thead>
-                            <div class="qr"><div class="picture"></div><span class="reset">重置</span></div>
-                        </table>
-                        <div class="behind">
-                            <? if (upPage!=null){?>
-                            <div class="return">
-                                <button type="button" class="btn btn-primary" >返回</button>
-                            </div>
-                            <?}?>
-                            <div class="pageshow">
-                                <input type="hidden" name="pageSize" id="pageSize">
-                                <span>每页显示：</span>
-                                <select class="evey-page" onclick="pageChange()">
-                                    <option value="20">20</option>
-                                    <option value="30">30</option>
-                                    <option value="50">50</option>
-                                </select>
-                                条数据
-                            </div>
-                            <div id="page"></div>
-                            <div class="all_data">
-                                共<span class="all_number">3</span>条数据 共<span class="all_page">15</span>页
-                            </div>
-                        </div>
-                        <?}?>
-
-                        <?
-				      includeFileTemplate("/page/usermanager/user_binding_pop.html",{}){}
-                      ?>
-
                     </div>
                 </div>
             </div>
