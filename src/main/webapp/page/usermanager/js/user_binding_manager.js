@@ -52,7 +52,6 @@ $(function(){
             $("#resourceInherited").prop("checked",false);
         }
     });
-
     //机构id点击全部
     $(".tol_quota").click(function(){
         $(".allSelectText").text("");
