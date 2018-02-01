@@ -99,6 +99,9 @@
 		<qq-connect.version>1.00</qq-connect.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
 		<wanfang.version>1.2017.346</wanfang.version>
+		<!-- 二维码 -->
+		<zxing.version>3.3.0</zxing.version>
+
 	</properties>
 
 	<!-- 声明parent的jar依赖，不被所有子项目继承，若子项目需继承jar，只需声明groupId和artifactId即可 -->
@@ -112,7 +115,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>usermanager-grpc-api</artifactId>
-			<version>1.2018.30-SNAPSHOT</version>
+			<version>1.2018.37-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>io.grpc</groupId>
@@ -797,6 +800,18 @@
 			<artifactId>guava</artifactId>
 			<version>20.0</version>
 		</dependency>
+		<!--二维码zxing-->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>${zxing.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>${zxing.version}</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 

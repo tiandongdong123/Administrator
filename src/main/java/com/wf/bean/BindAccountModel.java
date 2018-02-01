@@ -18,9 +18,9 @@ public class BindAccountModel {
     //绑定个人账号
     private String personId;
     //绑定时间
-    private Date bindTime;
+    private String bindTime;
     //失效时间
-    private Date invalidTime;
+    private String invalidTime;
 
     public Integer getDownloadLimit() {
         return downloadLimit;
@@ -78,19 +78,19 @@ public class BindAccountModel {
         this.personId = personId;
     }
 
-    public Date getBindTime() {
+    public String getBindTime() {
         return bindTime;
     }
 
-    public void setBindTime(Date bindTime) {
+    public void setBindTime(String bindTime) {
         this.bindTime = bindTime;
     }
 
-    public Date getInvalidTime() {
+    public String getInvalidTime() {
         return invalidTime;
     }
 
-    public void setInvalidTime(Date invalidTime) {
+    public void setInvalidTime(String invalidTime) {
         this.invalidTime = invalidTime;
     }
 
@@ -104,8 +104,8 @@ public class BindAccountModel {
                 ", downloadLimit=" + downloadLimit +
                 ", authority='" + authority + '\'' +
                 ", personId='" + personId + '\'' +
-                ", bindTime=" + bindTime +
-                ", invalidTime=" + invalidTime +
+                ", bindTime='" + bindTime + '\'' +
+                ", invalidTime='" + invalidTime + '\'' +
                 '}';
     }
 }

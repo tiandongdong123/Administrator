@@ -12,7 +12,8 @@ public class BindSearchParameter {
     //每页显示数量
     private Integer pageSize;
     //页数
-    private Integer pageNum;
+    private Integer page;
+
 
     public String getUserId() {
         return userId;
@@ -54,12 +55,12 @@ public class BindSearchParameter {
         this.pageSize = pageSize;
     }
 
-    public Integer getPageNum() {
-        return pageNum;
+    public Integer getPage() {
+        return page;
     }
 
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
+    public void setPage(Integer page) {
+        this.page = page;
     }
 
     @Override
@@ -70,7 +71,7 @@ public class BindSearchParameter {
                 ", startDay='" + startDay + '\'' +
                 ", endDay='" + endDay + '\'' +
                 ", pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
+                ", page=" + page +
                 '}';
     }
 }

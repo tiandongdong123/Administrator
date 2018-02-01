@@ -101,13 +101,21 @@
 	<!-- dubbo配置文件 -->
 	<import resource="classpath:dubbo-admin-consumer.xml" />
 
-	<bean id="personAuthorityMapping" class="com.wanfangdata.setting.PersonAuthorityMapping">
+	<bean id="personAuthorityMapping" class="com.wanfangdata.setting.BindAuthorityMapping">
 		<constructor-arg name="authority">
 			<map>
 				<entry key="资源下载" value="resource"/>
 				<entry key="万方分析" value="miner"/>
 			</map>
 		</constructor-arg>
+		<constructor-arg name="bindType">
+			<map>
+				<entry key="0" value="机构个人同时登录"/>
+				<entry key="1" value="机构登录"/>
+				<entry key="2" value="线下扫描"/>
+			</map>
+		</constructor-arg>
+
 	</bean>
     <bean id="channel" class="com.wanfangdata.grpcchannel.GrpcChannel"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>

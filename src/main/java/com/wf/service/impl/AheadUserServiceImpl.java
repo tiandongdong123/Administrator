@@ -23,7 +23,7 @@ import com.utils.*;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.rpc.bindauthority.*;
-import com.wanfangdata.setting.PersonAuthorityMapping;
+import com.wanfangdata.setting.BindAuthorityMapping;
 import com.wf.bean.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -158,7 +158,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Autowired
 	private BindAccountChannel  bindAccountChannel;
 	@Autowired
-	private PersonAuthorityMapping personAuthorityMapping;
+	private BindAuthorityMapping bindAuthorityMapping;
 
 
 	/**
@@ -1840,7 +1840,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
 		List<String> authorityList = new ArrayList<>();
 		for (String authority : authoritys) {
-			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
+			authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
 		}
 			OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
 					.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
@@ -1893,7 +1893,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
 		List<String> authorityList = new ArrayList<>();
 		for (String authority : authoritys) {
-			authorityList.add(personAuthorityMapping.getAuthorityName(authority));
+			authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
 		}
 		EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
 				.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
