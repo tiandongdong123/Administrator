@@ -293,12 +293,12 @@
 			           <?if(strutil.contain(rt,"perio")){?>
 						<!-- 期刊 -->
 			              <div class="tab-pane" id="perio_${i}_${j}">
-							<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>
-							<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm">选文献</button>
+							<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm">选刊</button>
+							<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm btn-success2">选文献</button>
 				             <div id="perioInfoDiv_${i}_${j}">
 				             	<label>期刊分类</label>
 								<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
-				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}">${perioCLC!}</textarea>
+				              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(${i},${j})">${perioCLC!}</textarea>
 				             </div>
 				             <div id="perioDiv_${i}_${j}" style="display:none;">
 			              		<label>中图分类</label>
@@ -307,7 +307,7 @@
 				             </div>
 				              <div style="width:60%;" id="journalIdDiv_${i}_${j}">
 		                	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
-		                	    <textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno">${perNo!}</textarea>
+		                	    <textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno_${i}_${j}" onblur="checkPerio(${i},${j})">${perNo!}</textarea>
 		               	   	  </div>
 		               	   	<label>年限</label>
 		               	   	<div class="time_block">
@@ -336,6 +336,7 @@
 		                		</select>
 		                		年
 		                	</div>
+		                	<div id="perioMsg_${i}_${j}"></div>
 			        	  </div>
 			           <?}?>
 			        <?if(strutil.contain(rt,"degree")){ ?>
@@ -389,9 +390,10 @@
 					 <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}">${conCLC!}</textarea>
 						<div class="form-group" style="width:60%;">
                 	   		<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>
-                	    	<textarea class="form-control" rows="6" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo">${confNo!}</textarea>
+                	    	<textarea class="form-control" rows="6" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo_${i}_${j}" onblur="checkConf(${i},${j})">${confNo!}</textarea>
 						</div>
 		             </div>
+		             <div id="confMsg_${i}_${j}"></div>
 			        <?}?>
 			        <?if(strutil.contain(rt,"local chronicles")){?>
 					<!-- 地方志 -->
@@ -430,11 +432,12 @@
 		             <div class="tab-pane" id="patent_${i}_${j}">
 			              <div style="padding: 10px;">
 							<div class="wrap">
-								<label>中图分类</label>
+								<label>IPC分类</label>
 								<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
-								<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}">${patentIPC!}</textarea>
+								<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}" onblur="checkPatent(${i},${j})">${patentIPC!}</textarea>
 							</div>
 						 </div>
+						 <div id="patentMsg_${i}_${j}"></div>
 		             </div>
 			        <?}?>
 			        <?if(strutil.contain(rt,"books")){?>
@@ -544,12 +547,12 @@
           <?if(strutil.contain(rt,"perio")){?>			           
            <!-- 期刊 -->
              <div class="tab-pane" id="perio_${i}_${j}">
-             	<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>
-				<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm">选文献</button>
+             	<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm">选刊</button>
+             	<button id="button1_${i}_${j}" onclick="changePerioClc('_${i}_${j}',1)" type="button" class="btn btn-primary btn-sm btn-success2">选文献</button>
              <div id="perioInfoDiv_${i}_${j}">
              	<label>期刊分类</label>
 				<ul class="ztree" id="perioInfoZtree_${i}_${j}"></ul>
-              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}"></textarea>
+              	<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].perioInfoClc" id="perioInfoClc_${i}_${j}" onblur="checkPerio(${i},${j})"></textarea>
              </div>
              <div id="perioDiv_${i}_${j}" style="display:none;">
              	<label>中图分类</label>
@@ -558,7 +561,7 @@
              </div>
              <div style="width:60%;" id="journalIdDiv_${i}_${j}">
               	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
-              	<textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno"></textarea>
+              	<textarea class="form-control" rows="10" name="rdlist[${i}].rldto[${j}].journalIdno" id="journalIdno_${i}_${j}" onblur="checkPerio(${i},${j})"></textarea>
              </div>
        	   	<label>年限</label>
        	   	<div class="time_block">
@@ -573,6 +576,7 @@
               	</select>
               	年
        	  	</div>
+       	  	<div id="perioMsg_${i}_${j}"></div>
        	  </div>
           <?}?>
        <?if(strutil.contain(rt,"degree")){?>
@@ -611,20 +615,22 @@
            <textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].conferenceClc" id="conferenceClc_${i}_${j}"></textarea>
 			<div class="form-group" style="width:60%;">
 				<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>
-				<textarea class="form-control" rows="6" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo"></textarea>
+				<textarea class="form-control" rows="6" name="rdlist[${i}].rldto[${j}].conferenceNo" id="conferenceNo_${i}_${j}" onblur="checkConf(${i},${j})"></textarea>
 			</div>
            </div>
+           <div id="confMsg_${i}_${j}"></div>
        <?}?>
        <?if(strutil.contain(rt,"patent")){?>
         <!-- 专利 -->
         <div class="tab-pane" id="patent_${i}_${j}">
           <div style="padding: 10px;">
 			<div class="wrap">
-				<label>中图分类</label>
+				<label>IPC分类</label>
 				<ul class="ztree" id="patentZtree_${i}_${j}"></ul>
-				<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}"></textarea>
+				<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist[${i}].rldto[${j}].patentIpc" id="patentIpc_${i}_${j}" onblur="checkPatent(${i},${j})"></textarea>
 			</div>
 		 </div>
+		 <div id="patentMsg_${i}_${j}"></div>
        </div>
        <?}?>
        <?if(strutil.contain(rt,"books")){?>

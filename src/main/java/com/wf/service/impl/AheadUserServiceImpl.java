@@ -1357,6 +1357,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
 			if(m!=null && m.get("productSourceCode")!=""){
 				List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+				if(m.get("resType")==null){
+					m.put("resType", "");
+				}
 				m.put("rp", rp);
 				list.add(m);
 			}

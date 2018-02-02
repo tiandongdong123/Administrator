@@ -95,6 +95,67 @@ function standardShow(count,i,id){
 	}
 }
 
+//验证期刊分类号和期刊ID
+function checkPerio(count,i){
+	var value=$("#perioInfoClc_"+count+"_"+i).val();
+	if(value!=null&&value!=""){
+		value=value.toUpperCase();
+		var reg = /^[A-Z0-9,]+$/;
+		if(!reg.test(value)){
+			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊分类输入格式不正确</font>');
+			return false;
+		}else{
+			$("#perioInfoClc_"+count+"_"+i).val(value);
+		}
+	}
+	var value2=$("#journalIdno_"+count+"_"+i).val();
+	if(value2!=null&&value2!=""){
+		var reg2 = /^[a-zA-Z0-9\n\r,-]+$/;
+		if(!reg2.test(value2)){
+			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊ID输入格式不正确</font>');
+			return false;
+		}
+	}
+	$("#perioMsg_"+count+"_"+i).html('');
+	return true;
+}
+
+//验证会议馆藏号
+function checkConf(count,i){
+	var value=$("#conferenceNo_"+count+"_"+i).val();
+	if(value==null||value==""){
+		$("#confMsg_"+count+"_"+i).html('');
+		return true;
+	}
+	var reg = /^[a-zA-Z0-9\n\r,-]+$/;
+	if(!reg.test(value)){
+		$("#confMsg_"+count+"_"+i).html('<font style="color:red">会议论文集馆藏号输入格式不正确</font>');
+		return false;
+	}else{
+		$("#confMsg_"+count+"_"+i).html('');
+		return true;
+	}
+}
+
+//验证专利RPC分类
+function checkPatent(count,i){
+	var value=$("#patentIpc_"+count+"_"+i).val();
+	if(value==null||value==""){
+		$("#patentMsg_"+count+"_"+i).html('');
+		return true;
+	}
+	value=value.toUpperCase();
+	var reg = /^[A-Z0-9,]+$/;
+	if(!reg.test(value)){
+		$("#patentMsg_"+count+"_"+i).html('<font style="color:red">IPC分类输入格式不正确</font>');
+		return false;
+	}else{
+		$("#patentIpc_"+count+"_"+i).val(value);
+		$("#patentMsg_"+count+"_"+i).html('');
+		return true;
+	}
+}
+
 //标准配置重置
 function resetStandard(count,i){
 	$("#company_"+count+"_"+i).val("");
@@ -276,6 +337,66 @@ function openPurchaseItems(count,i,type){
 			yes: function(index, layero){
 		    	if(validStandard(count,i)){
 		    		layer.closeAll();
+		    	}
+		    }
+		});
+	}else if(type.indexOf("perio")>-1){
+		$("#perioMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPerio(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPerio(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("conf")>-1){
+		$("#confMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkConf(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkConf(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("patent")>-1){
+		$("#patentMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPatent(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPatent(count,i)){
+		    		return false;
 		    	}
 		    }
 		});
@@ -492,20 +613,20 @@ function createDetail(count,i,resourceid,type){
 	text += '</ul><div class="tab-content">';
 	if(type.indexOf("perio")>-1){
 		text += '<div class="tab-pane" id="perio_'+count+'_'+i+'">';
-		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm btn-success">选刊</button>';
-		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm">选文献</button>';
+		text +='<button id="button0_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',0)" type="button" class="btn btn-primary btn-sm">选刊</button>';
+		text +='<button id="button1_'+count+'_'+i+'" onclick="changePerioClc(\'_'+count+'_'+i+'\',1)" type="button" class="btn btn-primary btn-sm btn-success2">选文献</button>';
 		text +='<div id="perioInfoDiv_'+count+'_'+i+'"><label>期刊分类</label><ul class="ztree" id="perioInfoZtree_'+count+'_'+i+'"></ul>';
-        text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'"></textarea></div>';
+        text +='<textarea placeholder="格式：A,B,C" placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].perioInfoClc" id="perioInfoClc_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<div id="perioDiv_'+count+'_'+i+'" style="display:none;"><label>中图分类</label><ul class="ztree" id="perioZtree_'+count+'_'+i+'"></ul>';
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].journalClc" id="journalClc_'+count+'_'+i+'"></textarea></div>';
 		text += '<div style="width:60%;" id="journalIdDiv_'+count+'_'+i+'">';
 		text += '<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>';
-		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'"></textarea></div>';
+		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<label>年限</label>';
 		text += '<div class="time_block">';
 		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_startTime" id="journal_startTime_'+count+'_'+i+'"></select>年——';
 		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_endTime" id="journal_endTime_'+count+'_'+i+'"></select>年';
-		text += '</div></div>';
+		text += '</div><div id="perioMsg_'+count+'_'+i+'"></div></div>';
 	}
 	if(type.indexOf("degree")>-1){
 		text += '<div class="tab-pane" id="degree_'+count+'_'+i+'">';
@@ -530,16 +651,16 @@ function createDetail(count,i,resourceid,type){
 		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].conferenceClc" id="conferenceClc_'+count+'_'+i+'"></textarea>';
 		text += '<div class="form-group" style="width:60%;">';
 		text += '<label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>';
-		text += '<textarea class="form-control" rows="6" name="rdlist['+count+'].rldto['+i+'].conferenceNo" id="conferenceNo_'+count+'_'+i+'"></textarea>';
-		text += '</div></div>';
+		text += '<textarea class="form-control" rows="6" name="rdlist['+count+'].rldto['+i+'].conferenceNo" id="conferenceNo_'+count+'_'+i+'" onblur="checkConf('+count+','+i+')"></textarea>';
+		text += '</div></div><div id="confMsg_'+count+'_'+i+'"></div>';
 	}
 	if(type.indexOf("patent")>-1){
 		text += '<div class="tab-pane" id="patent_'+count+'_'+i+'">';
 		text += '<div style="padding: 10px;">';
 		text += '<div class="wrap">';
-		text += '<label>IPC分类法</label><ul class="ztree" id="patentZtree_'+count+'_'+i+'"></ul>';
-		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].patentIpc" id="patentIpc_'+count+'_'+i+'"></textarea>';
-		text += '</div></div></div>';
+		text += '<label>IPC分类</label><ul class="ztree" id="patentZtree_'+count+'_'+i+'"></ul>';
+		text += '<textarea placeholder="格式：A,B,C" class="form-control" name="rdlist['+count+'].rldto['+i+'].patentIpc" id="patentIpc_'+count+'_'+i+'" onblur="checkPatent('+count+','+i+')"></textarea>';
+		text += '</div></div><div id="patentMsg_'+count+'_'+i+'"></div></div>';
 	}
 	if(type.indexOf("books")>-1){
 		text += '<div class="tab-pane" id="book_'+count+'_'+i+'">';
@@ -1036,6 +1157,7 @@ function findPatent(count,i){
 						onCheck: function(){
 							var pa = $.fn.zTree.getZTreeObj("patentZtree_"+data.number);
 							if(pa!=null){
+								$("#patentMsg_"+data.number).html("");
 								$("#patentIpc_"+data.number).val(getCheckNode(pa));
 							}
 						}
@@ -1078,6 +1200,7 @@ function findPerioSubject(count,i){
 						onCheck: function(){
 							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
 							if(qk!=null){
+								$("perioMsg_"+data.number).html("");
 								$("#perioInfoClc_"+data.number).val(getCheckNode(qk));
 							}
 						}
@@ -1245,14 +1368,14 @@ function getCheckNode(treeObj){
  */
 function changePerioClc(obj,type){
 	if(type==0){
-		$("#button1"+obj).removeClass('btn-success');
-		$("#button0"+obj).addClass('btn-success');
+		$("#button0"+obj).removeClass('btn-success2');
+		$("#button1"+obj).addClass('btn-success2');
 		$("#perioInfoDiv"+obj).show();
 		$("#perioDiv"+obj).hide();
 		$("#journalIdDiv"+obj).show();
 	}else if(type==1){
-		$("#button0"+obj).removeClass('btn-success');
-		$("#button1"+obj).addClass('btn-success');
+		$("#button1"+obj).removeClass('btn-success2');
+		$("#button0"+obj).addClass('btn-success2');
 		$("#perioDiv"+obj).show();
 		$("#perioInfoDiv"+obj).hide();
 		$("#journalIdDiv"+obj).hide();

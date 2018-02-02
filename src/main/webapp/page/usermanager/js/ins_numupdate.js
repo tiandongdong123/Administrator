@@ -97,6 +97,66 @@ function openItems(count,i,type){
 		    	}
 		    }
 		});
+	}else if(type.indexOf("perio")>-1){
+		$("#perioMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPerio(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPerio(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("conf")>-1){
+		$("#confMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkConf(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkConf(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("patent")>-1){
+		$("#patentMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPatent(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPatent(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
 	}else{
 		layer.open({
 		    type: 1, //page层 1div，2页面
@@ -140,12 +200,13 @@ function perioSubject(num){
 						onCheck: function(){
 							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
 							if(qk!=null){
+								$("#perioMsg_"+data.number).html("");
 								$("#perioInfoClc_"+data.number).val(getCheckNode(qk));
 							}
 						}
 					}
 				};
-			//期刊中途分类
+			//期刊分类
 			$.fn.zTree.init($("#perioInfoZtree_"+data.number), setting, data.ztreeJson);
 			if($.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number)!=null){				
 				checkedZtree($("#perioInfoClc_"+data.number).text(),$.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number));
@@ -258,7 +319,7 @@ function getAllChildrenNodes(treeNode,obj){
 	} 
 }
 
-//学科中图分类树
+//IPC分类树
 function findPatentEcho(num){
 	$.ajax({
 		type : "post",
@@ -289,12 +350,13 @@ function findPatentEcho(num){
 						onCheck: function(){
 							var pa=$.fn.zTree.getZTreeObj("patentZtree_"+data.number);
 							if(pa!=null){
+								$("#patentMsg_"+data.number).html("");
 								$("#patentIpc_"+data.number).val(getCheckNode(pa));
 							}
 						}
 					}
 			};
-			//期刊中途分类
+			//IPC分类
 			$.fn.zTree.init($("#patentZtree_"+data.number), setting, data.ztreeJson);
 			if($.fn.zTree.getZTreeObj("patentZtree_"+data.number)!=null){				
 				checkedZtree($("#patentIpc_"+data.number).val(),$.fn.zTree.getZTreeObj("patentZtree_"+data.number));
