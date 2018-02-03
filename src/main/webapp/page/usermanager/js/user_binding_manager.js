@@ -16,12 +16,14 @@ $(function(){
     });
     //绑定模式判断并展示二维码
     var choose = true;
+    var reset;
     $(".bind_table").on("click",".bindtype",function(){
         if($(this).text()=="线下扫描"){
             if(choose){
                  $(".qr").show();
                  choose = false;
                  var userId = $(this).siblings(".userID").text();
+                reset=userId;
                  $.ajax({
                      type : "post",
                      url : "../bindAuhtority/getQRCode.do",
@@ -40,8 +42,8 @@ $(function(){
         }
     });
     //点击重置二维码
-    $(".reset").click(function () {
-        var userId = $(this).siblings(".userID").text();
+    $(".bind_table").on("click",".reset",function(){
+        var userId = reset;
         $.ajax({
             type : "post",
             url : "../bindAuhtority/resetQRCode.do",
