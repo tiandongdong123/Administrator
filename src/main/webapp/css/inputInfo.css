@@ -407,7 +407,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .backdrop {
 	height: 100%;
 	width: 100%;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	z-index: 1003;
 	display: none;
@@ -584,7 +584,6 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .userID{
 	color: #0c60c2;
-	curosr: pointer;
 }
 
 

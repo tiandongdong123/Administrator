@@ -2,21 +2,17 @@ $(function(){
     yesChoose();
     //弹出框
     $(".institutionId").click(function(){
-        var h = $("body").height();  //获取当前浏览器界面的高度
-        var backwidth = $("body").width();   //获取当前浏览器界面的宽度
-        var backheight=h+42;
         $(".backdrop").css({
-            height:backheight,      //给遮盖层的div的高宽度赋值
-            width:backwidth,
             display:"block"  //遮盖层显示
         });
         $(".pop").show();
     });
     $(".x").click(function(){
-        noChoose();
+        yesChoose();
         $(".revise").text("修改");
         $(".backdrop").hide();
         $(".pop").hide();
+        dislodge();
     });
     //机构ID弹出框
     $(".bind_table").on("click",".userID",function(){
@@ -24,20 +20,21 @@ $(function(){
         $(".pop").show();
         $("#institution").val($(this).siblings(".username").text());
         $(".enshrine").text($(this).text());
-        var bindtype = $(".bindtype").text();
+
+        var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
-            $("#bindType").val()=="0";
+            $("#bindType option:eq(0)").prop("selected","selected");
         }
         else if(bindtype=="机构登陆"){
-            $("#bindType").val()=="1";
+            $("#bindType option:eq(1)").prop("selected","selected");
         }else if(bindtype="线下扫描"){
-            $("#bindType").val()=="2";
+            $("#bindType option:eq(2)").prop("selected","selected");
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
         $("#bindValidity").val($(this).siblings(".bindValidity").text());
         $("#downloadLimit").val($(this).siblings(".downloadLimit").text());
-        var authority = $(".authority").text();
-        if(authority=="资源下载,万方分析"){
+        var authority = $(this).siblings(".authority").text();
+        if(authority=="万方分析、资源下载"){
             $("#allInherited").prop("checked",true);
             $(".selFirst").prop("checked",true);
         }
@@ -217,13 +214,27 @@ function revise(){
         }
     }
 }
+
+//去除bootstrop
+function dislodge(){
+    $('.form-group').each(function(){ $(this).removeClass('has-success  has-error') });
+    $(".help-block").css("display","none");
+    $(".form-control-feedback").css("display","none");
+    $(".bind_num").css("color","#333");
+    $(".mistaken").css("display","none");
+    $(".wrong").css("display","none");
+    $(".bind_numm").css("color","#333");
+    $(".mistakenm").css("display","none");
+    $(".wrongm").css("display","none");
+    $("#bindLimit").css("border-color","#ccc");
+}
 //取消
 function abolish(){
     yesChoose();
     $(".revise").text("修改");
     $(".backdrop").hide();
     $(".pop").hide();
-
+    dislodge();
 }
 
 function inquiry(){
