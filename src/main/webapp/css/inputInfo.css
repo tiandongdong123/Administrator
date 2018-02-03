@@ -526,14 +526,15 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	width: 250px;
 	height: 250px;
 	border:1px solid #ccc;
-	position: absolute;
+	position: fixed;
 	background: #fff;
-	margin-left: 35%;
+	margin-left: 30%;
 }
 .reset{
 	position: absolute;
-	bottom: 10px;
+	bottom: 5px;
 	right: 10px;
+	cursor: pointer;
 }
 .picture{
 	width: 200px;

@@ -1325,7 +1325,17 @@ $(document).on("click",function(e){
 	}
 })
 
-
+//鼠标经过有提示
+function  showFont(){
+	$(".mechanism_id").hover(function(){
+		if($('.index:checked').length!=0){
+			$(".show_mechanism").text($(".enshrine").text());
+			$(".show_mechanism").show();
+		}
+	},function(){
+		$(".show_mechanism").hide();
+	});
+}
 
 //机构id点击其他
 function commonCaption(e) {
@@ -1340,7 +1350,8 @@ function commonCaption(e) {
 		$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
 		if(all_index==num){
 			if(all_index==1){
-				$(".enshrine ").text($(".quota li:first").text());
+				$(".data_first").css("display","none");
+				$(".enshrine").text($(".quota li:eq(1)").text());
 			}else {
 				$(".tol_quota").prop("checked",true);
 				$('.indexitemText').remove();
@@ -1356,7 +1367,6 @@ function commonCaption(e) {
 			}
 		});
 		$('.enshrine').text('');
-
 		$('.index:checked').each(function(){
 			curText = $(this).next().text();
 			$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');

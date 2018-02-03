@@ -80,17 +80,6 @@ $(document).ready(function(){
         check();
     });
 });
-//鼠标经过有提示
-function  showFont(){
-    $(".mechanism_id").hover(function(){
-        if($('.index:checked').length!=0){
-            $(".show_mechanism").text($(".enshrine").text());
-            $(".show_mechanism").show();
-        }
-    },function(){
-         $(".show_mechanism").hide();
-    });
-}
 
 function submitNew(){
     var reg = /^[1-9]\d*$/;
@@ -143,7 +132,10 @@ function submitNew(){
         //绑定个人下载量上限
         var downloadLimit = $("#downloadLimit").val();
         //绑定个人继承权限
-        var bindAuthority = $("#bindAuthority").val();
+        var bindAuthority = new Array();
+        $("input[class='selFirst']:checked").each(function () {
+            bindAuthority.push($(this).val());
+        });
         if(bool){
             return ;
         }
@@ -156,7 +148,7 @@ function submitNew(){
                 bindLimit:bindLimit,
                 bindValidity:bindValidity,
                 downloadLimit:downloadLimit,
-                bindAuthority:bindAuthority,
+                bindAuthority:bindAuthority.join(),
             },
             success: function(data){
                 $("#institution").val("");

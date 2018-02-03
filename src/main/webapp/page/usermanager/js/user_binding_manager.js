@@ -14,6 +14,47 @@ $(function(){
         $(".pop").hide();
         dislodge();
     });
+    //绑定模式判断并展示二维码
+    var choose = true;
+    $(".bind_table").on("click",".bindtype",function(){
+        if($(this).text()=="线下扫描"){
+            if(choose){
+                 $(".qr").show();
+                 choose = false;
+                 var userId = $(this).siblings(".userID").text();
+                 $.ajax({
+                     type : "post",
+                     url : "../bindAuhtority/getQRCode.do",
+                     dataType : "json",
+                     data:{
+                         userId:userId,
+                     },
+                     success: function(data){
+                         $('.picture').attr('src',data);
+                     }
+                 });
+            }else{
+                $(".qr").hide();
+                choose = true;
+            }
+        }
+    });
+    //点击重置二维码
+    $(".reset").click(function () {
+        var userId = $(this).siblings(".userID").text();
+        $.ajax({
+            type : "post",
+            url : "../bindAuhtority/resetQRCode.do",
+            dataType : "json",
+            data:{
+                userId:userId,
+            },
+            success: function(data){
+                $('.picture').attr('src',data);
+                $(".qr").toggle();
+            }
+        });
+    });
     //机构ID弹出框
     $(".bind_table").on("click",".userID",function(){
         $(".backdrop").show();
@@ -63,12 +104,14 @@ $(function(){
         else{
             $(".enshrine").text("");
             if($("enshrine").text()==""){
+                $(".mechanism_id").css("border-color","#dd4b39");
                 $(".bind_numm").css("color","#dd4b39");
                 $(".wrongm").css("background","url(../img/f.png)");
                 $(".mistakenm").css("display","inline");
                 $(".wrongm").css("display","inline");
                 $(".mistakenm").text("机构ID不能为空");
             }else {
+                $(".mechanism_id").css("border-color","#00a65a");
                 $(".bind_numm").css("color","#00a65a");
                 $(".wrongm").css("background","url(../img/t.png)");
                 $(".wrongm").css("display","inline");
@@ -84,6 +127,8 @@ $(function(){
     $("#bindLimit").keyup(function(){
         check();
     });
+
+
 });
 //移除disabled属性
 function noChoose(){
@@ -119,7 +164,7 @@ function revise(){
         var institution = $("#institution").val();
         $.ajax({
             type : "post",
-            url : "",
+            url : "../bindAuhtority/allUserId.do",
             dataType : "json",
             data:{
                 institutionName: institution,
@@ -159,6 +204,7 @@ function revise(){
         }
         if($(".enshrine").text()=="")
         {
+            $(".mechanism_id").css("border-color","#dd4b39");
             $(".bind_numm").css("color","#dd4b39");
             $(".wrongm").css("background","url(../img/f.png)");
             $(".mistakenm").css("display","inline");
@@ -166,15 +212,17 @@ function revise(){
             $(".mistakenm").text("机构ID不能为空");
             bool = true;
         }else{
+            $(".mechanism_id").css("border-color","#00a65a");
             $(".bind_numm").css("color","#00a65a");
             $(".wrongm").css("background","url(../img/t.png)");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
+            bool = false;
         }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");
             bool = true;
-        }    else{
+        }else{
             //机构ID
             var mechanism_id = new Array();
             $("input[class='index']:checked").each(function () {
@@ -189,26 +237,32 @@ function revise(){
             //绑定个人下载量上限
             var downloadLimit = $("#downloadLimit").val();
             //绑定个人继承权限
-            var bindAuthority = $("#bindAuthority").val();
+            var bindAuthority = new Array();
+            $("input[class='selFirst']:checked").each(function () {
+                bindAuthority.push($(this).val());
+            });
+
             if(bool){
                 return ;
             }
             $.ajax({
                 type : "post",
-                url : "",
+                url : "../bindAuhtority/updateAuthority.do",
                 data:{
                     userId:mechanism_id.join(),
                     bindType:bindType,
                     bindLimit:bindLimit,
                     bindValidity:bindValidity,
                     downloadLimit:downloadLimit,
-                    bindAuthority:bindAuthority,
+                    bindAuthority:bindAuthority.join(),
                 },
                 success: function(data){
                     yesChoose();
                     $(".revise").text("修改");
                     $(".backdrop").hide();
                     $(".pop").hide();
+                    dislodge();
+                    refresh();
                 }
             });
         }
@@ -258,10 +312,25 @@ function inquiry(){
         },
         url:"../bindAuhtority/searchBindInfo.do",
         success:function(data){
-            $('#bind_table').html(data)
+            $('#bind_table').html(data);
+            redq();
         }
     });
 }
+function redq() {
+    if($(".bindtype").length>0){
+        $(".bindtype").each(function (index,value) {
+            if($(value).text()=="线下扫描"){
+                $(value).css({
+                    "color":"#0c60c2",
+                    "cursor":"pointer",
+                });
+            }
+        })
+    }
+}
+
+
 //选择多少条数据
 function pageChange() {
     var userId = $("#userId").val();
@@ -297,18 +366,10 @@ function pageChange() {
     });
 }
 
-
-
-
-
 //刷新页面
 function refresh(){
-    window.location.href="../log/getLog.do";
+    window.location.href="../bindAuhtority/bindInfo.do";
 }
-
-
-
-
 /**
  * 日期转换
  * @param time
