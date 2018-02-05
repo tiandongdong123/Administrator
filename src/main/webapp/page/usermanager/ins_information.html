@@ -2,18 +2,19 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-
 <script type="text/javascript" src="../page/usermanager/js/ins_information.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
   <div class="content-wrapper">
     <section class="content-header"><h1>机构用户信息管理</h1></section>
 
+	  <input type="hidden" class="parameter" value="">
 <section class="content">
   <div class="row">
     <div class="col-md-6">
       <div class="box box-primary">
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
+
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
                  <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}">
@@ -65,7 +66,7 @@
      	<a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a>
         <a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a>
         <a href="../auser/groupOrder.do?userId=${list.userId}" class="add_admin">订单记录</a>
-		 <a href="#" class="add_admin">个人绑定机构列表</a>
+		 <a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a>
 	    <?if(list.pid!=null&&list.pid!=""){?>
 			<a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
 	    <?}else{?>

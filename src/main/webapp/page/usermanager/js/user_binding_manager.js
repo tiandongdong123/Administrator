@@ -1,4 +1,8 @@
 $(function(){
+    if($(".parameter").val()){
+       $("#userId").text($(".parameter").val());
+        inquiry();
+    }
     yesChoose();
     //弹出框
     $(".institutionId").click(function(){
@@ -9,6 +13,7 @@ $(function(){
     });
     $(".x").click(function(){
         yesChoose();
+        $(".mechanism_id").css("border-color","#eee");
         $(".revise").text("修改");
         $(".backdrop").hide();
         $(".pop").hide();
@@ -17,32 +22,79 @@ $(function(){
     //绑定模式判断并展示二维码
     var choose = true;
     var reset;
+    var relocate;
+
+    $(".bind_table").on("click",".return .btn-primary",function(){
+        window.history.back();
+    });
     $(".bind_table").on("click",".bindtype",function(){
         if($(this).text()=="线下扫描"){
-            if(choose){
-                 $(".qr").show();
-                 choose = false;
-                 var userId = $(this).siblings(".userID").text();
-                reset=userId;
-                 $.ajax({
-                     type : "post",
-                     url : "../bindAuhtority/getQRCode.do",
-                     data:{
-                         userId:userId,
-                     },
-                     success: function(data){
-                         $('.picture').attr('src',data);
-                     }
-                 });
-            }else{
-                $(".qr").hide();
-                choose = true;
+            if($(this).data('num')==reset){
+                if(choose){
+                    $(".qr").show();
+                    choose = false;
+                    var userId = $(this).siblings(".userID").text();
+                    var num = $(this).data('num');
+                    reset=num;
+                    $.ajax({
+                        type : "post",
+                        url : "../bindAuhtority/getQRCode.do",
+                        data:{
+                            userId:userId,
+                        },
+                        success: function(data){
+                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                            relocate=userId;
+                        }
+                    });
+                }else{
+                    $(".qr").hide();
+                    choose = true;
+                    reset=="";
+                }
+            }else {
+                if(choose){
+                    $(".qr").show();
+                    choose = false;
+                    var userId = $(this).siblings(".userID").text();
+                    var num = $(this).data('num');
+                    reset=num;
+                    $.ajax({
+                        type : "post",
+                        url : "../bindAuhtority/getQRCode.do",
+                        data:{
+                            userId:userId,
+                        },
+                        success: function(data){
+                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                            relocate=userId;
+                        }
+                    });
+                }else{
+                    $(".qr").show();
+                    choose = false;
+                    var userId = $(this).siblings(".userID").text();
+                    var num = $(this).data('num');
+                    reset=num;
+                    $.ajax({
+                        type : "post",
+                        url : "../bindAuhtority/getQRCode.do",
+                        data:{
+                            userId:userId,
+                        },
+                        success: function(data){
+                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                            relocate=userId;
+                        }
+                    });
+                }
             }
         }
     });
     //点击重置二维码
     $(".bind_table").on("click",".reset",function(){
-        var userId = reset;
+        $(".qr").show();
+        var userId = relocate;
         $.ajax({
             type : "post",
             url : "../bindAuhtority/resetQRCode.do",
@@ -50,13 +102,13 @@ $(function(){
                 userId:userId,
             },
             success: function(data){
-                $('.picture').attr('src',data);
-                $(".qr").toggle();
+                $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
             }
         });
     });
     //机构ID弹出框
     $(".bind_table").on("click",".userID",function(){
+        $(".mechanism_id").css("border-color","#d2d6de");
         $(".backdrop").show();
         $(".pop").show();
         $("#institution").val($(this).siblings(".username").text());
@@ -96,10 +148,11 @@ $(function(){
         $("input[name='quotaName']").prop("checked",$(".tol_quota").prop("checked"));
         if($(".tol_quota").is(":checked")){
             $(".enshrine").text("全部");
-            $(".bind_numm").css("color","#333");
+            $(".mechanism_id").css("border-color","#00a65a");
+            $(".bind_numm").css("color","#00a65a");
+            $(".wrongm").css("background","url(../img/t.png)");
+            $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
-            $(".wrongm").css("display","none");
-            $(".data_first").css("display","block");
         }
         else{
             $(".enshrine").text("");
@@ -181,6 +234,7 @@ function revise(){
                     showFont();
                 }else {
                     $(".data_first").css("display","block");
+                    $(".tol_quota").prop("checked","checked");
                     $(".enshrine").text($(".quota li:first").text());
                     showFont();
                 }
@@ -262,7 +316,8 @@ function revise(){
                     $(".backdrop").hide();
                     $(".pop").hide();
                     dislodge();
-                    refresh();
+                    $(".mechanism_id").css("border-color","#d2d6de");
+                    inquiry();
                 }
             });
         }
@@ -285,12 +340,12 @@ function dislodge(){
 //取消
 function abolish(){
     yesChoose();
+    $(".mechanism_id").css("border-color","#d2d6de");
     $(".revise").text("修改");
     $(".backdrop").hide();
     $(".pop").hide();
     dislodge();
 }
-
 function inquiry(){
     var userId = $("#userId").val();
     var institutionName = $("#institutionName").val();
@@ -314,24 +369,6 @@ function inquiry(){
         success:function(data){
             $('#bind_table').html(data);
             redq();
-            //显示分页
-            laypage({
-                cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
-                pages: pages, //通过后台拿到的总页数
-                curr: curr, //当前页
-                skip: true, //是否开启跳页
-                skin: 'molv',//当前页颜色，可16进制
-                groups: groups, //连续显示分页数
-                first: '首页', //若不显示，设置false即可
-                last: '尾页', //若不显示，设置false即可
-                prev: '上一页', //若不显示，设置false即可
-                next: '下一页', //若不显示，设置false即可
-                jump: function(obj, first){ //触发分页后的回调
-                    if(!first){ //点击跳页触发函数自身，并传递当前页：obj.curr
-                        tabulation(obj.curr);
-                    }
-                }
-            });
         }
     });
 }
@@ -403,4 +440,45 @@ function timeStamp2String(time){
     return year + "-" + month + "-" + date+" "+hour+":"+minute+":"+second;
 }
 
-
+//翻页跳转
+(function () {
+    var getPager = function (url, $container) {
+        $.get(url, function (html) {
+            $container.replaceWith(html);
+        });
+    };
+    //page-a异步跳转
+    $(document).on('click', '.sync-html .page_bind a', function () {
+        $('.sync-html').empty('');
+        var href = $(this).attr('href');
+        $(this).removeAttr('href');
+        $.get(href, function (html) {
+            $('.sync-html').html(html);
+        });
+    });
+    //page-form异步跳转
+    $(document).on('submit', '.sync-html .page_bind form', function () {
+        var action = $(this).attr('action');
+        var inputPage = parseInt($(this).find('.laypage_skip').val());
+        var allPage = $(this).attr('data-all');
+        if (inputPage > 0 && inputPage <= allPage) {
+            var href = action + inputPage;
+            getPager(href, $(this).closest('.sync-html'));
+        } else {
+            alert('请输入正确页码');
+        }
+        return false;
+    });
+    //page-form同步跳转
+    $(document).on('submit', '.no-sync .page_bind form', function () {
+        var action = $(this).attr('action');
+        var inputPage = parseInt($(this).find('.laypage_skip').val());
+        var allPage = $(this).attr('data-all');
+        if (inputPage > 0 && inputPage <= allPage) {
+            window.location.href = action + encodeURIComponent(inputPage);
+        } else {
+            alert('请输入正确页码');
+        }
+        return false;
+    });
+})();

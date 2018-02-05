@@ -24,7 +24,7 @@
             <? var institutionName =  institutionName(receipt.institutionId);  ?>
             <td class="username">${institutionName}</td>
             <td class="userID" style="cursor: pointer">${receipt.institutionId}</td>
-            <td class="bindtype">${receipt.bindType}</td>
+            <td class="bindtype" data-num=${i}>${receipt.bindType}</td>
             <td class="bindLimit">${receipt.bindLimit}</td>
             <td class="bindValidity">${receipt.bindValidity}</td>
             <td class="downloadLimit">${receipt.downloadLimit}</td>
@@ -55,10 +55,15 @@
             </select>
             条数据
         </div>
-        <div id="page"></div>
+            <?
+           includeFileTemplate("../../inc/pagePlugin.html",{maxPageNumber:5, pager:pager}){}
+           ?>
         <div class="all_data">
             <?if(pager != null){?>
-            共<span class="all_number">${pager.total}</span>条数据 共<span class="all_page">${pager.pageCount}</span>页
+            共<span class="all_number">${pager.total}</span>条数据
+            <!--共<span class="all_page">${pager.pageCount}</span>页-->
             <?}?>
         </div>
+
+
     </div>

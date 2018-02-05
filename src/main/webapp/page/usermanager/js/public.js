@@ -1343,9 +1343,11 @@ function commonCaption(e) {
 	var num= $('.index:checked').length;
 	var curText = e.next().text();
 	if(e.is(':checked')){
-		$(".bind_numm").css("color","#333");
+		$(".mechanism_id").css("border-color","#00a65a");
+		$(".bind_numm").css("color","#00a65a");
+		$(".wrongm").css("background","url(../img/t.png)");
+		$(".wrongm").css("display","inline");
 		$(".mistakenm").css("display","none");
-		$(".wrongm").css("display","none");
 		$(".data_first").css("display","block");
 		$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
 		if(all_index==num){
@@ -1372,12 +1374,14 @@ function commonCaption(e) {
 			$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
 		});
 		if($(".enshrine").text()==""){
+			$(".mechanism_id").css("border-color","#dd4b39");
 			$(".bind_numm").css("color","#dd4b39");
 			$(".wrongm").css("background","url(../img/f.png)");
 			$(".mistakenm").css("display","inline");
 			$(".wrongm").css("display","inline");
 			$(".mistakenm").text("机构ID不能为空");
 		}else {
+			$(".mechanism_id").css("border-color","#00a65a");
 			$(".bind_numm").css("color","#00a65a");
 			$(".wrongm").css("background","url(../img/t.png)");
 			$(".wrongm").css("display","inline");

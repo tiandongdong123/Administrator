@@ -398,6 +398,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .behind{
 	background: #fff;
 	overflow: hidden;
+	margin-left: 230px;
 }
 .all_data{
 	margin: 7px 10px;
@@ -576,7 +577,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 
 .bind_width{
-	width: 24%;
+	width: 385px;
 	margin: 0 auto;
 	display: inline-block;
 }
