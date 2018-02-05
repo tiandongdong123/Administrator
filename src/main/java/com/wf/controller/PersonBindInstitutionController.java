@@ -1,6 +1,7 @@
 package com.wf.controller;
 
 import com.google.protobuf.util.Timestamps;
+import com.utils.QRCodeUtil;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.model.BindSearchParameter;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import wfks.authentication.account.userinfo.UserInfoDao;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,6 +49,12 @@ public class PersonBindInstitutionController {
 
     private static final Logger log = Logger.getLogger(PersonBindInstitutionController.class);
 
+    /**
+     * 获取机构下所有没有设置个人绑定权限的机构账号和机构子账号
+     *
+     * @param institutionName 机构名称
+     * @return
+     */
     @RequestMapping("/userId")
     @ResponseBody
     public List<String> getUserIdByInstitutionName(String institutionName) {
@@ -64,6 +72,13 @@ public class PersonBindInstitutionController {
         return userIds;
     }
 
+    /**
+     * 跳转机构子账号信息管理页面
+     *
+     * @param upPage 上层页面
+     * @param model
+     * @return
+     */
     @RequestMapping("/bindInfo")
     public String toBindInfoManagement(String upPage,Model model) {
 
@@ -72,13 +87,23 @@ public class PersonBindInstitutionController {
         return "/page/usermanager/user_binding_manager";
     }
 
+    /**
+     * 跳转个人绑定机构权限设置页面
+     *
+     * @return
+     */
     @RequestMapping("/setPersonAuthority")
     public String toPersonBindAuthority() {
 
         return "/page/usermanager/user_binding_authority" ;
     }
 
-
+    /**
+     * 开通个人绑定机构权限
+     *
+     * @param bindAuthorityModel 绑定信息
+     * @return
+     */
     @RequestMapping("/openAuthority")
     public String openAuthority(BindAuthorityModel bindAuthorityModel) {
         String[] userIds = bindAuthorityModel.getUserId().split(",");
@@ -97,6 +122,48 @@ public class PersonBindInstitutionController {
         return "/page/usermanager/user_binding_manager";
     }
 
+    /**
+     * 修改个人绑定机构权限
+     *
+     * @param bindAuthorityModel 绑定信息
+     * @return
+     */
+    @RequestMapping("/updateAuthority")
+    @ResponseBody
+    public Boolean editBindAuthority(BindAuthorityModel bindAuthorityModel){
+        try{
+            String[] userIds = bindAuthorityModel.getUserId().split(",");
+            String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
+            List<String> authorityList = new ArrayList<>();
+            for (String authority : authoritys) {
+                authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
+            }
+            EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
+                    .setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
+                    .setBindLimit(bindAuthorityModel.getBindLimit())
+                    .setBindValidity(bindAuthorityModel.getBindValidity())
+                    .setDownloadLimit(bindAuthorityModel.getDownloadLimit())
+                    .addAllBindAuthority(authorityList);
+            ServiceResponse response = bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
+            if (response.getServiceResult()){
+                return true;
+            }else {
+                return  false;
+            }
+        }catch (Exception e){
+            log.error("修改个人绑定机构权限失败，机构id："+bindAuthorityModel.getUserId());
+           return false;
+        }
+    }
+
+    /**
+     * 个人绑定机构信息管理查询
+     *
+     * @param parameter 查询参数类
+     * @param upPage 上层页面
+     * @param model
+     * @return
+     */
     @RequestMapping("/searchBindInfo")
     public String seachBindInfo(BindSearchParameter parameter,String upPage, Model model) {
         String userType = null;
@@ -132,7 +199,7 @@ public class PersonBindInstitutionController {
                 accountIds.add(accountId);
                 request.addAllUser(accountIds);
             }
-        } else if (parameter.getInstitutionName() != null && "".equals(parameter.getInstitutionName())) {
+        } else if (parameter.getInstitutionName() != null &&!"".equals(parameter.getInstitutionName())) {
             List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
             for (String id : userIds) {
                 AccountId accountId = AccountId.newBuilder().setKey(id).build();
@@ -146,8 +213,11 @@ public class PersonBindInstitutionController {
        if(endTime!=null){
            request.setEndAddTime(Timestamps.fromMillis((endTime.getTime())));
        }
-       if (parameter.getPage()!=0){
+        SearchBindDetailsRequest.Builder countRequest = request;
+        SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest.build());
+        int totalSize = countResponse.getTotalCount();
 
+       if (parameter.getPage()!=0){
             int index = (parameter.getPage()-1)*parameter.getPageSize();
             request.setStartIndex(index);
        }
@@ -176,7 +246,6 @@ public class PersonBindInstitutionController {
         }
 
         int currentPage = parameter.getPage();
-        int totalSize = modelList.size();
         int pageSize = parameter.getPageSize();
         String actionUrl = "/bindAuhtority/searchBindInfo";
         PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(currentPage, totalSize, pageSize, modelList, actionUrl, parameter);
@@ -186,6 +255,13 @@ public class PersonBindInstitutionController {
         return "/page/usermanager/user_binding_table";
     }
 
+    /**
+     *  检查个人绑定机构权限的绑定上限
+     *
+     * @param userId 机构账号
+     * @param bindLimit 绑定上限数值
+     * @return
+     */
     @RequestMapping("/checkBindLimit")
     @ResponseBody
     public Boolean checkBindLimit(String userId, Integer bindLimit) {
@@ -211,6 +287,12 @@ public class PersonBindInstitutionController {
         }
     }
 
+    /**
+     * 机构下所有机构账号和机构子账号
+     *
+     * @param institutionName 机构名称
+     * @return
+     */
     @RequestMapping("/allUserId")
     @ResponseBody
     public List<String> getAllUserIdByInstitutionName(String institutionName) {
@@ -219,6 +301,43 @@ public class PersonBindInstitutionController {
 
     }
 
+    /**
+     * 返回线下扫描二维码
+     *
+     * @param userId 绑定的机构id
+     * @param response
+     */
+    @RequestMapping("/getQRCode")
+    public void getQRCode(String userId,HttpServletResponse response) {
+        try {
+            CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
+            GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
+            GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().getQRCode(codeRequest);
+            String url = codeResponse.getCiphertext();
+            QRCodeUtil.outputQRCode(response, url, 400, 400);
+        }catch (Exception e){
+            log.error("返回二维码失败，失败账号："+userId);
+        }
+    }
+
+    /**
+     * 重置二维码
+     *
+     * @param userId 绑定的机构id
+     * @param response
+     */
+    @RequestMapping("/resetQRCode")
+    public void resetQRCode(String userId,HttpServletResponse response) {
+        try {
+            CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
+            GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
+            GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().resetQRCode(codeRequest);
+            String url = codeResponse.getCiphertext();
+            QRCodeUtil.outputQRCode(response, url, 400, 400);
+        }catch (Exception e){
+            log.error("重置二维码失败，失败账号："+userId);
+        }
+    }
     /**
      * 转换时间（格式：yyyy-MM-dd hh:mm:ss ）
      * @param date
