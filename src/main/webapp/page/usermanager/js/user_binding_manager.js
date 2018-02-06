@@ -1,7 +1,7 @@
 $(function(){
     redq();
-    if($(".parameter").val()){
-       $("#userId").text($(".parameter").val());
+    if($(".parameter").val()!=""){
+       $("#userId").val($(".parameter").val());
         inquiry();
     }
     yesChoose();

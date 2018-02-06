@@ -1,5 +1,5 @@
 /*! laypage默认样式*/
-.page_bind{ padding: 3px 0 30px 20px;float: left}
+.page_bind{ padding: 3px 0 6px 20px;float: left}
 .laypage_main a, .laypage_main input, .laypage_main span { height: 26px; line-height: 26px ; }
 .laypage_main button, .laypage_main input, .laypageskin_default a { border: 1px solid #ccc; background-color: #fff }
 .laypage_main { font-size: 0; /*clear: both;*/ color: #666;text-align:center;  }
