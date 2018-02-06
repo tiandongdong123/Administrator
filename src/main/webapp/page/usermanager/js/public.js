@@ -89,11 +89,11 @@ function style(){
 	$(".bind_num").css("color","#dd4b39");
 	$("#bindLimit").css("border-color","#dd4b39");
 	$(".wrong").css("background","url(../img/f.png)");
-	$(".wrong").css("margin-left","5px");
+	$(".wrong").css("margin-left","6px");
 	$(".mistaken").css("display","inline");
 	$(".wrong").css("display","inline");
 }
-//机构id点击其他
+
 
 //统计分析
 function checkTj(value){
@@ -1346,6 +1346,7 @@ function commonCaption(e) {
 		$(".mechanism_id").css("border-color","#00a65a");
 		$(".bind_numm").css("color","#00a65a");
 		$(".wrongm").css("background","url(../img/t.png)");
+		$(".wrongm").css("margin-left","10px");
 		$(".wrongm").css("display","inline");
 		$(".mistakenm").css("display","none");
 		$(".data_first").css("display","block");
@@ -1377,6 +1378,7 @@ function commonCaption(e) {
 			$(".mechanism_id").css("border-color","#dd4b39");
 			$(".bind_numm").css("color","#dd4b39");
 			$(".wrongm").css("background","url(../img/f.png)");
+			$(".wrongm").css("margin-left","6px");
 			$(".mistakenm").css("display","inline");
 			$(".wrongm").css("display","inline");
 			$(".mistakenm").text("机构ID不能为空");
@@ -1384,6 +1386,7 @@ function commonCaption(e) {
 			$(".mechanism_id").css("border-color","#00a65a");
 			$(".bind_numm").css("color","#00a65a");
 			$(".wrongm").css("background","url(../img/t.png)");
+			$(".wrongm").css("margin-left","10px");
 			$(".wrongm").css("display","inline");
 			$(".mistakenm").css("display","none");
 		}

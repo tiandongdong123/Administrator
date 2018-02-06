@@ -101,6 +101,7 @@ function submitNew(){
     }
     if($(".enshrine").text()=="")
     {
+        $(".mechanism_id").css("border-color","#dd4b39");
         $(".bind_numm").css("color","#dd4b39");
         $(".wrongm").css("background","url(../img/f.png)");
         $(".mistakenm").css("display","inline");
@@ -108,6 +109,7 @@ function submitNew(){
         $(".mistakenm").text("机构ID不能为空");
         bool = true;
     }else{
+        $(".mechanism_id").css("border-color","#00a65a");
         $(".bind_numm").css("color","#00a65a");
         $(".wrongm").css("background","url(../img/t.png)");
         $(".wrongm").css("display","inline");

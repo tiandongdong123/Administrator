@@ -24,11 +24,13 @@ $(document).ready(function(){
 		var reg = /^[1-9]\d*$/;
 		if($("#bindLimit").val()==""){
 			$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+			$(".wrong").css("margin-left","5px");
 			style();
 			return;
 		}
 		if(!reg.test($("#bindLimit").val())){
 			$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+			$(".wrong").css("margin-left","5px");
 			style()
 			return;
 		}
@@ -50,6 +52,7 @@ $(document).ready(function(){
                     $(".bind_num").css("color","#00a65a");
                     $("#bindLimit").css("border-color","#00a65a");
                     $(".wrong").css("background","url(../img/t.png)");
+					$(".wrong").css("margin-left","10px");
                     $(".wrong").css("display","inline");
                     $(".mistaken").css("display","none");
 					already = true;
@@ -87,6 +90,7 @@ function submitForm(){
 			$(".bind_num").css("color","#00a65a");
 			$("#bindLimit").css("border-color","#00a65a");
 			$(".wrong").css("background","url(../img/t.png)");
+			$(".wrong").css("margin-left","10px");
 			$(".wrong").css("display","inline");
 			$(".mistaken").css("display","none");
 		}

@@ -1,4 +1,8 @@
 $(function(){
+	if($(".parameter").val()){
+		$("#userId").text($(".parameter").val());
+		findList();
+	}
 	goPage();
     $('.add_admin').click(function (e) {
         preventBubble(e);

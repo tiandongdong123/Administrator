@@ -1,4 +1,5 @@
 $(function(){
+    redq();
     if($(".parameter").val()){
        $("#userId").text($(".parameter").val());
         inquiry();
@@ -24,10 +25,38 @@ $(function(){
     var reset;
     var relocate;
 
-    $(".bind_table").on("click",".return .btn-primary",function(){
-        window.history.back();
+    $(document).on("change",".evey-page",function(){
+        //选择多少条数据
+        var userId = $("#userId").text();
+        var institutionName = $("#institutionName").text();
+        var startDay = $("#startDay").text();
+        var endDay = $("#endDay").text();
+        var pageSize = $(".evey-page option:selected").text();
+        var page = $(".laypage_curr").text();
+        $.ajax({
+            type:"POST",
+            data:{
+                userId:userId,
+                institutionName:institutionName,
+                startDay:startDay,
+                endDay:endDay,
+                pageSize:pageSize,
+                page: page,
+            },
+            url:"../bindAuhtority/searchBindInfo.do",
+            success:function(data){
+                $('.sync-html').html(data);
+                $('.evey-page option').each(function(){
+                    var value = +$(this).val();
+                    if(value == pageSize){
+                        $(this).attr('selected',true);
+                    }
+                });
+                redq();
+            }
+        });
     });
-    $(".bind_table").on("click",".bindtype",function(){
+    $(document).on("click",".bindtype",function(){
         if($(this).text()=="线下扫描"){
             if($(this).data('num')==reset){
                 if(choose){
@@ -92,7 +121,7 @@ $(function(){
         }
     });
     //点击重置二维码
-    $(".bind_table").on("click",".reset",function(){
+    $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId = relocate;
         $.ajax({
@@ -107,7 +136,7 @@ $(function(){
         });
     });
     //机构ID弹出框
-    $(".bind_table").on("click",".userID",function(){
+    $(document).on("click",".userID",function(){
         $(".mechanism_id").css("border-color","#d2d6de");
         $(".backdrop").show();
         $(".pop").show();
@@ -151,6 +180,7 @@ $(function(){
             $(".mechanism_id").css("border-color","#00a65a");
             $(".bind_numm").css("color","#00a65a");
             $(".wrongm").css("background","url(../img/t.png)");
+            $(".wrongm").css("margin-left","10px");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
         }
@@ -160,6 +190,7 @@ $(function(){
                 $(".mechanism_id").css("border-color","#dd4b39");
                 $(".bind_numm").css("color","#dd4b39");
                 $(".wrongm").css("background","url(../img/f.png)");
+                $(".wrongm").css("margin-left","6px");
                 $(".mistakenm").css("display","inline");
                 $(".wrongm").css("display","inline");
                 $(".mistakenm").text("机构ID不能为空");
@@ -167,6 +198,7 @@ $(function(){
                 $(".mechanism_id").css("border-color","#00a65a");
                 $(".bind_numm").css("color","#00a65a");
                 $(".wrongm").css("background","url(../img/t.png)");
+                $(".wrongm").css("margin-left","10px");
                 $(".wrongm").css("display","inline");
                 $(".mistakenm").css("display","none");
             }
@@ -253,6 +285,7 @@ function revise(){
             $(".bind_num").css("color","#00a65a");
             $("#bindLimit").css("border-color","#00a65a");
             $(".wrong").css("background","url(../img/t.png)");
+            $(".wrong").css("margin-left","10px");
             $(".wrong").css("display","inline");
             $(".mistaken").css("display","none");
         }
@@ -261,6 +294,7 @@ function revise(){
             $(".mechanism_id").css("border-color","#dd4b39");
             $(".bind_numm").css("color","#dd4b39");
             $(".wrongm").css("background","url(../img/f.png)");
+            $(".wrongm").css("margin-left","6px");
             $(".mistakenm").css("display","inline");
             $(".wrongm").css("display","inline");
             $(".mistakenm").text("机构ID不能为空");
@@ -269,6 +303,7 @@ function revise(){
             $(".mechanism_id").css("border-color","#00a65a");
             $(".bind_numm").css("color","#00a65a");
             $(".wrongm").css("background","url(../img/t.png)");
+            $(".wrongm").css("margin-left","10px");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
             bool = false;
@@ -295,7 +330,6 @@ function revise(){
             $("input[class='selFirst']:checked").each(function () {
                 bindAuthority.push($(this).val());
             });
-
             if(bool){
                 return ;
             }
@@ -367,12 +401,12 @@ function inquiry(){
         },
         url:"../bindAuhtority/searchBindInfo.do",
         success:function(data){
-            $('#bind_table').html(data);
+            $('.sync-html').html(data);
             redq();
         }
     });
 }
-function redq() {
+function redq(){
     if($(".bindtype").length>0){
         $(".bindtype").each(function (index,value) {
             if($(value).text()=="线下扫描"){
@@ -384,43 +418,6 @@ function redq() {
         })
     }
 }
-
-
-//选择多少条数据
-function pageChange() {
-    var userId = $("#userId").val();
-    var institutionName = $("#institutionName").val();
-    var startDay = $("#startDay").val();
-    var endDay = $("#endDay").val();
-    var pageSize = $(".evey-page").val();
-    var changePage = $(".evey-page option:selected").text();
-    if(pageSize==null){
-        pageSize=20;
-    }
-    $.ajax({
-        type:"POST",
-        data:{
-            userId:userId,
-            institutionName:institutionName,
-            startDay:startDay,
-            endDay:endDay,
-            pageSize:pageSize,
-            page: 1,
-        },
-        url:"../bindAuhtority/searchBindInfo.do",
-        dataType:"json",
-        success:function(data){
-            $('#bind_table').html(data);
-            $('.evey-page option').each(function(){
-                var value = +$(this).val();
-                if(value == changePage){
-                    $(this).attr('selected',true);
-                }
-            });
-        }
-    });
-}
-
 //刷新页面
 function refresh(){
     window.location.href="../bindAuhtority/bindInfo.do";
@@ -445,6 +442,7 @@ function timeStamp2String(time){
     var getPager = function (url, $container) {
         $.get(url, function (html) {
             $container.replaceWith(html);
+            redq();
         });
     };
     //page-a异步跳转
@@ -454,7 +452,9 @@ function timeStamp2String(time){
         $(this).removeAttr('href');
         $.get(href, function (html) {
             $('.sync-html').html(html);
+            redq();
         });
+
     });
     //page-form异步跳转
     $(document).on('submit', '.sync-html .page_bind form', function () {
@@ -464,9 +464,11 @@ function timeStamp2String(time){
         if (inputPage > 0 && inputPage <= allPage) {
             var href = action + inputPage;
             getPager(href, $(this).closest('.sync-html'));
+            redq();
         } else {
             alert('请输入正确页码');
         }
+
         return false;
     });
     //page-form同步跳转
@@ -476,9 +478,11 @@ function timeStamp2String(time){
         var allPage = $(this).attr('data-all');
         if (inputPage > 0 && inputPage <= allPage) {
             window.location.href = action + encodeURIComponent(inputPage);
+            redq();
         } else {
             alert('请输入正确页码');
         }
         return false;
     });
+
 })();
