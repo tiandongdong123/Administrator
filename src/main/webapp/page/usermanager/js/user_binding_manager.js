@@ -28,13 +28,12 @@ $(function(){
 
     $(document).on("change",".evey-page",function(){
         //选择多少条数据
-        var userId = $("#userId").text();
-        var institutionName = $("#institutionName").text();
-        var startDay = $("#startDay").text();
-        var endDay = $("#endDay").text();
+        var userId = $("#userId").val();
+        var institutionName = $("#institutionName").val();
+        var startDay = $("#startDay").val();
+        var endDay = $("#endDay").val();
         var pageSize = $(".evey-page option:selected").text();
         var page = $(".laypage_curr").text();
-
         $.ajax({
             type:"POST",
             data:{
