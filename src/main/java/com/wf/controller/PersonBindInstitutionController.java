@@ -244,11 +244,18 @@ public class PersonBindInstitutionController {
         List<BindAccountModel> modelList = new ArrayList<>();
 
         for (BindDetail detail : bindDetail) {
+            //查询机构的绑定个人上限
+            SearchAccountAuthorityRequest limitRequest = SearchAccountAuthorityRequest.newBuilder()
+                    .setUserId(detail.getRelatedid().getKey())
+                    .build();
+           SearchAccountAuthorityResponse limitResponse =  bindAuthorityChannel.getBlockingStub().searchAccountAuthority(limitRequest);
+
+
             BindAccountModel bindModel = new BindAccountModel();
             bindModel.setInstitutionId(detail.getRelatedid().getKey());
             bindModel.setBindType(bindAuthorityMapping.getBindTypeName(detail.getBindType().getNumber()));
             bindModel.setBindValidity(detail.getBindValidity());
-            bindModel.setBindLimit(detail.getDownloadLimit());
+            bindModel.setBindLimit(limitResponse.getItems(0).getBindLimit());
             bindModel.setDownloadLimit(detail.getDownloadLimit());
             bindModel.setPersonId(detail.getUser().getKey());
             Date bindTime = new Date(Timestamps.toMillis(detail.getValidStart()));
