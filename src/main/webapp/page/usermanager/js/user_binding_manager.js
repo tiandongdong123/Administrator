@@ -34,6 +34,7 @@ $(function(){
         var endDay = $("#endDay").text();
         var pageSize = $(".evey-page option:selected").text();
         var page = $(".laypage_curr").text();
+
         $.ajax({
             type:"POST",
             data:{
@@ -66,17 +67,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
                 }else{
                     $(".qr").hide();
                     choose = true;
@@ -89,34 +80,16 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    relocate=userId;
                 }else{
                     $(".qr").show();
                     choose = false;
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    relocate=userId;
                 }
             }
         }
@@ -125,16 +98,7 @@ $(function(){
     $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId = relocate;
-        $.ajax({
-            type : "post",
-            url : "../bindAuhtority/resetQRCode.do",
-            data:{
-                userId:userId,
-            },
-            success: function(data){
-                $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
-            }
-        });
+        $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
     });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
@@ -143,14 +107,12 @@ $(function(){
         $(".pop").show();
         $("#institution").val($(this).siblings(".username").text());
         $(".enshrine").text($(this).text());
-
         var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType option:eq(0)").prop("selected","selected");
-        }
-        else if(bindtype=="机构登陆"){
+        }else if(bindtype=="机构登录"){
             $("#bindType option:eq(1)").prop("selected","selected");
-        }else if(bindtype="线下扫描"){
+        }else if(bindtype=="线下扫描"){
             $("#bindType option:eq(2)").prop("selected","selected");
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
@@ -441,9 +403,10 @@ function timeStamp2String(time){
 //翻页跳转
 (function () {
     var getPager = function (url, $container) {
+        var evey = $(".evey-page").val();
         $.get(url, function (html) {
-            $container.replaceWith(html);
-            $('.sync-html').html(html);
+            $container.html(html);
+            $(".evey-page").val(evey);
             redq();
         });
     };
@@ -469,7 +432,7 @@ function timeStamp2String(time){
         if (inputPage > 0 && inputPage <= allPage) {
             var href = action + inputPage;
             getPager(href, $(this).closest('.sync-html'));
-            $('.sync-html').html(html);
+            $(".evey-page").val(evey);
             redq();
         } else {
             alert('请输入正确页码');
@@ -478,13 +441,14 @@ function timeStamp2String(time){
     });
     //page-form同步跳转
     $(document).on('submit', '.no-sync .page_bind form', function () {
+        // var evey = $(".evey-page").val();
         var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
         var allPage = $(this).attr('data-all');
         if (inputPage > 0 && inputPage <= allPage) {
             window.location.href = action + encodeURIComponent(inputPage);
-            $('.sync-html').html(html);
+            $(".evey-page").val(evey);
             redq();
         } else {
             alert('请输入正确页码');
