@@ -1,3 +1,4 @@
+var already = true;
 $(function(){
     var page_show=20;
     redq();
@@ -172,10 +173,47 @@ $(function(){
     });
     //绑定个人上限的提示
     $("#bindLimit").keyup(function(){
-        check();
+        var userId = $("#userId").val();
+        var bindLimit = $("#bindLimit").val();
+        var reg = /^[1-9]\d*$/;
+        if($("#bindLimit").val()==""){
+            $(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+            $(".wrong").css("margin-left","5px");
+            style();
+            return;
+        }
+        if(!reg.test($("#bindLimit").val())){
+            $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+            $(".wrong").css("margin-left","5px");
+            style()
+            return;
+        }
+        $.ajax({
+            url: '../bindAuhtority/checkBindLimit.do',
+            type: 'POST',
+            dateType:"json",
+            async:false,
+            data:{
+                userId: userId,
+                bindLimit:bindLimit,
+            },
+            success: function(data){
+                if(!data){
+                    $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+                    style()
+                    already = false;
+                }else {
+                    $(".bind_num").css("color","#00a65a");
+                    $("#bindLimit").css("border-color","#00a65a");
+                    $(".wrong").css("background","url(../img/t.png)");
+                    $(".wrong").css("margin-left","10px");
+                    $(".wrong").css("display","inline");
+                    $(".mistaken").css("display","none");
+                    already = true;
+                }
+            }
+        });
     });
-
-
 });
 //移除disabled属性
 function noChoose(){
@@ -243,6 +281,10 @@ function revise(){
             $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
             style();
             bool = true;
+        }else if(!already){
+            $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+            style();
+            bool = true;
         }else{
             $(".bind_num").css("color","#00a65a");
             $("#bindLimit").css("border-color","#00a65a");
@@ -268,7 +310,6 @@ function revise(){
             $(".wrongm").css("margin-left","10px");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
-            bool = false;
         }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");
