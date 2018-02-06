@@ -75,14 +75,17 @@ public class PersonBindInstitutionController {
     /**
      * 跳转机构子账号信息管理页面
      *
-     * @param upPage 上层页面
+     * @param userId 用户Id（此参数用于判断是否由信息管理页面跳转而来）
      * @param model
      * @return
      */
     @RequestMapping("/bindInfo")
-    public String toBindInfoManagement(String upPage,Model model) {
+    public String toBindInfoManagement(String userId,Model model) {
 
-        model.addAttribute("upPage",upPage);
+        if (userId!=null&&!"".equals(userId)){
+            model.addAttribute("userId",userId);
+            model.addAttribute("upPage",true);
+        }
         model.addAttribute("pager",null);
         return "/page/usermanager/user_binding_manager";
     }
@@ -166,13 +169,24 @@ public class PersonBindInstitutionController {
      */
     @RequestMapping("/searchBindInfo")
     public String seachBindInfo(BindSearchParameter parameter,String upPage, Model model) {
+
         String userType = null;
         Date startTime = null;
         Date endTime = null;
+        if(parameter.getPage()==null){
+            parameter.setPage(1);
+        }
+        if(parameter.getPageSize()==null){
+            parameter.setPageSize(20);
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            startTime = format.parse(parameter.getStartDay());
-            endTime = format.parse(parameter.getEndDay());
+            if (parameter.getStartDay()!=null&&!"".equals(parameter.getStartDay())){
+                startTime = format.parse(parameter.getStartDay());
+            }
+            if (parameter.getEndDay()!=null&&!"".equals(parameter.getEndDay())){
+                endTime = format.parse(parameter.getEndDay());
+            }
 ;
         } catch (ParseException e) {
             log.error("转换时间出错",e);
@@ -247,7 +261,7 @@ public class PersonBindInstitutionController {
 
         int currentPage = parameter.getPage();
         int pageSize = parameter.getPageSize();
-        String actionUrl = "/bindAuhtority/searchBindInfo";
+        String actionUrl = "/bindAuhtority/searchBindInfo.do";
         PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(currentPage, totalSize, pageSize, modelList, actionUrl, parameter);
         model.addAttribute("pager",formList);
         model.addAttribute("upPage",upPage);
