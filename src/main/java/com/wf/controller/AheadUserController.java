@@ -83,6 +83,7 @@ public class AheadUserController {
 	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
+	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	
 	/**
 	 *	判断ip段是否重复
@@ -570,13 +571,13 @@ public class AheadUserController {
 				hashmap.put("fail", "".equals(map.get("institution"))?"机构名称不能为空":"密码不能为空");
 				return hashmap;
 			}
-			Matcher m1 = pa.matcher(map.get("institution").toString());
+			Matcher m1 = paName.matcher(map.get("institution").toString());
 			Matcher m2 = pa.matcher(map.get("userId").toString());
 			boolean flag1 = m1.find();
 			boolean flag2 = m2.find();
 			if (flag1 || flag2) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail", flag1 ? "机构名称不能包含特殊字符" : "用户ID不能包含特殊字符");
+				hashmap.put("fail", flag1 ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
 				return hashmap;
 			}
 		}
@@ -745,13 +746,13 @@ public class AheadUserController {
 				hashmap.put("fail","用户ID不能为空");
 				return hashmap;
 			}
-			Matcher m1 = pa.matcher(map.get("institution").toString());
+			Matcher m1 = paName.matcher(map.get("institution").toString());
 			Matcher m2 = pa.matcher(map.get("userId").toString());
 			boolean flag1 = m1.find();
 			boolean flag2 = m2.find();
 			if (flag1 || flag2) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail", flag1 ? "机构名称不能包含特殊字符" : "用户ID不能包含特殊字符");
+				hashmap.put("fail", flag1 ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
 				return hashmap;
 			}
 		}
@@ -1093,7 +1094,7 @@ public class AheadUserController {
 				return view;
 			}
 		}
-		map.put("institution", institution);
+		map.put("institution", institution.replace("_", "\\_"));
 		map.put("adminname", adminname);
 		map.put("adminIP", adminIP);
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
