@@ -188,7 +188,7 @@
        	<i onclick="showProduct(this,1)" class="icon_minus"></i>
 		<ul style="display: none;" class="checkbox_list subset_list">
 		 	<? for(pd in data.rp){ ?>   	
-				<li><input type="checkbox" class="rdlist[${i}].tableName" <?if(!isEmpty(data.product_id)&&strutil.contain(data.product_id,pd.rid)){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
+				<li><input type="checkbox" class="rdlist[${i}].tableName" <?if(!isEmpty(data.product_id)&&(strutil.contain(data.product_id,pd.rid+"]")||strutil.contain(data.product_id,pd.rid+","))){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
 		 	<?}?>
 		</ul>
 		<?}?>
@@ -311,7 +311,7 @@
 		               	   	  </div>
 		               	   	<label>年限</label>
 		               	   	<div class="time_block">
-		               	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
+		               	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}" onchange="perioYear(0,${i},${j})">
 		               	   		<option value="">-请选择-</option>
 		               	   		<? for(sh in timelimit.startHtml){ ?>
 									<?if(!isEmpty(journal_time.Value) && (journal_time.Verb=="LargerThanOrEqualTo" || journal_time.Verb=="WithIn")){?>
@@ -322,7 +322,7 @@
 		               	   		<?}?>
 		               	   		</select>
 		                		年——
-		                		<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}">
+		                		<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}" onchange="perioYear(1,${i},${j})">
 		                		<option value="">-请选择-</option>
 		                		<? for(eh in timelimit.endYearHtml){ ?>
 									<?if(!isEmpty(journal_time.Value) && journal_time.Verb=="LessThanOrEqualTo"){?>
@@ -355,7 +355,7 @@
                 	   	  </div>
                 	   	 <label>论文年限</label>
                 	   	 <div class="time_block">
-	               	   		<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}">
+	               	   		<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}" onchange="degreeYear(0,${i},${j})">
 	               	   		<option value="">-请选择-</option>
 	               	   		<?for(sh in timelimit.startHtml){?>
 								<?if(!isEmpty(degree_time.Value) && (degree_time.Verb=="LargerThanOrEqualTo" || degree_time.Verb=="WithIn")){?>
@@ -366,7 +366,7 @@
 	               	   		<?}?>
 	               	   		</select>
                  		 	年——
-                 		 	<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}">
+                 		 	<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}" onchange="degreeYear(1,${i},${j})">
 	               	   		<option value="">-请选择-</option>
 	               	   		<?for(eh in timelimit.endYearHtml){?>
 								<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LessThanOrEqualTo"){?>
@@ -380,6 +380,7 @@
 	               	   		</select>
                  		 	年
                  		 </div>
+                 		 <div id="degreeMsg_${i}_${j}"></div>
 			          </div>
 			        <?}?>
 			        <?if(strutil.contain(rt,"conf")){?>
@@ -565,12 +566,12 @@
              </div>
        	   	<label>年限</label>
        	   	<div class="time_block">
-       	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}">
+       	   		<select name="rdlist[${i}].rldto[${j}].journal_startTime" id="journal_startTime_${i}_${j}" onchange="perioYear(0,${i},${j})">
              	<option value="">-请选择-</option>
              	<? for(sh in timelimit.startHtml){ ?><option value="${sh}">${sh}</option><?}?>
              	</select>
               	年——
-              	<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}">
+              	<select name="rdlist[${i}].rldto[${j}].journal_endTime" id="journal_endTime_${i}_${j}" onchange="perioYear(1,${i},${j})">
               	<option value="">-请选择-</option>
               	<? for(eh in timelimit.endYearHtml){ ?><option value="${eh}">${eh}</option><?}?>
               	</select>
@@ -594,17 +595,18 @@
         	</div>
         	<label>论文年限</label>
         	<div class="time_block">
-  		    	<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}">
+  		    	<select name="rdlist[${i}].rldto[${j}].degreeStarttime" id="degreeStarttime_${i}_${j}" onchange="degreeYear(0,${i},${j})">
   		    	<option value="">-请选择-</option>
           	   	<?for(sh in timelimit.startHtml){?><option value="${sh}">${sh}</option><?}?>
           	   	</select>
            		 年——
-           		<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}">
+           		<select name="rdlist[${i}].rldto[${j}].degreeEndtime" id="degreeEndtime_${i}_${j}" onchange="degreeYear(1,${i},${j})">
           	   	<option value="">-请选择-</option>
           	   	<?for(eh in timelimit.endYearHtml){?><option value="${eh}">${eh}</option><?}?>
           	   	</select>
            		 年
          	</div>
+         	<div id="degreeMsg_${i}_${j}"></div>
          </div>
        <?}?>
        <?if(strutil.contain(rt,"conf")){?>			        

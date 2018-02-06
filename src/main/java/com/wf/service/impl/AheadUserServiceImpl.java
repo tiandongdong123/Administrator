@@ -1098,31 +1098,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
     
     private static void addTimeToTerms(String Field,String startTime,String endTime,JSONArray Terms){
-    	
-    	if(StringUtils.isNotBlank(startTime) && startTime.substring(startTime.length()-1).equals(",")){
-    		startTime = startTime.substring(0,startTime.length()-1);
-    	}
-    	if(StringUtils.isNotBlank(endTime) && endTime.substring(endTime.length()-1).equals(",")){
-    		endTime = endTime.substring(0,endTime.length()-1);
-    	}
 		WfResourcesModel model = new WfResourcesModel();
 		model.setField(Field);
 		model.setValueType("DateTime[]");
 		model.setLogic("AND");
-		String[] str = new String[2];
-		if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
-			model.setVerb("WithIn");
-			str[0] = startTime;
-			str[1] = endTime;
-		} else if (StringUtils.isNotBlank(startTime) && StringUtils.isBlank(endTime)) {
-			model.setVerb("LargerThanOrEqualTo");
-			str[0] = startTime;
-		} else if (StringUtils.isNotBlank(endTime) && StringUtils.isBlank(startTime)) {
-			model.setVerb("LessThanOrEqualTo");
-			str[1] = endTime;
+		model.setVerb("WithIn");
+		String[] str=new String[2];
+		if(StringUtils.isBlank(startTime) && StringUtils.isNotBlank(endTime)){
+			startTime="1900";
+		}else if(StringUtils.isNotBlank(startTime) && StringUtils.isBlank(endTime)){
+			endTime=DateUtil.getCurrentYear();
 		}
+		str[0] = startTime;
+		str[1] = endTime;
 		model.setValue(str);
-		if (StringUtils.isNotBlank(startTime) || StringUtils.isNotBlank(endTime)) {
+		if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
 			Terms.add(JSON.toJSONString(model,new PascalNameFilter()));
 		}
     }

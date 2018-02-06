@@ -107,12 +107,12 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-		    	if(checkPerio(count,i)){
+		    	if(checkPerio(count,i)&&validPerioYear(count,i)){
 		    		layer.closeAll();
 		    	}
 		    },
 		    cancel: function(){
-		    	if(!checkPerio(count,i)){
+		    	if(!checkPerio(count,i)||!validPerioYear(count,i)){
 		    		return false;
 		    	}
 		    }
@@ -153,6 +153,26 @@ function openItems(count,i,type){
 		    },
 		    cancel: function(){
 		    	if(!checkPatent(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("degree")>-1){
+		$("#degreeMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(validDegreeYear(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!validDegreeYear(count,i)){
 		    		return false;
 		    	}
 		    }
