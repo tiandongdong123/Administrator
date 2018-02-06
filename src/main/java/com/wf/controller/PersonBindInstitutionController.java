@@ -85,6 +85,8 @@ public class PersonBindInstitutionController {
         if (userId!=null&&!"".equals(userId)){
             model.addAttribute("userId",userId);
             model.addAttribute("upPage",true);
+        }else {
+            model.addAttribute("upPage",null);
         }
         model.addAttribute("pager",null);
         return "/page/usermanager/user_binding_manager";
