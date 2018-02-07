@@ -276,7 +276,7 @@
            	   	</select>
             	年——
             	<select id="degreeEndtime">
-					<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LargerThanOrEqualTo"){?>
+					<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LessThanOrEqualTo"){?>
              	   		<option value="${degree_time.Value[0]}">${degree_time.Value[0]}</option>
          			<?}else if(!isEmpty(degree_time.Value) && degree_time.Verb=="WithIn"){?>
          				<option value="${degree_time.Value[1]}">${degree_time.Value[1]}</option>
