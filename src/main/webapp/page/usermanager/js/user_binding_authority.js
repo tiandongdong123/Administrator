@@ -17,7 +17,7 @@ $(document).ready(function(){
             success: function(data){
                 length = data.length;
                 for(var i=0;i<length;i++){
-                    var bindType = '<li class="jg_index"><label><input value='+data[i]+' name="quotaName" class="index" checked="checked" type="checkbox"><span>'+data[i]+'</span></label></li>';
+                    var bindType = '<li class="jg_index"><label><input value='+data[i]+' name="quotaName" class="index" checked="checked" type="checkbox"><span class="userid_choose">'+data[i]+'</span></label></li>';
                     $(".quota").append(bindType);
                 }
                 if(length==0){
