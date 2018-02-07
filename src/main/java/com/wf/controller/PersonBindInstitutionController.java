@@ -80,15 +80,15 @@ public class PersonBindInstitutionController {
      * @return
      */
     @RequestMapping("/bindInfo")
-    public String toBindInfoManagement(String userId,Model model) {
+    public String toBindInfoManagement(String userId, Model model) {
 
-        if (userId!=null&&!"".equals(userId)){
-            model.addAttribute("userId",userId);
-            model.addAttribute("upPage",true);
-        }else {
-            model.addAttribute("upPage",null);
+        if (userId != null && !"".equals(userId)) {
+            model.addAttribute("userId", userId);
+            model.addAttribute("upPage", true);
+        } else {
+            model.addAttribute("upPage", null);
         }
-        model.addAttribute("pager",null);
+        model.addAttribute("pager", null);
         return "/page/usermanager/user_binding_manager";
     }
 
@@ -100,7 +100,7 @@ public class PersonBindInstitutionController {
     @RequestMapping("/setPersonAuthority")
     public String toPersonBindAuthority() {
 
-        return "/page/usermanager/user_binding_authority" ;
+        return "/page/usermanager/user_binding_authority";
     }
 
     /**
@@ -135,8 +135,8 @@ public class PersonBindInstitutionController {
      */
     @RequestMapping("/updateAuthority")
     @ResponseBody
-    public Boolean editBindAuthority(BindAuthorityModel bindAuthorityModel){
-        try{
+    public Boolean editBindAuthority(BindAuthorityModel bindAuthorityModel) {
+        try {
             String[] userIds = bindAuthorityModel.getUserId().split(",");
             String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
             List<String> authorityList = new ArrayList<>();
@@ -150,14 +150,14 @@ public class PersonBindInstitutionController {
                     .setDownloadLimit(bindAuthorityModel.getDownloadLimit())
                     .addAllBindAuthority(authorityList);
             ServiceResponse response = bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
-            if (response.getServiceResult()){
+            if (response.getServiceResult()) {
                 return true;
-            }else {
-                return  false;
+            } else {
+                return false;
             }
-        }catch (Exception e){
-            log.error("修改个人绑定机构权限失败，机构id："+bindAuthorityModel.getUserId());
-           return false;
+        } catch (Exception e) {
+            log.error("修改个人绑定机构权限失败，机构id：" + bindAuthorityModel.getUserId());
+            return false;
         }
     }
 
@@ -165,37 +165,50 @@ public class PersonBindInstitutionController {
      * 个人绑定机构信息管理查询
      *
      * @param parameter 查询参数类
-     * @param upPage 上层页面
+     * @param upPage    上层页面
      * @param model
      * @return
      */
     @RequestMapping("/searchBindInfo")
-    public String seachBindInfo(BindSearchParameter parameter,String upPage, Model model) {
+    public String seachBindInfo(BindSearchParameter parameter, String upPage, Model model) {
+        //无条件查询返回空
+        if (parameter.getUserId() == null || "".equals(parameter.getUserId())
+                && (parameter.getInstitutionName() == null || "".equals(parameter.getInstitutionName()))
+                && (parameter.getStartDay() == null || "".equals(parameter.getStartDay()))
+                && (parameter.getEndDay() == null || "".equals(parameter.getEndDay()))
+                ) {
+            return null;
+        }
 
         String userType = null;
         Date startTime = null;
         Date endTime = null;
-        if(parameter.getPage()==null){
+        if (parameter.getPage() == null) {
             parameter.setPage(1);
         }
-        if(parameter.getPageSize()==null){
+        if (parameter.getPageSize() == null) {
             parameter.setPageSize(20);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (parameter.getStartDay()!=null&&!"".equals(parameter.getStartDay())){
+            if (parameter.getStartDay() != null && !"".equals(parameter.getStartDay())) {
                 startTime = format.parse(parameter.getStartDay());
             }
-            if (parameter.getEndDay()!=null&&!"".equals(parameter.getEndDay())){
-                endTime = format.parse(parameter.getEndDay());
+            if (parameter.getEndDay() != null && !"".equals(parameter.getEndDay())) {
+                //将时间加一天
+                //例如时间选择为6号到7号，要查询的范围则是6号0点到7号23点59分59秒
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(format.parse(parameter.getEndDay()));
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                endTime = calendar.getTime();
             }
-;
+            ;
         } catch (ParseException e) {
-            log.error("转换时间出错",e);
+            log.error("转换时间出错", e);
         }
 
         if (parameter.getUserId() != null && !"".equals(parameter.getUserId())) {
-            if (parameter.getInstitutionName() != null &&!"".equals(parameter.getInstitutionName())) {
+            if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
                 String groupName = personMapper.getInstitutionByUserId(parameter.getUserId());
                 if (parameter.getInstitutionName().equals(groupName)) {
                     return null;
@@ -215,31 +228,34 @@ public class PersonBindInstitutionController {
                 accountIds.add(accountId);
                 request.addAllUser(accountIds);
             }
-        } else if (parameter.getInstitutionName() != null &&!"".equals(parameter.getInstitutionName())) {
+        } else if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
             List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
+            if (userIds.size() < 1) {
+                return null;
+            }
             for (String id : userIds) {
                 AccountId accountId = AccountId.newBuilder().setKey(id).build();
                 accountIds.add(accountId);
             }
             request.addAllRelatedid(accountIds);
         }
-        if (startTime!=null){
-            request.setStartAddTime(Timestamps.fromMillis((startTime.getTime())));
+        if (startTime != null) {
+            request.setValidStart(Timestamps.fromMillis((startTime.getTime())));
         }
-       if(endTime!=null){
-           request.setEndAddTime(Timestamps.fromMillis((endTime.getTime())));
-       }
+        if (endTime != null) {
+            request.setValidEnd(Timestamps.fromMillis((endTime.getTime())));
+        }
         SearchBindDetailsRequest.Builder countRequest = request;
         SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest.build());
         int totalSize = countResponse.getTotalCount();
 
-       if (parameter.getPage()!=0){
-            int index = (parameter.getPage()-1)*parameter.getPageSize();
+        if (parameter.getPage() != 0) {
+            int index = (parameter.getPage() - 1) * parameter.getPageSize();
             request.setStartIndex(index);
-       }
-       if(parameter.getPageSize()!=0){
+        }
+        if (parameter.getPageSize() != 0) {
             request.setCount(parameter.getPageSize());
-       }
+        }
         SearchBindDetailsResponse response = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(request.build());
         List<BindDetail> bindDetail = response.getItemsList();
         //接收返回的数据
@@ -250,7 +266,7 @@ public class PersonBindInstitutionController {
             SearchAccountAuthorityRequest limitRequest = SearchAccountAuthorityRequest.newBuilder()
                     .setUserId(detail.getRelatedid().getKey())
                     .build();
-           SearchAccountAuthorityResponse limitResponse =  bindAuthorityChannel.getBlockingStub().searchAccountAuthority(limitRequest);
+            SearchAccountAuthorityResponse limitResponse = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(limitRequest);
 
 
             BindAccountModel bindModel = new BindAccountModel();
@@ -272,16 +288,16 @@ public class PersonBindInstitutionController {
         int pageSize = parameter.getPageSize();
         String actionUrl = "/bindAuhtority/searchBindInfo.do";
         PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(currentPage, totalSize, pageSize, modelList, actionUrl, parameter);
-        model.addAttribute("pager",formList);
-        model.addAttribute("upPage",upPage);
+        model.addAttribute("pager", formList);
+        model.addAttribute("upPage", upPage);
 
         return "/page/usermanager/user_binding_table";
     }
 
     /**
-     *  检查个人绑定机构权限的绑定上限
+     * 检查个人绑定机构权限的绑定上限
      *
-     * @param userId 机构账号
+     * @param userId    机构账号
      * @param bindLimit 绑定上限数值
      * @return
      */
@@ -289,7 +305,7 @@ public class PersonBindInstitutionController {
     @ResponseBody
     public Boolean checkBindLimit(String userId, Integer bindLimit) {
 
-        if(userId==null||bindLimit==null){
+        if (userId == null || bindLimit == null) {
             return false;
         }
         try {
@@ -299,10 +315,10 @@ public class PersonBindInstitutionController {
             accountIds.add(accountId);
             SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addAllRelatedid(accountIds).build();
             SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
-                int count = countResponse.getTotalCount();
-                if (count > bindLimit) {
-                    return false;
-                }
+            int count = countResponse.getTotalCount();
+            if (count > bindLimit) {
+                return false;
+            }
             return true;
         } catch (Exception e) {
             log.error("判断已绑定人数是否大于修改上限出错，账号：" + userId, e);
@@ -327,42 +343,44 @@ public class PersonBindInstitutionController {
     /**
      * 返回线下扫描二维码
      *
-     * @param userId 绑定的机构id
+     * @param userId   绑定的机构id
      * @param response
      */
     @RequestMapping("/getQRCode")
-    public void getQRCode(String userId,HttpServletResponse response) {
+    public void getQRCode(String userId, HttpServletResponse response) {
         try {
             CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
             GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
             GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().getQRCode(codeRequest);
             String url = codeResponse.getCiphertext();
             QRCodeUtil.outputQRCode(response, url, 400, 400);
-        }catch (Exception e){
-            log.error("返回二维码失败，失败账号："+userId);
+        } catch (Exception e) {
+            log.error("返回二维码失败，失败账号：" + userId);
         }
     }
 
     /**
      * 重置二维码
      *
-     * @param userId 绑定的机构id
+     * @param userId   绑定的机构id
      * @param response
      */
     @RequestMapping("/resetQRCode")
-    public void resetQRCode(String userId,HttpServletResponse response) {
+    public void resetQRCode(String userId, HttpServletResponse response) {
         try {
             CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
             GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
             GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().resetQRCode(codeRequest);
             String url = codeResponse.getCiphertext();
             QRCodeUtil.outputQRCode(response, url, 400, 400);
-        }catch (Exception e){
-            log.error("重置二维码失败，失败账号："+userId);
+        } catch (Exception e) {
+            log.error("重置二维码失败，失败账号：" + userId);
         }
     }
+
     /**
      * 转换时间（格式：yyyy-MM-dd hh:mm:ss ）
+     *
      * @param date
      * @return
      */
