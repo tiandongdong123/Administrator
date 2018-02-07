@@ -1094,7 +1094,9 @@ public class AheadUserController {
 				return view;
 			}
 		}
-		map.put("institution", institution.replace("_", "\\_"));
+		if (!StringUtils.isEmpty(institution)) {
+			map.put("institution", institution.replace("_", "\\_"));
+		}
 		map.put("adminname", adminname);
 		map.put("adminIP", adminIP);
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1125,6 +1127,9 @@ public class AheadUserController {
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
 		if(!StringUtil.isEmpty(ipSegment)){
 			map.put("ipSegment", ipSegment);
+		}
+		if (!StringUtils.isEmpty(institution)) {
+			map.put("institution", institution.replace("\\_", "_"));
 		}
 		map.put("pageList", pageList);
 		//获取权限列表
