@@ -1089,6 +1089,9 @@ public class AheadUserController {
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.addObject("settingList",settingList);
+
+		//获取个人绑定机构权限
+
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
