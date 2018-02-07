@@ -21,7 +21,7 @@ public class SendEmailJob {
 	private int days=1;
 	
 	//每凌晨1点执行(检查是否需要发送邮件)
-	@Scheduled(cron = "0 0 1 * * ?")
+	@Scheduled(cron = "0 0/5 * * * ?")
 	public void sendEmail() {
 		log.info("开始发送邮件");
 		WarningInfo war = aheadUserService.findWarning();
