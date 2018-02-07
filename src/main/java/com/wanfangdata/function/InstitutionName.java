@@ -1,4 +1,4 @@
-package com.wanfangdata.Function;
+package com.wanfangdata.function;
 
 import com.wf.dao.PersonMapper;
 import org.apache.log4j.Logger;

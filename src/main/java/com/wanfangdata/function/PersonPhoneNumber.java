@@ -1,4 +1,4 @@
-package com.wanfangdata.Function;
+package com.wanfangdata.function;
 
 import com.wf.dao.PersonMapper;
 import org.apache.log4j.Logger;
@@ -23,7 +23,7 @@ public class PersonPhoneNumber implements Function {
     public Object call(Object[] objects, Context context) {
         String userId = (String) objects[0];
         try {
-            String institutionName = personMapper.getInstitutionByUserId(userId);
+            String institutionName = personMapper.getPhoneNumberByUserId(userId);
             if (institutionName!=null){
                 return institutionName;
             }else {

@@ -348,4 +348,7 @@
     <select id="getInstitutionByUserId" resultType="java.lang.String">
         select institution from user  where  user_id = #{userId}
     </select>
+    <select id="getPhoneNumberByUserId" resultType="java.lang.String">
+        select mobile_phone from user  where  user_id = #{userId}
+    </select>
 </mapper>
