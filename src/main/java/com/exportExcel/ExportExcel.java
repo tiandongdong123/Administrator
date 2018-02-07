@@ -306,7 +306,8 @@ public class ExportExcel {
 				row.createCell(4).setCellValue(balance);
 				String count=data.getJSONObject(i).get("count")==null?"":data.getJSONObject(i).get("count").toString();
 				row.createCell(5).setCellValue(count);
-				row.createCell(6).setCellValue("");//过期情况暂无
+				String timeDesc=data.getJSONObject(i).get("timeDesc")==null?"":data.getJSONObject(i).get("timeDesc").toString();
+				row.createCell(6).setCellValue(timeDesc);
 				String balanceDesc=data.getJSONObject(i).get("balanceDesc")==null?"":data.getJSONObject(i).get("balanceDesc").toString();
 				row.createCell(7).setCellValue(balanceDesc);
 				String countDesc=data.getJSONObject(i).get("countDesc")==null?"":data.getJSONObject(i).get("countDesc").toString();
