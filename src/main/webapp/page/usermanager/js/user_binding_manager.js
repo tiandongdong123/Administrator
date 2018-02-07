@@ -481,7 +481,6 @@ function timeStamp2String(time){
     });
     //page-form同步跳转
     $(document).on('submit', '.no-sync .page_bind form', function () {
-        // var evey = $(".evey-page").val();
         var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
@@ -495,5 +494,4 @@ function timeStamp2String(time){
         }
         return false;
     });
-
 })();
