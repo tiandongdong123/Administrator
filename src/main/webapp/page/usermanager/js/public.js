@@ -1378,7 +1378,7 @@ function commonCaption(e) {
 			$(".mechanism_id").css("border-color","#dd4b39");
 			$(".bind_numm").css("color","#dd4b39");
 			$(".wrongm").css("background","url(../img/f.png)");
-			$(".wrongm").css("margin-left","6px");
+			$(".wrongm").css("margin-left","8px");
 			$(".mistakenm").css("display","inline");
 			$(".wrongm").css("display","inline");
 			$(".mistakenm").text("机构ID不能为空");

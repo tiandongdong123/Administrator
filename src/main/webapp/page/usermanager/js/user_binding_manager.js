@@ -1,4 +1,6 @@
+var already = true;
 $(function(){
+    var page_show=20;
     redq();
     if($(".parameter").val()!=""){
        $("#userId").val($(".parameter").val());
@@ -27,10 +29,10 @@ $(function(){
 
     $(document).on("change",".evey-page",function(){
         //选择多少条数据
-        var userId = $("#userId").text();
-        var institutionName = $("#institutionName").text();
-        var startDay = $("#startDay").text();
-        var endDay = $("#endDay").text();
+        var userId = $("#userId").val();
+        var institutionName = $("#institutionName").val();
+        var startDay = $("#startDay").val();
+        var endDay = $("#endDay").val();
         var pageSize = $(".evey-page option:selected").text();
         var page = $(".laypage_curr").text();
         $.ajax({
@@ -65,17 +67,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
                 }else{
                     $(".qr").hide();
                     choose = true;
@@ -88,34 +80,16 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    relocate=userId;
                 }else{
                     $(".qr").show();
                     choose = false;
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $.ajax({
-                        type : "post",
-                        url : "../bindAuhtority/getQRCode.do",
-                        data:{
-                            userId:userId,
-                        },
-                        success: function(data){
-                            $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
-                            relocate=userId;
-                        }
-                    });
+                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    relocate=userId;
                 }
             }
         }
@@ -124,16 +98,7 @@ $(function(){
     $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId = relocate;
-        $.ajax({
-            type : "post",
-            url : "../bindAuhtority/resetQRCode.do",
-            data:{
-                userId:userId,
-            },
-            success: function(data){
-                $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
-            }
-        });
+        $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
     });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
@@ -142,14 +107,12 @@ $(function(){
         $(".pop").show();
         $("#institution").val($(this).siblings(".username").text());
         $(".enshrine").text($(this).text());
-
         var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType option:eq(0)").prop("selected","selected");
-        }
-        else if(bindtype=="机构登陆"){
+        }else if(bindtype=="机构登录"){
             $("#bindType option:eq(1)").prop("selected","selected");
-        }else if(bindtype="线下扫描"){
+        }else if(bindtype=="线下扫描"){
             $("#bindType option:eq(2)").prop("selected","selected");
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
@@ -190,7 +153,7 @@ $(function(){
                 $(".mechanism_id").css("border-color","#dd4b39");
                 $(".bind_numm").css("color","#dd4b39");
                 $(".wrongm").css("background","url(../img/f.png)");
-                $(".wrongm").css("margin-left","6px");
+                $(".wrongm").css("margin-left","9px");
                 $(".mistakenm").css("display","inline");
                 $(".wrongm").css("display","inline");
                 $(".mistakenm").text("机构ID不能为空");
@@ -210,10 +173,47 @@ $(function(){
     });
     //绑定个人上限的提示
     $("#bindLimit").keyup(function(){
-        check();
+        var userId = $("#userId").val();
+        var bindLimit = $("#bindLimit").val();
+        var reg = /^[1-9]\d*$/;
+        if($("#bindLimit").val()==""){
+            $(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+            $(".wrong").css("margin-left","5px");
+            style();
+            return;
+        }
+        if(!reg.test($("#bindLimit").val())){
+            $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+            $(".wrong").css("margin-left","5px");
+            style()
+            return;
+        }
+        $.ajax({
+            url: '../bindAuhtority/checkBindLimit.do',
+            type: 'POST',
+            dateType:"json",
+            async:false,
+            data:{
+                userId: userId,
+                bindLimit:bindLimit,
+            },
+            success: function(data){
+                if(!data){
+                    $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+                    style()
+                    already = false;
+                }else {
+                    $(".bind_num").css("color","#00a65a");
+                    $("#bindLimit").css("border-color","#00a65a");
+                    $(".wrong").css("background","url(../img/t.png)");
+                    $(".wrong").css("margin-left","10px");
+                    $(".wrong").css("display","inline");
+                    $(".mistaken").css("display","none");
+                    already = true;
+                }
+            }
+        });
     });
-
-
 });
 //移除disabled属性
 function noChoose(){
@@ -281,6 +281,10 @@ function revise(){
             $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
             style();
             bool = true;
+        }else if(!already){
+            $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
+            style();
+            bool = true;
         }else{
             $(".bind_num").css("color","#00a65a");
             $("#bindLimit").css("border-color","#00a65a");
@@ -306,7 +310,6 @@ function revise(){
             $(".wrongm").css("margin-left","10px");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
-            bool = false;
         }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");
@@ -440,49 +443,55 @@ function timeStamp2String(time){
 //翻页跳转
 (function () {
     var getPager = function (url, $container) {
+        var evey = $(".evey-page").val();
         $.get(url, function (html) {
-            $container.replaceWith(html);
+            $container.html(html);
+            $(".evey-page").val(evey);
             redq();
         });
     };
     //page-a异步跳转
     $(document).on('click', '.sync-html .page_bind a', function () {
+        var evey = $(".evey-page").val();
         $('.sync-html').empty('');
         var href = $(this).attr('href');
         $(this).removeAttr('href');
         $.get(href, function (html) {
             $('.sync-html').html(html);
+            $(".evey-page").val(evey);
             redq();
         });
 
     });
     //page-form异步跳转
     $(document).on('submit', '.sync-html .page_bind form', function () {
+        var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
         var allPage = $(this).attr('data-all');
         if (inputPage > 0 && inputPage <= allPage) {
             var href = action + inputPage;
             getPager(href, $(this).closest('.sync-html'));
+            $(".evey-page").val(evey);
             redq();
         } else {
             alert('请输入正确页码');
         }
-
         return false;
     });
     //page-form同步跳转
     $(document).on('submit', '.no-sync .page_bind form', function () {
+        var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
         var allPage = $(this).attr('data-all');
         if (inputPage > 0 && inputPage <= allPage) {
             window.location.href = action + encodeURIComponent(inputPage);
+            $(".evey-page").val(evey);
             redq();
         } else {
             alert('请输入正确页码');
         }
         return false;
     });
-
 })();
