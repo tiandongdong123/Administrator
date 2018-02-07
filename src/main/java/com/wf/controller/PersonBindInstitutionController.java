@@ -172,12 +172,14 @@ public class PersonBindInstitutionController {
     @RequestMapping("/searchBindInfo")
     public String seachBindInfo(BindSearchParameter parameter, String upPage, Model model) {
         //无条件查询返回空
-        if (parameter.getUserId() == null || "".equals(parameter.getUserId())
+        if ((parameter.getUserId() == null || "".equals(parameter.getUserId()))
                 && (parameter.getInstitutionName() == null || "".equals(parameter.getInstitutionName()))
                 && (parameter.getStartDay() == null || "".equals(parameter.getStartDay()))
                 && (parameter.getEndDay() == null || "".equals(parameter.getEndDay()))
                 ) {
-            return null;
+            model.addAttribute("pager", null);
+            model.addAttribute("upPage", null);
+            return "/page/usermanager/user_binding_table";
         }
 
         String userType = null;
@@ -206,16 +208,25 @@ public class PersonBindInstitutionController {
         } catch (ParseException e) {
             log.error("转换时间出错", e);
         }
-
+        //当前账号所属机构与机构名称不符合，返回null
         if (parameter.getUserId() != null && !"".equals(parameter.getUserId())) {
             if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
                 String groupName = personMapper.getInstitutionByUserId(parameter.getUserId());
-                if (parameter.getInstitutionName().equals(groupName)) {
-                    return null;
+                if (!parameter.getInstitutionName().equals(groupName)) {
+                    model.addAttribute("pager", null);
+                    model.addAttribute("upPage", null);
+                    return "/page/usermanager/user_binding_table";
                 }
             }
             userType = personMapper.getUserTypeByUserId(parameter.getUserId());
+            //当前用户的用户类型为空，返回null
+            if(userType==null){
+                model.addAttribute("pager", null);
+                model.addAttribute("upPage", null);
+                return "/page/usermanager/user_binding_table";
+            }
         }
+
         List<AccountId> accountIds = new ArrayList<>();
         SearchBindDetailsRequest.Builder request = SearchBindDetailsRequest.newBuilder();
         if (userType != null) {
@@ -325,6 +336,41 @@ public class PersonBindInstitutionController {
             throw e;
         }
     }
+
+    /**
+     * 检查个人绑定机构权限的绑定上限
+     *
+     * @param userId    所有的机构账号
+     * @param bindLimit 绑定上限数值
+     * @return
+     */
+    @RequestMapping("/checkAllBindLimit")
+    @ResponseBody
+    public List<String> checkAllBindLimit(String userId, Integer bindLimit) {
+
+        if (userId == null || bindLimit == null) {
+            return null;
+        }
+        try {
+            List<String> beyondId = null;
+            String[] userIds = userId.split(",");
+            for (String id : userIds) {
+                //已绑定人数超出修改上限账号集合
+                AccountId accountId = AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+                SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addRelatedid(accountId).build();
+                SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
+                int count = countResponse.getTotalCount();
+                if (count > bindLimit) {
+                    beyondId.add(id);
+                }
+            }
+            return beyondId;
+        } catch (Exception e) {
+            log.error("判断已绑定人数是否大于修改上限出错，账号：" + userId, e);
+            throw e;
+        }
+    }
+
 
     /**
      * 机构下所有机构账号和机构子账号

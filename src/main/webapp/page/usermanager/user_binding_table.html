@@ -1,4 +1,5 @@
 <table  class="table table-bordered table-striped" >
+    <?if(pager != null){?>
         <thead>
         <tr>
             <th>序号</th>
@@ -15,7 +16,6 @@
             <th>失效时间</th>
         </tr>
         <?
-        if(pager != null){
         var i = (pager.currentPage-1)*pager.pageSize+1;
         for(receipt in pager.pageRecords){
     ?>
@@ -35,7 +35,7 @@
             <td>${receipt.bindTime}</td>
             <td>${receipt.invalidTime}</td>
         </tr>
-        <?}}?>
+        <?}?>
         </thead>
         <div class="qr"><img src="../img/qr.gif" class="picture"><span class="reset">重置</span></div>
     </table>
@@ -60,6 +60,5 @@
             <!--共<span class="all_page">${pager.pageCount}</span>页-->
             <?}?>
         </div>
-
-
+        <?}?>
     </div>

@@ -115,7 +115,12 @@
 				<entry key="2" value="线下扫描"/>
 			</map>
 		</constructor-arg>
-
+		<property name="authorityCn">
+		<map>
+			<entry key="resource" value="资源下载"/>
+			<entry key="miner" value="万方分析"/>
+		</map>
+		</property>
 	</bean>
     <bean id="channel" class="com.wanfangdata.grpcchannel.GrpcChannel"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>
