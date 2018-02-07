@@ -173,9 +173,12 @@ $(function(){
     $(".quota").on("click",".index",function(){
         commonCaption($(this));
     });
-    //绑定个人上限的提示
+    //绑定个人上限的提示  userid_choose
     $("#bindLimit").keyup(function(){
-        var userId = $("#userId").val();
+        var userId = new Array();
+        $(".quota input[class='index']:checked").each(function () {
+            userId.push($(this).val());
+        });
         var bindLimit = $("#bindLimit").val();
         var reg = /^[1-9]\d*$/;
         if($("#bindLimit").val()==""){
@@ -191,16 +194,16 @@ $(function(){
             return;
         }
         $.ajax({
-            url: '../bindAuhtority/checkBindLimit.do',
+            url: '../bindAuhtority/checkAllBindLimit.do',
             type: 'POST',
             dateType:"json",
             async:false,
             data:{
-                userId: userId,
+                userId: userId.join(),
                 bindLimit:bindLimit,
             },
             success: function(data){
-                if(!data){
+                if(data==null){
                     $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
                     style()
                     already = false;
