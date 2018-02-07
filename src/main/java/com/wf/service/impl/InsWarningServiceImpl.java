@@ -84,7 +84,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 									map.put("balanceDesc", "正常");
 								}
 								int days = daysBetween(account.getEndDateTime());
-								if (days >= 0 && days <= time) {
+								if (days >= 0 && days < time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
@@ -117,7 +117,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 									map.put("countDesc", "正常");
 								}
 								int days = daysBetween(account.getEndDateTime());
-								if (days >= 0 && days <= time) {
+								if (days >= 0 && days < time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
@@ -143,7 +143,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 								map.put("date", getStringDate(times.getEndDateTime()));
 								boolean isWarn = false;
 								int days = daysBetween(times.getEndDateTime());
-								if (days >= 0 && days <= time) {
+								if (days >= 0 && days < time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
@@ -156,7 +156,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 							}
 						}
 					}catch(Exception e){
-						System.out.println(wfks.getPayChannelid()+"发生异常");
+						log.error(wfks.getPayChannelid()+"发生异常");
 					}
 				}
 			}
@@ -182,11 +182,11 @@ public class InsWarningServiceImpl implements InsWarningService {
 			mail.setAffix(fileMap.get("filePath"));
 			mail.setAffixName(fileMap.get("fileName"));
 			SendMail2 util=new SendMail2();
-			//flag=util.sendEmail(mail);
+			flag=util.sendEmail(mail);
 			//删除临时附件
 			File f = new File(fileMap.get("filePath"));
 			if(f.exists()){
-				//f.delete();
+				f.delete();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
