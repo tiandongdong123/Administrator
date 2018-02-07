@@ -67,7 +67,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
                 }else{
                     $(".qr").hide();
                     choose = true;
@@ -80,7 +80,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
                     relocate=userId;
                 }else{
                     $(".qr").show();
@@ -88,7 +88,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','/bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
                     relocate=userId;
                 }
             }
@@ -97,9 +97,11 @@ $(function(){
     //点击重置二维码
     $(document).on("click",".reset",function(){
         $(".qr").show();
-        var userId = relocate;
-        $('.picture').attr('src','/bindAuhtority/resetQRCode.do?userId='+userId);
+        var userId_qr = relocate;
+        $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
+
     });
+
     //机构ID弹出框
     $(document).on("click",".userID",function(){
         $(".mechanism_id").css("border-color","#d2d6de");
@@ -257,7 +259,7 @@ function revise(){
             success: function(data){
                 length = data.length;
                 for(var i=0;i<length;i++){
-                    var bindType = '<li class="jg_index"><label><input value='+data[i]+' name="quotaName" class="index" checked="checked" type="checkbox"><span>'+data[i]+'</span></label></li>';
+                    var bindType = '<li class="jg_index"><label><input value='+data[i]+' name="quotaName" class="index" checked="checked" type="checkbox"><span class="userid_choose">'+data[i]+'</span></label></li>';
                     $(".quota").append(bindType);
                 }
                 if(length==1){

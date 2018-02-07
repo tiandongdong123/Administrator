@@ -398,7 +398,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .behind{
 	background: #fff;
 	overflow: hidden;
-	margin-left: 230px;
+	margin-left: 335px;
 }
 .all_data{
 	margin: 7px 10px;
@@ -618,6 +618,15 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	bottom: 5px;
 	right: 229px;
 	cursor: pointer;
+}
+.userid_choose{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 269px;
+	display: inline-block;
+	line-height: 16px;
+	vertical-align: middle;
 }
 
 
