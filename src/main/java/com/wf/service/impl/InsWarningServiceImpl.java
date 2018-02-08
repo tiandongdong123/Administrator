@@ -143,7 +143,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 								map.put("date", getStringDate(times.getEndDateTime()));
 								boolean isWarn = false;
 								int days = daysBetween(times.getEndDateTime());
-								if (days >= 0 && days < time) {
+								if (days >= 0 && days <= time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
