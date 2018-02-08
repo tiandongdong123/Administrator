@@ -64,10 +64,16 @@ function showAdm(id,pid,institution,e){
 						customerArray.push({adminId: $("#adminId_"+id+"_"+i).val(), adminpassword: $("#adminpassword_"+id+"_"+i).val(),adminIP: $("#adminIP_"+id+"_"+i).val(),
 							adminEmail: $("#adminEmail_"+id+"_"+i).val()});
 					}
+					var institution=$("#institu_"+id).val();
+					var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
+					if(!reg.test(institution)){
+						layer.msg('请填写规范的机构名称', {icon: 2,time: 1000});
+						return false;
+					}
 					$.ajax({
 						type : "post",
 						url : "../auser/updateins.do",
-						data:{"institution":$("#institu_"+id).val(),"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
+						data:{"institution":institution,"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
 						success: function(data){
 							if(data.flag=="true"){
 								layer.msg('管理员信息更新成功', {icon: 1});

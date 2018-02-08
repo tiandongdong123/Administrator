@@ -155,6 +155,72 @@ function checkPatent(count,i){
 		return true;
 	}
 }
+//期刊年份限定
+function validPerioYear(count,i){
+	return perioYear(-1,count,i);
+}
+function perioYear(value,count,i){
+	var startTime=$("#journal_startTime_"+count+"_"+i).val();
+	var endTime=$("#journal_endTime_"+count+"_"+i).val();
+	if(value==0){
+		if(startTime!=''){
+			if(endTime==''){
+				var myDate = new Date();
+				$("#journal_endTime_"+count+"_"+i).val(myDate.getFullYear());
+			}
+		}else{
+			$("#journal_endTime_"+count+"_"+i).val("");
+		}
+	}else if(value==1){
+		if(endTime!=''){
+			if(startTime==''){
+				$("#journal_startTime_"+count+"_"+i).val("1900");
+			}
+		}else{
+			$("#journal_startTime_"+count+"_"+i).val("");
+		}
+	}
+	if(parseInt(startTime)>parseInt(endTime)){
+		$("#perioMsg_"+count+"_"+i).html('<font style="color:red">年限格式不对，结束时间应大于开始时间</font>');
+		return false;
+	}else{
+		$("#perioMsg_"+count+"_"+i).html('');
+	}
+	return true;
+}
+//学位年份限定
+function validDegreeYear(count,i){
+	return degreeYear(-1,count,i);
+}
+function degreeYear(value,count,i){
+	var startTime=$("#degreeStarttime_"+count+"_"+i).val();
+	var endTime=$("#degreeEndtime_"+count+"_"+i).val();
+	if(value==0){
+		if(startTime!=''){
+			if(endTime==''){
+				var myDate = new Date();
+				$("#degreeEndtime_"+count+"_"+i).val(myDate.getFullYear());
+			}
+		}else{
+			$("#degreeEndtime_"+count+"_"+i).val("");
+		}
+	}else if(value==1){
+		if(endTime!=''){
+			if(startTime==''){
+				$("#degreeStarttime_"+count+"_"+i).val("1900");
+			}
+		}else{
+			$("#degreeStarttime_"+count+"_"+i).val("");
+		}
+	}
+	if(parseInt(startTime)>parseInt(endTime)){
+		$("#degreeMsg_"+count+"_"+i).html('<font style="color:red">年限格式不对，结束时间应大于开始时间</font>');
+		return false;
+	}else{
+		$("#degreeMsg_"+count+"_"+i).html('');
+	}
+	return true;
+}
 
 //标准配置重置
 function resetStandard(count,i){
@@ -350,12 +416,12 @@ function openPurchaseItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(index, layero){
-		    	if(checkPerio(count,i)){
+		    	if(checkPerio(count,i)&&validPerioYear(count,i)){
 		    		layer.closeAll();
 		    	}
 		    },
 		    cancel: function(){
-		    	if(!checkPerio(count,i)){
+		    	if(!checkPerio(count,i)||!validPerioYear(count,i)){
 		    		return false;
 		    	}
 		    }
@@ -396,6 +462,26 @@ function openPurchaseItems(count,i,type){
 		    },
 		    cancel: function(){
 		    	if(!checkPatent(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("degree")>-1){
+		$("#degreeMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(validDegreeYear(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!validDegreeYear(count,i)){
 		    		return false;
 		    	}
 		    }
@@ -624,8 +710,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<textarea class="form-control" rows="10" name="rdlist['+count+'].rldto['+i+'].journalIdno" id="journalIdno_'+count+'_'+i+'" onblur="checkPerio('+count+','+i+')"></textarea></div>';
 		text += '<label>年限</label>';
 		text += '<div class="time_block">';
-		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_startTime" id="journal_startTime_'+count+'_'+i+'"></select>年——';
-		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_endTime" id="journal_endTime_'+count+'_'+i+'"></select>年';
+		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_startTime" id="journal_startTime_'+count+'_'+i+'" onchange="perioYear(0,'+count+','+i+')"></select>年——';
+		text += '<select name="rdlist['+count+'].rldto['+i+'].journal_endTime" id="journal_endTime_'+count+'_'+i+'" onchange="perioYear(1,'+count+','+i+')"></select>年';
 		text += '</div><div id="perioMsg_'+count+'_'+i+'"></div></div>';
 	}
 	if(type.indexOf("degree")>-1){
@@ -641,9 +727,9 @@ function createDetail(count,i,resourceid,type){
 		text += '</div></div>';
 		text += '<label>论文年限</label>';
 		text += '<div class="time_block">';
-		text += '<select id="degreeStarttime_'+count+'_'+i+'" name="rdlist['+count+'].rldto['+i+'].degreeStarttime"></select>年——';
-		text += '<select id="degreeEndtime_'+count+'_'+i+'" name="rdlist['+count+'].rldto['+i+'].degreeEndtime"></select>年';
-		text += '</div></div>';
+		text += '<select id="degreeStarttime_'+count+'_'+i+'" name="rdlist['+count+'].rldto['+i+'].degreeStarttime" onchange="degreeYear(0,'+count+','+i+')"></select>年——';
+		text += '<select id="degreeEndtime_'+count+'_'+i+'" name="rdlist['+count+'].rldto['+i+'].degreeEndtime" onchange="degreeYear(1,'+count+','+i+')"></select>年';
+		text += '</div><div id="degreeMsg_'+count+'_'+i+'"></div></div>';
 	}
 	if(type.indexOf("conf")>-1){
 		text += '<div class="tab-pane" id="conf_'+count+'_'+i+'">';
