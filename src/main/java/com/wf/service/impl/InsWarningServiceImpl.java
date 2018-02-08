@@ -90,7 +90,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 								} else if (days >= -time && days < 0) {
 									map.put("timeDesc", "项目已过期"+(-days)+"天");
 									isWarn = true;
-								}else if(days > time){
+								}else if(days >= time){
 									map.put("timeDesc", "正常");
 								}else if(days < -time){
 									isWarn = false;
@@ -123,7 +123,7 @@ public class InsWarningServiceImpl implements InsWarningService {
 								} else if (days >= -time && days < 0) {
 									map.put("timeDesc", "项目已过期"+(-days)+"天");
 									isWarn = true;
-								}else if(days > time){
+								}else if(days >= time){
 									map.put("timeDesc", "正常");
 								}else if(days < -time){
 									isWarn = false;
