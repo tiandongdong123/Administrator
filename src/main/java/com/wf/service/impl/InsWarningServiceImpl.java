@@ -84,13 +84,13 @@ public class InsWarningServiceImpl implements InsWarningService {
 									map.put("balanceDesc", "正常");
 								}
 								int days = daysBetween(account.getEndDateTime());
-								if (days >= 0 && days < time) {
+								if (days >= 0 && days <= time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
 									map.put("timeDesc", "项目已过期"+(-days)+"天");
 									isWarn = true;
-								}else if(days >= time){
+								}else if(days > time){
 									map.put("timeDesc", "正常");
 								}else if(days < -time){
 									isWarn = false;
@@ -117,13 +117,13 @@ public class InsWarningServiceImpl implements InsWarningService {
 									map.put("countDesc", "正常");
 								}
 								int days = daysBetween(account.getEndDateTime());
-								if (days >= 0 && days < time) {
+								if (days >= 0 && days <= time) {
 									map.put("timeDesc", "项目时限已不足"+time+"天");
 									isWarn = true;
 								} else if (days >= -time && days < 0) {
 									map.put("timeDesc", "项目已过期"+(-days)+"天");
 									isWarn = true;
-								}else if(days >= time){
+								}else if(days > time){
 									map.put("timeDesc", "正常");
 								}else if(days < -time){
 									isWarn = false;
