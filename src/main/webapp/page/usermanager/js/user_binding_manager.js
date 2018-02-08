@@ -67,7 +67,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
                 }else{
                     $(".qr").hide();
                     choose = true;
@@ -80,7 +80,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
                     relocate=userId;
                 }else{
                     $(".qr").show();
@@ -88,7 +88,7 @@ $(function(){
                     var userId = $(this).siblings(".userID").text();
                     var num = $(this).data('num');
                     reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId);
+                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
                     relocate=userId;
                 }
             }
