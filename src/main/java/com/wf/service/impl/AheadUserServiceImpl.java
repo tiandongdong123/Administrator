@@ -1855,8 +1855,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		UserInstitution ins = new UserInstitution();
 		ins.setUserId(com.getUserId());
 		JSONObject obj=new JSONObject();
-		obj.put("database_statistics", tongji.contains("A")?1:0);
-		obj.put("resource_type_statistics", tongji.contains("B")?1:0);
+		obj.put("database_statistics", tongji.contains("database_statistics")?1:0);
+		obj.put("resource_type_statistics", tongji.contains("resource_type_statistics")?1:0);
 		ins.setStatisticalAnalysis(obj.toString());
 		userInstitutionMapper.addUserIns(ins);
 	}

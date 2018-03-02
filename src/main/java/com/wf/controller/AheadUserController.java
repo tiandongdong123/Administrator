@@ -1181,15 +1181,7 @@ public class AheadUserController {
 			map.put("tongji", "");//权限的就设置为空
 		}else{
 			String analysis = ins.getStatisticalAnalysis();
-			JSONObject obj = JSONObject.fromObject(analysis);
-			String tongji = "";
-			if (obj.getInt("database_statistics") == 1) {
-				tongji += "A";
-			}
-			if (obj.getInt("resource_type_statistics") == 1) {
-				tongji += "B";
-			}
-			map.put("tongji", tongji);
+			map.put("tongji", analysis);
 		}
 	}
 	
