@@ -421,7 +421,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	border: 1px solid #ccc;
 	position: fixed;
 	top: 20%;
-	left: 35%;
+	left: 30%;
 	z-index: 1004;
 }
 .x{
@@ -479,8 +479,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	width: 300px;
 	border: solid 1px #cccccc;
 	position: absolute;
-	margin-top: -3px;
-	margin-left: 214px;
+	margin-top: 25px;
+	margin-left: -13px;
 	z-index: 4;
 	background: #fff;
 }
@@ -515,8 +515,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	display: none;
 	border: 1px solid #ccc;
 	position: absolute;
-	margin-top: 2px;
-	margin-left: 228px;
+	margin-top: 29px;
+	margin-left: 15px;
 	z-index: 5;
 	background: #fff;
 	font-size: 15px;

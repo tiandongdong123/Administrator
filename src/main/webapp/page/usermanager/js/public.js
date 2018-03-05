@@ -1394,6 +1394,7 @@ function commonCaption(e) {
 }
 //点击箭头变化
 function icont(){
+
 	if(length==0){
 		$(".arrow").css({"background-position-x":"-10px"});
 		$(".quota").hide();
