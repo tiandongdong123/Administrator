@@ -18,6 +18,7 @@ $(function(){
         yesChoose();
         $(".mechanism_id").css("border-color","#eee");
         $(".revise").text("修改");
+        $(".more_userId").css("display","none");
         $(".backdrop").hide();
         $(".pop").hide();
         dislodge();
@@ -184,13 +185,15 @@ $(function(){
         if($("#bindLimit").val()==""){
             $(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
             $(".wrong").css("margin-left","5px");
+            $(".more_userId").css("display","none");
             style();
             return;
         }
         if(!reg.test($("#bindLimit").val())){
             $(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+            $(".more_userId").css("display","none");
             $(".wrong").css("margin-left","5px");
-            style()
+            style();
             return;
         }
         $.ajax({
@@ -203,9 +206,11 @@ $(function(){
                 bindLimit:bindLimit,
             },
             success: function(data){
-                if(data==null){
+                if(data.length>0){
+                    $(".more_userId").text(data);
                     $(".mistaken").text("已绑定人数超过修改后的个人上限，请联系管理员解绑");
-                    style()
+                    $(".more_userId").css("display","inline");
+                    style();
                     already = false;
                 }else {
                     $(".bind_num").css("color","#00a65a");
@@ -214,6 +219,7 @@ $(function(){
                     $(".wrong").css("margin-left","10px");
                     $(".wrong").css("display","inline");
                     $(".mistaken").css("display","none");
+                    $(".more_userId").css("display","none");
                     already = true;
                 }
             }
@@ -384,6 +390,7 @@ function abolish(){
     yesChoose();
     $(".mechanism_id").css("border-color","#d2d6de");
     $(".revise").text("修改");
+    $(".more_userId").css("display","none");
     $(".backdrop").hide();
     $(".pop").hide();
     dislodge();
