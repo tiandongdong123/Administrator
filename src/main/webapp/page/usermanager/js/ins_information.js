@@ -10,8 +10,9 @@ $(function(){
 
 	//点击重置二维码
 	$(document).on("click",".resets",function(){
-		var userId_qr =$(".bind_type").parents(".info_cont").find(".user_qrCode").text();
-		$('.pictures').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
+		var userId_qr = $(this).parents(".info_cont").find(".user_qrCode").text();
+		var pictures = $(this).siblings('.pictures');
+		pictures.attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
 	});
 });
 
