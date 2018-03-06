@@ -352,11 +352,11 @@ public class PersonBindInstitutionController {
             return null;
         }
         try {
-            List<String> beyondId = null;
+            List<String> beyondId = new ArrayList<>();
             String[] userIds = userId.split(",");
             for (String id : userIds) {
                 //已绑定人数超出修改上限账号集合
-                AccountId accountId = AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+                AccountId accountId = AccountId.newBuilder().setAccounttype("Group").setKey(id).build();
                 SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addRelatedid(accountId).build();
                 SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
                 int count = countResponse.getTotalCount();

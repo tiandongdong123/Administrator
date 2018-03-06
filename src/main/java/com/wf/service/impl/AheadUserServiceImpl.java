@@ -1463,6 +1463,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				for (AccountAuthority accountAuthority : accountList) {
 					authority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority())+"、");
 				}
+				bindAuthorityModel.setUserId(userId);
 				bindAuthorityModel.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
 				bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
 				bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
