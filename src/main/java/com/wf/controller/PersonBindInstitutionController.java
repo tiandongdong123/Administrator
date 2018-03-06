@@ -220,7 +220,7 @@ public class PersonBindInstitutionController {
             }
             userType = personMapper.getUserTypeByUserId(parameter.getUserId());
             //当前用户的用户类型为空，返回null
-            if(userType==null){
+            if (userType == null) {
                 model.addAttribute("pager", null);
                 model.addAttribute("upPage", null);
                 return "/page/usermanager/user_binding_table";
@@ -229,9 +229,9 @@ public class PersonBindInstitutionController {
 
         List<AccountId> accountIds = new ArrayList<>();
         SearchBindDetailsRequest.Builder request = SearchBindDetailsRequest.newBuilder();
-        if (userType != null) {
+        if (userType != null && !"1".equals(userType)) {
             AccountId accountId = AccountId.newBuilder().setKey(parameter.getUserId()).build();
-            if ("2".equals(userType)) {
+            if ("2".equals(userType) || "3".equals(userType)) {
                 accountIds.add(accountId);
                 request.addAllRelatedid(accountIds);
             }
@@ -239,7 +239,12 @@ public class PersonBindInstitutionController {
                 accountIds.add(accountId);
                 request.addAllUser(accountIds);
             }
-        } else if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
+        } else {
+            model.addAttribute("pager", null);
+            model.addAttribute("upPage", null);
+            return "/page/usermanager/user_binding_table";
+        }
+        if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
             List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
             if (userIds.size() < 1) {
                 return null;
