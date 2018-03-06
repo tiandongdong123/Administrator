@@ -415,7 +415,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .pop {
 	display: none;
-	width: 885px;
+	width: 876px;
 	height: 500px;
 	background: #ffffff;
 	border: 1px solid #ccc;
@@ -627,6 +627,17 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	display: inline-block;
 	line-height: 16px;
 	vertical-align: middle;
+}
+.more_userId{
+	display: none;
+	position: absolute;
+	margin-left: 34px;
+	margin-top: -6px;
+	width: 290px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	color: #dd4b39;
 }
 
 
