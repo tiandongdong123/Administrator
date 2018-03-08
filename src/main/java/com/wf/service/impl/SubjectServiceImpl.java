@@ -109,25 +109,13 @@ public class SubjectServiceImpl implements SubjectService {
 	@Override
 	public boolean subjectPublish() {
 		//清空redis中对应的key
-//		type="5";
 		int type=7;
 		for(int i=1;i<7;i++){
-			redis.del("subjects"+type);
+			redis.del(1,"subjects"+type);
 			List<Object> list= dao.find(type+"");
 			JSONArray jsonArr = JSONArray.fromObject(list);
 			redis.set("subjects"+type, jsonArr.toString(),1);
-			
 		}
-//		for(int i = 0;i < list.size();i++){
-//			Subject sj = (Subject) list.get(i);
-//			String object = JSONObject.fromObject(sj).toString();
-//			redis.zadd("pageSubject", i, sj.getId());//发布到redis
-//			redis.hset("subjects", sj.getId(), object);
-//			redis.set("subjects", object);
-			
-//		}
-		
-		
 		return false;
 	}
 
