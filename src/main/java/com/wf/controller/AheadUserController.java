@@ -462,7 +462,7 @@ public class AheadUserController {
 		List<ResourceDetailedDTO> list = new ArrayList<ResourceDetailedDTO>();
 		if (rdlist==null) {
 			hashmap.put("flag", "fail");
-			hashmap.put("fail","购买项目不能为空");
+			hashmap.put("fail","购买项目不能为空，请选择购买项目");
 			return hashmap;
 		}
 		for (ResourceDetailedDTO dto : rdlist) {
@@ -484,7 +484,7 @@ public class AheadUserController {
 				aheadUserService.addUserIp(com);
 			}else{
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "ip不合法");
+				hashmap.put("fail",  "账号IP段格式错误，请填写规范的IP段");
 				return hashmap;
 			}
 		}
@@ -962,8 +962,6 @@ public class AheadUserController {
 	public Map<String,Object> blockUnlock(MultipartFile file,String radio,HttpServletRequest request){
 		
 		String operation_content="";
-		String behavior="";
-		
 		Map<String,Object> hashmap = new HashMap<String, Object>();
 		List<String> list = aheadUserService.getExceluser(file);
 		int in = 0;
@@ -972,6 +970,7 @@ public class AheadUserController {
 			if(person!=null){
 				operation_content+=str;
 				int i = aheadUserService.updateUserFreeze(str,radio);
+				HttpClientUtil.updateUserData(str, "0");
 				if(i>0){
 					if ("1".equals(radio)) { //冻结
 						redis.set(str, "true", 12);
@@ -1349,19 +1348,19 @@ public class AheadUserController {
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if (StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
-			hashmap.put("fail", projectname+"时限结束时间不能为空");
+			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
 			return hashmap;
 		} else if(isBatch){
 			if (dto.getProjectType().equals("balance")) {
 				if (dto.getTotalMoney() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额不能为空");
+					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
 					return hashmap;
 				}
 			} else if (dto.getProjectType().equals("count")) {
 				if (dto.getPurchaseNumber() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数不能为空");
+					hashmap.put("fail",  projectname+"次数不能为空，请填写次数");
 					return hashmap;
 				}
 			}
@@ -1376,7 +1375,7 @@ public class AheadUserController {
 			}
 			if (flag) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail", projectname + "必须选择一个数据库");
+				hashmap.put("fail", projectname + "数据库不能为空，请选择数据库");
 				return hashmap;
 			}
 		}
