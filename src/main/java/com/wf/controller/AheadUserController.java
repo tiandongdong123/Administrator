@@ -1160,7 +1160,6 @@ public class AheadUserController {
 		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
-		view.addObject("settingList",settingList);
 
 		//获取个人绑定机构权限
 

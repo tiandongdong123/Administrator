@@ -1483,6 +1483,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			//查询个人绑定机构权限
+			SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId).build();
+			SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
+			List<AccountAuthority> accountList = response.getItemsList();
+			BindAuthorityViewModel bindAuthorityModel = new BindAuthorityViewModel();
+			if (accountList!=null&&accountList.size()>0){
+				bindAuthorityModel.setOpenState(true);
+				StringBuffer authority = new StringBuffer();
+				for (AccountAuthority accountAuthority : accountList) {
+					authority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority())+"、");
+				}
+				bindAuthorityModel.setUserId(userId);
+				bindAuthorityModel.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
+				bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
+				bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
+				bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
+				bindAuthorityModel.setBindAuthority(authority.toString().substring(0,authority.length()-1));
+
+				userMap.put("bindAuthority", bindAuthorityModel);
+			}
+
 		}
 		log.info(list.toString());
 		int i = personMapper.findListCountSimp(map);
