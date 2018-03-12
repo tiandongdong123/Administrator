@@ -177,8 +177,10 @@ public class AheadUserController {
 			if ("1".equals(flag)) { //冻结
 				redis.set(aid, "true", 12);
 				redis.expire(aid, 3600 * 24, 12); //设置超时时间
+				HttpClientUtil.updateUserData(aid, "1");
 			} else if ("2".equals(flag)) { //解冻
 				redis.del(12, aid);
+				HttpClientUtil.updateUserData(aid, "0");
 			}
 			return "true";
 		}
