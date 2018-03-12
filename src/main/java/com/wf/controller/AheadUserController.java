@@ -970,13 +970,14 @@ public class AheadUserController {
 			if(person!=null){
 				operation_content+=str;
 				int i = aheadUserService.updateUserFreeze(str,radio);
-				HttpClientUtil.updateUserData(str, "0");
 				if(i>0){
 					if ("1".equals(radio)) { //冻结
 						redis.set(str, "true", 12);
 						redis.expire(str, 3600 * 24, 12); //设置超时时间
+						HttpClientUtil.updateUserData(str, "1");
 					} else if ("2".equals(radio)) { //解冻
 						redis.del(12, str);
+						HttpClientUtil.updateUserData(str, "0");
 					}
 					in+=1;
 				}
