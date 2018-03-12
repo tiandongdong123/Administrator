@@ -53,6 +53,7 @@ import wfks.accounting.transaction.TransactionResponse;
 import wfks.authentication.AccountId;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
@@ -60,6 +61,25 @@ import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
 import com.webservice.WebServiceUtils;
+import com.wf.bean.Authority;
+import com.wf.bean.AuthoritySetting;
+import com.wf.bean.CommonEntity;
+import com.wf.bean.PageList;
+import com.wf.bean.Person;
+import com.wf.bean.Project;
+import com.wf.bean.ProjectResources;
+import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.ResourceLimitsDTO;
+import com.wf.bean.StandardUnit;
+import com.wf.bean.UserAccountRestriction;
+import com.wf.bean.UserInstitution;
+import com.wf.bean.UserIp;
+import com.wf.bean.WarningInfo;
+import com.wf.bean.WfResourcesModel;
+import com.wf.bean.WfksAccountidMapping;
+import com.wf.bean.WfksPayChannelResources;
+import com.wf.bean.WfksUserSetting;
+import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
 import com.wf.dao.AuthoritySettingMapper;
@@ -171,7 +191,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
-		HttpPost httpPost = new HttpPost("http://login.wanfangdata.com.cn/Register/HasExistedUserName");
+		String login=XxlConfClient.get("wf-uias.validate.register",null);
+		HttpPost httpPost = new HttpPost(login);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("userName", userName));
 		try {
@@ -849,8 +870,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public static String getField(ResourceLimitsDTO dto){
 		JSONObject obj = new JSONObject();
 		JSONArray Terms	= new JSONArray();//Terms
+		if(dto.getPerioInfoClc()!=null && !dto.getPerioInfoClc().equals("") && !dto.getPerioInfoClc().equals(",")){
+			addStringToTerms("perioInfo_CLC", "In", dto.getPerioInfoClc(), Terms, "String[]");
+		}
 		if(dto.getJournalClc()!=null && !dto.getJournalClc().equals("") && !dto.getJournalClc().equals(",")){
-			addStringToTerms("journal_CLC", "In", dto.getJournalClc(), Terms, "String[]");	    
+			addStringToTerms("journal_CLC", "In", dto.getJournalClc(), Terms, "String[]");
 		}
 		if(dto.getDegreeClc()!=null && !dto.getDegreeClc().equals("") && !dto.getDegreeClc().equals(",")){
 			addStringToTerms("degree_CLC", "In", dto.getDegreeClc(), Terms, "String[]");
@@ -864,19 +888,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(dto.getPatentIpc()!=null && !dto.getPatentIpc().equals("") && !dto.getPatentIpc().equals(",") ){
 			addStringToTerms("patent_IPC", "In", dto.getPatentIpc(), Terms, "String[]");
 		}
-		if(dto.getJournalIdno()!=null && !dto.getJournalIdno().equals("") && !dto.getJournalIdno().equals(",")){			
-			addStringToTerms("journal_IDNo","Equal",dto.getJournalIdno(),Terms,"String");
+		if(dto.getJournalIdno()!=null && !dto.getJournalIdno().equals("") && !dto.getJournalIdno().equals(",")){
+			addStringToTerms("journal_IDNo","In",dto.getJournalIdno(),Terms,"String[]");
 		}
 		addTimeToTerms("journal_time",dto.getJournal_startTime(), dto.getJournal_endTime(),Terms);
 		if(dto.getDegreeTypes()!=null){
 			addStringToTerms("degree_types", "In", Arrays.toString(dto.getDegreeTypes()), Terms, "String[]");
 		}
 		addTimeToTerms("degree_time", dto.getDegreeStarttime(), dto.getDegreeEndtime(),Terms);
-		if(dto.getConferenceNo()!=null && !dto.getConferenceNo().equals("") && !dto.getConferenceNo().equals(",")){			
-			addStringToTerms("conference_No","Equal",dto.getConferenceNo(),Terms,"String");
+		if(dto.getConferenceNo()!=null && !dto.getConferenceNo().equals("") && !dto.getConferenceNo().equals(",")){
+			addStringToTerms("conference_No","In",dto.getConferenceNo(),Terms,"String[]");
 		}
-		if(dto.getBooksIdno()!=null && !dto.getBooksIdno().equals("") && !dto.getBooksIdno().equals(",")){			
-			addStringToTerms("books_IDNo","Equal",dto.getBooksIdno(),Terms,"String");
+		if(dto.getBooksIdno()!=null && !dto.getBooksIdno().equals("") && !dto.getBooksIdno().equals(",")){
+			addStringToTerms("books_IDNo","In",dto.getBooksIdno(),Terms,"String[]");
 		}
 		//处理标准配置
 		if (STANDARD.equals(dto.getResourceid())) {
@@ -1051,47 +1075,51 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return ids;
 	}
 	
-    private static void addStringToTerms(String Field,String Verb,String value,JSONArray Terms,String ValueType){
-    	JSONObject clcm = new JSONObject();
-	    clcm.put("Field",Field);
-	    clcm.put("Verb",Verb);
-	    if(Verb.equals("Equal")){	    	
-	    	clcm.put("Value",value);
-	    }else if(Verb.equals("In")){
-	    	clcm.put("Value",StringUtils.strip(value.replaceAll("\"","").replaceAll(" ",""),"[]").split(","));
-	    }
-	    clcm.put("ValueType", ValueType);
-	    if(StringUtils.isNoneBlank(value)){	    	
-	    	Terms.add(clcm);	
-	    }
-    }
+	private static void addStringToTerms(String Field, String Verb, String value, JSONArray Terms,String ValueType) {
+		WfResourcesModel model = new WfResourcesModel();
+		model.setField(Field);
+		model.setVerb(Verb);
+		model.setValueType(ValueType);
+		model.setLogic("AND");
+		if (Verb.equals("Equal")) {
+			model.setValue(value);
+		} else if (Verb.equals("In")) {
+			value=value.replace("[", "").replace("]", "").replaceAll("，", ",");
+			value=value.replaceAll("\"", "").replaceAll(" ", "").replaceAll("\r\n", ",");
+			List<String> ls = new ArrayList<String>();
+			String[] strs = value.split(",");
+			for (String str : strs) {
+				if (!StringUtils.isEmpty(str)) {
+					ls.add(str);
+				}
+			}
+			if (ls.size() > 0) {
+				model.setValue(ls);
+			}
+		}
+		if (model.getValue()!=null) {
+			Terms.add(JSON.toJSONString(model,new PascalNameFilter()));
+		}
+	}
     
     private static void addTimeToTerms(String Field,String startTime,String endTime,JSONArray Terms){
-    	if(StringUtils.isNotBlank(startTime) && startTime.substring(startTime.length()-1).equals(",")){
-    		startTime = startTime.substring(0,startTime.length()-1);
-    	}
-    	if(StringUtils.isNotBlank(endTime) && endTime.substring(endTime.length()-1).equals(",")){
-    		endTime = endTime.substring(0,endTime.length()-1);
-    	}
-    	JSONObject clcm = new JSONObject();
-    	String[] str = new String[2];
-	    clcm.put("Field",Field);
-	    clcm.put("ValueType", "DateTime[]");
-	    if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){	    	
-	    	clcm.put("Verb","WithIn");
-	    	str[0] = startTime;
-	    	str[1] = endTime;
-	    }else if(StringUtils.isNotBlank(startTime) && StringUtils.isBlank(endTime)){
-	    	clcm.put("Verb","LargerThanOrEqualTo");
-	    	str[0] = startTime;
-	    }else if(StringUtils.isNotBlank(endTime) && StringUtils.isBlank(startTime)){
-	    	clcm.put("Verb","LessThanOrEqualTo");
-	    	str[1] = endTime;
-	    }
-	    clcm.put("Value",str);
-	    if(StringUtils.isNotBlank(startTime) || StringUtils.isNotBlank(endTime)){	    	
-	    	Terms.add(clcm);	
-	    }
+		WfResourcesModel model = new WfResourcesModel();
+		model.setField(Field);
+		model.setValueType("DateTime[]");
+		model.setLogic("AND");
+		model.setVerb("WithIn");
+		String[] str=new String[2];
+		if(StringUtils.isBlank(startTime) && StringUtils.isNotBlank(endTime)){
+			startTime="1900";
+		}else if(StringUtils.isNotBlank(startTime) && StringUtils.isBlank(endTime)){
+			endTime=DateUtil.getCurrentYear();
+		}
+		str[0] = startTime;
+		str[1] = endTime;
+		model.setValue(str);
+		if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)) {
+			Terms.add(JSON.toJSONString(model,new PascalNameFilter()));
+		}
     }
     
 	/**
@@ -1118,9 +1146,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 							str = ExcelUtil.readExcelTitle(row);
 							continue;
 						}
-						map.put("institution", ExcelUtil.getValue(row.getCell(0)));
-						map.put("userId", ExcelUtil.getValue(row.getCell(1)));
-						map.put("password", ExcelUtil.getValue(row.getCell(2)));
+						map.put("institution", ExcelUtil.getValue(row.getCell(0)).trim());
+						map.put("userId", ExcelUtil.getValue(row.getCell(1)).trim());
+						map.put("password", ExcelUtil.getValue(row.getCell(2)).trim());
 						//循环列Cell
 						List<Map<String, String>> li = new ArrayList<Map<String, String>>();
 						for(int i = 3; i < str.length; i++){
@@ -1324,6 +1352,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
 			if(m!=null && m.get("productSourceCode")!=""){
 				List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+				if(m.get("resType")==null){
+					m.put("resType", "");
+				}
 				m.put("rp", rp);
 				list.add(m);
 			}
@@ -1452,27 +1483,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
-			//查询个人绑定机构权限
-			SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId).build();
-			SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
-			List<AccountAuthority> accountList = response.getItemsList();
-			BindAuthorityViewModel bindAuthorityModel = new BindAuthorityViewModel();
-			if (accountList!=null&&accountList.size()>0){
-				bindAuthorityModel.setOpenState(true);
-				StringBuffer authority = new StringBuffer();
-				for (AccountAuthority accountAuthority : accountList) {
-					authority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority())+"、");
-				}
-				bindAuthorityModel.setUserId(userId);
-				bindAuthorityModel.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
-				bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
-				bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
-				bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
-				bindAuthorityModel.setBindAuthority(authority.toString().substring(0,authority.length()-1));
-
-				userMap.put("bindAuthority", bindAuthorityModel);
-			}
-
 		}
 		log.info(list.toString());
 		int i = personMapper.findListCountSimp(map);

@@ -73,10 +73,16 @@ function showAdm(id,pid,institution,e){
 						customerArray.push({adminId: $("#adminId_"+id+"_"+i).val(), adminpassword: $("#adminpassword_"+id+"_"+i).val(),adminIP: $("#adminIP_"+id+"_"+i).val(),
 							adminEmail: $("#adminEmail_"+id+"_"+i).val()});
 					}
+					var institution=$("#institu_"+id).val();
+					var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
+					if(!reg.test(institution)){
+						layer.msg('请填写规范的机构名称', {icon: 2,time: 1000});
+						return false;
+					}
 					$.ajax({
 						type : "post",
 						url : "../auser/updateins.do",
-						data:{"institution":$("#institu_"+id).val(),"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
+						data:{"institution":institution,"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
 						success: function(data){
 							if(data.flag=="true"){
 								layer.msg('管理员信息更新成功', {icon: 1});
@@ -215,7 +221,7 @@ function openPurchaseInfo(userId,payid,pscode,type){
 	}
 	layer.open({
 	    type: 1, //page层 1div，2页面
-	    area: ['50%', '700px'],
+	    area: ['40%', '700px'],
 	    title: '详情',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#open_"+userId+"_"+payid+"_"+pscode),

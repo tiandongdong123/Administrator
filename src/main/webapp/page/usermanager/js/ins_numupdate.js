@@ -172,12 +172,12 @@ function openItems(count,i,type){
 	if(type.indexOf("local chronicles")==-1){
 		//Ztree 返显
 		findSubjectEcho(count+"_"+i);
-		findPatentEcho(count+"_"+i);
 	}
+
 	if(type.indexOf("standard")>-1){
 		layer.open({
 		    type: 1, //page层 1div，2页面
-		    area: ['50%', '600px'],
+		    area: ['40%', '90%'],
 		    title: '详情',
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),
@@ -191,7 +191,7 @@ function openItems(count,i,type){
 	}else{
 		layer.open({
 		    type: 1, //page层 1div，2页面
-		    area: ['50%', '600px'],
+		    area: ['40%', '90%'],
 		    title: '详情',
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),
@@ -201,6 +201,49 @@ function openItems(count,i,type){
 		    },
 		});
 	}
+}
+//期刊学科分类号
+function perioSubject(num){
+	$.ajax({
+		type : "post",
+		data : {num:num},
+		async:false,
+		url : "../auser/findPerioSubject.do",
+		beforeSend : function(XMLHttpRequest) {},
+		success:function(data){
+			var setting = {
+					view: {
+						dblClickExpand: false,
+					},
+					data: {
+						simpleData: {
+				            enable:true,
+				            idKey:"id",
+				            pIdKey:"pid"
+				    	},
+				        key:{name:"name"}
+					},
+					check: {
+						enable: true,
+						chkStyle: "checkbox"
+					},
+					callback: {
+						onCheck: function(){
+							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
+							if(qk!=null){
+								$("#perioMsg_"+data.number).html("");
+								$("#perioInfoClc_"+data.number).val(getCheckNode(qk));
+							}
+						}
+					}
+				};
+			//期刊分类
+			$.fn.zTree.init($("#perioInfoZtree_"+data.number), setting, data.ztreeJson);
+			if($.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number)!=null){
+				checkedZtree($("#perioInfoClc_"+data.number).text(),$.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number));
+			}
+		}
+	});
 }
 
 //学科中图分类树
@@ -227,34 +270,25 @@ function findSubjectEcho(num){
 					},
 					check: {
 						enable: true,
-						chkStyle: "checkbox",
-						//chkboxType:{"Y":"s","N":"s"}
+						chkStyle: "checkbox"
 					},
 					callback: {
 						onCheck: function(){
 							var pz = $.fn.zTree.getZTreeObj("perioZtree_"+data.number);
 							if(pz!=null){
-								var text = new Array();
-								text=getCheckNode(pz);
-								$("#journalClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#journalClc_"+data.number).val(getCheckNode(pz));
 							}
 							var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+data.number);
 							if(dz!=null){
-								var text = new Array();
-								text=getCheckNode(dz);
-								$("#degreeClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#degreeClc_"+data.number).val(getCheckNode(dz));
 							}
 							var cz = $.fn.zTree.getZTreeObj("confZtree_"+data.number);
 							if(cz!=null){
-								var text = new Array();
-								text=getCheckNode(cz);
-								$("#conferenceClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#conferenceClc_"+data.number).val(getCheckNode(cz));
 							}
 							var bz = $.fn.zTree.getZTreeObj("bookZtree_"+data.number);
 							if(bz!=null){
-								var text = new Array();
-								text=getCheckNode(bz);
-								$("#booksClc_"+data.number).val(text.length>0?"["+text+"]":"");
+								$("#booksClc_"+data.number).val(getCheckNode(bz));
 							}
 						}
 					}
@@ -267,17 +301,16 @@ function findSubjectEcho(num){
 			$.fn.zTree.init($("#confZtree_"+data.number), setting, data.ztreeJson);
 			//图书中途分类
 			$.fn.zTree.init($("#bookZtree_"+data.number), setting, data.ztreeJson);
-
 			if($.fn.zTree.getZTreeObj("perioZtree_"+data.number)!=null){
 				checkedZtree($("#journalClc_"+data.number).text(),$.fn.zTree.getZTreeObj("perioZtree_"+data.number));
 			}
 			if($.fn.zTree.getZTreeObj("degreeZtree_"+data.number)!=null){
 				checkedZtree($("#degreeClc_"+data.number).text(),$.fn.zTree.getZTreeObj("degreeZtree_"+data.number));
 			}
-			if($.fn.zTree.getZTreeObj("confZtree_"+data.number)!=null){
+			if($.fn.zTree.getZTreeObj("confZtree_"+data.number)!=null){				
 				checkedZtree($("#conferenceClc_"+data.number).text(),$.fn.zTree.getZTreeObj("confZtree_"+data.number));
 			}
-			if($.fn.zTree.getZTreeObj("bookZtree_"+data.number)!=null){
+			if($.fn.zTree.getZTreeObj("bookZtree_"+data.number)!=null){				
 				checkedZtree($("#booksClc_"+data.number).text(),$.fn.zTree.getZTreeObj("bookZtree_"+data.number));
 			}
 		}
@@ -286,7 +319,7 @@ function findSubjectEcho(num){
 
 function checkedZtree(value,obj){
 	if(value!=null && value!=""){
-		var arr = value.substring(1).substring(0,value.length-2).replace(/[ ]/g,"").split(",");
+		var arr = value.replace(/[ ]/g,"").split(",");
 		for(var i=0;i<arr.length;i++){
 			treenodeClick(obj.getNodeByParam("value",arr[i].replace(/["“”]/g,"")), obj);
 		}
@@ -317,7 +350,7 @@ function getAllChildrenNodes(treeNode,obj){
 	} 
 }
 
-//学科中图分类树
+//IPC分类树
 function findPatentEcho(num){
 	$.ajax({
 		type : "post",
@@ -348,18 +381,17 @@ function findPatentEcho(num){
 						onCheck: function(){
 							var pa=$.fn.zTree.getZTreeObj("patentZtree_"+data.number);
 							if(pa!=null){
-								var text = new Array();
-								text=getCheckNode(pa);
-								$("#patentIpc_"+data.number).val(text.length>0?"["+text+"]":"");
-							}else{
-								$("#patentIpc_"+data.number).val("");
+								$("#patentMsg_"+data.number).html("");
+								$("#patentIpc_"+data.number).val(getCheckNode(pa));
 							}
 						}
 					}
 			};
-			//期刊中途分类
+			//IPC分类
 			$.fn.zTree.init($("#patentZtree_"+data.number), setting, data.ztreeJson);
-			checkedZtree($("#patentIpc_"+data.number).val(),$.fn.zTree.getZTreeObj("patentZtree_"+data.number));
+			if($.fn.zTree.getZTreeObj("patentZtree_"+data.number)!=null){
+				checkedZtree($("#patentIpc_"+data.number).val(),$.fn.zTree.getZTreeObj("patentZtree_"+data.number));
+			}
 		}
 	});
 }

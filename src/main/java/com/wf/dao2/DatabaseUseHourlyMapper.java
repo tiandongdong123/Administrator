@@ -1,4 +1,4 @@
-package com.wf.dao;
+package com.wf.dao2;
 
 import java.util.List;
 import java.util.Map;

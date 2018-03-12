@@ -17,7 +17,7 @@
 
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
-                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}">
+                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">IP</label>
@@ -42,6 +42,8 @@
 	<div class="info_block info_block1">
 	<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
 	<ul class="info_list">
+	<li class="info_list_con">
+	<ol class="info_list">
 	<li class="info_list_con">
 	<div class="info_box">
 	<div class="info_cont">
@@ -128,7 +130,7 @@
 	<i onclick="showProduct(this,1)" class="icon_minus"></i>
 	   <ul style="display: none;" class="checkbox_list subset_list">
 	   	<?for(pd in pldata.rp){?>
-			<li><input type="checkbox" <?if(!isEmpty(pldata.product_id)&&strutil.contain(pldata.product_id,pd.rid)){?>checked="checked"<?}?> value="${pd.rid}"/>${pd.name}</li>
+			<li><input type="checkbox" <?if(!isEmpty(pldata.product_id)&&(strutil.contain(pldata.product_id,pd.rid+"]")||strutil.contain(pldata.product_id,pd.rid+","))){?>checked="checked"<?}?> value="${pd.rid}"/>${pd.name}</li>
 	   	<?}?>
 	   </ul>
    <?}?>
@@ -139,11 +141,13 @@
 	<?}?>
    <?if(!isEmpty(pldata.contract)){ var payid = pro.payChannelid; var pscode = pldata.productSourceCode;?>
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
-		<? var journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
+		<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id;
 			for(var n=0;n<pldata.contract.~size;n++){
-				if("journal_CLC"==pldata.contract[n].Field){
+				if("perioInfo_CLC"==pldata.contract[n].Field){
+					perioInfo_CLC=pldata.contract[n];
+				}else if("journal_CLC"==pldata.contract[n].Field){
 					journal_CLC = pldata.contract[n];
 				}else if("journal_IDNo"==pldata.contract[n].Field){
 					journal_IDNo = pldata.contract[n];
@@ -206,6 +210,13 @@
 					}
 				}
 			}?>
+			<? var perioCLC;if(!isEmpty(perioInfo_CLC.Value)){ for(var co=0;co<perioInfo_CLC.Value.~size;co++){perioCLC=perioCLC+(isEmpty(perioCLC)?"":",")+perioInfo_CLC.Value[co];}}?>
+			<? var jourCLC;if(!isEmpty(journal_CLC.Value)){ for(var co=0;co<journal_CLC.Value.~size;co++){jourCLC=jourCLC+(isEmpty(jourCLC)?"":",")+journal_CLC.Value[co];}}?>
+			<? var perNo;if(!isEmpty(journal_IDNo.Value)){ for(var pe=0;pe<journal_IDNo.Value.~size;pe++){perNo=perNo+journal_IDNo.Value[pe]+"\r\n";}}?>
+			<? var degCLC;if(!isEmpty(degree_CLC.Value)){ for(var co=0;co<degree_CLC.Value.~size;co++){degCLC=degCLC+(isEmpty(degCLC)?"":",")+degree_CLC.Value[co];}}?>
+			<? var conCLC;if(!isEmpty(conference_CLC.Value)){ for(var co=0;co<conference_CLC.Value.~size;co++){conCLC=conCLC+(isEmpty(conCLC)?"":",")+conference_CLC.Value[co];}}?>
+			<? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
+			<? var patentIPC;if(!isEmpty(patent_IPC.Value)){ for(var co=0;co<patent_IPC.Value.~size;co++){patentIPC=patentIPC+(isEmpty(patentIPC)?"":",")+patent_IPC.Value[co];}}?>
 		<!-- 详情开始 -->
 	    <div class="nav-tabs-custom" id="open_${list.userId}_${payid}_${pscode}" style="display: none;">
 	        <ul class="nav nav-tabs">
@@ -222,13 +233,14 @@
 	        <!-- 期刊 -->
 	          <div class="tab-pane" id="perio_${list.userId}_${payid}_${pscode}">
 	           <div class="form-group" style="width:60%;">
-	          		<!-- 中图分类隐藏域 -->
-	          		<label>中图分类法</label>
-	          		<textarea class="form-control" name="journalClc" id="journalClc">${journal_CLC.Value!}</textarea>
-	           	   	<label>期刊ID</label>
-	           	    <textarea class="form-control" rows="3" name="journalIdno" id="journalIdno">${journal_IDNo.Value!}</textarea>
+	          		<label>期刊分类</label>
+	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioCLC!}</textarea>
+	          		<label>中图分类</label>
+	          		<textarea class="form-control" name="journalClc" id="journalClc">${jourCLC!}</textarea>
+	           	   	<label>期刊ID(支持输入格式:换行、英文逗号分隔)</label>
+	           	    <textarea class="form-control" rows="10" name="journalIdno" id="journalIdno">${perNo!}</textarea>
 	          </div>
-	          	<label>期刊年限</label>
+	          	<label>年限</label>
               	<div class="time_block">
              	   	<select id="journal_startTime">
 						<?if(!isEmpty(journal_time.Value) && (journal_time.Verb=="LargerThanOrEqualTo" || journal_time.Verb=="WithIn")){?>
@@ -250,8 +262,8 @@
 	        <?if(strutil.contain(pldata.resType,"degree")){?>
 	    	<!-- 学位 -->
 	       <div class="tab-pane" id="degree_${list.userId}_${payid}_${pscode}">
-			<label>中图分类法</label>
-			<textarea class="form-control" name="degreeClc" id="degreeClc">${degree_CLC.Value!}</textarea>
+			<label>中图分类</label>
+			<textarea class="form-control" name="degreeClc" id="degreeClc">${degCLC!}</textarea>
 	           <div class="form-group" style="width:60%;">
 	   	   		<label>论文类型</label>
 	   	   		<div style="height:50px;border:1px solid #C6C6C6;">
@@ -269,7 +281,7 @@
            	   	</select>
             	年——
             	<select id="degreeEndtime">
-					<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LargerThanOrEqualTo"){?>
+					<?if(!isEmpty(degree_time.Value) && degree_time.Verb=="LessThanOrEqualTo"){?>
              	   		<option value="${degree_time.Value[0]}">${degree_time.Value[0]}</option>
          			<?}else if(!isEmpty(degree_time.Value) && degree_time.Verb=="WithIn"){?>
          				<option value="${degree_time.Value[1]}">${degree_time.Value[1]}</option>
@@ -282,11 +294,13 @@
 	      <?if(strutil.contain(pldata.resType,"conf")){?>
 	      <!-- 会议 -->
 	       <div class="tab-pane" id="conf_${list.userId}_${payid}_${pscode}">
-	         <label>中图分类法</label>
-	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conference_CLC.Value!}</textarea>
+			<div class="form-group" style="width:60%;">
+	         <label>中图分类</label>
+	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conCLC!}</textarea>
+	         </div>
 	         <div class="form-group" style="width:60%;">
-	    	   <label>会议论文集馆藏号</label>
-	    	   <textarea class="form-control" rows="3" name="conferenceNo" id="conferenceNo">${conference_No.Value!}</textarea>
+	    	   <label>会议论文集馆藏号(支持输入格式:换行、英文逗号分隔)</label>
+	    	   <textarea class="form-control" rows="6" name="conferenceNo" id="conferenceNo">${confNo!}</textarea>
 	   	   	 </div>
 	      </div>
 	        <?}?>
@@ -295,8 +309,8 @@
 	         <div class="tab-pane" id="patent_${list.userId}_${payid}_${pscode}">
 	           <div style="padding: 10px;">
 				<div class="wrap">
-					<label>中图分类法</label>
-					<textarea class="form-control" name="patentIpc" id="patentIpc">${patent_IPC.Value!}</textarea>
+					<label>中图分类</label>
+					<textarea class="form-control" name="patentIpc" id="patentIpc">${patentIPC!}</textarea>
 				</div>
 			 	</div>
 	         </div>
@@ -304,7 +318,7 @@
 	         <?if(strutil.contain(pldata.resType,"books")){?>
 	        <!-- 图书  -->
 	         <div class="tab-pane" id="book_${list.userId}_${payid}_${pscode}">
-	          	<label>中图分类法</label>
+	          	<label>中图分类</label>
 	          	<textarea class="form-control" name="booksClc" id="booksClc">${books_CLC.Value!}</textarea>
 	          <div class="form-group" style="width:60%;">
 	           	 <label>图书ID</label>
@@ -443,11 +457,12 @@
 </div>
 </div>
 </li>
-</ul>
+	</ol>
 <?}?>
 </div>
 </div>
 <?}?>
+<?if(!isEmpty(msg)&&msg=='0'){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <div id="page"></div>
 </div>
 </div>

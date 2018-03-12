@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.wf.bean.DatabaseUseDaily;
 import com.wf.bean.DatabaseUseHourly;
 import com.wf.bean.PageList;
-import com.wf.dao.DatabaseUseHourlyMapper;
+import com.wf.dao2.DatabaseUseHourlyMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.service.DatabaseAnalysisService;

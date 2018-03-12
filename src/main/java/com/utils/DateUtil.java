@@ -189,4 +189,10 @@ public class DateUtil {
     public static void main(String[] args) {
 		System.out.println(getSysDate());
 	}
+    
+	public static String getCurrentYear() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+		Date date = new Date();
+		return sdf.format(date);
+	}
 }
