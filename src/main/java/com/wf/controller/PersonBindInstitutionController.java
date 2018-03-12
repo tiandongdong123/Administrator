@@ -182,7 +182,6 @@ public class PersonBindInstitutionController {
             return "/page/usermanager/user_binding_table";
         }
 
-        String userType = null;
         Date startTime = null;
         Date endTime = null;
         if (parameter.getPage() == null) {
@@ -208,8 +207,13 @@ public class PersonBindInstitutionController {
         } catch (ParseException e) {
             log.error("转换时间出错", e);
         }
+
+
+        List<AccountId> accountIds = new ArrayList<>();
+        SearchBindDetailsRequest.Builder request = SearchBindDetailsRequest.newBuilder();
         //当前账号所属机构与机构名称不符合，返回null
         if (parameter.getUserId() != null && !"".equals(parameter.getUserId())) {
+
             if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
                 String groupName = personMapper.getInstitutionByUserId(parameter.getUserId());
                 if (!parameter.getInstitutionName().equals(groupName)) {
@@ -218,32 +222,27 @@ public class PersonBindInstitutionController {
                     return "/page/usermanager/user_binding_table";
                 }
             }
-            userType = personMapper.getUserTypeByUserId(parameter.getUserId());
+
+            String userType = personMapper.getUserTypeByUserId(parameter.getUserId());
             //当前用户的用户类型为空，返回null
-            if (userType == null) {
+            if (userType == null || "1".equals(userType)) {
                 model.addAttribute("pager", null);
                 model.addAttribute("upPage", null);
                 return "/page/usermanager/user_binding_table";
+            } else {
+                AccountId accountId = AccountId.newBuilder().setKey(parameter.getUserId()).build();
+                if ("2".equals(userType) || "3".equals(userType)) {
+                    accountIds.add(accountId);
+                    request.addAllRelatedid(accountIds);
+                }
+                if ("0".equals(userType)) {
+                    accountIds.add(accountId);
+                    request.addAllUser(accountIds);
+                }
             }
         }
 
-        List<AccountId> accountIds = new ArrayList<>();
-        SearchBindDetailsRequest.Builder request = SearchBindDetailsRequest.newBuilder();
-        if (userType != null && !"1".equals(userType)) {
-            AccountId accountId = AccountId.newBuilder().setKey(parameter.getUserId()).build();
-            if ("2".equals(userType) || "3".equals(userType)) {
-                accountIds.add(accountId);
-                request.addAllRelatedid(accountIds);
-            }
-            if ("0".equals(userType)) {
-                accountIds.add(accountId);
-                request.addAllUser(accountIds);
-            }
-        } else {
-            model.addAttribute("pager", null);
-            model.addAttribute("upPage", null);
-            return "/page/usermanager/user_binding_table";
-        }
+
         if (parameter.getInstitutionName() != null && !"".equals(parameter.getInstitutionName())) {
             List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
             if (userIds.size() < 1) {

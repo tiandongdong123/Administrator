@@ -81,9 +81,9 @@ public class AheadUserController {
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
-		String [] str = ip.split("\n");	
+		String [] str = ip.split("\n");
 		//校验<数据库>是否存在IP重复
-		for(int i = 0; i < str.length; i++){		
+		for(int i = 0; i < str.length; i++){
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
 			List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
@@ -104,7 +104,7 @@ public class AheadUserController {
 		}
 		return map;
 	}
-	
+
 	/**
 	 *	查询机构管理员信息
 	 */
@@ -113,8 +113,8 @@ public class AheadUserController {
 	public Map<String,Object> findAdmin(String pid){
 		return aheadUserService.findInfoByPid(pid);
 	}
-	
-	
+
+
 	/**
 	 *	查询相似机构管理员
 	 */
@@ -123,9 +123,9 @@ public class AheadUserController {
 	public List<String> getAdminName(String value){
 		return null;
 	}
-	
+
 	/**
-	 *	查询相似机构名称 
+	 *	查询相似机构名称
 	 */
 	@RequestMapping("getkeywords")
 	@ResponseBody
@@ -135,7 +135,7 @@ public class AheadUserController {
 		log.info("查询相似机构名称["+value+"],耗时："+(System.currentTimeMillis()-time)+"ms");
 		return list;
 	}
-	
+
 	/**
 	 *	验证机构用户名是否存在
 	 */
@@ -152,7 +152,7 @@ public class AheadUserController {
 		}
 		return object;
 	}
-	
+
 	/**
 	 *	更新用户解冻/冻结状态
 	 */
@@ -171,7 +171,7 @@ public class AheadUserController {
 		}
 		return "false";
 	}
-	
+
 	/**
 	 *	移除管理员
 	 */
@@ -187,14 +187,14 @@ public class AheadUserController {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 *	跳转添加管理员
 	 */
 	@RequestMapping("goaddadmin")
 	public ModelAndView go(ModelAndView view,String pid,String userId,String institution,String flag){
-		if(StringUtils.isNotBlank(pid)){			
+		if(StringUtils.isNotBlank(pid)){
 			Map<String, Object> map = aheadUserService.findInfoByPid(pid);
 			view.addObject("map",map);
 		}
@@ -204,7 +204,7 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/add_admin");
 		return view;
 	}
-	
+
 	/**
 	 *	添加管理员/修改
 	 */
@@ -213,7 +213,7 @@ public class AheadUserController {
 	public String addadmin(CommonEntity com){
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
-			if(com.getManagerType().equals("new")){				
+			if(com.getManagerType().equals("new")){
 				aheadUserService.deleteUser(com.getAdminname());
 				aheadUserService.addRegisterAdmin(com);
 				if(StringUtils.isNotBlank(com.getAdminIP())){
@@ -222,7 +222,7 @@ public class AheadUserController {
 				}
 				map.put("pid", com.getAdminname());
 			}else{
-				map.put("pid", com.getAdminOldName());				
+				map.put("pid", com.getAdminOldName());
 			}
 			map.put("userId", com.getUserId());
 			int resinfo = aheadUserService.updatePid(map);
@@ -232,7 +232,7 @@ public class AheadUserController {
 		}
 		return null;
 	}
-	
+
 	/**
 	 *	查询专利IPC分类信息
 	 */
@@ -253,7 +253,7 @@ public class AheadUserController {
 		map.put("number", num);
 		return map;
 	}
-	
+
 	/**
 	 * 查询地方志的地区和专辑分类信息
 	 */
@@ -301,7 +301,7 @@ public class AheadUserController {
 		map.put("arrayArea", arrayArea);
 		return map;
 	}
-	
+
 	/**
 	 * 查询地方志的地区
 	 */
@@ -362,14 +362,14 @@ public class AheadUserController {
 			String id = obj.getString("value");
 			obj.element("name",id+"_"+name);
 			obj.put("num", num);
-			
+
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ztreeJson", array);
 		map.put("number", num);
 		return map;
 	}
-	
+
 	/**
 	 *	机构用户预警设置
 	 */
@@ -381,14 +381,14 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/ins_warning");
 		return view;
 	}
-	
+
 	/**
 	 *	机构用户预警信息提交
 	 */
 	@RequestMapping("getWarning")
 	@ResponseBody
 	public String updateWarning(String flag,Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,HttpServletRequest request){
-		
+
 		Log log=null;
 		String operation_content="金额阈值:"+amountthreshold+",次数阈值:"+countthreshold+",有效期阈值:"+datethreshold+",邮件提醒间隔时间:"+remindtime+",提醒邮箱:"+remindemail;
 		int i = 0;
@@ -399,9 +399,9 @@ public class AheadUserController {
 			i = aheadUserService.addWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
 			log=new Log("机构用户预警设置","增加",operation_content,request);
 		}
-		
+
 		logService.addLog(log);
-		
+
 		String msg = "";
 		if(i>0){
 			msg="true";
@@ -410,7 +410,7 @@ public class AheadUserController {
 		}
 		return msg;
 	}
-	
+
 	/**
 	 * 查询所有数据库信息
 	 */
@@ -724,13 +724,13 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
-			HttpServletRequest req,HttpServletResponse res)throws Exception{
+	public Map<String,String> updateBatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+												  HttpServletRequest req, HttpServletResponse res)throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		String adminOldName = null;
-		if(StringUtils.isNotBlank(com.getAdminOldName())){			
+		if(StringUtils.isNotBlank(com.getAdminOldName())){
 			adminOldName = com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/"));
 		}
 		Map<String, String> hashmap = new HashMap<String, String>();
@@ -878,8 +878,8 @@ public class AheadUserController {
 				if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
 					if(com.getManagerType().equals("new")){
 						aheadUserService.addRegisterAdmin(com);
-						aheadUserService.addUserAdminIp(com);						
-					}else{						
+						aheadUserService.addUserAdminIp(com);
+					}else{
 						Map<String, Object> m = new HashMap<String, Object>();
 						m.put("userId", com.getUserId());
 						m.put("pid", adminOldName);
