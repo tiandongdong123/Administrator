@@ -489,9 +489,21 @@ public class AheadUserController {
 			}
 		}
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
+			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构用户的ID和机构管理员的ID重复");
+				return hashmap;
+			}
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
+				aheadUserService.addUserAdminIp(com);
+			}else if(per.getUsertype()==1){
+				//更新机构管理员
+				aheadUserService.deleteUser(com.getAdminname());
+				aheadUserService.addRegisterAdmin(com);
+				//更新管理员IP
+				aheadUserService.deleteUserIp(com.getAdminname());
 				aheadUserService.addUserAdminIp(com);
 			}else if(per.getUsertype()!=1){
 				hashmap.put("flag", "fail");
@@ -657,11 +669,23 @@ public class AheadUserController {
 		}
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
 			if(com.getManagerType().equals("new")){
+				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构用户的ID和机构管理员的ID重复");
+					return hashmap;
+				}
 				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 				if(per==null){
 					aheadUserService.addRegisterAdmin(com);
 					aheadUserService.addUserAdminIp(com);
-				}else if(per.getUsertype()!=1){
+				}else if(per.getUsertype()==1){
+					//更新机构管理员
+					aheadUserService.deleteUser(com.getAdminname());
+					aheadUserService.addRegisterAdmin(com);
+					//更新管理员IP
+					aheadUserService.deleteUserIp(com.getAdminname());
+					aheadUserService.addUserAdminIp(com);
+				}else{
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  "机构管理员的ID已经被占用");
 					return hashmap;
@@ -840,6 +864,11 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(com.getManagerType().equals("new")){
+				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构用户的ID和机构管理员的ID重复");
+					return hashmap;
+				}
 				if(per==null){
 					aheadUserService.addRegisterAdmin(com);
 					aheadUserService.addUserAdminIp(com);
@@ -1294,6 +1323,11 @@ public class AheadUserController {
 		}
 		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
 			if(com.getManagerType().equals("new")){
+				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构用户的ID和机构管理员的ID重复");
+					return hashmap;
+				}
 				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 				if(per==null){
 					aheadUserService.addRegisterAdmin(com);
