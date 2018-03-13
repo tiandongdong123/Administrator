@@ -478,8 +478,6 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
-		
-		int resinfo = aheadUserService.addRegisterInfo(com);
 		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
 			//校验ip的合法性
 			if(IPConvertHelper.validateIp(com.getIpSegment())){
@@ -490,14 +488,22 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
+			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+			if(per==null){
+				aheadUserService.addRegisterAdmin(com);
+				aheadUserService.addUserAdminIp(com);
+			}else if(per.getUsertype()!=1){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员的ID已经被占用");
+				return hashmap;
+			}
+		}
+		int resinfo = aheadUserService.addRegisterInfo(com);
 		if(StringUtils.isNotBlank(com.getChecks())){		
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分析权限
-		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
-			aheadUserService.addRegisterAdmin(com);
-			aheadUserService.addUserAdminIp(com);
-		}
 		//购买详情信息
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectType().equals("balance")){
@@ -649,6 +655,19 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
+			if(com.getManagerType().equals("new")){
+				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+				if(per==null){
+					aheadUserService.addRegisterAdmin(com);
+					aheadUserService.addUserAdminIp(com);
+				}else if(per.getUsertype()!=1){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构管理员的ID已经被占用");
+					return hashmap;
+				}
+			}
+		}
 		for(Map<String, Object> map : listmap){
 			//Excel表格中部分账号信息
 			com.setInstitution(map.get("institution").toString());
@@ -689,17 +708,6 @@ public class AheadUserController {
 			}
 			this.saveOperationLogs(com, "3", req);
 			this.addLogs(com,"3",req);
-		}
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
-			if(com.getManagerType().equals("new")){
-				aheadUserService.addRegisterAdmin(com);
-				aheadUserService.addUserAdminIp(com);						
-			}else{						
-				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("userId", com.getUserId());
-				m.put("pid", adminOldName);
-				aheadUserService.updatePid(m);
-			}
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功导入："+in+"条");
@@ -829,6 +837,26 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
+			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+			if(com.getManagerType().equals("new")){
+				if(per==null){
+					aheadUserService.addRegisterAdmin(com);
+					aheadUserService.addUserAdminIp(com);
+				}else if(per.getUsertype()==1){
+					//更新机构管理员
+					aheadUserService.deleteUser(com.getAdminname());
+					aheadUserService.addRegisterAdmin(com);
+					//更新管理员IP
+					aheadUserService.deleteUserIp(com.getAdminname());
+					aheadUserService.addUserAdminIp(com);
+				}else{
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构管理员的ID已经被占用");
+					return hashmap;
+				}
+			}
+		}
 		for(Map<String, Object> map : listmap){
 			Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
 			//Excel表格中部分账号信息
@@ -851,20 +879,6 @@ public class AheadUserController {
 			int resinfo = aheadUserService.updateRegisterInfo(com, ps.getPid(), adminId);
 			//统计分析权限
 			aheadUserService.addUserIns(com);
-			//未存在管理员添加新的
-			if(StringUtils.isBlank(ps.getPid())){
-				if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
-					if(com.getManagerType().equals("new")){
-						aheadUserService.addRegisterAdmin(com);
-						aheadUserService.addUserAdminIp(com);						
-					}else{						
-						Map<String, Object> m = new HashMap<String, Object>();
-						m.put("userId", com.getUserId());
-						m.put("pid", adminOldName);
-						aheadUserService.updatePid(m);
-					}
-				}
-			}
 			aheadUserService.updateAccountRestriction(com);
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
@@ -1266,28 +1280,6 @@ public class AheadUserController {
 			this.removeproject(req,delList);
 		}
 		com.setRdlist(list);
-		//更新条件Map
-		Map<String, Object> map = new HashMap<String, Object>();
-		int resinfo = 0;	
-		resinfo = aheadUserService.updateUserInfo(com, adminId);
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
-			if(com.getManagerType().equals("new")){				
-				//更新机构管理员
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
-				//更新管理员IP
-				aheadUserService.deleteUserIp(com.getAdminname());
-				aheadUserService.addUserAdminIp(com);
-			}else{
-				map.put("userId", com.getUserId());
-				map.put("pid", com.getAdminOldName());
-				aheadUserService.updatePid(map);
-			}
-		}else{
-			map.put("userId", com.getUserId());
-			map.put("pid", "");
-			aheadUserService.updatePid(map);
-		}
 		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
 			//校验ip的合法性
 			if(IPConvertHelper.validateIp(com.getIpSegment())){
@@ -1300,6 +1292,27 @@ public class AheadUserController {
 		}else{
 			aheadUserService.deleteUserIp(com.getUserId());
 		}
+		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
+			if(com.getManagerType().equals("new")){
+				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+				if(per==null){
+					aheadUserService.addRegisterAdmin(com);
+					aheadUserService.addUserAdminIp(com);
+				}else if(per.getUsertype()==1){
+					//更新机构管理员
+					aheadUserService.deleteUser(com.getAdminname());
+					aheadUserService.addRegisterAdmin(com);
+					//更新管理员IP
+					aheadUserService.deleteUserIp(com.getAdminname());
+					aheadUserService.addUserAdminIp(com);
+				}else{
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  "机构管理员的ID已经被占用");
+					return hashmap;
+				}
+			}
+		}
+		int resinfo = aheadUserService.updateUserInfo(com, adminId);
 		aheadUserService.updateAccountRestriction(com);
 		//统计分析权限
 		aheadUserService.addUserIns(com);
