@@ -329,7 +329,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(com.getManagerType().equals("new")){
 				p.setPid(com.getAdminname());			
 			}else{
-				p.setPid(com.getAdminOldName());
+				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
 			}
 		}
 		p.setIsFreeze(2);
@@ -1213,7 +1213,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(com.getManagerType().equals("new")){					
 					p.setPid(com.getAdminname());
 				}else{
-					p.setPid(com.getAdminOldName());
+					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
 				}
 			}
 		}
