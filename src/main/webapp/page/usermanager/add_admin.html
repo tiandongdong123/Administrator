@@ -42,11 +42,15 @@
 				success: function(data){
 				   if(data == "true"){
 					   layer.msg('操作成功', {icon: 1});
+				   }else if(data=="false"){
+					   layer.msg('机构管理员被占用', {icon: 2});
 				   }else{
 					   layer.msg('操作失败', {icon: 2});
 				   }
 				   //window.close();
-				   window.parent.findList();
+				   if(data == "true"){
+					   window.parent.findList();
+				   }
 				},
 				complete: function(){
 					$("#submit").removeAttr("disabled");
