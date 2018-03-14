@@ -691,6 +691,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
+				com.setInstitution(institution);
 				aheadUserService.addRegisterAdmin(com);
 				aheadUserService.addUserAdminIp(com);
 			}else if(per.getUsertype()==1&&institution.equals(per.getInstitution())){
@@ -890,6 +891,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
+				com.setInstitution(institution);
 				aheadUserService.addRegisterAdmin(com);
 				aheadUserService.addUserAdminIp(com);
 			}else if(per.getUsertype()==1&&institution.equals(per.getInstitution())){
