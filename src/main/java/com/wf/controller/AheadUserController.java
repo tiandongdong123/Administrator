@@ -499,7 +499,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构用户ID和机构管理员ID重复");
+				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 				return hashmap;
 			}
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
@@ -642,7 +642,7 @@ public class AheadUserController {
 				if(StringUtils.isNotBlank(com.getAdminname())){
 					if(StringUtils.equals(map.get("userId").toString(), com.getAdminname())){
 						hashmap.put("flag", "fail");
-						hashmap.put("fail",  "机构用户ID和机构管理员ID重复");
+						hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 						return hashmap;
 					}
 					String ins=map.get("institution").toString();
@@ -843,7 +843,7 @@ public class AheadUserController {
 				if(StringUtils.isNotBlank(com.getAdminname())){
 					if(StringUtils.equals(map.get("userId").toString(), com.getAdminname())){
 						hashmap.put("flag", "fail");
-						hashmap.put("fail",  "机构用户ID和机构管理员ID重复");
+						hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 						return hashmap;
 					}
 					String ins=map.get("institution").toString();
@@ -1345,7 +1345,7 @@ public class AheadUserController {
 		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构用户ID和机构管理员ID重复");
+				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 				return hashmap;
 			}
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
@@ -1706,6 +1706,45 @@ public class AheadUserController {
 		return view;
 	}
 	
+	/**
+	 *	管理赠送万方卡
+	 */
+	@RequestMapping("manage_card")
+	public ModelAndView manage_card(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/manage_card");
+		return view;
+	}
+	
+	/**
+	 *	生成赠送万方卡
+	 */
+	@RequestMapping("creat_wfcard_view")
+	public ModelAndView creat_wfcard_view(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/creat_wfcard_view");
+		return view;
+	}
+	
+	/**
+	 *	审核赠送万方卡
+	 */
+	@RequestMapping("check_card")
+	public ModelAndView check_card(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/check_card");
+		return view;
+	}
+	
+	/**
+	 *	设置赠送万方卡
+	 */
+	@RequestMapping("wfcard_type")
+	public ModelAndView wfcard_type(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/wfcard_type");
+		return view;
+	}
 	
 	/**
 	 *	充值管理
