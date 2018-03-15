@@ -228,9 +228,12 @@
 	           	<ul class="treeview-menu menu-open" style="display: block;">
             		<li <?if(!strutil.contain(session.purviews,"生成万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="createCard.do"){ ?>class="active"<?}?>><a href="../card/createCard.do"><i class="fa fa-circle-o"></i> 生成万方卡</a></li>
             		<li <?if(!strutil.contain(session.purviews,"审核万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardCheck.do"){ ?>class="active"<?}?>><a href="../card/cardCheck.do"><i class="fa fa-circle-o"></i> 审核万方卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"管理万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardManager.do"){ ?>class="active"<?}?>><a href="../card/cardManager.do"><i class="fa fa-circle-o"></i> 管理万方卡</a>
-            		</li>
-	         	</ul>
+            		<li <?if(!strutil.contain(session.purviews,"管理万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardManager.do"){ ?>class="active"<?}?>><a href="../card/cardManager.do"><i class="fa fa-circle-o"></i> 管理万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"管理赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="manage_card.do"){ ?>class="active"<?}?>><a href="../auser/manage_card.do"><i class="fa fa-circle-o"></i>管理赠送万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"生成赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="creat_wfcard_view.do"){ ?>class="active"<?}?>><a href="../auser/creat_wfcard_view.do"><i class="fa fa-circle-o"></i>生成赠送万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"审核赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="check_card.do"){ ?>class="active"<?}?>><a href="../auser/check_card.do"><i class="fa fa-circle-o"></i>审核赠送万方卡</a>
+            		<li <?if(!strutil.contain(session.purviews,"设置赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="wfcard_type.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_type.do"><i class="fa fa-circle-o"></i>设置赠送万方卡</a></li>
+	         	</ul
             </li>
           </ul>
         </li>
