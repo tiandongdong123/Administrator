@@ -1878,8 +1878,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @return
 	 */
 	private boolean getExpired(Date date, Date next) {
-		SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println(fm.format(next) + "==" + fm.format(date));
 		return next.getTime() > date.getTime();
 	}
 
