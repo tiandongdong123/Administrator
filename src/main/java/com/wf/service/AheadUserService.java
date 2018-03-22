@@ -1,5 +1,6 @@
 package com.wf.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public interface AheadUserService {
 	WarningInfo findWarning();
 	
 	/** 更新预警信息 */
-	int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);
+	int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,Date exec_time);
 	
 	/** 添加预警信息 */
 	int addWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);

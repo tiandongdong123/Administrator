@@ -283,7 +283,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 *	更新预警信息
 	 */
 	@Override
-	public int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold) {
+	public int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,Date exec_time) {
 		WarningInfo winfo = new WarningInfo();
 		winfo.setId("1");
 		winfo.setAmountthreshold(amountthreshold);
@@ -291,6 +291,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		winfo.setDatethreshold(datethreshold);
 		winfo.setRemindtime(remindtime);
 		winfo.setRemindemail(remindemail);
+		winfo.setExec_time(exec_time);
 		return aheadUserMapper.updateWarning(winfo);
 	}
 	

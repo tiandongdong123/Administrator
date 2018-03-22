@@ -1,4 +1,7 @@
 package com.wf.bean;
+
+import java.util.Date;
+
 public class WarningInfo {
 	
 	private String id;
@@ -7,6 +10,7 @@ public class WarningInfo {
 	private Integer remindtime;
 	private String remindemail;
 	private Integer countthreshold;
+	private Date exec_time;
 	
 	public String getId() {
 		return id;
@@ -44,12 +48,20 @@ public class WarningInfo {
 	public void setCountthreshold(Integer countthreshold) {
 		this.countthreshold = countthreshold;
 	}
+	
+	public Date getExec_time() {
+		return exec_time;
+	}
+
+	public void setExec_time(Date exec_time) {
+		this.exec_time = exec_time;
+	}
 	@Override
 	public String toString() {
 		return "WarningInfo [id=" + id + ", amountthreshold=" + amountthreshold
 				+ ", datethreshold=" + datethreshold + ", remindtime="
 				+ remindtime + ", remindemail=" + remindemail
-				+ ", countthreshold=" + countthreshold + "]";
+				+ ", countthreshold=" + countthreshold +",exec_time="+exec_time+ "]";
 	}
 	
 }
