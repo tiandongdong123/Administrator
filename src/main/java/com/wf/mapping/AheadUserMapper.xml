@@ -19,8 +19,11 @@
    
   <!-- 修改预警金额阈值 -->
   <update id="updateWarning" parameterType="com.wf.bean.WarningInfo">
-  	update ins_warning set amountthreshold=#{amountthreshold},datethreshold=#{datethreshold},remindtime=#{remindtime},remindemail=#{remindemail},countthreshold=#{countthreshold},exec_time=#{exec_time}
-  	where id = #{id}
+  	update ins_warning set amountthreshold=#{amountthreshold},datethreshold=#{datethreshold},remindtime=#{remindtime},remindemail=#{remindemail},countthreshold=#{countthreshold}
+	<if test="exec_time != null">
+		,exec_time=#{exec_time}
+	</if>
+	where id = #{id}
   </update>
   
   <select id="findWarning" resultMap="BaseResultMap">
