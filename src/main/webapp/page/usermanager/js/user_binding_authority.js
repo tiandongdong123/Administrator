@@ -28,12 +28,19 @@ $(document).ready(function(){
                     $(".mistakenm").css("display","inline");
                     $(".wrongm").css("display","inline");
                     $(".mistakenm").text("无匹配机构ID");
+                    $(".mechanism_id").css("border-color","#dd4b39");
                 }
                 else if(length==1){
                     $(".data_first").css("display","none");
+                    $(".bind_numm").css("color","#333");
+                    $(".mistakenm").css("display","none");
+                    $(".wrongm").css("display","none");
+                    $(".mechanism_id").css("border-color","#d2d6de");
                     $(".enshrine ").text(data[0]);
                     showFont();
                 } else {
+                    //个人绑定机构   测试机构
+                    $(".mechanism_id").css("border-color","#d2d6de");
                     $(".bind_numm").css("color","#333");
                     $(".mistakenm").css("display","none");
                     $(".wrongm").css("display","none");
@@ -50,10 +57,11 @@ $(document).ready(function(){
         $("input[name='quotaName']").prop("checked",$(".tol_quota").prop("checked"));
         if($(".tol_quota").is(":checked")){
             $(".enshrine").text("全部");
-            $(".bind_numm").css("color","#333");
+            $(".bind_numm").css("color","#00a65a");
+            $(".wrongm").css("background","url(../img/t.png)");
+            $(".wrongm").css("display","inline");
+            $(".mechanism_id").css("border-color","#00a65a");
             $(".mistakenm").css("display","none");
-            $(".wrongm").css("display","none");
-            $(".data_first").css("display","block");
         }
         else{
             $(".enshrine").text("");
@@ -62,11 +70,13 @@ $(document).ready(function(){
                 $(".wrongm").css("background","url(../img/f.png)");
                 $(".mistakenm").css("display","inline");
                 $(".wrongm").css("display","inline");
+                $(".mechanism_id").css("border-color","#dd4b39");
                 $(".mistakenm").text("机构ID不能为空");
             }else {
                 $(".bind_numm").css("color","#00a65a");
                 $(".wrongm").css("background","url(../img/t.png)");
                 $(".wrongm").css("display","inline");
+                $(".mechanism_id").css("border-color","#00a65a");
                 $(".mistakenm").css("display","none");
             }
         }
