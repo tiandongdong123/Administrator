@@ -417,6 +417,11 @@ function inquiry(){
         url:"../bindAuhtority/searchBindInfo.do",
         success:function(data){
             $('.sync-html').html(data);
+            if( $("#database-table").find("table tr").length==1){
+                $(".behind").hide();
+            }else {
+                $(".behind").show();
+            }
             redq();
         }
     });
