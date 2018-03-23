@@ -436,7 +436,7 @@
 </div>
 <?}?>
 </div>
-
+<?}}?>
 			<?if(list.bindAuthority!=null){?>
 			<div class="user_bind" >
 				<span style="color: #0099ff">个人绑定机构</span>
@@ -448,11 +448,8 @@
 			</div>
 			<?if(list.bindAuthority.bindType=="线下扫描"){?>
 			<div class="qr_picture"><img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures"><span class="resets">重置</span></div>
-			  <?}?>
 			<?}?>
-
-<?}}?>
-
+			<?}?>
 </div>
 </div>
 </div>

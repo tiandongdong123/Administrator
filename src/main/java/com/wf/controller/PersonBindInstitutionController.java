@@ -181,7 +181,7 @@ public class PersonBindInstitutionController {
             model.addAttribute("upPage", null);
             return "/page/usermanager/user_binding_table";
         }
-
+        String userType = "";
         Date startTime = null;
         Date endTime = null;
         if (parameter.getPage() == null) {
@@ -223,7 +223,7 @@ public class PersonBindInstitutionController {
                 }
             }
 
-            String userType = personMapper.getUserTypeByUserId(parameter.getUserId());
+            userType = personMapper.getUserTypeByUserId(parameter.getUserId());
             //当前用户的用户类型为空，返回null
             if (userType == null || "1".equals(userType)) {
                 model.addAttribute("pager", null);
@@ -271,10 +271,24 @@ public class PersonBindInstitutionController {
         if (parameter.getPageSize() != 0) {
             request.setCount(parameter.getPageSize());
         }
+
+
         SearchBindDetailsResponse response = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(request.build());
         List<BindDetail> bindDetail = response.getItemsList();
         //接收返回的数据
         List<BindAccountModel> modelList = new ArrayList<>();
+
+        //当用户ID为机构ID或者按机构名称查询时判断是否已开通权限但没有绑定机构账号
+        if (startTime == null && endTime == null) {
+            if ("2".equals(userType) || "3".equals(userType)) {
+                List<String> userIds = new ArrayList<>();
+                userIds.add(parameter.getUserId());
+                modelList = searchBindAuthorityByUser(userIds);
+            } else if (!"".equals(parameter)) {
+                List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
+                modelList = searchBindAuthorityByUser(userIds);
+            }
+        }
 
         for (BindDetail detail : bindDetail) {
             //查询机构的绑定个人上限
@@ -444,4 +458,39 @@ public class PersonBindInstitutionController {
             throw e;
         }
     }
+
+    public List<BindAccountModel> searchBindAuthorityByUser(List<String> userIds) {
+
+        List<BindAccountModel> modelList = new ArrayList<>();
+        for (String userId : userIds) {
+            SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder()
+                    .setUserId(userId)
+                    .build();
+            SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
+            if (response.getTotalCount() != 0) {
+                AccountId accountId = AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+                SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addRelatedid(accountId).build();
+                SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
+                if (countResponse.getTotalCount()==0){
+                    
+                    BindAccountModel model = new BindAccountModel();
+                    model.setInstitutionId(userId);
+                    model.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
+                    model.setBindValidity(response.getItems(0).getBindValidity());
+                    model.setBindLimit(response.getItems(0).getBindLimit());
+                    model.setDownloadLimit(response.getItems(0).getDownloadLimit());
+                    List<AccountAuthority> accountList = response.getItemsList();
+                    StringBuffer allAuthority = new StringBuffer();
+                    for (AccountAuthority account : accountList) {
+                        allAuthority.append(bindAuthorityMapping.getAuthorityCn(account.getBindAuthority()) + "、");
+                    }
+                    model.setAuthority(allAuthority.toString().substring(0, allAuthority.length() - 1));
+                    modelList.add(model);
+                }
+            }
+        }
+
+        return modelList;
+    }
+
 }
