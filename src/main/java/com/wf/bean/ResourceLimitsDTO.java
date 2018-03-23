@@ -12,6 +12,7 @@ public class ResourceLimitsDTO {
 	
 	//资源购买详细信息
 	private String journalClc;
+	private String perioInfoClc;
 	
 	private String journalIdno;
 	
@@ -79,6 +80,14 @@ public class ResourceLimitsDTO {
 
 	public void setJournalClc(String journalClc) {
 		this.journalClc = journalClc;
+	}
+
+	public String getPerioInfoClc() {
+		return perioInfoClc;
+	}
+
+	public void setPerioInfoClc(String perioInfoClc) {
+		this.perioInfoClc = perioInfoClc;
 	}
 
 	public String getJournalIdno() {

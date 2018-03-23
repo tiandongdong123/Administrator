@@ -78,7 +78,7 @@ function getModularType(){
 			success : function(data) {
 				var rt="<input type='checkbox'  onclick='checkallbox();' id='all' name='items' value=\"all\">全部&nbsp;&nbsp;&nbsp;";
 				for(var k = 0 ;k<data.length;k++){
-					rt+="<input type='checkbox'  name='items' value="+data[k].id+">"+data[k].modularName+"&nbsp;&nbsp;&nbsp;";
+					rt+="<input type='checkbox'  name='items' id='item' value="+data[k].id+" onclick=\"checkOne();\">"+data[k].modularName+"&nbsp;&nbsp;&nbsp;";
 				}
 				document.getElementById('checkboxs').innerHTML = rt;
 			}
@@ -103,7 +103,7 @@ function deletePageManager(id){
 		dataType : "json",
 		success : function(data) {
 			layer.msg("删除成功");
-			page($(".laypage_curr").text());
+			refurbish();
 		}
 	});
 }
@@ -116,9 +116,30 @@ function checkallbox() {
 	}
 }
 
+function checkOne(){
+	if($("input[id='item']").length==$("input[id='item']:checked").length){
+		$("#all").prop("checked", "checked");
+	}else{
+		$("#all").removeAttr("checked");
+	}
+} 
+
 //导出
 function exportpage(){
+	
+	ids=new Array();
+    $("input[name=items]").each(function() {  
+        if ($(this).is(':checked')) {  
+            ids.push($(this).val());  
+        }  
+    }); 
+	pageName=$("#pageName").val();
 	window.location.href="../page/exportpage.do?ids="+ids+"&pageName="+pageName;
 }
 
+function refurbish(){
+	$("#pageName").val("");
+	$("input[type=checkbox]").prop("checked", false);
+	page(1);
+}
 

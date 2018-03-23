@@ -1,4 +1,4 @@
-package com.wf.dao;
+package com.wf.dao2;
 
 /**
  *	搜索引擎---liuYong

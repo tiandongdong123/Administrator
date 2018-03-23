@@ -76,7 +76,7 @@ function getModularType(){
 			success : function(data) {
 				var rt="<input type='checkbox'  onclick='checkallbox();' id='all' name='items' value=\"all\">全部&nbsp;&nbsp;&nbsp;";
 				for(var k = 0 ;k<data.length;k++){
-					rt+="<input type='checkbox'  name='items' value="+data[k].id+">"+data[k].modularName+"&nbsp;&nbsp;&nbsp;";
+					rt+="<input type='checkbox'  name='items' id='item' value="+data[k].id+" onclcik=\"checkOne();\">"+data[k].modularName+"&nbsp;&nbsp;&nbsp;";
 				}	
 				document.getElementById('checkboxs').innerHTML = rt;
 			}	
@@ -92,16 +92,35 @@ function updateModularManager(id){
 }
 
 function deleteModularManager(id){
+	var isdelete=false;
+	$.ajax( {  
+		type : "POST",  
+		async:false,
+		url : "../modular/getCountBymodularId.do",
+			data : {
+				'modularId' : id	
+			},
+			dataType : "json",
+			success : function(data) {
+				isdelete=data;
+			}
+		});
+	
+	if(isdelete){
+		layer.msg("该功能模块下还有页面在分析，不能删除!",{icon: 2});
+		return;
+	}
+	
 	$.ajax( {  
 		type : "POST",  
 		url : "../modular/deleteModular.do",
 			data : {
-				'id' : id	
+				'id' : id
 			},
 			dataType : "json",
 			success : function(data) {
 				layer.msg("删除成功");
-				window.location.href="../modular/modularManager.do";
+				refurbish();
 			}
 		});
 }
@@ -114,8 +133,15 @@ function checkallbox() {
 	}
 }
 
-function datapage(data)
-{
+function checkOne(){
+	if($("input[id='item']").length==$("input[id='item']:checked").length){
+		$("#all").prop("checked", "checked");
+	}else{
+		$("#all").removeAttr("checked");
+	}
+}
+
+function datapage(data){
 	page(data);
 }
 
@@ -123,3 +149,9 @@ function datapage(data)
 function exportmodular(){
 	window.location.href="../modular/exportmodular.do?ids="+ids;
 }
+
+function refurbish(){
+	$("input[type=checkbox]").prop("checked", false);
+	page(1);
+}
+

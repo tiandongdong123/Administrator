@@ -1,4 +1,4 @@
-package com.wf.dao;
+package com.wf.dao2;
 
 /**
  *	全部来源---liuYong(小时为统计单位)

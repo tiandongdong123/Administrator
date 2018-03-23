@@ -23,17 +23,17 @@
             <td>${i++}</td>
             <? var institutionName =  institutionName(receipt.institutionId);  ?>
             <td class="username">${institutionName}</td>
-            <td class="userID" style="cursor: pointer">${receipt.institutionId}</td>
-            <td class="bindtype" data-num=${i}>${receipt.bindType}</td>
-            <td class="bindLimit">${receipt.bindLimit}</td>
-            <td class="bindValidity">${receipt.bindValidity}</td>
-            <td class="downloadLimit">${receipt.downloadLimit}</td>
-            <td class="authority">${receipt.authority}</td>
-            <td>${receipt.personId}</td>
+            <td class="userID" style="cursor: pointer">${receipt.institutionId!}</td>
+            <td class="bindtype" data-num=${i}>${receipt.bindType!}</td>
+            <td class="bindLimit">${receipt.bindLimit!}</td>
+            <td class="bindValidity">${receipt.bindValidity!}</td>
+            <td class="downloadLimit">${receipt.downloadLimit!}</td>
+            <td class="authority">${receipt.authority!}</td>
+            <td>${receipt.personId!}</td>
             <? var phoneNumber = personPhoneNumber(receipt.personId); ?>
-            <td>${phoneNumber}</td>
-            <td>${receipt.bindTime}</td>
-            <td>${receipt.invalidTime}</td>
+            <td>${phoneNumber!}</td>
+            <td>${receipt.bindTime!}</td>
+            <td>${receipt.invalidTime!}</td>
         </tr>
         <?}?>
         </thead>
