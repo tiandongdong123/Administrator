@@ -113,11 +113,16 @@ public class CookieUtil {
 	
 	/**
 	 * 判断key是否存在
+	 * 
 	 * @param key
 	 * @return
 	 */
-	public static boolean exists(String key) {
-		boolean flag=redis.exists(key, 0);
-		return flag;
+	public static boolean exists(String key, String userId) {
+		String value = redis.hget(key, "Admin." + userId, 0);
+		if (value != null && !"".equals(value)) {
+			return true;
+		}
+		return false;
 	}
+	
 }
