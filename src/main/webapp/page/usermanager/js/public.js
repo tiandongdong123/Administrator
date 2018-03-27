@@ -1369,7 +1369,13 @@ function validateIp(ip,userId,object){
 			success: function(data){
 				if(data.flag=="true"){
 					bool = true;
-					layer.tips("IP冲突提示:</br>"+data.userId+"</br>"+data.errorIP+"</br>"+data.tableIP, object, {
+					var msg="";
+					if(data.tableIP!=null){
+						msg="IP冲突提示:</br>"+data.userId+"</br>"+data.errorIP+"</br>"+data.tableIP;
+					}else{
+						msg="IP格式错误:"+data.errorIP;
+					}
+					layer.tips(msg, object, {
 						tips: [2, '#3595CC'],
 						area: ['260px', ''], //宽高
 						time: 0
