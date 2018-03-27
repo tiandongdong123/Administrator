@@ -99,7 +99,13 @@ public class AheadUserController {
 		for(int i = 0; i < str.length; i++){		
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-			List<UserIp> bool = aheadUserService.validateIp(userId,IPConvertHelper.IPToNumber(beginIp),IPConvertHelper.IPToNumber(endIp));
+			long begin=IPConvertHelper.IPToNumber(beginIp);
+			long end=IPConvertHelper.IPToNumber(endIp);
+			if(begin>end){
+				map.put("flag", "true");
+				map.put("errorIP", beginIp+"-"+endIp);
+			}
+			List<UserIp> bool = aheadUserService.validateIp(userId,begin,end);
 			if(bool.size()>0){
 				map.put("flag", "true");
 				map.put("userId", "用户ID："+userId);
@@ -232,16 +238,12 @@ public class AheadUserController {
 				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 				if(per==null){
 					aheadUserService.addRegisterAdmin(com);
-					aheadUserService.addUserAdminIp(com);
-				}else if(per.getUsertype()==1&&StringUtils.equals(per.getInstitution(), com.getInstitution())){
-					//更新机构管理员
-					aheadUserService.deleteUser(com.getAdminname());
-					aheadUserService.addRegisterAdmin(com);
-					//更新管理员IP
+				}else if(per.getUsertype()!=1){
+					return "false";
+				}
+				if(StringUtils.isNotBlank(com.getAdminIP())){
 					aheadUserService.deleteUserIp(com.getAdminname());
 					aheadUserService.addUserAdminIp(com);
-				}else{
-					return "false";
 				}
 				map.put("pid", com.getAdminname());
 			}else{
@@ -415,7 +417,7 @@ public class AheadUserController {
 		String operation_content="金额阈值:"+amountthreshold+",次数阈值:"+countthreshold+",有效期阈值:"+datethreshold+",邮件提醒间隔时间:"+remindtime+",提醒邮箱:"+remindemail;
 		int i = 0;
 		if(flag.equals("1")){
-			i = aheadUserService.updateWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
+			i = aheadUserService.updateWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold,null);
 			log=new Log("机构用户预警设置","修改",operation_content,request);
 		}else{
 			i = aheadUserService.addWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
@@ -496,7 +498,7 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
-		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
+		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
@@ -505,18 +507,14 @@ public class AheadUserController {
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
-				aheadUserService.addUserAdminIp(com);
-			}else if(per.getUsertype()==1&&StringUtils.equals(per.getInstitution(), com.getInstitution())){
-				//更新机构管理员
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
-				//更新管理员IP
-				aheadUserService.deleteUserIp(com.getAdminname());
-				aheadUserService.addUserAdminIp(com);
-			}else{
+			}else if(per.getUsertype()!=1){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员的ID已经被占用");
 				return hashmap;
+			}
+			if(StringUtils.isNotBlank(com.getAdminIP())){
+				aheadUserService.deleteUserIp(com.getAdminname());
+				aheadUserService.addUserAdminIp(com);
 			}
 		}
 		int resinfo = aheadUserService.addRegisterInfo(com);
@@ -688,24 +686,9 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
-		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
-			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-			com.setInstitution(institution);
-			if(per==null){
-				aheadUserService.addRegisterAdmin(com);
-				aheadUserService.addUserAdminIp(com);
-			}else if(per.getUsertype()==1&&institution.equals(per.getInstitution())){
-				//更新机构管理员
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
-				//更新管理员IP
-				aheadUserService.deleteUserIp(com.getAdminname());
-				aheadUserService.addUserAdminIp(com);
-			}else{
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员的ID已经被占用");
-				return hashmap;
-			}
+		Map<String, String> msgMap = setBatchAdmin(com, institution);
+		if (msgMap != null) {
+			return msgMap;
 		}
 		for(Map<String, Object> map : listmap){
 			//Excel表格中部分账号信息
@@ -888,24 +871,9 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
-		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
-			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-			com.setInstitution(institution);
-			if(per==null){
-				aheadUserService.addRegisterAdmin(com);
-				aheadUserService.addUserAdminIp(com);
-			}else if(per.getUsertype()==1&&institution.equals(per.getInstitution())){
-				//更新机构管理员
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
-				//更新管理员IP
-				aheadUserService.deleteUserIp(com.getAdminname());
-				aheadUserService.addUserAdminIp(com);
-			}else{
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员的ID已经被占用");
-				return hashmap;
-			}
+		Map<String, String> msgMap = setBatchAdmin(com, institution);
+		if (msgMap != null) {
+			return msgMap;
 		}
 		for(Map<String, Object> map : listmap){
 			Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
@@ -972,6 +940,25 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
+	private Map<String,String> setBatchAdmin(CommonEntity com,String institution){
+		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
+			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+			com.setInstitution(institution);
+			if(per==null){
+				aheadUserService.addRegisterAdmin(com);
+			}else if(per.getUsertype()!=1){
+				Map<String, String> hashmap = new HashMap<String, String>();
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员的ID已经被占用");
+				return hashmap;
+			}
+			if(StringUtils.isNotBlank(com.getAdminIP())){
+				aheadUserService.deleteUserIp(com.getAdminname());
+				aheadUserService.addUserAdminIp(com);
+			}
+		}
+		return null;
+	}
 	
 	@RequestMapping("/worddownload")
 	public void worddownload(Model model,HttpServletResponse response,HttpServletRequest request) {
@@ -1351,18 +1338,18 @@ public class AheadUserController {
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
-				aheadUserService.addUserAdminIp(com);
-			}else if(per.getUsertype()==1&&StringUtils.equals(per.getInstitution(), com.getInstitution())){
-				//更新机构管理员
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
-				//更新管理员IP
-				aheadUserService.deleteUserIp(com.getAdminname());
-				aheadUserService.addUserAdminIp(com);
-			}else{
+			}else if(per.getUsertype()!=1){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员的ID已经被占用");
 				return hashmap;
+			}
+			if(StringUtils.equals(per.getInstitution(), com.getInstitution())){
+				aheadUserService.deleteUser(com.getAdminname());
+				aheadUserService.addRegisterAdmin(com);
+			}
+			if(StringUtils.isNotBlank(com.getAdminIP())){
+				aheadUserService.deleteUserIp(com.getAdminname());
+				aheadUserService.addUserAdminIp(com);
 			}
 		}
 		int resinfo = aheadUserService.updateUserInfo(com, adminId);
