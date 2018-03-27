@@ -264,19 +264,7 @@ public class PersonBindInstitutionController {
         }
         SearchBindDetailsRequest.Builder countRequest = request;
         SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest.build());
-        int totalSize = countResponse.getTotalCount();
-
-        if (parameter.getPage() != 0) {
-            int index = (parameter.getPage() - 1) * parameter.getPageSize();
-            request.setStartIndex(index);
-        }
-        if (parameter.getPageSize() != 0) {
-            request.setCount(parameter.getPageSize());
-        }
-
-
-        SearchBindDetailsResponse response = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(request.build());
-        List<BindDetail> bindDetail = response.getItemsList();
+        List<BindDetail> bindDetail = countResponse.getItemsList();
         //接收返回的数据
         List<BindAccountModel> modelList = new ArrayList<>();
 
@@ -286,7 +274,7 @@ public class PersonBindInstitutionController {
                 List<String> userIds = new ArrayList<>();
                 userIds.add(parameter.getUserId());
                 modelList = searchBindAuthorityByUser(userIds);
-            } else if (!"".equals(parameter)) {
+            } else if (!"".equals(parameter.getInstitutionName())) {
                 List<String> userIds = userInfoDao.getUserIdByInstitutionName(parameter.getInstitutionName());
                 modelList = searchBindAuthorityByUser(userIds);
             }
@@ -315,10 +303,24 @@ public class PersonBindInstitutionController {
             modelList.add(bindModel);
         }
 
-        int currentPage = parameter.getPage();
+        List<BindAccountModel> pageList = new ArrayList<>();
+
+        //设置分页
+        int page = parameter.getPage();
         int pageSize = parameter.getPageSize();
+        int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
+        int remainder = modelList.size() % pageSize;
+        if (remainder == 0) {
+            remainder = pageSize;
+        }
+        if (page == allPage) {
+            pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
+        } else {
+            pageList = modelList.subList((page - 1) * pageSize, page * pageSize);
+        }
+
         String actionUrl = "/bindAuhtority/searchBindInfo.do";
-        PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(currentPage, totalSize, pageSize, modelList, actionUrl, parameter);
+        PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
         model.addAttribute("pager", formList);
         model.addAttribute("upPage", upPage);
 
@@ -474,7 +476,7 @@ public class PersonBindInstitutionController {
                 SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addRelatedid(accountId).build();
                 SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
                 if (countResponse.getTotalCount()==0){
-                    
+
                     BindAccountModel model = new BindAccountModel();
                     model.setInstitutionId(userId);
                     model.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
