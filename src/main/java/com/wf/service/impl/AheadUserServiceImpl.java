@@ -331,7 +331,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(com.getManagerType().equals("new")){
 				p.setPid(com.getAdminname());			
 			}else{
-				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
+				if(com.getAdminOldName().indexOf("/")!=-1){
+					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
+				}else{
+					p.setPid(com.getAdminOldName());
+				}
 			}
 		}
 		p.setIsFreeze(2);
