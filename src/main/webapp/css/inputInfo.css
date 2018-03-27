@@ -638,6 +638,10 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	overflow: hidden;
 	color: #dd4b39;
 }
+#inputpageSize{
+	width: 45px;
+	margin-top: 3px;
+}
 
 
 
