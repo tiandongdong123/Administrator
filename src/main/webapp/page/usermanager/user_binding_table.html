@@ -40,25 +40,8 @@
         <div class="qr"><img src="../img/qr.gif" class="picture"><span class="reset">重置</span></div>
     </table>
     <div class="behind">
-
-        <div class="pageshow">
-            <input type="hidden" name="pageSize" id="pageSize">
-            <span>每页显示：</span>
-            <select class="evey-page">
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="50">50</option>
-            </select>
-            条数据
-        </div>
             <?
            includeFileTemplate("../../inc/pagePlugin.html",{maxPageNumber:5, pager:pager}){}
            ?>
-        <div class="all_data">
-            <?if(pager != null){?>
-            共<span class="all_number">${pager.total}</span>条数据
-            <!--共<span class="all_page">${pager.pageCount}</span>页-->
-            <?}?>
-        </div>
         <?}?>
     </div>
