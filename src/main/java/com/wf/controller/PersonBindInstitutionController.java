@@ -58,15 +58,17 @@ public class PersonBindInstitutionController {
     @RequestMapping("/userId")
     @ResponseBody
     public List<String> getUserIdByInstitutionName(String institutionName) {
-        List<String> userIdList = userInfoDao.getUserIdByInstitutionName(institutionName);
 
         List<String> userIds = new ArrayList<>();
-        for (String userId : userIdList) {
-            SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
-            SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
-            List<AccountAuthority> accountList = response.getItemsList();
-            if (accountList == null || accountList.size() < 1) {
-                userIds.add(userId);
+        if (!"".equals(institutionName)){
+            List<String> userIdList = userInfoDao.getUserIdByInstitutionName(institutionName);
+            for (String userId : userIdList) {
+                SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+                SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+                List<AccountAuthority> accountList = response.getItemsList();
+                if (accountList == null || accountList.size() < 1) {
+                    userIds.add(userId);
+                }
             }
         }
         return userIds;
