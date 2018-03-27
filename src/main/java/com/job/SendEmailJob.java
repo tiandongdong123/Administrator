@@ -46,14 +46,14 @@ public class SendEmailJob {
 			System.out.println(fm.format(cal.getTime()));
 			Date now=fm.parse(fm.format(cal.getTime()));
 			if(now.getTime()>=war.getExec_time().getTime()){
-				boolean flag=true;//ins.sendMail(war); 
+				boolean flag=ins.sendMail(war); 
 				if(flag){
 					log.info("发送成功");
 				}else{
 					log.info("发送失败");
 				}
 				//无论发送成功还是失败都要修改下次执行时间
-				cal.add(Calendar.DATE, remindTime*2);
+				cal.add(Calendar.DATE, remindTime);
 				war.setExec_time(cal.getTime());
 				aheadUserService.updateWarning(war.getAmountthreshold(), war.getDatethreshold(), war.getRemindtime(), war.getRemindemail(), war.getCountthreshold(), war.getExec_time());
 			}else{
