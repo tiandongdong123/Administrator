@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.utils.SendMail2;
-import com.utils.SettingUtil;
 import com.utils.jdbcUtils;
 import com.wf.bean.Mail;
 import com.wf.service.AheadUserService;
@@ -25,7 +24,6 @@ import com.xxl.conf.core.XxlConfClient;
 public class TongJiJob {
 	
 	private static Logger log = Logger.getLogger(TongJiJob.class);
-	private static String properites="email_phone.properties";
 	
 	@Autowired
 	private InsWarningService ins;
@@ -82,7 +80,11 @@ public class TongJiJob {
 			}
 			// 4、发送预警邮件
 			Mail mail=new Mail();
-			String revicer = SettingUtil.getPros(properites).getProperty("remail.revicer");
+			String revicer=XxlConfClient.get("wf-admin.tjremail.revicer", null);
+			if(StringUtils.isEmpty(revicer)){
+				log.info("邮箱地址为空");
+				return;
+			}
 			mail.setReceiver(revicer);
 			mail.setName("后台管理");
 			mail.setSubject("新平台访问次数统计");
