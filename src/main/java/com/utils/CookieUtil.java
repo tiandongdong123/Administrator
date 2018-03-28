@@ -47,23 +47,6 @@ public class CookieUtil {
 	}
 	
 	/**
-	 * 添加cookie
-	 * @param token
-	 * @param response
-	 */
-	public static void addCookie(String token, HttpServletResponse response) {
-		try {
-			Cookie cookie = new Cookie("CASTGC", token);
-			cookie.setMaxAge(3600);
-			cookie.setDomain(domain);
-			cookie.setPath("/");
-			response.addCookie(cookie);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * 获取cookie中存的用户信息
 	 * @param req
 	 * @return
@@ -93,6 +76,23 @@ public class CookieUtil {
 	
 	/**
 	 * 添加cookie
+	 * @param token
+	 * @param response
+	 */
+	public static void addCookie(String token, HttpServletResponse response) {
+		try {
+			Cookie cookie = new Cookie("CASTGC", token);
+			cookie.setMaxAge(3600);
+			cookie.setDomain(domain);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 添加cookie
 	 * @param user
 	 * @param response
 	 * @throws Exception
@@ -103,23 +103,6 @@ public class CookieUtil {
 			String str = URLEncoder.encode(JSONObject.fromObject(user).toString(), "utf-8");
 			cookie.setValue(str);
 			cookie.setMaxAge(3600);
-			cookie.setDomain(domain);
-			cookie.setPath("/");
-			res.addCookie(cookie);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 删除wfcookie信息
-	 * @param req
-	 * @param res
-	 */
-	public static void removeWfadmin(HttpServletRequest req, HttpServletResponse res) {
-		try {
-			Cookie cookie = new Cookie("Wfadmin", "");
-			cookie.setMaxAge(0);
 			cookie.setDomain(domain);
 			cookie.setPath("/");
 			res.addCookie(cookie);

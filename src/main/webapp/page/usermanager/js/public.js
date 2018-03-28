@@ -65,6 +65,18 @@ $(function(e){
 			$("#sconcurrent_div").hide();
 		}
 	});
+	//开通统计分析
+	$("#checktongji").click(function(){
+		$("input:checkbox[id=statistics]:checked").each(function(){
+			$(this).prop('checked',false);
+		});
+		$("#tongji").val("");
+		if($(this).is(':checked')){
+			$("#tongjiDiv").show();
+		}else{
+			$("#tongjiDiv").hide();
+		}
+	});
 });
 //校验绑定个人上限
 function check(){
@@ -96,24 +108,47 @@ function style(){
 
 
 //统计分析
-function checkTj(value){
+function checkTj(obj){
+	var value=$(obj).val();
 	if(value=="all"){
-		var bool=$("#statistics1").is(':checked');
-		$("#tongji").val(bool?"AB":"");
-		$("#statistics2").prop('checked',bool);
-		$("#statistics3").prop('checked',bool);
-	}else{
-		var statistics2=$("#statistics2").is(':checked');
-		var statistics3=$("#statistics3").is(':checked');
-		if(statistics2&&statistics3){
-			$("#tongji").val("AB");
-		}else if(statistics2){
-			$("#tongji").val("A");
-		}else if(statistics3){
-			$("#tongji").val("B");
+		if($(obj).is(':checked')){
+			var checkedList = new Array();
+			$("input:checkbox[id=statistics]").each(function(){
+				$(this).prop('checked',true);
+				var val=$(this).val();
+				if(val!='all'){
+					checkedList.push(val);
+				}
+			});
+			$("#tongji").val(checkedList.join());
 		}else{
+			$("input:checkbox[id=statistics]:checked").each(function(){
+				$(this).prop('checked',false);
+			});
 			$("#tongji").val("");
 		}
+	}else{
+		var checkedList = new Array();
+		var obj,check=false,uncheck=false;
+		$("input:checkbox[id=statistics]").each(function(){
+			var val = $(this).val();
+			if (val != 'all') {
+				if ($(this).is(':checked')) {
+					checkedList.push(val);
+					check=true;
+				} else {
+					uncheck=true;
+				}
+			}else{
+				obj=$(this);
+			}
+		});
+		if(check&&!uncheck){
+			obj.prop('checked',true);
+		}else if(uncheck){
+			obj.prop('checked',false);
+		}
+		$("#tongji").val(checkedList.join());
 	}
 }
 //绑定个人继承权限

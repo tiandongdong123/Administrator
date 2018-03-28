@@ -17,7 +17,7 @@
 
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
-                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
+                 <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
                </div>
                <div class="form-group input_block">
                  <label class="input_name">IP</label>
@@ -26,7 +26,7 @@
                </div>
                <div class="form-group input_block">
                  <label class="input_name">机构名称</label>
-                 <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}">
+                 <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
                </div>
             <?if(!isEmpty(map.pageList)){?>
 	        <input type="hidden" id="pageNum" name="pageNum" value="${map.pageList.pageNum}">

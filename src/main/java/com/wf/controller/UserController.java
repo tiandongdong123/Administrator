@@ -117,8 +117,7 @@ public class UserController {
 				json.put("registration_time", formatter.format(m.get("registration_time")));
 				redis.hset(token, "Admin." + user.getWangfang_admin_id(), json.toString(),0);
 				redis.expire(token, 3600,0);
-				redis.set(req.getSession().getId(), user.getWangfang_admin_id(),0);
-				redis.expire(req.getSession().getId(), 3600,0);
+				req.getSession();
 				map.put("flag", "true");
 			}
 		}else{
@@ -132,9 +131,9 @@ public class UserController {
 	 */
 	@RequestMapping("logout")
 	public ModelAndView logout(HttpServletRequest req,HttpServletResponse res){
-		String id = req.getSession().getId();
-		if (id != null) {
-			redis.del(0, id);
+		String token=CookieUtil.getCookie(req);
+		if (token != null) {
+			redis.del(0, token);
 		}
 		return new ModelAndView("redirect:/user/toLogin.do");
 	}

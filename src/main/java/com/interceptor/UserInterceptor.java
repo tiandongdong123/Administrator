@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.CookieUtil;
+import com.wf.bean.Wfadmin;
 
 /**
  * 拦截器
@@ -40,26 +41,26 @@ public class UserInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		//2、校验cookie
-		if(CookieUtil.getCookie(req)==null){
+		String cookie=CookieUtil.getCookie(req);
+		if(cookie==null){
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		//3、校验redis
-		HttpSession session = req.getSession(true);
-		String id=CookieUtil.getCache(session.getId());
-		if (id == null) {
+		//3、校验session,redis
+		HttpSession session = req.getSession(false);
+		if (session==null||!CookieUtil.exists(cookie)) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
 		// 4、判断是否被强退
 		if (!url.endsWith(CookieUtil.INDEX)) {
-			if (!CookieUtil.exists(CookieUtil.LAYOUT + id)) {
-				res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
-				return false;
-			}
-			String userName = (String) session.getAttribute("userName");
-			if (userName == null) {
-				String json = CookieUtil.getCache(CookieUtil.LAYOUT + id);
+			if (session.getAttribute("userName") == null) {
+				Wfadmin admin=CookieUtil.getWfadmin(req);
+				if(admin==null){
+					res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+					return false;
+				}
+				String json = CookieUtil.getCache(CookieUtil.LAYOUT + admin.getWangfang_admin_id());
 				if (json == null) {
 					res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 					return false;

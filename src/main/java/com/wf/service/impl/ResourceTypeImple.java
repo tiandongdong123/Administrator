@@ -19,7 +19,6 @@ public class ResourceTypeImple implements ResourceTypeService {
 	@Autowired
 	ResourceTypeMapper dao;
 
-	RedisUtil redis = new RedisUtil();
 	ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
 	@Override
 	public Boolean addResourceType(ResourceType resourceType) {
@@ -134,18 +133,11 @@ public class ResourceTypeImple implements ResourceTypeService {
 	@Override
 	public boolean resourcePublish() {
 		//清空redis中对应的key
-		redis.del("resources");
+		RedisUtil redis = new RedisUtil();
+		redis.del(1,"resources");
 		List<Object> list= dao.find();
 		JSONArray jsonArr = JSONArray.fromObject(list);
 		redis.set("resources", jsonArr.toString(),1);
-//		for(int i = 0;i < list.size();i++){
-//			ResourceType m = (ResourceType) list.get(i);
-//			String object = JSONObject.fromObject(m).toString();
-//			redis.zadd("pageResource", i, m.getId());//发布到redis
-//			redis.hset("resources", m.getId(), object);
-//		}
-
-
 		return false;
 	}
 	@Override
