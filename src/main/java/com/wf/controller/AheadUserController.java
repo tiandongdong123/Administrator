@@ -240,6 +240,8 @@ public class AheadUserController {
 					aheadUserService.addRegisterAdmin(com);
 				}else if(per.getUsertype()!=1){
 					return "false";
+				}else{
+					aheadUserService.updateRegisterAdmin(com);
 				}
 				if(StringUtils.isNotBlank(com.getAdminIP())){
 					aheadUserService.deleteUserIp(com.getAdminname());
@@ -507,7 +509,7 @@ public class AheadUserController {
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
-			}else if(per.getUsertype()!=1){
+			}else{
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员的ID已经被占用");
 				return hashmap;
@@ -946,7 +948,7 @@ public class AheadUserController {
 			com.setInstitution(institution);
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
-			}else if(per.getUsertype()!=1){
+			}else{
 				Map<String, String> hashmap = new HashMap<String, String>();
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员的ID已经被占用");
@@ -1342,10 +1344,12 @@ public class AheadUserController {
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "机构管理员的ID已经被占用");
 				return hashmap;
-			}
-			if(StringUtils.equals(per.getInstitution(), com.getInstitution())){
-				aheadUserService.deleteUser(com.getAdminname());
-				aheadUserService.addRegisterAdmin(com);
+			}else{
+				aheadUserService.updateRegisterAdmin(com);
+				if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
+					//修改该机构下的所有机构名称
+					aheadUserService.updateInstitution(com.getInstitution(),per.getInstitution());
+				}
 			}
 			if(StringUtils.isNotBlank(com.getAdminIP())){
 				aheadUserService.deleteUserIp(com.getAdminname());
