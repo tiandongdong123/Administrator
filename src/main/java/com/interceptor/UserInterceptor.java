@@ -54,12 +54,11 @@ public class UserInterceptor implements HandlerInterceptor {
 		}
 		// 4、校验redis
 		String adminId = admin.getWangfang_admin_id();
-		if (!CookieUtil.exists(cookie, adminId)) {
+		HttpSession session = req.getSession(false);
+		if (session==null || !CookieUtil.exists(cookie, adminId)) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		//5、判断是否被强退
-		HttpSession session = req.getSession(true);
 		if (!url.endsWith(CookieUtil.INDEX)) {
 			if (session.getAttribute("userName") == null) {
 				String json = CookieUtil.getCache(CookieUtil.LAYOUT + adminId);
