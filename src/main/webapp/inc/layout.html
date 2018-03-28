@@ -69,6 +69,7 @@
     }
 </script>
 <body class="sidebar-mini skin-blue-light">
+<div class="backdrop"></div>
 <div class="wrapper">
 
   <header class="main-header">
@@ -116,7 +117,7 @@
     <section class="sidebar">
 <!--       <div class="user-panel"> -->
 <!--         <div class="pull-left image"> -->
-<!--           <img src="../template/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"> -->
+<!--           <img src="../template/dist/img/user2-160x160.jpg" class="img-circle" alt="User Imag e"> -->
 <!--         </div> -->
 <!--         <div class="pull-left info"> -->
 <!--           <p>研发部_${session.userName}</p> -->
@@ -148,7 +149,11 @@
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构用户注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../auser/batchregister.do"><i class="fa fa-circle-o"></i>批量机构用户注册</a></li>
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../auser/batchupdate.do"><i class="fa fa-circle-o"></i>批量账号修改</a></li>
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量冻结/解冻账号")){?>style="display:none"<?}?> <? if(session.menu_first=="batchblock.do"){ ?>class="active"<?}?>><a href="../auser/batchblock.do"><i class="fa fa-circle-o"></i>批量账号冻结/解冻</a></li>
-		            <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../auser/warning.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
+                      <li ><a href="../bindAuhtority/bindInfo.do"><i class="fa fa-circle-o"></i>个人绑定机构信息管理</a></li>
+                      <ul class="treeview-menu menu-open" style="display: block;">
+                          <li ><a href="../bindAuhtority/setPersonAuthority.do"><i class="fa fa-circle-o"></i>个人绑定机构权限设置</a></li>
+                      </ul>
+                      <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../auser/warning.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
 		          </ul>
 	          </li>
 	          <li <?if(!strutil.contain(session.purviews,"个人用户管理")){?>style="display:none"<?}?>>

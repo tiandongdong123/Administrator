@@ -108,6 +108,12 @@
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
                	</div>
+				 <div class="checkbox input_block block_left">
+					 <label><input type="checkbox" id="user_dinding" name="openState" value="false">开通个人绑定机构</label>
+				 </div>
+				 <?
+				      includeFileTemplate("/page/usermanager/userBinding.html",{}){}
+                ?>
                 <div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>上传文档</label>
 					<div class="btn btn-default">

@@ -1,0 +1,47 @@
+<table  class="table table-bordered table-striped" >
+    <?if(pager != null){?>
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>机构名称</th>
+            <th>机构ID</th>
+            <th>绑定模式</th>
+            <th>绑定个人上限</th>
+            <th>绑定个人账号有效期</th>
+            <th>绑定个人下载量上限/天</th>
+            <th>绑定个人继承权限</th>
+            <th>绑定个人账号</th>
+            <th>绑定手机号</th>
+            <th>绑定时间</th>
+            <th>失效时间</th>
+        </tr>
+        <?
+        var i = (pager.currentPage-1)*pager.pageSize+1;
+        for(receipt in pager.pageRecords){
+    ?>
+        <tr>
+            <td>${i++}</td>
+            <? var institutionName =  institutionName(receipt.institutionId);  ?>
+            <td class="username">${institutionName}</td>
+            <td class="userID" style="cursor: pointer">${receipt.institutionId!}</td>
+            <td class="bindtype" data-num=${i}>${receipt.bindType!}</td>
+            <td class="bindLimit">${receipt.bindLimit!}</td>
+            <td class="bindValidity">${receipt.bindValidity!}</td>
+            <td class="downloadLimit">${receipt.downloadLimit!}</td>
+            <td class="authority">${receipt.authority!}</td>
+            <td>${receipt.personId!}</td>
+            <? var phoneNumber = personPhoneNumber(receipt.personId); ?>
+            <td>${phoneNumber!}</td>
+            <td>${receipt.bindTime!}</td>
+            <td>${receipt.invalidTime!}</td>
+        </tr>
+        <?}?>
+        </thead>
+        <div class="qr"><img src="../img/qr.gif" class="picture"><span class="reset">重置</span></div>
+    </table>
+    <div class="behind">
+            <?
+           includeFileTemplate("../../inc/pagePlugin.html",{maxPageNumber:5, pager:pager}){}
+           ?>
+        <?}?>
+    </div>

@@ -1,6 +1,6 @@
 var perioZtr,degreeZtr,confZtr,patentZtr,bookZtr;var count = 0;
 $(function(e){
-	
+	$("input[name='quotaName']").prop("checked",true);
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
@@ -13,7 +13,27 @@ $(function(e){
 			$("#administrator").hide();
 		}
 	});
-	
+	//是否开通个人绑定机构
+	$("#user_dinding").click(function(){
+		if($(this).is(':checked')){
+			$("#user_dinding").val("true");
+			$("#bindAuthority").val("资源下载");
+			$("#bindLimit").val("100");
+			$("#bindValidity").val("180");
+			$("#downlaodLimit").val("30");
+			$("#dinding").show();
+		}else{
+			$("#user_dinding").val("false");
+			$("#bindAuthority").val("");
+			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
+			$("#bindLimit").val("1");
+			$("#bindLimit").val("");
+			$("#bindValidity").val("");
+			$("#downlaodLimit").val("");
+			$("#dinding").hide();
+		}
+	})
+
 	//设置机构账号并发数
 	$("#checkp").click(function(){
 		if($(this).is(':checked')){
@@ -38,7 +58,7 @@ $(function(e){
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("");
+			$("#upperlimit").val("100");
 			$("#sConcurrentcountber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
@@ -58,6 +78,34 @@ $(function(e){
 		}
 	});
 });
+//校验绑定个人上限
+function check(){
+	var reg = /^[1-9]\d*$/;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("margin-left","10px");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+}
+
+function style(){
+	$(".bind_num").css("color","#dd4b39");
+	$("#bindLimit").css("border-color","#dd4b39");
+	$(".wrong").css("background","url(../img/f.png)");
+	$(".wrong").css("margin-left","6px");
+	$(".mistaken").css("display","inline");
+	$(".wrong").css("display","inline");
+}
+
 
 //统计分析
 function checkTj(obj){
@@ -103,6 +151,26 @@ function checkTj(obj){
 		$("#tongji").val(checkedList.join());
 	}
 }
+//绑定个人继承权限
+function bindingInherited(value){
+	var all_index= $('.selFirst').length;
+	var num= $('.selFirst:checked').length;
+	var bindAuthority = new Array();
+	if(value=="all"){
+		$("input[name='resourceType']").prop("checked",$("#allInherited").prop("checked"));
+	} else{
+		if(all_index==num){
+			$("#allInherited").prop("checked",true);
+		}else {
+			$("#allInherited").prop("checked",false);
+		}
+	}
+	$("input[class='selFirst']:checked").each(function () {
+		bindAuthority.push($(this).val());
+	});
+	$("#bindAuthority").val(bindAuthority);
+}
+
 
 //标准
 function standardShow(count,i,id){
@@ -308,9 +376,9 @@ function validStandard(count,i){
 			layer.msg(" 机构名称不能为空",{icon: 2,time: 2000});
 			return false;
 		}else{
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){ 
+			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){
 				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 2000});
-				return false; 
+				return false;
 			}
 		}
 		if(companySimp==null||companySimp==""){
@@ -321,9 +389,9 @@ function validStandard(count,i){
 				layer.msg("机构单位简称的长度必须在5到30之间",{icon: 2,time: 2000});
 				return false;
 			}
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){ 
+			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){
 				layer.msg(" 机构单位简称不能包含汉字",{icon: 2,time: 2000});
-				return false; 
+				return false;
 			}
 		}
 	} else if (isBK) {// 2、包库
@@ -852,7 +920,7 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("local chronicles")>-1){//添加地方志专辑分类和区域代码
 		initGazetteer(count,i);
 	}
-	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1){							
+	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1){
 		//加载详情限定时间
 		setDateList(count,i,type);
 	}
@@ -1203,7 +1271,7 @@ function findSubject(count,i){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -1263,7 +1331,7 @@ function findPatent(count,i){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -1306,7 +1374,7 @@ function findPerioSubject(count,i){
 						dblClickExpand: false,
 					},
 					data: {
-						simpleData: { 
+						simpleData: {
 				            enable:true,
 				            idKey:"id",
 				            pIdKey:"pid"
@@ -1358,7 +1426,7 @@ function validateUserId(){
 //校验IP是否存在交集
 function validateIp(ip,userId,object){
 	var loginMode = $("#loginMode").val();
-	if(loginMode==0){		
+	if(loginMode==0){
 		var bool = false;
 		$.ajax({
 			type : "post",
@@ -1388,7 +1456,7 @@ function IpFormat(str){
 	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
 	var ip = str.split("\n");
 	for(i in ip){
-		if(ip[i]!=""){			
+		if(ip[i]!=""){
 			if(ipLimigLineRegex.test(ip[i])){
 				continue;
 			}else{
@@ -1396,7 +1464,7 @@ function IpFormat(str){
 			}
 		}
 	}
-	return true;					
+	return true;
 }
 
 function validateFrom(){
@@ -1446,8 +1514,8 @@ function radioClick(addOrUpdate,isBatch){
 				}else{
 					$("#adminOldName option:not(:first)").remove();
 					for(var i in data){
-						if(isBatch!="batch"){							
-							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>"); 
+						if(isBatch!="batch"){
+							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
 						}else{
 							$("#adminOldName").append("<option value='"+data[i].userId+"/"+data[i].institution+"'>"+data[i].userId+"/"+data[i].institution+"</option>");
 						}
@@ -1459,8 +1527,8 @@ function radioClick(addOrUpdate,isBatch){
 						$("#adminEmail").val("");
 					}
 					$("#newManager").hide();
-					$("#oldManager").show();	
-				}	
+					$("#oldManager").show();
+				}
 			}
 		});
 	}
@@ -1551,3 +1619,94 @@ function getListNode(treeObj){
 	}
 	return text;
 }
+
+$(document).on("click",function(e){
+	if($(e.target).parents(".userId").length==0){
+		$(".quota").css("display","none");
+		$(".arrow").css({"background-position-x":"-10px"});
+	}
+})
+
+//鼠标经过有提示
+function  showFont(){
+	$(".mechanism_id").hover(function(){
+		if($('.index:checked').length!=0){
+			$(".show_mechanism").text($(".enshrine").text());
+			$(".show_mechanism").show();
+		}
+	},function(){
+		$(".show_mechanism").hide();
+	});
+}
+
+//机构id点击其他
+function commonCaption(e) {
+	var all_index= $('.jg_index').length;
+	var num= $('.index:checked').length;
+	var curText = e.next().text();
+	if(e.is(':checked')){
+		$(".mechanism_id").css("border-color","#00a65a");
+		$(".bind_numm").css("color","#00a65a");
+		$(".wrongm").css("background","url(../img/t.png)");
+		$(".wrongm").css("margin-left","10px");
+		$(".wrongm").css("display","inline");
+		$(".mistakenm").css("display","none");
+		$(".data_first").css("display","block");
+		$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
+		if(all_index==num){
+			if(all_index==1){
+				$(".data_first").css("display","none");
+				$(".enshrine").text($(".quota li:eq(1)").text());
+			}else {
+				$(".tol_quota").prop("checked",true);
+				$('.indexitemText').remove();
+				$(".enshrine").text("全部");
+			}
+		}
+	}else {
+		$('.tol_quota').prop("checked","");
+		$('.allSelectText').text('');
+		$('.enshrine span').each(function () {
+			if(curText == $(this).data('text')){
+				$(this).remove();
+			}
+		});
+		$('.enshrine').text('');
+		$('.index:checked').each(function(){
+			curText = $(this).next().text();
+			$('.enshrine').append('<span class="indexitemText" data-text='+curText+'>'+curText+","+'</span>');
+		});
+		if($(".enshrine").text()==""){
+			$(".mechanism_id").css("border-color","#dd4b39");
+			$(".bind_numm").css("color","#dd4b39");
+			$(".wrongm").css("background","url(../img/f.png)");
+			$(".wrongm").css("margin-left","8px");
+			$(".mistakenm").css("display","inline");
+			$(".wrongm").css("display","inline");
+			$(".mistakenm").text("机构ID不能为空");
+		}else {
+			$(".mechanism_id").css("border-color","#00a65a");
+			$(".bind_numm").css("color","#00a65a");
+			$(".wrongm").css("background","url(../img/t.png)");
+			$(".wrongm").css("margin-left","10px");
+			$(".wrongm").css("display","inline");
+			$(".mistakenm").css("display","none");
+		}
+	}
+}
+//点击箭头变化
+function icont(){
+
+	if(length==0){
+		$(".arrow").css({"background-position-x":"-10px"});
+		$(".quota").hide();
+	}
+	else {
+		$(".arrow").css({"background-position-x":"-39px"});
+		$(".quota").toggle();
+	}
+	if($.trim($(".quota").css("display"))=="none"){
+		$(".arrow").css({"background-position-x":"-10px"});
+	}
+}
+

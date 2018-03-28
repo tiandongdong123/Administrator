@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wf.bean.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -36,22 +38,6 @@ import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
-import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
-import com.wf.bean.CommonEntity;
-import com.wf.bean.Log;
-import com.wf.bean.OperationLogs;
-import com.wf.bean.PageList;
-import com.wf.bean.Person;
-import com.wf.bean.ResourceDetailedDTO;
-import com.wf.bean.ResourceLimitsDTO;
-import com.wf.bean.StandardUnit;
-import com.wf.bean.UserInstitution;
-import com.wf.bean.UserIp;
-import com.wf.bean.WarningInfo;
-import com.wf.bean.Wfadmin;
-import com.wf.bean.WfksAccountidMapping;
-import com.wf.bean.WfksUserSetting;
 import com.wf.service.AheadUserService;
 import com.wf.service.LogService;
 import com.wf.service.OpreationLogsService;
@@ -69,22 +55,23 @@ public class AheadUserController {
 
 	@Autowired
 	private AheadUserService aheadUserService;
-	
+
 	@Autowired
 	private PersonService personservice;
-	
+
 	@Autowired
 	private OpreationLogsService opreationLogs;
 
 	@Autowired
 	private LogService logService;
-	
+
 	private RedisUtil redis = new RedisUtil();
-	
+
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
 	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
-	
+
+
 	/**
 	 *	判断ip段是否重复
 	 */
@@ -177,10 +164,8 @@ public class AheadUserController {
 			if ("1".equals(flag)) { //冻结
 				redis.set(aid, "true", 12);
 				redis.expire(aid, 3600 * 24, 12); //设置超时时间
-				HttpClientUtil.updateUserData(aid, "1");
 			} else if ("2".equals(flag)) { //解冻
 				redis.del(12, aid);
-				HttpClientUtil.updateUserData(aid, "0");
 			}
 			return "true";
 		}
@@ -240,8 +225,6 @@ public class AheadUserController {
 					//更新管理员IP
 					aheadUserService.deleteUserIp(com.getAdminname());
 					aheadUserService.addUserAdminIp(com);
-				}else{
-					return "false";
 				}
 				map.put("pid", com.getAdminname());
 			}else{
@@ -464,7 +447,9 @@ public class AheadUserController {
 	 */
 	@RequestMapping("registerInfo")
 	@ResponseBody
-	public Map<String,String> registerInfo(CommonEntity com,ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
+	public Map<String,String> registerInfo(CommonEntity com,BindAuthorityModel bindAuthorityModel,
+			ModelAndView view,HttpServletRequest req,HttpServletResponse res) throws Exception{
+
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -496,6 +481,10 @@ public class AheadUserController {
 				return hashmap;
 			}
 		}
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			aheadUserService.openBindAuthority(bindAuthorityModel);
+		}
+		log.info("成功开通个人绑定机构权限");
 		if(StringUtils.isNotBlank(com.getAdminname())&&StringUtils.isNotBlank(com.getAdminpassword())){
 			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 				hashmap.put("flag", "fail");
@@ -520,7 +509,7 @@ public class AheadUserController {
 			}
 		}
 		int resinfo = aheadUserService.addRegisterInfo(com);
-		if(StringUtils.isNotBlank(com.getChecks())){		
+		if(StringUtils.isNotBlank(com.getChecks())){
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分析权限
@@ -576,11 +565,16 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String,String> addbatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
-			HttpServletRequest req,HttpServletResponse res)throws Exception{
+	public Map<String,String> addbatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+											   HttpServletRequest req, HttpServletResponse res)throws Exception{
+
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
+		String adminOldName = null;
+		if(StringUtils.isNotBlank(com.getAdminOldName())){
+			adminOldName = com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/"));
+		}
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
 		for (int i = 0; i < listmap.size(); i++) {
@@ -716,7 +710,13 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(com.getChecks())){			
 				aheadUserService.addAccountRestriction(com);
 			}
-			aheadUserService.addUserIns(com);//统计分析权限
+			aheadUserService.addUserIns(com);//统计分线权限
+			bindAuthorityModel.setUserId(map.get("userId").toString());
+			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+				aheadUserService.openBindAuthority(bindAuthorityModel);
+			}
+			log.info("成功开通个人绑定机构权限");
+
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			for(ResourceDetailedDTO dto : list){
 				for(Map<String, Object> pro : lm) {
@@ -772,11 +772,15 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file,CommonEntity com,ModelAndView view,
-			HttpServletRequest req,HttpServletResponse res)throws Exception{
+	public Map<String,String> updateBatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+												  HttpServletRequest req, HttpServletResponse res)throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
+		String adminOldName = null;
+		if(StringUtils.isNotBlank(com.getAdminOldName())){
+			adminOldName = com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/"));
+		}
 		Map<String, String> hashmap = new HashMap<String, String>();
 		if (file == null || file.isEmpty()) {
 			hashmap.put("flag", "fail");
@@ -929,6 +933,35 @@ public class AheadUserController {
 			int resinfo = aheadUserService.updateRegisterInfo(com, null, adminId);
 			//统计分析权限
 			aheadUserService.addUserIns(com);
+			//修改或开通个人绑定机构权限
+			bindAuthorityModel.setUserId(map.get("userId").toString());
+			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
+				if (response.getServiceResult()==false){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",response.getResultMessage());
+					return hashmap;
+				}
+			}else {
+				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
+				if (count>0){
+					aheadUserService.closeBindAuthority(bindAuthorityModel);
+				}
+			}
+			//未存在管理员添加新的
+			if(StringUtils.isBlank(ps.getPid())){
+				if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(adminOldName)){
+					if(com.getManagerType().equals("new")){
+						aheadUserService.addRegisterAdmin(com);
+						aheadUserService.addUserAdminIp(com);
+					}else{
+						Map<String, Object> m = new HashMap<String, Object>();
+						m.put("userId", com.getUserId());
+						m.put("pid", adminOldName);
+						aheadUserService.updatePid(m);
+					}
+				}
+			}
 			aheadUserService.updateAccountRestriction(com);
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			if(list!=null){
@@ -1160,9 +1193,7 @@ public class AheadUserController {
 				return view;
 			}
 		}
-		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("_", "\\_"));
-		}
+		map.put("institution", institution);
 		map.put("adminname", adminname);
 		map.put("adminIP", adminIP);
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
@@ -1194,9 +1225,6 @@ public class AheadUserController {
 		if(!StringUtil.isEmpty(ipSegment)){
 			map.put("ipSegment", ipSegment);
 		}
-		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("\\_", "_"));
-		}
 		map.put("pageList", pageList);
 		//获取权限列表
 		if(pageList.getTotalRow()>0){
@@ -1207,7 +1235,9 @@ public class AheadUserController {
 		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
-		
+
+		//获取个人绑定机构权限
+
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
@@ -1231,6 +1261,9 @@ public class AheadUserController {
 		}
 		//数据分析权限
 		getTongInstitution(userId,map);
+		//个人绑定机构权限
+		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
+		view.addObject("bindInformation",bindInformation);
 		aheadUserService.getprojectinfo(userId,map);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
@@ -1303,7 +1336,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(MultipartFile file,CommonEntity com,HttpServletRequest req,HttpServletResponse res) throws Exception{
+	public Map<String,String> updateinfo(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, HttpServletRequest req, HttpServletResponse res) throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -1367,8 +1400,22 @@ public class AheadUserController {
 		}
 		int resinfo = aheadUserService.updateUserInfo(com, adminId);
 		aheadUserService.updateAccountRestriction(com);
-		//统计分析权限
+		//统计分线权限
 		aheadUserService.addUserIns(com);
+		//修改或开通个人绑定机构权限
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
+			if (response.getServiceResult()==false){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail","修改个人绑定机构权限失败");
+				return hashmap;
+			}
+		}else {
+			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
+			if (count>0){
+				aheadUserService.closeBindAuthority(bindAuthorityModel);
+			}
+		}
 		//修改项目
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){

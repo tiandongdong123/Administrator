@@ -147,9 +147,49 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
+
+			bindValidity:{
+				message : '绑定个人账号有效期不能为空，请填写正确的有效期',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '绑定个人账号有效期不能为空，请填写正确的有效期'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp: /^\+?[1-9]\d*$/,
+						message: '绑定个人账号有效期是大于0的整数，请填写正确的有效期'
+					},
+				}
+			},
+			downloadLimit:{
+				message : '绑定个人下载量上限/天不能为空，请填写正确的数字',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '绑定个人下载量上限/天不能为空，请填写正确的数字'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp:  /^\+?[1-9]\d*$/,
+						message: '绑定个人下载量上限/天是大于0的整数，请填写正确的数字'
+					},
+				}
+			},
+			resourceType:{
+				message : '个人继承权限不能为空，请选择权限',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '个人继承权限不能为空，请选择权限'
+					},
+				}
+			},
+			bindType:{
+				message : '请输入绑定模式',
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定模式'
+					},
+				}
+			},
 		}
 	})
-
 });
 
 function fieldsCheck() {

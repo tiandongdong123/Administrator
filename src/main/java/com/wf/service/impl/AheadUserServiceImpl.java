@@ -19,6 +19,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.*;
+import com.wanfangdata.grpcchannel.BindAccountChannel;
+import com.wanfangdata.grpcchannel.BindAuthorityChannel;
+import com.wanfangdata.rpc.bindauthority.*;
+import com.wanfangdata.setting.BindAuthorityMapping;
+import com.wf.bean.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -49,13 +55,6 @@ import wfks.authentication.AccountId;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.utils.DateUtil;
-import com.utils.ExcelUtil;
-import com.utils.GetUuid;
-import com.utils.Getproperties;
-import com.utils.HttpClientUtil;
-import com.utils.IPConvertHelper;
-import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
@@ -174,9 +173,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * */
     @Autowired
     private TransactionProcess accountingService;
-    
-    
-    /** 
+	@Autowired
+	private BindAuthorityChannel bindAuthorityChannel;
+	@Autowired
+	private BindAccountChannel  bindAccountChannel;
+	@Autowired
+	private BindAuthorityMapping bindAuthorityMapping;
+
+
+	/**
      * 调用接口验证老平台用户是否存在 
      */
     @Override
@@ -1478,6 +1483,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			//查询个人绑定机构权限
+			SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId).build();
+			SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
+			List<AccountAuthority> accountList = response.getItemsList();
+			BindAuthorityViewModel bindAuthorityModel = new BindAuthorityViewModel();
+			if (accountList!=null&&accountList.size()>0){
+				bindAuthorityModel.setOpenState(true);
+				StringBuffer authority = new StringBuffer();
+				for (AccountAuthority accountAuthority : accountList) {
+					authority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority())+"、");
+				}
+				bindAuthorityModel.setUserId(userId);
+				bindAuthorityModel.setBindType(bindAuthorityMapping.getBindTypeName(response.getItems(0).getBindType().getNumber()));
+				bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
+				bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
+				bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
+				bindAuthorityModel.setBindAuthority(authority.toString().substring(0,authority.length()-1));
+
+				userMap.put("bindAuthority", bindAuthorityModel);
+			}
+
 		}
 		log.info(list.toString());
 		int i = personMapper.findListCountSimp(map);
@@ -1860,6 +1886,100 @@ public class AheadUserServiceImpl implements AheadUserService{
 		ins.setStatisticalAnalysis(obj.toString());
 		userInstitutionMapper.addUserIns(ins);
 	}
+	@Override
+	public void openBindAuthority(BindAuthorityModel bindAuthorityModel){
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
+		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
+		List<String> authorityList = new ArrayList<>();
+		for (String authority : authoritys) {
+			authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
+		}
+			OpenBindRequest.Builder request = OpenBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
+					.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
+					.setBindLimit(bindAuthorityModel.getBindLimit())
+					.setBindValidity(bindAuthorityModel.getBindValidity())
+					.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
+					.addAllBindAuthority(authorityList);
+			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
+	}
+
+	@Override
+	public BindAuthorityModel getBindAuthority(String userId) {
+		BindAuthorityModel bindAuthorityModel = new BindAuthorityModel();
+		SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+		SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+		List<AccountAuthority> accountList = response.getItemsList();
+		if (accountList!=null&&accountList.size()>0){
+			bindAuthorityModel.setOpenState(true);
+			List<String> authorityList = new ArrayList<>();
+			for (AccountAuthority accountAuthority : accountList) {
+				authorityList.add(accountAuthority.getBindAuthority());
+			}
+			bindAuthorityModel.setBindType(response.getItems(0).getBindType().getNumber());
+			bindAuthorityModel.setBindLimit(response.getItems(0).getBindLimit());
+			bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
+			bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
+			bindAuthorityModel.setBindAuthority(authorityList.toString());
+		}else {
+			bindAuthorityModel.setOpenState(false);
+		}
+		return bindAuthorityModel;
+	}
+	@Override
+	public int getBindAuthorityCount(String userId) {
+		SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+		SearchAccountAuthorityResponse response =bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+		List<AccountAuthority> accountList = response.getItemsList();
+		if (accountList!=null&&accountList.size()>0){
+			return accountList.size();
+		}else {
+			return 0;
+		}
+	}
+
+	@Override
+	public ServiceResponse editBindAuthority(BindAuthorityModel bindAuthorityModel){
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
+		String[] authoritys = bindAuthorityModel.getBindAuthority().split(",");
+		List<String> authorityList = new ArrayList<>();
+		for (String authority : authoritys) {
+			authorityList.add(bindAuthorityMapping.getAuthorityName(authority));
+		}
+		EditBindRequest.Builder request = EditBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds))
+				.setBindType(BindType.forNumber(bindAuthorityModel.getBindType()))
+				.setBindLimit(bindAuthorityModel.getBindLimit())
+				.setBindValidity(bindAuthorityModel.getBindValidity())
+				.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
+				.addAllBindAuthority(authorityList);
+		return  bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
+	}
+
+	@Override
+	public void closeBindAuthority(BindAuthorityModel bindAuthorityModel){
+
+		String[] userIds = bindAuthorityModel.getUserId().split(",");
+		CloseBindRequest.Builder request = CloseBindRequest.newBuilder().addAllUserId(Arrays.asList(userIds));
+		bindAuthorityChannel.getBlockingStub().closeBindAuthority(request.build());
+	}
+
+	@Override
+	public List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit){
+		List<String> beyondId = new ArrayList<>();
+		for(Map<String, Object> map : listMap){
+			String userId = map.get("userId").toString();
+			List<com.wanfangdata.rpc.bindauthority.AccountId> accountIds = new ArrayList<>();
+			com.wanfangdata.rpc.bindauthority.AccountId accountId = com.wanfangdata.rpc.bindauthority.AccountId.newBuilder().setAccounttype("Group").setKey(userId).build();
+			accountIds.add(accountId);
+			SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder().addAllRelatedid(accountIds).build();
+			SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
+			int count = countResponse.getTotalCount();
+			if (count>bindLimit){
+				beyondId.add(userId);
+			}
+		}
+		return  beyondId;
+	}
+
 
 	@Override
 	public UserInstitution getUserInstitution(String userId) {
