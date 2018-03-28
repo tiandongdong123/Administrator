@@ -53,7 +53,7 @@ public interface AheadUserService {
 	int updateRegisterInfo(CommonEntity com,String pid,String adminId);
 	
 	/** 更新机构管理员 */
-	int updateRegisterAdmin(String institution,JSONObject json) throws Exception;
+	int updateRegisterAdmin(CommonEntity com);
 	
 	/** 通过用户名查询用户信息 */
 	Person queryPersonInfo(String userId);

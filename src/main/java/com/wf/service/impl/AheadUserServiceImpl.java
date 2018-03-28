@@ -363,6 +363,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
+	public int updateRegisterAdmin(CommonEntity com){
+		//机构管理员注册
+		Person per = new Person();
+		per.setUserId(com.getAdminname());
+		try {
+			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		per.setInstitution(com.getInstitution());
+		per.setAdminEmail(com.getAdminEmail());
+		return personMapper.updateRegisterAdmin(per);
+	}
+	
+	@Override
 	public void addUserAdminIp(CommonEntity com){
 		String[] arr_ip = com.getAdminIP().split("\r\n");
 		int index=0;
@@ -1225,29 +1240,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
 		return personMapper.updateRegisterInfo(p);
-	}
-
-	@Override
-	public int updateRegisterAdmin(String institution,JSONObject json) throws Exception{
-		//更新机构管理员
-		Person per = new Person();
-		per.setUserId(json.getString("adminId"));
-		per.setPassword(PasswordHelper.encryptPassword(json.getString("adminpassword").toString()));
-		per.setInstitution(institution);
-		int i = personMapper.updateRegisterAdmin(per);
-		
-		UserIp userIp = new UserIp();
-		if(StringUtils.isNotBlank(json.getString("adminIP"))){
-			userIp.setUserId(json.getString("adminId"));
-			userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(json.getString("adminIP").substring(0, json.getString("adminIP").indexOf("-"))));
-			userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(json.getString("adminIP").substring(json.getString("adminIP").indexOf("-")+1, json.getString("adminIP").length())));
-		}
-		int in = userIpMapper.updateIp(userIp);
-
-		if(i>0&&in>0){			
-			return 1;
-		}
-		return 0;
 	}
 	
 	@Override
