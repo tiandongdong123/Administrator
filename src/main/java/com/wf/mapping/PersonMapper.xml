@@ -96,6 +96,9 @@
       <if test="institution != null and institution !=''" >
         institution = #{institution},
       </if>
+      <if test="adminEmail != null and adminEmail !=''" >
+        admin_email = #{adminEmail},
+      </if>
     </set>
     where user_id = #{userId}
  </update>

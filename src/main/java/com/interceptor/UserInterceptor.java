@@ -40,27 +40,28 @@ public class UserInterceptor implements HandlerInterceptor {
 		if (url.endsWith(CookieUtil.LOGIN_URL) || url.endsWith(CookieUtil.REMIND)) {
 			return true;
 		}
-		//2、校验cookie
-		String cookie=CookieUtil.getCookie(req);
-		if(cookie==null){
+		// 2、校验cookie
+		String cookie = CookieUtil.getCookie(req);
+		if (cookie == null) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		//3、校验session,redis
+		// 3、获取cookie中的wfadmin
+		Wfadmin admin = CookieUtil.getWfadmin(req);
+		if (admin == null) {
+			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
+			return false;
+		}
+		// 4、校验redis
+		String adminId = admin.getWangfang_admin_id();
 		HttpSession session = req.getSession(false);
-		if (session==null||!CookieUtil.exists(cookie)) {
+		if (session==null || !CookieUtil.exists(cookie, adminId)) {
 			res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 			return false;
 		}
-		// 4、判断是否被强退
 		if (!url.endsWith(CookieUtil.INDEX)) {
 			if (session.getAttribute("userName") == null) {
-				Wfadmin admin=CookieUtil.getWfadmin(req);
-				if(admin==null){
-					res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
-					return false;
-				}
-				String json = CookieUtil.getCache(CookieUtil.LAYOUT + admin.getWangfang_admin_id());
+				String json = CookieUtil.getCache(CookieUtil.LAYOUT + adminId);
 				if (json == null) {
 					res.sendRedirect(req.getContextPath() + CookieUtil.LOGIN_URL);
 					return false;

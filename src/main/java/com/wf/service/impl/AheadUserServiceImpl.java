@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -287,7 +288,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 *	更新预警信息
 	 */
 	@Override
-	public int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold) {
+	public int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,Date exec_time) {
 		WarningInfo winfo = new WarningInfo();
 		winfo.setId("1");
 		winfo.setAmountthreshold(amountthreshold);
@@ -295,6 +296,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		winfo.setDatethreshold(datethreshold);
 		winfo.setRemindtime(remindtime);
 		winfo.setRemindemail(remindemail);
+		winfo.setExec_time(exec_time);
 		return aheadUserMapper.updateWarning(winfo);
 	}
 	
@@ -334,7 +336,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(com.getManagerType().equals("new")){
 				p.setPid(com.getAdminname());			
 			}else{
-				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
+				if(com.getAdminOldName().indexOf("/")!=-1){
+					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
+				}else{
+					p.setPid(com.getAdminOldName());
+				}
 			}
 		}
 		p.setIsFreeze(2);
@@ -359,6 +365,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 		per.setInstitution(com.getInstitution());
 		per.setAdminEmail(com.getAdminEmail());
 		return personMapper.addRegisterAdmin(per);
+	}
+	
+	@Override
+	public int updateRegisterAdmin(CommonEntity com){
+		//机构管理员注册
+		Person per = new Person();
+		per.setUserId(com.getAdminname());
+		try {
+			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		per.setInstitution(com.getInstitution());
+		per.setAdminEmail(com.getAdminEmail());
+		return personMapper.updateRegisterAdmin(per);
 	}
 	
 	@Override
@@ -1225,29 +1246,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
 		return personMapper.updateRegisterInfo(p);
 	}
-
-	@Override
-	public int updateRegisterAdmin(String institution,JSONObject json) throws Exception{
-		//更新机构管理员
-		Person per = new Person();
-		per.setUserId(json.getString("adminId"));
-		per.setPassword(PasswordHelper.encryptPassword(json.getString("adminpassword").toString()));
-		per.setInstitution(institution);
-		int i = personMapper.updateRegisterAdmin(per);
-		
-		UserIp userIp = new UserIp();
-		if(StringUtils.isNotBlank(json.getString("adminIP"))){
-			userIp.setUserId(json.getString("adminId"));
-			userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(json.getString("adminIP").substring(0, json.getString("adminIP").indexOf("-"))));
-			userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(json.getString("adminIP").substring(json.getString("adminIP").indexOf("-")+1, json.getString("adminIP").length())));
-		}
-		int in = userIpMapper.updateIp(userIp);
-
-		if(i>0&&in>0){			
-			return 1;
-		}
-		return 0;
-	}
 	
 	@Override
 	public void updateUserIp(CommonEntity com){
@@ -1400,6 +1398,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
+			Date nextDay = this.getDay();
 			for(WfksPayChannelResources wfks : listWfks){
 				Map<String, Object> libdata = new HashMap<String, Object>();//组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
@@ -1422,6 +1421,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
+						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						//查询条件
@@ -1433,6 +1433,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(account!=null){
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
+						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("payChannelid", account.getPayChannelId());
@@ -1448,6 +1449,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
+						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						//查询条件
@@ -1984,5 +1986,31 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public UserInstitution getUserInstitution(String userId) {
 		return userInstitutionMapper.getUserIns(userId);
+	}
+	
+	/**
+	 * 比较日期大小
+	 * 
+	 * @param date
+	 * @return
+	 */
+	private boolean getExpired(Date date, Date next) {
+		return next.getTime() > date.getTime();
+	}
+
+	/**
+	 * 获取下一天的日期
+	 * 
+	 * @return
+	 */
+	private Date getDay() {
+		try {
+			SimpleDateFormat fm = new SimpleDateFormat("yyyyMMdd");
+			Calendar cal = Calendar.getInstance();
+			return fm.parse(fm.format(cal.getTime()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

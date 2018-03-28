@@ -8,6 +8,7 @@
     <result column="remindtime" property="remindtime" jdbcType="VARCHAR" />
     <result column="remindemail" property="remindemail" jdbcType="VARCHAR" />
     <result column="countthreshold" property="countthreshold" jdbcType="VARCHAR" />
+    <result column="exec_time" property="exec_time" jdbcType="VARCHAR" />
   </resultMap>
   
    <!-- 新增预警金额阈值 -->
@@ -18,8 +19,11 @@
    
   <!-- 修改预警金额阈值 -->
   <update id="updateWarning" parameterType="com.wf.bean.WarningInfo">
-  	update ins_warning set amountthreshold=#{amountthreshold},datethreshold=#{datethreshold},remindtime=#{remindtime},remindemail=#{remindemail},countthreshold=#{countthreshold} 
-  	where id = #{id}
+  	update ins_warning set amountthreshold=#{amountthreshold},datethreshold=#{datethreshold},remindtime=#{remindtime},remindemail=#{remindemail},countthreshold=#{countthreshold}
+	<if test="exec_time != null">
+		,exec_time=#{exec_time}
+	</if>
+	where id = #{id}
   </update>
   
   <select id="findWarning" resultMap="BaseResultMap">

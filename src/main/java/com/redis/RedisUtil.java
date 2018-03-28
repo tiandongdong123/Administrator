@@ -651,6 +651,28 @@ public class RedisUtil {
 	}
 	
 	/**
+	 * <p>通过key 和 field 获取指定的 value</p>
+	 * @param key
+	 * @param field
+	 * @return 没有返回null
+	 */
+	public String hget(String key, String field,int num){
+		Jedis jedis = null;
+		String res = null;
+		try {
+			jedis = pool.getResource();
+			jedis.select(num);
+			res = jedis.hget(key, field);
+		} catch (Exception e) {
+			pool.returnBrokenResource(jedis);
+			e.printStackTrace();
+		} finally {
+			returnResource(pool, jedis);
+		}
+		return res;
+	}
+	
+	/**
 	 * <p>通过key 和 fields 获取指定的value 如果没有对应的value则返回null</p>
 	 * @param key
 	 * @param fields 可以使 一个String 也可以是 String数组

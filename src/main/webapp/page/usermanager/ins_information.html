@@ -110,8 +110,8 @@
 		<div class="List_head">
 			<span style="color: #0099ff">${pro.name}</span>
 			<div class="timeMoney">
-				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>
-					<span>${pro.beginDateTime}~${pro.endDateTime}</span>
+				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>				
+					<span <?if(pro.expired){?>style="color:red;"<?}?>>${pro.beginDateTime}~${pro.endDateTime}</span>
 				<?}?>
 				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>
 					<span>${pro.balance}</span>

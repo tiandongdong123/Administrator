@@ -1,5 +1,6 @@
 package com.wf.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public interface AheadUserService {
 	WarningInfo findWarning();
 	
 	/** 更新预警信息 */
-	int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);
+	int updateWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,Date exec_time);
 	
 	/** 添加预警信息 */
 	int addWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);
@@ -40,7 +41,7 @@ public interface AheadUserService {
 	int updateRegisterInfo(CommonEntity com,String pid,String adminId);
 	
 	/** 更新机构管理员 */
-	int updateRegisterAdmin(String institution,JSONObject json) throws Exception;
+	int updateRegisterAdmin(CommonEntity com);
 	
 	/** 通过用户名查询用户信息 */
 	Person queryPersonInfo(String userId);
