@@ -1,10 +1,11 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-<script type="text/javascript" src="../page/usermanager/js/ins_batchupdate.js"></script>
+
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/ins_batchupdate.js"></script>
   <div class="content-wrapper">
     <section class="content-header"><h1>机构用户批量账号修改</h1></section>
 
@@ -106,6 +107,12 @@
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
                	</div>
+				 <div class="checkbox input_block block_left">
+					 <label><input type="checkbox" id="user_dinding" name="openState" value="false">开通个人绑定机构</label>
+				 </div>
+				 <?
+				      includeFileTemplate("/page/usermanager/userBinding.html",{}){}
+                ?>
                 <div class="checkbox input_block block_left">
                   <label><input type="checkbox" name="resetMoney" value="true">金额重置</label>
 	            </div>

@@ -1,5 +1,34 @@
+$(document).ready(function(){
+	$("input[name='openState']").prop("checked",false);
+	$("input[name='resourceType']").prop("checked",false);
+	$("input[id='resourceInherited']").prop("checked",true);
+	//绑定个人上限的提示
+	$("#bindLimit").keyup(function(){
+		check();
+	})
+});
 //提交事件
 function submitForm(){
+	var reg = /^[1-9]\d*$/;
+	var bool = false;
+	if($("#bindLimit").val()==""){
+		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
+		style();
+		bool = true;
+	}else if(!reg.test($("#bindLimit").val())){
+		$(".mistaken").text("绑定个人上限是大于0的整数，请填写正确的数字");
+		style()
+		bool = true;
+	}else {
+		$(".bind_num").css("color","#00a65a");
+		$("#bindLimit").css("border-color","#00a65a");
+		$(".wrong").css("background","url(../img/t.png)");
+		$(".wrong").css("display","inline");
+		$(".mistaken").css("display","none");
+	}
+	if(bool){
+		return ;
+	}
 	$("#submit").attr({disabled: "disabled"});
 	if(!validateFrom()){
 		$("#submit").removeAttr("disabled");

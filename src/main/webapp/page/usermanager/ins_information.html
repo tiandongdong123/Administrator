@@ -7,12 +7,14 @@
   <div class="content-wrapper">
     <section class="content-header"><h1>机构用户信息管理</h1></section>
 
+	  <input type="hidden" class="parameter" value="">
 <section class="content">
   <div class="row">
     <div class="col-md-6">
       <div class="box box-primary">
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
+
                <div class="form-group input_block">
                  <label class="input_name">用户ID</label>
                  <input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"><?if(!isEmpty(msg)&&msg=='1'){?>&nbsp;&nbsp;<span style="color:red">该用户ID是个人用户</span><?}?>
@@ -39,8 +41,10 @@
 	<div class="container01">
 	<div class="info_block info_block1">
 	<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
+	<ul class="info_list">
+	<li class="info_list_con">
 	<ol class="info_list">
-	<li class="info_list_con">	      
+	<li class="info_list_con">
 	<div class="info_box">
 	<div class="info_cont">
  	<div class="info_jg_title" <?if(i<6){?>onclick="unfolded(2,this,'show_${i}');"<?}else{?>onclick="unfolded(1,this,'show_${i}');"<?}?>>
@@ -64,6 +68,7 @@
      	<a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a>
         <a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a>
         <a href="../auser/groupOrder.do?userId=${list.userId}" class="add_admin">订单记录</a>
+		 <a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a>
 	    <?if(list.pid!=null&&list.pid!=""){?>
 			<a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
 	    <?}else{?>
@@ -88,14 +93,14 @@
  	</div>
 	<div id="show_${i}" <?if(i<6){?>style="display:black;"<?}else{?>style="display:none;"<?}?>>
 	<div class="user_info">
-		<span>${list.userId}</span>
-		<?if(list.loginMode!=0){?>						        					
+		<span class="user_qrCode">${list.userId}</span>
+		<?if(list.loginMode!=0){?>
 			<span>${list.password}</span>
 		<?}?>
 		<span>${list.loginMode==0?'IP自动登录':(list.loginMode==2?'用户名密码+IP':'用户名密码')}</span>
 	</div>
 	<?if(!isEmpty(list.loginMode)&&list.loginMode!=1){?>
-		<? if(!isEmpty(list.list_ip)){ for(listIp in list.list_ip){ ?>			
+		<? if(!isEmpty(list.list_ip)){ for(listIp in list.list_ip){ ?>
 			<div class="ip_num">${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber}</div>
 		<?}}?>
 	<?}?>
@@ -108,10 +113,10 @@
 				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>				
 					<span <?if(pro.expired){?>style="color:red;"<?}?>>${pro.beginDateTime}~${pro.endDateTime}</span>
 				<?}?>
-				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>								        				
+				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>
 					<span>${pro.balance}</span>
 				<?}?>
-				<?if(pro.payChannelid=='HistoryCheck'){?>								        				
+				<?if(pro.payChannelid=='HistoryCheck'){?>
 					<span>${pro.ViewHistoryCheck}</span>
 				<?}?>
 			</div>
@@ -138,7 +143,7 @@
     <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
 		<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
-		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id; 
+		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id;
 			for(var n=0;n<pldata.contract.~size;n++){
 				if("perioInfo_CLC"==pldata.contract[n].Field){
 					perioInfo_CLC=pldata.contract[n];
@@ -430,9 +435,21 @@
 <?}?>
 </div>
 <?}?>
-
 </div>
 <?}}?>
+			<?if(list.bindAuthority!=null){?>
+			<div class="user_bind" >
+				<span style="color: #0099ff">个人绑定机构</span>
+				<div class="bind"><span>绑定模式：</span><span class="bind_type">${list.bindAuthority.bindType}</span></div>
+				<div class="bind"><span>绑定个人上限：</span><span>${list.bindAuthority.bindLimit}</span></div>
+				<div class="bind"><span>绑定个人账号有效期：</span><span>${list.bindAuthority.bindValidity}</span></div>
+				<div class="bind"><span>绑定个人下载量上限/天：</span><span>${list.bindAuthority.downloadLimit}</span></div>
+				<div class="bind"><span>绑定个人继承权限：</span><span>${list.bindAuthority.bindAuthority}</span></div>
+			</div>
+			<?if(list.bindAuthority.bindType=="线下扫描"){?>
+			<div class="qr_picture"><img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures"><span class="resets">重置</span></div>
+			<?}?>
+			<?}?>
 </div>
 </div>
 </div>

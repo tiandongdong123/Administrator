@@ -1,10 +1,19 @@
 $(function(){
+	if($(".parameter").val()){
+		$("#userId").text($(".parameter").val());
+		findList();
+	}
 	goPage();
-	
     $('.add_admin').click(function (e) {
         preventBubble(e);
     });
-    
+
+	//点击重置二维码
+	$(document).on("click",".resets",function(){
+		var userId_qr = $(this).parents(".info_cont").find(".user_qrCode").text();
+		var pictures = $(this).siblings('.pictures');
+		pictures.attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
+	});
 });
 
 //全局点击事件(隐藏服务权限div)
@@ -313,6 +322,7 @@ function findList(){
 	}
 	$("#pageNum").val(1);
 	$("#fromList").submit();
+
 }
 
 String.prototype.startWith=function(str){

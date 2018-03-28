@@ -68,13 +68,13 @@
               <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>是否开通管理员</label>
             </div>
             <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
-             
+
               <div class="form-group input_block">
               		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
               		<input type="radio" name="managerType" value="old"  onclick="radioClick('update');"/>选择已有管理员
                   	<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
                </div>
-                	
+
                 <div class="form-group input_block" id="oldManager" style="display: none;">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
                   <select class="form-control input_width" name="adminOldName" id="adminOldName">
@@ -102,7 +102,7 @@
                <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
              </div>
 	       </div>
-             
+
             </div>
             <div class="checkbox input_block block_left">
               <label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>checked="checked"<?}?>>是否开通机构子账号</label>
@@ -138,7 +138,42 @@
 			<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(tongji&&strutil.contain(tongjiM,"database_statistics\":1")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
 			<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(tongji&&strutil.contain(tongjiM,"resource_type_statistics\":1")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
 		  </div>
-          </div>
+			<div class="checkbox input_block block_left">
+				<label><input type="checkbox" id="user_dinding" name="openState"<?if(bindInformation.openState){?>checked="checked"<?}?>>开通个人绑定机构</label>
+			</div>
+            <div id="dinding" >
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
+                <select class="form-control input_width"  id="bindType" name="bindType"  >
+                    <>
+                    <option value="0"<?if(bindInformation.bindType==0){?>selected = "selected"<?}?>>机构个人同时登录</option>
+                    <option value="1"<?if(bindInformation.bindType==1){?>selected = "selected"<?}?>>机构登录</option>
+                    <option value="2"<?if(bindInformation.bindType==2){?>selected = "selected"<?}?>>线下扫描</option>
+
+                </select>
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name bind_num"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人上限</label>
+                <input type="text" class="form-control input_width" value="${bindInformation.bindLimit}" id="bindLimit" name="bindLimit">
+				<i class="wrong"></i>
+				<span class="mistaken"></span>
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人账号有效期(天)</label>
+                <input type="text" class="form-control input_width" value="${bindInformation.bindValidity}" id="bindValidity" name="bindValidity">
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人下载量上限/天</label>
+                <input type="text" class="form-control input_width" value="${bindInformation.downloadLimit}" id="downlaodLimit" name="downloadLimit">
+            </div>
+            <div class="form-group input_block">
+                <input type="hidden" name="bindAuthority" id="bindAuthority" value="资源下载">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人继承权限</label>
+                <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
+                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"resource")){?>checked="checked"<?}?>  class="selFirst" id="resourceInherited" onclick="bindingInherited()" value="资源下载">资源下载&nbsp;&nbsp;
+                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"miner")){?>checked="checked"<?}?>  class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
+                </div>
+            </div>
           <div id="multplediv">
           	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
           	<div class="balance_block" name="full_div">
@@ -147,7 +182,7 @@
            		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
-           		<button type="button" class="btn btn-primary" style="margin-left:1000px;" 
+           		<button type="button" class="btn btn-primary" style="margin-left:1000px;"
            		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
            	</div>
            	<div class="time_block">
@@ -161,24 +196,24 @@
             	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime}">
             	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime}">
             	<?}?>
-           		<?if(pro.type!='time'&&pro.type!='count'){?>	              	
+           		<?if(pro.type!='time'&&pro.type!='count'){?>
             		<div class="time_input time_money">
             			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
             		</div>
             	<?}?>
-            	<?if(pro.type!='time'&&pro.type!='balance'){?>              	
+            	<?if(pro.type!='time'&&pro.type!='balance'){?>
             		<div class="time_input time_money">
             			<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
             		</div>
             	<?}?>
             	<?if(pro.payChannelid=='HistoryCheck'){?>
-            		<p><div class="time_input time_money"><span><b>*</b>查看交易信息</span> 
+            		<p><div class="time_input time_money"><span><b>*</b>查看交易信息</span>
             			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='is'){?>checked="checked"<?}?> type="radio" value="ViewHistoryCheck"/>可以
             			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='not'){?>checked="checked"<?}?> type="radio" value="not"/>不可以
             		</div>
             	<?}?>
            	</div>
-<?if(pro.type!='count' && !isEmpty(pro.plList)){?>           		
+<?if(pro.type!='count' && !isEmpty(pro.plList)){?>
 <div class="balance_list">
     <div class="checkbox_check">
     	<div><b>*</b>选择数据库</div>
@@ -190,7 +225,7 @@
 		<? if(!isEmpty(data.rp)){ ?>
        	<i onclick="showProduct(this,1)" class="icon_minus"></i>
 		<ul style="display: none;" class="checkbox_list subset_list">
-		 	<? for(pd in data.rp){ ?>   	
+		 	<? for(pd in data.rp){ ?>
 				<li><input type="checkbox" class="rdlist[${i}].tableName" <?if(!isEmpty(data.product_id)&&(strutil.contain(data.product_id,pd.rid+"]")||strutil.contain(data.product_id,pd.rid+","))){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
 		 	<?}?>
 		</ul>
@@ -487,13 +522,13 @@
 								<div class="form-group input_block">
 									<label><b>*</b>机构名称：</label>
 									<input type="hidden" id="h_orgName_${i}_${j}" value="${org_name.Value!}"/>
-									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" value="${org_name.Value!}" 
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" value="${org_name.Value!}"
 									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})"/>（若账号为中文，则填写全拼）
 								</div>
 								<div class="form-group input_block">
 									<label><b>*</b>机构单位简称：</label>
 									<input type="hidden" id="h_companySimp_${i}_${j}" value="${company_simp.Value!}"/>
-									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" value="${company_simp.Value!}" 
+									<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" value="${company_simp.Value!}"
 									onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
 								</div>
 							</div>
@@ -548,7 +583,7 @@
              <?if(strutil.contain(rt,"local chronicles")){?><li><a href="#localchronicles_${i}_${j}" data-toggle="tab">地方志限定</a></li><?}?>
            </ul>
            <div class="tab-content">
-          <?if(strutil.contain(rt,"perio")){?>			           
+          <?if(strutil.contain(rt,"perio")){?>
            <!-- 期刊 -->
              <div class="tab-pane" id="perio_${i}_${j}">
              	<button id="button0_${i}_${j}" onclick="changePerioClc('_${i}_${j}',0)" type="button" class="btn btn-primary btn-sm">选刊</button>
@@ -612,7 +647,7 @@
          	<div id="degreeMsg_${i}_${j}"></div>
          </div>
        <?}?>
-       <?if(strutil.contain(rt,"conf")){?>			        
+       <?if(strutil.contain(rt,"conf")){?>
         <!-- 会议 -->
           <div class="tab-pane" id="conf_${i}_${j}">
            <label>中图分类</label>
@@ -703,12 +738,12 @@
 				</div>
 				<div class="form-group input_block">
 					<label><b>*</b>机构名称：</label>
-					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}" 
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].orgName" id="orgName_${i}_${j}"
 					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">（若账号为中文，则填写全拼）
 				</div>
 				<div class="form-group input_block">
 					<label><b>*</b>机构单位简称：</label>
-					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}" 
+					<input type="text" class="form-control input_width" name="rdlist[${i}].rldto[${j}].companySimp" id="companySimp_${i}_${j}"
 					onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')" onblur="checkOrg(${i},${j})">
 				</div>
 			</div>

@@ -124,6 +124,19 @@ public interface PersonMapper {
 	 *获取机构下所有账号
 	 */
 	List<String> getInstitutionUser(@Param("institutionName")String institutionName);
-    
-	
+
+	/**
+	 * 根据用户id查询机构名称
+	 * @param userId
+	 * @return
+	 */
+	String getInstitutionByUserId(@Param("userId") String userId);
+
+	/**
+	 * 根据用户id查询用户手机号
+	 * @param userId
+	 * @return
+	 */
+	String getPhoneNumberByUserId(@Param("userId") String userId);
+
 }
