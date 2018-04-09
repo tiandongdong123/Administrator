@@ -155,10 +155,6 @@
 	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time)
      values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now())
   </insert>
-  
-  <delete id="deleteUser" parameterType="java.lang.String">
-  	delete from user where user_id = #{userId}
-  </delete>
  
   <!-- 移除机构账号管理员 -->
  <update id="updatePid" parameterType="java.util.Map">

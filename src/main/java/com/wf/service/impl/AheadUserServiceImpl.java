@@ -1089,7 +1089,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			return null;
 		}
 		// 正则去除特殊字符
-		Pattern p = Pattern.compile("[^0-9a-zA-Z]");
+		Pattern p = Pattern.compile("[^0-9a-zA-Z_]");
 		Matcher m = p.matcher(ids);
 		ids = m.replaceAll(" ").trim();
 		ids = ids.replaceAll(" +"," ").replaceAll(" ", ";");
@@ -1534,11 +1534,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public int deleteUserIp(String userId){
 		return userIpMapper.deleteUserIp(userId);
-	}
-	
-	@Override
-	public int deleteUser(String userId){
-		return personMapper.deleteUser(userId);
 	}
 	
 	@Override

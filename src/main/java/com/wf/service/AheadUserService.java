@@ -6,13 +6,25 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.wanfangdata.rpc.bindauthority.ServiceResponse;
-import com.wf.bean.*;
-import net.sf.json.JSONObject;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.setting.PayChannelModel;
+
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wf.bean.Authority;
+import com.wf.bean.AuthoritySetting;
+import com.wf.bean.BindAuthorityModel;
+import com.wf.bean.CommonEntity;
+import com.wf.bean.PageList;
+import com.wf.bean.Person;
+import com.wf.bean.Project;
+import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.StandardUnit;
+import com.wf.bean.UserInstitution;
+import com.wf.bean.UserIp;
+import com.wf.bean.WarningInfo;
+import com.wf.bean.WfksAccountidMapping;
+import com.wf.bean.WfksUserSetting;
 
 public interface AheadUserService {
 	
@@ -140,9 +152,6 @@ public interface AheadUserService {
      * @return 
      */
 	int personCharge(String userId, String turnover, String reason, String authToken, HttpServletResponse httpResponse) throws Exception;
-
-	/** 删除用户 */
-	int deleteUser(String userId);
 
 	/** 删除用户IP */
 	int deleteUserIp(String userId);
