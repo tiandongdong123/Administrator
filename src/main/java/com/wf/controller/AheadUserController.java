@@ -1109,8 +1109,7 @@ public class AheadUserController {
 			com.setAdminEmail(json.getString("adminEmail"));
 			com.setAdminIP(json.getString("adminIP"));
 			com.setInstitution(institution);
-			aheadUserService.deleteUser(json.getString("adminId"));
-			int in = aheadUserService.addRegisterAdmin(com);
+			int in = aheadUserService.updateRegisterAdmin(com);
 			if(StringUtils.isNotBlank(json.getString("adminIP"))){
 				aheadUserService.deleteUserIp(json.getString("adminId"));
 				aheadUserService.addUserAdminIp(com);
