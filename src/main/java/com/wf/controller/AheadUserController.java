@@ -93,11 +93,13 @@ public class AheadUserController {
 	@RequestMapping("validateip")
 	@ResponseBody
 	public JSONObject validateIp(String ip,String userId){
+		long time=System.currentTimeMillis();
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
 		String [] str = ip.split("\n");	
 		//校验<数据库>是否存在IP重复
+		List<UserIp> list=new ArrayList<UserIp>();
 		for(int i = 0; i < str.length; i++){		
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
@@ -107,22 +109,40 @@ public class AheadUserController {
 				map.put("flag", "true");
 				map.put("errorIP", beginIp+"-"+endIp);
 			}
-			List<UserIp> bool = aheadUserService.validateIp(userId,begin,end);
+			UserIp user=new UserIp();
+			user.setUserId(userId);
+			user.setBeginIpAddressNumber(begin);
+			user.setEndIpAddressNumber(end);
+			list.add(user);
+		}
+		if(map.size()==0){
+			List<UserIp> bool = aheadUserService.validateIp(list);
 			if(bool.size()>0){
-				map.put("flag", "true");
-				map.put("userId", "用户ID："+userId);
-				sbf.append(str[i]+"</br>");
-				map.put("errorIP", sbf.toString());
 				for(UserIp userIp : bool){
-					sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
-					+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
+					if(StringUtils.equals(userIp.getUserId(), userId)){
+						continue;
+					}
+					for(UserIp src:list){
+						if(src.getBeginIpAddressNumber()<=userIp.getEndIpAddressNumber()&&src.getEndIpAddressNumber()>=userIp.getBeginIpAddressNumber()){
+							sbf.append(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
+									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>");
+							sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
+									+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
+						}
+					}
 				}
-				map.put("tableIP", sb.toString());
+				if(sbf.length()>0){
+					map.put("flag", "true");
+					map.put("userId", "用户ID："+userId);
+					map.put("errorIP", sbf.toString());
+					map.put("tableIP", sb.toString());	
+				}
 			}
 		}
-		if(map.size()<=0){
+		if(map.size()==0){
 			map.put("flag", "false");
 		}
+		log.info("IP校验："+userId+" "+ip.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
 		return map;
 	}
 	
