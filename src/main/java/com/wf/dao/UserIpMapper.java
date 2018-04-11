@@ -14,7 +14,7 @@ public interface UserIpMapper {
     int deleteUserIp(String userId);
     
     /** 验证IP交集  */
-    List<UserIp> validateIp(List<UserIp> list);
+    List<Map<String,Object>> validateIp(List<UserIp> list);
 
     /** 更新ip段 */
 	int updateIp(UserIp userIp);

@@ -118,18 +118,29 @@ public class AheadUserController {
 			list.add(user);
 		}
 		if(map.size()==0){
-			List<UserIp> bool = aheadUserService.validateIp(list);
+			List<Map<String,Object>> bool = aheadUserService.validateIp(list);
 			if(bool.size()>0){
-				for(UserIp userIp : bool){
-					if(StringUtils.equals(userIp.getUserId(), userId)){
+				for(Map<String,Object> mbo : bool){
+					if(StringUtils.equals(String.valueOf(mbo.get("userId")), userId)){
+						continue;
+					}
+					String userid=mbo.get("userId").toString();
+					long end=Long.parseLong(String.valueOf(mbo.get("endIpAddressNumber")));
+					long begin=Long.parseLong(String.valueOf(mbo.get("beginIpAddressNumber")));
+					if(mbo.get("userType")==null||mbo.get("loginCode")==null){
+						continue;
+					}
+					int userType=Integer.parseInt(String.valueOf(mbo.get("userType")));
+					int loginCode=Integer.parseInt(String.valueOf(mbo.get("loginCode")));
+					if(userType!=2||loginCode!=0){
 						continue;
 					}
 					for(UserIp src:list){
-						if(src.getBeginIpAddressNumber()<=userIp.getEndIpAddressNumber()&&src.getEndIpAddressNumber()>=userIp.getBeginIpAddressNumber()){
+						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
 							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
-							sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
-									+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
+							sb.append(userid+","+IPConvertHelper.NumberToIP(begin)
+									+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
 						}
 					}
 				}

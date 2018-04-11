@@ -131,7 +131,7 @@ public interface AheadUserService {
 	Map<String, Object> selectBalanceById(String userId);
 
 	/** 验证ip是否有交集  */
-	List<UserIp> validateIp(List<UserIp> list);
+	List<Map<String,Object>> validateIp(List<UserIp> list);
 
 	/** 通过机构名称获取所属管理员 
 	 * @param pid */
