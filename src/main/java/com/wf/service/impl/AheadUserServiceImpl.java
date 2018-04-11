@@ -1537,11 +1537,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int deleteUser(String userId){
-		return personMapper.deleteUser(userId);
-	}
-	
-	@Override
 	public int updatePid(Map<String, Object> map){
 		return personMapper.updatePid(map);
 	}
@@ -1586,9 +1581,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public List<UserIp> validateIp(String userId, long beginIp, long endIp){
-		List<UserIp> list = userIpMapper.validateIp(userId, beginIp, endIp);
-		return list;
+	public List<UserIp> validateIp(List<UserIp> list){
+		return userIpMapper.validateIp(list);
 	}
 
 	//通过机构名称查询下属管理员

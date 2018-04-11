@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,8 +15,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.wanfangdata.rpc.bindauthority.ServiceResponse;
-import com.wf.bean.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -38,8 +37,10 @@ import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
+import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.Log;
 import com.wf.bean.OperationLogs;
@@ -93,11 +94,14 @@ public class AheadUserController {
 	@RequestMapping("validateip")
 	@ResponseBody
 	public JSONObject validateIp(String ip,String userId){
+		long time=System.currentTimeMillis();
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
+		 Map<String,String> maps = new LinkedHashMap<String,String>();
 		String [] str = ip.split("\n");	
 		//校验<数据库>是否存在IP重复
+		List<UserIp> list=new ArrayList<UserIp>();
 		for(int i = 0; i < str.length; i++){		
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
@@ -107,22 +111,43 @@ public class AheadUserController {
 				map.put("flag", "true");
 				map.put("errorIP", beginIp+"-"+endIp);
 			}
-			List<UserIp> bool = aheadUserService.validateIp(userId,begin,end);
+			UserIp user=new UserIp();
+			user.setUserId(userId);
+			user.setBeginIpAddressNumber(begin);
+			user.setEndIpAddressNumber(end);
+			list.add(user);
+		}
+		if(map.size()==0){
+			List<UserIp> bool = aheadUserService.validateIp(list);
 			if(bool.size()>0){
-				map.put("flag", "true");
-				map.put("userId", "用户ID："+userId);
-				sbf.append(str[i]+"</br>");
-				map.put("errorIP", sbf.toString());
 				for(UserIp userIp : bool){
-					sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
-					+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
+					if(StringUtils.equals(userIp.getUserId(), userId)){
+						continue;
+					}
+					for(UserIp src:list){
+						if(src.getBeginIpAddressNumber()<=userIp.getEndIpAddressNumber()&&src.getEndIpAddressNumber()>=userIp.getBeginIpAddressNumber()){
+							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
+									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
+							sb.append(userIp.getUserId()+","+IPConvertHelper.NumberToIP(userIp.getBeginIpAddressNumber())
+									+"-"+IPConvertHelper.NumberToIP(userIp.getEndIpAddressNumber())+"</br>");
+						}
+					}
 				}
-				map.put("tableIP", sb.toString());
+				if(maps.size()>0){
+					map.put("flag", "true");
+					map.put("userId", "用户ID：" + userId);
+					for (String key : maps.keySet()) {
+						sbf.append(key);
+					}
+					map.put("errorIP", sbf.toString());
+					map.put("tableIP", sb.toString());
+				}
 			}
 		}
-		if(map.size()<=0){
+		if(map.size()==0){
 			map.put("flag", "false");
 		}
+		log.info("IP校验："+userId+" "+ip.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
 		return map;
 	}
 	
@@ -1109,8 +1134,7 @@ public class AheadUserController {
 			com.setAdminEmail(json.getString("adminEmail"));
 			com.setAdminIP(json.getString("adminIP"));
 			com.setInstitution(institution);
-			aheadUserService.deleteUser(json.getString("adminId"));
-			int in = aheadUserService.addRegisterAdmin(com);
+			int in = aheadUserService.updateRegisterAdmin(com);
 			if(StringUtils.isNotBlank(json.getString("adminIP"))){
 				aheadUserService.deleteUserIp(json.getString("adminId"));
 				aheadUserService.addUserAdminIp(com);
