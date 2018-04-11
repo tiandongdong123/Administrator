@@ -1449,6 +1449,7 @@ function validateIp(ip,userId,object){
 						time: 0
 					});
 				}else{
+					layer.closeAll();
 					bool = false;
 				}
 			}
