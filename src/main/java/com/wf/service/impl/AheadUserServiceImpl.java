@@ -332,9 +332,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			e.printStackTrace();
 		}
 		p.setUsertype(2);
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){			
+		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){	
 			if(com.getManagerType().equals("new")){
-				p.setPid(com.getAdminname());			
+				p.setPid(com.getAdminname());
 			}else{
 				if(com.getAdminOldName().indexOf("/")!=-1){
 					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
@@ -1216,6 +1216,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}else{
 				p.setPid(com.getAdminOldName());
 			}
+		}else{
+			p.setPid("");
 		}
 		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
 		return personMapper.updateRegisterInfo(p);
@@ -1228,20 +1230,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 		p.setUserId(com.getUserId());
 		p.setInstitution(com.getInstitution());
 		try {
-			if(StringUtils.isNotBlank(com.getPassword())){				
+			if(StringUtils.isNotBlank(com.getPassword())){
 				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(StringUtils.isBlank(pid)){
-			if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){				
-				if(com.getManagerType().equals("new")){					
-					p.setPid(com.getAdminname());
-				}else{
-					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
-				}
+		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){				
+			if(com.getManagerType().equals("new")){					
+				p.setPid(com.getAdminname());
+			}else{
+				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
 			}
+		}else{
+			p.setPid("");
 		}
 		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
 		return personMapper.updateRegisterInfo(p);
