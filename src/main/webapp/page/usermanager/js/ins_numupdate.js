@@ -149,6 +149,7 @@ function openItems(count,i,type){
 	if(type.indexOf("perio")>-1){
 		$("a[href='#perio_"+count+"_"+i+"']").parent().addClass("active");
 		$("#perio_"+count+"_"+i).addClass("active").siblings().removeClass("active");
+		perioSubject(count+"_"+i);
 	}else if(type.indexOf("degree")>-1){
 		$("a[href='#degree_"+count+"_"+i+"']").parent().addClass("active");
 		$("#degree_"+count+"_"+i).addClass("active").siblings().removeClass("active");
@@ -158,6 +159,7 @@ function openItems(count,i,type){
 	}else if(type.indexOf("patent")>-1){
 		$("a[href='#patent_"+count+"_"+i+"']").parent().addClass("active");
 		$("#patent_"+count+"_"+i).addClass("active").siblings().removeClass("active");
+		findPatentEcho(count+"_"+i);
 	}else if(type.indexOf("books")>-1){
 		$("a[href='#book_"+count+"_"+i+"']").parent().addClass("active");
 		$("#book_"+count+"_"+i).addClass("active").siblings().removeClass("active");
@@ -173,7 +175,7 @@ function openItems(count,i,type){
 		//Ztree 返显
 		findSubjectEcho(count+"_"+i);
 	}
-
+	
 	if(type.indexOf("standard")>-1){
 		layer.open({
 		    type: 1, //page层 1div，2页面
@@ -185,6 +187,86 @@ function openItems(count,i,type){
 			yes: function(index, layero){
 		    	if(validStandard(count,i)){
 		    		layer.closeAll();
+		    	}
+		    }
+		});
+	}else if(type.indexOf("perio")>-1){
+		$("#perioMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPerio(count,i)&&validPerioYear(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPerio(count,i)||!validPerioYear(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("conf")>-1){
+		$("#confMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkConf(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkConf(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("patent")>-1){
+		$("#patentMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(checkPatent(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!checkPatent(count,i)){
+		    		return false;
+		    	}
+		    }
+		});
+	}else if(type.indexOf("degree")>-1){
+		$("#degreeMsg_"+count+"_"+i).html("");
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '详情',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(index, layero){
+		    	if(validDegreeYear(count,i)){
+		    		layer.closeAll();
+		    	}
+		    },
+		    cancel: function(){
+		    	if(!validDegreeYear(count,i)){
+		    		return false;
 		    	}
 		    }
 		});

@@ -213,7 +213,7 @@ function checkPerio(count,i){
 	}
 	var value2=$("#journalIdno_"+count+"_"+i).val();
 	if(value2!=null&&value2!=""){
-		var reg2 = /^[a-zA-Z0-9\n\r,-]+$/;
+		var reg2 = /^[a-zA-Z0-9\n\r,_-]+$/;
 		if(!reg2.test(value2)){
 			$("#perioMsg_"+count+"_"+i).html('<font style="color:red">期刊ID输入格式不正确</font>');
 			return false;
