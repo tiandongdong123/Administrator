@@ -1364,20 +1364,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
-		List<Object> list = personMapper.findListInfoSimp(map);
-		for (int i = 0; i < list.size(); i++) {// 如果查询出的是机构子账号，则再查询一次
-			Map<String, Object> userMap = (Map<String, Object>) list.get(i);
+		//1、筛选user
+		List<Object> userList = personMapper.findListInfoSimp(map);
+		for (int i = 0; i < userList.size(); i++) {// 如果查询出的是机构子账号，则再查询一次
+			Map<String, Object> userMap = (Map<String, Object>) userList.get(i);
 			String userType = userMap.get("usertype").toString();
 			if ("3".equals(userType)) {
-				list.remove(i);
+				userList.remove(i);
 				Map<String, Object> uMap = personMapper.findUserById(userMap.get("pid").toString());
 				if (uMap.size() > 0) {
-					list.add(uMap);
+					userList.add(uMap);
 				}
 				break;
 			}
 		}
-		for(Object object : list){
+		//2、查询产品
+		Date nextDay = this.getDay();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+		List<PayChannelModel> list_ = this.purchaseProject();
+		for(Object object : userList){
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
@@ -1396,20 +1401,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				userMap.put("list_ip", list_ip);
 			}
-			//通过userId查询详情限定列表
 			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
+			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
+			for(PayChannelModel pay:list_){
+				for(WfksPayChannelResources res:listWfks){
+					if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
+						wfList.add(res);
+					}
+				}
+			}
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
-			Date nextDay = this.getDay();
-			for(WfksPayChannelResources wfks : listWfks){
-				Map<String, Object> libdata = new HashMap<String, Object>();//组装条件Map
-				Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
-				SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy年MM月dd日" );
-				//根据“购买项目.用户名”获取账务信息，根据购买项目类型不同做强制类型转换,测试："GBalanceLimit","000278bccca9"
-				List<PayChannelModel> list_ = this.purchaseProject();
-				if(!list_.toString().contains(wfks.getPayChannelid())){
-					continue;
-				}
+			for(WfksPayChannelResources wfks : wfList){
+				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
+				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
 					WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
 					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
@@ -1509,10 +1514,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 
 		}
-		log.info(list.toString());
+		log.info(userList.toString());
 		int i = personMapper.findListCountSimp(map);
 		PageList pageList = new PageList();
-		pageList.setPageRow(list);
+		pageList.setPageRow(userList);
 		pageList.setTotalRow(i);
 		return pageList;
 	}
@@ -1631,17 +1636,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public Map<String, Object> getprojectinfo(String userId, Map<String, Object> map){
 		//通过userId查询详情限定列表
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
+		//判断项目ID是存在
+		List<PayChannelModel> list_ = this.purchaseProject();
+		List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
+		for(PayChannelModel pay:list_){
+			for(WfksPayChannelResources res:listWfks){
+				if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
+					wfList.add(res);
+				}
+			}
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//购买项目列表
 		List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
-		for(WfksPayChannelResources wfks : listWfks){
+		for(WfksPayChannelResources wfks : wfList){
 			Map<String, Object> libdata = new HashMap<String, Object>();//组装条件Map
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
-			SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd");
-			//判断项目ID是存在
-			List<PayChannelModel> list_ = this.purchaseProject();
-			if(!list_.toString().contains(wfks.getPayChannelid())){
-				continue;
-			}
 			//已发表论文检测项目特殊处理
 			if(wfks.getPayChannelid().equals("HistoryCheck")){
 				WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
@@ -1732,8 +1742,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return list;
 	}
 
-
-
 	@Override
 	public void updateInstitution(String institution, String oldins) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1741,7 +1749,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		map.put("oldins", oldins);
 		personMapper.updateAllInstitution(map);
 	}
-
 
 	@Override
 	public WfksAccountidMapping getAddauthority(String userId,String msg){
