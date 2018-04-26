@@ -192,10 +192,8 @@
             		<span class="to">至</span>
             		<input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime" id="${pro.payChannelid}_et" onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
             	</div>
-            	<?if(pro.type=='time'){?>
-            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime}">
-            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime}">
-            	<?}?>
+            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
+            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
             		<div class="time_input time_money">
             			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>

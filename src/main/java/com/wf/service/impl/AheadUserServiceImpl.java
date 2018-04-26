@@ -475,6 +475,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public int addProjectDeadline(CommonEntity com,ResourceDetailedDTO dto,String adminId){
 		 int flag = 0;
+		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
+			return 1;
+		}
 		 boolean isSuccess;
 		 try{
 			//创建一个余额限时账户
@@ -543,6 +547,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
     public int chargeCountLimitUser(CommonEntity com,ResourceDetailedDTO dto,String adminId){
     	int flag = 0;
+    	if(dto.getPurchaseNumber()==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
+    		return 1;
+    	}
     	boolean isSuccess;
         try{
         	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
@@ -610,6 +618,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
     public int chargeProjectBalance(CommonEntity com,ResourceDetailedDTO dto,String adminId){
     	int flag = 0;
+		if (dto.getTotalMoney() == 0
+				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
+			return 1;
+		}
     	boolean isSuccess = false;
     	try{
     		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
