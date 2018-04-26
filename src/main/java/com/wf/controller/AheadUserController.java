@@ -480,12 +480,11 @@ public class AheadUserController {
 	 */
 	@RequestMapping("getdata")
 	@ResponseBody
-	public List<Map<String, Object>> findDataManage(String proid){
+	public List<Map<String, Object>> findDataManage(String proid) {
+		long time = System.currentTimeMillis();
 		List<Map<String, Object>> list = aheadUserService.selectListByRid(proid);
-		if(list.size()>0){
-			return list;
-		}
-		return null;
+		log.info("getdata耗时：" + (System.currentTimeMillis() - time) + "ms");
+		return list;
 	}
 	
 	/**
