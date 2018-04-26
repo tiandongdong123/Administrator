@@ -910,7 +910,9 @@ function createDetail(count,i,resourceid,type){
 	}
 	text += '</div></div>';
 	$("#detail_0").append(text);
-	findSubject(count,i);
+	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1||type.indexOf("conf")>-1||type.indexOf("books")>-1){
+		findSubject(count,i);
+	}
 	if(type.indexOf("patent")>-1){
 		findPatent(count,i);
 	}
