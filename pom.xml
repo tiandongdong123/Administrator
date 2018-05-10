@@ -125,7 +125,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>encrypt</artifactId>
-			<version>1.2017.266</version>
+			<version>1.2018.121</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
