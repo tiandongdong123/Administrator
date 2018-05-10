@@ -47,7 +47,7 @@
             <div>
              <div class="form-group input_block" id="upass" <?if(!isEmpty(map.password)&&map.loginMode!=0){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                <label class="input_name">密码</label>
-               <input type="text" class="form-control input_width" name="password" id="password" value="${map.password!}">
+               <input type="text" class="form-control input_width" name="password" id="password" value="${map.password!}" onkeyup="this.value=this.value.replace(' ','')" onafterpaste="this.value=this.value.replace(' ','')">
              </div>
              <div class="form-group input_block" id="ipvalue" <?if(map.loginMode!=1){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                <label  class="input_name">账号IP段</label>
@@ -192,10 +192,8 @@
             		<span class="to">至</span>
             		<input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime" id="${pro.payChannelid}_et" onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
             	</div>
-            	<?if(pro.type=='time'){?>
-            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime}">
-            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime}">
-            	<?}?>
+            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
+            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
             		<div class="time_input time_money">
             			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>

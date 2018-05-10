@@ -42,17 +42,21 @@ public class CardBatchServiceImpl implements CardBatchService{
 		cardBatch.setBatchId(batchId);// 批次ID
 		Date date = new Date();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
-		String batch = sdf1.format(date);// 现在的日期
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy");
+		String batch = sdf1.format(date);
 		String max = cbm.queryBatchName();// 获取最大的批次
 		if (max != null) {
-			String maxDate = max.substring(0, 8);
-			if (batch.equals(maxDate)) {// 当前日期已经生成过批次
-				batch = Long.valueOf(max) + 1 + "";// 批次号
-			} else {// 当前日期没有生成过批次号
-				batch = Long.valueOf(batch) + "001";// 批次号
+			String maxYear = max.substring(0, 4); // 数据库中最大年份
+			String nowYear = sd.format(date); // 当年年份
+			if (StringUtils.equals(maxYear, nowYear)) { // 当前日期已经生成过批次
+				String max1 = max.substring(8, 11);
+				DecimalFormat df = new DecimalFormat("000");
+				batch = batch + df.format(Integer.parseInt(max1) + 1); // 批次号
+			} else { // 当前日期没有生成过批次号
+				batch = batch + "001";// 批次号
 			}
 		} else {
-			batch = Long.valueOf(batch) + "001";// 批次号
+			batch = batch + "001"; // 批次号
 		}
 		cardBatch.setBatchName(batch);// 批次号
 		cardBatch.setType(type);// 万方卡类型
@@ -197,7 +201,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 					card.setBatchId(batchId);// 万方卡批次id
 					String cardNum = sdf1.format(date) + money + f2.format(index++);// 卡号
 					card.setCardNum(cardNum);// 卡号
-					card.setPassword(String.valueOf(new Random().nextInt(999999999) + 100000000));// 密码
+					card.setPassword(String.valueOf(new Random().nextInt(899999999) + 100000000));// 密码
 					card.setValue(value);// 面值
 					card.setInvokeState(1);// 初始激活状态
 					cardList.add(card);

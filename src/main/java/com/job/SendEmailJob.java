@@ -33,7 +33,7 @@ public class SendEmailJob {
 			log.info("开始发送账号预警邮件");
 			InetAddress addr = InetAddress.getLocalHost();
 			String hostip = addr.getHostAddress();
-			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
+			String execIp = XxlConfClient.get("wf-admin.inswarningIP", null);
 			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
 				log.info("服务器" + hostip + "无需发布邮件,有权限执行的ip:" + execIp);
 				return;

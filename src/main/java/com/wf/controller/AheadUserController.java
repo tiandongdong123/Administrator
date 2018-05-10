@@ -480,12 +480,11 @@ public class AheadUserController {
 	 */
 	@RequestMapping("getdata")
 	@ResponseBody
-	public List<Map<String, Object>> findDataManage(String proid){
+	public List<Map<String, Object>> findDataManage(String proid) {
+		long time = System.currentTimeMillis();
 		List<Map<String, Object>> list = aheadUserService.selectListByRid(proid);
-		if(list.size()>0){
-			return list;
-		}
-		return null;
+		log.info("getdata耗时：" + (System.currentTimeMillis() - time) + "ms");
+		return list;
 	}
 	
 	/**
@@ -634,9 +633,15 @@ public class AheadUserController {
 				hashmap.put("fail","用户ID不能为空");
 				return hashmap;
 			}
-			if("".equals(map.get("institution"))||"".equals(map.get("password"))){
+			if("".equals(map.get("institution"))){
 				hashmap.put("flag", "fail");
-				hashmap.put("fail", "".equals(map.get("institution"))?"机构名称不能为空":"密码不能为空");
+				hashmap.put("fail", "机构名称不能为空");
+				return hashmap;
+			}
+			String password=(String) map.get("password");
+			if("".equals(password)||password.contains(" ")){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "".equals(password)?"密码不能为空":"密码不能有空格");
 				return hashmap;
 			}
 			Matcher m1 = paName.matcher(map.get("institution").toString());
@@ -833,6 +838,12 @@ public class AheadUserController {
 			if (flag1 || flag2) {
 				hashmap.put("flag", "fail");
 				hashmap.put("fail", flag1 ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
+				return hashmap;
+			}
+			String password=(String) map.get("password");
+			if(password.contains(" ")){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "密码不能有空格");
 				return hashmap;
 			}
 		}
