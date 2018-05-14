@@ -45,7 +45,7 @@
                 <div>
 	                <div class="form-group input_block" id="upass">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>密码</label>
-	                  <input type="text" class="form-control input_width" name="password" id="password" onkeyup="this.value=this.value.replace(' ','')" onafterpaste="this.value=this.value.replace(' ','')">
+	                  <input type="text" class="form-control input_width" name="password" id="password" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
 	                </div>
 	                <div class="form-group input_block" id="ipvalue" style="display: none;">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
