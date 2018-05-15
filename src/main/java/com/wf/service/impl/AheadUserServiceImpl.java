@@ -1385,8 +1385,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
 		//1、筛选user
+		long time=System.currentTimeMillis();
 		List<Object> userList = personMapper.findListInfoSimp(map);
+		int i = personMapper.findListCountSimp(map);
+		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
+		long time1=System.currentTimeMillis();
 		Date nextDay = this.getDay();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		List<PayChannelModel> list_ = this.purchaseProject();
@@ -1500,7 +1504,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			long timeInf=System.currentTimeMillis()-time1;
 			//查询个人绑定机构权限
+			long time3=System.currentTimeMillis();
 			SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId).build();
 			SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
 			List<AccountAuthority> accountList = response.getItemsList();
@@ -1520,10 +1526,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 				userMap.put("bindAuthority", bindAuthorityModel);
 			}
-
+			long timeSea=System.currentTimeMillis()-time3;
+			log.info("数据库耗时:"+timeSql+"ms,接口耗时:"+timeInf+"ms,个人绑定机构耗时:"+timeSea+"ms");
 		}
 		log.info(userList.toString());
-		int i = personMapper.findListCountSimp(map);
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
 		pageList.setTotalRow(i);
