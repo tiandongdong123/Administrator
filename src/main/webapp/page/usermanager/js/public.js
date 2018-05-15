@@ -1320,22 +1320,18 @@ function findPerioSubject(count,i){
 //校验用户名是否已存在
 function validateUserId(){
 	var userId = $("#userId").val();
-	var bool = false;
+	var msg = "";
 	$.ajax({
 	 	type : "post",
 	 	async:false,
-		url : "../auser/getPersion.do",
+		url : "../auser/getPersion.do?t="+escape(new Date()),
 		data:{userId:userId},
 		dataType : "json",
 		success: function(data){
-		   if(data.flag=="true"){
-			   bool = true;
-		   }else{
-			   bool = false;
-		   }
+			msg=data.flag;
 		}
 	});
-	return bool;
+	return msg;
 }
 
 //校验IP是否存在交集

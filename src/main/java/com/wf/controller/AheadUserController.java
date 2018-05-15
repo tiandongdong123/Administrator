@@ -201,12 +201,16 @@ public class AheadUserController {
 	public JSONObject getPersion(String userId){
 		JSONObject object = new JSONObject();
 		Person p = aheadUserService.queryPersonInfo(userId);
-		String msg = aheadUserService.validateOldUser(userId);
-		if(p==null && msg.equals("true")){
-			object.put("flag", "true");
-		}else{
+		if (p != null) {
 			object.put("flag", "false");
+			return object;
 		}
+		String msg = aheadUserService.validateOldUser(userId);
+		if (!"true".equals(msg)) {
+			object.put("flag", msg);
+			return object;
+		}
+		object.put("flag", "true");
 		return object;
 	}
 	

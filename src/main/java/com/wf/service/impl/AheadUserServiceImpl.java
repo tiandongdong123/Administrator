@@ -190,13 +190,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if (!"true".equals(isOpen)) {
 			return "true";
 		}
-		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
 		String login=XxlConfClient.get("wf-uias.validate.register",null);
 		HttpPost httpPost = new HttpPost(login);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("userName", userName));
 		try {
+			StringBuffer buffer = new StringBuffer();
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
 			HttpResponse response = httpclient.execute(httpPost);
 			InputStream is = response.getEntity().getContent();
@@ -204,12 +204,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 			while ((i = is.read()) != -1) {
 				buffer.append((char) i);
 			}
+			String msg = buffer.toString();
+			if ("false".equals(msg)) {
+				msg = "old";
+			} else if ("".equals(msg)) {
+				msg = "error";
+			}
+			return msg;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "error";
 		} finally {
 			httpPost.releaseConnection();
 		}
-		return buffer.toString();
 	}
     
     
