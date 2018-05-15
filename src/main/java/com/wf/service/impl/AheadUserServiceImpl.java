@@ -1386,18 +1386,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public PageList findListInfo(Map<String, Object> map){
 		//1、筛选user
 		List<Object> userList = personMapper.findListInfoSimp(map);
-		for (int i = 0; i < userList.size(); i++) {// 如果查询出的是机构子账号，则再查询一次
-			Map<String, Object> userMap = (Map<String, Object>) userList.get(i);
-			String userType = userMap.get("usertype").toString();
-			if ("3".equals(userType)) {
-				userList.remove(i);
-				Map<String, Object> uMap = personMapper.findUserById(userMap.get("pid").toString());
-				if (uMap.size() > 0) {
-					userList.add(uMap);
-				}
-				break;
-			}
-		}
 		//2、查询产品
 		Date nextDay = this.getDay();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
