@@ -1297,7 +1297,8 @@ public class AheadUserController {
 		//个人绑定机构权限
 		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
 		view.addObject("bindInformation",bindInformation);
-		aheadUserService.getprojectinfo(userId,map);
+		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
+		map.put("proList", proList);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);

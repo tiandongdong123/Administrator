@@ -1629,24 +1629,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public List<Map<String,Object>> sonAccountNumber(String userId, String sonId, String start_time, String end_time){
-		Map<String,Object> m2 = new HashMap<String,Object>();
-		Map<String,Object> pro = getprojectinfo(userId, m2);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("sonId", sonId);
 		map.put("userId", userId);
 		map.put("start_time", start_time);
 		map.put("end_time", end_time);
 		List<Map<String,Object>> lm = personMapper.sonAccountNumber(map);
-		if(lm.size()>0 && pro.size()>0){
-			for(Map<String, Object> ma : lm){
-				ma.put("sonProjectList", pro.get("proList"));
+		if(lm.size()>0){
+			for (Map<String, Object> ma : lm) {
+				ma.put("sonProjectList", this.getProjectInfo(ma.get("userId").toString()));
 			}			
 		}
 		return lm;
 	}
 
 	@Override
-	public Map<String, Object> getprojectinfo(String userId, Map<String, Object> map){
+	public List<Map<String, Object>> getProjectInfo(String userId){
 		//通过userId查询详情限定列表
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 		//判断项目ID是存在
@@ -1739,8 +1737,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				projectList.add(extraData);
 			}
 		}
-		map.put("proList", projectList.size() > 0 ? projectList:"");
-		return map;
+		return projectList;
 	}
 
 	@Override
