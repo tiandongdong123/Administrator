@@ -171,20 +171,23 @@ function bindingInherited(value){
 	$("#bindAuthority").val(bindAuthority);
 }
 
-
+//标准配置重置
+function resetStandard(count,i){
+	$("#fullIpRange_"+count+"_"+i).val("");
+	$("#limitedParcelStarttime_"+count+"_"+i).val("");
+	$("#limitedParcelEndtime_"+count+"_"+i).val("");
+	$("#readingPrint_"+count+"_"+i).val("");
+	$("#onlineVisitor_"+count+"_"+i).val("");
+	$("#copyNo_"+count+"_"+i).val("");
+	$("#totalPrintNo_"+count+"_"+i).val("");
+	$("#singlePrintNo_"+count+"_"+i).val("");
+}
 //标准
 function standardShow(count,i,id){
 	resetStandard(count,i);
 	$("#stand_div_"+count+"_"+i).hide();
 	$("#isBK").hide();
-	$("#isZJ").hide();
-	if(id=="isZJ"){
-		if($("#isZJ_"+count+"_"+i).is(':checked')){
-			$("#isZJ").show();
-			$("#stand_div_"+count+"_"+i).show();
-			$("#isBK_"+count+"_"+i).attr("checked",false);
-		}
-	}else if(id=="isBK"){
+	if(id=="isBK"){
 		if($("#isBK_"+count+"_"+i).is(':checked')){
 			$("#readingPrint_"+count+"_"+i).val("0");
 			$("#onlineVisitor_"+count+"_"+i).val("-1");
@@ -193,7 +196,6 @@ function standardShow(count,i,id){
 			$("#singlePrintNo_"+count+"_"+i).val("-1");
 			$("#isBK").show();
 			$("#stand_div_"+count+"_"+i).show();
-			$("#isZJ_"+count+"_"+i).attr("checked",false);
 		}
 	}
 }
@@ -325,27 +327,11 @@ function degreeYear(value,count,i){
 	return true;
 }
 
-//标准配置重置
-function resetStandard(count,i){
-	$("#company_"+count+"_"+i).val("");
-	$("#orgName_"+count+"_"+i).val("");
-	$("#companySimp_"+count+"_"+i).val("");
-	$("#fullIpRange_"+count+"_"+i).val("");
-	$("#limitedParcelStarttime_"+count+"_"+i).val("");
-	$("#limitedParcelEndtime_"+count+"_"+i).val("");
-	$("#readingPrint_"+count+"_"+i).val("");
-	$("#onlineVisitor_"+count+"_"+i).val("");
-	$("#copyNo_"+count+"_"+i).val("");
-	$("#totalPrintNo_"+count+"_"+i).val("");
-	$("#singlePrintNo_"+count+"_"+i).val("");
-}
-
 //校验标准内容
 function validStandard(count,i){
 	//1、时间不能为空，而且还是时间要小于等于结束时间
-	var isZJ=$("#isZJ_"+count+"_"+i).is(':checked');
 	var isBK=$("#isBK_"+count+"_"+i).is(':checked');
-	if (isZJ || isBK) {
+	if (isBK) {
 		var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
 		var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
 		if(startTime==null||startTime==""){
@@ -362,47 +348,12 @@ function validStandard(count,i){
 			layer.msg("开始时间不能大于结束时间",{icon: 2,time: 2000});
 			return false;
 		}
-	}
-	//2、元数据和包库的要分别校验
-	if (isZJ) {// 1、元数据+全文
-		var company=$("#company_"+count+"_"+i).val();
-		var orgName=$("#orgName_"+count+"_"+i).val();
-		var companySimp=$("#companySimp_"+count+"_"+i).val();
-		if(company==null||company==""){
-			layer.msg("单位名称不能为空",{icon: 2,time: 2000});
-			return false;
-		}
-		if(orgName==null||orgName==""){
-			layer.msg(" 机构名称不能为空",{icon: 2,time: 2000});
-			return false;
-		}else{
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(orgName)){
-				layer.msg(" 机构名称不能包含汉字",{icon: 2,time: 2000});
-				return false;
-			}
-		}
-		if(companySimp==null||companySimp==""){
-			layer.msg("机构单位简称不能为空",{icon: 2,time: 2000});
-			return false;
-		}else{
-			if(companySimp.length<5 || companySimp.length>30){
-				layer.msg("机构单位简称的长度必须在5到30之间",{icon: 2,time: 2000});
-				return false;
-			}
-			if(/.*[\u4e00-\u9fa5]+.*$/.test(companySimp)){
-				layer.msg(" 机构单位简称不能包含汉字",{icon: 2,time: 2000});
-				return false;
-			}
-		}
-	} else if (isBK) {// 2、包库
 		var readingPrint=$("#readingPrint_"+count+"_"+i).val();
 		if(readingPrint==null||readingPrint==""){
 			layer.msg("版权阅读打印不能为空",{icon: 2,time: 2000});
 			return false;
 		}
-	}
-	//3、ip不能为空
-	if (isZJ || isBK) {
+		//3、ip不能为空
 		var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
 		if(fullIpRange==null||fullIpRange==""){
 			layer.msg("ip段必须填写",{icon: 2,time: 2000});
@@ -410,38 +361,6 @@ function validStandard(count,i){
 		}
 	}
 	return true;
-}
-
-//验证标准机构是否合法
-function checkOrg(count,i){
-	var orgName=$("#orgName_"+count+"_"+i).val();
-	var companySimp=$("#companySimp_"+count+"_"+i).val();
-	var userId=$("#userId").val();
-	if(orgName==""&& companySimp==""){
-		return true;
-	}
-	var oldOrgName=$("#h_orgName_"+count+"_"+i).val();
-	var oldCom=$("#h_companySimp_"+count+"_"+i).val();
-	if(orgName==oldOrgName&&companySimp==oldCom){
-		return true;
-	}
-	$.ajax({
-		type : "post",
-		data : {userId:userId,orgName:orgName,companySimp:companySimp},
-		async:false,
-		url : "../auser/findStandardUnit.do",
-		dataType : "json",
-		success:function(data){
-			if(data.result!="0"){
-				layer.msg(data.msg,{icon: 2});
-			}
-			if(data.result=="1"){
-				$("#orgName_"+count+"_"+i).focus();
-			}else if(data.result=="2"){
-				$("#companySimp_"+count+"_"+i).focus();
-			}
-		}
-	});
 }
 
 //登录方式切换
@@ -863,16 +782,10 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("standard")>-1){
 		text += '<div class="tab-pane" id="standard_'+count+'_'+i+'"><div class="form-group input_block">';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
-		// text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isZJ_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isZJ\');" value="质检出版社">元数据+全文(质检)</label>';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
 		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
 		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" id="limitedParcelEndtime_'+count+'_'+i+'" onclick="WdatePicker()" type="text"></div>';
-		text += '<div id="isZJ"><div class="form-group input_block"><label><b>*</b>单位名称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].company" id="company_'+count+'_'+i+'"></div>';
-		text += '<div class="form-group input_block"><label><b>*</b>机构名称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].orgName" id="orgName_'+count+'_'+i+'"';
-		text += ' onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,\'\')" onblur="checkOrg('+count+','+i+')">（若账号为中文，则填写全拼）</div>';
-		text += '<div class="form-group input_block"><label><b>*</b>机构单位简称：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].companySimp" id="companySimp_'+count+'_'+i+'"';
-		text += ' onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,\'\')"  onblur="checkOrg('+count+','+i+')"></div></div>';
 		text += '<div id="isBK"><div class="form-group input_block"><label><b>*</b>版权阅读打印：</label><select class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].readingPrint" id="readingPrint_'+count+'_'+i+'">';
 		text += '<option value="0" checked>授权阅读打印</option><option value="1">授权阅读</option><option value="2">授权打印</option><option value="3">未阅读</option></select></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;在线用户数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].onlineVisitor" id="onlineVisitor_'+count+'_'+i+'" value="-1"><span>-1表示不限制</span><br></div>';

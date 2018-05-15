@@ -377,20 +377,6 @@
 							<input class="Wdate" name="limitedParcelEndtime" value="${limited_parcel_time.Value[1]}" onclick="WdatePicker()" type="text">
 		          		<?}?>
 					</div>
-					<div id="isZJ" <?if(isEmpty(org_name.Value)){?>style="display:none;"<?}?>>
-						<div class="form-group input_block">
-							<label><b>*</b>单位名称：</label>
-							<input type="text" class="form-control input_width" name="company" value="${company.Value!}">
-						</div>
-						<div class="form-group input_block">
-							<label><b>*</b>机构名称：</label>
-							<input type="text" class="form-control input_width" name="orgName" value="${org_name.Value!}">（若账号为中文，则填写全拼）
-						</div>
-						<div class="form-group input_block">
-							<label><b>*</b>机构单位简称：</label>
-							<input type="text" class="form-control input_width" name="companySimp" value="${company_simp.Value!}">
-						</div>
-					</div>
 					<div id="isBK" <?if(isEmpty(reading_print.Value)){?>style="display:none;"<?}?>>
 						<div class="form-group input_block">
 							<label><b>*</b>版权阅读打印：</label>
