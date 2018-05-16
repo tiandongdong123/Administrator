@@ -1429,13 +1429,17 @@ public class AheadUserController {
 				return hashmap;
 			}
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-			if(per==null){
+			if (per == null) {
 				aheadUserService.addRegisterAdmin(com);
-			}else if(per.getUsertype()!=1){
+			} else if (per.getUsertype() != 1) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员的ID已经被占用");
+				hashmap.put("fail", "机构管理员的ID已经被占用");
 				return hashmap;
-			}else{
+			} else if (!StringUtils.equals(per.getInstitution(), com.getInstitution())) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "该机构名称与机构管理员不一致");
+				return hashmap;
+			} else {
 				aheadUserService.updateRegisterAdmin(com);
 				if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
 					//修改该机构下的所有机构名称
