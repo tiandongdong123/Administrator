@@ -162,9 +162,6 @@
    	<select id="getHotWordSettingTask" resultMap="TaskResultMap">
  		select * from hot_search_word_setting where substr(next_publish_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='自动发布' and status=1 limit 0,1
  	</select>
- 	<select id="getHotWordTongJi" resultMap="ThemeResultMap" parameterType="java.lang.String">
-		<![CDATA[ ${hotword} ]]>
- 	</select>
  	
  	<update id="updateAllSetting">
  	 	update hot_search_word_setting set status=2 
