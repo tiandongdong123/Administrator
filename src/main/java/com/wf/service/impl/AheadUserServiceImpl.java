@@ -207,7 +207,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String msg = buffer.toString();
 			if ("false".equals(msg)) {
 				msg = "old";
-			} else if ("".equals(msg)) {
+			} else if (!"true".equals(msg)) {
 				msg = "error";
 			}
 			return msg;
