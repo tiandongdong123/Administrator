@@ -14,7 +14,6 @@ public interface HotWordSettingDao {
 	HotWordSetting getOneHotWordSetting(Integer id);
 	Integer updateHotWordSetting(HotWordSetting hotWordSetting);
 	HotWordSetting getHotWordSettingTask();
-	List<Map<String,Object>> getHotWordTongJi(@Param("hotword") String hotword);
 	Integer updateAllSetting();
 	Integer checkFirst();
 	String getNextPublishTime();
