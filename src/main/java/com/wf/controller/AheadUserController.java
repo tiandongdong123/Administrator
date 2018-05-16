@@ -1683,12 +1683,26 @@ public class AheadUserController {
 		Map<Object,String> map = new HashMap<Object,String>();
 		String partyId=authority.getPartyAdmin();
 		String oldPartyId=authority.getOldPartyAdmin();
+		String userId=authority.getUserId();
 		Person person=null;
 		if(!StringUtils.isEmpty(partyId)){
 			person=aheadUserService.queryPersonInfo(partyId);
-			if (person != null && 4!=person.getUsertype()) {
-				map.put("flag", "fail");
-				map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
+			if (person != null) {
+				if(4!=person.getUsertype()){
+					map.put("flag", "fail");
+					map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
+					return map;
+				}
+				String jsonStr = person.getExtend();
+				if (!StringUtils.isEmpty(jsonStr)) {
+					JSONObject json = JSONObject.fromObject(jsonStr);
+					String pid = (String) json.get("RelatedGroupId");
+					if (!StringUtils.equals(userId, pid)) {
+						map.put("flag", "fail");
+						map.put("msg", "该用户ID已被使用");
+						return map;
+					}
+				}
 			}
 			if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
 				String msg = aheadUserService.validateOldUser(partyId);

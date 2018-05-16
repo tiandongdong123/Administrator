@@ -1795,25 +1795,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String partyAdmin=authority.getPartyAdmin();
 		String password = authority.getPassword();
 		String authorityType=authority.getAuthorityType();
-		
-		int i = 0;
-		WfksAccountidMapping mapping=wfksAccountidMappingMapper.selectByUserId(userId, type);
-		if(mapping!=null){
-			if (person != null) {
-				if (!StringUtils.equals(person.getUserId(), mapping.getRelatedidKey())) {
-					return -1; // 修改的用户id已存在user表
-				}
-			}
-			if(!StringUtils.isEmpty(mapping.getRelatedidKey())){
-				personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
-			}
-		}else{
-			if (person != null) {
-				return -1; //新建的用户id已存在user表
-			}
-		}
-		
-		i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
+		int i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
 		if("is".equals(authorityType) && !type.equals("UserLogReport")){
 			WfksAccountidMapping am = new WfksAccountidMapping();
 			am.setMappingid(GetUuid.getId());
@@ -1850,7 +1832,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					json.put("IsTrialPartyAdminTime", false);
 				}
 				per.setExtend(json.toString());
-				i = personMapper.addRegisterAdmin(per);
+				if(person!=null){
+					i = personMapper.updateRegisterAdmin(per);
+				}else{
+					i = personMapper.addRegisterAdmin(per);
+				}
+				
 			}
 		}
 		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){
