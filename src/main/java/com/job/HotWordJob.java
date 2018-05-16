@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.utils.jdbcUtils;
 import com.wf.bean.HotWord;
 import com.wf.bean.HotWordSetting;
-import com.wf.service.HotWordService;
 import com.wf.service.HotWordSettingService;
 import com.xxl.conf.core.XxlConfClient;
 
@@ -36,8 +36,6 @@ public class HotWordJob {
 	
 	@Autowired
 	private HotWordSettingService hotWordSettingService;
-	@Autowired
-	private HotWordService hotWordService;
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
@@ -99,14 +97,13 @@ public class HotWordJob {
 				String limit=pageNum*pageSize+","+pageSize;
 				String query=sql.toString()+limit;
 				log.info("执行sql:"+query);
-				List<Map<String,Object>> list=hotWordSettingService.getHotWordTongJi(query);
+				List<Map<String,String>> list=jdbcUtils.getConnectStatistics(query);
 				if(list.size()==0){
 					break;
 				}
-				for(Object obj:list){
-					Map<String,Object> map=(Map<String, Object>) obj;
-					String theme=map.get("theme").toString();
-					int count=Integer.parseInt(map.get("frequency").toString());
+				for(Map<String,String> map:list){
+					String theme=map.get("theme");
+					int count=Integer.parseInt(map.get("frequency"));
 					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
 					if(forbid>0 || isMessyCode(theme)){
 						continue;
