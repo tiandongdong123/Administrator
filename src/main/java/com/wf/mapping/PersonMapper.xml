@@ -99,6 +99,9 @@
       <if test="adminEmail != null and adminEmail !=''" >
         admin_email = #{adminEmail},
       </if>
+      <if test="extend != null and extend !=''" >
+        extend = #{extend},
+      </if>
     </set>
     where user_id = #{userId}
  </update>
