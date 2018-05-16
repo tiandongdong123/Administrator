@@ -1260,6 +1260,8 @@ public class AheadUserController {
 					pageList = aheadUserService.findListInfo(map);
 				}
 				map.put("userId", userId);
+			}else{
+				pageList.setPageRow(new ArrayList<Object>());
 			}
 		}else{
 			pageList = aheadUserService.findListInfo(map);
