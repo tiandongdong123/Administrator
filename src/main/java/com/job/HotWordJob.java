@@ -97,7 +97,7 @@ public class HotWordJob {
 				String limit=pageNum*pageSize+","+pageSize;
 				String query=sql.toString()+limit;
 				log.info("执行sql:"+query);
-				List<Map<String,String>> list=jdbcUtils.getConnectStatistics(query);
+				List<Map<String,String>> list=jdbcUtils.getConnectTheme(query);
 				if(list.size()==0){
 					break;
 				}
