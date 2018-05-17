@@ -13,7 +13,6 @@ public interface HotWordSettingService {
 	HotWordSetting getOneHotWordSetting(Integer id);
 	Object getOneHotWordSettingShow(Map map);
 	HotWordSetting getHotWordSettingTask();
-	List<Map<String,Object>> getHotWordTongJi(String sql);
 	Integer updateAllSetting();
 	Integer checkFirst();
 	String getNextPublishTime();

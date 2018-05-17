@@ -24,9 +24,6 @@ public interface PersonMapper {
 
 	/**更新管理员账号*/
 	int updateRegisterAdmin(Person per);
-	
-	/** 删除用户 */
-	int deleteUser(String userId);
 
 	/**通过用户名查询用户信息*/
 	Person queryPersonInfo(String userId);

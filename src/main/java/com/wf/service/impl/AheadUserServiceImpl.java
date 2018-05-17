@@ -190,13 +190,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if (!"true".equals(isOpen)) {
 			return "true";
 		}
-		StringBuffer buffer = new StringBuffer();
 		HttpClient httpclient = HttpClients.createDefault();
 		String login=XxlConfClient.get("wf-uias.validate.register",null);
 		HttpPost httpPost = new HttpPost(login);
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("userName", userName));
 		try {
+			StringBuffer buffer = new StringBuffer();
 			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
 			HttpResponse response = httpclient.execute(httpPost);
 			InputStream is = response.getEntity().getContent();
@@ -204,12 +204,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 			while ((i = is.read()) != -1) {
 				buffer.append((char) i);
 			}
+			String msg = buffer.toString();
+			if ("false".equals(msg)) {
+				msg = "old";
+			} else if (!"true".equals(msg)) {
+				msg = "error";
+			}
+			return msg;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return "error";
 		} finally {
 			httpPost.releaseConnection();
 		}
-		return buffer.toString();
 	}
     
     
@@ -1378,20 +1385,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public PageList findListInfo(Map<String, Object> map){
 		//1、筛选user
+		long time=System.currentTimeMillis();
 		List<Object> userList = personMapper.findListInfoSimp(map);
-		for (int i = 0; i < userList.size(); i++) {// 如果查询出的是机构子账号，则再查询一次
-			Map<String, Object> userMap = (Map<String, Object>) userList.get(i);
-			String userType = userMap.get("usertype").toString();
-			if ("3".equals(userType)) {
-				userList.remove(i);
-				Map<String, Object> uMap = personMapper.findUserById(userMap.get("pid").toString());
-				if (uMap.size() > 0) {
-					userList.add(uMap);
-				}
-				break;
-			}
-		}
+		int i = personMapper.findListCountSimp(map);
+		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
+		long time1=System.currentTimeMillis();
 		Date nextDay = this.getDay();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		List<PayChannelModel> list_ = this.purchaseProject();
@@ -1505,7 +1504,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			long timeInf=System.currentTimeMillis()-time1;
 			//查询个人绑定机构权限
+			long time3=System.currentTimeMillis();
 			SearchAccountAuthorityRequest request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId).build();
 			SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request);
 			List<AccountAuthority> accountList = response.getItemsList();
@@ -1525,10 +1526,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 				userMap.put("bindAuthority", bindAuthorityModel);
 			}
-
+			long timeSea=System.currentTimeMillis()-time3;
+			log.info("数据库耗时:"+timeSql+"ms,接口耗时:"+timeInf+"ms,个人绑定机构耗时:"+timeSea+"ms");
 		}
 		log.info(userList.toString());
-		int i = personMapper.findListCountSimp(map);
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
 		pageList.setTotalRow(i);
@@ -1629,24 +1630,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public List<Map<String,Object>> sonAccountNumber(String userId, String sonId, String start_time, String end_time){
-		Map<String,Object> m2 = new HashMap<String,Object>();
-		Map<String,Object> pro = getprojectinfo(userId, m2);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("sonId", sonId);
 		map.put("userId", userId);
 		map.put("start_time", start_time);
 		map.put("end_time", end_time);
 		List<Map<String,Object>> lm = personMapper.sonAccountNumber(map);
-		if(lm.size()>0 && pro.size()>0){
-			for(Map<String, Object> ma : lm){
-				ma.put("sonProjectList", pro.get("proList"));
+		if(lm.size()>0){
+			for (Map<String, Object> ma : lm) {
+				ma.put("sonProjectList", this.getProjectInfo(ma.get("userId").toString()));
 			}			
 		}
 		return lm;
 	}
 
 	@Override
-	public Map<String, Object> getprojectinfo(String userId, Map<String, Object> map){
+	public List<Map<String, Object>> getProjectInfo(String userId){
 		//通过userId查询详情限定列表
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 		//判断项目ID是存在
@@ -1739,8 +1738,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				projectList.add(extraData);
 			}
 		}
-		map.put("proList", projectList.size() > 0 ? projectList:"");
-		return map;
+		return projectList;
 	}
 
 	@Override
@@ -1797,25 +1795,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String partyAdmin=authority.getPartyAdmin();
 		String password = authority.getPassword();
 		String authorityType=authority.getAuthorityType();
-		
-		int i = 0;
-		WfksAccountidMapping mapping=wfksAccountidMappingMapper.selectByUserId(userId, type);
-		if(mapping!=null){
-			if (person != null) {
-				if (!StringUtils.equals(person.getUserId(), mapping.getRelatedidKey())) {
-					return -1; // 修改的用户id已存在user表
-				}
-			}
-			if(!StringUtils.isEmpty(mapping.getRelatedidKey())){
-				personMapper.deleteUser(mapping.getRelatedidKey());//此处只删除服务权限的用户
-			}
-		}else{
-			if (person != null) {
-				return -1; //新建的用户id已存在user表
-			}
-		}
-		
-		i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
+		int i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
 		if("is".equals(authorityType) && !type.equals("UserLogReport")){
 			WfksAccountidMapping am = new WfksAccountidMapping();
 			am.setMappingid(GetUuid.getId());
@@ -1852,7 +1832,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					json.put("IsTrialPartyAdminTime", false);
 				}
 				per.setExtend(json.toString());
-				i = personMapper.addRegisterAdmin(per);
+				if(person!=null){
+					i = personMapper.updateRegisterAdmin(per);
+				}else{
+					i = personMapper.addRegisterAdmin(per);
+				}
+				
 			}
 		}
 		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){

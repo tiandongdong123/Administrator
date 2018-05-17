@@ -201,12 +201,16 @@ public class AheadUserController {
 	public JSONObject getPersion(String userId){
 		JSONObject object = new JSONObject();
 		Person p = aheadUserService.queryPersonInfo(userId);
-		String msg = aheadUserService.validateOldUser(userId);
-		if(p==null && msg.equals("true")){
-			object.put("flag", "true");
-		}else{
+		if (p != null) {
 			object.put("flag", "false");
+			return object;
 		}
+		String msg = aheadUserService.validateOldUser(userId);
+		if (!"true".equals(msg)) {
+			object.put("flag", msg);
+			return object;
+		}
+		object.put("flag", "true");
 		return object;
 	}
 	
@@ -1208,8 +1212,7 @@ public class AheadUserController {
 	 *	机构用户信息管理列表
 	 */
 	@RequestMapping("information")
-	public ModelAndView information(String userId,String ipSegment,String institution,String adminname,
-			String adminIP,String pageNum,String pageSize,String start_time,String end_time,HttpServletRequest request){
+	public ModelAndView information(String userId,String ipSegment,String institution,String pageNum,String pageSize,HttpServletRequest request){
 		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1227,31 +1230,41 @@ public class AheadUserController {
 		if (!StringUtils.isEmpty(institution)) {
 			map.put("institution", institution.replace("_", "\\_"));
 		}
-		map.put("adminname", adminname);
-		map.put("adminIP", adminIP);
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
 		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
-		map.put("start_time", start_time);
-		map.put("end_time", end_time);
 		if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)) {
 			view.setViewName("/page/usermanager/ins_information");
 			return view;
 		}
-		String msg="0";
-		PageList pageList = aheadUserService.findListInfo(map);
-		if (pageList.getTotalRow() == 0 && StringUtils.isNotEmpty(userId)) {
+		String msg = "0";
+		PageList pageList = new PageList();
+		if(!StringUtils.isEmpty(userId)){
 			Person per = personservice.findById(userId);
 			if (per != null) {
 				if (per.getUsertype() == 0) {
 					msg="1";
-				} else if (per.getUsertype() == 4) {// 党建用户重新查关联机构
+					pageList.setPageRow(new ArrayList<Object>());
+				} else if (per.getUsertype() == 1) {//机构管理员
+					map.remove("userId");
+					map.put("pid", per.getUserId());
+					pageList = aheadUserService.findListInfo(map);
+				} else if (per.getUsertype() == 2) {//机构账号
+					pageList = aheadUserService.findListInfo(map);
+				} else if (per.getUsertype() == 3) {//机构子账号
+					map.put("userId", per.getPid());
+					pageList = aheadUserService.findListInfo(map);
+				} else if (per.getUsertype() == 4) {//党建用户
 					String json = per.getExtend();
 					JSONObject obj = JSONObject.fromObject(json);
 					map.put("userId", obj.get("RelatedGroupId"));
 					pageList = aheadUserService.findListInfo(map);
-					map.put("userId", userId);
 				}
+				map.put("userId", userId);
+			}else{
+				pageList.setPageRow(new ArrayList<Object>());
 			}
+		}else{
+			pageList = aheadUserService.findListInfo(map);
 		}
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
@@ -1297,7 +1310,8 @@ public class AheadUserController {
 		//个人绑定机构权限
 		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
 		view.addObject("bindInformation",bindInformation);
-		aheadUserService.getprojectinfo(userId,map);
+		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
+		map.put("proList", proList);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
@@ -1415,13 +1429,17 @@ public class AheadUserController {
 				return hashmap;
 			}
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-			if(per==null){
+			if (per == null) {
 				aheadUserService.addRegisterAdmin(com);
-			}else if(per.getUsertype()!=1){
+			} else if (per.getUsertype() != 1) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员的ID已经被占用");
+				hashmap.put("fail", "机构管理员的ID已经被占用");
 				return hashmap;
-			}else{
+			} else if (!StringUtils.equals(per.getInstitution(), com.getInstitution())) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "该机构名称与机构管理员不一致");
+				return hashmap;
+			} else {
 				aheadUserService.updateRegisterAdmin(com);
 				if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
 					//修改该机构下的所有机构名称
@@ -1669,12 +1687,26 @@ public class AheadUserController {
 		Map<Object,String> map = new HashMap<Object,String>();
 		String partyId=authority.getPartyAdmin();
 		String oldPartyId=authority.getOldPartyAdmin();
+		String userId=authority.getUserId();
 		Person person=null;
 		if(!StringUtils.isEmpty(partyId)){
 			person=aheadUserService.queryPersonInfo(partyId);
-			if (person != null && 4!=person.getUsertype()) {
-				map.put("flag", "fail");
-				map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
+			if (person != null) {
+				if(4!=person.getUsertype()){
+					map.put("flag", "fail");
+					map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
+					return map;
+				}
+				String jsonStr = person.getExtend();
+				if (!StringUtils.isEmpty(jsonStr)) {
+					JSONObject json = JSONObject.fromObject(jsonStr);
+					String pid = (String) json.get("RelatedGroupId");
+					if (!StringUtils.equals(userId, pid)) {
+						map.put("flag", "fail");
+						map.put("msg", "该用户ID已被使用");
+						return map;
+					}
+				}
 			}
 			if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
 				String msg = aheadUserService.validateOldUser(partyId);

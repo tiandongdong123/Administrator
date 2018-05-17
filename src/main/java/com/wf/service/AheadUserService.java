@@ -116,7 +116,7 @@ public interface AheadUserService {
 	int updateAccountRestriction(CommonEntity com);
 	
 	/** 通过userId获取购买项目信息 */
-	Map<String, Object> getprojectinfo(String userId, Map<String, Object> map);
+	List<Map<String, Object>> getProjectInfo(String userId);
 
 	/** 更新所有机构账号的管理员 */
 	int updateAllPid(String pid,String old_pid);

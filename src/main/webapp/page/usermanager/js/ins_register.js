@@ -38,8 +38,16 @@ function submitForm(){
 	if(!validateFrom()){
 		$("#submit").removeAttr("disabled");
 		return false;
-	}else if(!validateUserId()){
-		layer.msg("该机构ID已存在",{icon: 2});
+	}
+	var msg=validateUserId();
+	if(msg!="true"){
+		if(msg=='false'){
+			layer.msg("该机构ID已存在",{icon: 2});
+		}else if(msg=='old'){
+			layer.msg("该机构ID在旧平台已存在",{icon: 2});
+		}else if(msg=='error'){
+			layer.msg("旧平台校验机构ID异常",{icon: 2});
+		}
 		$("#submit").removeAttr("disabled");
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){

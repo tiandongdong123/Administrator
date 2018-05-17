@@ -99,6 +99,9 @@
       <if test="adminEmail != null and adminEmail !=''" >
         admin_email = #{adminEmail},
       </if>
+      <if test="extend != null and extend !=''" >
+        extend = #{extend},
+      </if>
     </set>
     where user_id = #{userId}
  </update>
@@ -271,8 +274,11 @@
    <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
    select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
     from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-         and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
+    <if test="userId !=null and userId !=''">
+    	and u.user_id = #{userId}
+    </if>
+    <if test="pid !=null and pid !=''">
+    	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
 		and u.institution like #{institution} and u.userType =2  
@@ -280,25 +286,22 @@
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and u.userType =2
-	</if>
 	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
 	select count(1) from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-        and ((u.user_id = #{userId} and (u.userType = 2 or userType = 3)) or (u.pid = #{userId} and u.userType = 2))
+    <if test="userId !=null and userId !=''">
+    	and u.user_id = #{userId}
+    </if>
+    <if test="pid !=null and pid !=''">
+    	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
 		and u.institution like #{institution} and userType =2  
 	</if>
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
-	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and userType =2
 	</if>
   </select>
   
