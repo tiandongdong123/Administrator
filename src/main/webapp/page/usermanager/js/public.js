@@ -1,4 +1,4 @@
-var perioZtr,degreeZtr,confZtr,patentZtr,bookZtr;var count = 0;
+var zhongZtr=null,perioZtr=null,patentZtr=null;var count = 0;
 $(function(e){
 	$("input[name='quotaName']").prop("checked",true);
 	//是否开通管理员
@@ -1173,147 +1173,173 @@ function getDataType(val,count,i){
 /*****************方志代码 结束**********************/
 //学科中图分类树
 function findSubject(count,i){
-	$.ajax({
-		type : "post",
-		data : {num:count+"_"+i},
-		async:false,
-		url : "../auser/findsubject.do",
-		//dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success:function(data){
-			var setting = {
-					view: {
-						dblClickExpand: false,
-					},
-					data: {
-						simpleData: {
-				            enable:true,
-				            idKey:"id",
-				            pIdKey:"pid"
-				    	},
-				        key:{name:"name"}
-					},
-					check: {
-						enable: true,
-						chkStyle: "checkbox"
-					},
-					callback: {
-						onCheck: function(){
-							var pz = $.fn.zTree.getZTreeObj("perioZtree_"+data.number);
-							if(pz!=null){
-								$("#journalClc_"+data.number).val(getCheckNode(pz));
-							}
-							var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+data.number);
-							if(dz!=null){
-								$("#degreeClc_"+data.number).val(getCheckNode(dz));
-							}
-							var cz = $.fn.zTree.getZTreeObj("confZtree_"+data.number);
-							if(cz!=null){
-								$("#conferenceClc_"+data.number).val(getCheckNode(cz));
-							}
-							var bz = $.fn.zTree.getZTreeObj("bookZtree_"+data.number);
-							if(bz!=null){
-								$("#booksClc_"+data.number).val(getCheckNode(bz));
-							}
-						}
+	var num=count+"_"+i;
+	if(zhongZtr==null){
+		$.ajax({
+			type : "post",
+			data : {num:num},
+			async:false,
+			url : "../auser/findsubject.do",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				zhongZtr=data;
+				setSuject(data,num);
+			}
+		});
+	}else{
+		setSuject(zhongZtr,num);
+	}
+}
+//学科分类号填值
+function setSuject(data,num){
+	var setting = {
+			view: {
+				dblClickExpand: false,
+			},
+			data: {
+				simpleData: {
+		            enable:true,
+		            idKey:"id",
+		            pIdKey:"pid"
+		    	},
+		        key:{name:"name"}
+			},
+			check: {
+				enable: true,
+				chkStyle: "checkbox"
+			},
+			callback: {
+				onCheck: function(){
+					var pz = $.fn.zTree.getZTreeObj("perioZtree_"+num);
+					if(pz!=null){
+						$("#journalClc_"+num).val(getCheckNode(pz));
 					}
-			};
-			//期刊中途分类
-			$.fn.zTree.init($("#perioZtree_"+data.number), setting, data.ztreeJson);
-			//学位中途分类
-			$.fn.zTree.init($("#degreeZtree_"+data.number), setting, data.ztreeJson);
-			//会议中途分类
-			$.fn.zTree.init($("#confZtree_"+data.number), setting, data.ztreeJson);
-			//图书中途分类
-			$.fn.zTree.init($("#bookZtree_"+data.number), setting, data.ztreeJson);
-		}
-	});
+					var dz = $.fn.zTree.getZTreeObj("degreeZtree_"+num);
+					if(dz!=null){
+						$("#degreeClc_"+num).val(getCheckNode(dz));
+					}
+					var cz = $.fn.zTree.getZTreeObj("confZtree_"+num);
+					if(cz!=null){
+						$("#conferenceClc_"+num).val(getCheckNode(cz));
+					}
+					var bz = $.fn.zTree.getZTreeObj("bookZtree_"+num);
+					if(bz!=null){
+						$("#booksClc_"+num).val(getCheckNode(bz));
+					}
+				}
+			}
+	};
+	//期刊中途分类
+	$.fn.zTree.init($("#perioZtree_"+num), setting, data.ztreeJson);
+	//学位中途分类
+	$.fn.zTree.init($("#degreeZtree_"+num), setting, data.ztreeJson);
+	//会议中途分类
+	$.fn.zTree.init($("#confZtree_"+num), setting, data.ztreeJson);
+	//图书中途分类
+	$.fn.zTree.init($("#bookZtree_"+num), setting, data.ztreeJson);
+
 }
 
 
 //专利中图分类树
 function findPatent(count,i){
-	$.ajax({
-		type : "post",
-		data : {num:count+"_"+i},
-		async:false,
-		url : "../auser/findpatent.do",
-		dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success:function(data){
-			var setting = {
-					view: {
-						dblClickExpand: false,
-					},
-					data: {
-						simpleData: {
-				            enable:true,
-				            idKey:"id",
-				            pIdKey:"pid"
-				    	},
-				        key:{name:"name"}
-					},
-					check: {
-						enable: true,
-						chkStyle: "checkbox"
-					},
-					callback: {
-						onCheck: function(){
-							var pa = $.fn.zTree.getZTreeObj("patentZtree_"+data.number);
-							if(pa!=null){
-								$("#patentMsg_"+data.number).html("");
-								$("#patentIpc_"+data.number).val(getCheckNode(pa));
-							}
-						}
+	var num=count+"_"+i;
+	if(patentZtr==null){
+		$.ajax({
+			type : "post",
+			data : {num:num},
+			async:false,
+			url : "../auser/findpatent.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				setPatent(data,num);
+			}
+		});
+	}else{
+		setPatent(patentZtr,num);
+	}
+}
+function setPatent(data,num){
+	var setting = {
+			view: {
+				dblClickExpand: false,
+			},
+			data: {
+				simpleData: {
+		            enable:true,
+		            idKey:"id",
+		            pIdKey:"pid"
+		    	},
+		        key:{name:"name"}
+			},
+			check: {
+				enable: true,
+				chkStyle: "checkbox"
+			},
+			callback: {
+				onCheck: function(){
+					var pa = $.fn.zTree.getZTreeObj("patentZtree_"+num);
+					if(pa!=null){
+						$("#patentMsg_"+num).html("");
+						$("#patentIpc_"+num).val(getCheckNode(pa));
 					}
-			};
-			//期刊中途分类
-			$.fn.zTree.init($("#patentZtree_"+data.number), setting, data.ztreeJson);
-		}
-	});
+				}
+			}
+	};
+	//专利中途分类
+	$.fn.zTree.init($("#patentZtree_"+num), setting, data.ztreeJson);
 }
 
 
-//专利中图分类树
+//期刊中图分类树
 function findPerioSubject(count,i){
-	$.ajax({
-		type : "post",
-		data : {num:count+"_"+i},
-		async:false,
-		url : "../auser/findPerioSubject.do",
-		dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success:function(data){
-			var setting = {
-					view: {
-						dblClickExpand: false,
-					},
-					data: {
-						simpleData: {
-				            enable:true,
-				            idKey:"id",
-				            pIdKey:"pid"
-				    	},
-				        key:{name:"name"}
-					},
-					check: {
-						enable: true,
-						chkStyle: "checkbox"
-					},
-					callback: {
-						onCheck: function(){
-							var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+data.number);
-							if(qk!=null){
-								$("perioMsg_"+data.number).html("");
-								$("#perioInfoClc_"+data.number).val(getCheckNode(qk));
-							}
-						}
+	var num=count+"_"+i
+	if(perioZtr==null){
+		$.ajax({
+			type : "post",
+			data : {num:num},
+			async:false,
+			url : "../auser/findPerioSubject.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				setPerioSubject(data,num);
+			}
+		});
+	}else{
+		setPerioSubject(perioZtr,num);
+	}
+}
+function setPerioSubject(data,num){
+	var setting = {
+			view: {
+				dblClickExpand: false,
+			},
+			data: {
+				simpleData: {
+		            enable:true,
+		            idKey:"id",
+		            pIdKey:"pid"
+		    	},
+		        key:{name:"name"}
+			},
+			check: {
+				enable: true,
+				chkStyle: "checkbox"
+			},
+			callback: {
+				onCheck: function(){
+					var qk = $.fn.zTree.getZTreeObj("perioInfoZtree_"+num);
+					if(qk!=null){
+						$("perioMsg_"+num).html("");
+						$("#perioInfoClc_"+num).val(getCheckNode(qk));
 					}
-			};
-			//期刊中途分类
-			$.fn.zTree.init($("#perioInfoZtree_"+data.number), setting, data.ztreeJson);
-		}
-	});
+				}
+			}
+	};
+	//期刊中途分类
+	$.fn.zTree.init($("#perioInfoZtree_"+num), setting, data.ztreeJson);
 }
 
 
