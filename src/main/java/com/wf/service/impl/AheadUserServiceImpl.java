@@ -1643,43 +1643,47 @@ public class AheadUserServiceImpl implements AheadUserService{
 			for (Map<String, Object> ma : lm) {
 				String id=ma.get("userId").toString();
 				List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
-				for(WfksPayChannelResources wfks : list){
-					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
-					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
-					if(pay.getType().equals("balance")){
-						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-						if(account!=null){
-							extraData.put("name", pay.getName());
-							extraData.put("payChannelid", account.getPayChannelId());
-							extraData.put("type", pay.getType());
-							extraData.put("balance", account.getBalance());
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
+				try{
+					for(WfksPayChannelResources wfks : list){
+						PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
+						Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+						if(pay.getType().equals("balance")){
+							wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
+							if(account!=null){
+								extraData.put("name", pay.getName());
+								extraData.put("payChannelid", account.getPayChannelId());
+								extraData.put("type", pay.getType());
+								extraData.put("balance", account.getBalance());
+								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
+								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
+							}
+						}else if(pay.getType().equals("time")){
+							wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
+							if(account!=null){
+								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
+								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
+								extraData.put("payChannelid", account.getPayChannelId());
+								extraData.put("name", pay.getName());
+								extraData.put("type", pay.getType());
+							}
+						}else if(pay.getType().equals("count")){
+							wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
+							if(account!=null){
+								extraData.put("name", pay.getName());
+								extraData.put("payChannelid", account.getPayChannelId());
+								extraData.put("type", pay.getType());
+								extraData.put("balance", account.getBalance());
+								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
+								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
+								extraData.put("totalConsume", account.getTotalConsume());
+							}
 						}
-					}else if(pay.getType().equals("time")){
-						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-						if(account!=null){
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-							extraData.put("payChannelid", account.getPayChannelId());
-							extraData.put("name", pay.getName());
-							extraData.put("type", pay.getType());
-						}
-					}else if(pay.getType().equals("count")){
-						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-						if(account!=null){
-							extraData.put("name", pay.getName());
-							extraData.put("payChannelid", account.getPayChannelId());
-							extraData.put("type", pay.getType());
-							extraData.put("balance", account.getBalance());
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-							extraData.put("totalConsume", account.getTotalConsume());
+						if(extraData.size()>0){
+							projectList.add(extraData);
 						}
 					}
-					if(extraData.size()>0){
-						projectList.add(extraData);
-					}
+				}catch(Exception e){
+					log.error("子账号"+id+"调用接口异常",e);
 				}
 				ma.put("sonProjectList", projectList);
 			}			
