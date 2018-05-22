@@ -1612,6 +1612,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public List<Map<String,Object>> validateIp(List<UserIp> list){
 		return userIpMapper.validateIp(list);
 	}
+	
+	@Override
+	public List<Map<String,Object>> listIpByUserId(String userId) {
+		List<Map<String,Object>> list=userIpMapper.listIpByUserId(userId);
+		return list;
+	}
 
 	//通过机构名称查询下属管理员
 	@Override

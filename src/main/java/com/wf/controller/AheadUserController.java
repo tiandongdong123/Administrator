@@ -805,8 +805,8 @@ public class AheadUserController {
 				in += 1;
 				log.info("机构用户["+com.getUserId()+"]注册成功");
 			}
-			this.saveOperationLogs(com, "3", req);
-			this.addLogs(com,"3",req);
+			this.saveOperationLogs(com, "1", req);
+			this.addLogs(com,"1",req);
 		}
 		hashmap.put("flag", "success");
 		hashmap.put("success", "成功导入："+in+"条");
@@ -851,8 +851,9 @@ public class AheadUserController {
 				hashmap.put("fail","用户ID不能为空");
 				return hashmap;
 			}
+			String userId=map.get("userId").toString();
 			Matcher m1 = paName.matcher(map.get("institution").toString());
-			Matcher m2 = pa.matcher(map.get("userId").toString());
+			Matcher m2 = pa.matcher(userId);
 			boolean flag1 = m1.find();
 			boolean flag2 = m2.find();
 			if (flag1 || flag2) {
@@ -867,7 +868,16 @@ public class AheadUserController {
 				return hashmap;
 			}
 			if ("2".equals(com.getLoginMode())) {
-				if (!IPConvertHelper.validateIp((String) map.get("ip"))) {
+				String ip = (String) map.get("ip");
+				if (StringUtils.isBlank(ip)) {
+					List<Map<String, Object>> ls = aheadUserService.listIpByUserId(userId);
+					if (ls == null || ls.size() == 0) {
+						hashmap.put("flag", "fail");
+						hashmap.put("fail", userId + "未添加有效IP");
+						return hashmap;
+					}
+				}
+				if (!IPConvertHelper.validateIp(ip)) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail", "ip不合法");
 					return hashmap;
