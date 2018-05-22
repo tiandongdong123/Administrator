@@ -35,6 +35,9 @@ public class IPConvertHelper {
 		if (StringUtils.isBlank(ips)) {
 			return false;
 		}
+		if (ips.indexOf("-") == -1) {
+			return false;
+		}
 		// 开始ip
 		String startip = ips.substring(0, ips.indexOf("-"));
 		if (!validateOneIp(startip)) {
@@ -62,6 +65,7 @@ public class IPConvertHelper {
 		if (StringUtils.isBlank(ips)) {
 			return false;
 		}
+		ips=ips.replace("\r\n", "\n").replace("\n", "\r\n");
 		String[] arr_ip = ips.split("\r\n");
 		for (String ip : arr_ip) {
 			if (ip.contains("-")) {

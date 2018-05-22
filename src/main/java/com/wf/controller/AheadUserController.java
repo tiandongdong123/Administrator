@@ -648,6 +648,13 @@ public class AheadUserController {
 				hashmap.put("fail", "".equals(password)?"密码不能为空":"密码不能有空格");
 				return hashmap;
 			}
+			if ("2".equals(com.getLoginMode())) {
+				if (!IPConvertHelper.validateIp((String) map.get("ip"))) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", "ip不合法");
+					return hashmap;
+				}
+			}
 			Matcher m1 = paName.matcher(map.get("institution").toString());
 			Matcher m2 = pa.matcher(map.get("userId").toString());
 			boolean flag1 = m1.find();
@@ -755,6 +762,15 @@ public class AheadUserController {
 				aheadUserService.addAccountRestriction(com);
 			}
 			aheadUserService.addUserIns(com);//统计分析权限
+			//保存IP
+			if ("2".equals(com.getLoginMode())) {
+				String ip=(String) map.get("ip");
+				ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+				com.setIpSegment(ip);
+				aheadUserService.updateUserIp(com);
+			}else{
+				aheadUserService.deleteUserIp(com.getUserId());
+			}
 			bindAuthorityModel.setUserId(map.get("userId").toString());
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 				aheadUserService.openBindAuthority(bindAuthorityModel);
@@ -849,6 +865,13 @@ public class AheadUserController {
 				hashmap.put("flag", "fail");
 				hashmap.put("fail", "密码不能有空格");
 				return hashmap;
+			}
+			if ("2".equals(com.getLoginMode())) {
+				if (!IPConvertHelper.validateIp((String) map.get("ip"))) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", "ip不合法");
+					return hashmap;
+				}
 			}
 		}
 		List<ResourceDetailedDTO> list = com.getRdlist();
@@ -964,6 +987,15 @@ public class AheadUserController {
 			int resinfo = aheadUserService.updateRegisterInfo(com, null, adminId);
 			//统计分析权限
 			aheadUserService.addUserIns(com);
+			//保存IP
+			if ("2".equals(com.getLoginMode())) {
+				String ip=(String) map.get("ip");
+				ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+				com.setIpSegment(ip);
+				aheadUserService.updateUserIp(com);
+			}else{
+				aheadUserService.deleteUserIp(com.getUserId());
+			}
 			//修改或开通个人绑定机构权限
 			bindAuthorityModel.setUserId(map.get("userId").toString());
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
