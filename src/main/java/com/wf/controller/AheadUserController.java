@@ -976,7 +976,7 @@ public class AheadUserController {
 									}
 									if (!aheadUserService.checkLimit(com, dto)) {
 										hashmap.put("flag", "fail");
-										hashmap.put("fail", dto.getProjectname() + "的累加" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+										hashmap.put("fail", dto.getProjectname() + "的更新后" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
 										return hashmap;
 									}
 								}
@@ -1476,7 +1476,7 @@ public class AheadUserController {
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				if (!aheadUserService.checkLimit(com, dto)) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", dto.getProjectname() + "的累加" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+					hashmap.put("fail", dto.getProjectname() + "的更新后" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
 					return hashmap;
 				}
 			}
