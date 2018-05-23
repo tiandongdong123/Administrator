@@ -2033,30 +2033,30 @@ public class AheadUserController {
 	/**
 	 *	生成充值码
 	 */
-	@RequestMapping("create_ChargeCode")
+	@RequestMapping("create_chargeCode")
 	public ModelAndView create_ChargeCode(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/create_ChargeCode");
+		view.setViewName("/page/usermanager/create_chargeCode");
 		return view;
 	}
 
 	/**
 	 *	充值码批次查询
 	 */
-	@RequestMapping("search_ChargeCode_Batch")
+	@RequestMapping("search_chargeCode_Batch")
 	public ModelAndView search_ChargeCode_Batch(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_ChargeCode_Batch");
+		view.setViewName("/page/usermanager/search_chargeCode_Batch");
 		return view;
 	}
 
 	/**
 	 *	充值码信息查询
 	 */
-	@RequestMapping("search_ChargeCode")
+	@RequestMapping("search_chargeCode")
 	public ModelAndView search_ChargeCode(){
 		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_ChargeCode");
+		view.setViewName("/page/usermanager/search_chargeCode");
 		return view;
 	}
 
