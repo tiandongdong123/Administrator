@@ -956,11 +956,30 @@ public class AheadUserController {
 					for(ResourceDetailedDTO dto : list){
 						if(dto.getProjectid()!=null){
 							if(lm.toString().contains(dto.getProjectid())){
-								continue;
+								//continue;
 							}else{							
 								hashmap.put("flag", "fail");
 								hashmap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
 								return hashmap;
+							}
+						}
+						// 验证金额是否正确
+						String ptype = dto.getProjectType();
+						if (ptype.equals("balance") || ptype.equals("count")) {
+							com.setUserId(map.get("userId").toString());
+							for(Map<String, Object> pro : lm) {
+								if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
+									if (ptype.equals("balance")) {
+										dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+									} else {
+										dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+									}
+									if (!aheadUserService.checkLimit(com, dto)) {
+										hashmap.put("flag", "fail");
+										hashmap.put("fail", dto.getProjectname() + "的累加" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+										return hashmap;
+									}
+								}
 							}
 						}
 					}
@@ -1425,7 +1444,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, HttpServletRequest req, HttpServletResponse res) throws Exception{
+	public Map<String,String> updateinfo(CommonEntity com, BindAuthorityModel bindAuthorityModel, HttpServletRequest req, HttpServletResponse res) throws Exception{
 		long time=System.currentTimeMillis();
 		String adminId = CookieUtil.getCookie(req);
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -1450,6 +1469,17 @@ public class AheadUserController {
 		//删除项目
 		if(delList.size()>0){
 			this.removeproject(req,delList);
+		}
+		// 验证金额是否正确
+		for (ResourceDetailedDTO dto : list) {
+			String ptype = dto.getProjectType();
+			if (ptype.equals("balance") || ptype.equals("count")) {
+				if (!aheadUserService.checkLimit(com, dto)) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", dto.getProjectname() + "的累加" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+					return hashmap;
+				}
+			}
 		}
 		com.setRdlist(list);
 		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){

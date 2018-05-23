@@ -250,5 +250,7 @@ public interface AheadUserService {
 	 * @return
 	 */
 	UserInstitution getUserInstitution(String userId);
+	/**判断余额和限次是否为大于等于0*/
+	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto);
 	
 }
