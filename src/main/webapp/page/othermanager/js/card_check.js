@@ -140,11 +140,16 @@ function check(obj){
 	    		},
 	    		dataType : "json",
 	    		success : function(data){
-	    			if(data){
+	    			if(data==1){
 	    				Page(1);
+	    			}else if(data==0){
+	    				layer.msg("执行失败..",{icon: 2});
+	    			}else if(data==-1){
+	    				layer.msg("正在执行中..",{icon: 2});
 	    			}
 	    		},
 	    		error : function(data){
+	    			layer.msg("执行失败..",{icon: 2});
 	    		}
 	    	});
 	        layer.closeAll();
