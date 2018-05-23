@@ -38,6 +38,9 @@ public class IPConvertHelper {
 		if (ips.indexOf("-") == -1) {
 			return false;
 		}
+		if(ips.split("-").length>2){
+			return false;
+		}
 		// 开始ip
 		String startip = ips.substring(0, ips.indexOf("-"));
 		if (!validateOneIp(startip)) {
