@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class UserController {
 	RemindService remindService;
 	
 	private RedisUtil redis = new RedisUtil();
+	private static Logger log = Logger.getLogger(UserController.class);
 	
 	/**
 	 *	查询权限接口
@@ -78,7 +80,9 @@ public class UserController {
 	 */
 	@RequestMapping("userLogin")
 	@ResponseBody
-	public Map<String,String> login(String userName,String passWord,HttpServletRequest req,HttpServletResponse res) throws Exception{
+	public Map<String, String> login(String userName, String passWord, HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
+		long time = System.currentTimeMillis();
 		Map<String,String> map = new HashMap<String, String>();
 		Wfadmin user = service.getuser(userName, passWord);
 		if (user != null) {
@@ -123,6 +127,7 @@ public class UserController {
 		}else{
 			map.put("flag", "false");
 		}
+		log.info(user.getWangfang_admin_id()+"登录耗时："+(System.currentTimeMillis()-time)+"ms");
 		return map;
 	}
 	
@@ -142,7 +147,9 @@ public class UserController {
 	 *	后台登录主页面跳转 
 	 */
 	@RequestMapping("toIndex")
-	public ModelAndView toIndex(HttpServletRequest req,HttpServletResponse res,HttpSession session) throws Exception{
+	public ModelAndView toIndex(HttpServletRequest req, HttpServletResponse res, HttpSession session)
+			throws Exception {
+		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Wfadmin admin = CookieUtil.getWfadmin(req);
 		Department dept=admin.getDept();
@@ -173,6 +180,7 @@ public class UserController {
 		redis.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(),0);
 		redis.expire(CookieUtil.LAYOUT+userId, 3600,0); //设置超时时间
 		view.setViewName("/page/index");
+		log.info(admin.getWangfang_admin_id()+"跳转页面耗时："+(System.currentTimeMillis()-time)+"ms");
 		return view;
 	}
 	

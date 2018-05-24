@@ -21,6 +21,8 @@ public interface UserIpMapper {
 	
     /** 查询ip结果集 */
     List<Map<String,Object>> findIpByUserId(String userId);
+    /** 查询结果集(无排序) */
+    List<Map<String,Object>> listIpByUserId(String userId);
     
     /** 通过IP查询userId */
     List<UserIp> findUserIdByIp(long l);

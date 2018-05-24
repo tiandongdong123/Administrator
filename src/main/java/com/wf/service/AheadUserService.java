@@ -132,6 +132,8 @@ public interface AheadUserService {
 
 	/** 验证ip是否有交集  */
 	List<Map<String,Object>> validateIp(List<UserIp> list);
+	/** 根据user_id查询ip信息  */
+	List<Map<String, Object>> listIpByUserId(String userId);
 
 	/** 通过机构名称获取所属管理员 
 	 * @param pid */
@@ -248,5 +250,7 @@ public interface AheadUserService {
 	 * @return
 	 */
 	UserInstitution getUserInstitution(String userId);
+	/**判断余额和限次是否为大于等于0*/
+	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto);
 	
 }

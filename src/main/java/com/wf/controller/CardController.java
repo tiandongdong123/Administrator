@@ -3,7 +3,6 @@ package com.wf.controller;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -26,8 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.exportExcel.ExportExcel;
+import com.redis.RedisUtil;
 import com.utils.CookieUtil;
-import com.utils.DateTools;
 import com.utils.FileUploadUtil;
 import com.wf.bean.CardType;
 import com.wf.bean.Log;
@@ -389,14 +388,27 @@ public class CardController {
 	 */
 	@RequestMapping("updateCheckState")
 	@ResponseBody
-	public boolean updateCheckState(HttpServletRequest request,String batchId) throws UnknownHostException{
+	public String updateCheckState(HttpServletRequest request, String batchId)
+			throws UnknownHostException {
+	
+		RedisUtil redis = new RedisUtil();
+		String key = "updateCheckState" + batchId;
+		String str = redis.get(key, 0);
+		if (!StringUtils.isEmpty(str)) {
+			return "-1";
+		}
+		redis.set(key, "0", 0);
+		redis.expire(key, 3600, 0);
 		Wfadmin admin=CookieUtil.getWfadmin(request);
-		
-		//记录日志
-		Log log=new Log("审核万方卡","审核","万方卡卡号:"+batchId,request);
-		logService.addLog(log);
-		
-		return cardBatchService.updateCheckState(admin, batchId);//审核状态改变
+		boolean flag =cardBatchService.updateCheckState(admin, batchId);// 审核状态改变
+		redis.del(key);
+		if (flag) {
+			// 记录日志
+			Log log = new Log("审核万方卡", "审核", "万方卡卡号:" + batchId, request);
+			logService.addLog(log);
+			return "1";
+		}
+		return "0";
 	}
 	
 	/**

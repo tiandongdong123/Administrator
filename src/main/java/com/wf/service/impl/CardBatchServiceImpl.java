@@ -14,6 +14,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,9 @@ import com.wf.dao.CardMapper;
 import com.wf.service.CardBatchService;
 @Service
 public class CardBatchServiceImpl implements CardBatchService{
+	
+	private static Logger log = Logger.getLogger(CardBatchServiceImpl.class);
+	
 	@Autowired
 	private CardBatchMapper cbm;
 	@Autowired
@@ -164,6 +168,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 	public boolean updateCheckState(Wfadmin admin,String batchId) {
 		boolean flag = false;
 		try {
+			long time=System.currentTimeMillis();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyyMMdd");
 			Map<String,Object> map = new HashMap<String, Object>();
@@ -218,8 +223,9 @@ public class CardBatchServiceImpl implements CardBatchService{
 			if (batchCard > 0 && cardNum > 0) {
 				flag = true;
 			}
+			log.info("批次:"+batchId+"生成万方卡耗时:"+(System.currentTimeMillis()-time)+"ms");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("批量导入万方卡异常：", e);
 		}
 		return flag;
 	}

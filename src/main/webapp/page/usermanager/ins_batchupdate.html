@@ -16,9 +16,11 @@
           <form id="fromList" method="post" enctype="multipart/form-data">
              <div class="box-body">
                 <div class="form-group input_block">
-                  <label class="input_name">登录方式</label>
-                  <input type="text" class="form-control input_width" value="用户名密码" readonly="readonly">
-                  <input type="hidden" class="form-control input_width" name="loginMode" id="loginMode" value="1">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>登录方式</label>
+                  <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+                    <option value="1">用户名密码</option>
+                    <option value="2">用户名密码+IP</option>
+                  </select>
                 </div>
                 <div class="checkbox input_block block_left">
                   <label><input type="checkbox" id="checkp">设置机构账号并发数</label>
