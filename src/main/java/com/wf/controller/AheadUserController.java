@@ -978,7 +978,7 @@ public class AheadUserController {
 									}
 									if (!aheadUserService.checkLimit(com, dto)) {
 										hashmap.put("flag", "fail");
-										hashmap.put("fail", dto.getProjectname() + "的更新后" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+										hashmap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
 										return hashmap;
 									}
 								}
@@ -1478,7 +1478,7 @@ public class AheadUserController {
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				if (!aheadUserService.checkLimit(com, dto)) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", dto.getProjectname() + "的更新后" + (ptype.equals("balance") ? "金额" : "次数") + "小于0");
+					hashmap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
 					return hashmap;
 				}
 			}
