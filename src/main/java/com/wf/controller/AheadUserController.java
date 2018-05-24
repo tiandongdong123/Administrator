@@ -651,7 +651,7 @@ public class AheadUserController {
 			if ("2".equals(com.getLoginMode())) {
 				if (!IPConvertHelper.validateIp((String) map.get("ip"))) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", "ip不合法");
+					hashmap.put("fail", "IP不合法");
 					return hashmap;
 				}
 			}
@@ -879,7 +879,7 @@ public class AheadUserController {
 				}
 				if (!IPConvertHelper.validateIp(ip)) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", "ip不合法");
+					hashmap.put("fail", userId+"的IP不合法");
 					return hashmap;
 				}
 			}
@@ -971,8 +971,10 @@ public class AheadUserController {
 								if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
 									if (ptype.equals("balance")) {
 										dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+										dto.setPurchaseNumber(0);
 									} else {
 										dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+										dto.setTotalMoney(0.0);
 									}
 									if (!aheadUserService.checkLimit(com, dto)) {
 										hashmap.put("flag", "fail");
@@ -1488,7 +1490,7 @@ public class AheadUserController {
 				aheadUserService.updateUserIp(com);
 			}else{
 				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "ip不合法");
+				hashmap.put("fail",  "IP不合法");
 				return hashmap;
 			}
 		}else{

@@ -1,8 +1,12 @@
 package com.utils;
 
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class IPConvertHelper {
+	
+	private static Pattern pa = Pattern.compile("[^0-9.-]");
 	
 	/**
 	 * 是否是合法ip
@@ -14,13 +18,22 @@ public class IPConvertHelper {
 		if (StringUtils.isBlank(ip)) {
 			return flag;
 		}
-		if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
-			String s[] = ip.split("\\.");
-			if (Integer.parseInt(s[0]) <= 223 && Integer.parseInt(s[0])>0)
-				if (Integer.parseInt(s[1]) <= 255)
-					if (Integer.parseInt(s[2]) <= 255)
-						if (Integer.parseInt(s[3]) <= 255)
-							flag = true;
+		try{
+			flag = pa.matcher(ip).find();
+			if (flag) {
+				return false;
+			}
+			if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+				
+				String s[] = ip.split("\\.");
+				if (Integer.parseInt(s[0]) <= 223 && Integer.parseInt(s[0])>0)
+					if (Integer.parseInt(s[1]) <= 255)
+						if (Integer.parseInt(s[2]) <= 255)
+							if (Integer.parseInt(s[3]) <= 255)
+								flag = true;
+			}
+		}catch(Exception e){
+			return flag;
 		}
 		return flag;
 	}
@@ -32,27 +45,31 @@ public class IPConvertHelper {
 	 * @return
 	 */
 	public static boolean validateDoubleIp(String ips) {
-		if (StringUtils.isBlank(ips)) {
-			return false;
-		}
-		if (ips.indexOf("-") == -1) {
-			return false;
-		}
-		if(ips.split("-").length>2){
-			return false;
-		}
-		// 开始ip
-		String startip = ips.substring(0, ips.indexOf("-"));
-		if (!validateOneIp(startip)) {
-			return false;
-		}
-		// 结束ip
-		String endip = ips.substring(0, ips.indexOf("-"));
-		if (!validateOneIp(endip)) {
-			return false;
-		}
-		// 结束ip大于等于开始ip
-		if (IPToNumber(startip) > IPToNumber(endip)) {
+		try{
+			if (StringUtils.isBlank(ips)) {
+				return false;
+			}
+			if (ips.indexOf("-") == -1) {
+				return false;
+			}
+			if(ips.split("-").length>2){
+				return false;
+			}
+			// 开始ip
+			String startip = ips.substring(0, ips.indexOf("-"));
+			if (!validateOneIp(startip)) {
+				return false;
+			}
+			// 结束ip
+			String endip = ips.substring(ips.indexOf("-")+1);
+			if (!validateOneIp(endip)) {
+				return false;
+			}
+			// 结束ip大于等于开始ip
+			if (IPToNumber(startip) > IPToNumber(endip)) {
+				return false;
+			}
+		}catch(Exception e){
 			return false;
 		}
 		return true;
