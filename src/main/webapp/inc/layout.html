@@ -219,6 +219,14 @@
             		<li <?if(!strutil.contain(session.purviews,"设置赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="wfcard_type.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_type.do"><i class="fa fa-circle-o"></i>设置赠送万方卡</a></li>
 	         	</ul
             </li>
+              <li <?if(!strutil.contain(session.purviews,"充值码管理")){?>style="display:none"<?}?>>
+              <a href="#"><i class="fa fa-circle-o"></i>充值码管理<i class="fa fa-angle-left pull-right"></i></a>
+              <ul class="treeview-menu menu-open" style="display: block;">
+                  <li <?if(!strutil.contain(session.purviews,"生成充值码")){?>style="display:none"<?}?> <? if(session.menu_first=="create_chargeCode.do"){ ?>class="active"<?}?>><a href="../auser/create_chargeCode.do"><i class="fa fa-circle-o"></i> 生成充值码</a></li>
+                  <li <?if(!strutil.contain(session.purviews,"充值码批次查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode_Batch.do"){ ?>class="active"<?}?>><a href="../auser/search_chargeCode_Batch.do"><i class="fa fa-circle-o"></i> 充值码批次查询</a></li>
+                  <li <?if(!strutil.contain(session.purviews,"充值码信息查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode.do"){ ?>class="active"<?}?>><a href="../auser/search_chargeCode.do"><i class="fa fa-circle-o"></i> 充值码信息查询</a></li>
+              </ul
+              </li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"系统管理")){?>style="display:none"<?}?>>
