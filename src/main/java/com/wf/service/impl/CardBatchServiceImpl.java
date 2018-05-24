@@ -14,6 +14,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -219,7 +220,7 @@ public class CardBatchServiceImpl implements CardBatchService{
 				flag = true;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.error("批量导入万方卡异常：", e);
 		}
 		return flag;
 	}
