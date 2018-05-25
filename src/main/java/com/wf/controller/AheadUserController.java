@@ -534,10 +534,7 @@ public class AheadUserController {
 			}
 		}
 		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
-			//校验ip的合法性
-			if(IPConvertHelper.validateIp(com.getIpSegment())){
-				aheadUserService.addUserIp(com);
-			}else{
+			if(!IPConvertHelper.validateIp(com.getIpSegment())){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail",  "账号IP段格式错误，请填写规范的IP段");
 				return hashmap;
@@ -571,6 +568,9 @@ public class AheadUserController {
 			aheadUserService.addAccountRestriction(com);
 		}
 		aheadUserService.addUserIns(com);//统计分析权限
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+			aheadUserService.addUserIp(com);
+		}
 		//购买详情信息
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectType().equals("balance")){
@@ -589,17 +589,18 @@ public class AheadUserController {
 				}
 			}
 		}
+		this.saveOperationLogs(com, "1", req);
+		this.addLogs(com, "1", req);
+		String logStr = "";
 		if (resinfo > 0) {
-			//更新前台用户信息
-			HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());
+			HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
 			hashmap.put("flag", "success");
-			log.info("机构用户["+com.getUserId()+"]注册成功，耗时:"+(System.currentTimeMillis()-time)+"ms");
+			logStr = com.getUserId() + "注册成功，耗时:" + (System.currentTimeMillis() - time) + "ms";
 		} else {
 			hashmap.put("flag", "fail");
-			log.info("机构用户["+com.getUserId()+"]注册失败，耗时:"+(System.currentTimeMillis()-time)+"ms");
+			logStr = com.getUserId() + "注册失败，耗时:" + (System.currentTimeMillis() - time) + "ms";
 		}
-		this.saveOperationLogs(com,"1", req);
-		this.addLogs(com,"1",req);
+		log.info(logStr);
 		return hashmap;
 	}
 	
@@ -2089,7 +2090,6 @@ public class AheadUserController {
 						
 						if (com.getRdlist() != null) {
 							JSONObject json=JSONObject.fromObject(dto);
-							//json.remove("rldto");
 							op.setReason(json.toString());
 						}
 						op.setProjectId(dto.getProjectid());
@@ -2103,39 +2103,7 @@ public class AheadUserController {
 		}
 	}
 
-
-	/**
-	 *	生成充值码
-	 */
-	@RequestMapping("create_chargeCode")
-	public ModelAndView create_ChargeCode(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/create_chargeCode");
-		return view;
-	}
-
-	/**
-	 *	充值码批次查询
-	 */
-	@RequestMapping("search_chargeCode_Batch")
-	public ModelAndView search_ChargeCode_Batch(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_chargeCode_Batch");
-		return view;
-	}
-
-	/**
-	 *	充值码信息查询
-	 */
-	@RequestMapping("search_chargeCode")
-	public ModelAndView search_ChargeCode(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_chargeCode");
-		return view;
-	}
-
-
-
-
-
+	
+	
+	
 }
