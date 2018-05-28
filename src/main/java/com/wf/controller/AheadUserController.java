@@ -529,7 +529,7 @@ public class AheadUserController {
 				}
 			}
 			for (ResourceDetailedDTO dto : list) {
-				hashmap = this.getValidate(dto,true);
+				hashmap = this.getValidate(dto, true, true);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
@@ -663,11 +663,9 @@ public class AheadUserController {
 			}
 			Matcher m1 = paName.matcher(map.get("institution").toString());
 			Matcher m2 = pa.matcher(map.get("userId").toString());
-			boolean flag1 = m1.find();
-			boolean flag2 = m2.find();
-			if (flag1 || flag2) {
+			if (m1.find() || m2.find()) {
 				hashmap.put("flag", "fail");
-				hashmap.put("fail", flag1 ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
+				hashmap.put("fail", m1.find() ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
 				return hashmap;
 			}
 		}
@@ -680,7 +678,7 @@ public class AheadUserController {
 		for (int j = 0; j < list.size(); j++) {
 			ResourceDetailedDTO dto = list.get(j);
 			if (dto.getProjectid() != null) {
-				hashmap = this.getValidate(dto, false);
+				hashmap = this.getValidate(dto, false, true);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
@@ -899,7 +897,7 @@ public class AheadUserController {
 		for (int j = 0; j < list.size(); j++) {
 			ResourceDetailedDTO dto = list.get(j);
 			if (dto.getProjectid() != null) {
-				hashmap = this.getValidate(dto, false);
+				hashmap = this.getValidate(dto, false, false);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
@@ -1469,7 +1467,7 @@ public class AheadUserController {
 					delList.add(dto.getProjectid());
 					continue;
 				}
-				hashmap = this.getValidate(dto,true);
+				hashmap = this.getValidate(dto, true, false);
 				if (hashmap.size() > 0) {
 					return hashmap;
 				}
@@ -1596,24 +1594,35 @@ public class AheadUserController {
 	 * @param isBatch false是批量,true是非批量
 	 * @return
 	 */
-	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean isBatch){
+	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
 		Map<String,String> hashmap=new HashMap<String,String>();
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if (StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
 			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
 			return hashmap;
-		} else if(isBatch){
+		}
+		if(notBatch){
 			if (dto.getProjectType().equals("balance")) {
 				if (dto.getTotalMoney() == null) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
 					return hashmap;
 				}
+				if (dto.getTotalMoney()<=0&&isAdd) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"金额必须大于0");
+					return hashmap;
+				}
 			} else if (dto.getProjectType().equals("count")) {
 				if (dto.getPurchaseNumber() == null) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  projectname+"次数不能为空，请填写次数");
+					return hashmap;
+				}
+				if (dto.getPurchaseNumber()<=0&&isAdd) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"次数必须大于0");
 					return hashmap;
 				}
 			}
