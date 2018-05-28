@@ -36,6 +36,7 @@ import com.utils.CookieUtil;
 import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
@@ -636,6 +637,12 @@ public class AheadUserController {
 		String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 		Map<String,String> hashmap = new HashMap<String, String>();
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		int maxSize = SettingUtil.getImportExcelMaxSize();
+		if (listmap.size() > maxSize) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "批量注册最多可以一次注册" + maxSize + "条");
+			return hashmap;
+		}
 		for (int i = 0; i < listmap.size(); i++) {
 			Map<String, Object> map = listmap.get(i);
 			if ("".equals(map.get("userId"))) {
@@ -848,6 +855,12 @@ public class AheadUserController {
 			return hashmap;
 		}
 		List<Map<String, Object>> listmap = aheadUserService.getExcelData(file);
+		int maxSize = SettingUtil.getImportExcelMaxSize();
+		if (listmap.size() > maxSize) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "批量更新最多可以一次更新" + maxSize + "条");
+			return hashmap;
+		}
 		for (int i = 0; i < listmap.size(); i++) {
 			Map<String, Object> map = listmap.get(i);
 			if ("".equals(map.get("userId"))) {
