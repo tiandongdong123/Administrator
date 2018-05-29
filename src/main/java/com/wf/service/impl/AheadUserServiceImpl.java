@@ -497,7 +497,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	        account.setPayChannelId(dto.getProjectid());//支付渠道id
 	        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 	        account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-			//生效时间，可以精确到秒
 	        account.setEndDateTime(sd.parse(dto.getValidityEndtime()));//失效时间，可以精确到秒
 	      
 	        //根据token可获取管理员登录信息
@@ -562,54 +561,21 @@ public class AheadUserServiceImpl implements AheadUserService{
     	}
     	boolean isSuccess;
         try{
-        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
-        	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-        	CountLimitAccount before = null;
-        	if(account!=null){
-        		//更新前的数据
-        		before = new CountLimitAccount();
-        		before.setUserId(com.getUserId());//机构用户名
-        		before.setOrganName(com.getInstitution());//机构名称
-        		before.setPayChannelId(account.getPayChannelId());//支付渠道id
-        		before.setBeginDateTime(account.getBeginDateTime());//生效时间，可以精确到秒
-        		before.setEndDateTime(account.getEndDateTime());//失效时间，可以精确到秒
-        		before.setBalance(account.getBalance());//充值次数
-        	}
             //需要更新的数据
             CountLimitAccount count = new CountLimitAccount();
-            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
             count.setUserId(com.getUserId());//机构用户名
             count.setOrganName(com.getInstitution());//机构名称
             count.setPayChannelId(dto.getProjectid());//支付渠道id
-            //起始时间未填写，使用之前的时间
-            if(StringUtils.isNoneBlank(dto.getValidityStarttime())){            	
-            	count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-            }else{
-            	count.setBeginDateTime(account.getBeginDateTime());
-            }
-            //结束时间未填写，使用之前的时间
-            if(StringUtils.isNoneBlank(dto.getValidityEndtime())){            	
-            	count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-            }else{
-            	count.setEndDateTime(account.getEndDateTime());
-            }
-	        if(account!=null && (account.getBalance()+dto.getPurchaseNumber())>=0){
-	        	if(account.getEndDateTime().before(new Date())){
-	        		count.setBalance(account.getBalance()+dto.getPurchaseNumber());
-	        	}else{	        		
-	        		count.setBalance(dto.getPurchaseNumber());
-	        	}
-	        }else if(account==null){
-	        	count.setBalance(dto.getPurchaseNumber());
-	        }else{
-	        	count.setBalance(0);
-	        }
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+            count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+            count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+            count.setBalance(dto.getPurchaseNumber());
             //是否重置金额
             boolean resetCount = false;
             if(StringUtils.isNotBlank(com.getResetCount())){
             	resetCount = true;
             }
-        	isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+        	isSuccess = groupAccountUtil.addCountLimitAccount(null, count, httpRequest.getRemoteAddr(), adminId, resetCount);
             if (isSuccess) {
 	        	flag = 1;
 	        } else {
@@ -634,46 +600,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
     	boolean isSuccess = false;
     	try{
-    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
-    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-    		BalanceLimitAccount before = null;
-            if(account!=null){
-            	//更新前信息
-            	before = new BalanceLimitAccount();
-            	before.setUserId(com.getUserId());//机构用户名
-            	before.setOrganName(com.getInstitution());//机构名称
-            	before.setPayChannelId(account.getPayChannelId());//支付渠道id
-            	before.setBeginDateTime(account.getBeginDateTime());
-            	before.setEndDateTime(account.getEndDateTime());
-            	before.setBalance(account.getBalance());
-            }
             //需要更新的数据
-            BalanceLimitAccount after = new BalanceLimitAccount();
+            BalanceLimitAccount account = new BalanceLimitAccount();
+            account.setUserId(com.getUserId());//机构用户名
+            account.setOrganName(com.getInstitution());//机构名称
+            account.setPayChannelId(dto.getProjectid());//支付渠道id
             SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-            after.setUserId(com.getUserId());//机构用户名
-            after.setOrganName(com.getInstitution());//机构名称
-            after.setPayChannelId(dto.getProjectid());//支付渠道id
-            if(StringUtils.isNoneBlank(dto.getValidityStarttime())){            	
-            	after.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-            }else{
-            	after.setBeginDateTime(account.getBeginDateTime());
-            }
-            if(StringUtils.isNoneBlank(dto.getValidityEndtime())){            	
-            	after.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-            }else{
-            	after.setEndDateTime(account.getEndDateTime());
-            }
-            if(account!=null && BigDecimal.valueOf(dto.getTotalMoney()).add(account.getBalance()).signum()!=-1){
-            	if(account.getEndDateTime().before(new Date())){            		
-            		after.setBalance(BigDecimal.valueOf(dto.getTotalMoney()).add(account.getBalance()));
-            	}else{
-            		after.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
-            	}
-            }else if(account==null){
-            	after.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
-            }else{
-            	after.setBalance(BigDecimal.ZERO);
-            }
+            account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+            account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+            account.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
             //根据token可获取管理员登录信息
             //String authToken = "Admin."+adminId;
             //调用注册或充值余额限时账户方法
@@ -684,7 +619,7 @@ public class AheadUserServiceImpl implements AheadUserService{
             if(StringUtils.isNotBlank(com.getResetMoney())){
             	resetMoney = true;
             }
-            isSuccess = groupAccountUtil.addBalanceLimitAccount(before, after, httpRequest.getRemoteAddr(), adminId, resetMoney);//提交注册或充值请求
+            isSuccess = groupAccountUtil.addBalanceLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId, resetMoney);//提交注册或充值请求
             if (isSuccess) {
             	flag = 1;
             } else {
@@ -707,9 +642,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-    	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
-    	    			return false;
-    	    		}
+//    	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
+//    	    			return false;
+//    	    		}
 			} else if ("count".equals(dto.getProjectType())) {
 				if (dto.getPurchaseNumber()==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
@@ -717,9 +652,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-    	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
-    	    			return false;
-    	    		}
+//    	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
+//    	    			return false;
+//    	    		}
 			}
         } catch (Exception e) {
         	e.printStackTrace();
