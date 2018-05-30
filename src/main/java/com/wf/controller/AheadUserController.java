@@ -590,7 +590,6 @@ public class AheadUserController {
 					}
 				}
 			}
-			this.saveOperationLogs(com, "1", req);
 			this.addLogs(com, "1", req);
 			String logStr = "";
 			if (resinfo > 0) {
@@ -819,7 +818,6 @@ public class AheadUserController {
 					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]注册成功");
 				}
-				this.saveOperationLogs(com, "1", req);
 				this.addLogs(com,"1",req);
 			}
 			hashmap.put("flag", "success");
@@ -1104,7 +1102,6 @@ public class AheadUserController {
 					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]修改成功");
 				}
-				this.saveOperationLogs(com,"2", req);
 				this.addLogs(com,"2",req);
 			}
 			hashmap.put("flag", "success");
@@ -1470,7 +1467,6 @@ public class AheadUserController {
 			rdlist.add(dto);
 		}
 		com.setRdlist(rdlist);
-		this.saveOperationLogs(com, "3", req);
 		this.addLogs(com,"3",req);
 	}
 	
@@ -1599,7 +1595,6 @@ public class AheadUserController {
 					}
 				}
 			}
-			this.saveOperationLogs(com,"2", req);
 			this.addLogs(com,"2",req);
 			String logStr="";
 			if (resinfo > 0) {
@@ -1993,54 +1988,6 @@ public class AheadUserController {
 	}
 	
 	/**
-	 * 添加操作日志信息
-	 * @return
-	 */
-	private void saveOperationLogs(CommonEntity com,String flag,HttpServletRequest req) throws Exception{
-		if(com!=null){
-			Wfadmin admin =CookieUtil.getWfadmin(req);
-			List<ResourceDetailedDTO> list = com.getRdlist();
-			if(list!=null &&list.size()>0){
-				for(ResourceDetailedDTO dto:list){
-					if(dto.getProjectid()!=null){
-						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
-							continue;
-						} else if (dto.getProjectType().equals("count")
-								&& dto.getPurchaseNumber() == 0) {
-							continue;
-						} else if (dto.getProjectType().equals("time")) {
-							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
-									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
-								continue;
-							}
-						}
-						OperationLogs op = new OperationLogs();
-						op.setUserId(com.getUserId());
-						op.setPerson(admin.getWangfang_admin_id());
-						
-						if(flag == "1" ){
-							op.setOpreation("注册");
-						}else if(flag == "2" ){
-							op.setOpreation("更新");
-						}else if(flag == "3" ){
-							op.setOpreation("删除");
-						}
-						
-						if (com.getRdlist() != null) {
-							JSONObject json=JSONObject.fromObject(dto);
-							//json.remove("rldto");
-							op.setReason(json.toString());
-						}
-						op.setProjectId(dto.getProjectid());
-						op.setProjectName(dto.getProjectname());
-						opreationLogs.addOperationLogs(op);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
 	 * 根据机构名称获取管理员
 	 * @param response
 	 * @param institution 机构名称
@@ -2123,16 +2070,12 @@ public class AheadUserController {
 						OperationLogs op = new OperationLogs();
 						op.setUserId(com.getUserId());
 						op.setPerson(admin.getWangfang_admin_id());
-						String behavior = null;
 						if(flag == "1" ){
 							op.setOpreation("注册");
-							behavior="注册";
 						}else if(flag == "2" ){
 							op.setOpreation("更新");
-							behavior="更新";
 						}else if(flag == "3" ){
 							op.setOpreation("删除");
-							behavior="删除";
 						}
 						
 						if (com.getRdlist() != null) {
@@ -2141,16 +2084,13 @@ public class AheadUserController {
 						}
 						op.setProjectId(dto.getProjectid());
 						op.setProjectName(dto.getProjectname());
-						
-						Log log=new Log("机构用户信息管理",behavior,req, JSONObject.fromObject(op).toString());
+						opreationLogs.addOperationLogs(op);
+						Log log=new Log("机构用户信息管理",op.getOpreation(),req, JSONObject.fromObject(op).toString());
 						logService.addLog_Institution(log);
 					}
 				}
 			}
 		}
 	}
-
-	
-	
 	
 }
