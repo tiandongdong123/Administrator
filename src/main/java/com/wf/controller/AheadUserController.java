@@ -825,7 +825,7 @@ public class AheadUserController {
 			log.info("批量注册成功："+in+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}catch(Exception e){
 			hashmap.put("flag", "fail");
-			hashmap.put("success", "注册成功"+in+"条,未注册成功"+(listmap.size()-in)+"条");
+			hashmap.put("fail", "注册成功"+in+"条,未注册成功"+(listmap.size()-in)+"条");
 			log.error("机构用户批量注册异常：",e);
 		}
 		return hashmap;
@@ -1109,7 +1109,7 @@ public class AheadUserController {
 			log.info("批量修改成功："+in+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}catch(Exception e){
 			hashmap.put("flag", "success");
-			hashmap.put("success", "成功更新"+in+"条,更新失败"+(listmap.size()-in)+"条");
+			hashmap.put("fail", "成功更新"+in+"条,更新失败"+(listmap.size()-in)+"条");
 			log.error("机构用户批量更新", e);
 		}
 		return hashmap;
