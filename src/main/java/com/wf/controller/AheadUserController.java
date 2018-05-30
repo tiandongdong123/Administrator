@@ -816,6 +816,7 @@ public class AheadUserController {
 				}
 				if (resinfo > 0) {
 					in += 1;
+					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]注册成功");
 				}
 				this.saveOperationLogs(com, "1", req);
@@ -1100,6 +1101,7 @@ public class AheadUserController {
 				}
 				if(resinfo>0){
 					in+=1;
+					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]修改成功");
 				}
 				this.saveOperationLogs(com,"2", req);
@@ -1994,7 +1996,7 @@ public class AheadUserController {
 	 * 添加操作日志信息
 	 * @return
 	 */
-	private void saveOperationLogs(CommonEntity com,String flag,HttpServletRequest req){
+	private void saveOperationLogs(CommonEntity com,String flag,HttpServletRequest req) throws Exception{
 		if(com!=null){
 			Wfadmin admin =CookieUtil.getWfadmin(req);
 			List<ResourceDetailedDTO> list = com.getRdlist();
@@ -2099,7 +2101,7 @@ public class AheadUserController {
 	 * 添加操作日志信息
 	 * @return
 	 */
-	private void addLogs(CommonEntity com,String flag,HttpServletRequest req){
+	private void addLogs(CommonEntity com,String flag,HttpServletRequest req) throws Exception{
 		if(com!=null){
 			Wfadmin admin =CookieUtil.getWfadmin(req);
 			List<ResourceDetailedDTO> list = com.getRdlist();
