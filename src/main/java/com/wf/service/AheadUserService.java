@@ -63,9 +63,6 @@ public interface AheadUserService {
 
 	/**更新用户解冻/冻结状态 */
 	int updateUserFreeze(String str, String redio);
-	
-	/** 查询所有数据库 */
-    //List<Map<String, Object>> selectList();
 
     /** 查询机构账号列表信息 */
 	PageList findListInfo(Map<String, Object> map);
@@ -89,19 +86,19 @@ public interface AheadUserService {
 	int addAccountRestriction(CommonEntity com);
 
 	/** 添加余额信息 */
-	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto,String adminId);
+	int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 添加系统次数信息 */
-	int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto,String adminId);
+	int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 更新系统次数信息 */
-	int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 添加项目资源信息 */
 	void addProjectResources(CommonEntity com, ResourceDetailedDTO dto);
@@ -169,7 +166,7 @@ public interface AheadUserService {
 	int updateUserInfo(CommonEntity com, String adminId);
 
 	/** 删除购买项目（逻辑删除） */
-	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
@@ -251,6 +248,6 @@ public interface AheadUserService {
 	 */
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
-	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto);
+	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
 	
 }
