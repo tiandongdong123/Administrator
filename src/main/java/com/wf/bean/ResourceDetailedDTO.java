@@ -26,6 +26,10 @@ public class ResourceDetailedDTO {
 	private String validityStarttime2;
 	
 	private String validityEndtime2;
+	// 是否试用 trical--试用，formal--正常
+	private String mode;
+	// 功能分类 resource--资源，function--功能
+	private String feature;
 	
 	private List<ResourceLimitsDTO> rldto;
 	
@@ -117,6 +121,22 @@ public class ResourceDetailedDTO {
 		this.purchaseNumber = purchaseNumber;
 	}
 
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public String getFeature() {
+		return feature;
+	}
+
+	public void setFeature(String feature) {
+		this.feature = feature;
+	}
+
 	public List<ResourceLimitsDTO> getRldto() {
 		return rldto;
 	}
@@ -134,7 +154,9 @@ public class ResourceDetailedDTO {
 				+ ", totalMoney=" + totalMoney + ", relatedIdAccountType="
 				+ relatedIdAccountType + ", purchaseNumber=" + purchaseNumber
 				+ ", validityStarttime2=" + validityStarttime2
-				+ ", validityEndtime2=" + validityEndtime2 + ", rldto=" + rldto
-				+ "]";
+				+ ", validityEndtime2=" + validityEndtime2
+				+ ", mode=" + mode
+				+ ", feature=" + feature
+				+ ", rldto=" + rldto+"]";
 	}
 }
