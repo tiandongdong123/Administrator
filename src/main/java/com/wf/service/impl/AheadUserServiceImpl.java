@@ -67,7 +67,6 @@ import com.wf.bean.AuthoritySetting;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
-import com.wf.bean.Project;
 import com.wf.bean.ProjectResources;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
@@ -87,7 +86,6 @@ import com.wf.dao.AuthoritySettingMapper;
 import com.wf.dao.DatamanagerMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ProjectBalanceMapper;
-import com.wf.dao.ProjectMapper;
 import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
 import com.wf.dao.StandardUnitMapper;
@@ -139,9 +137,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Autowired
 	private DatamanagerMapper datamanagerMapper;
-	
-	@Autowired
-	private ProjectMapper projectMapper;
 	
 	@Autowired
 	private WfksPayChannelResourcesMapper wfksMapper;
@@ -275,14 +270,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<String> queryInstitution(String institution){
 		return personMapper.queryInstitution(institution);
-	}
-	
-	/**
-	 *	查询所有项目 
-	 */
-	@Override
-	public List<Project> findProject() {
-		return projectMapper.findProject();
 	}
 	
 	/**
@@ -2008,5 +1995,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	@Override
+	public int addUserBoughtItems(CommonEntity com) {
+		return 0;
 	}
 }

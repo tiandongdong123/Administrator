@@ -17,7 +17,6 @@ import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
-import com.wf.bean.Project;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserInstitution;
@@ -39,9 +38,6 @@ public interface AheadUserService {
 
 	/** 获取Excel机构用户 */
 	List<Map<String, Object>> getExcelData(MultipartFile file);
-	
-	/** 查询所有项目 */
-	List<Project> findProject();
 	
 	/** 机构账号注册 */
 	int addRegisterInfo(CommonEntity com);
@@ -249,5 +245,7 @@ public interface AheadUserService {
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
 	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
+	/**机构用户购买项目表*/
+	int addUserBoughtItems(CommonEntity com);
 	
 }
