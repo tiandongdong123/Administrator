@@ -642,9 +642,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-//    	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
-//    	    			return false;
-//    	    		}
+    	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
+    	    			return false;
+    	    		}
 			} else if ("count".equals(dto.getProjectType())) {
 				if (dto.getPurchaseNumber()==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
@@ -652,9 +652,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-//    	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
-//    	    			return false;
-//    	    		}
+    	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
+    	    			return false;
+    	    		}
 			}
         } catch (Exception e) {
         	e.printStackTrace();
