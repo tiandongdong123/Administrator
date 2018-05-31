@@ -292,7 +292,7 @@ public class AheadUserController {
 				}
 				map.put("pid", com.getAdminname());
 			}else{
-				map.put("pid", com.getAdminOldName());				
+				map.put("pid", com.getAdminOldName());
 			}
 			map.put("userId", com.getUserId());
 			int resinfo = aheadUserService.updatePid(map);
@@ -733,9 +733,9 @@ public class AheadUserController {
 					List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 					//判断金额或次数，不可存在负数
 					for(Map<String, Object> pl : lm){
-						if(Double.valueOf(pl.get("totalMoney").toString())<0){
+						if(Double.valueOf(pl.get("totalMoney").toString())<=0){
 							hashmap.put("flag", "fail");
-							hashmap.put("fail", map.get("userId")+"的购买项目中存在负数");
+							hashmap.put("fail", map.get("userId")+"的购买项目必须大于0");
 							return hashmap;
 						}
 					}
