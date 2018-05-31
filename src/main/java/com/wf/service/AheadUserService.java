@@ -19,6 +19,7 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -247,5 +248,7 @@ public interface AheadUserService {
 	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
 	/**机构用户购买项目表*/
 	int addUserBoughtItems(CommonEntity com);
+	/**根据机构用户ID获取购买项目信息*/
+	List<UserBoughtItems> getUserBoughtItems(String userId);
 	
 }

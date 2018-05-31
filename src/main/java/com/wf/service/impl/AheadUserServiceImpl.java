@@ -20,12 +20,6 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.utils.*;
-import com.wanfangdata.grpcchannel.BindAccountChannel;
-import com.wanfangdata.grpcchannel.BindAuthorityChannel;
-import com.wanfangdata.rpc.bindauthority.*;
-import com.wanfangdata.setting.BindAuthorityMapping;
-import com.wf.bean.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -56,14 +50,36 @@ import wfks.authentication.AccountId;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.utils.DateUtil;
+import com.utils.ExcelUtil;
+import com.utils.GetUuid;
+import com.utils.Getproperties;
+import com.utils.HttpClientUtil;
+import com.utils.IPConvertHelper;
+import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
+import com.wanfangdata.grpcchannel.BindAccountChannel;
+import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
 import com.wanfangdata.model.UserAccount;
+import com.wanfangdata.rpc.bindauthority.AccountAuthority;
+import com.wanfangdata.rpc.bindauthority.BindType;
+import com.wanfangdata.rpc.bindauthority.CloseBindRequest;
+import com.wanfangdata.rpc.bindauthority.EditBindRequest;
+import com.wanfangdata.rpc.bindauthority.OpenBindRequest;
+import com.wanfangdata.rpc.bindauthority.SearchAccountAuthorityRequest;
+import com.wanfangdata.rpc.bindauthority.SearchAccountAuthorityResponse;
+import com.wanfangdata.rpc.bindauthority.SearchBindDetailsRequest;
+import com.wanfangdata.rpc.bindauthority.SearchBindDetailsResponse;
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wanfangdata.setting.BindAuthorityMapping;
 import com.webservice.WebServiceUtils;
 import com.wf.bean.Authority;
 import com.wf.bean.AuthoritySetting;
+import com.wf.bean.BindAuthorityModel;
+import com.wf.bean.BindAuthorityViewModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -72,6 +88,7 @@ import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
+import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -90,6 +107,7 @@ import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
 import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
+import com.wf.dao.UserBoughtItemsMapper;
 import com.wf.dao.UserInstitutionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
@@ -154,6 +172,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private StandardUnitMapper standardUnitMapper;
 	@Autowired
 	private UserInstitutionMapper userInstitutionMapper;
+	@Autowired
+	UserBoughtItemsMapper userBoughtItemsMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -537,12 +557,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 		count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
 		count.setBalance(dto.getPurchaseNumber());
-		// 是否重置金额
+		// 是否重置次数
 		boolean resetCount = false;
+		CountLimitAccount before = null;
 		if (StringUtils.isNotBlank(com.getResetCount())) {
-			resetCount = true;
+	    	wfks.accounting.handler.entity.CountLimitAccount oldNum = (wfks.accounting.handler.entity.CountLimitAccount)
+    	    	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+	    	if(oldNum!=null){
+	    		//更新前的数据
+	    		before = new CountLimitAccount();
+	    		before.setUserId(com.getUserId());//机构用户名
+	    		before.setOrganName(com.getInstitution());//机构名称
+	    		before.setPayChannelId(oldNum.getPayChannelId());//支付渠道id
+	    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
+	    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
+	    		before.setBalance(oldNum.getBalance());//充值次数
+	    	}
+	    	resetCount = true;
 		}
-        boolean isSuccess = groupAccountUtil.addCountLimitAccount(null, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
 		int flag = 0;
 		if (isSuccess) {
 			flag = 1;
@@ -580,10 +613,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 第二个参数起传递账户信息，userIP，auto_token
 		// 是否重置金额
 		boolean resetMoney = false;
+		BalanceLimitAccount before = null;
 		if (StringUtils.isNotBlank(com.getResetMoney())) {
+    		wfks.accounting.handler.entity.BalanceLimitAccount oldBlance = (wfks.accounting.handler.entity.BalanceLimitAccount)
+    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+            if(oldBlance!=null){
+            	//更新前信息
+            	before = new BalanceLimitAccount();
+            	before.setUserId(com.getUserId());//机构用户名
+            	before.setOrganName(com.getInstitution());//机构名称
+            	before.setPayChannelId(oldBlance.getPayChannelId());//支付渠道id
+            	before.setBeginDateTime(oldBlance.getBeginDateTime());
+            	before.setEndDateTime(oldBlance.getEndDateTime());
+            	before.setBalance(oldBlance.getBalance());
+            }
 			resetMoney = true;
 		}
-        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
+        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
 		int flag = 0;
 		if (isSuccess) {
 			flag = 1;
@@ -603,9 +649,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-    	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
-    	    			return false;
-    	    		}
+	    		if(account==null){
+	    			if(dto.getTotalMoney()<=0){
+	    				return false;
+	    			}
+	    			return true;
+	    		}
+	    		if(account.getBalance().intValue()+dto.getTotalMoney()<=0){
+	    			return false;
+	    		}
 			} else if ("count".equals(dto.getProjectType())) {
 				if (dto.getPurchaseNumber()==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
@@ -613,9 +665,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-    	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
-    	    			return false;
-    	    		}
+	    		if(account==null){
+	    			if(dto.getPurchaseNumber()<=0){
+	    				return false;
+	    			}
+	    			return true;
+	    		}
+	    		if(account.getBalance()+dto.getPurchaseNumber()<=0){
+	    			return false;
+	    		}
 			}
         } catch (Exception e) {
         	e.printStackTrace();
@@ -1643,6 +1701,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
+		List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+		Map<String,String> itemsMap=new HashMap<String,String>();
+		for(UserBoughtItems item:items){
+			if(item.getMode().equals("trical")){
+				itemsMap.put(item.getTransteroutType(), item.getMode());
+			}
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//购买项目列表
 		List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
@@ -1664,6 +1729,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("balance", account.getBalance());
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
+					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1676,6 +1742,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("payChannelid", account.getPayChannelId());
 					extraData.put("name", pay.getName());
 					extraData.put("type", pay.getType());
+					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1690,6 +1757,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("totalConsume", account.getTotalConsume());
+					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1997,9 +2065,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return null;
 	}
 
-
 	@Override
 	public int addUserBoughtItems(CommonEntity com) {
-		return 0;
+		userBoughtItemsMapper.delete(com.getUserId());
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		int ins=0;
+		for(ResourceDetailedDTO dto:rdlist){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType(dto.getProjectid());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				item.setMode("trical");
+			}else{
+				item.setMode("formal");
+			}
+			item.setFeature("resource");
+			ins+=userBoughtItemsMapper.insert(item);
+		}
+		return ins;
+	}
+
+	@Override
+	public List<UserBoughtItems> getUserBoughtItems(String userId) {
+		return userBoughtItemsMapper.getUserBoughtItemsList(userId);
 	}
 }
