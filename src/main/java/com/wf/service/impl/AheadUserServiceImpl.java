@@ -655,7 +655,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    			}
 	    			return true;
 	    		}
-	    		if(account.getBalance().intValue()+dto.getTotalMoney()<=0){
+	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
 	    			return false;
 	    		}
 			} else if ("count".equals(dto.getProjectType())) {
@@ -671,7 +671,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    			}
 	    			return true;
 	    		}
-	    		if(account.getBalance()+dto.getPurchaseNumber()<=0){
+	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
 	    			return false;
 	    		}
 			}
