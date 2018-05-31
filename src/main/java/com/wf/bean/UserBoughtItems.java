@@ -2,17 +2,17 @@ package com.wf.bean;
 
 public class UserBoughtItems {
 	
-	private Integer Id; // ID
+	private String Id; // ID
 	private String UserId; // 用户ID
 	private String TransteroutType; // 购买项目资源类型
 	private String Mode; // 购买项目类型：trical--试用，formal--正常
 	private String Feature; // 功能分类：resource--资源，function--功能
 
-	public Integer getId() {
+	public String getId() {
 		return Id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		Id = id;
 	}
 

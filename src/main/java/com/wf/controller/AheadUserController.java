@@ -568,10 +568,13 @@ public class AheadUserController {
 			if (StringUtils.isNotBlank(com.getChecks())) {
 				aheadUserService.addAccountRestriction(com);
 			}
-			aheadUserService.addUserIns(com);// 统计分析权限
 			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
 				aheadUserService.addUserIp(com);
 			}
+			// 统计分析权限
+			aheadUserService.addUserIns(com);
+			// 机构用户购买项目
+			aheadUserService.addUserBoughtItems(com);
 			//购买详情信息
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectType().equals("balance")){
@@ -773,7 +776,10 @@ public class AheadUserController {
 				if(StringUtils.isNotBlank(com.getChecks())){			
 					aheadUserService.addAccountRestriction(com);
 				}
-				aheadUserService.addUserIns(com);//统计分析权限
+				//统计分线权限
+				aheadUserService.addUserIns(com);
+				// 机构用户购买项目
+				aheadUserService.addUserBoughtItems(com);
 				//保存IP
 				if ("2".equals(com.getLoginMode())) {
 					String ip=(String) map.get("ip");
@@ -1041,8 +1047,10 @@ public class AheadUserController {
 				com.setUserId(map.get("userId").toString());
 				//更新机构账号
 				int resinfo = aheadUserService.updateRegisterInfo(com, null, adminId);
-				//统计分析权限
+				//统计分线权限
 				aheadUserService.addUserIns(com);
+				// 机构用户购买项目
+				aheadUserService.addUserBoughtItems(com);
 				//保存IP
 				if ("2".equals(com.getLoginMode())) {
 					String ip=(String) map.get("ip");
@@ -1558,6 +1566,8 @@ public class AheadUserController {
 			aheadUserService.updateAccountRestriction(com);
 			//统计分线权限
 			aheadUserService.addUserIns(com);
+			// 机构用户购买项目
+			aheadUserService.addUserBoughtItems(com);
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
