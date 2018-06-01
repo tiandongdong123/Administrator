@@ -2116,7 +2116,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				log.info("msesage:"+message);
 				mail.setMessage(message);
 				SendMail2 util=new SendMail2();
-				//util.sendEmail(mail);
+				util.sendEmail(mail);
 			}
 			//微信嵌入服务保存邮件地址
 			WfksUserSetting setting=new WfksUserSetting();
