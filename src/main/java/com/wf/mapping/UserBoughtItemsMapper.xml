@@ -31,8 +31,14 @@
     </set>
     where UserId = #{UserId}
  </update>
-  <!-- 添加一条数据 --> 
+  <!-- 根据userId删除数据  --> 
   <delete id="delete" parameterType="java.lang.String">
-  	delete from UserBoughtItems where UserId = #{userId}
+  	delete from UserBoughtItems where UserId = #{UserId}
+  	<if test="TransteroutType != null and TransteroutType != ''">
+		AND TransteroutType = #{TransteroutType}  
+	</if>
+  	<if test="Mode != null and Mode != ''">
+		AND Mode = #{Mode}  
+	</if>
   </delete>
 </mapper>

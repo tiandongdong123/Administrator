@@ -51,11 +51,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.PascalNameFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.utils.DateUtil;
+import com.utils.Des;
 import com.utils.ExcelUtil;
 import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.SendMail2;
 import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
@@ -81,6 +83,7 @@ import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
 import com.wf.bean.CommonEntity;
+import com.wf.bean.Mail;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ProjectResources;
@@ -1839,6 +1842,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
+	public WfksUserSetting[] getUserSetting2(String userId,String type) {
+		WfksUserSettingKey key = new WfksUserSettingKey();
+		key.setUserType(type);
+		key.setUserId(userId);
+		return wfksUserSettingMapper.selectByUserId(key);
+	}
+	
+	@Override
 	public int setAddauthority(Authority authority,Person person){
 		String type = authority.getRelatedIdAccountType();
 		String userId=authority.getUserId();
@@ -2066,10 +2077,56 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int addUserBoughtItems(CommonEntity com) {
-		userBoughtItemsMapper.delete(com.getUserId());
+	public void addUserBoughtItems(CommonEntity com) {
+		userBoughtItemsMapper.delete(com.getUserId(),null,null);
 		List<ResourceDetailedDTO> rdlist = com.getRdlist();
-		int ins=0;
+		//APP嵌入
+		if(!StringUtils.isEmpty(com.getOpenApp())){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType("");
+			item.setMode("openApp");
+			item.setFeature("function");
+			userBoughtItemsMapper.insert(item);
+		}
+		//微信嵌入
+		//1、先删除
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserId(com.getUserId());
+		key.setUserType("WeChat");
+		key.setPropertyName("email");
+		wfksUserSettingMapper.deleteByUserId(key);
+		//2、再添加
+		if(!StringUtils.isEmpty(com.getOpenWeChat())){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType("");
+			item.setMode("openWeChat");
+			item.setFeature("function");
+			userBoughtItemsMapper.insert(item);
+			//微信嵌入服务要发邮件
+			if(!StringUtils.isEmpty(com.getSendMail())){
+				Mail mail=new Mail();
+				mail.setReceiver(com.getWeChatEamil());
+				mail.setName("后台管理");
+				mail.setSubject("已开通微信公众号嵌入服务");
+				String message=Des.enDes(com.getUserId(),com.getPassword());
+				log.info("msesage:"+message);
+				mail.setMessage(message);
+				SendMail2 util=new SendMail2();
+				//util.sendEmail(mail);
+			}
+			//微信嵌入服务保存邮件地址
+			WfksUserSetting setting=new WfksUserSetting();
+			setting.setUserType("WeChat");
+			setting.setUserId(com.getUserId());
+			setting.setPropertyName("email");
+			setting.setPropertyValue(com.getWeChatEamil());
+			wfksUserSettingMapper.insert(setting);
+		}
+		//是否添加使用
 		for(ResourceDetailedDTO dto:rdlist){
 			UserBoughtItems item=new UserBoughtItems();
 			item.setId(GetUuid.getId());
@@ -2081,9 +2138,73 @@ public class AheadUserServiceImpl implements AheadUserService{
 				item.setMode("formal");
 			}
 			item.setFeature("resource");
-			ins+=userBoughtItemsMapper.insert(item);
+			userBoughtItemsMapper.insert(item);
 		}
-		return ins;
+	}
+	
+	@Override
+	public void updateUserBoughtItems(CommonEntity com) {
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		//APP嵌入
+		if(!StringUtils.isEmpty(com.getOpenApp())){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType("");
+			item.setMode("openApp");
+			item.setFeature("function");
+			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
+			userBoughtItemsMapper.insert(item);
+		}
+		//微信嵌入
+		if(!StringUtils.isEmpty(com.getOpenWeChat())){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType("");
+			item.setMode("openWeChat");
+			item.setFeature("function");
+			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
+			userBoughtItemsMapper.insert(item);
+			//微信嵌入服务要发邮件
+			if(!StringUtils.isEmpty(com.getSendMail())){
+				Mail mail=new Mail();
+				mail.setReceiver(com.getWeChatEamil());
+				mail.setName("后台管理");
+				mail.setSubject("已开通微信公众号嵌入服务");
+				String message=Des.enDes(com.getUserId(),com.getPassword());
+				log.info("msesage:"+message);
+				mail.setMessage(message);
+				SendMail2 util=new SendMail2();
+				util.sendEmail(mail);
+			}
+			//微信嵌入服务保存邮件地址
+			WfksUserSetting setting=new WfksUserSetting();
+			setting.setUserType("WeChat");
+			setting.setUserId(com.getUserId());
+			setting.setPropertyName("email");
+			setting.setPropertyValue(com.getWeChatEamil());
+			WfksUserSettingKey key=new WfksUserSettingKey();
+			key.setUserId(setting.getUserId());
+			key.setUserType(setting.getUserType());
+			wfksUserSettingMapper.deleteByUserId(key);
+			wfksUserSettingMapper.insert(setting);
+		}
+		//是否添加试用
+		for(ResourceDetailedDTO dto:rdlist){
+			UserBoughtItems item=new UserBoughtItems();
+			item.setId(GetUuid.getId());
+			item.setUserId(com.getUserId());
+			item.setTransteroutType(dto.getProjectid());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				item.setMode("trical");
+			}else{
+				item.setMode("formal");
+			}
+			item.setFeature("resource");
+			userBoughtItemsMapper.delete(item.getUserId(), item.getTransteroutType(), null);
+			userBoughtItemsMapper.insert(item);
+		}
 	}
 
 	@Override

@@ -50,6 +50,7 @@ import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -1050,7 +1051,7 @@ public class AheadUserController {
 				//统计分线权限
 				aheadUserService.addUserIns(com);
 				// 机构用户购买项目
-				aheadUserService.addUserBoughtItems(com);
+				aheadUserService.updateUserBoughtItems(com);
 				//保存IP
 				if ("2".equals(com.getLoginMode())) {
 					String ip=(String) map.get("ip");
@@ -1408,6 +1409,8 @@ public class AheadUserController {
 		}
 		//数据分析权限
 		getTongInstitution(userId,map);
+		//开通APP嵌入服务、开通微信公众号嵌入服务
+		getOpenApp(userId,map);
 		//个人绑定机构权限
 		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
 		view.addObject("bindInformation",bindInformation);
@@ -1419,6 +1422,20 @@ public class AheadUserController {
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.setViewName("/page/usermanager/ins_numupdate");
 		return view;
+	}
+	
+	//获取机构用户权限表
+	private void getOpenApp(String userId, Map<String, Object> map) {
+		List<UserBoughtItems> items = aheadUserService.getUserBoughtItems(userId);
+		for (UserBoughtItems item : items) {
+			if ("function".equals(item.getFeature())) {
+				map.put(item.getMode(), "0");
+				if ("openWeChat".equals(item.getMode())) {
+					WfksUserSetting[] setting = aheadUserService.getUserSetting2(userId, "WeChat");
+					map.put("weChatEamil", setting.length>0?setting[0].getPropertyValue():"");
+				}
+			}
+		}
 	}
 	
 	//获取机构用户权限表

@@ -56,9 +56,17 @@ public class CommonEntity implements Serializable {
 
     private Integer downloadupperlimit;
     
-    //统计分析
-    private String tongji;
-	
+	// 统计分析
+	private String tongji;
+	// 开通APP嵌入服务
+	private String openApp;
+	// 开通微信公众号嵌入服务
+	private String openWeChat;
+	// 开通微信公众号嵌入服务是否立即发送
+	private String sendMail;
+	// 开通微信公众号嵌入服务的email
+	private String weChatEamil;
+    
     private List<ResourceDetailedDTO> rdlist;
 
 	public List<ResourceDetailedDTO> getRdlist() {
@@ -222,6 +230,38 @@ public class CommonEntity implements Serializable {
 		this.tongji = tongji;
 	}
 
+	public String getOpenApp() {
+		return openApp;
+	}
+
+	public void setOpenApp(String openApp) {
+		this.openApp = openApp;
+	}
+
+	public String getOpenWeChat() {
+		return openWeChat;
+	}
+
+	public void setOpenWeChat(String openWeChat) {
+		this.openWeChat = openWeChat;
+	}
+
+	public String getSendMail() {
+		return sendMail;
+	}
+
+	public void setSendMail(String sendMail) {
+		this.sendMail = sendMail;
+	}
+
+	public String getWeChatEamil() {
+		return weChatEamil;
+	}
+
+	public void setWeChatEamil(String weChatEamil) {
+		this.weChatEamil = weChatEamil;
+	}
+
 	@Override
 	public String toString() {
 		return "CommonEntity [institution=" + institution + ", userId="
@@ -236,6 +276,8 @@ public class CommonEntity implements Serializable {
 				+ ", pConcurrentnumber=" + pConcurrentnumber
 				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks="
 				+ chargebacks + ", downloadupperlimit=" + downloadupperlimit
+				+ ",sendMail="+sendMail+", weChatEamil="+weChatEamil
+				+ ", openApp=" + openApp + ", openWeChat=" + openWeChat
 				+ ", rdlist=" + rdlist + "]";
 	}
 	

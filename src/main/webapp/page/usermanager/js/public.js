@@ -1662,4 +1662,18 @@ function icont(){
 		$(".arrow").css({"background-position-x":"-10px"});
 	}
 }
+//开通微信公众号嵌入服务
+function checkWeChat(obj,type) {
+	$("#weChatEamil").val("");
+	if ($(obj).is(':checked')) {
+		$("#wechatDiv").show();
+		if(type==0){
+			$("#sendMail").prop("checked",true);
+		}else{
+			$("#sendMail").prop("checked",false);
+		}
+	} else {
+		$("#wechatDiv").hide();
+	}
+}
 
