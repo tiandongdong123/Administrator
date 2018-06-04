@@ -2198,12 +2198,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			item.setTransteroutType(dto.getProjectid());
 			if(StringUtils.equals(dto.getMode(), "trical")){
 				item.setMode("trical");
-			}else{
-				item.setMode("formal");
+				item.setFeature("resource");
+				userBoughtItemsMapper.delete(item.getUserId(), item.getTransteroutType(), null);
+				userBoughtItemsMapper.insert(item);
 			}
-			item.setFeature("resource");
-			userBoughtItemsMapper.delete(item.getUserId(), item.getTransteroutType(), null);
-			userBoughtItemsMapper.insert(item);
 		}
 	}
 
