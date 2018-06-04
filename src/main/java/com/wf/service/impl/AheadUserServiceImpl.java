@@ -2187,6 +2187,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			WfksUserSettingKey key=new WfksUserSettingKey();
 			key.setUserId(setting.getUserId());
 			key.setUserType(setting.getUserType());
+			key.setPropertyName(setting.getPropertyName());
 			wfksUserSettingMapper.deleteByUserId(key);
 			wfksUserSettingMapper.insert(setting);
 		}
