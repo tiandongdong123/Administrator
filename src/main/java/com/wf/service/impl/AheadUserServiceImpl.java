@@ -2210,4 +2210,36 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public List<UserBoughtItems> getUserBoughtItems(String userId) {
 		return userBoughtItemsMapper.getUserBoughtItemsList(userId);
 	}
+
+	@Override
+	public void updateSubaccount(CommonEntity com,String adminId) throws Exception{
+		long time=System.currentTimeMillis();
+		String pid = com.getUserId();
+		List<String> ls = personMapper.getSubaccount(pid);
+		if (ls == null || ls.size() == 0) {
+			return;
+		}
+		for(String id:ls){
+			//修改项目
+			com.setUserId(id);
+			List<ResourceDetailedDTO> list=com.getRdlist();
+			for(ResourceDetailedDTO dto : list){
+				if(dto.getProjectid()!=null){
+					if(dto.getProjectType().equals("balance")){
+						dto.setTotalMoney(0.0);
+						this.chargeProjectBalance(com, dto, adminId);
+					}else if(dto.getProjectType().equals("time")){
+						this.addProjectDeadline(com, dto,adminId);
+					}else if(dto.getProjectType().equals("count")){
+						dto.setPurchaseNumber(0);
+						this.chargeCountLimitUser(com, dto, adminId);
+					}
+				}
+			}
+		}
+		com.setUserId(pid);
+		if(log.isInfoEnabled()){
+			log.info("子账号延期处理，耗时："+(System.currentTimeMillis()-time)+"ms");
+		}
+	}
 }

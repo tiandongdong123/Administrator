@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.setting.PayChannelModel;
@@ -254,5 +253,6 @@ public interface AheadUserService {
 	void updateUserBoughtItems(CommonEntity com);
 	/**根据机构用户ID获取购买项目信息*/
 	List<UserBoughtItems> getUserBoughtItems(String userId);
-	
+	/**获取子账号列表*/
+	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
 }

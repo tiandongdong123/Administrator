@@ -494,17 +494,21 @@ public class CardController {
 	 */
 	@RequestMapping("exportCard")
 	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) throws Exception {
-		
+		int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
+		int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
 		ExportExcel exc= new ExportExcel();
 		if(type == 1){//万方卡批次已审核未领取导出
 			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
+			if (list.size() > column * maxSize) {
+				return;
+			}
 			List<String> namelist=new ArrayList<String>();
 			namelist.add("万方卡类型");
 			namelist.add("卡号");
 			namelist.add("密码");
 			namelist.add("面值");
 			namelist.add("有效期");
-			exc.exportExccel1(response,list,namelist);
+			exc.exportExccel1(response,list,namelist,column,maxSize);
 		}else if(type == 2){//万方卡批次已领取导出
 			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
@@ -520,8 +524,6 @@ public class CardController {
 				//卡详情list(所有已审核的card)
 				cardList = cardService.queryAllCard();
 			}
-			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
-			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
 			if (cardList.size() > column * maxSize) {
 				return;
 			}

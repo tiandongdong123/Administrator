@@ -49,8 +49,8 @@ public class ExportExcel {
 		 * @param realspath 真实路径
 		 * @return
 		 */
-	public String exportExccel1(HttpServletResponse response, List<Map<String, Object>> list,
-			List<String> namelist) {
+	public String exportExccel1(HttpServletResponse response, List<Map<String, Object>> cardList,
+			List<String> namelist,int column,int maxSize) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = sdf.format(new Date());
@@ -58,22 +58,28 @@ public class ExportExcel {
 		try {
 			// 工作区
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("审核未领取");
-			XSSFRow row = sheet.createRow(0);
-			for (int i = 0; i < namelist.size(); i++) {
-				row.createCell(i).setCellValue(namelist.get(i));
-			}
-			for (int i = 0; i < list.size(); i++) {
-				Map<String, Object> map=list.get(i);
-				// 创建第一个sheet
-				// 生成第一行
-				row = sheet.createRow(i + 1);
-				// 给这一行的第一列赋值
-				row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
-				row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
-				row.createCell(2).setCellValue(String.valueOf(map.get("password")));
-				row.createCell(3).setCellValue(String.valueOf(map.get("value")));
-				row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+			// 创建第二个sheet
+			List<List<Map<String, Object>>> tempList = this.createList(cardList, column);
+			int index=0;
+			for(List<Map<String, Object>> temp:tempList){
+				index+=1;
+				XSSFSheet sheet = wb.createSheet("审核未领取"+(tempList.size()==1?"":index));
+				XSSFRow row = sheet.createRow(0);
+				for (int i = 0; i < namelist.size(); i++) {
+					row.createCell(i).setCellValue(namelist.get(i));
+				}
+				for (int i = 0; i < temp.size(); i++) {
+					Map<String, Object> map=temp.get(i);
+					// 创建第一个sheet
+					// 生成第一行
+					row = sheet.createRow(i + 1);
+					// 给这一行的第一列赋值
+					row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
+					row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+					row.createCell(2).setCellValue(String.valueOf(map.get("password")));
+					row.createCell(3).setCellValue(String.valueOf(map.get("value")));
+					row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+				}
 			}
 			// 设置Content-Disposition
 			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
@@ -159,7 +165,8 @@ public class ExportExcel {
 			List<List<Map<String, Object>>> tempList = this.createList(cardList, column);
 			int index=0;
 			for(List<Map<String, Object>> temp:tempList){
-				XSSFSheet sheet2 = wb.createSheet("卡详情"+(++index));
+				index+=1;
+				XSSFSheet sheet2 = wb.createSheet("卡详情"+(tempList.size()==1?"":index));
 				XSSFRow row2 = sheet2.createRow(0);
 				for(int i=0;i<cardNamelist.size();i++){
 					row2.createCell(i).setCellValue(cardNamelist.get(i));

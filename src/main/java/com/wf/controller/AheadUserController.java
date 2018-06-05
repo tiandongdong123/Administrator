@@ -1106,6 +1106,8 @@ public class AheadUserController {
 						}
 					}
 				}
+				//子账号延期
+				aheadUserService.updateSubaccount(com,adminId);
 				if(resinfo>0){
 					in+=1;
 					Thread.sleep(1000);
@@ -1622,6 +1624,8 @@ public class AheadUserController {
 					}
 				}
 			}
+			//子账号延期
+			aheadUserService.updateSubaccount(com,adminId);
 			this.addLogs(com,"2",req);
 			String logStr="";
 			if (resinfo > 0) {
