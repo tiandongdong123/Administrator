@@ -92,7 +92,7 @@ public class CardServiceImpl implements CardService{
 		map.put("pageNum", pageStart);
 		map.put("pageSize", pageSize);
 		List<Object> list = cardMapper.queryCardBybatchId(map);
-		int size= cardMapper.querySzieBybatchId(batchId);
+		int size= cardMapper.querySizeBybatchId(batchId);
 		PageList p = new PageList();
 		p.setTotalRow(size);
 		p.setPageNum(pageNum);
@@ -143,6 +143,14 @@ public class CardServiceImpl implements CardService{
 	public List<Map<String, Object>> queryAllCard() {
 		List<Map<String, Object>> list = cardMapper.queryAllCard();
 		return list;
+	}
+	@Override
+	public int querySizeBybatchId(String batchId) {
+		return cardMapper.querySizeBybatchId(batchId);
+	}
+	@Override
+	public int queryAllCardSize() {
+		return cardMapper.queryAllCardSize();
 	}
 	
 }

@@ -46,7 +46,8 @@ public interface CardMapper {
 	 * @param batchId
 	 * @return
 	 */
-	int querySzieBybatchId(String batchId);
+	int querySizeBybatchId(String batchId);
+	
 	
 	/**
 	 * 根据batchId  分页万方卡列表
@@ -66,4 +67,9 @@ public interface CardMapper {
 	 * @return
 	 */
 	Integer queryCardValue(String userId);
+	/**
+	 * 统计万方卡的数量
+	 * @return
+	 */
+	int queryAllCardSize();
 }

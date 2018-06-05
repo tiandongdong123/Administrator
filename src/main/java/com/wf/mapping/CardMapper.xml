@@ -102,6 +102,9 @@
   	where c.batch_id = b.batch_id and b.type=t.card_code and b.check_state=2
   	ORDER BY b.batch_name,c.card_num ASC
   </select>
+  <select id="queryAllCardSize" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	select count(c.card_num) from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b where b.check_state=2
+  </select>
   <!-- 查询万方卡列表 -->
   <select id="queryCard" resultMap="BaseResultMap2" parameterType="java.util.Map">
   	select c.*,b.*,t.* from wfks_accounting.rech_card c,wfks_accounting.rech_card_batch b,wfks_accounting.card_type t
@@ -153,7 +156,7 @@
   	and b.type=t.card_code
   	and c.batch_id = #{batchId}
   </select>
-  <select id="querySzieBybatchId" resultType="java.lang.Integer" parameterType="java.lang.String">
+  <select id="querySizeBybatchId" resultType="java.lang.Integer" parameterType="java.lang.String">
   	select count(1) from wfks_accounting.rech_card c where c.batch_id = #{batchId}
   </select>
   <!-- 根据batchId  分页万方卡列表 -->
