@@ -2226,13 +2226,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectid()!=null){
 					if(dto.getProjectType().equals("balance")){
-						dto.setTotalMoney(0.0);
-						this.chargeProjectBalance(com, dto, adminId);
+						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
+						if(account!=null){
+							dto.setTotalMoney(0.0);
+							this.chargeProjectBalance(com, dto, adminId);
+						}
 					}else if(dto.getProjectType().equals("time")){
-						this.addProjectDeadline(com, dto,adminId);
+						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
+						if(account!=null){
+							this.addProjectDeadline(com, dto,adminId);
+						}
 					}else if(dto.getProjectType().equals("count")){
-						dto.setPurchaseNumber(0);
-						this.chargeCountLimitUser(com, dto, adminId);
+						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
+						if(account!=null){
+							dto.setPurchaseNumber(0);
+							this.chargeCountLimitUser(com, dto, adminId);
+						}
 					}
 				}
 			}
