@@ -469,10 +469,10 @@ public class CardController {
 			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
 			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
 			int size=0;
-			if (StringUtils.isEmpty(batchId)) {
-				size = cardService.queryAllCardSize();
-			} else {
+			if (!StringUtils.isEmpty(batchId)) {
 				size = cardService.querySizeBybatchId(batchId);
+			} else {
+				size = cardService.queryAllCardSize();
 			}
 			if (size > column * maxSize) {
 				return false;
@@ -520,9 +520,10 @@ public class CardController {
 				//卡详情list(所有已审核的card)
 				cardList = cardService.queryAllCard();
 			}
-			int column=NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
-			int maxSize=NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
-			if(cardList.size()>column*maxSize){
+			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
+			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
+			if (cardList.size() > column * maxSize) {
+				return;
 			}
 			//批次详情
 			List<String> batchNamelist=new ArrayList<String>();
@@ -552,7 +553,7 @@ public class CardController {
 			cardNamelist.add("激活日期");
 			cardNamelist.add("激活用户");
 			cardNamelist.add("激活ip");
-			exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist);
+			exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist,column,maxSize);
 		}
 		Log log=new Log("审核万方卡","导出","",request);
 		logService.addLog(log);

@@ -3,6 +3,7 @@ package com.exportExcel;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.wf.bean.Card;
 
 public class ExportExcel {
 		/**
@@ -96,7 +99,7 @@ public class ExportExcel {
 	 */
 	@SuppressWarnings("unchecked")
 	public String exportExcel2(HttpServletResponse response, List<Map<String, Object>> batchList,
-			List<String> batchNamelist, List<Map<String, Object>> cardList,List<String> cardNamelist) {
+			List<String> batchNamelist, List<Map<String, Object>> cardList,List<String> cardNamelist,int column,int maxSize) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = sdf.format(new Date());
@@ -153,33 +156,37 @@ public class ExportExcel {
 				
 			}
 			// 创建第二个sheet
-			XSSFSheet sheet2 = wb.createSheet("卡详情");
-			XSSFRow row2 = sheet2.createRow(0);
-			for(int i=0;i<cardNamelist.size();i++){
-				row2.createCell(i).setCellValue(cardNamelist.get(i));
-			}
-			for (int i =0; i<cardList.size(); i++) {
-				Map<String,Object> map=cardList.get(i);
-				//处理激活状态
-				String invokeState = String.valueOf(map.get("invokeState"));
-				if("1".equals(invokeState)){
-					invokeState = "未激活";
-				}else if("2".equals(invokeState)){
-					invokeState = "已激活";
-				}else if("3".equals(invokeState)){
-					invokeState = "已过期";
+			List<List<Map<String, Object>>> tempList = this.createList(cardList, column);
+			int index=0;
+			for(List<Map<String, Object>> temp:tempList){
+				XSSFSheet sheet2 = wb.createSheet("卡详情"+(++index));
+				XSSFRow row2 = sheet2.createRow(0);
+				for(int i=0;i<cardNamelist.size();i++){
+					row2.createCell(i).setCellValue(cardNamelist.get(i));
 				}
-				// 生成第一行
-				row2 = sheet2.createRow(i+1);
-				// 给这一行的第一列赋值
-				row2.createCell(0).setCellValue(String.valueOf(map.get("batchName")));
-				row2.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
-				row2.createCell(2).setCellValue(String.valueOf(map.get("password")));
-				row2.createCell(3).setCellValue(String.valueOf(map.get("value")));
-				row2.createCell(4).setCellValue(invokeState);
-				row2.createCell(5).setCellValue(String.valueOf(map.get("invokeDate")).equals("null")?"":String.valueOf(map.get("invokeDate")));
-				row2.createCell(6).setCellValue(String.valueOf(map.get("invokeUser")).equals("null")?"":String.valueOf(map.get("invokeUser")));
-				row2.createCell(7).setCellValue(String.valueOf(map.get("invokeIp")).equals("null")?"":String.valueOf(map.get("invokeIp")));
+				for (int i =0; i<temp.size(); i++) {
+					Map<String,Object> map=temp.get(i);
+					//处理激活状态
+					String invokeState = String.valueOf(map.get("invokeState"));
+					if("1".equals(invokeState)){
+						invokeState = "未激活";
+					}else if("2".equals(invokeState)){
+						invokeState = "已激活";
+					}else if("3".equals(invokeState)){
+						invokeState = "已过期";
+					}
+					// 生成第一行
+					row2 = sheet2.createRow(i+1);
+					// 给这一行的第一列赋值
+					row2.createCell(0).setCellValue(String.valueOf(map.get("batchName")));
+					row2.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+					row2.createCell(2).setCellValue(String.valueOf(map.get("password")));
+					row2.createCell(3).setCellValue(String.valueOf(map.get("value")));
+					row2.createCell(4).setCellValue(invokeState);
+					row2.createCell(5).setCellValue(String.valueOf(map.get("invokeDate")).equals("null")?"":String.valueOf(map.get("invokeDate")));
+					row2.createCell(6).setCellValue(String.valueOf(map.get("invokeUser")).equals("null")?"":String.valueOf(map.get("invokeUser")));
+					row2.createCell(7).setCellValue(String.valueOf(map.get("invokeIp")).equals("null")?"":String.valueOf(map.get("invokeIp")));
+				}
 			}
 			// 设置Content-Disposition
 			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
@@ -990,5 +997,19 @@ public class ExportExcel {
 			}	
 		}
 		
+	private <T> List<List<T>> createList(List<T> targe, int size) {
+		List<List<T>> listArr = new ArrayList<List<T>>();
+		int arrSize = targe.size() % size == 0 ? targe.size() / size : targe.size() / size + 1;
+		for (int i = 0; i < arrSize; i++) {
+			List<T> sub = new ArrayList<T>();
+			for (int j = i * size; j <= size * (i + 1) - 1; j++) {
+				if (j <= targe.size() - 1) {
+					sub.add(targe.get(j));
+				}
+			}
+			listArr.add(sub);
+		}
+		return listArr;
+	}
 		
 }
