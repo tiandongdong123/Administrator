@@ -1418,6 +1418,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+			Map<String,String> itemsMap=new HashMap<String,String>();
+			for(UserBoughtItems item:items){
+				if(item.getMode().equals("trical")){
+					itemsMap.put(item.getTransteroutType(), item.getMode());
+				}
+			}
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
@@ -1439,6 +1446,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
+						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
@@ -1452,6 +1460,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("payChannelid", account.getPayChannelId());
+						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
@@ -1467,6 +1476,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
+						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
 						//查询条件
 						libdata.put("userId", account.getUserId());
 						libdata.put("payChannelid", account.getPayChannelId());
