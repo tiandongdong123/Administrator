@@ -2123,9 +2123,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				mail.setReceiver(com.getWeChatEamil());
 				mail.setName("后台管理");
 				mail.setSubject("已开通微信公众号嵌入服务");
-				String message=Des.enDes(com.getUserId(),com.getPassword());
-				log.info("msesage:"+message);
-				mail.setMessage(message);
+				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
 				SendMail2 util=new SendMail2();
 				util.sendEmail(mail);
 			}
@@ -2183,9 +2181,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				mail.setReceiver(com.getWeChatEamil());
 				mail.setName("后台管理");
 				mail.setSubject("已开通微信公众号嵌入服务");
-				String message=Des.enDes(com.getUserId(),com.getPassword());
-				log.info("msesage:"+message);
-				mail.setMessage(message);
+				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
 				SendMail2 util=new SendMail2();
 				util.sendEmail(mail);
 			}

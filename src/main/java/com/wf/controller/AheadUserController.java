@@ -822,7 +822,6 @@ public class AheadUserController {
 				}
 				if (resinfo > 0) {
 					in += 1;
-					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]注册成功");
 				}
 				this.addLogs(com,"1",req);
@@ -1110,7 +1109,6 @@ public class AheadUserController {
 				aheadUserService.updateSubaccount(com,adminId);
 				if(resinfo>0){
 					in+=1;
-					Thread.sleep(1000);
 					log.info("机构用户["+com.getUserId()+"]修改成功");
 				}
 				this.addLogs(com,"2",req);

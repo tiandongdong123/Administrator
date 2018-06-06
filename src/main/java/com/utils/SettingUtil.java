@@ -64,7 +64,7 @@ public class SettingUtil {
 	}
 	
 	/**
-	 * 批量导入，批量注册单次最大条数
+	 * 获取四种资源ID
 	 * @return
 	 */
 	public static Map<String,String> getResouceLimit() {
