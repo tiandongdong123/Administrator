@@ -58,6 +58,7 @@ import com.utils.Getproperties;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.utils.SendMail2;
+import com.utils.SettingUtil;
 import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
@@ -2219,12 +2220,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if (ls == null || ls.size() == 0) {
 			return;
 		}
+		Map<String,String> map=SettingUtil.getResouceLimit();
 		for(String id:ls){
 			//修改项目
 			com.setUserId(id);
 			List<ResourceDetailedDTO> list=com.getRdlist();
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectid()!=null){
+					//只允许四种资源子账号延期
+					if (map.get(dto.getProjectid())==null) {
+						continue;
+					}
 					if(dto.getProjectType().equals("balance")){
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){

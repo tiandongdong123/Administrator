@@ -1,10 +1,15 @@
 package com.utils;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
+
 import com.wanfangdata.setting.UpdateHandler;
 
 /**
@@ -56,5 +61,19 @@ public class SettingUtil {
 			return 0;
 		}
 		return NumberUtils.toInt(maxSize);
+	}
+	
+	/**
+	 * 批量导入，批量注册单次最大条数
+	 * @return
+	 */
+	public static Map<String,String> getResouceLimit() {
+		String resouceLimit = SettingUtil.getSetting("resouceLimit");
+		String[] strs=resouceLimit.split(",");
+		Map<String,String> map=new HashMap<String,String>();
+		for(String str:strs){
+			map.put(str, str);
+		}
+		return map;
 	}
 }
