@@ -135,5 +135,12 @@ public interface PersonMapper {
 	 * @return
 	 */
 	String getPhoneNumberByUserId(@Param("userId") String userId);
+	
+	/**
+	 * 获取子账号列表
+	 * @param pid
+	 * @return
+	 */
+	List<String> getSubaccount(@Param("pid") String pid);
 
 }

@@ -132,12 +132,21 @@
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
 				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
                	</div>
-				  <div class="checkbox input_block block_left">
-					  <label><input type="checkbox" id="user_dinding" name="openState" value="false">开通个人绑定机构</label>
-				  </div>
-				  <?
-				      includeFileTemplate("/page/usermanager/userBinding.html",{}){}
-                ?>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="user_dinding" name="openState" value="false">开通个人绑定机构</label>
+				</div>
+				<?includeFileTemplate("/page/usermanager/userBinding.html",{}){}?>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="openApp" name="openApp" value="0">开通APP嵌入服务</label>
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务</label>
+				</div>
+	            <div class="form-group input_block" style="display: none;" id="wechatDiv">
+                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
+                 <input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil">
+				 <input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
+               	</div>
                   <div class="box-footer block_left">
 	                <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>
 	                <button type="reset" class="btn btn-primary" onclick="location=location;">重置</button>

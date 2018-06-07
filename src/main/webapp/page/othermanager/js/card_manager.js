@@ -196,12 +196,12 @@ function Page(curr){
 						}
 						if(data.pageRow[i].batchState == 2){
 							batchState = "已审核未领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+							html1 = '<a href="javascript:;" style="text-decoration:underline;" onclick="exportCard(\''+data.pageRow[i].batchId+'\',1);">导出</a>&nbsp;&nbsp;&nbsp;'
 								+'<a href="../card/batchDetailsUnGet.do?batchId='+data.pageRow[i].batchId+'&type=1" style="text-decoration:underline;">领取</a>';
 						}
 						if(data.pageRow[i].batchState == 3){
 							batchState = "已领取";
-							html1 = '<a href="../card/exportCard.do?batchId='+data.pageRow[i].batchId+'&type=2" style="text-decoration:underline;">导出</a>&nbsp;&nbsp;&nbsp;'
+							html1 = '<a href="javascript:;" style="text-decoration:underline;" onclick="exportCard(\''+data.pageRow[i].batchId+'\',2);">导出</a>&nbsp;&nbsp;&nbsp;'
 								+'<a href="../card/batchDetailsGet.do?batchId='+data.pageRow[i].batchId+'" style="text-decoration:underline;">详情</a>';
 						}
 						var valueNumber="";
@@ -292,6 +292,24 @@ function remind(batchName,type,applyDepartment,applyPerson,applyDate){
 		}
 		
 	});
+}
+
+function exportCard(batchId,type){
+	$.ajax({
+		type : 'post',
+		url : '../card/exportSize.do',
+		data : {'batchId':batchId},
+		dataType : 'json',
+		success : function(data){
+			if(data){
+				window.location.href='../card/exportCard.do?batchId='+batchId+"&type="+type;
+			}else{
+				layer.alert("导出条数超过允许导出的最大条数");
+			}
+		}
+		
+	});
+	
 }
 
 function exportAll(){	

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.setting.PayChannelModel;
@@ -17,9 +16,9 @@ import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
-import com.wf.bean.Project;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -39,9 +38,6 @@ public interface AheadUserService {
 
 	/** 获取Excel机构用户 */
 	List<Map<String, Object>> getExcelData(MultipartFile file);
-	
-	/** 查询所有项目 */
-	List<Project> findProject();
 	
 	/** 机构账号注册 */
 	int addRegisterInfo(CommonEntity com);
@@ -63,9 +59,6 @@ public interface AheadUserService {
 
 	/**更新用户解冻/冻结状态 */
 	int updateUserFreeze(String str, String redio);
-	
-	/** 查询所有数据库 */
-    //List<Map<String, Object>> selectList();
 
     /** 查询机构账号列表信息 */
 	PageList findListInfo(Map<String, Object> map);
@@ -89,19 +82,19 @@ public interface AheadUserService {
 	int addAccountRestriction(CommonEntity com);
 
 	/** 添加余额信息 */
-	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto,String adminId);
+	int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 添加系统次数信息 */
-	int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto,String adminId);
+	int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 更新系统次数信息 */
-	int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 添加项目资源信息 */
 	void addProjectResources(CommonEntity com, ResourceDetailedDTO dto);
@@ -169,7 +162,7 @@ public interface AheadUserService {
 	int updateUserInfo(CommonEntity com, String adminId);
 
 	/** 删除购买项目（逻辑删除） */
-	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId);
+	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
@@ -181,6 +174,8 @@ public interface AheadUserService {
 	WfksAccountidMapping getAddauthority(String userId, String msg);
 
 	WfksUserSetting getUserSetting(String userId, String msg);
+	
+	WfksUserSetting[] getUserSetting2(String userId,String type);
 
 	WfksAccountidMapping[] getAddauthorityByUserId(String userId);
 
@@ -251,6 +246,13 @@ public interface AheadUserService {
 	 */
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
-	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto);
-	
+	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
+	/**添加机构用户购买项目表*/
+	void addUserBoughtItems(CommonEntity com);
+	/**修改机构用户购买项目表*/
+	void updateUserBoughtItems(CommonEntity com);
+	/**根据机构用户ID获取购买项目信息*/
+	List<UserBoughtItems> getUserBoughtItems(String userId);
+	/**获取子账号列表*/
+	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
 }

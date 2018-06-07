@@ -3,6 +3,7 @@ package com.exportExcel;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.wf.bean.Card;
 
 public class ExportExcel {
 		/**
@@ -46,8 +49,8 @@ public class ExportExcel {
 		 * @param realspath 真实路径
 		 * @return
 		 */
-	public String exportExccel1(HttpServletResponse response, List<Map<String, Object>> list,
-			List<String> namelist) {
+	public String exportExccel1(HttpServletResponse response, List<Map<String, Object>> cardList,
+			List<String> namelist,int column,int maxSize) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = sdf.format(new Date());
@@ -55,22 +58,28 @@ public class ExportExcel {
 		try {
 			// 工作区
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("审核未领取");
-			XSSFRow row = sheet.createRow(0);
-			for (int i = 0; i < namelist.size(); i++) {
-				row.createCell(i).setCellValue(namelist.get(i));
-			}
-			for (int i = 0; i < list.size(); i++) {
-				Map<String, Object> map=list.get(i);
-				// 创建第一个sheet
-				// 生成第一行
-				row = sheet.createRow(i + 1);
-				// 给这一行的第一列赋值
-				row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
-				row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
-				row.createCell(2).setCellValue(String.valueOf(map.get("password")));
-				row.createCell(3).setCellValue(String.valueOf(map.get("value")));
-				row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+			// 创建第二个sheet
+			List<List<Map<String, Object>>> tempList = this.createList(cardList, column);
+			int index=0;
+			for(List<Map<String, Object>> temp:tempList){
+				index+=1;
+				XSSFSheet sheet = wb.createSheet("审核未领取"+(tempList.size()==1?"":index));
+				XSSFRow row = sheet.createRow(0);
+				for (int i = 0; i < namelist.size(); i++) {
+					row.createCell(i).setCellValue(namelist.get(i));
+				}
+				for (int i = 0; i < temp.size(); i++) {
+					Map<String, Object> map=temp.get(i);
+					// 创建第一个sheet
+					// 生成第一行
+					row = sheet.createRow(i + 1);
+					// 给这一行的第一列赋值
+					row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
+					row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+					row.createCell(2).setCellValue(String.valueOf(map.get("password")));
+					row.createCell(3).setCellValue(String.valueOf(map.get("value")));
+					row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+				}
 			}
 			// 设置Content-Disposition
 			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
@@ -96,7 +105,7 @@ public class ExportExcel {
 	 */
 	@SuppressWarnings("unchecked")
 	public String exportExcel2(HttpServletResponse response, List<Map<String, Object>> batchList,
-			List<String> batchNamelist, List<Map<String, Object>> cardList,List<String> cardNamelist) {
+			List<String> batchNamelist, List<Map<String, Object>> cardList,List<String> cardNamelist,int column,int maxSize) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = sdf.format(new Date());
@@ -153,33 +162,38 @@ public class ExportExcel {
 				
 			}
 			// 创建第二个sheet
-			XSSFSheet sheet2 = wb.createSheet("卡详情");
-			XSSFRow row2 = sheet2.createRow(0);
-			for(int i=0;i<cardNamelist.size();i++){
-				row2.createCell(i).setCellValue(cardNamelist.get(i));
-			}
-			for (int i =0; i<cardList.size(); i++) {
-				Map<String,Object> map=cardList.get(i);
-				//处理激活状态
-				String invokeState = String.valueOf(map.get("invokeState"));
-				if("1".equals(invokeState)){
-					invokeState = "未激活";
-				}else if("2".equals(invokeState)){
-					invokeState = "已激活";
-				}else if("3".equals(invokeState)){
-					invokeState = "已过期";
+			List<List<Map<String, Object>>> tempList = this.createList(cardList, column);
+			int index=0;
+			for(List<Map<String, Object>> temp:tempList){
+				index+=1;
+				XSSFSheet sheet2 = wb.createSheet("卡详情"+(tempList.size()==1?"":index));
+				XSSFRow row2 = sheet2.createRow(0);
+				for(int i=0;i<cardNamelist.size();i++){
+					row2.createCell(i).setCellValue(cardNamelist.get(i));
 				}
-				// 生成第一行
-				row2 = sheet2.createRow(i+1);
-				// 给这一行的第一列赋值
-				row2.createCell(0).setCellValue(String.valueOf(map.get("batchName")));
-				row2.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
-				row2.createCell(2).setCellValue(String.valueOf(map.get("password")));
-				row2.createCell(3).setCellValue(String.valueOf(map.get("value")));
-				row2.createCell(4).setCellValue(invokeState);
-				row2.createCell(5).setCellValue(String.valueOf(map.get("invokeDate")).equals("null")?"":String.valueOf(map.get("invokeDate")));
-				row2.createCell(6).setCellValue(String.valueOf(map.get("invokeUser")).equals("null")?"":String.valueOf(map.get("invokeUser")));
-				row2.createCell(7).setCellValue(String.valueOf(map.get("invokeIp")).equals("null")?"":String.valueOf(map.get("invokeIp")));
+				for (int i =0; i<temp.size(); i++) {
+					Map<String,Object> map=temp.get(i);
+					//处理激活状态
+					String invokeState = String.valueOf(map.get("invokeState"));
+					if("1".equals(invokeState)){
+						invokeState = "未激活";
+					}else if("2".equals(invokeState)){
+						invokeState = "已激活";
+					}else if("3".equals(invokeState)){
+						invokeState = "已过期";
+					}
+					// 生成第一行
+					row2 = sheet2.createRow(i+1);
+					// 给这一行的第一列赋值
+					row2.createCell(0).setCellValue(String.valueOf(map.get("batchName")));
+					row2.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+					row2.createCell(2).setCellValue(String.valueOf(map.get("password")));
+					row2.createCell(3).setCellValue(String.valueOf(map.get("value")));
+					row2.createCell(4).setCellValue(invokeState);
+					row2.createCell(5).setCellValue(String.valueOf(map.get("invokeDate")).equals("null")?"":String.valueOf(map.get("invokeDate")));
+					row2.createCell(6).setCellValue(String.valueOf(map.get("invokeUser")).equals("null")?"":String.valueOf(map.get("invokeUser")));
+					row2.createCell(7).setCellValue(String.valueOf(map.get("invokeIp")).equals("null")?"":String.valueOf(map.get("invokeIp")));
+				}
 			}
 			// 设置Content-Disposition
 			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
@@ -194,82 +208,6 @@ public class ExportExcel {
 		}
 		return date;
 	}
-		
-		/**
-		 * 万方卡详情页导出
-		 * @param title  文本名称
-		 * @param type	类型
-		 * @param data	保存数据  list<map>
-		 * @param realspath 真实路径
-		 * @return
-		 */
-			@SuppressWarnings("unchecked")
-			public String exportExccel3(HttpServletResponse response,List<Map<String,Object>> list,List<String> namelist) {
-				
-				SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-				String date=sdf.format(new Date());
-				String newpate = date+".xlsx";
-				try {
-					// 工作区
-					XSSFWorkbook wb = new XSSFWorkbook();
-					// 创建第一个sheet
-					XSSFSheet sheet = wb.createSheet("Sheet1");
-					XSSFRow row = sheet.createRow(0);
-					for(int i=0;i<namelist.size();i++){
-						row.createCell(i).setCellValue(namelist.get(i));
-					}
-					for (int i =0; i<list.size(); i++) {
-						Map<String,Object> mapLs=list.get(i);
-						//处理面值数量
-						String valueAndNumber = "";
-						List<Map<String,Object>> valueNumber = JSONArray.fromObject(mapLs.get("valueNumber"));
-						for(int j = 0;j < valueNumber.size();j++){
-							Map<String,Object> map = valueNumber.get(j);
-							valueAndNumber += map.get("value") + "/" + map.get("number") + ",";
-						}
-						//处理批次状态
-						String batchState = String.valueOf(mapLs.get("batchState"));
-						if("1".equals(batchState)){
-							batchState = "未审核";
-						}else if("2".equals(batchState)){
-							batchState = "已审核未领取";
-						}else if("3".equals(batchState)){
-							batchState = "已领取";
-						}
-						// 生成第一行
-						row = sheet.createRow(i+1);
-						// 给这一行的第一列赋值
-						row.createCell(0).setCellValue(String.valueOf(mapLs.get("batchName")));
-						row.createCell(1).setCellValue(String.valueOf(mapLs.get("cardTypeName")));
-						row.createCell(2).setCellValue(valueAndNumber.substring(0, valueAndNumber.length()-1));
-						row.createCell(3).setCellValue(String.valueOf(mapLs.get("amount")));
-						row.createCell(4).setCellValue(String.valueOf(mapLs.get("validStart")) + "--" + String.valueOf(mapLs.get("validEnd")));
-						row.createCell(5).setCellValue(String.valueOf(mapLs.get("createDate")));
-						row.createCell(6).setCellValue(String.valueOf(mapLs.get("applyDepartment")));
-						row.createCell(7).setCellValue(String.valueOf(mapLs.get("applyPerson")));
-						row.createCell(8).setCellValue(String.valueOf(mapLs.get("applyDate")));
-						row.createCell(9).setCellValue(batchState);
-						row.createCell(10).setCellValue(String.valueOf(mapLs.get("checkDepartment")));
-						row.createCell(11).setCellValue(String.valueOf(mapLs.get("checkPerson")));
-						row.createCell(12).setCellValue(String.valueOf(mapLs.get("checkDate")));
-						row.createCell(13).setCellValue(String.valueOf(mapLs.get("pullDepartment")));
-						row.createCell(14).setCellValue(String.valueOf(mapLs.get("pullPerson")));
-						row.createCell(15).setCellValue(String.valueOf(mapLs.get("pullDate")));
-					}
-					//设置Content-Disposition  
-			        response.setHeader("Content-Disposition", "attachment;filename="+ newpate); 
-			        OutputStream out = response.getOutputStream();
-					// 写文件
-					wb.write(out);  
-					// 关闭输出流
-					out.close();
-				
-					return date;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return date;
-			}
 	
 	/**
 	 * 导出预警信息
@@ -1066,5 +1004,19 @@ public class ExportExcel {
 			}	
 		}
 		
+	private <T> List<List<T>> createList(List<T> targe, int size) {
+		List<List<T>> listArr = new ArrayList<List<T>>();
+		int arrSize = targe.size() % size == 0 ? targe.size() / size : targe.size() / size + 1;
+		for (int i = 0; i < arrSize; i++) {
+			List<T> sub = new ArrayList<T>();
+			for (int j = i * size; j <= size * (i + 1) - 1; j++) {
+				if (j <= targe.size() - 1) {
+					sub.add(targe.get(j));
+				}
+			}
+			listArr.add(sub);
+		}
+		return listArr;
+	}
 		
 }

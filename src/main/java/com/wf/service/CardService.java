@@ -55,4 +55,6 @@ public interface CardService {
 	 * @return
 	 */
 	boolean updateInvokeState(String id,String invokeState);
+	int querySizeBybatchId(String batchId);
+	int queryAllCardSize();
 }
