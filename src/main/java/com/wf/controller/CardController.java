@@ -16,6 +16,7 @@ import net.sf.json.JSONArray;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,8 @@ import com.wf.service.RemindService;
 @Controller
 @RequestMapping("card")
 public class CardController {
+	
+	private static Logger log = Logger.getLogger(CardController.class);
 	@Autowired
 	CardBatchService cardBatchService;
 	
@@ -466,6 +469,7 @@ public class CardController {
 	@ResponseBody
 	public boolean exportSize(String batchId,HttpServletRequest request){
 		try {
+			long time=System.currentTimeMillis();
 			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
 			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
 			int size=0;
@@ -474,11 +478,15 @@ public class CardController {
 			} else {
 				size = cardService.queryAllCardSize();
 			}
+			if(log.isInfoEnabled()){
+				log.info("导出数量查询耗时:"+(System.currentTimeMillis()-time)+"ms");
+			}
 			if (size > column * maxSize) {
 				return false;
 			}
 			return true;
 		} catch (Exception e) {
+			log.error("查询条数异常:", e);
 			return false;
 		}
 	}
@@ -493,71 +501,89 @@ public class CardController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("exportCard")
-	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) throws Exception {
-		int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
-		int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
-		ExportExcel exc= new ExportExcel();
-		if(type == 1){//万方卡批次已审核未领取导出
-			List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
-			if (list.size() > column * maxSize) {
-				return;
+	public void exportCard(HttpServletRequest request,HttpServletResponse response,String batchId,int type) {
+		try{
+			long time=System.currentTimeMillis();
+			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
+			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
+			ExportExcel exc= new ExportExcel();
+			if(type == 1){//万方卡批次已审核未领取导出
+				List<Map<String,Object>> list = cardService.queryAllCardBybatchId(batchId);
+				if(log.isInfoEnabled()){
+					log.info("万方卡批次已审核未领取查询耗时:"+(System.currentTimeMillis()-time)+"ms");
+				}
+				if (list.size() > column * maxSize) {
+					return;
+				}
+				List<String> namelist=new ArrayList<String>();
+				namelist.add("万方卡类型");
+				namelist.add("卡号");
+				namelist.add("密码");
+				namelist.add("面值");
+				namelist.add("有效期");
+				exc.exportExccel1(response,list,namelist,column,maxSize);
+				if(log.isInfoEnabled()){
+					log.info("万方卡批次已审核未领取导出耗时:"+(System.currentTimeMillis()-time)+"ms");
+				}
+			}else if(type == 2){//万方卡批次已领取导出
+				List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
+				List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
+				if(StringUtils.isNotBlank(batchId)){//单个批次导出
+					//批次详情list
+					Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
+					batchList.add(map);
+					//卡详情list
+					cardList = cardService.queryAllCardBybatchId(batchId);
+				}else{//导出全部批次
+					//批次详情list(已审核)
+					batchList = cardBatchService.queryAllBatch();
+					//卡详情list(所有已审核的card)
+					cardList = cardService.queryAllCard();
+				}
+				if(log.isInfoEnabled()){
+					log.info("万方卡批次已领取查询耗时:"+(System.currentTimeMillis()-time)+"ms");
+				}
+				if (cardList.size() > column * maxSize) {
+					return;
+				}
+				//批次详情
+				List<String> batchNamelist=new ArrayList<String>();
+				batchNamelist.add("批次");
+				batchNamelist.add("万方卡类型");
+				batchNamelist.add("面值/数值");
+				batchNamelist.add("总金额");
+				batchNamelist.add("有效期");
+				batchNamelist.add("生成日期");
+				batchNamelist.add("申请部门");
+				batchNamelist.add("申请人");
+				batchNamelist.add("申请日期");
+				batchNamelist.add("批次状态");
+				batchNamelist.add("审核部门");
+				batchNamelist.add("审核人");
+				batchNamelist.add("审核日期");
+				batchNamelist.add("领取部门");
+				batchNamelist.add("领取人");
+				batchNamelist.add("领取日期");
+				//卡详情
+				List<String> cardNamelist = new ArrayList<String>();
+				cardNamelist.add("批次");
+				cardNamelist.add("卡号");
+				cardNamelist.add("密码");
+				cardNamelist.add("面值");		
+				cardNamelist.add("激活状态");		
+				cardNamelist.add("激活日期");
+				cardNamelist.add("激活用户");
+				cardNamelist.add("激活ip");
+				exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist,column,maxSize);
+				if(log.isInfoEnabled()){
+					log.info("万方卡批次已领取导出耗时:"+(System.currentTimeMillis()-time)+"ms");
+				}
 			}
-			List<String> namelist=new ArrayList<String>();
-			namelist.add("万方卡类型");
-			namelist.add("卡号");
-			namelist.add("密码");
-			namelist.add("面值");
-			namelist.add("有效期");
-			exc.exportExccel1(response,list,namelist,column,maxSize);
-		}else if(type == 2){//万方卡批次已领取导出
-			List<Map<String,Object>> batchList = new ArrayList<Map<String,Object>>();
-			List<Map<String,Object>> cardList = new ArrayList<Map<String,Object>>();
-			if(StringUtils.isNotBlank(batchId)){//单个批次导出
-				//批次详情list
-				Map<String,Object> map = cardBatchService.queryOneByBatchId(batchId);
-				batchList.add(map);
-				//卡详情list
-				cardList = cardService.queryAllCardBybatchId(batchId);
-			}else{//导出全部批次
-				//批次详情list(已审核)
-				batchList = cardBatchService.queryAllBatch();
-				//卡详情list(所有已审核的card)
-				cardList = cardService.queryAllCard();
-			}
-			if (cardList.size() > column * maxSize) {
-				return;
-			}
-			//批次详情
-			List<String> batchNamelist=new ArrayList<String>();
-			batchNamelist.add("批次");
-			batchNamelist.add("万方卡类型");
-			batchNamelist.add("面值/数值");
-			batchNamelist.add("总金额");
-			batchNamelist.add("有效期");
-			batchNamelist.add("生成日期");
-			batchNamelist.add("申请部门");
-			batchNamelist.add("申请人");
-			batchNamelist.add("申请日期");
-			batchNamelist.add("批次状态");
-			batchNamelist.add("审核部门");
-			batchNamelist.add("审核人");
-			batchNamelist.add("审核日期");
-			batchNamelist.add("领取部门");
-			batchNamelist.add("领取人");
-			batchNamelist.add("领取日期");
-			//卡详情
-			List<String> cardNamelist = new ArrayList<String>();
-			cardNamelist.add("批次");
-			cardNamelist.add("卡号");
-			cardNamelist.add("密码");
-			cardNamelist.add("面值");		
-			cardNamelist.add("激活状态");		
-			cardNamelist.add("激活日期");
-			cardNamelist.add("激活用户");
-			cardNamelist.add("激活ip");
-			exc.exportExcel2(response,batchList,batchNamelist,cardList,cardNamelist,column,maxSize);
+			Log log=new Log("审核万方卡","导出","",request);
+			logService.addLog(log);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		Log log=new Log("审核万方卡","导出","",request);
-		logService.addLog(log);
+		
 	}
 }
