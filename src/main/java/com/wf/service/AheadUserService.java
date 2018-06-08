@@ -11,7 +11,6 @@ import wfks.accounting.setting.PayChannelModel;
 
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
@@ -183,8 +182,6 @@ public interface AheadUserService {
 	
 	/**根据用户id数组查询用户信息*/
 	List<Person> queryPersonInId(List<String> userIds);
-	/**获取权限列表*/
-	List<AuthoritySetting> getAuthoritySettingList();
 	
 	/**
 	 * 根据条件查询标准机构

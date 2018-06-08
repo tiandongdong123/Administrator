@@ -40,7 +40,6 @@ import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.Log;
@@ -499,8 +498,8 @@ public class AheadUserController {
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
 		ModelAndView view = new ModelAndView();
-		List<PayChannelModel> list = aheadUserService.purchaseProject();
-		view.addObject("project",list);
+		//List<PayChannelModel> list = aheadUserService.purchaseProject();
+		//view.addObject("project",list);
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
 	}
@@ -1377,12 +1376,6 @@ public class AheadUserController {
 			map.put("institution", institution.replace("\\_", "_"));
 		}
 		map.put("pageList", pageList);
-		//获取权限列表
-		if(pageList.getTotalRow()>0){
-			List<AuthoritySetting> settingList=aheadUserService.getAuthoritySettingList();
-			view.addObject("settingList",settingList);
-			msg="2";
-		}
 		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
@@ -2120,6 +2113,26 @@ public class AheadUserController {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 *	机构用户注册跳转
+	 */
+	@RequestMapping("getProject")
+	@ResponseBody
+	public List<PayChannelModel> getProject(HttpServletRequest req, HttpServletResponse res){
+		String val=req.getParameter("val");
+		List<PayChannelModel> list = aheadUserService.purchaseProject();
+		List<PayChannelModel> ls=new ArrayList<PayChannelModel>();
+		for(PayChannelModel pay:list){
+			if (pay.getProductDetail().contains(val)) {
+				ls.add(pay);
+			} else if (pay.getResourceType().equals("resource") && "Limit".equals(val)) {
+				ls.add(pay);
+			}
+		}
+		return ls;
 	}
 	
 }

@@ -80,7 +80,6 @@ import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wanfangdata.setting.BindAuthorityMapping;
 import com.webservice.WebServiceUtils;
 import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
 import com.wf.bean.CommonEntity;
@@ -103,7 +102,6 @@ import com.wf.bean.WfksUserSetting;
 import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
-import com.wf.dao.AuthoritySettingMapper;
 import com.wf.dao.DatamanagerMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ProjectBalanceMapper;
@@ -168,9 +166,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Autowired
 	private WfksUserSettingMapper wfksUserSettingMapper;
-	
-	@Autowired
-	private AuthoritySettingMapper authoritySettingMapper;
 	
 	@Autowired
 	private StandardUnitMapper standardUnitMapper;
@@ -1929,11 +1924,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Person> queryPersonInId(List<String> userIds) {
 		return personMapper.queryPersonInId(userIds);
-	}
-
-	@Override
-	public List<AuthoritySetting> getAuthoritySettingList() {
-		return authoritySettingMapper.getAuthoritySettingList();
 	}
 
 	@Override
