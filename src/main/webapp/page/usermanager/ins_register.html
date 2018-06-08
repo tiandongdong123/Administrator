@@ -30,7 +30,7 @@
                 </div>
                 <div style="display: none;" id="pconcurrent_div">
                     <div class="form-group input_block">
-	                  <label class="input_name">机构账号并发数</label>
+	                  <label class="input_name">机构账号并发数（登录并发）</label>
 	                  <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber">
 	                </div>
                 </div>
@@ -43,23 +43,24 @@
                   </select>
                 </div>
                 <div>
-	                <div class="form-group input_block" id="upass">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>密码</label>
-	                  <input type="text" class="form-control input_width" name="password" id="password" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
-	                </div>
-	                <div class="form-group input_block" id="ipvalue" style="display: none;">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
-	                  <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
-	                </div>
-                </div>
+				<div class="form-group input_block" id="upass">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>密码</label>
+					<input type="text" class="form-control input_width" name="password" id="password" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
+				</div>
+				<div class="form-group input_block" id="ipvalue" style="display: none;">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
+					<textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
+				</div>
+				</div>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
-                  <select class="form-control input_width" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'1','checked');">
-					<option value="">-添加项目-</option>
-					<?for(pro in project){?>					
-					<option proid="${pro.productDetail}" type="${pro.resourceType}" value="${pro.type}" id="${pro.id}">${pro.name}</option>
-					<?}?>
-                  </select>
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
+					<select class="form-control input_time" name="proType" id="proType" onchange="selectType(this);">
+						<option value="">-请选择-</option>
+						<option value="Limit">资源下载</option>
+						<option value="Check">万方检测</option>
+						<option value="WFStats">万方分析</option>
+					</select>
+					<select class="form-control input_time" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'1','checked');"><option value="">-请选择-</option></select>
                 </div>
                 <input type="hidden" id="count" value="-1"/>
                 <div id="multplediv"></div>

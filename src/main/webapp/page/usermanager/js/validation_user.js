@@ -26,7 +26,7 @@ $(function() {/* 文档加载，执行一个函数 */
 						message : '请输入机构ID'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-                        regexp: /^[\u4e00-\u9fa5 A-Za-z0-9-_]*$/,
+                        regexp: /^[A-Za-z0-9-_]*$/,
                         message: '不能包含特殊字符'
                     }/*,
                     stringLength: {长度提示

@@ -72,14 +72,6 @@
 	    <?}else{?>
 	      	<a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}',2);" class="add_admin">添加机构管理员</a>
 	    <?}?>
-        <div class="btn-group">
-			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">服务权限设置<span class="caret"></span></a>
-			<ul class="dropdown-menu" role="menu">
-			<?if(!isEmpty(settingList)){ for(setting in settingList){?>
-			<li><a href="javascript:void(0);" onclick="showAuthority('${setting.authorityCode}','${setting.authorityName}','${list.userId}');">${setting.authorityName}</a></li>
-			<?}}?>
-			</ul>
-		</div>
 		<a href="javascript:void(0);">
         <?if(list.isFreeze==2){?>
           <i onclick="setfreeze(1,this,'${list.userId}');" class="icon_lock icon_open"></i>

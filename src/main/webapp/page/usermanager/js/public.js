@@ -587,13 +587,15 @@ function selectProject(obj,flag,checked){
 								text += '<i onclick="showProduct(this,1)" class="icon_minus"></i>';
 							}
 							text += name;
-							text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
+							if('IsticBalanceLimit'!=projectid){
+								text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
+							}
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
 							for(var n in rp){									
 								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
-							if($(obj).val()=="time"||$(obj).val()=="balance"){
+							if('IsticBalanceLimit'!=projectid&&($(obj).val()=="time"||$(obj).val()=="balance")){
 								createDetail(count,i,code,type);
 							}
 						}else{
@@ -1662,6 +1664,7 @@ function icont(){
 		$(".arrow").css({"background-position-x":"-10px"});
 	}
 }
+
 //开通微信公众号嵌入服务
 function checkWeChat(obj,type) {
 	$("#weChatEamil").val("");
@@ -1675,5 +1678,26 @@ function checkWeChat(obj,type) {
 	} else {
 		$("#wechatDiv").hide();
 	}
+}
+//选择购买项目
+function selectType(obj){
+	var val=$(obj).val();
+	$("#resourcePurchaseType").html('<option value="">-请选择-</option>');
+	if(val==""){
+		return;
+	}
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getProject.do",
+		data:{"val":val},
+		dataType:"json",
+		success:function(data){
+			for(var i in data){
+				var pro=data[i];
+				$("#resourcePurchaseType").append('<option proid="'+pro.productDetail+'" type="'+pro.resourceType+'" value="'+pro.type+'" id="'+pro.id+'">'+pro.name+'</option>');
+			}
+		}
+	});
 }
 
