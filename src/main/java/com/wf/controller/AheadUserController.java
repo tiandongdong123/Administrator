@@ -2121,5 +2121,35 @@ public class AheadUserController {
 			}
 		}
 	}
-	
+
+
+	/**
+	 *	生成充值码
+	 */
+	@RequestMapping("create_chargeCode")
+	public ModelAndView create_ChargeCode(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/create_chargeCode");
+		return view;
+	}
+
+	/**
+	 *	充值码批次查询
+	 */
+	@RequestMapping("search_chargeCode_Batch")
+	public ModelAndView search_ChargeCode_Batch(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_chargeCode_Batch");
+		return view;
+	}
+
+	/**
+	 *	充值码信息查询
+	 */
+	@RequestMapping("search_chargeCode")
+	public ModelAndView search_ChargeCode(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_chargeCode");
+		return view;
+	}
 }
