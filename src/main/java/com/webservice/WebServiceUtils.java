@@ -36,7 +36,7 @@ public class WebServiceUtils {
 		int msg = 0;
 		try{
 			String Username = obj.getString("UserId");
-			String enName = getEnName(Username) + "0830";// 0830是接口固定的
+			String enName = getEnName(Username);
 			DatatypeFactory dtf = DatatypeFactory.newInstance();
 			GregorianCalendar cal = new GregorianCalendar();
 			String startTime=obj.getString("BK_StartTime").replace("T", " ");
@@ -108,7 +108,7 @@ public class WebServiceUtils {
 						sb.append(temp);
 					}
 				}
-				return sb.toString();
+				return sb.toString()+"0830";// 0830是接口固定的
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
