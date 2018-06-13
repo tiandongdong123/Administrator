@@ -83,7 +83,7 @@ public class SignUtil {
 		String base64Sha1Passstr = "";
 		try {
 			MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-			byte[] sha1Passbytes = sha1.digest(encPass.getBytes());
+			byte[] sha1Passbytes = sha1.digest(encPass.getBytes("GBK"));
 			if (sha1Passbytes != null) {
 				base64Sha1Passstr = new String(Base64.encodeBase64(sha1Passbytes));
 			}
