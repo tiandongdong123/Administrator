@@ -56,8 +56,8 @@ public class WebServiceUtils {
 			String token = SignUtil.toSHA1Base64(keyStr);
 			log.info("enName:" + enName + ",BK_StartTime:" + startTime + ",BK_EndTime:" + endTime
 					+ ",Rdptauth:" + Rdptauth + ",Onlines:" + Onlines + ",Copys:" + Copys + ",Prints:"
-					+ Prints + ",Sigprint" + ",ipStr:" + ipStr + ",Username:" + Username + ",UserState:"
-					+ UserState);
+					+ Prints + ",Sigprint:"+Sigprint + ",ipStr:" + ipStr + ",Username:" + Username + ",UserState:"
+					+ UserState+",token:"+token);
 			WFDataCenterInterface service=new WFDataCenterInterface();
 			WFDataCenterInterfaceSoap soap=service.getWFDataCenterInterfaceSoap();
 			boolean flag=soap.isExistedNonAccountingUser(enName);
