@@ -79,7 +79,6 @@ import com.wanfangdata.rpc.bindauthority.SearchBindDetailsResponse;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wanfangdata.setting.BindAuthorityMapping;
 import com.webservice.WebServiceUtils;
-import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
 import com.wf.bean.CommonEntity;
@@ -1856,66 +1855,60 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int setAddauthority(Authority authority,Person person){
-		String type = authority.getRelatedIdAccountType();
-		String userId=authority.getUserId();
-		String partyAdmin=authority.getPartyAdmin();
-		String password = authority.getPassword();
-		String authorityType=authority.getAuthorityType();
+	public int setPartyAdmin(CommonEntity com){
+		String type = "PartyAdminTime";
+		String userId=com.getUserId();
+		String partyAdmin=com.getPartyAdmin();
+		String password = com.getPartyPassword();
+		String partyLimit=com.getPartyLimit();
 		int i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
-		if("is".equals(authorityType) && !type.equals("UserLogReport")){
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Group");
-			am.setIdKey(userId);
-			am.setRelatedidAccounttype(type);
-			am.setRelatedidKey(partyAdmin);
+		WfksUserSetting setting = new WfksUserSetting();
+		setting.setUserId(userId);
+		setting.setUserType("Group");
+		setting.setPropertyName(type);
+		setting.setPropertyValue(partyAdmin);
+		i = wfksUserSettingMapper.deleteByUserId(setting);
+		if(!StringUtils.isEmpty(partyLimit)){
+			WfksAccountidMapping mapping = new WfksAccountidMapping();
+			mapping.setMappingid(GetUuid.getId());
+			mapping.setIdAccounttype("Group");
+			mapping.setIdKey(userId);
+			mapping.setRelatedidAccounttype(type);
+			mapping.setRelatedidKey(partyAdmin);
 			try{
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-				am.setBegintime(sd.parse(authority.getBegintime()));
-				am.setEndtime(sd.parse(authority.getEndtime()));
-				am.setLastUpdatetime(sd.parse(sd.format(new Date())));
+				mapping.setBegintime(sd.parse(com.getPartyBegintime()));
+				mapping.setEndtime(sd.parse(com.getPartyEndtime()));
+				mapping.setLastUpdatetime(sd.parse(sd.format(new Date())));
 			}catch(ParseException e){
 				e.printStackTrace();
 			}
-			i = wfksAccountidMappingMapper.insert(am);
-			if(StringUtils.isNoneBlank(partyAdmin) && StringUtils.isNoneBlank(password)){
-				Person per = new Person();
-				per.setUserId(partyAdmin);
-				try {
-					per.setPassword(PasswordHelper.encryptPassword(password));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				per.setLoginMode(1);	//密码登录
-				per.setUsertype(4);	//服务权限用户
-				per.setIsFreeze(2);	//解冻
-				per.setRegistrationTime(DateUtil.getStringDate());
-				JSONObject json = new JSONObject();
-				json.put("RelatedGroupId", userId);
-				if("isTrial".equals(authority.getTrial())){//是否试用
-					json.put("IsTrialPartyAdminTime", true);
-				}else{
-					json.put("IsTrialPartyAdminTime", false);
-				}
-				per.setExtend(json.toString());
-				if(person!=null){
-					i = personMapper.updateRegisterAdmin(per);
-				}else{
-					i = personMapper.addRegisterAdmin(per);
-				}
-				
+			i = wfksAccountidMappingMapper.insert(mapping);
+			i = wfksUserSettingMapper.insert(setting);
+			Person per = new Person();
+			per.setUserId(partyAdmin);
+			try {
+				per.setPassword(PasswordHelper.encryptPassword(password));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		}
-		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){
-			WfksUserSetting us = new WfksUserSetting();
-			us.setUserId(userId);
-			us.setUserType("Group");
-			us.setPropertyName(type);
-			us.setPropertyValue(type.equals("UserLogReport")?"Authorization":partyAdmin);
-			i = wfksUserSettingMapper.deleteByUserId(us);
-			if("is".equals(authorityType)){
-				i = wfksUserSettingMapper.insert(us);
+			per.setLoginMode(1);	//密码登录
+			per.setUsertype(4);	//服务权限用户
+			per.setIsFreeze(2);	//解冻
+			per.setRegistrationTime(DateUtil.getStringDate());
+			JSONObject json = new JSONObject();
+			json.put("RelatedGroupId", userId);
+			if("isTrial".equals(com.getIsTrial())){//是否试用
+				json.put("IsTrialPartyAdminTime", true);
+			}else{
+				json.put("IsTrialPartyAdminTime", false);
+			}
+			per.setExtend(json.toString());
+			Person person = this.queryPersonInfo(partyAdmin);
+			if (person != null) {
+				i = personMapper.updateRegisterAdmin(per);
+			} else {
+				i = personMapper.addRegisterAdmin(per);
 			}
 		}
 		return i;

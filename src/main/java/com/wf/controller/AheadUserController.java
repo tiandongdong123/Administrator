@@ -39,7 +39,6 @@ import com.utils.IPConvertHelper;
 import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
-import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.Log;
@@ -542,6 +541,9 @@ public class AheadUserController {
 					return hashmap;
 				}
 			}
+			//添加党建管理员
+			aheadUserService.setPartyAdmin(com);
+			//开通机构管理员
 			if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 					hashmap.put("flag", "fail");
@@ -1790,94 +1792,6 @@ public class AheadUserController {
 		view.addObject("project", project);//获取用户购买项目
 		view.setViewName("/page/usermanager/ins_oprationrecord");
 		return view;
-	}
-	
-	
-	/**
-	 *	服务权限设置跳转
-	 */
-	@RequestMapping("showAuthority")
-	public ModelAndView showAuthority(String msg,String userId) throws Exception {
-		ModelAndView view = new ModelAndView();
-		WfksAccountidMapping wfks = aheadUserService.getAddauthority(userId,msg);
-		WfksUserSetting setting =  aheadUserService.getUserSetting(userId, msg);
-		String trial="notTrial";
-		if(setting!=null && msg.equals("PartyAdminTime")){			
-			Person ps = aheadUserService.queryPersonInfo(setting.getPropertyValue());
-			if(ps!=null){				
-				ps.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
-				view.addObject("ps", ps);
-				String jsonStr = ps.getExtend();
-				boolean flag = false;
-				if (!StringUtils.isEmpty(jsonStr)) {
-					JSONObject json = JSONObject.fromObject(jsonStr);
-					flag = (boolean) json.get("IsTrialPartyAdminTime");
-				}
-				if (flag) {
-					trial = "isTrial";
-				}
-			}
-		}
-		view.addObject("trial",trial);
-		view.addObject("setting", setting);
-		view.addObject("wfks", wfks);
-		view.addObject("msg", msg);
-		view.addObject("sdate", DateUtil.getSysDate());
-		view.addObject("edate", DateUtil.beforeOrAfterNDay(3));
-		view.addObject("userId", userId);
-		view.setViewName("/page/usermanager/authority");
-		return view;
-	}
-	
-	/**
-	 *	服务权限设置
-	 */
-	@RequestMapping("addauthority")
-	@ResponseBody
-	public Map<Object,String> addauthority(Authority authority) throws Exception{
-		Map<Object,String> map = new HashMap<Object,String>();
-		String partyId=authority.getPartyAdmin();
-		String oldPartyId=authority.getOldPartyAdmin();
-		String userId=authority.getUserId();
-		Person person=null;
-		if(!StringUtils.isEmpty(partyId)){
-			person=aheadUserService.queryPersonInfo(partyId);
-			if (person != null) {
-				if(4!=person.getUsertype()){
-					map.put("flag", "fail");
-					map.put("msg","该用户ID已被使用");//用户id已存在(非全权限类用户)
-					return map;
-				}
-				String jsonStr = person.getExtend();
-				if (!StringUtils.isEmpty(jsonStr)) {
-					JSONObject json = JSONObject.fromObject(jsonStr);
-					String pid = (String) json.get("RelatedGroupId");
-					if (!StringUtils.equals(userId, pid)) {
-						map.put("flag", "fail");
-						map.put("msg", "该用户ID已被使用");
-						return map;
-					}
-				}
-			}
-			if(StringUtils.isEmpty(oldPartyId)||!StringUtils.equals(partyId,oldPartyId)){
-				String msg = aheadUserService.validateOldUser(partyId);
-				if("false".equals(msg)){
-					map.put("flag", "fail");
-					map.put("msg","旧平台存在该用户ID");
-					return map;
-				}
-			}
-		}
-		int result = aheadUserService.setAddauthority(authority,person);
-		if (result > 0) {
-			map.put("flag", "success");
-		} else {
-			map.put("flag", "fail");
-			if (result == -1) {// 已存在其它类型的用户
-				map.put("msg", "该用户ID已被使用");
-			}
-		}
-		return map;
 	}
 	
 	@RequestMapping("perManagers")

@@ -64,18 +64,13 @@
                 </div>
                 <div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通权限</label>
-					<input type="checkbox" id="party" name="party" value="0" onclick="checkParty(this)">开通党建管理员</span>
+					<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)">开通党建管理员</span>
                 </div>
 				<div id="partyDiv" style="display: none;">
-					<div class="form-group input_block">
-	              		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否有权限</label>
-	              		<input type="radio" name="authorityType" value="is"/>有权限
-	               	 	<input type="radio" name="authorityType" value="not"/>无权限
-					</div>
 			        <div class="form-group input_block">
 		              	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-		              	<input type="radio" name="trial" value="isTrial"/>是
-		                <input type="radio" name="trial" value="notTrial"/>否
+		              	<input type="radio" name="isTrial" value="isTrial"/>是
+		                <input type="radio" name="isTrial" value="notTrial"/>否
 			        </div>
 	                <div class="form-group input_block">
 	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>

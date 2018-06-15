@@ -9,53 +9,32 @@ import java.util.List;
 public class CommonEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	//机构账号
+	// 机构账号
 	private String institution;
-	
 	private String userId;
-	
 	private String loginMode;
-	
 	private String password;
-	
 	private String resetMoney;
-	
 	private String resetCount;
-	
-	//是否开通机构管理员状态
+	private String ipSegment;// 账号IP
+
+	// 是否开通机构管理员状态
 	private String checkuser;
-	
-	//管理员选择状态
-	private String managerType;
-	
-	//Old机构管理员id
-	private String adminOldName;
-	
-	//New机构管理员信息
-	private String adminname;
-	
+	private String managerType;// 管理员选择状态
+	private String adminOldName;// Old机构管理员id
+	private String adminname;// New机构管理员信息
 	private String adminpassword;
-	
 	private String adminIP;
-	
 	private String adminEmail;
-	
-	//账号IP
-	private String ipSegment;
-	
-	//账号限制条件
+
+	// 机构子账号
 	private String checks;
-	
-    private Integer upperlimit;
+	private Integer upperlimit;
+	private Integer pConcurrentnumber;
+	private Integer sConcurrentnumber;
+	private Integer chargebacks;
+	private Integer downloadupperlimit;
 
-    private Integer pConcurrentnumber;
-
-    private Integer sConcurrentnumber;
-
-    private Integer chargebacks;
-
-    private Integer downloadupperlimit;
-    
 	// 统计分析
 	private String tongji;
 	// 开通APP嵌入服务
@@ -66,6 +45,14 @@ public class CommonEntity implements Serializable {
 	private String sendMail;
 	// 开通微信公众号嵌入服务的email
 	private String weChatEamil;
+
+	// 党建管理员
+	private String partyLimit;//是否有权限
+	private String isTrial;//是否使用
+	private String partyAdmin;//党建管理员ID
+	private String partyPassword;//党建管理员密码
+	private String partyBegintime;//有效期-开始
+	private String partyEndtime;//有效期-结束
     
     private List<ResourceDetailedDTO> rdlist;
 
@@ -262,6 +249,54 @@ public class CommonEntity implements Serializable {
 		this.weChatEamil = weChatEamil;
 	}
 
+	public String getPartyLimit() {
+		return partyLimit;
+	}
+
+	public void setPartyLimit(String partyLimit) {
+		this.partyLimit = partyLimit;
+	}
+
+	public String getIsTrial() {
+		return isTrial;
+	}
+
+	public void setIsTrial(String isTrial) {
+		this.isTrial = isTrial;
+	}
+
+	public String getPartyAdmin() {
+		return partyAdmin;
+	}
+
+	public void setPartyAdmin(String partyAdmin) {
+		this.partyAdmin = partyAdmin;
+	}
+
+	public String getPartyPassword() {
+		return partyPassword;
+	}
+
+	public void setPartyPassword(String partyPassword) {
+		this.partyPassword = partyPassword;
+	}
+
+	public String getPartyBegintime() {
+		return partyBegintime;
+	}
+
+	public void setPartyBegintime(String partyBegintime) {
+		this.partyBegintime = partyBegintime;
+	}
+
+	public String getPartyEndtime() {
+		return partyEndtime;
+	}
+
+	public void setPartyEndtime(String partyEndtime) {
+		this.partyEndtime = partyEndtime;
+	}
+
 	@Override
 	public String toString() {
 		return "CommonEntity [institution=" + institution + ", userId="
@@ -276,10 +311,11 @@ public class CommonEntity implements Serializable {
 				+ ", pConcurrentnumber=" + pConcurrentnumber
 				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks="
 				+ chargebacks + ", downloadupperlimit=" + downloadupperlimit
-				+ ",sendMail="+sendMail+", weChatEamil="+weChatEamil
+				+ ", sendMail="+sendMail+", weChatEamil="+weChatEamil
+				+ ", partyLimit="+partyLimit+", isTrial="+isTrial
+				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword
+				+ ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
 				+ ", openApp=" + openApp + ", openWeChat=" + openWeChat
 				+ ", rdlist=" + rdlist + "]";
 	}
-	
-	
 }

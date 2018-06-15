@@ -285,20 +285,6 @@ function btnBlack(obj,e){
 	}
 }
 
-
-//服务权限设置弹窗
-function showAuthority(msg,title,userId,e){
-	preventBubble(e);
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['750px', '520px'],
-	    title: title,
-	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: 'showAuthority.do?msg='+msg+'&userId='+userId
-	}); 
-}
-
-
 //数据提交
 function findList(){
 	var ipSegment = $("#ipSegment").val();

@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import wfks.accounting.setting.PayChannelModel;
 
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
-import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.PageList;
@@ -166,8 +165,8 @@ public interface AheadUserService {
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
 
-	/** 设置服务权限 */
-	int setAddauthority(Authority authority,Person person);
+	/** 创建党建管理员 **/
+	int setPartyAdmin(CommonEntity com);
 
 	/** 查询服务权限信息 */
 	WfksAccountidMapping getAddauthority(String userId, String msg);
