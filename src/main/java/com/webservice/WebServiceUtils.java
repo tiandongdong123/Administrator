@@ -36,7 +36,7 @@ public class WebServiceUtils {
 		int msg = 0;
 		try{
 			String Username = obj.getString("UserId");
-			String enName = getEnName(Username) + "0830";// 0830是接口固定的
+			String enName = getEnName(Username);
 			DatatypeFactory dtf = DatatypeFactory.newInstance();
 			GregorianCalendar cal = new GregorianCalendar();
 			String startTime=obj.getString("BK_StartTime").replace("T", " ");
@@ -56,8 +56,8 @@ public class WebServiceUtils {
 			String token = SignUtil.toSHA1Base64(keyStr);
 			log.info("enName:" + enName + ",BK_StartTime:" + startTime + ",BK_EndTime:" + endTime
 					+ ",Rdptauth:" + Rdptauth + ",Onlines:" + Onlines + ",Copys:" + Copys + ",Prints:"
-					+ Prints + ",Sigprint" + ",ipStr:" + ipStr + ",Username:" + Username + ",UserState:"
-					+ UserState);
+					+ Prints + ",Sigprint:"+Sigprint + ",ipStr:" + ipStr + ",Username:" + Username + ",UserState:"
+					+ UserState+",token:"+token);
 			WFDataCenterInterface service=new WFDataCenterInterface();
 			WFDataCenterInterfaceSoap soap=service.getWFDataCenterInterfaceSoap();
 			boolean flag=soap.isExistedNonAccountingUser(enName);
@@ -108,7 +108,7 @@ public class WebServiceUtils {
 						sb.append(temp);
 					}
 				}
-				return sb.toString();
+				return sb.toString()+"0830";// 0830是接口固定的
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
