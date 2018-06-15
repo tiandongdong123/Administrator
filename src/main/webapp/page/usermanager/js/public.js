@@ -1665,10 +1665,18 @@ function icont(){
 	}
 }
 
+
+/******************/
+
 //开通微信公众号嵌入服务
 function checkWeChat(obj,type) {
 	$("#weChatEamil").val("");
 	if ($(obj).is(':checked')) {
+		if($("#loginMode").val()!=1){
+			$("#openWeChatspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
+			$(obj).prop("checked",false);
+			return;
+		}
 		$("#wechatDiv").show();
 		if(type==0){
 			$("#sendMail").prop("checked",true);
@@ -1678,14 +1686,28 @@ function checkWeChat(obj,type) {
 	} else {
 		$("#wechatDiv").hide();
 	}
+	$("#openWeChatspan").html("");
 }
+
+//开通APP嵌入服务
+function checkApp(obj){
+	if ($(obj).is(':checked')) {
+		if($("#loginMode").val()!=1){
+			$(obj).prop("checked",false);
+			$("#openAppspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
+			return;
+		}
+	}
+	$("#openAppspan").html("");
+}
+
 //选择购买项目
 function selectType(obj){
 	var val=$(obj).val();
-	$("#resourcePurchaseType").html('<option value="">-请选择-</option>');
 	if(val==""){
 		return;
 	}
+	$("#resourcePurchaseType").html('<option value="">-请选择-</option>');
 	$.ajax({
 		type:"post",
 		async: false,
@@ -1699,5 +1721,52 @@ function selectType(obj){
 			}
 		}
 	});
+}
+
+//获取机构管理员信息
+function getAdmin(obj){
+	var userId=$(obj).val();
+	if(userId==""){
+		$("#adminpassword").val("");
+		$("#adminIP").val("");
+		$("#adminEmail").val("");
+		return;
+	}
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getAdmin.do",
+		data:{"userId":userId},
+		dataType:"json",
+		success:function(data){
+			$("#adminpassword").val(data.password);
+			var ip="";
+			if(data.adminIP!=null){
+				for(var i in data.adminIP){
+					if(ip!=""){
+						ip+="\r\n";
+					}
+					ip+=data.adminIP[i].beginIpAddressNumber+"-"+data.adminIP[i].endIpAddressNumber;
+				}
+			}
+			$("#adminIP").val(ip);
+			$("#adminEmail").val(data.adminEmail);
+		
+		}
+	});
+}
+//党建管理员
+function checkParty(obj){
+	$("#partyAdmin").val("");
+	$("#partyPassword").val("");
+	$("#partyBegintime").val("");
+	$("#partyEndtime").val("");
+	$("input[name=trial]").prop("checked",false);
+	$("input[name=authorityType]").prop("checked",false);
+	if($(obj).is(':checked')) {
+		$("#partyDiv").show();
+	}else{
+		$("#partyDiv").hide();
+	}
 }
 
