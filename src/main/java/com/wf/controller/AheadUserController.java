@@ -1282,6 +1282,15 @@ public class AheadUserController {
 	}
 	
 	/**
+	 *获取用户信息
+	 */
+	@RequestMapping("getAdmin")
+	@ResponseBody
+	public Map<String, Object> getAdmin(String userId){
+		return aheadUserService.findInfoByPid(userId);
+	}
+	
+	/**
 	 *	机构用户信息管理查询
 	 */
 	@RequestMapping("toInformation")
@@ -1374,6 +1383,9 @@ public class AheadUserController {
 		}
 		if (!StringUtils.isEmpty(institution)) {
 			map.put("institution", institution.replace("\\_", "_"));
+		}
+		if(pageList.getTotalRow()>0){
+			msg="2";
 		}
 		map.put("pageList", pageList);
 		view.addObject("msg", msg);
@@ -2016,11 +2028,19 @@ public class AheadUserController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("getOldAdminNameByInstitution")
-	public void getOldAdminNameByInstitution(HttpServletResponse response,String institution) throws Exception{
-		List<Map<String, Object>> userids = personservice.getAllInstitutional(institution);
-		JSONArray array = JSONArray.fromObject(userids);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(array.toString());
+	public void getOldAdminNameByInstitution(HttpServletResponse response,String institution){
+		try{
+			String msg="";
+			if(!StringUtils.isEmpty(institution)){
+				List<Map<String, Object>> userids = personservice.getAllInstitutional(institution);
+				JSONArray array = JSONArray.fromObject(userids);
+				msg=array.toString();
+			}
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(msg);
+		}catch(Exception e){
+			log.error("管理员查询异常:", e);
+		}
 	}
 	
 	/**

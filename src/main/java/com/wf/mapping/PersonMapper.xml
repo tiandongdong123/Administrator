@@ -315,10 +315,7 @@
   </select>
     
   <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
-  	select user_id,institution from user where userType=1
-  	<if test="null!=institution and ''!=institution">
-  		and institution = #{institution}
-  	</if>
+  	select user_id,institution from user where institution = #{institution} and userType=1
   </select>
   
   <select id="getUserTypeByUserId"  resultType="java.lang.String">
