@@ -384,6 +384,13 @@ function switchcs(obj){
 		$("#upass").show();
 		$("#ipvalue").show();
 	}
+	if($(obj).val()=="0"){
+		$("#checkIp").show();
+		$("#deleteIp").show();
+	}else{
+		$("#checkIp").hide();
+		$("#deleteIp").hide();
+	}
 }
 
 //全选和取消
@@ -1371,56 +1378,7 @@ function validateUserId(){
 	return msg;
 }
 
-//校验IP是否存在交集
-function validateIp(ip,userId,object){
-	var loginMode = $("#loginMode").val();
-	if(loginMode==0){
-		var bool = false;
-		$.ajax({
-			type : "post",
-			async:false,
-			url : "../auser/validateip.do",
-			data:{ip:ip,userId:userId},
-			dataType : "json",
-			success: function(data){
-				if(data.flag=="true"){
-					bool = true;
-					var msg="";
-					if(data.tableIP!=null){
-						msg="IP冲突提示:</br>"+data.userId+"</br>"+data.errorIP+"</br>"+data.tableIP;
-					}else{
-						msg="IP格式错误:"+data.errorIP;
-					}
-					layer.tips(msg, object, {
-						tips: [2, '#3595CC'],
-						area: ['260px', ''], //宽高
-						time: 0
-					});
-				}else{
-					layer.closeAll();
-					bool = false;
-				}
-			}
-		});
-		return bool;
-	}
-}
 
-//校验多行ip对
-function IpFormat(str){
-	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
-	var ip = str.split("\n");
-	for(i in ip){
-		if(ip[i]!=""){
-			if(ipLimigLineRegex.test(ip[i])){
-				continue;
-			}else{
-				return false;
-			}
-		}
-	}
-	return true;
-}
 
 function validateFrom(){
 	var bool = false;
@@ -1785,5 +1743,101 @@ function selectRegion(obj){
 	}else{
 		$("#PostCode").html('<option value="">无</option>');
 	}
+}
+var tableIP="";
+//校验IP是否存在交集
+function validateIp(ip,userId,object){
+	var loginMode = $("#loginMode").val();
+	tableIP="";
+	if(loginMode==0){
+		var bool = false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/validateip.do",
+			data:{ip:ip,userId:userId},
+			dataType : "json",
+			success: function(data){
+				if(data.flag=="true"){
+					bool = true;
+					var msg="";
+					if(data.tableIP!=null){
+						tableIP=data.tableIP;
+						msg="<font style='color:red'>以下IP段存在冲突</font></br>"+data.errorIP+"<font style='color:red'>相冲突账号</font></br>"+data.tableIP;
+					}else{
+						msg="IP格式错误:"+data.errorIP;
+					}
+					layer.tips(msg, object, {
+						tips: [3, '#3595CC'],
+						area: ['260px', ''], //宽高
+						time: 0
+					});
+				}else{
+					layer.tips("无冲突", object, {
+						tips: [3, '#3595CC'],
+						area: ['260px', ''], //宽高
+						time: 2000
+					});
+					bool = false;
+				}
+			}
+		});
+		return bool;
+	}
+}
+
+//校验多行ip对
+function IpFormat(str){
+	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
+	var ip = str.split("\n");
+	for(i in ip){
+		if(ip[i]!=""){
+			if(ipLimigLineRegex.test(ip[i])){
+				continue;
+			}else{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+//检查IP
+function checkIP(){
+	var ip = $("#ipSegment").val();
+	if(ip==""){
+		layer.msg("请输入IP",{icon: 2});
+		return;
+	}
+	if(!IpFormat(ip)){
+		layer.msg("IP段格式有误",{icon: 2});
+		return;
+	}
+	var userId = $("#userId").val();
+	validateIp(ip,userId,"#checkIp");
+}
+
+//剔除IP
+function deleteIP(){
+	var ipSegment = $("#ipSegment").val();
+	if(ipSegment==""){
+		layer.msg("请输入IP",{icon: 2});
+		return;
+	}
+	var array=tableIP.split('</br>');
+	var ips=ipSegment.split("\n");
+	var ipHtml="";
+	for(var ip in ips){
+		var flag=false
+		for(var ar in array){
+			if(ar==ip){
+				flag=true;
+			}
+		}
+		if(!flag){
+			ipHtml.append();
+		}
+	}
+	layer.closeAll();
 }
 

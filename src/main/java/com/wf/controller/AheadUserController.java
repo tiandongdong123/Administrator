@@ -143,7 +143,7 @@ public class AheadUserController {
 				}
 				if(maps.size()>0){
 					map.put("flag", "true");
-					map.put("userId", "用户ID：" + userId);
+					map.put("userId",userId);
 					for (String key : maps.keySet()) {
 						sbf.append(key);
 					}
