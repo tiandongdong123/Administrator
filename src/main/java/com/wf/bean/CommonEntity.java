@@ -53,6 +53,12 @@ public class CommonEntity implements Serializable {
 	private String partyPassword;//党建管理员密码
 	private String partyBegintime;//有效期-开始
 	private String partyEndtime;//有效期-结束
+	
+	private String CountryRegion;//国家
+	private String PostCode;//区域
+	private String Organization;//机构类型
+	private String OrderType;//工单类型
+	private String OrderContent;//工单内容
     
     private List<ResourceDetailedDTO> rdlist;
 
@@ -297,6 +303,46 @@ public class CommonEntity implements Serializable {
 		this.partyEndtime = partyEndtime;
 	}
 
+	public String getCountryRegion() {
+		return CountryRegion;
+	}
+
+	public void setCountryRegion(String countryRegion) {
+		CountryRegion = countryRegion;
+	}
+
+	public String getPostCode() {
+		return PostCode;
+	}
+
+	public void setPostCode(String postCode) {
+		PostCode = postCode;
+	}
+
+	public String getOrganization() {
+		return Organization;
+	}
+
+	public void setOrganization(String organization) {
+		Organization = organization;
+	}
+
+	public String getOrderType() {
+		return OrderType;
+	}
+
+	public void setOrderType(String orderType) {
+		OrderType = orderType;
+	}
+
+	public String getOrderContent() {
+		return OrderContent;
+	}
+
+	public void setOrderContent(String orderContent) {
+		OrderContent = orderContent;
+	}
+
 	@Override
 	public String toString() {
 		return "CommonEntity [institution=" + institution + ", userId="
@@ -316,6 +362,9 @@ public class CommonEntity implements Serializable {
 				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword
 				+ ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
 				+ ", openApp=" + openApp + ", openWeChat=" + openWeChat
-				+ ", rdlist=" + rdlist + "]";
+				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode
+				+ ", Organization=" + Organization + ", OrderType=" + OrderType
+				+ ", OrderContent=" + OrderContent +", rdlist=" + rdlist + "]";
 	}
+	
 }

@@ -1769,4 +1769,21 @@ function checkParty(obj){
 		$("#partyDiv").hide();
 	}
 }
+//工单类型
+function selectOrder(obj){
+	var type=$("#OrderType").val();
+	if(type=='crm'){
+		$("#orderTypeSpan").html("CRM工单号");
+	}else{
+		$("#orderTypeSpan").html("申请部门");
+	}
+}
+//选择国家
+function selectRegion(obj){
+	if($(obj).val()=='China'){
+		$("#PostCode").html('<option value="China">北京</option>');
+	}else{
+		$("#PostCode").html('<option value="">无</option>');
+	}
+}
 

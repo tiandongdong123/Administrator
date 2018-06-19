@@ -251,4 +251,6 @@ public interface AheadUserService {
 	List<UserBoughtItems> getUserBoughtItems(String userId);
 	/**获取子账号列表*/
 	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
+	/** 保存机构用户权限 **/
+	void addWfksAccountidMapping(CommonEntity com);
 }

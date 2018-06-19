@@ -34,6 +34,9 @@
     delete from wfks_accountid_mapping where id_key = #{idKey,jdbcType=VARCHAR} 
     and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
   </delete>
+  <delete id="deleteByUserIdAndType" parameterType="java.lang.String" >
+    delete from wfks_accountid_mapping where id_accounttype = #{idAccounttype,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
+  </delete>
   
   <insert id="insert" parameterType="com.wf.bean.WfksAccountidMapping" >
     insert into wfks_accountid_mapping (mappingid, id_accounttype, id_key, 

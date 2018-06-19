@@ -27,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import wfks.accounting.setting.PayChannelModel;
-
 import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
@@ -53,7 +51,6 @@ import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.Wfadmin;
-import com.wf.bean.WfksAccountidMapping;
 import com.wf.bean.WfksUserSetting;
 import com.wf.service.AheadUserService;
 import com.wf.service.LogService;
@@ -577,6 +574,8 @@ public class AheadUserController {
 			aheadUserService.addUserIns(com);
 			// 机构用户购买项目
 			aheadUserService.addUserBoughtItems(com);
+			//用户权限
+			aheadUserService.addWfksAccountidMapping(com);
 			//购买详情信息
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectType().equals("balance")){

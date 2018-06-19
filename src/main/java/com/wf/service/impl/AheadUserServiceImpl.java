@@ -2246,4 +2246,46 @@ public class AheadUserServiceImpl implements AheadUserService{
 			log.info("子账号延期处理，耗时："+(System.currentTimeMillis()-time)+"ms");
 		}
 	}
+	
+	@Override
+	public void addWfksAccountidMapping(CommonEntity com) {
+		//先删除再添加
+		wfksAccountidMappingMapper.deleteByUserIdAndType(com.getUserId(),"Limit");
+		if(!StringUtils.isEmpty(com.getCountryRegion())){//国家区域
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			am.setRelatedidAccounttype(com.getCountryRegion());
+			am.setRelatedidKey(com.getPostCode());
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+		if(!StringUtils.isEmpty(com.getOrderType())){//工单类型和工单号|申请部门
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			am.setRelatedidAccounttype(com.getOrderType());
+			am.setRelatedidKey(com.getOrderContent());
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+		if(!StringUtils.isEmpty(com.getOrganization())){//机构类型
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			am.setRelatedidAccounttype("Organization");
+			am.setRelatedidKey(com.getOrganization());
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+	}
 }
