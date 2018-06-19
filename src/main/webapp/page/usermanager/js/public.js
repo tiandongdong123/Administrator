@@ -1403,6 +1403,10 @@ function radioClick(addOrUpdate,isBatch){
 	var $selectedvalue = $("input[name='managerType']:checked").val();
 	if ($selectedvalue =="new") {
 		$("#adminOldName").val("");
+		$("#adminname").val("");
+		$("#adminpassword").val("");
+		$("#adminIP").val("");
+		$("#adminEmail").val("");
 		$("#oldManager").hide();
 		$("#newManager").show();
 	}else {
@@ -1654,7 +1658,11 @@ function checkApp(obj){
 			$(obj).prop("checked",false);
 			$("#openAppspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
 			return;
+		}else{
+			$("#openAppDiv").show();
 		}
+	}else{
+		$("#openAppDiv").hide();
 	}
 	$("#openAppspan").html("");
 }
@@ -1744,11 +1752,11 @@ function selectRegion(obj){
 		$("#PostCode").html('<option value="">无</option>');
 	}
 }
-var tableIP="";
+var errorIP="";
 //校验IP是否存在交集
 function validateIp(ip,userId,object){
 	var loginMode = $("#loginMode").val();
-	tableIP="";
+	errorIP="";
 	if(loginMode==0){
 		var bool = false;
 		$.ajax({
@@ -1762,7 +1770,7 @@ function validateIp(ip,userId,object){
 					bool = true;
 					var msg="";
 					if(data.tableIP!=null){
-						tableIP=data.tableIP;
+						errorIP=data.errorIP;
 						msg="<font style='color:red'>以下IP段存在冲突</font></br>"+data.errorIP+"<font style='color:red'>相冲突账号</font></br>"+data.tableIP;
 					}else{
 						msg="IP格式错误:"+data.errorIP;
@@ -1819,25 +1827,34 @@ function checkIP(){
 
 //剔除IP
 function deleteIP(){
+	layer.closeAll();
 	var ipSegment = $("#ipSegment").val();
-	if(ipSegment==""){
-		layer.msg("请输入IP",{icon: 2});
+	if (ipSegment == "") {
+		layer.msg("请输入IP", {
+			icon : 2
+		});
 		return;
 	}
-	var array=tableIP.split('</br>');
-	var ips=ipSegment.split("\n");
-	var ipHtml="";
-	for(var ip in ips){
-		var flag=false
-		for(var ar in array){
-			if(ar==ip){
-				flag=true;
+	var ips = ipSegment.split("\n");
+	var array = errorIP.split('</br>');
+	var ipHtml = "";
+	for (var ip in ips) {
+		if(ips[ip]==""){
+			continue;
+		}
+		var flag = false;
+		for (var ar in array) {
+			if(array[ar]==""){
+				continue;
+			}
+			if (ips[ip]==array[ar]) {
+				flag = true;
 			}
 		}
-		if(!flag){
-			ipHtml.append();
+		if (!flag) {
+			ipHtml += ips[ip] + "\n";
 		}
 	}
-	layer.closeAll();
+	$("#ipSegment").val(ipHtml);
 }
 

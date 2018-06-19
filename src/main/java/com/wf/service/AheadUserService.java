@@ -243,8 +243,6 @@ public interface AheadUserService {
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
 	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
-	/**添加机构用户购买项目表*/
-	void addUserBoughtItems(CommonEntity com);
 	/**修改机构用户购买项目表*/
 	void updateUserBoughtItems(CommonEntity com);
 	/**根据机构用户ID获取购买项目信息*/

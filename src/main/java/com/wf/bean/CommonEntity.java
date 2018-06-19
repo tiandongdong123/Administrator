@@ -39,8 +39,12 @@ public class CommonEntity implements Serializable {
 	private String tongji;
 	// 开通APP嵌入服务
 	private String openApp;
+	private String appBegintime;
+	private String appEndtime;
 	// 开通微信公众号嵌入服务
 	private String openWeChat;
+	private String weChatBegintime;
+	private String weChatEndtime;
 	// 开通微信公众号嵌入服务是否立即发送
 	private String sendMail;
 	// 开通微信公众号嵌入服务的email
@@ -343,25 +347,50 @@ public class CommonEntity implements Serializable {
 		OrderContent = orderContent;
 	}
 
+	public String getAppBegintime() {
+		return appBegintime;
+	}
+
+	public void setAppBegintime(String appBegintime) {
+		this.appBegintime = appBegintime;
+	}
+
+	public String getAppEndtime() {
+		return appEndtime;
+	}
+
+	public void setAppEndtime(String appEndtime) {
+		this.appEndtime = appEndtime;
+	}
+
+	public String getWeChatBegintime() {
+		return weChatBegintime;
+	}
+
+	public void setWeChatBegintime(String weChatBegintime) {
+		this.weChatBegintime = weChatBegintime;
+	}
+
+	public String getWeChatEndtime() {
+		return weChatEndtime;
+	}
+
+	public void setWeChatEndtime(String weChatEndtime) {
+		this.weChatEndtime = weChatEndtime;
+	}
+
 	@Override
 	public String toString() {
-		return "CommonEntity [institution=" + institution + ", userId="
-				+ userId + ", loginMode=" + loginMode + ", password="
-				+ password + ", resetMoney=" + resetMoney + ", resetCount="
-				+ resetCount + ", checkuser=" + checkuser + ", managerType="
-				+ managerType + ", adminOldName=" + adminOldName
-				+ ", adminname=" + adminname + ", adminpassword="
-				+ adminpassword + ", adminIP=" + adminIP + ", adminEmail="
-				+ adminEmail + ", ipSegment=" + ipSegment + ", checks="
-				+ checks + ", upperlimit=" + upperlimit
-				+ ", pConcurrentnumber=" + pConcurrentnumber
-				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks="
-				+ chargebacks + ", downloadupperlimit=" + downloadupperlimit
-				+ ", sendMail="+sendMail+", weChatEamil="+weChatEamil
-				+ ", partyLimit="+partyLimit+", isTrial="+isTrial
-				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword
-				+ ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
-				+ ", openApp=" + openApp + ", openWeChat=" + openWeChat
+		return "CommonEntity [institution=" + institution + ", userId=" + userId + ", loginMode=" + loginMode + ", password="
+				+ password + ", resetMoney=" + resetMoney + ", resetCount=" + resetCount + ", checkuser=" + checkuser + ", managerType="
+				+ managerType + ", adminOldName=" + adminOldName + ", adminname=" + adminname + ", adminpassword="
+				+ adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail + ", ipSegment=" + ipSegment + ", checks="
+				+ checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
+				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit=" + downloadupperlimit
+				+ ", sendMail="+sendMail+", weChatEamil="+weChatEamil + ", partyLimit="+partyLimit+", isTrial="+isTrial
+				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword + ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
+				+ ", openApp=" + openApp + ", appBegintime=" + appBegintime + ", appEndtime=" + appEndtime
+				+ ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime + ", weChatEndtime=" + weChatEndtime
 				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode
 				+ ", Organization=" + Organization + ", OrderType=" + OrderType
 				+ ", OrderContent=" + OrderContent +", rdlist=" + rdlist + "]";

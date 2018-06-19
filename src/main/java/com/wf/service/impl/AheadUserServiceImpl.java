@@ -2069,70 +2069,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return null;
 	}
-
-	@Override
-	public void addUserBoughtItems(CommonEntity com) {
-		userBoughtItemsMapper.delete(com.getUserId(),null,null);
-		List<ResourceDetailedDTO> rdlist = com.getRdlist();
-		//APP嵌入
-		if(!StringUtils.isEmpty(com.getOpenApp())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openApp");
-			item.setFeature("function");
-			userBoughtItemsMapper.insert(item);
-		}
-		//微信嵌入
-		//1、先删除
-		WfksUserSettingKey key=new WfksUserSettingKey();
-		key.setUserId(com.getUserId());
-		key.setUserType("WeChat");
-		key.setPropertyName("email");
-		wfksUserSettingMapper.deleteByUserId(key);
-		//2、再添加
-		if(!StringUtils.isEmpty(com.getOpenWeChat())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openWeChat");
-			item.setFeature("function");
-			userBoughtItemsMapper.insert(item);
-			//微信嵌入服务要发邮件
-			if(!StringUtils.isEmpty(com.getSendMail())){
-				Mail mail=new Mail();
-				mail.setReceiver(com.getWeChatEamil());
-				mail.setName("后台管理");
-				mail.setSubject("已开通微信公众号嵌入服务");
-				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
-				SendMail2 util=new SendMail2();
-				util.sendEmail(mail);
-			}
-			//微信嵌入服务保存邮件地址
-			WfksUserSetting setting=new WfksUserSetting();
-			setting.setUserType("WeChat");
-			setting.setUserId(com.getUserId());
-			setting.setPropertyName("email");
-			setting.setPropertyValue(com.getWeChatEamil());
-			wfksUserSettingMapper.insert(setting);
-		}
-		//是否添加使用
-		for(ResourceDetailedDTO dto:rdlist){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType(dto.getProjectid());
-			if(StringUtils.equals(dto.getMode(), "trical")){
-				item.setMode("trical");
-			}else{
-				item.setMode("formal");
-			}
-			item.setFeature("resource");
-			userBoughtItemsMapper.insert(item);
-		}
-	}
 	
 	@Override
 	public void updateUserBoughtItems(CommonEntity com) {
@@ -2287,5 +2223,73 @@ public class AheadUserServiceImpl implements AheadUserService{
 			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 			wfksAccountidMappingMapper.insert(am);
 		}
+		if(!StringUtils.isEmpty(com.getOpenApp())){//APP嵌入
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			am.setRelatedidAccounttype("openApp");
+			am.setRelatedidKey("");
+			am.setBegintime(DateUtil.stringToDate(com.getAppBegintime()));
+			am.setEndtime(DateUtil.stringToDate(com.getAppEndtime()));
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+		//微信嵌入
+		//1、先删除
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserId(com.getUserId());
+		key.setUserType("WeChat");
+		key.setPropertyName("email");
+		wfksUserSettingMapper.deleteByUserId(key);
+		//2、再添加
+		if(!StringUtils.isEmpty(com.getOpenWeChat())){
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			am.setRelatedidAccounttype("openWeChat");
+			am.setRelatedidKey("");
+			am.setBegintime(DateUtil.stringToDate(com.getAppBegintime()));
+			am.setEndtime(DateUtil.stringToDate(com.getAppEndtime()));
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+			//微信嵌入服务要发邮件
+			if(!StringUtils.isEmpty(com.getSendMail())){
+				Mail mail=new Mail();
+				mail.setReceiver(com.getWeChatEamil());
+				mail.setName("后台管理");
+				mail.setSubject("已开通微信公众号嵌入服务");
+				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
+				SendMail2 util=new SendMail2();
+				util.sendEmail(mail);
+			}
+			//微信嵌入服务保存邮件地址
+			WfksUserSetting setting=new WfksUserSetting();
+			setting.setUserType("WeChat");
+			setting.setUserId(com.getUserId());
+			setting.setPropertyName("email");
+			setting.setPropertyValue(com.getWeChatEamil());
+			wfksUserSettingMapper.insert(setting);
+		}
+		//是否添加使用
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		for(ResourceDetailedDTO dto:rdlist){
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				am.setRelatedidAccounttype("trical");
+			}else{
+				continue;
+			}
+			am.setRelatedidKey("");
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+	
 	}
 }
