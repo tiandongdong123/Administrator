@@ -2230,8 +2230,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			am.setIdKey(com.getUserId());
 			am.setRelatedidAccounttype("openApp");
 			am.setRelatedidKey("");
-			am.setBegintime(DateUtil.stringToDate(com.getAppBegintime()));
-			am.setEndtime(DateUtil.stringToDate(com.getAppEndtime()));
+			am.setBegintime(DateUtil.stringToDate1(com.getAppBegintime()));
+			am.setEndtime(DateUtil.stringToDate1(com.getAppEndtime()));
 			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 			wfksAccountidMappingMapper.insert(am);
 		}
@@ -2250,8 +2250,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			am.setIdKey(com.getUserId());
 			am.setRelatedidAccounttype("openWeChat");
 			am.setRelatedidKey("");
-			am.setBegintime(DateUtil.stringToDate(com.getAppBegintime()));
-			am.setEndtime(DateUtil.stringToDate(com.getAppEndtime()));
+			am.setBegintime(DateUtil.stringToDate1(com.getWeChatBegintime()));
+			am.setEndtime(DateUtil.stringToDate1(com.getWeChatEndtime()));
 			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 			wfksAccountidMappingMapper.insert(am);
 			//微信嵌入服务要发邮件

@@ -82,7 +82,6 @@ function submitForm(type){
 	    		    	}else{
 	    		    		window.location.href='../auser/information.do?userId='+userId;
 	    		    	}
-	    		    	
 	    		    }
 	    		});
 			}else{
