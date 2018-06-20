@@ -3,12 +3,9 @@ package com.wf.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
-
 import wfks.accounting.setting.PayChannelModel;
-
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
@@ -16,7 +13,6 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
-import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -169,14 +165,10 @@ public interface AheadUserService {
 	int setPartyAdmin(CommonEntity com);
 
 	/** 查询服务权限信息 */
-	WfksAccountidMapping getAddauthority(String userId, String msg);
-
-	WfksUserSetting getUserSetting(String userId, String msg);
-	
-	WfksUserSetting[] getUserSetting2(String userId,String type);
-
+	WfksAccountidMapping[] getAddauthority(String userId, String msg);
 	WfksAccountidMapping[] getAddauthorityByUserId(String userId);
-
+	WfksUserSetting getUserSetting(String userId, String type);
+	WfksUserSetting[] getUserSetting2(String userId,String type);
 	WfksUserSetting[] getUserSettingByUserId(String userId);
 	
 	/**根据用户id数组查询用户信息*/
@@ -234,19 +226,10 @@ public interface AheadUserService {
 	 * @return
 	 */
 	List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit);
-
-	/**
-	 * 获取
-	 * @param userId
-	 * @return
-	 */
+	/** 获取  **/
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
 	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
-	/**修改机构用户购买项目表*/
-	void updateUserBoughtItems(CommonEntity com);
-	/**根据机构用户ID获取购买项目信息*/
-	List<UserBoughtItems> getUserBoughtItems(String userId);
 	/**获取子账号列表*/
 	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
 	/** 保存机构用户权限 **/

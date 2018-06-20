@@ -90,7 +90,6 @@ import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
-import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -108,7 +107,6 @@ import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
 import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
-import com.wf.dao.UserBoughtItemsMapper;
 import com.wf.dao.UserInstitutionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
@@ -170,8 +168,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private StandardUnitMapper standardUnitMapper;
 	@Autowired
 	private UserInstitutionMapper userInstitutionMapper;
-	@Autowired
-	UserBoughtItemsMapper userBoughtItemsMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -1412,12 +1408,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+			WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.selectByUserId(userId, "trical");
 			Map<String,String> itemsMap=new HashMap<String,String>();
-			for(UserBoughtItems item:items){
-				if(item.getMode().equals("trical")){
-					itemsMap.put(item.getTransteroutType(), item.getMode());
-				}
+			for(WfksAccountidMapping wm:tricals){
+				itemsMap.put(wm.getRelatedidKey(), "trical");
 			}
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
@@ -1425,7 +1419,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
-					WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+					WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
 					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
 				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
@@ -1709,12 +1703,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
-		List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+		WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.selectByUserId(userId, "trical");
 		Map<String,String> itemsMap=new HashMap<String,String>();
-		for(UserBoughtItems item:items){
-			if(item.getMode().equals("trical")){
-				itemsMap.put(item.getTransteroutType(), item.getMode());
-			}
+		for(WfksAccountidMapping wm:tricals){
+			itemsMap.put(wm.getRelatedidKey(), "trical");
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		//购买项目列表
@@ -1724,7 +1716,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
 			//已发表论文检测项目特殊处理
 			if(wfks.getPayChannelid().equals("HistoryCheck")){
-				WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+				WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
 				extraData.put("ViewHistoryCheck", mapping==null?"not":"is");
 			}
 			PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
@@ -1820,8 +1812,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public WfksAccountidMapping getAddauthority(String userId,String msg){
-		return wfksAccountidMappingMapper.selectByUserId(userId,msg);
+	public WfksAccountidMapping[] getAddauthority(String userId,String type){
+		return wfksAccountidMappingMapper.selectByUserId(userId,type);
 	}
 
 	@Override
@@ -2069,73 +2061,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return null;
 	}
-	
-	@Override
-	public void updateUserBoughtItems(CommonEntity com) {
-		List<ResourceDetailedDTO> rdlist = com.getRdlist();
-		//APP嵌入
-		if(!StringUtils.isEmpty(com.getOpenApp())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openApp");
-			item.setFeature("function");
-			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
-			userBoughtItemsMapper.insert(item);
-		}
-		//微信嵌入
-		if(!StringUtils.isEmpty(com.getOpenWeChat())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openWeChat");
-			item.setFeature("function");
-			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
-			userBoughtItemsMapper.insert(item);
-			//微信嵌入服务要发邮件
-			if(!StringUtils.isEmpty(com.getSendMail())){
-				Mail mail=new Mail();
-				mail.setReceiver(com.getWeChatEamil());
-				mail.setName("后台管理");
-				mail.setSubject("已开通微信公众号嵌入服务");
-				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
-				SendMail2 util=new SendMail2();
-				util.sendEmail(mail);
-			}
-			//微信嵌入服务保存邮件地址
-			WfksUserSetting setting=new WfksUserSetting();
-			setting.setUserType("WeChat");
-			setting.setUserId(com.getUserId());
-			setting.setPropertyName("email");
-			setting.setPropertyValue(com.getWeChatEamil());
-			WfksUserSettingKey key=new WfksUserSettingKey();
-			key.setUserId(setting.getUserId());
-			key.setUserType(setting.getUserType());
-			key.setPropertyName(setting.getPropertyName());
-			wfksUserSettingMapper.deleteByUserId(key);
-			wfksUserSettingMapper.insert(setting);
-		}
-		//是否添加试用
-		for(ResourceDetailedDTO dto:rdlist){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType(dto.getProjectid());
-			if(StringUtils.equals(dto.getMode(), "trical")){
-				item.setMode("trical");
-				item.setFeature("resource");
-				userBoughtItemsMapper.delete(item.getUserId(), item.getTransteroutType(), null);
-				userBoughtItemsMapper.insert(item);
-			}
-		}
-	}
-
-	@Override
-	public List<UserBoughtItems> getUserBoughtItems(String userId) {
-		return userBoughtItemsMapper.getUserBoughtItemsList(userId);
-	}
 
 	@Override
 	public void updateSubaccount(CommonEntity com,String adminId) throws Exception{
@@ -2187,92 +2112,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public void addWfksAccountidMapping(CommonEntity com) {
 		//先删除再添加
 		wfksAccountidMappingMapper.deleteByUserIdAndType(com.getUserId(),"Limit");
-		if(!StringUtils.isEmpty(com.getCountryRegion())){//国家区域
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Limit");
-			am.setIdKey(com.getUserId());
-			am.setRelatedidAccounttype(com.getCountryRegion());
-			am.setRelatedidKey(com.getPostCode());
-			am.setBegintime(null);
-			am.setEndtime(null);
-			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-			wfksAccountidMappingMapper.insert(am);
-		}
-		if(!StringUtils.isEmpty(com.getOrderType())){//工单类型和工单号|申请部门
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Limit");
-			am.setIdKey(com.getUserId());
-			am.setRelatedidAccounttype(com.getOrderType());
-			am.setRelatedidKey(com.getOrderContent());
-			am.setBegintime(null);
-			am.setEndtime(null);
-			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-			wfksAccountidMappingMapper.insert(am);
-		}
-		if(!StringUtils.isEmpty(com.getOrganization())){//机构类型
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Limit");
-			am.setIdKey(com.getUserId());
-			am.setRelatedidAccounttype("Organization");
-			am.setRelatedidKey(com.getOrganization());
-			am.setBegintime(null);
-			am.setEndtime(null);
-			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-			wfksAccountidMappingMapper.insert(am);
-		}
-		if(!StringUtils.isEmpty(com.getOpenApp())){//APP嵌入
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Limit");
-			am.setIdKey(com.getUserId());
-			am.setRelatedidAccounttype("openApp");
-			am.setRelatedidKey("");
-			am.setBegintime(DateUtil.stringToDate1(com.getAppBegintime()));
-			am.setEndtime(DateUtil.stringToDate1(com.getAppEndtime()));
-			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-			wfksAccountidMappingMapper.insert(am);
-		}
-		//微信嵌入
-		//1、先删除
-		WfksUserSettingKey key=new WfksUserSettingKey();
-		key.setUserId(com.getUserId());
-		key.setUserType("WeChat");
-		key.setPropertyName("email");
-		wfksUserSettingMapper.deleteByUserId(key);
-		//2、再添加
-		if(!StringUtils.isEmpty(com.getOpenWeChat())){
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Limit");
-			am.setIdKey(com.getUserId());
-			am.setRelatedidAccounttype("openWeChat");
-			am.setRelatedidKey("");
-			am.setBegintime(DateUtil.stringToDate1(com.getWeChatBegintime()));
-			am.setEndtime(DateUtil.stringToDate1(com.getWeChatEndtime()));
-			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-			wfksAccountidMappingMapper.insert(am);
-			//微信嵌入服务要发邮件
-			if(!StringUtils.isEmpty(com.getSendMail())){
-				Mail mail=new Mail();
-				mail.setReceiver(com.getWeChatEamil());
-				mail.setName("后台管理");
-				mail.setSubject("已开通微信公众号嵌入服务");
-				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
-				SendMail2 util=new SendMail2();
-				util.sendEmail(mail);
-			}
-			//微信嵌入服务保存邮件地址
-			WfksUserSetting setting=new WfksUserSetting();
-			setting.setUserType("WeChat");
-			setting.setUserId(com.getUserId());
-			setting.setPropertyName("email");
-			setting.setPropertyValue(com.getWeChatEamil());
-			wfksUserSettingMapper.insert(setting);
-		}
-		//是否添加使用
+		// 国家区域
+		setCountryRegion(com);
+		// 工单类型和工单号|申请部门
+		setOrderType(com);
+		// 机构类型
+		setOrganization(com);
+		// APP嵌入
+		setOpenApp(com);
+		// 微信嵌入
+		setWebChat(com);
+		// 是否添加使用
 		List<ResourceDetailedDTO> rdlist = com.getRdlist();
 		for(ResourceDetailedDTO dto:rdlist){
 			WfksAccountidMapping am = new WfksAccountidMapping();
@@ -2281,15 +2131,150 @@ public class AheadUserServiceImpl implements AheadUserService{
 			am.setIdKey(com.getUserId());
 			if(StringUtils.equals(dto.getMode(), "trical")){
 				am.setRelatedidAccounttype("trical");
+				am.setRelatedidKey(dto.getProjectid());;
 			}else{
 				continue;
 			}
-			am.setRelatedidKey("");
 			am.setBegintime(null);
 			am.setEndtime(null);
 			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
 			wfksAccountidMappingMapper.insert(am);
 		}
 	
+	}
+	
+	//国家区域
+	private void setCountryRegion(CommonEntity com){
+		if(StringUtils.isEmpty(com.getCountryRegion())){
+			return;
+		}
+		//国别
+		WfksAccountidMapping wfks = new WfksAccountidMapping();
+		wfks.setMappingid(GetUuid.getId());
+		wfks.setIdAccounttype("Limit");
+		wfks.setIdKey(com.getUserId());
+		wfks.setRelatedidAccounttype("CountryRegion");
+		wfks.setRelatedidKey(com.getCountryRegion());
+		wfks.setBegintime(null);
+		wfks.setEndtime(null);
+		wfks.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(wfks);
+		//外国不用存储地区
+		if("foreign".equals(com.getCountryRegion())){
+			return;
+		}
+		//区域
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("PostCode");
+		am.setRelatedidKey(com.getPostCode());
+		am.setBegintime(null);
+		am.setEndtime(null);
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+	
+	}
+	//工单类型和工单号|申请部门
+	private void setOrderType(CommonEntity com){
+		if(StringUtils.isEmpty(com.getOrderType())){
+			return;
+		}
+		WfksAccountidMapping wfks = new WfksAccountidMapping();
+		wfks.setMappingid(GetUuid.getId());
+		wfks.setIdAccounttype("Limit");
+		wfks.setIdKey(com.getUserId());
+		wfks.setRelatedidAccounttype("OrderType");
+		wfks.setRelatedidKey(com.getOrderType());
+		wfks.setBegintime(null);
+		wfks.setEndtime(null);
+		wfks.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(wfks);
+		//工单号|申请部门
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("OrderContent");
+		am.setRelatedidKey(com.getOrderContent());
+		am.setBegintime(null);
+		am.setEndtime(null);
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+	}
+	//机构类型
+	private void setOrganization(CommonEntity com){
+		if(StringUtils.isEmpty(com.getOrganization())){
+			return;
+		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("Organization");
+		am.setRelatedidKey(com.getOrganization());
+		am.setBegintime(null);
+		am.setEndtime(null);
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+	}
+	
+	//APP嵌入
+	private void setOpenApp(CommonEntity com){
+		if(StringUtils.isEmpty(com.getOpenApp())){
+			return;
+		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("openApp");
+		am.setRelatedidKey("");
+		am.setBegintime(DateUtil.stringToDate1(com.getAppBegintime()));
+		am.setEndtime(DateUtil.stringToDate1(com.getAppEndtime()));
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+	}
+	
+	//微信嵌入
+	private void setWebChat(CommonEntity com){
+		//1、先删除
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserId(com.getUserId());
+		key.setUserType("WeChat");
+		key.setPropertyName("email");
+		wfksUserSettingMapper.deleteByUserId(key);
+		//2、再添加
+		if(StringUtils.isEmpty(com.getOpenWeChat())){
+			return;
+		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("openWeChat");
+		am.setRelatedidKey("");
+		am.setBegintime(DateUtil.stringToDate1(com.getWeChatBegintime()));
+		am.setEndtime(DateUtil.stringToDate1(com.getWeChatEndtime()));
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+		//微信嵌入服务要发邮件
+		if(!StringUtils.isEmpty(com.getSendMail())){
+			Mail mail=new Mail();
+			mail.setReceiver(com.getWeChatEamil());
+			mail.setName("后台管理");
+			mail.setSubject("已开通微信公众号嵌入服务");
+			mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
+			SendMail2 util=new SendMail2();
+			util.sendEmail(mail);
+		}
+		//微信嵌入服务保存邮件地址
+		WfksUserSetting setting=new WfksUserSetting();
+		setting.setUserType("WeChat");
+		setting.setUserId(com.getUserId());
+		setting.setPropertyName("email");
+		setting.setPropertyValue(com.getWeChatEamil());
+		wfksUserSettingMapper.insert(setting);
 	}
 }
