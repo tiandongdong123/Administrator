@@ -9,7 +9,7 @@ $(document).ready(function(){
 });
 
 //提交事件
-function submitForm(){
+function submitForm(type){
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
 	if($("#bindLimit").val()==""){
@@ -77,7 +77,12 @@ function submitForm(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['确定'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/register.do';
+	    		    	if(type==0){
+	    		    		window.location.href='../auser/register.do';
+	    		    	}else{
+	    		    		window.location.href='../auser/information.do?userId='+userId;
+	    		    	}
+	    		    	
 	    		    }
 	    		});
 			}else{
