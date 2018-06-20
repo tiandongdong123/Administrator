@@ -1745,11 +1745,14 @@ function selectOrder(obj){
 	}
 }
 //选择国家
+var arrayArea="";
 function selectRegion(obj){
-	if($(obj).val()=='China'){
-		$("#PostCode").html('<option value="China">北京</option>');
+	var region=$(obj).val();
+	if(region=='foreign'){
+		arrayArea=$("#PostCode").html();
+		$("#PostCode").html('<option value="none">无</option>');
 	}else{
-		$("#PostCode").html('<option value="">无</option>');
+		$("#PostCode").html(arrayArea);
 	}
 }
 var errorIP="";

@@ -494,8 +494,16 @@ public class AheadUserController {
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
 		ModelAndView view = new ModelAndView();
-		//List<PayChannelModel> list = aheadUserService.purchaseProject();
-		//view.addObject("project",list);
+		JSONArray arrayArea = new JSONArray();
+		String reg = redis.get("Region", 13);// 省级区域
+		JSONArray region = JSONArray.fromObject(reg);
+		for (int i = 0; i < region.size(); i++) {
+			JSONObject obj = region.getJSONObject(i);
+			if (obj.get("pid").equals("0")) {
+				arrayArea.add(obj);
+			}
+		}
+		view.addObject("arrayArea", arrayArea);
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
 	}
