@@ -63,15 +63,16 @@
      </div>
      <div class="info_box_right">
       	<a href="../auser/numupdate.do?userId=${list.userId}" class="add_admin">账号修改</a>
-     	<a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a>
-        <a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a>
-        <a href="../auser/groupOrder.do?userId=${list.userId}" class="add_admin">订单记录</a>
-		 <a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a>
-	    <?if(list.pid!=null&&list.pid!=""){?>
-			<a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
-	    <?}else{?>
-	      	<a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}',2);" class="add_admin">添加机构管理员</a>
-	    <?}?>
+        <div class="btn-group">
+			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">服务权限设置<span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+			<li><a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a></li>
+			<li><a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a></li>
+			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a></li>
+			<li><?if(list.pid!=null&&list.pid!=""){?><a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
+				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}',2);" class="add_admin">添加机构管理员</a><?}?></li>
+			</ul>
+		</div>
 		<a href="javascript:void(0);">
         <?if(list.isFreeze==2){?>
           <i onclick="setfreeze(1,this,'${list.userId}');" class="icon_lock icon_open"></i>
