@@ -95,23 +95,3 @@ function submitForm(type){
 	    });
 	}
 }
-
-function validatePasAndIp(){
-	var loginMode = $("#loginMode").val();
-	var value = false;
-	if(loginMode=='1'){
-		if($("#password").val().length > 0){			
-			value = true;
-		}
-	}else if(loginMode=='0'){
-		if($("#ipSegment").val().length > 0){
-			value = true;
-		}
-	}else if(loginMode=='2'){
-		if($("#ipSegment").val().length > 0&&$("#password").val().length > 0){
-			value = true;
-		}
-	}
-	return value;
-}
-

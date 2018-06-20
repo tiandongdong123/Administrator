@@ -121,7 +121,12 @@ public class DateUtil {
             }  
         }  
         return null;  
-    }  
+    }
+    
+    public static String dateToString2(Date date){  
+        SimpleDateFormat format = new SimpleDateFormat(formatPattern_Short);  
+        return format.format(date);  
+    } 
       
     //java中怎样计算两个时间如：“21:57”和“08:20”相差的分钟数、小时数 java计算两个时间差小时 分钟 秒 .  
     public void timeSubtract(){  

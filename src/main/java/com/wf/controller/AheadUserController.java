@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import wfks.accounting.setting.PayChannelModel;
+
 import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
@@ -46,11 +48,11 @@ import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
-import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
 import com.wf.bean.Wfadmin;
+import com.wf.bean.WfksAccountidMapping;
 import com.wf.bean.WfksUserSetting;
 import com.wf.service.AheadUserService;
 import com.wf.service.LogService;
@@ -494,6 +496,12 @@ public class AheadUserController {
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
 		ModelAndView view = new ModelAndView();
+		view.addObject("arrayArea", this.getArea());
+		view.setViewName("/page/usermanager/ins_register");
+		return view;
+	}
+	//获取一个省份直辖市自治区
+	private JSONArray getArea(){
 		JSONArray arrayArea = new JSONArray();
 		String reg = redis.get("Region", 13);// 省级区域
 		JSONArray region = JSONArray.fromObject(reg);
@@ -503,9 +511,7 @@ public class AheadUserController {
 				arrayArea.add(obj);
 			}
 		}
-		view.addObject("arrayArea", arrayArea);
-		view.setViewName("/page/usermanager/ins_register");
-		return view;
+		return arrayArea;
 	}
 	
 	/**
@@ -1056,7 +1062,7 @@ public class AheadUserController {
 				//统计分线权限
 				aheadUserService.addUserIns(com);
 				// 机构用户购买项目
-				aheadUserService.updateUserBoughtItems(com);
+				//aheadUserService.add(com);
 				//保存IP
 				if ("2".equals(com.getLoginMode())) {
 					String ip=(String) map.get("ip");
@@ -1418,47 +1424,59 @@ public class AheadUserController {
 			map.put("adminpassword", m.get("password"));
 			map.put("adminIP", m.get("adminIP"));
 			map.put("adminEmail", m.get("adminEmail"));
+			List<Map<String, Object>> admin=personservice.getAllInstitutional(String.valueOf(map.get("institution")));
+			view.addObject("admin", admin);
 		}
 		//数据分析权限
-		getTongInstitution(userId,map);
-		//开通APP嵌入服务、开通微信公众号嵌入服务
-		getOpenApp(userId,map);
-		//个人绑定机构权限
-		BindAuthorityModel bindInformation = aheadUserService.getBindAuthority(userId);
-		view.addObject("bindInformation",bindInformation);
-		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
-		map.put("proList", proList);
+		getTongInstitution(userId,view);
+		//用户权限
+		getWfksAccountidLimit(userId,view);
 		view.addObject("map",map);
-		List<PayChannelModel> list = aheadUserService.purchaseProject();
-		view.addObject("project",list);
+		//个人绑定机构权限
+		view.addObject("bindInformation",aheadUserService.getBindAuthority(userId));
+		map.put("proList", aheadUserService.getProjectInfo(userId));
 		view.addObject("timelimit",DateUtil.getTimeLimit());
+		view.addObject("arrayArea", this.getArea());
 		view.setViewName("/page/usermanager/ins_numupdate");
 		return view;
 	}
-	
-	//获取机构用户权限表
-	private void getOpenApp(String userId, Map<String, Object> map) {
-		List<UserBoughtItems> items = aheadUserService.getUserBoughtItems(userId);
-		for (UserBoughtItems item : items) {
-			if ("function".equals(item.getFeature())) {
-				map.put(item.getMode(), "0");
-				if ("openWeChat".equals(item.getMode())) {
-					WfksUserSetting[] setting = aheadUserService.getUserSetting2(userId, "WeChat");
-					map.put("weChatEamil", setting.length>0?setting[0].getPropertyValue():"");
+	//获取机构用户权限表1
+	private void getWfksAccountidLimit(String userId,ModelAndView view){
+		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountidLimit(userId, "Limit");
+		Map<String, WfksAccountidMapping> map = new HashMap<String, WfksAccountidMapping>();
+		for (WfksAccountidMapping wfks : mapping) {
+			if (!"Limit".equals(wfks.getIdAccounttype())) {
+				continue;
+			}
+			if ("trical".equals(wfks.getRelatedidAccounttype())) {
+				continue;
+			}
+			if (wfks.getBegintime() != null) {
+				wfks.setBegin(DateUtil.dateToString2(wfks.getBegintime()));
+			}
+			if (wfks.getEndtime() != null) {
+				wfks.setEnd(DateUtil.dateToString2(wfks.getEndtime()));
+			}
+			if ("openWeChat".equals(wfks.getRelatedidAccounttype())) {
+				WfksUserSetting[] setting = aheadUserService.getUserSetting(userId, "WeChat");
+				for (WfksUserSetting wf : setting) {
+					view.addObject(wf.getPropertyName(), wf.getPropertyValue());
+					break;
 				}
 			}
+			map.put(wfks.getRelatedidAccounttype(), wfks);
 		}
+		view.addObject("limit", map);
 	}
 	
-	//获取机构用户权限表
-	private void getTongInstitution(String userId,Map<String, Object> map){
-		UserInstitution ins=aheadUserService.getUserInstitution(userId);
-		if(ins==null){
-			map.put("tongji", "");//权限的就设置为空
-		}else{
-			String analysis = ins.getStatisticalAnalysis();
-			map.put("tongji", analysis);
+	//获取机构用户权限表2
+	private void getTongInstitution(String userId, ModelAndView view) {
+		UserInstitution ins = aheadUserService.getUserInstitution(userId);
+		String tongji = "";
+		if (ins != null) {
+			tongji = ins.getStatisticalAnalysis();
 		}
+		view.addObject("tongji", tongji);
 	}
 	
 	/**
@@ -1593,10 +1611,10 @@ public class AheadUserController {
 			}
 			int resinfo = aheadUserService.updateUserInfo(com, adminId);
 			aheadUserService.updateAccountRestriction(com);
-			//统计分线权限
+			// 统计分析权限
 			aheadUserService.addUserIns(com);
-			// 机构用户购买项目
-			//aheadUserService.addUserBoughtItems(com);
+			// 用户权限
+			aheadUserService.addWfksAccountidMapping(com);
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);

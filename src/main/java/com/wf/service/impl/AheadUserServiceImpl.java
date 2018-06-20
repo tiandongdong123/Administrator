@@ -1408,7 +1408,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.selectByUserId(userId, "trical");
+			WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.getWfksAccountid(userId, "trical");
 			Map<String,String> itemsMap=new HashMap<String,String>();
 			for(WfksAccountidMapping wm:tricals){
 				itemsMap.put(wm.getRelatedidKey(), "trical");
@@ -1419,7 +1419,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
-					WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+					WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountid(userId,"ViewHistoryCheck");
 					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
 				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
@@ -1703,7 +1703,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
-		WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.selectByUserId(userId, "trical");
+		WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.getWfksAccountid(userId, "trical");
 		Map<String,String> itemsMap=new HashMap<String,String>();
 		for(WfksAccountidMapping wm:tricals){
 			itemsMap.put(wm.getRelatedidKey(), "trical");
@@ -1716,7 +1716,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
 			//已发表论文检测项目特殊处理
 			if(wfks.getPayChannelid().equals("HistoryCheck")){
-				WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+				WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountid(userId,"ViewHistoryCheck");
 				extraData.put("ViewHistoryCheck", mapping==null?"not":"is");
 			}
 			PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
@@ -1812,34 +1812,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public WfksAccountidMapping[] getAddauthority(String userId,String type){
-		return wfksAccountidMappingMapper.selectByUserId(userId,type);
-	}
-
-	@Override
-	public WfksAccountidMapping[] getAddauthorityByUserId(String userId) {
-		return wfksAccountidMappingMapper.selectAllByUserId(userId);
+	public WfksAccountidMapping[] getWfksAccountidLimit(String userId,String type){
+		return wfksAccountidMappingMapper.getWfksAccountidLimit(userId,type);
 	}
 	
 	@Override
-	public WfksUserSetting getUserSetting(String userId,String msg){
-		WfksUserSettingKey key = new WfksUserSettingKey();
-		key.setUserType("Group");
-		key.setUserId(userId);
-		key.setPropertyName(msg);
-		return wfksUserSettingMapper.selectByPrimaryKey(key);
-	}
-
-	@Override
-	public WfksUserSetting[] getUserSettingByUserId(String userId) {
-		WfksUserSettingKey key = new WfksUserSettingKey();
-		key.setUserType("Group");
-		key.setUserId(userId);
-		return wfksUserSettingMapper.selectByUserId(key);
-	}
-	
-	@Override
-	public WfksUserSetting[] getUserSetting2(String userId,String type) {
+	public WfksUserSetting[] getUserSetting(String userId,String type) {
 		WfksUserSettingKey key = new WfksUserSettingKey();
 		key.setUserType(type);
 		key.setUserId(userId);

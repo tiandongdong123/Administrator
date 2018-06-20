@@ -163,14 +163,8 @@ public interface AheadUserService {
 
 	/** 创建党建管理员 **/
 	int setPartyAdmin(CommonEntity com);
-
 	/** 查询服务权限信息 */
-	WfksAccountidMapping[] getAddauthority(String userId, String msg);
-	WfksAccountidMapping[] getAddauthorityByUserId(String userId);
-	WfksUserSetting getUserSetting(String userId, String type);
-	WfksUserSetting[] getUserSetting2(String userId,String type);
-	WfksUserSetting[] getUserSettingByUserId(String userId);
-	
+	WfksUserSetting[] getUserSetting(String userId,String type);
 	/**根据用户id数组查询用户信息*/
 	List<Person> queryPersonInId(List<String> userIds);
 	
@@ -234,4 +228,6 @@ public interface AheadUserService {
 	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
 	/** 保存机构用户权限 **/
 	void addWfksAccountidMapping(CommonEntity com);
+	/** 获取机构用户权限 **/
+	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
 }
