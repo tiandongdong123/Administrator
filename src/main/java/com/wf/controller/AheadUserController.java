@@ -87,6 +87,7 @@ public class AheadUserController {
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
 	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
+	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
 	
 	/**
 	 *	判断ip段是否重复
@@ -1437,7 +1438,10 @@ public class AheadUserController {
 		view.addObject("map",map);
 		//个人绑定机构权限
 		view.addObject("bindInformation",aheadUserService.getBindAuthority(userId));
-		map.put("proList", aheadUserService.getProjectInfo(userId));
+		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
+		//余额转限时，限时转余额
+		limitChange(proList,view);
+		map.put("proList", proList);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.addObject("arrayArea", this.getArea());
 		view.setViewName("/page/usermanager/ins_numupdate");
@@ -1505,6 +1509,22 @@ public class AheadUserController {
 			}
 			view.addObject("party",author);
 		}
+	}
+	
+	//余额转限时，限时转余额
+	private void limitChange(List<Map<String, Object>> proList,ModelAndView view){
+		Map<String,String> changeMap=new HashMap<String,String>();
+		changeMap.put(channelid[0], channelid[0]);
+		changeMap.put(channelid[1], channelid[1]);
+		for(Map<String, Object> map:proList){
+			String payChannelid=String.valueOf(map.get("payChannelid"));
+			for(String str:channelid){
+				if(str.equals(payChannelid)){
+					changeMap.remove(payChannelid);
+				}
+			}
+		}
+		view.addObject("changeMap",changeMap);
 	}
 	
 	/**

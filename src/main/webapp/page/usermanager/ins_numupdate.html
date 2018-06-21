@@ -271,12 +271,16 @@
           	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
           	<div class="balance_block" name="full_div">
            	<div class="resources_title">
-           		<span name="proname">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
+           		<span name="proname" id="proname${i}">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
            		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
-           		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
+           		<input type="hidden" name="rdlist[${i}].projectname" id="projectname_${pro.payChannelid}" value="${pro.name}">
+           		<input type="hidden" name="rdlist[${i}].ischange" id="ischange_${pro.payChannelid}" value="0">
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
-           		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
-           		<button type="button" class="btn btn-primary" style="margin-left:1000px;"
+           		<input type="hidden" name="rdlist[${i}].projectType" id="projectType_${pro.payChannelid}" value="${pro.type}"><?var marginleft=1000;?>
+				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=50;?>
+				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit('${pro.payChannelid}','${i}');"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></button>
+				<?}?>
+           		<button type="button" class="btn btn-primary btn-sm" style="margin-left:${marginleft}px;"
            		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
            	</div>
            	<div class="time_block">
@@ -288,16 +292,14 @@
             	</div>
             	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
             	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
+            	<div class="time_input time_money" id="time_money_${i}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
-            		<div class="time_input time_money">
-            			<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
-            		</div>
+					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
             	<?}?>
             	<?if(pro.type!='time'&&pro.type!='balance'){?>
-            		<div class="time_input time_money">
-            			<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
-            		</div>
+					<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
             	<?}?>
+				</div>
             	<?if(pro.payChannelid=='HistoryCheck'){?>
             		<p><div class="time_input time_money"><span><b>*</b>查看交易信息</span>
             			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='is'){?>checked="checked"<?}?> type="radio" value="ViewHistoryCheck"/>可以

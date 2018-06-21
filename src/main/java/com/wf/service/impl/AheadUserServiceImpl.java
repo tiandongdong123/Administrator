@@ -476,7 +476,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			throws Exception {
 		
 		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
+				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
+				&& !StringUtils.equals("1", dto.getIschange())) {
 			return 1;
 		}
 		// 创建一个限时账户
@@ -497,6 +498,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 			flag = 1;
 		} else {
 			flag = 0;
+		}
+		if(flag==1&&StringUtils.equals(dto.getIschange(),"1")){//限时转化为余额
+			UserAccount acc = new UserAccount();
+			acc.setUserId(com.getUserId());
+			acc.setPayChannelId("GBalanceLimit");
+			acc.setOrganName(com.getInstitution());
+			acc.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			acc.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			boolean succ=groupAccountUtil.deleteAccount(acc, httpRequest.getRemoteAddr(), adminId);
+			if(!succ){
+				flag=1;
+			}
 		}
 		return flag;
 	}
@@ -623,8 +636,20 @@ public class AheadUserServiceImpl implements AheadUserService{
             }
 			resetMoney = true;
 		}
-        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
 		int flag = 0;
+        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
+		if(StringUtils.equals(dto.getIschange(),"1")){//限时转化为余额
+			UserAccount acc = new UserAccount();
+			acc.setUserId(com.getUserId());
+			acc.setPayChannelId("GTimeLimit");
+			acc.setOrganName(com.getInstitution());
+			acc.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			acc.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			boolean succ=groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(), adminId);
+			if(!succ){
+				flag=1;
+			}
+		}
 		if (isSuccess) {
 			flag = 1;
 		} else {

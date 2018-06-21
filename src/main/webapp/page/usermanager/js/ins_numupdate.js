@@ -477,3 +477,35 @@ function findPatentEcho(num){
 		}
 	});
 }
+
+//余额转化为限时，限时转化为余额
+function changeLimit(channelid,i){
+	var msg="";
+	if(channelid=='GBalanceLimit'){
+		msg="确定要将余额账号转换为限时账号吗？";
+	}else if(channelid=='GTimeLimit'){
+		msg="确定要将限时账号转换为余额账号吗？";
+	}
+	layer.alert(msg,{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	if(channelid=='GBalanceLimit'){
+	    		$("#proname"+i).html('资源限时');
+	    		$("#projectname_"+channelid).val('资源限时');
+	    		$("#pro_"+channelid).val('GTimeLimit');
+	    		$("#projectType_"+channelid).val('time');
+	    		$("#time_money_"+i).html('');
+	    	}else if(channelid=='GTimeLimit'){
+	    		$("#proname"+i).html('资源余额');
+	    		$("#projectname_"+channelid).val('资源余额');
+	    		$("#pro_"+channelid).val('GBalanceLimit');
+	    		$("#projectType_"+channelid).val('balance');
+	    		$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
+	    	}
+	    	$("#ischange_"+channelid).val('1');
+	    	layer.closeAll();
+	    }
+	});
+}
