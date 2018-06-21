@@ -235,4 +235,8 @@ public interface AheadUserService {
 	/** 获取机构用户权限 **/
 	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
 	WfksAccountidMapping[] getWfksAccountid(String userId,String type);
+	/**
+	 * 查询该机构名下的所有机构管理员
+	 */
+	List<Person> findInstitutionAllUser(String institution);
 }

@@ -1248,9 +1248,29 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
+	/**
+	 *	机构信息列表（查询机构下管理员）此方法已经废弃
+	 */
+	@RequestMapping("findInstitutionAllUser")
+	@ResponseBody
+	public Map<String,String> findInstitutionAllUser(String institution){
+		//查询机构下机构管理员列表
+		List<Person> list=aheadUserService.findInstitutionAllUser(institution);
+		Map<String,String> idMap=new HashMap<String,String>();
+		for(Person per:list){
+			String userId=per.getUserId();
+			if(per.getUsertype()==1){
+				idMap.put("admin", idMap.get("admin")==null?userId:(idMap.get("admin")+","+userId));
+			}else if(per.getUsertype()==2){
+				idMap.put("user", idMap.get("user")==null?userId:(idMap.get("user")+","+userId));
+			}
+		}
+		return idMap;
+	}
+	
 	
 	/**
-	 *	机构信息列表（查询机构下管理员）
+	 *	机构信息列表（查询机构下管理员）此方法已经废弃
 	 */
 	@RequestMapping("findins")
 	@ResponseBody
@@ -1260,35 +1280,19 @@ public class AheadUserController {
 	}
 	
 	/**
-	 * 更新机构管理员
+	 * 更新机构名称
 	 */
 	@RequestMapping("updateins")
 	@ResponseBody
-	public Map<String, Object> updateInstitutionAdmin(String institution,String oldins,String adminList){
+	public Map<String, Object> updateins(String institution,String oldins){
 		Map<String, Object> map = new HashMap<String, Object>();
-		JSONArray array = JSONArray.fromObject(adminList);
-		int i = 0;
-		for(Object object : array){
-			JSONObject json = JSONObject.fromObject(object);
-			CommonEntity com = new CommonEntity();
-			com.setAdminname(json.getString("adminId"));
-			com.setAdminpassword(json.getString("adminpassword"));
-			com.setAdminEmail(json.getString("adminEmail"));
-			com.setAdminIP(json.getString("adminIP"));
-			com.setInstitution(institution);
-			int in = aheadUserService.updateRegisterAdmin(com);
-			if(StringUtils.isNotBlank(json.getString("adminIP"))){
-				aheadUserService.deleteUserIp(json.getString("adminId"));
-				aheadUserService.addUserAdminIp(com);
-			}else{
-				aheadUserService.deleteUserIp(json.getString("adminId"));
-			}
-			if(in>0){
-				i++;
-			}
+		try{
+			aheadUserService.updateInstitution(institution,oldins);
+		}catch(Exception e){
+			log.error("更新机构名称异常:",e);
 		}
-		aheadUserService.updateInstitution(institution,oldins);
-		if(i==array.size()){
+		int i=0;
+		if(i>0){
 			map.put("flag", "true");
 		}else{
 			map.put("flag", "false");

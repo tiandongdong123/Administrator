@@ -2285,4 +2285,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		setting.setPropertyValue(com.getWeChatEamil());
 		wfksUserSettingMapper.insert(setting);
 	}
+
+	@Override
+	public List<Person> findInstitutionAllUser(String institution) {
+		return personMapper.findInstitutionAllUser(institution);
+	}
 }

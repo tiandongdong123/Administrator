@@ -35,72 +35,91 @@ function preventBubble(event){
 //查询机构下管理员、并修改
 function showAdm(id,pid,institution,e){
 	preventBubble(e);
-	$.ajax({
-		type : "post",
-		url : "../auser/findins.do",
-		data:{institution:institution,userId:id},
-		success: function(data){
-			var text = '<tr><th>管理员ID</th><th>密码</th><th>管理员IP段</th><th>管理员邮箱</th><th>管理机构账号数</th></tr>';
-			for(var i = 0;i < data.length; i++){
-				text += '<tr><td><input type="hidden" id="adminId_'+id+'_'+i+'" value="'+data[i].userId+'">'+data[i].userId+'</td>';
-				text += '<td><input type="text" style="width:200px;" id="adminpassword_'+id+'_'+i+'" value="'+data[i].password+'"></td>';
-				if(data[i].adminIP!=null && data[i].adminIP.length>0){					
-					text += '<td><textarea style="margin: 0px; width: 300px; height: 44px;" id="adminIP_'+id+'_'+i+'">';
-					for(var j = 0;j < data[i].adminIP.length; j++){						
-						text += data[i].adminIP[j].beginIpAddressNumber+'-'+data[i].adminIP[j].endIpAddressNumber
-					}
-					text += '</textarea></td>';
-				}else{
-					text += '<td><textarea style="margin: 0px; width: 300px; height: 44px;" id="adminIP_'+id+'_'+i+'"></textarea></td>';
-				}
-				text += '<td><input type="text" style="width:200px;" id="adminEmail_'+id+'_'+i+'" value="'+data[i].adminEmail+'"></td>';
-				text += '<td>'+data[i].num+'</td>';
+	//弹出结果集
+	layer.open({
+	    type: 1, //page层 1div，2页面
+	    shadeClose: false,
+	    area: ['500px', '200px'],
+	    title: '修改机构信息',
+	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+	    content: $("#ins_"+id),
+	    btn: ['提交','取消'],
+		yes: function(){
+			var institution=$("#institu_"+id).val();
+			var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
+			if(!reg.test(institution)){
+				layer.msg('格式不对，请填写规范的机构名称', {icon: 2,time: 1000});
+				return false;
 			}
-			$("#tbody_"+id).html(text);
-			//弹出结果集
-			layer.open({
-			    type: 1, //page层 1div，2页面
-			    shadeClose: false,
-			    area: ['1100px', '500px'],
-			    title: '修改机构信息',
-			    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-			    content: $("#ins_"+id),
-			    btn: ['提交','取消'],
-				yes: function(){
-					var count = $("#tbody_"+id+" tr").length-1;
-					var customerArray = new Array();
-					for(var i = 0; i < count; i++){
-						customerArray.push({adminId: $("#adminId_"+id+"_"+i).val(), adminpassword: $("#adminpassword_"+id+"_"+i).val(),adminIP: $("#adminIP_"+id+"_"+i).val(),
-							adminEmail: $("#adminEmail_"+id+"_"+i).val()});
+			var olds=$("#ins_hidden_"+id).val();
+			if(institution==olds){
+				layer.closeAll();
+				return false;
+			}
+			$.ajax({
+				type : "post",
+				url : "../auser/findInstitutionAllUser.do",
+				data:{"institution":olds},
+				success: function(data){
+					var html="";
+					var admin=data.admin;
+					var user=data.user;
+					if(admin!=null){
+						html+="该机构下的机构账号有：</br>";
+						var array=admin.split(",");
+						for(ar in array){
+							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+						}
 					}
-					var institution=$("#institu_"+id).val();
-					var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
-					if(!reg.test(institution)){
-						layer.msg('格式不对，请填写规范的机构名称', {icon: 2,time: 1000});
-						return false;
+					if(user!=null){
+						html+="该机构下的机构管理员有：</br>";
+						var array=user.split(",");
+						for(ar in array){
+							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+						}
 					}
-					$.ajax({
-						type : "post",
-						url : "../auser/updateins.do",
-						data:{"institution":institution,"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
-						success: function(data){
-							if(data.flag=="true"){
-								layer.msg('管理员信息更新成功', {icon: 1});
-							}else{
-								layer.msg('更新失败', {icon: 2});
-							}
-							layer.closeAll();
-							if($("#institution").val()!=""){
-								$("#institution").val($("#institu_"+id).val());
-							}							
-							findList();
+					html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
+					$("#adminInstitution").html(html);
+					layer.open({
+					    type: 1, //page层 1div，2页面
+					    shadeClose: false,
+					    area: ['600px', '300px'],
+					    title: '确认',
+					    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+					    content: $("#adminInstitution"),
+					    btn: ['确定','取消'],
+						yes: function(){
+							updateInstitution(institution,olds);//更新机构名称
 						}
 					});
-			    },
-			    end: function(){
-			    	preventBubble(e);
-			    }
+				}
 			});
+	    },
+	    end: function(){
+	    	preventBubble(e);
+	    }
+	});
+}
+//查询机构信息
+function queryInstitution(institution,olds,id){}
+
+//更新机构名称
+function updateInstitution(news,olds){
+	$.ajax({
+		type : "post",
+		url : "../auser/updateins.do",
+		data:{"institution":news,"oldins":olds},
+		success: function(data){
+			if(data.flag=="true"){
+				layer.msg('管理员信息更新成功', {icon: 1});
+			}else{
+				layer.msg('管理员信息更新失败', {icon: 2});
+			}
+			layer.closeAll();
+			if($("#institution").val()!=""){
+				$("#institution").val($("#institu_"+id).val());
+			}
+			findList();
 		}
 	});
 }

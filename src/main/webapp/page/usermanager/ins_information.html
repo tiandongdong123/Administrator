@@ -61,6 +61,7 @@
         <tbody id="tbody_${list.userId}"></tbody>
        	</table>
      </div>
+     <div class="box-body table-responsive no-padding" style="display: none;" id="adminInstitution"></div>
      <div class="info_box_right">
       	<a href="../auser/numupdate.do?userId=${list.userId}" class="add_admin">账号修改</a>
         <div class="btn-group">
@@ -105,10 +106,10 @@
 					<span>试用</span>
 				<?}?>
 				<?if(!isEmpty(pro.beginDateTime)&&!isEmpty(pro.endDateTime)){?>				
-					<span <?if(pro.expired){?>style="color:red;"<?}?>>${pro.beginDateTime}~${pro.endDateTime}</span>
+					<span <?if(pro.expired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${pro.beginDateTime}~${pro.endDateTime}</span>
 				<?}?>
 				<?if(pro.type!='time'&&!isEmpty(pro.balance)){?>
-					<span>${pro.balance}</span>
+					<span <?if(pro.balance<0){?>style="background-color:red;color:#FFFFFF;"<?}?>>${pro.balance}</span>
 				<?}?>
 				<?if(pro.payChannelid=='HistoryCheck'){?>
 					<span>${pro.ViewHistoryCheck}</span>
@@ -440,7 +441,7 @@
 </div>
 <?}?>
 <?if(!isEmpty(msg)&&msg=='0'){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
-<div id="page"></div>
+<?if(!isEmpty(map.pageList)&&map.pageList.pageNum>1){?><div id="page"></div><?}?>
 </div>
 </div>
 </div>

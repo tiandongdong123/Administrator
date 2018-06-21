@@ -89,6 +89,12 @@ public interface PersonMapper {
 	 * @return
 	 */
 	List<Map<String, Object>> getAllInstitutional(@Param("institution")String institution);
+	/**
+	 * 根据机构名称查询所有用户
+	 * @param institution
+	 * @return
+	 */
+	List<Person> findInstitutionAllUser(@Param("institution")String institution);
 	
 	/**
 	 * 根据用户ID查询用户类型
