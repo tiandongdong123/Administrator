@@ -76,7 +76,7 @@ function showAdm(id,pid,institution,e){
 					var institution=$("#institu_"+id).val();
 					var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
 					if(!reg.test(institution)){
-						layer.msg('请填写规范的机构名称', {icon: 2,time: 1000});
+						layer.msg('格式不对，请填写规范的机构名称', {icon: 2,time: 1000});
 						return false;
 					}
 					$.ajax({

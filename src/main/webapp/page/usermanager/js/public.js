@@ -391,6 +391,7 @@ function switchcs(obj){
 		$("#checkIp").hide();
 		$("#deleteIp").hide();
 	}
+	$("#fromList").data('bootstrapValidator').resetForm();
 }
 
 //全选和取消
@@ -1388,6 +1389,13 @@ function validateFrom(){
 		bool = false;
 	}
 	return bool;
+}
+
+function fieldsCheck() {
+	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+	bootstrapValidator.resetForm();
+	bootstrapValidator.validate();
+	return (bootstrapValidator.isValid());
 }
 
 function checkemail(str){

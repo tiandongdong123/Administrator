@@ -8,14 +8,14 @@ $(function() {/* 文档加载，执行一个函数 */
 		},
 		fields : {/* 验证：规则 */
 			institution:{
-				message : '请输入机构名称',
+				message : '机构名称不能为空，请填写规范的机构名称',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入机构名称'
+						message : '机构名称不能为空，请填写规范的机构名称'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp:  /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]*$/,
-                        message: '请填写规范的机构名称'
+                        message: '格式不对，请填写规范的机构名称'
                     },
 				}
 			},
@@ -69,6 +69,13 @@ $(function() {/* 文档加载，执行一个函数 */
                         message: '附件必须是以xlsx结尾的excel'
                     }
                 }
+			},
+			OrderContent: {
+                validators: {
+                    notEmpty: {
+                        message: '请填写工单对应信息'
+                    }
+                }	
 			},
 			adminOldName: {
                 validators: {
@@ -203,9 +210,3 @@ $(function() {/* 文档加载，执行一个函数 */
 		}
 	})
 });
-
-function fieldsCheck() {
-	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
-	bootstrapValidator.validate();
-	return (bootstrapValidator.isValid());
-}

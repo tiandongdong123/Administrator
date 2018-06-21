@@ -672,7 +672,7 @@ public class AheadUserController {
 				}
 				if("".equals(map.get("institution"))){
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", "机构名称不能为空");
+					hashmap.put("fail", "机构名称不能为空，请填写规范的机构名称");
 					return hashmap;
 				}
 				String password=(String) map.get("password");
@@ -692,7 +692,7 @@ public class AheadUserController {
 				Matcher m2 = pa.matcher(map.get("userId").toString());
 				if (m1.find() || m2.find()) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", m1.find() ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
+					hashmap.put("fail", m1.find() ? "格式不对，请填写规范的机构名称" : "用户ID不能包含特殊字符");
 					return hashmap;
 				}
 			}
@@ -904,7 +904,7 @@ public class AheadUserController {
 				boolean flag2 = m2.find();
 				if (flag1 || flag2) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail", flag1 ? "请填写规范的机构名称" : "用户ID不能包含特殊字符");
+					hashmap.put("fail", flag1 ? "格式不对，请填写规范的机构名称" : "用户ID不能包含特殊字符");
 					return hashmap;
 				}
 				String password=(String) map.get("password");
