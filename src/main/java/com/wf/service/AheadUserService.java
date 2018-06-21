@@ -3,9 +3,13 @@ package com.wf.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.multipart.MultipartFile;
+
 import wfks.accounting.setting.PayChannelModel;
+
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
@@ -230,4 +234,5 @@ public interface AheadUserService {
 	void addWfksAccountidMapping(CommonEntity com);
 	/** 获取机构用户权限 **/
 	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
+	WfksAccountidMapping[] getWfksAccountid(String userId,String type);
 }

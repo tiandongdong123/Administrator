@@ -39,6 +39,7 @@ import com.utils.IPConvertHelper;
 import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
 import com.wf.bean.Log;
@@ -1431,6 +1432,8 @@ public class AheadUserController {
 		getTongInstitution(userId,view);
 		//用户权限
 		getWfksAccountidLimit(userId,view);
+		//获取党建管理员
+		getPartyAdmin(userId,view);
 		view.addObject("map",map);
 		//个人绑定机构权限
 		view.addObject("bindInformation",aheadUserService.getBindAuthority(userId));
@@ -1477,6 +1480,31 @@ public class AheadUserController {
 			tongji = ins.getStatisticalAnalysis();
 		}
 		view.addObject("tongji", tongji);
+	}
+	
+	//获得党建信息
+	private void getPartyAdmin(String userId, ModelAndView view) {
+		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId, "PartyAdminTime");
+		if(mapping.length>0){
+			Authority author=new Authority();
+			Person per = personservice.findById(mapping[0].getRelatedidKey());
+			author.setPartyAdmin(per.getUserId());
+			author.setBegintime(DateUtil.dateToString2(mapping[0].getBegintime()));
+			author.setEndtime(DateUtil.dateToString2(mapping[0].getEndtime()));
+			try {
+				author.setPassword(PasswordHelper.decryptPassword(per.getPassword()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String json = String.valueOf(per.getExtend());
+			if(!StringUtils.isEmpty(json)){
+				JSONObject obj = JSONObject.fromObject(json);
+				String id=String.valueOf(obj.get("RelatedGroupId"));
+				author.setUserId(id);
+				author.setTrial(obj.getBoolean("IsTrialPartyAdminTime"));
+			}
+			view.addObject("party",author);
+		}
 	}
 	
 	/**
@@ -1580,6 +1608,9 @@ public class AheadUserController {
 			} else {
 				aheadUserService.deleteUserIp(com.getUserId());
 			}
+			//添加党建管理员
+			aheadUserService.setPartyAdmin(com);
+			//机构管理员
 			if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 					hashmap.put("flag", "fail");

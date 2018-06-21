@@ -1812,6 +1812,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
+	public WfksAccountidMapping[] getWfksAccountid(String userId,String type){
+		return wfksAccountidMappingMapper.getWfksAccountid(userId,type);
+	}
+	
+	@Override
 	public WfksAccountidMapping[] getWfksAccountidLimit(String userId,String type){
 		return wfksAccountidMappingMapper.getWfksAccountidLimit(userId,type);
 	}

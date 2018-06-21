@@ -39,34 +39,34 @@
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>国家</label>
 				<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion(this);">
-					<option value="China" <?if(limit.CountryRegion.relatedidKey=='China'){ ?>selected="selected"<?}?>>中国</option>
-					<option value="foreign" <?if(limit.CountryRegion.relatedidKey=='foreign'){ ?>selected="selected"<?}?>>外国</option>
+					<option value="China" <?if(!isEmpty(limit.CountryRegion)&&limit.CountryRegion.relatedidKey=='China'){ ?>selected="selected"<?}?>>中国</option>
+					<option value="foreign" <?if(!isEmpty(limit.CountryRegion)&&limit.CountryRegion.relatedidKey=='foreign'){ ?>selected="selected"<?}?>>外国</option>
 				</select>
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>地区</label>
 				<select class="form-control input_time" name="PostCode" id="PostCode">
-				<?for(arr in arrayArea){?><option value="${arr.id}" <?if(limit.PostCode.relatedidKey==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
+				<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(limit.PostCode)&&limit.PostCode.relatedidKey==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
 				</select>
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构类型</label>
 				<select class="form-control input_time" name="Organization" id="Organization">
-					<option value="本科院校" <?if(limit.Organization.relatedidKey=='本科院校'){ ?>selected="selected"<?}?>>本科院校</option>
-					<option value="职教类院校" <?if(limit.Organization.relatedidKey=='职教类院校'){ ?>selected="selected"<?}?>>职教类院校</option>
-					<option value="公共图书馆" <?if(limit.Organization.relatedidKey=='公共图书馆'){ ?>selected="selected"<?}?>>公共图书馆</option>
-					<option value="情报所" <?if(limit.Organization.relatedidKey=='科研院所'){ ?>selected="selected"<?}?>>情报所</option>
-					<option value="科研院所" <?if(limit.Organization.relatedidKey=='科研院所'){ ?>selected="selected"<?}?>>科研院所</option>
-					<option value="政府机构" <?if(limit.Organization.relatedidKey=='政府机构'){ ?>selected="selected"<?}?>>政府机构</option>
-					<option value="医院" <?if(limit.Organization.relatedidKey=='医院'){ ?>selected="selected"<?}?>>医院</option>
-					<option value="企业" <?if(limit.Organization.relatedidKey=='企业'){ ?>selected="selected"<?}?>>企业</option>
+					<option value="本科院校" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='本科院校'){ ?>selected="selected"<?}?>>本科院校</option>
+					<option value="职教类院校" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='职教类院校'){ ?>selected="selected"<?}?>>职教类院校</option>
+					<option value="公共图书馆" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='公共图书馆'){ ?>selected="selected"<?}?>>公共图书馆</option>
+					<option value="情报所" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='科研院所'){ ?>selected="selected"<?}?>>情报所</option>
+					<option value="科研院所" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='科研院所'){ ?>selected="selected"<?}?>>科研院所</option>
+					<option value="政府机构" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='政府机构'){ ?>selected="selected"<?}?>>政府机构</option>
+					<option value="医院" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='医院'){ ?>selected="selected"<?}?>>医院</option>
+					<option value="企业" <?if(!isEmpty(limit.Organization)&&limit.Organization.relatedidKey=='企业'){ ?>selected="selected"<?}?>>企业</option>
 				</select>
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>工单类型</label>
 				<select class="form-control input_time" name="OrderType" id="OrderType" onchange="selectOrder(this);">
-					<option value="crm" <?if(limit.OrderType.relatedidKey=='crm'){ ?>selected="selected"<?}?>>CRM工单</option>
-					<option value="inner" <?if(limit.OrderType.relatedidKey=='inner'){ ?>selected="selected"<?}?>>内部工单</option>
+					<option value="crm" <?if(!isEmpty(map.pConcurrentnumber)&&limit.OrderType.relatedidKey=='crm'){ ?>selected="selected"<?}?>>CRM工单</option>
+					<option value="inner" <?if(!isEmpty(map.pConcurrentnumber)&&limit.OrderType.relatedidKey=='inner'){ ?>selected="selected"<?}?>>内部工单</option>
 				</select>
 			</div>
 			<div class="form-group input_block">
@@ -108,6 +108,32 @@
 				<option value="0">-请选择-</option>
 				</select>
 			</div>
+			<div class="form-group input_block">
+				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通权限</label>
+				<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</span>
+			</div>
+			<div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"<?}?>>
+		        <div class="form-group input_block">
+	              	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	              	<input type="radio" name="isTrial" value="isTrial" <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"<?}?>/>是
+	                <input type="radio" name="isTrial" value="notTrial" <?if(!isEmpty(party)&&party.trial==false){?>checked="checked"<?}?>/>否
+		        </div>
+                <div class="form-group input_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
+                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${party.partyAdmin!}">
+                </div>
+                <div class="form-group input_block">
+                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
+                 	<input class="form-control input_width" type="text" name="partyPassword" id="partyPassword" value="${party.password!}">
+                </div>
+                <div class="form-group time_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                	<div class="time_input">
+					<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" value="${party.begintime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
+					<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" value="${party.endtime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
+					</div>
+                </div>
+			</div>
             <div class="checkbox input_block block_left">
               <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>是否开通管理员</label>
             </div>
@@ -121,7 +147,9 @@
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
 					<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
 						<option value="">-请选择管理员ID-</option>
+						<?if(!isEmpty(admin)){?>
 						<?for(adm in admin){?><option value="${adm.userId}" <?if(adm.userId==map.pid){?>selected="selected"<?}?>>${adm.institution}</option><?}?>
+						<?}?>
 					</select>
 				</div>
                	<div id="newManager" class="form-group input_block" <?if(!isEmpty(map.pid)){?>style="display: none;"<?}?>>
