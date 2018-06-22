@@ -1394,7 +1394,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public PageList findListInfo(Map<String, Object> map){
+	public PageList findListInfo(Map<String, Object> map) throws Exception{
 		//1、筛选user
 		long time=System.currentTimeMillis();
 		List<Object> userList = personMapper.findListInfoSimp(map);
@@ -1412,7 +1412,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
-				e.printStackTrace();
+				log.error("密码转化异常：",e);
 			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
 			if(userMap.get("loginMode")!=null&&!userMap.get("loginMode").toString().equals("1")){
@@ -1424,8 +1424,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				userMap.put("list_ip", list_ip);
 			}
-			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
+			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			for(PayChannelModel pay:list_){
 				for(WfksPayChannelResources res:listWfks){
 					if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
@@ -1433,19 +1433,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.getWfksAccountid(userId, "trical");
+
+			//查询权限信息
 			Map<String,String> itemsMap=new HashMap<String,String>();
-			for(WfksAccountidMapping wm:tricals){
-				itemsMap.put(wm.getRelatedidKey(), "trical");
-			}
+			String viewChack="ViewHistoryCheck";
+			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
+			//查询机构管理员
+			userMap.put("admin", this.findInfoByPid(userMap.get("pid").toString()));
+			//查询机构子账号
+			this.getAccount(userMap);
+
+			userMap.put("admin", this.findInfoByPid(userMap.get("pid").toString()));
+			//查询统计分析
+			UserInstitution ins=this.getUserInstitution(userId);
+			userMap.put("tongji", ins==null?"":ins.getStatisticalAnalysis());
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
-					WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountid(userId,"ViewHistoryCheck");
-					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
+					extraData.put("ViewHistoryCheck", viewChack);
 				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 				if(pay.getType().equals("balance")){
@@ -1555,11 +1563,82 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return pageList;
 	}
 	
+	//机构子账号
+	private void getAccount(Map<String, Object> userMap) {
+		UserAccountRestriction uar=this.getAccountRestriction(userMap.get("userId").toString());
+		userMap.put("upperlimit", uar.getUpperlimit());
+		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
+		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());
+		userMap.put("chargebacks", uar.getChargebacks());
+	}
+
+	//获取权限信息
+	private void getUserAccountidMapping(String userId, Map<String, String> itemsMap,
+			Map<String, Object> userMap, String viewCheck) throws Exception{
+		
+		WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountidByIdKey(userId);
+		for (WfksAccountidMapping wm : mapping) {
+			if ("trical".equals(wm.getRelatedidAccounttype())) {
+				itemsMap.put(wm.getRelatedidKey(), "trical");
+			}
+			if ("ViewHistoryCheck".equals(wm.getRelatedidAccounttype())) {
+				viewCheck = "可以";
+			}
+			if ("CountryRegion".equals(wm.getRelatedidAccounttype())) {
+				userMap.put("CountryRegion", wm.getRelatedidKey());
+			}
+			if ("PostCode".equals(wm.getRelatedidAccounttype())) {
+				userMap.put("PostCode", wm.getRelatedidKey());
+			}
+			if ("OrderType".equals(wm.getRelatedidAccounttype())) {
+				userMap.put("OrderType", wm.getRelatedidKey());
+			}
+			if ("OrderContent".equals(wm.getRelatedidAccounttype())) {
+				userMap.put("OrderContent", wm.getRelatedidKey());
+			}
+			if("openApp".equals(wm.getRelatedidAccounttype())){
+				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
+						+DateUtil.DateToFromatStr(wm.getEndtime()));
+			}
+			if("openWeChat".equals(wm.getRelatedidAccounttype())){
+				Map<String,String> wechat=new HashMap<String,String>();
+				wechat.put("time",  DateUtil.DateToFromatStr(wm.getBegintime())+"-"
+						+DateUtil.DateToFromatStr(wm.getEndtime()));
+				WfksUserSettingKey key=new WfksUserSettingKey();
+				key.setUserId(userId);
+				key.setUserType("WeChat");
+				key.setPropertyName("email");
+				WfksUserSetting[] setting=wfksUserSettingMapper.selectByUserId(key);
+				if(setting.length>0){
+					wechat.put("email", setting[0].getPropertyValue());
+				}
+				userMap.put("openWeChat", wechat);
+			}
+			if("PartyAdminTime".equals(wm.getRelatedidAccounttype())){
+				Map<String,String> party=new HashMap<String,String>();
+				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
+						+ DateUtil.DateToFromatStr(wm.getEndtime()));
+				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
+				party.put("userId", per.getUserId());
+				try{
+					party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
+				}catch (Exception e){
+					log.error("密码转化异常：",e);
+				}
+				String json = String.valueOf(per.getExtend());
+				if(!StringUtils.isEmpty(json)){
+					JSONObject obj = JSONObject.fromObject(json);
+					party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
+				}
+				userMap.put("party", party);
+			}
+		}
+	}
+
 	@Override
 	public Map<String, Object> selectBalanceById(String userId){
 		return projectBalanceMapper.selectBalanceById(userId);
 	}
-	
 	
 	@Override
 	public int updateAllPid(String pid,String old_pid){

@@ -49,7 +49,11 @@
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
           <span class="university" onclick="showAdm('${list.userId}','${list.pid}','${list.institution}');">${list.institution}</span>
-          <span class="time"><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}',1);">${list.pid}</a></span>
+          <span class="time">${list.CountryRegion!}</span>
+          <span class="time">${list.PostCode!}</span>
+          <span class="time">${list.Organization!}</span>
+          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单<?}?><?if(list.OrderType=='inner'){?>内部工单<?}?></span>
+          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.OrderType=='inner'){?>申请部门：<?}?>${list.OrderContent!}</span>
       </div>
       <div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
         <table class="table table-hover">
@@ -418,8 +422,54 @@
 <?}?>
 </div>
 <?}}?>
+
+			<!-- 党建管理员 -->
+			<?if(list.party!=null){?>
+			<div class="user_bind" style="width:80%">
+				<span style="color: #0099ff">党建管理员</span>
+				<div class="bind"><?if(list.party.trical=='true'){?>试用<?}?></span></div>
+				<div class="bind"><span>党建管理员ID：</span><span>${list.party.userId}</span></div>
+				<div class="bind"><span>党建管理员密码：</span><span>${list.party.password}</span></div>
+				<div class="bind"><span>有效期：</span><span>${list.party.time}</span></div>
+			</div>
+			<?}?>
+			<!-- 党建管理员结束 -->
+			<!-- 机构管理员 -->
+			<?if(list.admin!=null){?>
+			<div class="user_bind" style="width:80%">
+				<span style="color: #0099ff">机构管理员</span>
+				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.admin.userId}</span></div>
+				<div class="bind"><span>机构管理员密码：</span><span>${list.admin.password}</span></div>
+				<div class="bind"><span>机构管理员邮箱：</span><span>${list.admin.adminEmail}</span></div>
+				<div class="bind"><span>机构管理员IP：</span><span>
+				<?if(!isEmpty(list.admin.adminIP)){for(listIp in list.admin.adminIP){?>${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber} <?}}?></span></div>
+			</div>
+			<?}?>
+			<!-- 机构管理员结束 -->
+			<!-- 机构子账号 -->
+			<?if(list.chargebacks!=null){?>
+			<div class="user_bind" style="width:80%">
+				<span style="color: #0099ff">机构子账号</span>
+				<div class="bind"><span>子账号上限：</span><span>${list.upperlimit}</span></div>
+				<div class="bind"><span>子账号并发数上限：</span><span>${list.sConcurrentnumber}</span></div>
+				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.downloadupperlimit}</span></div>
+				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.chargebacks==0){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
+			</div>
+			<?}?>
+			<!-- 机构子账号结束 -->
+			</br>
+			<!-- 统计分析 -->
+			<?if(list.tongji!=''){?>
+			<div class="user_bind" style="width:80%">
+				<span style="color: #0099ff">统计分析</span>
+				<div class="bind"><span><?if(strutil.contain(list.tongji,"database_statistics\":1")){?>数据库使用统计<?}?></span></div>
+				<div class="bind"><span><?if(strutil.contain(list.tongji,"resource_type_statistics\":1")){?>资源类型使用统计<?}?></span></div>
+			</div>
+			<?}?>
+			<!-- 统计分析结束 -->
+			<!-- 个人绑定机构 -->
 			<?if(list.bindAuthority!=null){?>
-			<div class="user_bind" >
+			<div class="user_bind">
 				<span style="color: #0099ff">个人绑定机构</span>
 				<div class="bind"><span>绑定模式：</span><span class="bind_type">${list.bindAuthority.bindType}</span></div>
 				<div class="bind"><span>绑定个人上限：</span><span>${list.bindAuthority.bindLimit}</span></div>
@@ -431,6 +481,24 @@
 			<div class="qr_picture"><img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures"><span class="resets">重置</span></div>
 			<?}?>
 			<?}?>
+			<!-- 个人绑定机构结束 -->
+			<!-- APP嵌入服务 -->
+			<?if(list.openApp!=null){?>
+			<div class="user_bind" style="width:80%">
+				<span style="color: #0099ff">APP嵌入服务</span>
+				<div class="bind"><span>开通时限：</span><span>${list.openApp}</span></div>
+			</div>
+			<?}?>
+			<!-- APP嵌入服务结束 -->
+			<!-- 微信公众号嵌入服务 -->
+			<?if(list.openWeChat!=null){?>
+			<div class="user_bind" style="width:800px">
+				<span style="color: #0099ff">微信公众号嵌入服务</span>
+				<div class="bind"><span>开通时限：</span><span>${list.openWeChat.time}</span></div>
+				<div class="bind"><span>链接发送邮箱：</span><span>${list.openWeChat.email}</span></div>
+			</div>
+			<?}?>
+			<!-- 微信公众号嵌入服务结束 -->
 </div>
 </div>
 </div>
@@ -442,6 +510,7 @@
 <?}?>
 <?if(!isEmpty(msg)&&msg=='0'){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <?if(!isEmpty(map.pageList)&&map.pageList.pageNum>1){?><div id="page"></div><?}?>
+</div>
 </div>
 </div>
 </div>

@@ -1353,69 +1353,45 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("userId", userId);
-		if (!StringUtil.isEmpty(ipSegment)) {
-			if(IPConvertHelper.validateOneIp(ipSegment)){
-				map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
-			}else{
-				map.put("ipSegment", ipSegment);
-				view.addObject("map", map);
+		try{
+			map.put("userId", userId);
+			if (!StringUtil.isEmpty(ipSegment)) {
+				if(IPConvertHelper.validateOneIp(ipSegment)){
+					map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
+				}else{
+					map.put("ipSegment", ipSegment);
+					view.addObject("map", map);
+					view.setViewName("/page/usermanager/ins_information");
+					return view;
+				}
+			}
+			if (!StringUtils.isEmpty(institution)) {
+				map.put("institution", institution.replace("_", "\\_"));
+			}
+			map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+			map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
+			if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)) {
 				view.setViewName("/page/usermanager/ins_information");
 				return view;
 			}
-		}
-		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("_", "\\_"));
-		}
-		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
-		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
-		if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)) {
-			view.setViewName("/page/usermanager/ins_information");
-			return view;
-		}
-		String msg = "0";
-		PageList pageList = new PageList();
-		if(!StringUtils.isEmpty(userId)){
-			Person per = personservice.findById(userId);
-			if (per != null) {
-				if (per.getUsertype() == 0) {
-					msg="1";
-					pageList.setPageRow(new ArrayList<Object>());
-				} else if (per.getUsertype() == 1) {//机构管理员
-					map.remove("userId");
-					map.put("pid", per.getUserId());
-					pageList = aheadUserService.findListInfo(map);
-				} else if (per.getUsertype() == 2) {//机构账号
-					pageList = aheadUserService.findListInfo(map);
-				} else if (per.getUsertype() == 3) {//机构子账号
-					map.put("userId", per.getPid());
-					pageList = aheadUserService.findListInfo(map);
-				} else if (per.getUsertype() == 4) {//党建用户
-					String json = per.getExtend();
-					JSONObject obj = JSONObject.fromObject(json);
-					map.put("userId", obj.get("RelatedGroupId"));
-					pageList = aheadUserService.findListInfo(map);
-				}
-				map.put("userId", userId);
-			}else{
-				pageList.setPageRow(new ArrayList<Object>());
+			String msg = "0";
+			PageList pageList = aheadUserService.findListInfo(map);
+			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
+			pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
+			if(!StringUtil.isEmpty(ipSegment)){
+				map.put("ipSegment", ipSegment);
 			}
-		}else{
-			pageList = aheadUserService.findListInfo(map);
+			if (!StringUtils.isEmpty(institution)) {
+				map.put("institution", institution.replace("\\_", "_"));
+			}
+			if(pageList.getTotalRow()>0){
+				msg="2";
+			}
+			map.put("pageList", pageList);
+			view.addObject("msg", msg);
+		}catch(Exception e){
+			log.error("机构用户查询异常：", e);
 		}
-		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
-		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
-		if(!StringUtil.isEmpty(ipSegment)){
-			map.put("ipSegment", ipSegment);
-		}
-		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("\\_", "_"));
-		}
-		if(pageList.getTotalRow()>0){
-			msg="2";
-		}
-		map.put("pageList", pageList);
-		view.addObject("msg", msg);
 		view.addObject("map", map);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");

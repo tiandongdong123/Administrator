@@ -232,47 +232,9 @@
  <select id="findListIns" resultMap="BaseResultMap2">
    select user_id,institution from user WHERE userType =2
  </select>
- 
- <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
-   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-    from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-        and ((u.user_id = #{userId} and u.userType = 2) or
-        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
-        (u.pid = #{userId} and u.userType = 2))
-    </if>
-	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and u.userType =2  
-	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
-	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and u.userType =2
-	</if>
-	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
-  </select>
-  
-  <select id="findListCount" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-        and ((u.user_id = #{userId} and u.userType = 2) or
-        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
-        (u.pid = #{userId} and u.userType = 2))
-    </if>
-	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and userType =2  
-	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
-	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and userType =2
-	</if>
-  </select>
   
    <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
-   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend
     from user u WHERE 1=1
     <if test="userId !=null and userId !=''">
     	and u.user_id = #{userId}

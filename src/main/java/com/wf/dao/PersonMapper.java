@@ -30,15 +30,9 @@ public interface PersonMapper {
 
 	/** 更新用户解冻/冻结状态 */
 	int updateUserFreeze(Map<String, String> map);
-
-	/** 查询用户列表信息 */
-	List<Object> findListInfo(Map<String, Object> map);
 	
 	/** 查询用户列表信息(优化) */
 	List<Object> findListInfoSimp(Map<String, Object> map);
-
-	/** 查询用户列表总数 */
-	int findListCount(Map<String, Object> map);
 	
 	/** 查询用户列表总数(优化) */
 	int findListCountSimp(Map<String, Object> map);

@@ -51,11 +51,11 @@ public class PersonServiceImpl implements PersonService {
 		map.put("nameType", 1);//1表示精确查询 2表示模糊查询（按机构名称）
 		map.put("pageNum", pm);
 		map.put("pageSize", pagesize);
-		List<Object> list = persondao.findListInfo(map);
+		List<Object> list = persondao.findListInfoSimp(map);
 		pageList.setPageNum(pagenum);
 		pageList.setPageRow(list);
 		pageList.setPageSize(pagesize);
-		pageList.setTotalRow(persondao.findListCount(map));
+		pageList.setTotalRow(persondao.findListCountSimp(map));
 		return pageList;
 	}
 	

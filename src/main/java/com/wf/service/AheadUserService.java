@@ -60,7 +60,7 @@ public interface AheadUserService {
 	int updateUserFreeze(String str, String redio);
 
     /** 查询机构账号列表信息 */
-	PageList findListInfo(Map<String, Object> map);
+	PageList findListInfo(Map<String, Object> map) throws Exception;
 
 	/** 添加/移除机构管理员 */
 	int updatePid(Map<String, Object> map);
