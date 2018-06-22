@@ -1439,14 +1439,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String viewChack="ViewHistoryCheck";
 			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
 			//查询机构管理员
-			userMap.put("admin", this.findInfoByPid(userMap.get("pid").toString()));
+			String pid=userMap.get("pid").toString();
+			if(!StringUtils.isEmpty(pid)){
+				userMap.put("admin", this.findInfoByPid(pid));
+			}
 			//查询机构子账号
 			this.getAccount(userMap);
-
-			userMap.put("admin", this.findInfoByPid(userMap.get("pid").toString()));
 			//查询统计分析
 			UserInstitution ins=this.getUserInstitution(userId);
-			userMap.put("tongji", ins==null?"":ins.getStatisticalAnalysis());
+			if(ins!=null){
+				userMap.put("tongji", ins.getStatisticalAnalysis());
+			}
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
@@ -1566,6 +1569,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	//机构子账号
 	private void getAccount(Map<String, Object> userMap) {
 		UserAccountRestriction uar=this.getAccountRestriction(userMap.get("userId").toString());
+		if(uar==null){
+			return;
+		}
 		userMap.put("upperlimit", uar.getUpperlimit());
 		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
 		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());

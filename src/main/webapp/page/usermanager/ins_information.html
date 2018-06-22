@@ -457,9 +457,8 @@
 			</div>
 			<?}?>
 			<!-- 机构子账号结束 -->
-			</br>
 			<!-- 统计分析 -->
-			<?if(list.tongji!=''){?>
+			<?if(!isEmpty(list.tongji)&&strutil.contain(list.tongji,"1")){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">统计分析</span>
 				<div class="bind"><span><?if(strutil.contain(list.tongji,"database_statistics\":1")){?>数据库使用统计<?}?></span></div>
