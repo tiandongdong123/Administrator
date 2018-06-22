@@ -394,7 +394,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Override
 	public void addUserAdminIp(CommonEntity com){
-		String[] arr_ip = com.getAdminIP().split("\r\n");
+		String[] arr_ip = com.getAdminIP().replace("\r\n", "\n").split("\n");
 		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){

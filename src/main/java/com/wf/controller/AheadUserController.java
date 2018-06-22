@@ -267,22 +267,25 @@ public class AheadUserController {
 		if (StringUtils.isNotBlank(pid)) {
 			map = aheadUserService.findInfoByPid(pid);
 		}
-		view.addObject("map", map);
 		String tongji = "";
 		List<Map<String, Object>> admin = new ArrayList<Map<String, Object>>();
-		UserAccountRestriction res=null;
 		if ("1".equals(flag)) {
 			UserInstitution ins = aheadUserService.getUserInstitution(userId);
 			if (ins != null) {
 				tongji = ins.getStatisticalAnalysis();
 			}
-			res=aheadUserService.getAccountRestriction(userId);
-			res.setsConcurrentnumber(100);
+			UserAccountRestriction res=aheadUserService.getAccountRestriction(userId);
+			if(res!=null){
+				map.put("upperlimit", res.getUpperlimit());
+				map.put("sConcurrentnumber", res.getsConcurrentnumber());
+				map.put("downloadupperlimit", res.getDownloadupperlimit());
+				map.put("chargebacks", res.getChargebacks());
+			}
 			admin = personservice.getAllInstitutional(institution);
 		}
+		view.addObject("map", map);
 		view.addObject("tongji", tongji);
 		view.addObject("admin", admin);
-		view.addObject("res", res);
 		view.setViewName("/page/usermanager/add_admin");
 		return view;
 	}
@@ -294,29 +297,31 @@ public class AheadUserController {
 	@ResponseBody
 	public String addadmin(CommonEntity com){
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){
-			if(com.getManagerType().equals("new")){
-				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-				if(per==null){
-					aheadUserService.addRegisterAdmin(com);
-				}else if(per.getUsertype()!=1){
-					return "false";
-				}else{
-					aheadUserService.updateRegisterAdmin(com);
-				}
-				if(StringUtils.isNotBlank(com.getAdminIP())){
-					aheadUserService.deleteUserIp(com.getAdminname());
-					aheadUserService.addUserAdminIp(com);
-				}
-				map.put("pid", com.getAdminname());
+		if(!StringUtils.isEmpty(com.getManagerType())){
+			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+			if(per==null){
+				aheadUserService.addRegisterAdmin(com);
+			}else if(per.getUsertype()!=1){
+				return "false";
 			}else{
-				map.put("pid", com.getAdminOldName());
+				aheadUserService.updateRegisterAdmin(com);
 			}
-			map.put("userId", com.getUserId());
-			int resinfo = aheadUserService.updatePid(map);
-			if(resinfo>0){
-				return "true";
+			if(StringUtils.isNotBlank(com.getAdminIP())){
+				aheadUserService.deleteUserIp(com.getAdminname());
+				aheadUserService.addUserAdminIp(com);
 			}
+			map.put("pid", com.getAdminname());
+		}else{
+			map.put("pid", com.getAdminOldName());
+		}
+		// 机构子账号权限
+		aheadUserService.updateAccountRestriction(com);
+		// 统计分析权限
+		aheadUserService.addUserIns(com);
+		map.put("userId", com.getUserId());
+		int resinfo = aheadUserService.updatePid(map);
+		if(resinfo>0){
+			return "true";
 		}
 		return null;
 	}
