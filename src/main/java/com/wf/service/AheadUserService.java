@@ -17,6 +17,7 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -76,9 +77,11 @@ public interface AheadUserService {
 	/** 添加管理员ip */
 	void addUserAdminIp(CommonEntity com);
 	
-	/** 添加账号限制信息 */
+	/** 机构子账号处理 */
 	int addAccountRestriction(CommonEntity com);
-
+	int updateAccountRestriction(CommonEntity com);
+	UserAccountRestriction getAccountRestriction(String userId);
+	
 	/** 添加余额信息 */
 	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
 
@@ -102,9 +105,6 @@ public interface AheadUserService {
 
 	/** 通过userId更新用户ip */
 	void updateUserIp(CommonEntity com);
-
-	/** 通过userId更新用户限制 */
-	int updateAccountRestriction(CommonEntity com);
 	
 	/** 通过userId获取购买项目信息 */
 	List<Map<String, Object>> getProjectInfo(String userId);

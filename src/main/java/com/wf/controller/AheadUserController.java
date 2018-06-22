@@ -49,6 +49,7 @@ import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
+import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -258,13 +259,30 @@ public class AheadUserController {
 	 */
 	@RequestMapping("goaddadmin")
 	public ModelAndView go(ModelAndView view,String pid,String userId,String institution,String flag){
-		if(StringUtils.isNotBlank(pid)){			
-			Map<String, Object> map = aheadUserService.findInfoByPid(pid);
-			view.addObject("map",map);
+		view.addObject("flag", flag);
+		view.addObject("userId", userId);
+		view.addObject("institution", institution);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (StringUtils.isNotBlank(pid)) {
+			map = aheadUserService.findInfoByPid(pid);
 		}
-		view.addObject("flag",flag);
-		view.addObject("userId",userId);
-		view.addObject("institution",institution);
+		view.addObject("map", map);
+		String tongji = "";
+		List<Map<String, Object>> admin = new ArrayList<Map<String, Object>>();
+		UserAccountRestriction res=null;
+		if ("1".equals(flag)) {
+			UserInstitution ins = aheadUserService.getUserInstitution(userId);
+			if (ins != null) {
+				tongji = ins.getStatisticalAnalysis();
+			}
+			res=aheadUserService.getAccountRestriction(userId);
+			res.setsConcurrentnumber(100);
+			admin = personservice.getAllInstitutional(institution);
+		}
+		view.addObject("tongji", tongji);
+		view.addObject("admin", admin);
+		view.addObject("res", res);
 		view.setViewName("/page/usermanager/add_admin");
 		return view;
 	}
@@ -557,24 +575,9 @@ public class AheadUserController {
 			//添加党建管理员
 			aheadUserService.setPartyAdmin(com);
 			//开通机构管理员
-			if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
-				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
-					return hashmap;
-				}
-				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-				if(per==null){
-					aheadUserService.addRegisterAdmin(com);
-				}else{
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  "机构管理员的ID已经被占用");
-					return hashmap;
-				}
-				if(StringUtils.isNotBlank(com.getAdminIP())){
-					aheadUserService.deleteUserIp(com.getAdminname());
-					aheadUserService.addUserAdminIp(com);
-				}
+			this.openAdmin(com, hashmap);
+			if (hashmap.size() > 0) {
+				return hashmap;
 			}
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
@@ -1634,35 +1637,10 @@ public class AheadUserController {
 			}
 			//添加党建管理员
 			aheadUserService.setPartyAdmin(com);
-			//机构管理员
-			if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
-				if(StringUtils.equals(com.getAdminname(), com.getUserId())){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
-					return hashmap;
-				}
-				Person per=aheadUserService.queryPersonInfo(com.getAdminname());
-				if (per == null) {
-					aheadUserService.addRegisterAdmin(com);
-				} else if (per.getUsertype() != 1) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "机构管理员的ID已经被占用");
-					return hashmap;
-				} else if (!StringUtils.equals(per.getInstitution(), com.getInstitution())) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "该机构名称与机构管理员不一致");
-					return hashmap;
-				} else {
-					aheadUserService.updateRegisterAdmin(com);
-					if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
-						//修改该机构下的所有机构名称
-						aheadUserService.updateInstitution(com.getInstitution(),per.getInstitution());
-					}
-				}
-				if(StringUtils.isNotBlank(com.getAdminIP())){
-					aheadUserService.deleteUserIp(com.getAdminname());
-					aheadUserService.addUserAdminIp(com);
-				}
+			//开通机构管理员
+			this.openAdmin(com, hashmap);
+			if (hashmap.size() > 0) {
+				return hashmap;
 			}
 			int resinfo = aheadUserService.updateUserInfo(com, adminId);
 			aheadUserService.updateAccountRestriction(com);
@@ -1722,6 +1700,41 @@ public class AheadUserController {
 			log.info(logStr);
 		}catch(Exception e){
 			log.error("账号修改异常:", e);
+		}
+		return hashmap;
+	}
+	
+	//创建机构管理
+	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
+		if (StringUtils.isEmpty(com.getManagerType())) {
+			return hashmap;
+		}
+		if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
+			return hashmap;
+		}
+		Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+		if (per == null) {
+			aheadUserService.addRegisterAdmin(com);
+		} else if (per.getUsertype() != 1) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员的ID已经被占用");
+			return hashmap;
+		} else if (!StringUtils.equals(per.getInstitution(), com.getInstitution())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "该机构名称与机构管理员不一致");
+			return hashmap;
+		} else {
+			aheadUserService.updateRegisterAdmin(com);
+			if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
+				//修改该机构下的所有机构名称
+				aheadUserService.updateInstitution(com.getInstitution(),per.getInstitution());
+			}
+		}
+		if(StringUtils.isNotBlank(com.getAdminIP())){
+			aheadUserService.deleteUserIp(com.getAdminname());
+			aheadUserService.addUserAdminIp(com);
 		}
 		return hashmap;
 	}

@@ -66,42 +66,74 @@
           <input type="hidden" id="userId" value="${userId}">
           <input type="hidden" id="institution" value="${institution}">
           <form id="fromList" method="post">
-          
-	          <div class="form-group input_block">
-              		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
-              		<input type="radio" name="managerType" value="old"  onclick="radioClick('update');"/>选择已有管理员
-                  	<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
-	         </div>
-          	<div id="newManager">
-          		<div id="administrator">
-                <div class="form-group input_block">
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+					<input type="radio" name="managerType" value="new" onclick="radioClick();" <?if(isEmpty(map.pid)){?>checked="checked"<?}?>/>创建新管理员
+					<input type="radio" name="managerType" value="old" onclick="radioClick();" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>/>选择已有机构管理员
+				</div>
+				<div id="oldManager" class="form-group input_block" <?if(isEmpty(map.pid)){?>style="display: none;"<?}?>>
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+					<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+						<option value="">-请选择管理员ID-</option>
+						<?if(!isEmpty(admin)){?>
+						<?for(adm in admin){?><option value="${adm.userId}" <?if(adm.userId==map.pid){?>selected="selected"<?}?>>${adm.institution}</option><?}?>
+						<?}?>
+					</select>
+				</div>
+               	<div id="newManager" class="form-group input_block" <?if(!isEmpty(map.pid)){?>style="display: none;"<?}?>>
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-                  <input type="text" class="form-control input_width" name="adminname" id="adminname" <?if(flag=='1'){?>readonly="readonly"<?}?> value="${map.userId!}">
+                  <input type="text" class="form-control input_width" name="adminname" id="adminname" value="${map.userId}" onfocus="input_onfocus(this);"/>
                 </div>
-                <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
-                  <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword" value="${map.password!}">
-                </div>
-                <div class="form-group input_block">
-                  <label class="input_name">管理员IP段</label>
-                  <textarea class="form-control input_width" style="margin: 0px; width: 324px; height: 215px;" rows="3" name="adminIP" id="adminIP"><?if(!isEmpty(map.adminIP)){?><?for(ip in map.adminIP){?>${ip.beginIpAddressNumber}-${ip.endIpAddressNumber}&#13;&#10;<?}?><?}?></textarea>
-                </div>
-                <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
-                  <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
-                </div>
-             </div>
-          </div>
-         <div class="form-group input_block" id="oldManager" style="display: none;">
-          <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-          <select class="form-control input_width" name="adminOldName" id="adminOldName">
-			<option value="">-请选择管理员ID-</option>
-          </select>
-         </div>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
+					<input type="text" class="form-control input_width" name="adminpassword" id="adminpassword" value="${map.password}">
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name">管理员IP段</label>
+					<textarea class="form-control input_width" rows="3" name="adminIP" id="adminIP"><? if(!isEmpty(map.adminIP)){ var a=0; for(aip in map.adminIP){ ?>${aip.beginIpAddressNumber}-${aip.endIpAddressNumber}<?if(a<map.adminIP.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
+					<input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(res)){?>checked="checked"<?}?>>是否开通机构子账号</label>
+				</div>
+				<div id="sconcurrent_div" <?if(!isEmpty(res)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+					<div class="form-group input_block">
+						<label class="input_name">设置子帐号上限</label>
+						<input type="text" class="form-control input_width" value="${res.upperlimit}" name="upperlimit" id="upperlimit">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name">设置子账号并发数</label>
+						<input type="text" class="form-control input_width" value="100" id="sConcurrentnumber" name="sConcurrentnumber">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name">子账号下载量上限/天</label>
+						<input type="text" class="form-control input_width" value="${res.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name">设置子账号扣款模式</label>
+						<select class="form-control input_width" name="chargebacks" id="chargebacks">
+							<option value="0" <?if(!isEmpty(res)&&res.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
+							<option value="1" <?if(!isEmpty(res)&&res.chargebacks==1){?>selected="selected"<?}?>>从机构子账号扣款</option>
+						</select>
+					</div>
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checktongji" <?if(strutil.contain(tongji,":1")){?>checked="checked"<?}?>>开通统计分析</label>
+				</div>
+				<div class="form-group input_block" <?if(!strutil.contain(tongji,":1")){?>style="display: none;"<?}?> id="tongjiDiv">
+					<input type="hidden" name="tongji" id="tongji" value="${map.tongji}">
+					<label class="input_name">功能模块</label>
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all" <?if(!strutil.contain(tongji,":0")){?>checked="checked"<?}?>>全部&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(strutil.contain(tongji,"database_statistics\":1")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(strutil.contain(tongji,"resource_type_statistics\":1")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
+				</div>
         </form>
 		<div class="block_left">
-		  <button type="button" class="btn btn-primary" id="submit" onclick="addOrUpateAdminInfo();">提交</button>
-		  <button type="button" class="btn btn-primary" onclick="location=location;">重置</button>
+		  <button type="button" class="btn btn-primary" id="submit" onclick="addOrUpateAdminInfo();">确认</button>
+		  <button type="button" class="btn btn-primary" onclick="location=location">取消</button>
 		</div>
         </div>
         </div>

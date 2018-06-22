@@ -1439,17 +1439,7 @@ function radioClick(addOrUpdate,isBatch){
 				}else{
 					$("#adminOldName option:not(:first)").remove();
 					for(var i in data){
-						if(isBatch!="batch"){
-							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
-						}else{
-							$("#adminOldName").append("<option value='"+data[i].userId+"/"+data[i].institution+"'>"+data[i].userId+"/"+data[i].institution+"</option>");
-						}
-					}
-					if(addOrUpdate!="update"){
-						$("#adminname").val("");
-						$("#adminpassword").val("");
-						$("#adminIP").val("");
-						$("#adminEmail").val("");
+						$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
 					}
 					$("#newManager").hide();
 					$("#oldManager").show();

@@ -2290,4 +2290,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public List<Person> findInstitutionAllUser(String institution) {
 		return personMapper.findInstitutionAllUser(institution);
 	}
+
+	@Override
+	public UserAccountRestriction getAccountRestriction(String userId) {
+		return userAccountRestrictionMapper.getAccountRestriction(userId);
+	}
 }
