@@ -1364,7 +1364,7 @@ public class AheadUserController {
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
 			pageList.setPageNum(Integer.parseInt(query.getPageNum()==null?"1":query.getPageNum()));//当前页
-			pageList.setPageSize(Integer.parseInt(query.getPageSize()==null?"10":query.getPageSize()));//每页显示的数量
+			pageList.setPageSize(Integer.parseInt(query.getPageSize()==null?"20":query.getPageSize()));//每页显示的数量
 			if(!StringUtil.isEmpty(query.getIpSegment())){
 				map.put("ipSegment", query.getIpSegment());
 			}

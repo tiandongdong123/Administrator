@@ -1694,17 +1694,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		Map<String, Object> map = personMapper.findInfoByPid(pid);
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
+			for(Map<String, Object> userIp : list_ip){
+				String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
+				userIp.put("beginIpAddressNumber", beginIpAddressNumber);
+				String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
+				userIp.put("endIpAddressNumber", endIpAddressNumber);
+			}
+			map.put("adminIP", list_ip);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("获取机构管理员信息失败：", e);
 		}
-		List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
-		for(Map<String, Object> userIp : list_ip){
-			String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
-			userIp.put("beginIpAddressNumber", beginIpAddressNumber);
-			String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
-			userIp.put("endIpAddressNumber", endIpAddressNumber);
-		}
-		map.put("adminIP", list_ip);
 		return map;
 	}
 

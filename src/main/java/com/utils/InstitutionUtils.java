@@ -76,7 +76,7 @@ public class InstitutionUtils {
 		if(rekey.length()>0){
 			map.put("relatedidKey", rekey.toString());
 		}
-		if("pid".equals(openLimit)||"Subaccount".equals(openLimit)||"binding".equals(openLimit)||"tongji".equals(openLimit)){//查询机构管理员
+		if("binding".equals(openLimit)){//个人机构绑定的暂时没做
 			
 		}
 		map.put("openLimit", openLimit);
@@ -87,7 +87,7 @@ public class InstitutionUtils {
 		map.put("resource", resource);
 		map.put("OrderContent", OrderContent.trim());
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
-		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
+		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
 		if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)&&StringUtils.isEmpty(openLimit)
 				&&StringUtils.isEmpty(Organization)&&StringUtils.isEmpty(PostCode)&&StringUtils.isEmpty(OrderType)&&StringUtils.isEmpty(proType)) {
 			flag=false;

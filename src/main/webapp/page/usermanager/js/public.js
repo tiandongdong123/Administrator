@@ -1741,6 +1741,7 @@ function selectOrder(obj){
 	}else{
 		$("#orderTypeSpan").html("申请部门");
 	}
+	$("#OrderContent").val("");
 }
 //选择国家
 var arrayArea="";
