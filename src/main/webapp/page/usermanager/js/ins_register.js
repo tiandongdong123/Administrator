@@ -34,9 +34,9 @@ function submitForm(type){
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}
 	var msg=validateUserId();
@@ -48,18 +48,18 @@ function submitForm(type){
 		}else if(msg=='error'){
 			layer.msg("旧平台校验机构ID异常",{icon: 2});
 		}
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){
 		layer.msg("机构账号IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
 		layer.msg("管理员IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 	   var data = new FormData($('#fromList')[0]);
@@ -91,7 +91,17 @@ function submitForm(type){
 					layer.msg("注册失败", {icon: 2});
 				}
 			}
-	    	$("#submit").removeAttr("disabled");
+	    	removeAtrr();
 	    });
 	}
+}
+
+function removeAtrr(){
+	$("#submit1").removeAttr("disabled");
+	$("#submit2").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit1").attr({disabled: "disabled"});
+	$("#submit2").attr({disabled: "disabled"});
 }
