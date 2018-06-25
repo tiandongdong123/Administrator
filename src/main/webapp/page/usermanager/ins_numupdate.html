@@ -109,7 +109,7 @@
 				</select>
 			</div>
 			<div class="form-group input_block">
-				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通权限</label>
+				<label class="input_name">开通权限</label>
 				<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</span>
 			</div>
 			<div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"<?}?>>
@@ -135,7 +135,7 @@
                 </div>
 			</div>
             <div class="checkbox input_block block_left">
-              <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>是否开通管理员</label>
+              <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>开通机构管理员</label>
             </div>
             <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
 				<div class="form-group input_block">
