@@ -1673,6 +1673,10 @@ public class AheadUserController {
 		if (StringUtils.isEmpty(com.getManagerType())) {
 			return hashmap;
 		}
+		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
+				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
+			return hashmap;
+		}
 		if(StringUtils.equals(com.getAdminname(), com.getUserId())){
 			hashmap.put("flag", "fail");
 			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
