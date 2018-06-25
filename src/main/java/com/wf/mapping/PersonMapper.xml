@@ -233,9 +233,15 @@
    select user_id,institution from user WHERE userType =2
  </select>
   
-   <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
-   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend
-    from user u WHERE 1=1
+   <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map" >
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend from user u
+    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+    	 left join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    </if>
+    <if test="resource !=null and resource !=''">
+		left join wfks_pay_channel_resources pay  on u.user_id=pay.user_id
+    </if>
+     WHERE 1=1
     <if test="userId !=null and userId !=''">
     	and u.user_id = #{userId}
     </if>
@@ -248,11 +254,26 @@
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
+    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+    	and (<if test="accounttype !=null and accounttype !=''">wf.relatedid_accounttype in<![CDATA[(${accounttype})]]></if>
+    	<if test="accounttype !=null and accounttype !='' and relatedidKey !=null and relatedidKey !=''"> or </if>
+    	<if test="relatedidKey !=null and relatedidKey !=''">wf.relatedid_key in<![CDATA[(${relatedidKey})]]></if>)
+    </if>
+    <if test="resource !=null and resource !=''">
+		and pay.pay_channelId=#{resource}
+    </if>
 	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u WHERE 1=1
+	select count(1) from user u 
+    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+    	 left join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    </if>
+    <if test="resource !=null and resource !=''">
+		left join wfks_pay_channel_resources pay  on u.user_id=pay.user_id
+    </if>
+	WHERE 1=1
     <if test="userId !=null and userId !=''">
     	and u.user_id = #{userId}
     </if>
@@ -265,6 +286,14 @@
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
+    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+    	and (<if test="accounttype !=null and accounttype !=''">wf.relatedid_accounttype in(#{accounttype})</if>
+    	<if test="accounttype !=null and accounttype !='' and relatedidKey !=null and relatedidKey !=''"> or </if>
+    	<if test="relatedidKey !=null and relatedidKey !=''">wf.relatedid_key in(#{relatedidKey})</if>)
+    </if>
+    <if test="resource !=null and resource !=''">
+		and pay.pay_channelId=#{resource}
+    </if>
   </select>
   
   <select id="findUserById" resultMap="BaseResultMap2" parameterType="java.lang.String">

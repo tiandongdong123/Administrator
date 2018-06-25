@@ -36,6 +36,7 @@ import com.utils.CookieUtil;
 import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.InstitutionUtils;
 import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
@@ -46,6 +47,7 @@ import com.wf.bean.Log;
 import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
+import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
@@ -1341,6 +1343,7 @@ public class AheadUserController {
 			map.put("adminIP", adminIP);
 		}
 		view.addObject("map", map);
+		view.addObject("arrayArea", this.getArea());//添加地区
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
@@ -1349,46 +1352,26 @@ public class AheadUserController {
 	 *	机构用户信息管理列表
 	 */
 	@RequestMapping("information")
-	public ModelAndView information(String userId,String ipSegment,String institution,String pageNum,String pageSize,HttpServletRequest request){
+	public ModelAndView information(Query query,HttpServletRequest request){
 		long time=System.currentTimeMillis();
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			map.put("userId", userId);
-			if (!StringUtil.isEmpty(ipSegment)) {
-				if(IPConvertHelper.validateOneIp(ipSegment)){
-					map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
-				}else{
-					map.put("ipSegment", ipSegment);
-					view.addObject("map", map);
-					view.setViewName("/page/usermanager/ins_information");
-					return view;
-				}
-			}
-			if (!StringUtils.isEmpty(institution)) {
-				map.put("institution", institution.replace("_", "\\_"));
-			}
-			map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
-			map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
-			if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)) {
+			view.addObject("arrayArea", this.getArea());//添加地区
+			if(!InstitutionUtils.validateQuery(map,query)){
 				view.setViewName("/page/usermanager/ins_information");
 				return view;
 			}
-			String msg = "0";
 			PageList pageList = aheadUserService.findListInfo(map);
-			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
-			pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
-			if(!StringUtil.isEmpty(ipSegment)){
-				map.put("ipSegment", ipSegment);
+			pageList.setPageNum(Integer.parseInt(query.getPageNum()==null?"1":query.getPageNum()));//当前页
+			pageList.setPageSize(Integer.parseInt(query.getPageSize()==null?"10":query.getPageSize()));//每页显示的数量
+			if(!StringUtil.isEmpty(query.getIpSegment())){
+				map.put("ipSegment", query.getIpSegment());
 			}
-			if (!StringUtils.isEmpty(institution)) {
-				map.put("institution", institution.replace("\\_", "_"));
-			}
-			if(pageList.getTotalRow()>0){
-				msg="2";
+			if (!StringUtils.isEmpty(query.getInstitution())) {
+				map.put("institution", query.getInstitution().replace("\\_", "_"));
 			}
 			map.put("pageList", pageList);
-			view.addObject("msg", msg);
 		}catch(Exception e){
 			log.error("机构用户查询异常：", e);
 		}
@@ -1399,7 +1382,7 @@ public class AheadUserController {
 		return view;
 	}
 	
-	
+
 	
 	/**
 	 *	账号修改页面返显

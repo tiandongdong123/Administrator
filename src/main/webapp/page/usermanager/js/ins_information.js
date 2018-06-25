@@ -100,8 +100,6 @@ function showAdm(id,pid,institution,e){
 	    }
 	});
 }
-//查询机构信息
-function queryInstitution(institution,olds,id){}
 
 //更新机构名称
 function updateInstitution(news,olds){
@@ -308,7 +306,7 @@ function btnBlack(obj,e){
 function findList(){
 	var ipSegment = $("#ipSegment").val();
 	if(ipSegment!=null&&ipSegment!=''){
-		if(!checkIP(ipSegment)){
+		if(!checkOneIp(ipSegment)){
 			$("#ipResult").html("ip格式不合法");
 			$("#ipSegment").css("border","1px solid red");
 			return false;
@@ -324,6 +322,12 @@ function findList(){
 			institution = "%" + institution;
 		}
 		$("#institution").val(institution);
+	}
+	var proType=$("#proType").val();
+	var resource=$("#resource").val();
+	if(proType!=''&&resource==''){
+		layer.msg('请选择具体的购买项目', {icon: 2});
+		return false;
 	}
 	$("#pageNum").val(1);
 	$("#fromList").submit();
@@ -341,7 +345,7 @@ String.prototype.endWith=function(str){
 }
 
 //校验ip
-function checkIP(val){
+function checkOneIp(val){
 	// ip地址
 	if (val.startWith("0.")) {
 		return false;
@@ -363,4 +367,38 @@ String.prototype.startWith=function(str){
 String.prototype.endWith=function(str){     
   var reg=new RegExp(str+"$");     
   return reg.test(this);        
+}
+
+//工单类型
+function queryOrder(obj){
+	var type=$("#OrderType").val();
+	$("#OrderContent").val("");
+	if(type=='inner'){
+		$("#ordercontent_td").show();
+	}else{
+		$("#ordercontent_td").hide();
+	}
+}
+//选择购买项目
+function queryType(obj){
+	var val=$(obj).val();
+	if(val==""){
+		$("#resource").hide();
+		return;
+	}
+	$("#resource").show();
+	$("#resource").html('<option value="">--请选择--</option>');
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getProject.do",
+		data:{"val":val},
+		dataType:"json",
+		success:function(data){
+			for(var i in data){
+				var pro=data[i];
+				$("#resource").append('<option value="'+pro.id+'">'+pro.name+'</option>');
+			}
+		}
+	});
 }

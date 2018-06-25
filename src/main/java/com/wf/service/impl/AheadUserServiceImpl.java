@@ -1602,6 +1602,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if ("OrderContent".equals(wm.getRelatedidAccounttype())) {
 				userMap.put("OrderContent", wm.getRelatedidKey());
 			}
+			if ("Organization".equals(wm.getRelatedidAccounttype())) {
+				userMap.put("Organization", wm.getRelatedidKey());
+			}
 			if("openApp".equals(wm.getRelatedidAccounttype())){
 				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
 						+DateUtil.DateToFromatStr(wm.getEndtime()));
