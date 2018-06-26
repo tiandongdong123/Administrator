@@ -7,6 +7,7 @@ $(function(e){
 			$("#administrator").show();
 		}else{
 			$("#adminname").val("");
+			$("#adminOldName").val("");
 			$("#adminpassword").val("");
 			$("#adminIP").val("");
 			$("#adminEmail").val("");

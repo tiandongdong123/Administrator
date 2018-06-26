@@ -1695,7 +1695,11 @@ public class AheadUserController {
 			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 			return hashmap;
 		}
-		Person per=aheadUserService.queryPersonInfo(com.getAdminname());
+		String adminId=com.getAdminname();
+		if(StringUtils.isEmpty(adminId)){
+			adminId=com.getAdminOldName();
+		}
+		Person per=aheadUserService.queryPersonInfo(adminId);
 		if (per == null) {
 			aheadUserService.addRegisterAdmin(com);
 		} else if (per.getUsertype() != 1) {

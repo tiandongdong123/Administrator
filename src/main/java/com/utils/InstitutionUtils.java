@@ -43,20 +43,20 @@ public class InstitutionUtils {
 			map.put("institution", institution.replace("_", "\\_"));
 		}
 		//调用用户权限 (个人绑定未加入)
-		if (AuthorityLimit.TRICAL.equals(openLimit)) {
+		if (AuthorityLimit.TRICAL.getName().equals(openLimit)) {
 			map.put("mapping", openLimit);
-		}else if (AuthorityLimit.OPENAPP.equals(openLimit)) {
+		}else if (AuthorityLimit.OPENAPP.getName().equals(openLimit)) {
 			map.put("mapping", openLimit);
-		}else if (AuthorityLimit.OPENWECHAT.equals(openLimit)) {
+		}else if (AuthorityLimit.OPENWECHAT.getName().equals(openLimit)) {
 			map.put("mapping", openLimit);
-		}else if (AuthorityLimit.PARTYADMINTIME.equals(openLimit)) {
+		}else if (AuthorityLimit.PARTYADMINTIME.getName().equals(openLimit)) {
 			map.put("mapping", openLimit);
-		}else if(AuthorityLimit.PID.equals(openLimit)){
+		}else if(AuthorityLimit.PID.getName().equals(openLimit)){
 			map.put("admin", openLimit);
-		}else if(AuthorityLimit.STATISTICS.equals(openLimit)){
+		}else if(AuthorityLimit.STATISTICS.getName().equals(openLimit)){
 			map.put("tongji", openLimit);
-		}else if(AuthorityLimit.SUBACCOUNT.equals(openLimit)){
-			map.put("tongji", openLimit);
+		}else if(AuthorityLimit.SUBACCOUNT.getName().equals(openLimit)){
+			map.put("Subaccount", openLimit);
 		}
 		map.put("openLimit", openLimit);
 		if (!StringUtils.isEmpty(Organization) || !StringUtils.isEmpty(PostCode)
