@@ -92,11 +92,11 @@
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
           <span class="university" onclick="showAdm('${list.userId}','${list.pid}','${list.institution}');">${list.institution}</span>
-          <span class="time"><?if(list.groupInfo.CountryRegion=='China'){ ?>中国<?}else{?>外国<?}?></span>
-          <span class="time"><?for(arr in arrayArea){ if(!isEmpty(list.groupInfo.PostCode)&&list.groupInfo.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
+          <span class="time"><?if(!isEmpty(list.groupInfo)&&list.groupInfo.CountryRegion=='China'){ ?>中国<?}else{?>外国<?}?></span>
+          <span class="time"><?for(arr in arrayArea){ if(!isEmpty(list.groupInfo)&&list.groupInfo.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
           <span class="time"><?for(organ in org){ if(!isEmpty(list.groupInfo)&&list.groupInfo.Organization==organ.name){ ?>${organ.desc}<?}}?></span>
-          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单<?}?><?if(list.groupInfo.OrderType=='inner'){?>内部工单<?}?></span>
-          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.groupInfo.OrderType=='inner'){?>申请部门：<?}?>${list.groupInfo.OrderContent!}</span>
+          <span class="time"><?if(!isEmpty(list.groupInfo)&&list.groupInfo.OrderType=='crm'){?>CRM工单<?}?><?if(!isEmpty(list.groupInfo)&&list.groupInfo.OrderType=='inner'){?>内部工单<?}?></span>
+          <span class="time"><?if(!isEmpty(list.groupInfo)&&list.groupInfo.OrderType=='crm'){?>CRM工单号：<?}?><?if(!isEmpty(list.groupInfo)&&list.groupInfo.OrderType=='inner'){?>申请部门：<?}?>${list.groupInfo.OrderContent!}</span>
       </div>
       <div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
         <table class="table table-hover">
