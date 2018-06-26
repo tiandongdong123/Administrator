@@ -13,6 +13,7 @@ import wfks.accounting.setting.PayChannelModel;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.CommonEntity;
+import com.wf.bean.GroupInfo;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
@@ -239,4 +240,25 @@ public interface AheadUserService {
 	 * 查询该机构名下的所有机构管理员
 	 */
 	List<Person> findInstitutionAllUser(String institution);
+	
+	/**
+	 * 新增机构用户权限
+	 * @param com
+	 * @return
+	 */
+	int addGroupInfo(CommonEntity com);
+	
+	/**
+	 * 修改机构用户权限
+	 * @param com
+	 * @return
+	 */
+	int updateGroupInfo(CommonEntity com);
+	
+	/**
+	 * 根据userId查询机构用户权限
+	 * @param userId
+	 * @return
+	 */
+	GroupInfo getGroupInfo(String userId);
 }

@@ -235,16 +235,19 @@
   
    <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map" >
    select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend from user u
-    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+    <if test="ginfo !=null">
+    	right join GroupInfo info on u.user_id=info.Userid
+    </if>
+    <if test="mapping !=null and mapping !=''">
     	right join wfks_accountid_mapping wf on u.user_id= wf.id_key
     </if>
     <if test="resource !=null and resource !=''">
 		left join wfks_pay_channel_resources pay on u.user_id=pay.user_id
     </if>
-    <if test="openLimit =='tongji'">
+    <if test="tongji != null and tongji != ''">
 		right join user_institution ins on u.user_id=ins.user_id
     </if>
-    <if test="openLimit =='Subaccount'">
+    <if test="Subaccount != null and Subaccount!= ''">
 		right join user_account_restriction res on u.user_id=res.user_id
     </if>
      WHERE 1=1
@@ -260,38 +263,51 @@
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
-    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
-    	and (<if test="accounttype !=null and accounttype !=''">wf.relatedid_accounttype in<![CDATA[(${accounttype})]]></if>
-    	<if test="accounttype !=null and accounttype !='' and relatedidKey !=null and relatedidKey !=''"> or </if>
-    	<if test="relatedidKey !=null and relatedidKey !=''">wf.relatedid_key in<![CDATA[(${relatedidKey})]]></if>)
+    <if test="mapping !=null and mapping !=''">
+    	and wf.relatedid_accounttype=#{mapping}
     </if>
     <if test="resource !=null and resource !=''">
 		and pay.pay_channelId=#{resource}
     </if>
-    <if test="openLimit =='pid'">
+    <if test="admin != null and admin!= ''">
 		and u.pid is not null and u.pid!=''
     </if>
-    <if test="openLimit =='tongji'">
+    <if test="tongji != null and tongji!= ''">
 		and ins.statistical_analysis like '%1%'
     </if>
-    <if test="openLimit =='Subaccount'">
+    <if test="Subaccount != null and Subaccount!= ''">
 		and res.user_id is not null
+    </if>
+    <if test="Organization != null and Organization !=''">
+		and info.Organization=#{Organization}
+    </if>
+    <if test="PostCode != null and PostCode !=''">
+		and info.PostCode=#{PostCode}
+    </if>
+    <if test="OrderType != null and OrderType !=''">
+		and info.OrderType=#{OrderType}
+    </if>
+    <if test="OrderContent != null and OrderContent !=''">
+		and info.OrderContent=#{OrderContent}
     </if>
 	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
 	select count(1) from user u 
-    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
+	<if test="ginfo !=null">
+    	right join GroupInfo info on u.user_id=info.Userid
+    </if>
+    <if test="mapping !=null and mapping !=''">
     	right join wfks_accountid_mapping wf on u.user_id= wf.id_key
     </if>
     <if test="resource !=null and resource !=''">
 		left join wfks_pay_channel_resources pay on u.user_id=pay.user_id
     </if>
-    <if test="openLimit =='tongji'">
+    <if test="tongji != null and tongji != ''">
 		right join user_institution ins on u.user_id=ins.user_id
     </if>
-    <if test="openLimit =='Subaccount'">
+    <if test="Subaccount != null and Subaccount!= ''">
 		right join user_account_restriction res on u.user_id=res.user_id
     </if>
 	WHERE 1=1
@@ -307,22 +323,32 @@
 	<if test="ipSegment != null and ipSegment != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
 	</if>
-    <if test="accounttype !=null and accounttype !='' or relatedidKey !=null and relatedidKey !=''">
-    	and (<if test="accounttype !=null and accounttype !=''">wf.relatedid_accounttype in(#{accounttype})</if>
-    	<if test="accounttype !=null and accounttype !='' and relatedidKey !=null and relatedidKey !=''"> or </if>
-    	<if test="relatedidKey !=null and relatedidKey !=''">wf.relatedid_key in(#{relatedidKey})</if>)
+    <if test="mapping !=null and mapping !=''">
+    	and wf.relatedid_accounttype=#{mapping}
     </if>
     <if test="resource !=null and resource !=''">
 		and pay.pay_channelId=#{resource}
     </if>
-    <if test="openLimit =='pid'">
+    <if test="admin != null and admin!= ''">
 		and u.pid is not null and u.pid!=''
     </if>
-    <if test="openLimit =='tongji'">
+    <if test="tongji != null and tongji!= ''">
 		and ins.statistical_analysis like '%1%'
     </if>
-    <if test="openLimit =='Subaccount'">
+    <if test="Subaccount != null and Subaccount!= ''">
 		and res.user_id is not null
+    </if>
+    <if test="Organization != null and Organization !=''">
+		and info.Organization=#{Organization}
+    </if>
+    <if test="PostCode != null and PostCode !=''">
+		and info.PostCode=#{PostCode}
+    </if>
+    <if test="OrderType != null and OrderType !=''">
+		and info.OrderType=#{OrderType}
+    </if>
+    <if test="OrderContent != null and OrderContent !=''">
+		and info.OrderContent=#{OrderContent}
     </if>
   </select>
   

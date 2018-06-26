@@ -82,6 +82,7 @@ import com.webservice.WebServiceUtils;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
 import com.wf.bean.CommonEntity;
+import com.wf.bean.GroupInfo;
 import com.wf.bean.Mail;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -101,6 +102,7 @@ import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
 import com.wf.dao.DatamanagerMapper;
+import com.wf.dao.GroupInfoMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ProjectBalanceMapper;
 import com.wf.dao.ProjectResourcesMapper;
@@ -168,6 +170,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private StandardUnitMapper standardUnitMapper;
 	@Autowired
 	private UserInstitutionMapper userInstitutionMapper;
+	@Autowired
+	private GroupInfoMapper groupInfoMapper;
 	/**
 	 * 机构操作类
 	 * */
@@ -1439,7 +1443,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String viewChack="ViewHistoryCheck";
 			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
 			//查询机构管理员
-			String pid=userMap.get("pid").toString();
+			String pid=String.valueOf(userMap.get("pid"));
 			if(!StringUtils.isEmpty(pid)){
 				userMap.put("admin", this.findInfoByPid(pid));
 			}
@@ -1450,6 +1454,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(ins!=null){
 				userMap.put("tongji", ins.getStatisticalAnalysis());
 			}
+			userMap.put("groupInfo", this.getGroupInfo(userId));
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
@@ -1589,21 +1594,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			if ("ViewHistoryCheck".equals(wm.getRelatedidAccounttype())) {
 				viewCheck = "可以";
-			}
-			if ("CountryRegion".equals(wm.getRelatedidAccounttype())) {
-				userMap.put("CountryRegion", wm.getRelatedidKey());
-			}
-			if ("PostCode".equals(wm.getRelatedidAccounttype())) {
-				userMap.put("PostCode", wm.getRelatedidKey());
-			}
-			if ("OrderType".equals(wm.getRelatedidAccounttype())) {
-				userMap.put("OrderType", wm.getRelatedidKey());
-			}
-			if ("OrderContent".equals(wm.getRelatedidAccounttype())) {
-				userMap.put("OrderContent", wm.getRelatedidKey());
-			}
-			if ("Organization".equals(wm.getRelatedidAccounttype())) {
-				userMap.put("Organization", wm.getRelatedidKey());
 			}
 			if("openApp".equals(wm.getRelatedidAccounttype())){
 				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
@@ -2208,12 +2198,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public void addWfksAccountidMapping(CommonEntity com) {
 		//先删除再添加
 		wfksAccountidMappingMapper.deleteByUserIdAndType(com.getUserId(),"Limit");
-		// 国家区域
-		setCountryRegion(com);
-		// 工单类型和工单号|申请部门
-		setOrderType(com);
-		// 机构类型
-		setOrganization(com);
 		// APP嵌入
 		setOpenApp(com);
 		// 微信嵌入
@@ -2237,83 +2221,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			wfksAccountidMappingMapper.insert(am);
 		}
 	
-	}
-	
-	//国家区域
-	private void setCountryRegion(CommonEntity com){
-		if(StringUtils.isEmpty(com.getCountryRegion())){
-			return;
-		}
-		//国别
-		WfksAccountidMapping wfks = new WfksAccountidMapping();
-		wfks.setMappingid(GetUuid.getId());
-		wfks.setIdAccounttype("Limit");
-		wfks.setIdKey(com.getUserId());
-		wfks.setRelatedidAccounttype("CountryRegion");
-		wfks.setRelatedidKey(com.getCountryRegion());
-		wfks.setBegintime(null);
-		wfks.setEndtime(null);
-		wfks.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-		wfksAccountidMappingMapper.insert(wfks);
-		//外国不用存储地区
-		if("foreign".equals(com.getCountryRegion())){
-			return;
-		}
-		//区域
-		WfksAccountidMapping am = new WfksAccountidMapping();
-		am.setMappingid(GetUuid.getId());
-		am.setIdAccounttype("Limit");
-		am.setIdKey(com.getUserId());
-		am.setRelatedidAccounttype("PostCode");
-		am.setRelatedidKey(com.getPostCode());
-		am.setBegintime(null);
-		am.setEndtime(null);
-		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-		wfksAccountidMappingMapper.insert(am);
-	
-	}
-	//工单类型和工单号|申请部门
-	private void setOrderType(CommonEntity com){
-		if(StringUtils.isEmpty(com.getOrderType())){
-			return;
-		}
-		WfksAccountidMapping wfks = new WfksAccountidMapping();
-		wfks.setMappingid(GetUuid.getId());
-		wfks.setIdAccounttype("Limit");
-		wfks.setIdKey(com.getUserId());
-		wfks.setRelatedidAccounttype("OrderType");
-		wfks.setRelatedidKey(com.getOrderType());
-		wfks.setBegintime(null);
-		wfks.setEndtime(null);
-		wfks.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-		wfksAccountidMappingMapper.insert(wfks);
-		//工单号|申请部门
-		WfksAccountidMapping am = new WfksAccountidMapping();
-		am.setMappingid(GetUuid.getId());
-		am.setIdAccounttype("Limit");
-		am.setIdKey(com.getUserId());
-		am.setRelatedidAccounttype("OrderContent");
-		am.setRelatedidKey(com.getOrderContent());
-		am.setBegintime(null);
-		am.setEndtime(null);
-		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-		wfksAccountidMappingMapper.insert(am);
-	}
-	//机构类型
-	private void setOrganization(CommonEntity com){
-		if(StringUtils.isEmpty(com.getOrganization())){
-			return;
-		}
-		WfksAccountidMapping am = new WfksAccountidMapping();
-		am.setMappingid(GetUuid.getId());
-		am.setIdAccounttype("Limit");
-		am.setIdKey(com.getUserId());
-		am.setRelatedidAccounttype("Organization");
-		am.setRelatedidKey(com.getOrganization());
-		am.setBegintime(null);
-		am.setEndtime(null);
-		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
-		wfksAccountidMappingMapper.insert(am);
 	}
 	
 	//APP嵌入
@@ -2383,4 +2290,42 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public UserAccountRestriction getAccountRestriction(String userId) {
 		return userAccountRestrictionMapper.getAccountRestriction(userId);
 	}
+
+	@Override
+	public int addGroupInfo(CommonEntity com) {
+		groupInfoMapper.deleteGroupInfo(com.getUserId());
+		GroupInfo info=new GroupInfo();
+		info.setUserId(com.getUserId());
+		info.setInstitution(com.getInstitution());
+		info.setOrganization(com.getOrganization());
+		if(com.getManagerType().equals("new")){
+			info.setPid(com.getAdminname());
+		}else{
+			info.setPid(com.getAdminOldName());
+		}
+		info.setCountryRegion(com.getCountryRegion());
+		info.setOrderType(com.getOrderType());
+		info.setOrderContent(com.getOrderContent());
+		info.setPostCode(com.getPostCode());
+		
+		return groupInfoMapper.insertGroupInfo(info);
+	}
+	
+	@Override
+	public int updateGroupInfo(CommonEntity com) {
+		GroupInfo info=new GroupInfo();
+		info.setUserId(com.getUserId());
+		info.setCountryRegion(com.getCountryRegion());
+		info.setOrderType(com.getOrderType());
+		info.setOrderContent(com.getOrderContent());
+		info.setPostCode(com.getPostCode());
+		info.setOrganization(com.getOrganization());
+		return groupInfoMapper.updateGroupInfo(info);
+	}
+
+	@Override
+	public GroupInfo getGroupInfo(String userId) {
+		return groupInfoMapper.getGroupInfo(userId);
+	}
+	
 }

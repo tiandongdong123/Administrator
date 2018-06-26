@@ -42,50 +42,34 @@ public class InstitutionUtils {
 		if (!StringUtils.isEmpty(institution)) {
 			map.put("institution", institution.replace("_", "\\_"));
 		}
-		//调用用户权限
-		StringBuffer type=new StringBuffer("");
-		if ("trical".equals(openLimit)) {
-			type.append(type.length() > 0 ? "," : "").append("'trical'");
-		}
-		if ("openApp".equals(openLimit)) {
-			type.append(type.length() > 0 ? "," : "").append("'openApp'");
-		}
-		if ("openWeChat".equals(openLimit)) {
-			type.append(type.length() > 0 ? "," : "").append("'openWeChat'");
-		}
-		if ("PartyAdminTime".equals(openLimit)) {
-			type.append(type.length() > 0 ? "," : "").append("'PartyAdminTime'");
-		}
-		if(type.length()>0){
-			map.put("accounttype", type.toString());
-		}
-		StringBuffer rekey=new StringBuffer("");
-		if(!StringUtils.isBlank(Organization)){
-			rekey.append(rekey.length() > 0 ? "," : "").append("'"+Organization+"'");
-		}
-		if(!StringUtils.isBlank(PostCode)){
-			rekey.append(rekey.length() > 0 ? "," : "").append("'"+PostCode+"'");
-		}
-		if(!StringUtils.isBlank(OrderType)){
-			if(!StringUtils.isBlank(OrderContent)&&"inner".equals(OrderType)){
-				rekey.append(rekey.length() > 0 ? "," : "").append("'"+OrderContent.trim()+"'");
-			}else{
-				rekey.append(rekey.length() > 0 ? "," : "").append("'"+OrderType+"'");
-			}
-		}
-		if(rekey.length()>0){
-			map.put("relatedidKey", rekey.toString());
-		}
-		if("binding".equals(openLimit)){//个人机构绑定的暂时没做
-			
+		//调用用户权限 (个人绑定未加入)
+		if (AuthorityLimit.TRICAL.equals(openLimit)) {
+			map.put("mapping", openLimit);
+		}else if (AuthorityLimit.OPENAPP.equals(openLimit)) {
+			map.put("mapping", openLimit);
+		}else if (AuthorityLimit.OPENWECHAT.equals(openLimit)) {
+			map.put("mapping", openLimit);
+		}else if (AuthorityLimit.PARTYADMINTIME.equals(openLimit)) {
+			map.put("mapping", openLimit);
+		}else if(AuthorityLimit.PID.equals(openLimit)){
+			map.put("admin", openLimit);
+		}else if(AuthorityLimit.STATISTICS.equals(openLimit)){
+			map.put("tongji", openLimit);
+		}else if(AuthorityLimit.SUBACCOUNT.equals(openLimit)){
+			map.put("tongji", openLimit);
 		}
 		map.put("openLimit", openLimit);
+		if (!StringUtils.isEmpty(Organization) || !StringUtils.isEmpty(PostCode)
+				|| !StringUtils.isEmpty(OrderType)) {
+			map.put("ginfo", "0");
+		}
 		map.put("Organization", Organization);
 		map.put("PostCode", PostCode);
 		map.put("OrderType", OrderType);
+		map.put("OrderContent", OrderContent==null?"":OrderContent.trim());
+		
 		map.put("proType", proType);
 		map.put("resource", resource);
-		map.put("OrderContent", OrderContent.trim());
 		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
 		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
 		if (StringUtils.isBlank(userId) && StringUtils.isBlank(ipSegment)&& StringUtils.isEmpty(institution)&&StringUtils.isEmpty(openLimit)

@@ -50,14 +50,7 @@
                 <div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构类型</label>
 					<select class="form-control input_time" name="Organization" id="Organization">
-						<option value="本科院校">本科院校</option>
-						<option value="职教类院校">职教类院校</option>
-						<option value="公共图书馆">公共图书馆</option>
-						<option value="情报所">情报所</option>
-						<option value="科研院所">科研院所</option>
-						<option value="政府机构">政府机构</option>
-						<option value="医院">医院</option>
-						<option value="企业">企业</option>
+					<?for(organ in org){ ?><option value="${organ.name}">${organ.desc}</option><?}?>
 					</select>
                 </div>
                 <div class="form-group input_block">

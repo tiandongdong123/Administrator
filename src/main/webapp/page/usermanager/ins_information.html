@@ -31,28 +31,14 @@
 					<label class="input_name">开通权限</label>
 					<select class="form-control input_width" name="openLimit" id="openLimit">
 		                <option value="">--请选择--</option>
-		                <option value="trical" <?if(!isEmpty(map.openLimit)&&map.openLimit=='trical'){?>selected="selected"<?}?>>试用项目</option>
-		                <option value="pid" <?if(!isEmpty(map.openLimit)&&map.openLimit=='pid'){?>selected="selected"<?}?>>机构管理员</option>
-		                <option value="Subaccount" <?if(!isEmpty(map.openLimit)&&map.openLimit=='Subaccount'){?>selected="selected"<?}?>>机构子账号</option>
-		                <option value="binding" <?if(!isEmpty(map.openLimit)&&map.openLimit=='binding'){?>selected="selected"<?}?>>个人绑定机构</option>
-		                <option value="tongji" <?if(!isEmpty(map.openLimit)&&map.openLimit=='tongji'){?>selected="selected"<?}?>>统计分析</option>
-		                <option value="openApp" <?if(!isEmpty(map.openLimit)&&map.openLimit=='openApp'){?>selected="selected"<?}?>>APP嵌入服务</option>
-		                <option value="openWeChat" <?if(!isEmpty(map.openLimit)&&map.openLimit=='openWeChat'){?>selected="selected"<?}?>>微信公众号嵌入服务</option>
-	                	<option value="PartyAdminTime" <?if(!isEmpty(map.openLimit)&&map.openLimit=='PartyAdminTime'){?>selected="selected"<?}?>>党建管理员</option>
+		                <?for(auth in Authority){ ?><option value="${auth.name}" <?if(!isEmpty(map.openLimit)&&map.openLimit==auth.name){ ?>selected="selected"<?}?>>${auth.desc}</option><?}?>
 	                </select>
 				</td></tr>
 				<tr><td>
 					<label class="input_name">机构类型</label>
 					<select class="form-control input_width" name="Organization" id="Organization">
 						<option value="">--请选择--</option>
-						<option value="本科院校" <?if(!isEmpty(map.Organization)&&map.Organization=='本科院校'){?>selected="selected"<?}?>>本科院校</option>
-						<option value="职教类院校" <?if(!isEmpty(map.Organization)&&map.Organization=='职教类院校'){?>selected="selected"<?}?>>职教类院校</option>
-						<option value="公共图书馆" <?if(!isEmpty(map.Organization)&&map.Organization=='公共图书馆'){?>selected="selected"<?}?>>公共图书馆</option>
-						<option value="情报所" <?if(!isEmpty(map.Organization)&&map.Organization=='情报所'){?>selected="selected"<?}?>>情报所</option>
-						<option value="科研院所" <?if(!isEmpty(map.Organization)&&map.Organization=='科研院所'){?>selected="selected"<?}?>>科研院所</option>
-						<option value="政府机构" <?if(!isEmpty(map.Organization)&&map.Organization=='政府机构'){?>selected="selected"<?}?>>政府机构</option>
-						<option value="医院" <?if(!isEmpty(map.Organization)&&map.Organization=='医院'){?>selected="selected"<?}?>>医院</option>
-						<option value="企业" <?if(!isEmpty(map.Organization)&&map.Organization=='企业'){?>selected="selected"<?}?>>企业</option>
+						<?for(organ in org){ ?><option value="${organ.name}" <?if(!isEmpty(map.Organization)&&map.Organization==organ.name){ ?>selected="selected"<?}?>>${organ.desc}</option><?}?>
 					</select>
 				</td><td>
 					<label class="input_name">地区</label>
@@ -106,11 +92,11 @@
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
           <span class="university" onclick="showAdm('${list.userId}','${list.pid}','${list.institution}');">${list.institution}</span>
-          <span class="time"><?if(list.CountryRegion=='China'){ ?>中国<?}else{?>外国<?}?></span>
-          <span class="time"><?for(arr in arrayArea){ if(!isEmpty(list.PostCode)&&list.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
-          <span class="time">${list.Organization!}</span>
-          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单<?}?><?if(list.OrderType=='inner'){?>内部工单<?}?></span>
-          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.OrderType=='inner'){?>申请部门：<?}?>${list.OrderContent!}</span>
+          <span class="time"><?if(list.groupInfo.CountryRegion=='China'){ ?>中国<?}else{?>外国<?}?></span>
+          <span class="time"><?for(arr in arrayArea){ if(!isEmpty(list.groupInfo.PostCode)&&list.groupInfo.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
+          <span class="time"><?for(organ in org){ if(!isEmpty(list.groupInfo)&&list.groupInfo.Organization==organ.name){ ?>${organ.desc}<?}}?></span>
+          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单<?}?><?if(list.groupInfo.OrderType=='inner'){?>内部工单<?}?></span>
+          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.groupInfo.OrderType=='inner'){?>申请部门：<?}?>${list.groupInfo.OrderContent!}</span>
       </div>
       <div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
         <table class="table table-hover">
@@ -564,7 +550,7 @@
 </div>
 </div>
 <?}?>
-<?if(isEmpty(map.pageList)||map.pageList.pageTotal==0){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
+<?if(isEmpty(map.pageList)||map.pageList.totalRow==0){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <?if(!isEmpty(map.pageList)&&map.pageList.totalRow>20){?><div id="page"></div><?}?>
 </div>
 </div>

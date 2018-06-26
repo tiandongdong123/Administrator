@@ -32,11 +32,13 @@ import wfks.accounting.setting.PayChannelModel;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
+import com.utils.AuthorityLimit;
 import com.utils.CookieUtil;
 import com.utils.DateUtil;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.utils.InstitutionUtils;
+import com.utils.Organization;
 import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
@@ -524,6 +526,7 @@ public class AheadUserController {
 	public ModelAndView register(HttpServletResponse httpResponse){
 		ModelAndView view = new ModelAndView();
 		view.addObject("arrayArea", this.getArea());
+		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
 	}
@@ -598,8 +601,10 @@ public class AheadUserController {
 			}
 			// 统计分析权限
 			aheadUserService.addUserIns(com);
-			// 用户权限
+			// 开通用户角色
 			aheadUserService.addWfksAccountidMapping(com);
+			//开通用户权限
+			aheadUserService.addGroupInfo(com);
 			// 购买详情信息
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectType().equals("balance")){
@@ -1343,7 +1348,9 @@ public class AheadUserController {
 			map.put("adminIP", adminIP);
 		}
 		view.addObject("map", map);
-		view.addObject("arrayArea", this.getArea());//添加地区
+		view.addObject("arrayArea", this.getArea());//地区地区
+		view.addObject("org", Organization.values());//机构账户类型
+		view.addObject("Authority", AuthorityLimit.values());//权限
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
@@ -1357,7 +1364,9 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			view.addObject("arrayArea", this.getArea());//添加地区
+			view.addObject("arrayArea", this.getArea());//地区地区
+			view.addObject("org", Organization.values());//机构账户类型
+			view.addObject("Authority", AuthorityLimit.values());//权限
 			if(!InstitutionUtils.validateQuery(map,query)){
 				view.setViewName("/page/usermanager/ins_information");
 				return view;
@@ -1415,6 +1424,8 @@ public class AheadUserController {
 		map.put("proList", proList);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.addObject("arrayArea", this.getArea());
+		view.addObject("org", Organization.values());
+		view.addObject("groupInfo", aheadUserService.getGroupInfo(userId));
 		view.setViewName("/page/usermanager/ins_numupdate");
 		return view;
 	}
@@ -1612,6 +1623,8 @@ public class AheadUserController {
 			aheadUserService.addUserIns(com);
 			// 用户权限
 			aheadUserService.addWfksAccountidMapping(com);
+			//开通用户权限
+			aheadUserService.addGroupInfo(com);
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
