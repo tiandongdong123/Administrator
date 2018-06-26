@@ -1443,8 +1443,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String viewChack="ViewHistoryCheck";
 			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
 			//查询机构管理员
-			String pid=String.valueOf(userMap.get("pid"));
-			if(!StringUtils.isEmpty(pid)){
+			String pid=userMap.get("pid")==null?"":userMap.get("pid").toString();
+			if(!"".equals(pid)){
 				userMap.put("admin", this.findInfoByPid(pid));
 			}
 			//查询机构子账号
