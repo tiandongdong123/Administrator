@@ -120,7 +120,7 @@
 			<li><a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a></li>
 			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a></li>
 			<li><?if(list.pid!=null&&list.pid!=""){?><a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
-				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}',2);" class="add_admin">添加机构管理员</a><?}?></li>
+				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}');" class="add_admin">添加机构管理员</a><?}?></li>
 			</ul>
 		</div>
 		<a href="javascript:void(0);">

@@ -172,15 +172,14 @@ function delAdmin(aid,e){
 }
 
 //添加/更新管理员
-function setAdmin(userId,pid,institution,flag,e){
+function setAdmin(userId,pid,institution,e){
 	preventBubble(e);
-	$("#aid").val(userId);
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['750px', '520px'],
 	    title: '机构管理员信息',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: 'goaddadmin.do?pid='+pid+"&institution="+institution+"&userId="+userId+"&flag="+flag
+	    content: '../auser/goaddadmin.do?institution='+institution+'&userId='+userId
 	}); 
 }
 

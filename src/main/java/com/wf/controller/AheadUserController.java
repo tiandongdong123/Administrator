@@ -52,7 +52,6 @@ import com.wf.bean.Person;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
-import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -261,34 +260,9 @@ public class AheadUserController {
 	 *	跳转添加管理员
 	 */
 	@RequestMapping("goaddadmin")
-	public ModelAndView go(ModelAndView view,String pid,String userId,String institution,String flag){
-		view.addObject("flag", flag);
+	public ModelAndView go(ModelAndView view,String userId,String institution){
 		view.addObject("userId", userId);
 		view.addObject("institution", institution);
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (StringUtils.isNotBlank(pid)) {
-			map = aheadUserService.findInfoByPid(pid);
-		}
-		String tongji = "";
-		List<Map<String, Object>> admin = new ArrayList<Map<String, Object>>();
-		if ("1".equals(flag)) {
-			UserInstitution ins = aheadUserService.getUserInstitution(userId);
-			if (ins != null) {
-				tongji = ins.getStatisticalAnalysis();
-			}
-			UserAccountRestriction res=aheadUserService.getAccountRestriction(userId);
-			if(res!=null){
-				map.put("upperlimit", res.getUpperlimit());
-				map.put("sConcurrentnumber", res.getsConcurrentnumber());
-				map.put("downloadupperlimit", res.getDownloadupperlimit());
-				map.put("chargebacks", res.getChargebacks());
-			}
-			admin = personservice.getAllInstitutional(institution);
-		}
-		view.addObject("map", map);
-		view.addObject("tongji", tongji);
-		view.addObject("admin", admin);
 		view.setViewName("/page/usermanager/add_admin");
 		return view;
 	}
@@ -300,7 +274,7 @@ public class AheadUserController {
 	@ResponseBody
 	public String addadmin(CommonEntity com){
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(!StringUtils.isEmpty(com.getManagerType())){
+		if(!StringUtils.isEmpty(com.getAdminname())){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			if(per==null){
 				aheadUserService.addRegisterAdmin(com);
