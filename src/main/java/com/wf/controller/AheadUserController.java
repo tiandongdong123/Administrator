@@ -51,7 +51,6 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
-import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserInstitution;
@@ -544,64 +543,30 @@ public class AheadUserController {
 		Map<String,String> hashmap = new HashMap<String, String>();
 		try{
 			String adminId = CookieUtil.getCookie(req);
-			List<ResourceDetailedDTO> rdlist = com.getRdlist();
 			List<ResourceDetailedDTO> list = new ArrayList<ResourceDetailedDTO>();
-			if (rdlist==null) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail","购买项目不能为空，请选择购买项目");
+			// 注册的时候验证
+			hashmap = InstitutionUtils.getRegisterValidate(com, list);
+			if (hashmap.size() > 0) {
 				return hashmap;
 			}
-			for (ResourceDetailedDTO dto : rdlist) {
-				if (!StringUtils.isEmpty(dto.getProjectname())) {
-					list.add(dto);
-				}
-			}
-			for (ResourceDetailedDTO dto : list) {
-				hashmap = this.getValidate(dto, true, true);
-				if (hashmap.size() > 0) {
-					return hashmap;
-				}
-			}
-			if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
-				if(!IPConvertHelper.validateIp(com.getIpSegment())){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  "账号IP段格式错误，请填写规范的IP段");
-					return hashmap;
-				}
-			}
-			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
-				return hashmap;
-			}
-			if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
-				return hashmap;
-			}
-			if(StringUtils.equals(com.getAdminname(), com.getPartyAdmin())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员ID和党建管理员ID重复");
-				return hashmap;
-			}
-			//开通机构管理员
+			// 开通机构管理员
 			this.openAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
-			//添加党建管理员
-			aheadUserService.setPartyAdmin(com);
-			
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 			}
+			//添加机构信息
 			int resinfo = aheadUserService.addRegisterInfo(com);
-			if (StringUtils.isNotBlank(com.getChecks())) {
-				aheadUserService.addAccountRestriction(com);
-			}
 			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
 				aheadUserService.addUserIp(com);
 			}
+			if (StringUtils.isNotBlank(com.getChecks())) {
+				aheadUserService.addAccountRestriction(com);
+			}
+			//添加党建管理员
+			aheadUserService.setPartyAdmin(com);
 			// 统计分析权限
 			aheadUserService.addUserIns(com);
 			// 开通用户角色
@@ -723,7 +688,7 @@ public class AheadUserController {
 			for (int j = 0; j < list.size(); j++) {
 				ResourceDetailedDTO dto = list.get(j);
 				if (dto.getProjectid() != null) {
-					hashmap = this.getValidate(dto, false, true);
+					hashmap = InstitutionUtils.getValidate(dto, false, true);
 					if (hashmap.size() > 0) {
 						return hashmap;
 					}
@@ -957,7 +922,7 @@ public class AheadUserController {
 			for (int j = 0; j < list.size(); j++) {
 				ResourceDetailedDTO dto = list.get(j);
 				if (dto.getProjectid() != null) {
-					hashmap = this.getValidate(dto, false, false);
+					hashmap = InstitutionUtils.getValidate(dto, false, false);
 					if (hashmap.size() > 0) {
 						return hashmap;
 					}
@@ -1571,40 +1536,10 @@ public class AheadUserController {
 			String adminId = CookieUtil.getCookie(req);
 			List<String> delList=new ArrayList<String>();
 			List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
-			if(com.getRdlist()==null){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "购买项目不能为空");
+			// 机构修改校验
+			hashmap = InstitutionUtils.getUpdateValidate(com, delList, list);
+			if (hashmap.size() > 0) {
 				return hashmap;
-			}
-			for (ResourceDetailedDTO dto : com.getRdlist()) {
-				if (StringUtils.isEmpty(dto.getProjectname())) {
-					delList.add(dto.getProjectid());
-					continue;
-				}
-				hashmap = this.getValidate(dto, true, false);
-				if (hashmap.size() > 0) {
-					return hashmap;
-				}
-				list.add(dto);
-			}
-			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
-				return hashmap;
-			}
-			if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
-				return hashmap;
-			}
-			if(StringUtils.equals(com.getAdminname(), com.getPartyAdmin())){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail",  "机构管理员ID和党建管理员ID重复");
-				return hashmap;
-			}
-			//删除项目
-			if(delList.size()>0){
-				this.removeproject(req,delList);
 			}
 			// 验证金额是否正确
 			for (ResourceDetailedDTO dto : list) {
@@ -1617,32 +1552,31 @@ public class AheadUserController {
 					}
 				}
 			}
-			com.setRdlist(list);
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				if (IPConvertHelper.validateIp(com.getIpSegment())) {// 校验ip的合法性
-					aheadUserService.updateUserIp(com);
-				} else {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "IP不合法");
-					return hashmap;
-				}
-			} else {
-				aheadUserService.deleteUserIp(com.getUserId());
+			// 删除项目
+			if (delList.size() > 0) {
+				this.removeproject(req, delList);
 			}
+			com.setRdlist(list);
 			//开通机构管理员
 			this.openAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
-			//添加党建管理员
-			aheadUserService.setPartyAdmin(com);
+			// 修改机构信息
 			int resinfo = aheadUserService.updateUserInfo(com, adminId);
+			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+				aheadUserService.updateUserIp(com);
+			} else {
+				aheadUserService.deleteUserIp(com.getUserId());
+			}
 			aheadUserService.updateAccountRestriction(com);
+			// 添加党建管理员
+			aheadUserService.setPartyAdmin(com);
 			// 统计分析权限
 			aheadUserService.addUserIns(com);
 			// 用户权限
 			aheadUserService.addWfksAccountidMapping(com);
-			//开通用户权限
+			// 开通用户权限
 			aheadUserService.addGroupInfo(com);
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
@@ -1709,87 +1643,26 @@ public class AheadUserController {
 				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
 			return hashmap;
 		}
-		String adminId=com.getAdminname();
-		if(StringUtils.isEmpty(adminId)){
+		String adminId="";
+		if(com.getManagerType().equals("new")){
+			adminId=com.getAdminname();
+		}else{
 			adminId=com.getAdminOldName();
 		}
 		Person per=aheadUserService.queryPersonInfo(adminId);
-		if (per == null) {
-			aheadUserService.addRegisterAdmin(com);
-		} else if (per.getUsertype() != 1) {
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", "机构管理员的ID已经被占用");
-			return hashmap;
-		} else if (!StringUtils.equals(per.getInstitution(), com.getInstitution())) {
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", "该机构名称与机构管理员不一致");
-			return hashmap;
-		} else {
-			aheadUserService.updateRegisterAdmin(com);
-			if(!StringUtils.equals(per.getInstitution(), com.getInstitution())){
-				//修改该机构下的所有机构名称
-				aheadUserService.updateInstitution(com.getInstitution(),per.getInstitution());
+		if(per!=null){
+			if(com.getManagerType().equals("new")||per.getUsertype() != 1){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "机构管理员的ID已经被占用");
+				return hashmap;
 			}
+			aheadUserService.updateRegisterAdmin(com);
+		}else{
+			aheadUserService.addRegisterAdmin(com);
 		}
 		if(StringUtils.isNotBlank(com.getAdminIP())){
 			aheadUserService.deleteUserIp(com.getAdminname());
 			aheadUserService.addUserAdminIp(com);
-		}
-		return hashmap;
-	}
-	
-	/**
-	 *  注册或者修改机构用户的非空校验
-	 * @param dto
-	 * @param isBatch false是批量,true是非批量
-	 * @return
-	 */
-	private Map<String,String> getValidate(ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
-		Map<String,String> hashmap=new HashMap<String,String>();
-		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
-		if (StringUtils.isBlank(dto.getValidityEndtime())) {
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
-			return hashmap;
-		}
-		if(notBatch){
-			if (dto.getProjectType().equals("balance")) {
-				if (dto.getTotalMoney() == null) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
-					return hashmap;
-				}
-				if (dto.getTotalMoney()<=0&&isAdd) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额必须大于0");
-					return hashmap;
-				}
-			} else if (dto.getProjectType().equals("count")) {
-				if (dto.getPurchaseNumber() == null) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数不能为空，请填写次数");
-					return hashmap;
-				}
-				if (dto.getPurchaseNumber()<=0&&isAdd) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数必须大于0");
-					return hashmap;
-				}
-			}
-		}
-		if (dto.getRldto() != null) {
-			boolean flag = true;// 判断是否有选中的数据库
-			for (ResourceLimitsDTO rldto : dto.getRldto()) {
-				if (rldto.getResourceid() != null) {
-					flag = false;
-					break;
-				}
-			}
-			if (flag) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", projectname + "数据库不能为空，请选择数据库");
-				return hashmap;
-			}
 		}
 		return hashmap;
 	}

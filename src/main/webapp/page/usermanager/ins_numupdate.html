@@ -6,7 +6,7 @@
 <script type="text/javascript" src="../page/usermanager/js/ins_numupdate.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
-<script type="text/javascript" src="../page/usermanager/js/validation_updateuser.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
   <div class="content-wrapper">
     <section class="content-header"><h1>账号修改</h1></section>
 <section class="content">
@@ -17,7 +17,7 @@
           <div class="box-body">
             <div class="form-group input_block">
               <label class="input_name">机构用户名</label>
-              <input type="hidden" class="form-control input_width" name="userId" id="userId" value="${map.userId}">
+              <input type="hidden" name="userId" id="userId" value="${map.userId}">
               <input type="text" class="form-control input_width" value="${map.userId}" readonly="readonly">
             </div>
             <div class="form-group input_block">
@@ -25,7 +25,7 @@
               <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
                 <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;">
 				<ul></ul>
-			</div>
+				</div>
             </div>
             <div class="checkbox input_block block_left">
               <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数</label>

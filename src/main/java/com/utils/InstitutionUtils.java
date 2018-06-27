@@ -1,11 +1,16 @@
 package com.utils;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.citrus.util.StringUtil;
+import com.wf.bean.CommonEntity;
 import com.wf.bean.Query;
+import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.ResourceLimitsDTO;
 
 public class InstitutionUtils {
 
@@ -77,5 +82,163 @@ public class InstitutionUtils {
 			flag=false;
 		}
 		return flag;
+	}
+	
+	/**
+	 * 机构注册验证
+	 * @param com
+	 * @param list
+	 * @return
+	 */
+	public static Map<String,String> getRegisterValidate(CommonEntity com,List<ResourceDetailedDTO> list){
+		Map<String,String> hashmap = new HashMap<String, String>();
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		if (rdlist==null) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail","购买项目不能为空，请选择购买项目");
+			return hashmap;
+		}
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+			if(!IPConvertHelper.validateIp(com.getIpSegment())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "账号IP段格式错误，请填写规范的IP段");
+				return hashmap;
+			}
+		}
+		if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
+			return hashmap;
+		}
+		if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
+			return hashmap;
+		}
+		if (!StringUtils.isBlank(com.getAdminname())
+				&& StringUtils.equals(com.getAdminname(), com.getPartyAdmin())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员ID和党建管理员ID重复");
+			return hashmap;
+		}
+		for (ResourceDetailedDTO dto : rdlist) {
+			if (!StringUtils.isEmpty(dto.getProjectname())) {
+				list.add(dto);
+			}
+		}
+		for (ResourceDetailedDTO dto : list) {
+			hashmap = InstitutionUtils.getValidate(dto, true, true);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
+		}
+		return hashmap;
+	}
+	
+	/**
+	 *  注册或者修改机构用户的非空校验
+	 * @param dto
+	 * @param isBatch false是批量,true是非批量
+	 * @return
+	 */
+	public static Map<String,String> getValidate(ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
+		Map<String,String> hashmap=new HashMap<String,String>();
+		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
+		if (StringUtils.isBlank(dto.getValidityEndtime())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
+			return hashmap;
+		}
+		if(notBatch){
+			if (dto.getProjectType().equals("balance")) {
+				if (dto.getTotalMoney() == null) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
+					return hashmap;
+				}
+				if (dto.getTotalMoney()<=0&&isAdd) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"金额必须大于0");
+					return hashmap;
+				}
+			} else if (dto.getProjectType().equals("count")) {
+				if (dto.getPurchaseNumber() == null) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"次数不能为空，请填写次数");
+					return hashmap;
+				}
+				if (dto.getPurchaseNumber()<=0&&isAdd) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail",  projectname+"次数必须大于0");
+					return hashmap;
+				}
+			}
+		}
+		if (dto.getRldto() != null) {
+			boolean flag = true;// 判断是否有选中的数据库
+			for (ResourceLimitsDTO rldto : dto.getRldto()) {
+				if (rldto.getResourceid() != null) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname + "数据库不能为空，请选择数据库");
+				return hashmap;
+			}
+		}
+		return hashmap;
+	}
+	
+	/**
+	 * 机构账号修改验证
+	 * @param com
+	 * @param delList
+	 * @param list
+	 * @return
+	 */
+	public static Map<String,String> getUpdateValidate(CommonEntity com,List<String> delList,List<ResourceDetailedDTO> list){
+		Map<String,String> hashmap=new HashMap<String,String>();
+		if(com.getRdlist()==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "购买项目不能为空");
+			return hashmap;
+		}
+		if(com.getLoginMode().equals("0") || com.getLoginMode().equals("2")){
+			if(!IPConvertHelper.validateIp(com.getIpSegment())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "账号IP段格式错误，请填写规范的IP段");
+				return hashmap;
+			}
+		}
+		if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
+			return hashmap;
+		}
+		if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
+			return hashmap;
+		}
+		if (!StringUtils.isBlank(com.getAdminname())
+				&& StringUtils.equals(com.getAdminname(), com.getPartyAdmin())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员ID和党建管理员ID重复");
+			return hashmap;
+		}
+		for (ResourceDetailedDTO dto : com.getRdlist()) {
+			if (StringUtils.isEmpty(dto.getProjectname())) {
+				delList.add(dto.getProjectid());
+				continue;
+			}
+			hashmap = InstitutionUtils.getValidate(dto, true, false);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
+			list.add(dto);
+		}
+		return hashmap;
 	}
 }
