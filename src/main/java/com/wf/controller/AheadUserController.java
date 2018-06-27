@@ -244,11 +244,15 @@ public class AheadUserController {
 	 */
 	@RequestMapping("deladmin")
 	@ResponseBody
-	public String deladmin(String aid){
+	public String deladmin(String userId,String pid){
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("userId", aid);
+		map.put("userId", userId);
 		map.put("pid", "");
 		int resinfo = aheadUserService.updatePid(map);
+		CommonEntity com=new CommonEntity();
+		com.setUserId(userId);
+		aheadUserService.updateAccountRestriction(com);
+		aheadUserService.addUserIns(com);
 		if(resinfo>0){
 			return "true";
 		}

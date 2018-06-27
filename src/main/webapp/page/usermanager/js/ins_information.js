@@ -126,19 +126,33 @@ function updateInstitution(news,olds){
 //锁定/解锁切换
 function setfreeze(flag,obj,aid,e){
 	preventBubble(e);
-	$.ajax({
-		type : "post",
-		url : "../auser/setfreeze.do",
-		data:{aid : aid,flag:flag},
-		success: function(data){
-			if(flag==2){
-				$(obj).removeClass('icon_close').addClass('icon_open');
-				$(obj).attr("onclick","setfreeze(1,this,'"+aid+"');")
-			}else{
-				$(obj).removeClass('icon_open').addClass('icon_close');
-				$(obj).attr("onclick","setfreeze(2,this,'"+aid+"');")
-			}
-		}
+	var msg="";
+	if(flag=='1'){
+		msg="确定要冻结机构账户吗？";
+	}else{
+		msg="确定要解冻机构账户吗？";
+	}
+	layer.alert(msg,{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		url : "../auser/setfreeze.do",
+	    		data:{aid : aid,flag:flag},
+	    		success: function(data){
+	    			if(flag==2){
+	    				$(obj).removeClass('icon_close').addClass('icon_open');
+	    				$(obj).attr("onclick","setfreeze(1,this,'"+aid+"');")
+	    			}else{
+	    				$(obj).removeClass('icon_open').addClass('icon_close');
+	    				$(obj).attr("onclick","setfreeze(2,this,'"+aid+"');")
+	    			}
+	    			layer.closeAll();
+	    		}
+	    	});
+	    }
 	});
 }
 
@@ -156,18 +170,25 @@ function unfolded(flag,obj,index){
 }
 
 //移除管理员
-function delAdmin(aid,e){
+function delAdmin(userId,e){
 	preventBubble(e);
-	$.ajax({
-		type : "post",
-		url : "../auser/deladmin.do",
-		data:{"aid":aid},
-		success: function(data){
-		   if(data == "true"){
-			   layer.msg('移除成功', {icon: 1});
-			   findList();
-		   }
-		}
+	layer.alert('确定要移除机构管理员吗？',{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		url : "../auser/deladmin.do",
+	    		data:{"userId":userId},
+	    		success: function(data){
+	    		   if(data == "true"){
+	    			   layer.msg('移除成功', {icon: 1});
+	    			   findList();
+	    		   }
+	    		}
+	    	});
+	    }
 	});
 }
 
