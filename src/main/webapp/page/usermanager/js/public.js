@@ -392,6 +392,20 @@ function switchcs(obj){
 		$("#checkIp").hide();
 		$("#deleteIp").hide();
 	}
+	if ($(obj).val() != "1") {
+		$("#wechatDiv").hide();
+		$("#openAppDiv").hide();
+		$("#sendMail").prop("checked", false);
+		$("#openApp").prop("checked", false);
+		$("#openWeChat").prop("checked", false);
+		$("#appBegintime").val("");
+		$("#appEndtime").val("");
+		$("#weChatBegintime").val("");
+		$("#weChatEndtime").val("");
+		$("#weChatEamil").val("");
+	}
+	$("#openWeChatspan").html("");
+	$("#openAppspan").html("");
 	$("#fromList").data('bootstrapValidator').resetForm();
 }
 
@@ -1876,4 +1890,3 @@ function checkData(obj){
 	}
 	obj.value=parseInt(value);
 }
-
