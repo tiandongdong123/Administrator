@@ -32,7 +32,7 @@
             </div>
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                 <div class="form-group input_block">
-               <label class="input_name">机构账号并发数</label>
+               <label class="input_name">机构账号并发数（登录并发）</label>
                <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}">
              </div>
             </div>
@@ -155,7 +155,7 @@
 				</div>
 				<div class="form-group input_block">
 					<label class="input_name">管理员IP段</label>
-					<textarea class="form-control input_width" rows="3" name="adminIP" id="adminIP"><? if(!isEmpty(map.adminIP)){ var a=0; for(aip in map.adminIP){ ?>${aip.beginIpAddressNumber}-${aip.endIpAddressNumber}<?if(a<map.adminIP.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
+					<input type="text" class="form-control input_width" name="adminIP" id="adminIP" <?if(!isEmpty(map.adminIP)){?>value="${map.adminIP[0].beginIpAddressNumber}-${map.adminIP[0].endIpAddressNumber}"<?}?>/>
 				</div>
 				<div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
