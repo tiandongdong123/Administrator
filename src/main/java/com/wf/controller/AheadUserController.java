@@ -525,23 +525,10 @@ public class AheadUserController {
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
 		ModelAndView view = new ModelAndView();
-		view.addObject("arrayArea", this.getArea());
+		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
-	}
-	//获取一个省份直辖市自治区
-	private JSONArray getArea(){
-		JSONArray arrayArea = new JSONArray();
-		String reg = redis.get("Region", 13);// 省级区域
-		JSONArray region = JSONArray.fromObject(reg);
-		for (int i = 0; i < region.size(); i++) {
-			JSONObject obj = region.getJSONObject(i);
-			if (obj.get("pid").equals("0")) {
-				arrayArea.add(obj);
-			}
-		}
-		return arrayArea;
 	}
 	
 	/**
@@ -582,13 +569,29 @@ public class AheadUserController {
 					return hashmap;
 				}
 			}
-			//添加党建管理员
-			aheadUserService.setPartyAdmin(com);
+			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
+				return hashmap;
+			}
+			if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
+				return hashmap;
+			}
+			if(StringUtils.equals(com.getAdminname(), com.getPartyAdmin())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员ID和党建管理员ID重复");
+				return hashmap;
+			}
 			//开通机构管理员
 			this.openAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
+			//添加党建管理员
+			aheadUserService.setPartyAdmin(com);
+			
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 			}
@@ -1348,9 +1351,10 @@ public class AheadUserController {
 			map.put("adminIP", adminIP);
 		}
 		view.addObject("map", map);
-		view.addObject("arrayArea", this.getArea());//地区地区
+		view.addObject("arrayArea", SettingUtil.getRegionCode());//地区地区
 		view.addObject("org", Organization.values());//机构账户类型
 		view.addObject("Authority", AuthorityLimit.values());//权限
+		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
@@ -1364,7 +1368,7 @@ public class AheadUserController {
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
-			view.addObject("arrayArea", this.getArea());//地区地区
+			view.addObject("arrayArea", SettingUtil.getRegionCode());//地区地区
 			view.addObject("org", Organization.values());//机构账户类型
 			view.addObject("Authority", AuthorityLimit.values());//权限
 			if(!InstitutionUtils.validateQuery(map,query)){
@@ -1423,7 +1427,7 @@ public class AheadUserController {
 		limitChange(proList,view);
 		map.put("proList", proList);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
-		view.addObject("arrayArea", this.getArea());
+		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());
 		view.addObject("groupInfo", aheadUserService.getGroupInfo(userId));
 		view.setViewName("/page/usermanager/ins_numupdate");
@@ -1583,6 +1587,21 @@ public class AheadUserController {
 				}
 				list.add(dto);
 			}
+			if(StringUtils.equals(com.getAdminname(), com.getUserId())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
+				return hashmap;
+			}
+			if(StringUtils.equals(com.getPartyAdmin(), com.getUserId())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "党建管理员ID和机构用户ID重复");
+				return hashmap;
+			}
+			if(StringUtils.equals(com.getAdminname(), com.getPartyAdmin())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail",  "机构管理员ID和党建管理员ID重复");
+				return hashmap;
+			}
 			//删除项目
 			if(delList.size()>0){
 				this.removeproject(req,delList);
@@ -1610,13 +1629,13 @@ public class AheadUserController {
 			} else {
 				aheadUserService.deleteUserIp(com.getUserId());
 			}
-			//添加党建管理员
-			aheadUserService.setPartyAdmin(com);
 			//开通机构管理员
 			this.openAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
+			//添加党建管理员
+			aheadUserService.setPartyAdmin(com);
 			int resinfo = aheadUserService.updateUserInfo(com, adminId);
 			aheadUserService.updateAccountRestriction(com);
 			// 统计分析权限
@@ -1688,11 +1707,6 @@ public class AheadUserController {
 		}
 		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
 				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
-			return hashmap;
-		}
-		if(StringUtils.equals(com.getAdminname(), com.getUserId())){
-			hashmap.put("flag", "fail");
-			hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
 			return hashmap;
 		}
 		String adminId=com.getAdminname();
