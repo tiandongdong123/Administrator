@@ -1658,6 +1658,7 @@ function checkWeChat(obj,type) {
 		}else{
 			$("#sendMail").prop("checked",false);
 		}
+		$("#weChatBegintime").val(getData());
 	} else {
 		$("#wechatDiv").hide();
 	}
@@ -1672,6 +1673,7 @@ function checkApp(obj){
 			$("#openAppspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
 			return;
 		}else{
+			$("#appBegintime").val(getData());
 			$("#openAppDiv").show();
 		}
 	}else{
@@ -1743,6 +1745,7 @@ function checkParty(obj){
 	$("input[name=trial]").prop("checked",false);
 	$("input[name=authorityType]").prop("checked",false);
 	if($(obj).is(':checked')) {
+		$("#partyBegintime").val(getData());
 		$("#partyDiv").show();
 	}else{
 		$("#partyDiv").hide();
