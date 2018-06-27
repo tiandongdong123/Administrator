@@ -552,7 +552,7 @@
 </div>
 </div>
 <?}?>
-<?if(isEmpty(map.pageList)||map.pageList.totalRow==0){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
+<?if(isEmpty(msg)&&(isEmpty(map.pageList)||map.pageList.totalRow==0)){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
 <?if(!isEmpty(map.pageList)&&map.pageList.totalRow>20){?><div id="page"></div><?}?>
 </div>
 </div>
