@@ -11,6 +11,7 @@ public class CommonEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	// 机构账号
 	private String institution;
+	private String oldInstitution;
 	private String userId;
 	private String loginMode;
 	private String password;
@@ -143,6 +144,12 @@ public class CommonEntity implements Serializable {
 	}
 	public void setInstitution(String institution) {
 		this.institution = institution;
+	}
+	public String getOldInstitution() {
+		return oldInstitution;
+	}
+	public void setOldInstitution(String oldInstitution) {
+		this.oldInstitution = oldInstitution;
 	}
 	public String getUserId() {
 		return userId;

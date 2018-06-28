@@ -1562,6 +1562,9 @@ public class AheadUserController {
 			aheadUserService.addWfksAccountidMapping(com);
 			// 开通用户权限
 			aheadUserService.addGroupInfo(com);
+			if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
+				aheadUserService.updateInstitution(com.getInstitution(),com.getOldInstitution());
+			}
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
