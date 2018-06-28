@@ -14,6 +14,9 @@ $(function(){
 		var pictures = $(this).siblings('.pictures');
 		pictures.attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
 	});
+	if($("#proType").val()!=''){
+		queryType();
+	}
 });
 
 //全局点击事件(隐藏服务权限div)
@@ -400,14 +403,15 @@ function queryOrder(obj){
 	}
 }
 //选择购买项目
-function queryType(obj){
-	var val=$(obj).val();
+function queryType(){
+	var val=$("#proType").val();
 	if(val==""){
 		$("#resource").hide();
 		return;
 	}
 	$("#resource").show();
 	$("#resource").html('<option value="">--请选择--</option>');
+	var oldresource=$("#oldresource").val();
 	$.ajax({
 		type:"post",
 		async: false,
@@ -417,7 +421,11 @@ function queryType(obj){
 		success:function(data){
 			for(var i in data){
 				var pro=data[i];
-				$("#resource").append('<option value="'+pro.id+'">'+pro.name+'</option>');
+				var type="";
+				if(pro.id==oldresource){
+					type='selected="selected"';
+				}
+				$("#resource").append('<option value="'+pro.id+'"'+type+'>'+pro.name+'</option>');
 			}
 		}
 	});

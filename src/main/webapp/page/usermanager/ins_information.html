@@ -57,13 +57,14 @@
 					</select>
 				</td><td>
 					<label class="input_name">购买项目</label>
-					<select class="form-control input_time" name="proType" id="proType" onchange="queryType(this);">
+					<select class="form-control input_time" name="proType" id="proType" onchange="queryType();">
 						<option value="">--请选择--</option>
 						<option value="Limit" <?if(!isEmpty(map.proType)&&map.proType=='Limit'){?>selected="selected"<?}?>>资源下载</option>
 						<option value="Check" <?if(!isEmpty(map.proType)&&map.proType=='Check'){?>selected="selected"<?}?>>万方检测</option>
 						<option value="WFStats" <?if(!isEmpty(map.proType)&&map.proType=='WFStats'){?>selected="selected"<?}?>>万方分析</option>
 					</select>
 					<select class="form-control input_width" style="display:none;" name="resource" id="resource"><option value="">--请选择--</option></select>
+					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}">
 				</td></tr>
 				<tr id="ordercontent_td" <?if(isEmpty(map.OrderType)||map.OrderType!='inner'){?>style="display:none;"<?}?>><td>
 					<label class="input_name">申请部门</label>
