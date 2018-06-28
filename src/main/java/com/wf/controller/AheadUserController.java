@@ -527,8 +527,9 @@ public class AheadUserController {
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
-			// 开通机构管理员
-			this.openAdmin(com, hashmap);
+			// 是否添加机构管理员
+			Map<String,Person> perMap=new HashMap<String,Person>();
+			this.openAdmin(com, hashmap, perMap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -543,13 +544,15 @@ public class AheadUserController {
 			if (StringUtils.isNotBlank(com.getChecks())) {
 				aheadUserService.addAccountRestriction(com);
 			}
-			//添加党建管理员
+			// 添加党建管理员
 			aheadUserService.setPartyAdmin(com);
+			// 添加机构管理员
+			this.addAdmin(com, perMap.get("per"));
 			// 统计分析权限
 			aheadUserService.addUserIns(com);
 			// 开通用户角色
 			aheadUserService.addWfksAccountidMapping(com);
-			//开通用户权限
+			// 开通用户权限
 			aheadUserService.addGroupInfo(com);
 			// 购买详情信息
 			for(ResourceDetailedDTO dto : list){
@@ -1530,16 +1533,17 @@ public class AheadUserController {
 					}
 				}
 			}
+			// 是否开通机构管理员
+			Map<String, Person> perMap = new HashMap<String, Person>();
+			this.openAdmin(com, hashmap, perMap);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
 			// 删除项目
 			if (delList.size() > 0) {
 				this.removeproject(req, delList);
 			}
 			com.setRdlist(list);
-			//开通机构管理员
-			this.openAdmin(com, hashmap);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
 			// 修改机构信息
 			int resinfo = aheadUserService.updateUserInfo(com, adminId);
 			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
@@ -1550,6 +1554,8 @@ public class AheadUserController {
 			aheadUserService.updateAccountRestriction(com);
 			// 添加党建管理员
 			aheadUserService.setPartyAdmin(com);
+			// 添加机构管理员
+			this.addAdmin(com, perMap.get("per"));
 			// 统计分析权限
 			aheadUserService.addUserIns(com);
 			// 用户权限
@@ -1612,8 +1618,8 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
-	//创建机构管理
-	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
+	//验证机构管理员
+	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap,Map<String,Person> perMap) throws Exception{
 		if (StringUtils.isEmpty(com.getManagerType())) {
 			return hashmap;
 		}
@@ -1634,6 +1640,21 @@ public class AheadUserController {
 				hashmap.put("fail", "机构管理员的ID已经被占用");
 				return hashmap;
 			}
+			perMap.put("per", per);
+		}
+		return hashmap;
+	}
+	
+	//添加机构管理员
+	private void addAdmin(CommonEntity com,Person per) throws Exception{
+		if (StringUtils.isEmpty(com.getManagerType())) {
+			return;
+		}
+		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
+				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
+			return;
+		}
+		if(per!=null){
 			aheadUserService.updateRegisterAdmin(com);
 		}else{
 			aheadUserService.addRegisterAdmin(com);
@@ -1642,7 +1663,6 @@ public class AheadUserController {
 			aheadUserService.deleteUserIp(com.getAdminname());
 			aheadUserService.addUserAdminIp(com);
 		}
-		return hashmap;
 	}
 	
 	/**
