@@ -1742,11 +1742,11 @@ function checkParty(obj){
 	$("#partyPassword").val("");
 	$("#partyBegintime").val("");
 	$("#partyEndtime").val("");
-	$("input[name=trial]").prop("checked",false);
-	$("input[name=authorityType]").prop("checked",false);
+	$("input:radio[name=isTrial]").prop('checked',false);
 	if($(obj).is(':checked')) {
 		$("#partyBegintime").val(getData());
 		$("#partyDiv").show();
+		$("input:radio[value=notTrial]").prop("checked",true);
 	}else{
 		$("#partyDiv").hide();
 	}
