@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1413,6 +1415,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
+			int sortScore=1+Integer.parseInt(userMap.get("loginMode").toString());
+			boolean flag=false;//用户是否过期
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
@@ -1457,6 +1461,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			userMap.put("groupInfo", this.getGroupInfo(userId));
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> oldList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
@@ -1472,7 +1477,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired=this.getExpired(account.getEndDateTime(),nextDay);
+						if(!expired){
+							expired=account.getBalance().intValue()<0;
+						}
+						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
@@ -1502,7 +1511,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired = this.getExpired(account.getEndDateTime(), nextDay);
+						if (!expired) {
+							expired = account.getBalance() < 0;
+						}
+						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
@@ -1532,13 +1545,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(plList.size()>0 && plList.get(0).get("tableName")!=null){					
 					extraData.put("plList", data);
 				}
-				if(extraData.size()>0){					
-					projectList.add(extraData);
+				if(extraData.size()>0){
+					if((boolean) extraData.get("expired")){
+						oldList.add(extraData);
+						flag=true;
+					}else{
+						projectList.add(extraData);
+					}
 				}
 			}
+			projectList.addAll(oldList);
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			if(flag){
+				sortScore=100*sortScore;
+			}
+			userMap.put("score", sortScore);
 			long timeInf=System.currentTimeMillis()-time1;
 			//查询个人绑定机构权限
 			long time3=System.currentTimeMillis();
@@ -1565,6 +1588,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 			log.info("数据库耗时:"+timeSql+"ms,接口耗时:"+timeInf+"ms,个人绑定机构耗时:"+timeSea+"ms");
 		}
 		log.info(userList.toString());
+		//对userList排序
+		Collections.sort(userList, new Comparator<Object>() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				Map<String, Object> map1 = (Map<String, Object>) o1;
+				Map<String, Object> map2 = (Map<String, Object>) o2;
+				int num1 = Integer.parseInt(map1.get("score").toString());
+				int num2 = Integer.parseInt(map2.get("score").toString());
+				if (num1 > num2) {
+					return 1;
+				} else if (num1 < num2) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		});
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
 		pageList.setTotalRow(i);
