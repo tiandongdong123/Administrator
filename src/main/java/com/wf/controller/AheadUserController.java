@@ -1638,10 +1638,16 @@ public class AheadUserController {
 		}
 		Person per=aheadUserService.queryPersonInfo(adminId);
 		if(per!=null){
-			if(com.getManagerType().equals("new")||per.getUsertype() != 1){
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", "机构管理员的ID已经被占用");
-				return hashmap;
+			if(com.getManagerType().equals("new")){
+				if(per.getUsertype() != 1){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", "机构管理员的ID已经被占用");
+					return hashmap;
+				}else{
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", "该机构管理员ID已经存在，请重新输入机构管理员ID");
+					return hashmap;	
+				}
 			}
 			perMap.put("per", per);
 		}

@@ -102,11 +102,11 @@ function submitForm(){
 		$("#submit").removeAttr("disabled");
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){
-		layer.msg("机构账号IP段格式有误",{icon: 2});
+		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
 		$("#submit").removeAttr("disabled");
 		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
-		layer.msg("管理员IP段格式有误",{icon: 2});
+		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
 		$("#submit").removeAttr("disabled");
 		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){

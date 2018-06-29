@@ -164,7 +164,7 @@ public class InstitutionUtils {
 			} else if (dto.getProjectType().equals("count")) {
 				if (dto.getPurchaseNumber() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数不能为空，请填写次数");
+					hashmap.put("fail",  projectname+"次数输入不正确，请正确填写次数");
 					return hashmap;
 				}
 				if (dto.getPurchaseNumber()<=0&&isAdd) {
