@@ -45,7 +45,7 @@
 					<select class="form-control input_width" name="PostCode" id="PostCode">
 						<option value="">--请选择--</option>
 						<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(map.PostCode)&&map.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
-						<option value="0" <?if(!isEmpty(map.PostCode)&&map.PostCode=='0'){ ?>selected="selected"<?}?>>无</option>
+						<option value="none" <?if(!isEmpty(map.PostCode)&&map.PostCode=='none'){ ?>selected="selected"<?}?>>无</option>
 					</select>
 				</td></tr>
 				<tr><td>

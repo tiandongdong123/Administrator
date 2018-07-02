@@ -26,7 +26,10 @@ import com.wf.bean.WfksAccountidMapping;
 import com.wf.bean.WfksUserSetting;
 
 public interface AheadUserService {
-	
+	/** 机构账号注册 */
+	boolean registerInfo(CommonEntity com);
+	/** 机构账号修改 **/
+	boolean updateinfo(CommonEntity com);
 	/** 查询预警信息 */
 	WarningInfo findWarning();
 	
@@ -158,7 +161,7 @@ public interface AheadUserService {
 	void updateInstitution(String institution, String oldins);
 
 	/** 账号修改 */
-	int updateUserInfo(CommonEntity com, String adminId);
+	int updateUserInfo(CommonEntity com);
 
 	/** 删除购买项目（逻辑删除） */
 	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
@@ -236,6 +239,7 @@ public interface AheadUserService {
 	/** 获取机构用户权限 **/
 	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
 	WfksAccountidMapping[] getWfksAccountid(String userId,String type);
+	WfksAccountidMapping[]  getWfksAccountidByRelatedidKey(String relatedidKey);
 	/**
 	 * 查询该机构名下的所有机构管理员
 	 */

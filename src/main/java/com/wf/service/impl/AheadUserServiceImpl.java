@@ -134,58 +134,38 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
-	
 	@Autowired
 	private PersonMapper personMapper;
-	
 	@Autowired
 	private AccountDao accountDao;
-	
 	@Autowired
 	private ProjectBalanceMapper projectBalanceMapper;
-	
 	@Autowired
 	private ProjectResourcesMapper projectResourcesMapper;
-	
 	@Autowired
 	private ResourcePriceMapper resourcePriceMapper;
-	
 	@Autowired
 	private UserIpMapper userIpMapper;
-	
 	@Autowired
 	private UserAccountRestrictionMapper userAccountRestrictionMapper;
-	
 	@Autowired
 	private DatamanagerMapper datamanagerMapper;
-	
 	@Autowired
 	private WfksPayChannelResourcesMapper wfksMapper;
-	
 	@Autowired
 	private WfksAccountidMappingMapper wfksAccountidMappingMapper;
-	
 	@Autowired
 	private WfksUserSettingMapper wfksUserSettingMapper;
-	
 	@Autowired
 	private StandardUnitMapper standardUnitMapper;
 	@Autowired
 	private UserInstitutionMapper userInstitutionMapper;
 	@Autowired
 	private GroupInfoMapper groupInfoMapper;
-	/**
-	 * 机构操作类
-	 * */
 	@Autowired
-	private GroupAccountUtil groupAccountUtil;
-	
-	/**
-	 * 用来获取ip
-	 * */
+	private GroupAccountUtil groupAccountUtil;//机构操作类
 	@Autowired
-	private HttpServletRequest httpRequest;
-	
+	private HttpServletRequest httpRequest;//用来获取ip
 	/**
 	 * 个人修改接口
 	 * */
@@ -197,7 +177,95 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private BindAccountChannel  bindAccountChannel;
 	@Autowired
 	private BindAuthorityMapping bindAuthorityMapping;
-
+	
+	@Override
+	public boolean registerInfo(CommonEntity com) {
+		boolean flag = true;
+		try {
+			// 添加机构名称
+			this.addRegisterInfo(com);
+			// 添加用户IP
+			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+				this.addUserIp(com);
+			}
+			// 机构子账号限定
+			if (StringUtils.isNotBlank(com.getChecks())) {
+				this.addAccountRestriction(com);
+			}
+			// 添加党建管理员
+			this.setPartyAdmin(com);
+			// 添加机构管理员
+			this.addAdmin(com);
+			// 统计分析权限
+			this.addUserIns(com);
+			// 开通用户角色
+			this.addWfksAccountidMapping(com);
+			// 开通用户权限
+			this.addGroupInfo(com);
+		} catch (Exception e) {
+			log.error("机构注册异常:", e);
+			flag = false;
+		}
+		return flag;
+	}
+	
+	@Override
+	public boolean updateinfo(CommonEntity com) {		
+		boolean flag = true;
+		try {
+			// 修改机构名称
+			this.updateUserInfo(com);
+			//修改用户IP
+			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+				this.updateUserIp(com);
+			} else {
+				this.deleteUserIp(com.getUserId());
+			}
+			// 机构子账号限定
+			this.updateAccountRestriction(com);
+			// 党建管理员
+			this.setPartyAdmin(com);
+			// 机构管理员
+			this.addAdmin(com);
+			// 统计分析权限
+			this.addUserIns(com);
+			// 用户权限
+			this.addWfksAccountidMapping(com);
+			// 开通用户权限
+			this.addGroupInfo(com);
+			//修改机构名称
+			if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
+				this.updateInstitution(com.getInstitution(),com.getOldInstitution());
+			}
+		} catch (Exception e) {
+			log.error("机构注册异常:", e);
+			flag = false;
+		}
+		return flag;
+	}
+	
+	//添加机构管理员
+	private void addAdmin(CommonEntity com) throws Exception{
+		if (StringUtils.isEmpty(com.getManagerType())) {
+			return;
+		}
+		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
+				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
+			return;
+		}
+		String adminId = com.getManagerType().equals("new") ? com.getAdminname() : com
+				.getAdminOldName();
+		Person per=this.queryPersonInfo(adminId);
+		if(per!=null){
+			this.updateRegisterAdmin(com);
+		}else{
+			this.addRegisterAdmin(com);
+		}
+		if(StringUtils.isNotBlank(com.getAdminIP())){
+			this.deleteUserIp(com.getAdminname());
+			this.addUserAdminIp(com);
+		}
+	}
 
 	/**
      * 调用接口验证老平台用户是否存在 
@@ -1235,29 +1303,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateUserInfo(CommonEntity com,String adminId){
-		//账号修改
-		Person p = new Person();
-		p.setUserId(com.getUserId());
-		p.setInstitution(com.getInstitution());
+	public int updateUserInfo(CommonEntity com) {
+		int i = 0;
 		try {
-			if(StringUtils.isNotBlank(com.getPassword())){
+			// 账号修改
+			Person p = new Person();
+			p.setUserId(com.getUserId());
+			p.setInstitution(com.getInstitution());
+			if (StringUtils.isNotBlank(com.getPassword())) {
 				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){			
-			if(com.getManagerType().equals("new")){
+			if (com.getManagerType().equals("new")) {
 				p.setPid(com.getAdminname());
-			}else{
+			} else if (com.getManagerType().equals("old")) {
 				p.setPid(com.getAdminOldName());
+			} else {
+				p.setPid("");
 			}
-		}else{
-			p.setPid("");
+			p.setLoginMode(Integer.parseInt(com.getLoginMode()));
+			i = personMapper.updateRegisterInfo(p);
+		} catch (Exception e) {
+			log.error("机构修改异常：", e);
 		}
-		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
-		return personMapper.updateRegisterInfo(p);
+		return i;
 	}
 	
 	@Override
@@ -1963,6 +2031,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public WfksAccountidMapping[] getWfksAccountidLimit(String userId,String type){
 		return wfksAccountidMappingMapper.getWfksAccountidLimit(userId,type);
 	}
+	@Override
+	public WfksAccountidMapping[] getWfksAccountidByRelatedidKey(String relatedidKey) {
+		return wfksAccountidMappingMapper.getWfksAccountidByRelatedidKey(relatedidKey);
+	}
 	
 	@Override
 	public WfksUserSetting[] getUserSetting(String userId,String type) {
@@ -2367,5 +2439,4 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public GroupInfo getGroupInfo(String userId) {
 		return groupInfoMapper.getGroupInfo(userId);
 	}
-	
 }

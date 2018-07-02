@@ -460,28 +460,21 @@ public class AheadUserController {
 	 */
 	@RequestMapping("getWarning")
 	@ResponseBody
-	public String updateWarning(String flag,Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold,HttpServletRequest request){
+	public String updateWarning(String flag, Integer amountthreshold, Integer datethreshold,
+			Integer remindtime, String remindemail, Integer countthreshold,HttpServletRequest request) {
 		
 		Log log=null;
 		String operation_content="金额阈值:"+amountthreshold+",次数阈值:"+countthreshold+",有效期阈值:"+datethreshold+",邮件提醒间隔时间:"+remindtime+",提醒邮箱:"+remindemail;
 		int i = 0;
-		if(flag.equals("1")){
+		if("1".equals(flag)){
 			i = aheadUserService.updateWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold,null);
 			log=new Log("机构用户预警设置","修改",operation_content,request);
 		}else{
 			i = aheadUserService.addWarning(amountthreshold,datethreshold,remindtime,remindemail,countthreshold);
 			log=new Log("机构用户预警设置","增加",operation_content,request);
 		}
-		
 		logService.addLog(log);
-		
-		String msg = "";
-		if(i>0){
-			msg="true";
-		}else{
-			msg = "false";
-		}
-		return msg;
+		return i > 0 ? "true" : "false";
 	}
 	
 	/**
@@ -520,41 +513,29 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		Map<String,String> hashmap = new HashMap<String, String>();
 		try{
-			String adminId = CookieUtil.getCookie(req);
 			List<ResourceDetailedDTO> list = new ArrayList<ResourceDetailedDTO>();
-			// 注册的时候验证
+			// 注册验证
 			hashmap = InstitutionUtils.getRegisterValidate(com, list);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
-			// 是否添加机构管理员
-			Map<String,Person> perMap=new HashMap<String,Person>();
-			this.openAdmin(com, hashmap, perMap);
+			// 校验机构管理员
+			this.openAdmin(com, hashmap);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
+			// 校验党建管理
+			this.openPartyAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 			}
-			//添加机构信息
-			int resinfo = aheadUserService.addRegisterInfo(com);
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				aheadUserService.addUserIp(com);
-			}
-			if (StringUtils.isNotBlank(com.getChecks())) {
-				aheadUserService.addAccountRestriction(com);
-			}
-			// 添加党建管理员
-			aheadUserService.setPartyAdmin(com);
-			// 添加机构管理员
-			this.addAdmin(com, perMap.get("per"));
-			// 统计分析权限
-			aheadUserService.addUserIns(com);
-			// 开通用户角色
-			aheadUserService.addWfksAccountidMapping(com);
-			// 开通用户权限
-			aheadUserService.addGroupInfo(com);
+			//添加机构相关信息
+			boolean flag=aheadUserService.registerInfo(com);
 			// 购买详情信息
+			String adminId = CookieUtil.getCookie(req);
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectType().equals("balance")){
 					if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
@@ -572,9 +553,8 @@ public class AheadUserController {
 					}
 				}
 			}
-			this.addLogs(com, "1", req);
 			String logStr = "";
-			if (resinfo > 0) {
+			if (flag) {
 				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
 				hashmap.put("flag", "success");
 				logStr = com.getUserId() + "注册成功，耗时:" + (System.currentTimeMillis() - time) + "ms";
@@ -582,7 +562,10 @@ public class AheadUserController {
 				hashmap.put("flag", "fail");
 				logStr = com.getUserId() + "注册失败，耗时:" + (System.currentTimeMillis() - time) + "ms";
 			}
-			log.info(logStr);
+			if(log.isInfoEnabled()){
+				log.info(logStr);
+			}
+			this.addLogs(com, "1", req);//添加日期
 		}catch(Exception e){
 			hashmap.put("flag", "fail");
 			hashmap.put("fail","注册机构用户异常");
@@ -1510,11 +1493,12 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String,String> updateinfo(CommonEntity com, BindAuthorityModel bindAuthorityModel, HttpServletRequest req, HttpServletResponse res){
+	public Map<String, String> updateinfo(CommonEntity com, BindAuthorityModel bindAuthorityModel,
+			HttpServletRequest req, HttpServletResponse res) {
+		
 		long time=System.currentTimeMillis();
 		Map<String,String> hashmap = new HashMap<String, String>();
 		try{
-			String adminId = CookieUtil.getCookie(req);
 			List<String> delList=new ArrayList<String>();
 			List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
 			// 机构修改校验
@@ -1533,9 +1517,13 @@ public class AheadUserController {
 					}
 				}
 			}
-			// 是否开通机构管理员
-			Map<String, Person> perMap = new HashMap<String, Person>();
-			this.openAdmin(com, hashmap, perMap);
+			// 校验机构管理员
+			this.openAdmin(com, hashmap);
+			if (hashmap.size() > 0) {
+				return hashmap;
+			}
+			// 校验党建管理
+			this.openPartyAdmin(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -1545,34 +1533,10 @@ public class AheadUserController {
 			}
 			com.setRdlist(list);
 			// 修改机构信息
-			int resinfo = aheadUserService.updateUserInfo(com, adminId);
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				aheadUserService.updateUserIp(com);
-			} else {
-				aheadUserService.deleteUserIp(com.getUserId());
-			}
-			aheadUserService.updateAccountRestriction(com);
-			// 添加党建管理员
-			aheadUserService.setPartyAdmin(com);
-			// 添加机构管理员
-			this.addAdmin(com, perMap.get("per"));
-			// 统计分析权限
-			aheadUserService.addUserIns(com);
-			// 用户权限
-			aheadUserService.addWfksAccountidMapping(com);
-			// 开通用户权限
-			aheadUserService.addGroupInfo(com);
-			if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
-				aheadUserService.updateInstitution(com.getInstitution(),com.getOldInstitution());
-			}
+			boolean flag=aheadUserService.updateinfo(com);
 			//修改或开通个人绑定机构权限
 			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
-				ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
-				if (response.getServiceResult()==false){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail","修改个人绑定机构权限失败");
-					return hashmap;
-				}
+				aheadUserService.editBindAuthority(bindAuthorityModel);
 			}else {
 				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 				if (count>0){
@@ -1580,6 +1544,7 @@ public class AheadUserController {
 				}
 			}
 			//修改项目
+			String adminId = CookieUtil.getCookie(req);
 			for(ResourceDetailedDTO dto : list){
 				if(dto.getProjectid()!=null){
 					if(dto.getProjectType().equals("balance")){
@@ -1604,9 +1569,8 @@ public class AheadUserController {
 			}
 			//子账号延期
 			aheadUserService.updateSubaccount(com,adminId);
-			this.addLogs(com,"2",req);
 			String logStr="";
-			if (resinfo > 0) {
+			if (flag) {
 				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
 				hashmap.put("flag", "success");
 				logStr=com.getUserId()+"更新成功，耗时:"+(System.currentTimeMillis()-time)+"ms";
@@ -1615,6 +1579,7 @@ public class AheadUserController {
 				logStr=com.getUserId()+"更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms";
 			}
 			log.info(logStr);
+			this.addLogs(com,"2",req);
 		}catch(Exception e){
 			log.error("账号修改异常:", e);
 		}
@@ -1622,7 +1587,7 @@ public class AheadUserController {
 	}
 	
 	//验证机构管理员
-	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap,Map<String,Person> perMap) throws Exception{
+	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
 		if (StringUtils.isEmpty(com.getManagerType())) {
 			return hashmap;
 		}
@@ -1630,48 +1595,53 @@ public class AheadUserController {
 				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
 			return hashmap;
 		}
-		String adminId="";
-		if(com.getManagerType().equals("new")){
-			adminId=com.getAdminname();
-		}else{
-			adminId=com.getAdminOldName();
+		String adminId = com.getManagerType().equals("new") ? com.getAdminname() : com
+				.getAdminOldName();
+		Person per = aheadUserService.queryPersonInfo(adminId);
+		if (per == null) {
+			return hashmap;
 		}
-		Person per=aheadUserService.queryPersonInfo(adminId);
-		if(per!=null){
-			if(com.getManagerType().equals("new")){
-				if(per.getUsertype() != 1){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "机构管理员的ID已经被占用");
-					return hashmap;
-				}else{
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "该机构管理员ID已经存在，请重新输入机构管理员ID");
-					return hashmap;	
-				}
+		if(com.getManagerType().equals("new")){
+			if(per.getUsertype() != 1){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "机构管理员的ID已经被占用");
+				return hashmap;
+			}else{
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "该机构管理员ID已经存在，请重新输入机构管理员ID");
+				return hashmap;	
 			}
-			perMap.put("per", per);
 		}
 		return hashmap;
 	}
 	
-	//添加机构管理员
-	private void addAdmin(CommonEntity com,Person per) throws Exception{
-		if (StringUtils.isEmpty(com.getManagerType())) {
-			return;
+	//验证机构管理员
+	private Map<String,String> openPartyAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
+		if (StringUtils.isEmpty(com.getPartyLimit())) {
+			return hashmap;
 		}
-		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
-				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
-			return;
+		Person per=aheadUserService.queryPersonInfo(com.getPartyAdmin());
+		if(per==null){
+			return hashmap;
 		}
-		if(per!=null){
-			aheadUserService.updateRegisterAdmin(com);
-		}else{
-			aheadUserService.addRegisterAdmin(com);
+		if(per.getUsertype() != 4){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "党建管理员的ID已经被占用");
+			return hashmap;
 		}
-		if(StringUtils.isNotBlank(com.getAdminIP())){
-			aheadUserService.deleteUserIp(com.getAdminname());
-			aheadUserService.addUserAdminIp(com);
+		WfksAccountidMapping[] maping= aheadUserService.getWfksAccountidByRelatedidKey(com.getPartyAdmin());
+		if (maping == null) {
+			return hashmap;
 		}
+		for (WfksAccountidMapping wfks : maping) {
+			if ("PartyAdminTime".equals(wfks.getRelatedidAccounttype())
+					&& !wfks.getIdKey().equals(com.getUserId())) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "该党建管理员ID已经存在，请重新输入党建管理员ID");
+				return hashmap;
+			}
+		}
+		return hashmap;
 	}
 	
 	/**
