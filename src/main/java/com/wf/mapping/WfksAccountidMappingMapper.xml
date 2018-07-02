@@ -15,6 +15,11 @@
     mappingid, id_accounttype, id_key, relatedid_accounttype, relatedid_key, begintime, 
     endtime, last_updatetime
   </sql>
+  <select id="getWfksAccountidByRelatedidKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping where relatedid_key = #{relatedidKey,jdbcType=VARCHAR}
+  </select>
   <select id="getWfksAccountidByIdKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
