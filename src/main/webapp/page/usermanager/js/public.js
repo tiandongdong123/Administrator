@@ -574,10 +574,10 @@ function selectProject(obj,flag,checked){
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
 			if($(obj).val()!="time"&&$(obj).val()!="count"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');" onafterpaste="this.value=this.value.replace(/[^\\d]/g,\'\');"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);"></div>';
 			}
 			if($(obj).val()!="time"&&$(obj).val()!="balance"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="this.value=this.value.replace(/[^\\d]/g,\'\');" onafterpaste="this.value=this.value.replace(/[^\\d]/g,\'\');"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);"></div>';
 			}
 			if(projectid=='HistoryCheck'){
 				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
@@ -1877,8 +1877,8 @@ function deleteIP(){
 	}
 	$("#ipSegment").val(ipHtml);
 }
-
-function checkData(obj){
+//验证金额
+function checkNum(obj){
 	var value=obj.value.replace(/[^-\d]/g,'');
 	var flag=false;
 	if(value.substr(0,1)=="-"){
@@ -1892,4 +1892,19 @@ function checkData(obj){
 		value="0";
 	}
 	obj.value=parseInt(value);
+}
+
+//验证次数
+function checkMoney(obj){
+	var val=obj.value;
+	var flag=false;
+	if(val.substr(0,1)=="-"){
+		flag=true;
+	}
+	val= val.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+	val = val.replace(/^\./g,""); //验证第一个字符是数字
+	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+	obj.value=(flag?"-":"")+val;
 }
