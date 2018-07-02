@@ -532,27 +532,11 @@ public class AheadUserController {
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 			}
-			//添加机构相关信息
-			boolean flag=aheadUserService.registerInfo(com);
-			// 购买详情信息
-			String adminId = CookieUtil.getCookie(req);
-			for(ResourceDetailedDTO dto : list){
-				if(dto.getProjectType().equals("balance")){
-					if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
-						aheadUserService.addProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("time")){
-					//增加限时信息
-					if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
-						aheadUserService.addProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("count")){
-					//增加次数信息
-					if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
-						aheadUserService.addProjectResources(com, dto);
-					}
-				}
-			}
+			// 添加机构相关信息
+			boolean flag = aheadUserService.registerInfo(com);
+			// 添加购买项目
+			this.addProject(com, req, list);
+			
 			String logStr = "";
 			if (flag) {
 				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
@@ -1323,9 +1307,7 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
-	
 
-	
 	/**
 	 *	账号修改页面返显
 	 */
@@ -1543,32 +1525,9 @@ public class AheadUserController {
 					aheadUserService.closeBindAuthority(bindAuthorityModel);
 				}
 			}
-			//修改项目
-			String adminId = CookieUtil.getCookie(req);
-			for(ResourceDetailedDTO dto : list){
-				if(dto.getProjectid()!=null){
-					if(dto.getProjectType().equals("balance")){
-						if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
-							aheadUserService.deleteResources(com,dto,false);
-							aheadUserService.updateProjectResources(com, dto);
-						}
-					}else if(dto.getProjectType().equals("time")){
-						//增加限时信息
-						if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
-							aheadUserService.deleteResources(com,dto,false);
-							aheadUserService.updateProjectResources(com, dto);
-						}
-					}else if(dto.getProjectType().equals("count")){
-						//增加次数信息
-						if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
-							aheadUserService.deleteResources(com,dto,false);
-							aheadUserService.updateProjectResources(com, dto);
-						}
-					}
-				}
-			}
-			//子账号延期
-			aheadUserService.updateSubaccount(com,adminId);
+			// 修改购买项目
+			this.updateProject(com, req, list);
+			
 			String logStr="";
 			if (flag) {
 				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
@@ -1586,6 +1545,56 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
+	//添加机构用户购买项目
+	private void addProject(CommonEntity com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		for(ResourceDetailedDTO dto : list){
+			if(dto.getProjectType().equals("balance")){
+				if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("time")){
+				//增加限时信息
+				if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("count")){
+				//增加次数信息
+				if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}
+		}
+	}
+	//修改机构用户购买项目
+	private void updateProject(CommonEntity com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		for(ResourceDetailedDTO dto : list){
+			if(dto.getProjectid()!=null){
+				if(dto.getProjectType().equals("balance")){
+					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}else if(dto.getProjectType().equals("time")){
+					//增加限时信息
+					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}else if(dto.getProjectType().equals("count")){
+					//增加次数信息
+					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}
+			}
+		}
+		//子账号延期
+		aheadUserService.updateSubaccount(com,adminId);
+	}
+
 	//验证机构管理员
 	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
 		if (StringUtils.isEmpty(com.getManagerType())) {
