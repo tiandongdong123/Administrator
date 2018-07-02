@@ -32,7 +32,7 @@
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                 <div class="form-group input_block">
                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构账号并发数</label>
-               <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}">
+               <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}" maxlength="11">
              </div>
             </div>
 			<div class="form-group input_block">
@@ -166,15 +166,15 @@
 				<div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
 					<div class="form-group input_block">
 						<label class="input_name">设置子帐号上限</label>
-						<input type="text" class="form-control input_width" value="${map.upperlimit}" name="upperlimit" id="upperlimit">
+						<input type="text" class="form-control input_width" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">设置子账号并发数</label>
-						<input type="text" class="form-control input_width" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber">
+						<input type="text" class="form-control input_width" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">子账号下载量上限/天</label>
-						<input type="text" class="form-control input_width" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit">
+						<input type="text" class="form-control input_width" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">设置子账号扣款模式</label>
