@@ -175,11 +175,11 @@ $(function() {/* 文档加载，执行一个函数 */
 			weChatEamil: {
 				validators : {
 					notEmpty : {
-						message : '请输入链接发送邮箱'
+						message : '邮箱不能为空，请填写规范的邮箱'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
-                        message: '请输入正确的邮箱地址'
+                        message: '邮箱格式错误，请填写规范的邮箱'
                     },
 				}
 			},
