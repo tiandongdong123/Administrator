@@ -123,7 +123,7 @@
 	          <li <?if(!strutil.contain(session.purviews,"机构用户")){?>style="display:none"<?}?>>
 		          <a href=""><i class="fa fa-circle-o"></i> 机构用户<i class="fa fa-angle-left pull-right"></i></a>
 		          <ul class="treeview-menu menu-open" style="display: block;">
-		            <li <?if(!strutil.contain(session.purviews,"机构用户信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../auser/toInformation.do"><i class="fa fa-circle-o"></i>机构用户信息管理</a></li>
+		            <li <?if(!strutil.contain(session.purviews,"机构账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../auser/toInformation.do"><i class="fa fa-circle-o"></i>机构账号信息管理</a></li>
 		        	<li <?if(!strutil.contain(session.purviews,"机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="register.do"){ ?>class="active"<?}?>><a href="../auser/register.do"><i class="fa fa-circle-o"></i>机构账号注册</a></li>
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构用户注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../auser/batchregister.do"><i class="fa fa-circle-o"></i>批量机构用户注册</a></li>
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../auser/batchupdate.do"><i class="fa fa-circle-o"></i>批量账号修改</a></li>

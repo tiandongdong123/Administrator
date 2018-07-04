@@ -39,6 +39,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.account.AccountDao;
@@ -83,8 +85,8 @@ import com.wanfangdata.setting.BindAuthorityMapping;
 import com.webservice.WebServiceUtils;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
-import com.wf.bean.CommonEntity;
 import com.wf.bean.GroupInfo;
+import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Mail;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -178,74 +180,102 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Autowired
 	private BindAuthorityMapping bindAuthorityMapping;
 	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean registerInfo(CommonEntity com) {
-		boolean flag = true;
-		try {
-			// 添加机构名称
-			this.addRegisterInfo(com);
-			// 添加用户IP
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				this.addUserIp(com);
-			}
-			// 机构子账号限定
-			if (StringUtils.isNotBlank(com.getChecks())) {
-				this.addAccountRestriction(com);
-			}
-			// 添加党建管理员
-			this.setPartyAdmin(com);
-			// 添加机构管理员
-			this.addAdmin(com);
-			// 统计分析权限
-			this.addUserIns(com);
-			// 开通用户角色
-			this.addWfksAccountidMapping(com);
-			// 开通用户权限
-			this.addGroupInfo(com);
-		} catch (Exception e) {
-			log.error("机构注册异常:", e);
-			flag = false;
+	public boolean registerInfo(InstitutionalUser com) {
+		// 添加机构名称
+		this.addRegisterInfo(com);
+		// 添加用户IP
+		if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+			this.addUserIp(com);
 		}
-		return flag;
+		// 机构子账号限定
+		if (StringUtils.isNotBlank(com.getChecks())) {
+			this.addAccountRestriction(com);
+		}
+		// 添加党建管理员
+		this.setPartyAdmin(com);
+		// 添加机构管理员
+		this.addAdmin(com);
+		// 统计分析权限
+		this.addUserIns(com);
+		// 开通用户角色
+		this.addWfksAccountidMapping(com);
+		// 开通用户权限
+		this.addGroupInfo(com);
+		return true;
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean updateinfo(CommonEntity com) {		
-		boolean flag = true;
-		try {
-			// 修改机构名称
-			this.updateUserInfo(com);
-			//修改用户IP
-			if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-				this.updateUserIp(com);
-			} else {
-				this.deleteUserIp(com.getUserId());
-			}
-			// 机构子账号限定
-			this.updateAccountRestriction(com);
-			// 党建管理员
-			this.setPartyAdmin(com);
-			// 机构管理员
-			this.addAdmin(com);
-			// 统计分析权限
-			this.addUserIns(com);
-			// 用户权限
-			this.addWfksAccountidMapping(com);
-			// 开通用户权限
-			this.addGroupInfo(com);
-			//修改机构名称
-			if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
-				this.updateInstitution(com.getInstitution(),com.getOldInstitution());
-			}
-		} catch (Exception e) {
-			log.error("机构注册异常:", e);
-			flag = false;
+	public boolean updateinfo(InstitutionalUser com) {		
+		// 修改机构名称
+		this.updateUserInfo(com);
+		//修改用户IP
+		if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
+			this.updateUserIp(com);
+		} else {
+			this.deleteUserIp(com.getUserId());
 		}
-		return flag;
+		// 机构子账号限定
+		this.updateAccountRestriction(com);
+		// 党建管理员
+		this.setPartyAdmin(com);
+		// 机构管理员
+		this.addAdmin(com);
+		// 统计分析权限
+		this.addUserIns(com);
+		// 用户权限
+		this.addWfksAccountidMapping(com);
+		// 开通用户权限
+		this.addGroupInfo(com);
+		//修改机构名称
+		if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
+			this.updateInstitution(com.getInstitution(),com.getOldInstitution());
+		}
+		return true;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean batchRegisterInfo(InstitutionalUser com,Map<String,Object> map) {
+		// 添加机构名称
+		this.addRegisterInfo(com);
+		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
+		if ("2".equals(com.getLoginMode())) {
+			String ip=(String) map.get("ip");
+			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+			com.setIpSegment(ip);
+			this.updateUserIp(com);
+		}else{
+			this.deleteUserIp(com.getUserId());
+		}
+		// 机构子账号限定
+		if(StringUtils.isNotBlank(com.getChecks())){			
+			this.addAccountRestriction(com);
+		}
+		// 添加党建管理员
+		this.setPartyAdmin(com);
+		// 添加机构管理员
+		this.addAdmin(com);
+		//统计分线权限
+		this.addUserIns(com);
+		// 开通用户角色
+		this.addWfksAccountidMapping(com);
+		// 开通用户权限
+		this.addGroupInfo(com);
+		return true;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean batchUpdateInfo(InstitutionalUser com) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	//添加机构管理员
-	private void addAdmin(CommonEntity com) throws Exception{
+	private void addAdmin(InstitutionalUser com){
 		if (StringUtils.isEmpty(com.getManagerType())) {
 			return;
 		}
@@ -400,7 +430,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int addRegisterInfo(CommonEntity com){
+	public int addRegisterInfo(InstitutionalUser com){
 		//机构账号注册
 		Person p = new Person();
 		p.setUserId(com.getUserId());
@@ -433,7 +463,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addRegisterAdmin(CommonEntity com){
+	public int addRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
 		per.setUserId(com.getAdminname());
@@ -452,7 +482,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateRegisterAdmin(CommonEntity com){
+	public int updateRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
 		per.setUserId(com.getAdminname());
@@ -467,7 +497,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void addUserAdminIp(CommonEntity com){
+	public void addUserAdminIp(InstitutionalUser com){
 		String[] arr_ip = com.getAdminIP().replace("\r\n", "\n").split("\n");
 		int index=0;
 		for(String ip : arr_ip){
@@ -484,7 +514,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addAccountRestriction(CommonEntity com){
+	public int addAccountRestriction(InstitutionalUser com){
 		UserAccountRestriction acc = new UserAccountRestriction();
 		acc.setUserId(com.getUserId());
 		acc.setUpperlimit(com.getUpperlimit());
@@ -496,7 +526,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int deleteAccount(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
@@ -518,7 +548,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int addProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		//创建一个余额账户
@@ -546,7 +576,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
@@ -589,7 +619,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int addProjectNumber(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		// 创建一个次数账户
@@ -622,7 +652,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @throws Exception
      */
 	@Override
-	public int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
     	
     	if(dto.getPurchaseNumber()==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
@@ -670,7 +700,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * 为机构余额账户充值
      */
 	@Override
-	public int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		if (dto.getTotalMoney() == 0
@@ -733,7 +763,7 @@ public class AheadUserServiceImpl implements AheadUserService{
     }
 	
 	@Override
-    public boolean checkLimit(CommonEntity com,ResourceDetailedDTO dto) throws Exception{
+    public boolean checkLimit(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
     	try{
 			if ("balance".equals(dto.getProjectType())) {
 				if (dto.getTotalMoney() == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
@@ -780,7 +810,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @如后期无扩展此方法可以与updateProjectResources方法合并优化
      * */
 	@Override
-	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
+	public void addProjectResources(InstitutionalUser com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
 			delUserSetting(dto,com);
@@ -831,7 +861,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @如后期无扩展此方法可以与addProjectResources方法合并优化
      * */
 	@Override
-	public void updateProjectResources(CommonEntity com,ResourceDetailedDTO dto){
+	public void updateProjectResources(InstitutionalUser com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
 			delUserSetting(dto,com);
@@ -883,7 +913,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @return 
      * */
 	@Override
-	public void deleteResources(CommonEntity com, ResourceDetailedDTO dto,boolean b){		
+	public void deleteResources(InstitutionalUser com, ResourceDetailedDTO dto,boolean b){		
 		ProjectResources p = new ProjectResources();
 		p.setUserId(com.getUserId());
 		if(!b){			
@@ -900,7 +930,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param dto
 	 * @param com
 	 */
-	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
+	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, InstitutionalUser com) {
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
 			//查询数据库，验证标准机构是否存在
@@ -978,7 +1008,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param detail
 	 * @param com
 	 */
-	private void delUserSetting(ResourceDetailedDTO detail, CommonEntity com){
+	private void delUserSetting(ResourceDetailedDTO detail, InstitutionalUser com){
 		// 先删除再添加
 		WfksUserSettingKey key=new WfksUserSettingKey();
 		key.setUserType(detail.getProjectid());
@@ -1125,7 +1155,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param dto
 	 * @param Terms
 	 */
-	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
+	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,InstitutionalUser com){
 		com.alibaba.fastjson.JSONObject obj=null;
 		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(standardtypes.contains("质检出版社")){
@@ -1303,7 +1333,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateUserInfo(CommonEntity com) {
+	public int updateUserInfo(InstitutionalUser com) {
 		int i = 0;
 		try {
 			// 账号修改
@@ -1329,7 +1359,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateRegisterInfo(CommonEntity com,String pid,String adminId){
+	public int updateRegisterInfo(InstitutionalUser com,String pid,String adminId){
 		//批量更新机构账号(当前账号无管理员添加新的，已有管理员不做任何操作) 
 		Person p = new Person();
 		p.setUserId(com.getUserId());
@@ -1355,13 +1385,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void updateUserIp(CommonEntity com){
+	public void updateUserIp(InstitutionalUser com){
 		userIpMapper.deleteUserIp(com.getUserId());
 		addUserIp(com);
 	}
 	
 	@Override
-	public void addUserIp(CommonEntity com){
+	public void addUserIp(InstitutionalUser com){
 		String[] arr_ip = com.getIpSegment().split("\r\n");
 		int index=0;
 		for(String ip : arr_ip){
@@ -1378,7 +1408,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int updateAccountRestriction(CommonEntity com){
+	public int updateAccountRestriction(InstitutionalUser com){
 		userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
 		if(StringUtils.isBlank(com.getChecks())){
 			return 0;
@@ -2045,7 +2075,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int setPartyAdmin(CommonEntity com){
+	public int setPartyAdmin(InstitutionalUser com){
 		String type = "PartyAdminTime";
 		String userId=com.getUserId();
 		String partyAdmin=com.getPartyAdmin();
@@ -2119,7 +2149,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public void addUserIns(CommonEntity com) {
+	public void addUserIns(InstitutionalUser com) {
 		// 添加统计分析
 		String tongji = com.getTongji();
 		userInstitutionMapper.deleteUserIns(com.getUserId());
@@ -2261,7 +2291,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public void updateSubaccount(CommonEntity com,String adminId) throws Exception{
+	public void updateSubaccount(InstitutionalUser com,String adminId) throws Exception{
 		long time=System.currentTimeMillis();
 		String pid = com.getUserId();
 		List<String> ls = personMapper.getSubaccount(pid);
@@ -2307,7 +2337,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void addWfksAccountidMapping(CommonEntity com) {
+	public void addWfksAccountidMapping(InstitutionalUser com) {
 		//先删除再添加
 		wfksAccountidMappingMapper.deleteByUserIdAndType(com.getUserId(),"Limit");
 		// APP嵌入
@@ -2336,7 +2366,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	//APP嵌入
-	private void setOpenApp(CommonEntity com){
+	private void setOpenApp(InstitutionalUser com){
 		if(StringUtils.isEmpty(com.getOpenApp())){
 			return;
 		}
@@ -2353,7 +2383,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	//微信嵌入
-	private void setWebChat(CommonEntity com){
+	private void setWebChat(InstitutionalUser com){
 		//1、先删除
 		WfksUserSettingKey key=new WfksUserSettingKey();
 		key.setUserId(com.getUserId());
@@ -2404,7 +2434,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int addGroupInfo(CommonEntity com) {
+	public int addGroupInfo(InstitutionalUser com) {
 		groupInfoMapper.deleteGroupInfo(com.getUserId());
 		GroupInfo info=new GroupInfo();
 		info.setUserId(com.getUserId());
@@ -2424,7 +2454,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateGroupInfo(CommonEntity com) {
+	public int updateGroupInfo(InstitutionalUser com) {
 		GroupInfo info=new GroupInfo();
 		info.setUserId(com.getUserId());
 		info.setCountryRegion(com.getCountryRegion());
@@ -2439,4 +2469,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public GroupInfo getGroupInfo(String userId) {
 		return groupInfoMapper.getGroupInfo(userId);
 	}
+
+
 }

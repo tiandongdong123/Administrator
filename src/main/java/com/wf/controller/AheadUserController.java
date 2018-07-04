@@ -44,7 +44,7 @@ import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
-import com.wf.bean.CommonEntity;
+import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Log;
 import com.wf.bean.OperationLogs;
 import com.wf.bean.PageList;
@@ -249,7 +249,7 @@ public class AheadUserController {
 		map.put("userId", userId);
 		map.put("pid", "");
 		int resinfo = aheadUserService.updatePid(map);
-		CommonEntity com=new CommonEntity();
+		InstitutionalUser com=new InstitutionalUser();
 		com.setUserId(userId);
 		aheadUserService.updateAccountRestriction(com);
 		aheadUserService.addUserIns(com);
@@ -276,7 +276,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addadmin")
 	@ResponseBody
-	public String addadmin(CommonEntity com){
+	public String addadmin(InstitutionalUser com){
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!StringUtils.isEmpty(com.getAdminname())){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
@@ -507,55 +507,40 @@ public class AheadUserController {
 	 */
 	@RequestMapping("registerInfo")
 	@ResponseBody
-	public Map<String,String> registerInfo(CommonEntity com,BindAuthorityModel bindAuthorityModel,
-			ModelAndView view,HttpServletRequest req,HttpServletResponse res){
+	public Map<String, String> registerInfo(InstitutionalUser user,
+			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
 
-		long time=System.currentTimeMillis();
-		Map<String,String> hashmap = new HashMap<String, String>();
-		try{
-			List<ResourceDetailedDTO> list = new ArrayList<ResourceDetailedDTO>();
-			// 注册验证
-			hashmap = InstitutionUtils.getRegisterValidate(com, list);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			// 校验机构管理员
-			this.openAdmin(com, hashmap);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			// 校验党建管理
-			this.openPartyAdmin(com, hashmap);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
-				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
+		long time = System.currentTimeMillis();
+		Map<String, String> errorMap = new HashMap<String, String>();
+		try {
+			// 机构注册验证
+			errorMap = this.registerValidate(user, errorMap);
+			if (errorMap.size() > 0) {
+				return errorMap;
 			}
 			// 添加机构相关信息
-			boolean flag = aheadUserService.registerInfo(com);
+			boolean isSuccess = aheadUserService.registerInfo(user);
+			if (!isSuccess) {
+				this.addLogInfo(user.getUserId() + "注册失败", time);
+				errorMap.put("flag", "fail");
+				return errorMap;
+			}
 			// 添加购买项目
-			this.addProject(com, req, list);
-			
-			String logStr = "";
-			if (flag) {
-				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
-				hashmap.put("flag", "success");
-				logStr = com.getUserId() + "注册成功，耗时:" + (System.currentTimeMillis() - time) + "ms";
-			} else {
-				hashmap.put("flag", "fail");
-				logStr = com.getUserId() + "注册失败，耗时:" + (System.currentTimeMillis() - time) + "ms";
-			}
-			if(log.isInfoEnabled()){
-				log.info(logStr);
-			}
-			this.addLogs(com, "1", req);//添加日期
-		}catch(Exception e){
-			hashmap.put("flag", "fail");
-			hashmap.put("fail","注册机构用户异常");
-			log.error("注册异常：",e);
+			this.addProject(user, req);
+			// 个人信息绑定
+			this.addBindAuthorityModel(user, bindAuthorityModel);
+			// 添加日志
+			this.addLogInfo(user.getUserId() + "注册成功", time);
+			// 添加数据库统计日志
+			this.addOperationLogs(user, "注册", req);
+			errorMap.put("flag", "success");
+			return errorMap;
+		} catch (Exception e) {
+			log.error("注册异常：", e);
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "注册机构用户异常");
+			return errorMap;
 		}
-		return hashmap;
 	}
 	
 	
@@ -565,10 +550,8 @@ public class AheadUserController {
 	@RequestMapping("batchregister")
 	public ModelAndView batchRegister(HttpServletRequest request){
 		ModelAndView view = new ModelAndView();
-		List<PayChannelModel> list = aheadUserService.purchaseProject();
-		view.addObject("project",list);
-		String path = request.getServletContext().getRealPath("/") + "page/usermanager/" + "excel";
-		view.addObject("path",path);
+		view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
+		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchregister");
 		return view;
 	}
@@ -578,7 +561,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String,String> addbatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+	public Map<String,String> addbatchRegister(MultipartFile file, InstitutionalUser com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
 			   HttpServletRequest req, HttpServletResponse res){
 		long time=System.currentTimeMillis();
 		Map<String,String> hashmap = new HashMap<String, String>();
@@ -636,7 +619,7 @@ public class AheadUserController {
 			for (int j = 0; j < list.size(); j++) {
 				ResourceDetailedDTO dto = list.get(j);
 				if (dto.getProjectid() != null) {
-					hashmap = InstitutionUtils.getValidate(dto, false, true);
+					hashmap = InstitutionUtils.getProectValidate(dto, false, true);
 					if (hashmap.size() > 0) {
 						return hashmap;
 					}
@@ -718,29 +701,13 @@ public class AheadUserController {
 				com.setInstitution(map.get("institution").toString());
 				com.setUserId(map.get("userId").toString());
 				com.setPassword(String.valueOf(map.get("password")));
-				int resinfo = aheadUserService.addRegisterInfo(com);
-				if(StringUtils.isNotBlank(com.getChecks())){			
-					aheadUserService.addAccountRestriction(com);
-				}
-				//统计分线权限
-				aheadUserService.addUserIns(com);
-				// 机构用户购买项目
-				//aheadUserService.addUserBoughtItems(com);
-				//保存IP
-				if ("2".equals(com.getLoginMode())) {
-					String ip=(String) map.get("ip");
-					ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
-					com.setIpSegment(ip);
-					aheadUserService.updateUserIp(com);
-				}else{
-					aheadUserService.deleteUserIp(com.getUserId());
-				}
+				//添加机构信息
+				boolean flag=aheadUserService.batchRegisterInfo(com,map);
+				//个人绑定机构权限
 				bindAuthorityModel.setUserId(map.get("userId").toString());
 				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
 				}
-				log.info("成功开通个人绑定机构权限");
-
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
 					for(Map<String, Object> pro : lm) {
@@ -765,11 +732,11 @@ public class AheadUserController {
 						}
 					}
 				}
-				if (resinfo > 0) {
+				if (flag) {
 					in += 1;
 					log.info("机构用户["+com.getUserId()+"]注册成功");
 				}
-				this.addLogs(com,"1",req);
+				this.addOperationLogs(com, "注册", req);
 			}
 			hashmap.put("flag", "success");
 			hashmap.put("success", "成功导入："+in+"条");
@@ -789,8 +756,8 @@ public class AheadUserController {
 	@RequestMapping("batchupdate")
 	public ModelAndView batchUpdate(){
 		ModelAndView view = new ModelAndView();
-		List<PayChannelModel> list = aheadUserService.purchaseProject();
-		view.addObject("project",list);
+		view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
+		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchupdate");
 		return view;
 	}
@@ -800,7 +767,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file, CommonEntity com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
+	public Map<String,String> updateBatchRegister(MultipartFile file, InstitutionalUser com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
 			HttpServletRequest req, HttpServletResponse res)throws Exception{
 		long time=System.currentTimeMillis();
 		Map<String, String> hashmap = new HashMap<String, String>();
@@ -870,7 +837,7 @@ public class AheadUserController {
 			for (int j = 0; j < list.size(); j++) {
 				ResourceDetailedDTO dto = list.get(j);
 				if (dto.getProjectid() != null) {
-					hashmap = InstitutionUtils.getValidate(dto, false, false);
+					hashmap = InstitutionUtils.getProectValidate(dto, false, false);
 					if (hashmap.size() > 0) {
 						return hashmap;
 					}
@@ -1056,7 +1023,7 @@ public class AheadUserController {
 					in+=1;
 					log.info("机构用户["+com.getUserId()+"]修改成功");
 				}
-				this.addLogs(com,"2",req);
+				this.addOperationLogs(com, "修改", req);;
 			}
 			hashmap.put("flag", "success");
 			hashmap.put("success", "成功更新："+in+"条");
@@ -1069,7 +1036,7 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
-	private Map<String,String> setBatchAdmin(CommonEntity com,String institution){
+	private Map<String,String> setBatchAdmin(InstitutionalUser com,String institution){
 		if(StringUtils.isNotBlank(com.getAdminname())&&com.getManagerType().equals("new")){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
 			com.setInstitution(institution);
@@ -1286,7 +1253,27 @@ public class AheadUserController {
 			view.addObject("Authority", AuthorityLimit.values());//权限
 			if(!InstitutionUtils.validateQuery(map,query)){
 				view.setViewName("/page/usermanager/ins_information");
+				view.addObject("map", map);
 				return view;
+			}
+			String userId=map.get("userId")==null?"":map.get("userId").toString();
+			if(!StringUtils.isEmpty(userId)){
+				Person person=aheadUserService.queryPersonInfo(userId);
+				if (person == null || person.getUsertype() == 0 || person.getUsertype() == 3) {
+					view.setViewName("/page/usermanager/ins_information");
+					view.addObject("map", map);
+					return view;
+				}
+				if(person.getUsertype()==1){
+					map.put("pid", userId);
+					map.put("userId", "");
+				}else if(person.getUsertype()==4){
+					String json=person.getExtend();
+					if(!StringUtils.isEmpty(json)){
+						JSONObject obj = JSONObject.fromObject(json);
+						map.put("userId", String.valueOf(obj.get("RelatedGroupId")));
+					}
+				}
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
 			pageList.setPageNum(Integer.parseInt(query.getPageNum()==null?"1":query.getPageNum()));//当前页
@@ -1297,6 +1284,7 @@ public class AheadUserController {
 			if (!StringUtils.isEmpty(query.getInstitution())) {
 				map.put("institution", query.getInstitution().replace("\\_", "_"));
 			}
+			map.put("userId", userId);
 			map.put("pageList", pageList);
 		}catch(Exception e){
 			log.error("机构用户查询异常：", e);
@@ -1324,26 +1312,28 @@ public class AheadUserController {
 			List<Map<String, Object>> admin=personservice.getAllInstitutional(String.valueOf(map.get("institution")));
 			view.addObject("admin", admin);
 		}
-		//数据分析权限
-		getTongInstitution(userId,view);
 		//用户权限
 		getWfksAccountidLimit(userId,view);
 		//获取党建管理员
 		getPartyAdmin(userId,view);
-		view.addObject("map",map);
+		//数据分析权限
+		UserInstitution ins = aheadUserService.getUserInstitution(userId);
+		view.addObject("tongji", ins != null?ins.getStatisticalAnalysis():"");
 		//个人绑定机构权限
 		view.addObject("bindInformation",aheadUserService.getBindAuthority(userId));
 		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
+		map.put("proList", proList);
 		//余额转限时，限时转余额
 		limitChange(proList,view);
-		map.put("proList", proList);
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());
 		view.addObject("groupInfo", aheadUserService.getGroupInfo(userId));
+		view.addObject("map",map);
 		view.setViewName("/page/usermanager/ins_numupdate");
 		return view;
 	}
+	
 	//获取机构用户权限表1
 	private void getWfksAccountidLimit(String userId,ModelAndView view){
 		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountidLimit(userId, "Limit");
@@ -1371,16 +1361,6 @@ public class AheadUserController {
 			map.put(wfks.getRelatedidAccounttype(), wfks);
 		}
 		view.addObject("limit", map);
-	}
-	
-	//获取机构用户权限表2
-	private void getTongInstitution(String userId, ModelAndView view) {
-		UserInstitution ins = aheadUserService.getUserInstitution(userId);
-		String tongji = "";
-		if (ins != null) {
-			tongji = ins.getStatisticalAnalysis();
-		}
-		view.addObject("tongji", tongji);
 	}
 	
 	//获得党建信息
@@ -1429,7 +1409,7 @@ public class AheadUserController {
 	 */
 	private void removeproject(HttpServletRequest req,List<String> list) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
-		CommonEntity com = new CommonEntity();
+		InstitutionalUser com = new InstitutionalUser();
 		List<ResourceDetailedDTO> rdlist = new ArrayList<ResourceDetailedDTO>();
 		for (String json : list) {
 			if(StringUtils.isEmpty(json)){
@@ -1467,7 +1447,7 @@ public class AheadUserController {
 			rdlist.add(dto);
 		}
 		com.setRdlist(rdlist);
-		this.addLogs(com,"3",req);
+		this.addOperationLogs(com, "删除", req);;
 	}
 	
 	/**
@@ -1475,7 +1455,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updateinfo")
 	@ResponseBody
-	public Map<String, String> updateinfo(CommonEntity com, BindAuthorityModel bindAuthorityModel,
+	public Map<String, String> updateinfo(InstitutionalUser com, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
 		
 		long time=System.currentTimeMillis();
@@ -1500,12 +1480,12 @@ public class AheadUserController {
 				}
 			}
 			// 校验机构管理员
-			this.openAdmin(com, hashmap);
+			this.adminValidate(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
 			// 校验党建管理
-			this.openPartyAdmin(com, hashmap);
+			this.partyAdminValidate(com, hashmap);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -1538,7 +1518,7 @@ public class AheadUserController {
 				logStr=com.getUserId()+"更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms";
 			}
 			log.info(logStr);
-			this.addLogs(com,"2",req);
+			this.addOperationLogs(com, "批量修改", req);
 		}catch(Exception e){
 			log.error("账号修改异常:", e);
 		}
@@ -1546,9 +1526,9 @@ public class AheadUserController {
 	}
 	
 	//添加机构用户购买项目
-	private void addProject(CommonEntity com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
+	private void addProject(InstitutionalUser com,HttpServletRequest req) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
-		for(ResourceDetailedDTO dto : list){
+		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
 					aheadUserService.addProjectResources(com, dto);
@@ -1566,8 +1546,17 @@ public class AheadUserController {
 			}
 		}
 	}
+	
+	//个人信息绑定
+	private void addBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
+		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
+		if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
+			aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
+		}
+	}
+	
 	//修改机构用户购买项目
-	private void updateProject(CommonEntity com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
+	private void updateProject(InstitutionalUser com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
 		for(ResourceDetailedDTO dto : list){
 			if(dto.getProjectid()!=null){
@@ -1594,23 +1583,48 @@ public class AheadUserController {
 		//子账号延期
 		aheadUserService.updateSubaccount(com,adminId);
 	}
+	
+	private void addLogInfo(String msg,long time){
+		if (log.isInfoEnabled()) {
+			log.info("，耗时:"+(System.currentTimeMillis()-time)+"ms");
+		}
+	}
+	
+	//机构信息注册
+	private Map<String,String> registerValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		errorMap = InstitutionUtils.getRegisterValidate(user);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		// 校验机构管理员
+		this.adminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		// 校验党建管理
+		this.partyAdminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		return errorMap;
+	}
 
 	//验证机构管理员
-	private Map<String,String> openAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
-		if (StringUtils.isEmpty(com.getManagerType())) {
+	private Map<String,String> adminValidate(InstitutionalUser user,Map<String,String> hashmap) throws Exception{
+		if (StringUtils.isEmpty(user.getManagerType())) {
 			return hashmap;
 		}
-		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
-				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
+		if("new".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminname())||
+				"old".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminOldName())){
 			return hashmap;
 		}
-		String adminId = com.getManagerType().equals("new") ? com.getAdminname() : com
+		String adminId = user.getManagerType().equals("new") ? user.getAdminname() : user
 				.getAdminOldName();
 		Person per = aheadUserService.queryPersonInfo(adminId);
 		if (per == null) {
 			return hashmap;
 		}
-		if(com.getManagerType().equals("new")){
+		if(user.getManagerType().equals("new")){
 			if(per.getUsertype() != 1){
 				hashmap.put("flag", "fail");
 				hashmap.put("fail", "机构管理员的ID已经被占用");
@@ -1625,7 +1639,7 @@ public class AheadUserController {
 	}
 	
 	//验证机构管理员
-	private Map<String,String> openPartyAdmin(CommonEntity com,Map<String,String> hashmap) throws Exception{
+	private Map<String,String> partyAdminValidate(InstitutionalUser com,Map<String,String> hashmap) throws Exception{
 		if (StringUtils.isEmpty(com.getPartyLimit())) {
 			return hashmap;
 		}
@@ -1953,7 +1967,7 @@ public class AheadUserController {
 	 * 添加操作日志信息
 	 * @return
 	 */
-	private void addLogs(CommonEntity com,String flag,HttpServletRequest req) throws Exception{
+	private void addOperationLogs(InstitutionalUser com,String flag,HttpServletRequest req) throws Exception{
 		if(com!=null){
 			Wfadmin admin =CookieUtil.getWfadmin(req);
 			List<ResourceDetailedDTO> list = com.getRdlist();
@@ -2017,5 +2031,35 @@ public class AheadUserController {
 		}
 		return ls;
 	}
-	
+
+
+	/**
+	 *	生成充值码
+	 */
+	@RequestMapping("create_chargeCode")
+	public ModelAndView create_ChargeCode(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/create_chargeCode");
+		return view;
+	}
+
+	/**
+	 *	充值码批次查询
+	 */
+	@RequestMapping("search_chargeCode_Batch")
+	public ModelAndView search_ChargeCode_Batch(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_chargeCode_Batch");
+		return view;
+	}
+
+	/**
+	 *	充值码信息查询
+	 */
+	@RequestMapping("search_chargeCode")
+	public ModelAndView search_ChargeCode(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_chargeCode");
+		return view;
+	}
 }
