@@ -204,17 +204,17 @@
 					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
 				</div>
 				<div style="display: none;" id="wechatDiv">
-		            <div class="form-group input_block">
-	                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-	                 <input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil">
-					 <input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
-	               	</div>
 		            <div class="form-group time_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                	<div class="time_input">
-					<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
-					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
-					</div>
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                		<div class="time_input">
+						<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
+						<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
+						</div>
+	               	</div>
+		            <div class="form-group input_block">
+	                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
+	                 	<input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil">
+					 	<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
 	               	</div>
                	</div>
                 <input type="hidden" id="count" value="-1"/>

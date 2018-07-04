@@ -8,7 +8,7 @@
 <script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
   <div class="content-wrapper">
-    <section class="content-header"><h1>账号修改</h1></section>
+    <section class="content-header"><h1>机构账号修改</h1></section>
 <section class="content">
   <div class="row">
     <div class="col-md-6">
@@ -16,18 +16,18 @@
       	<form id="fromList" method="post" enctype="multipart/form-data">
           <div class="box-body">
             <div class="form-group input_block">
-              <label class="input_name">机构用户名</label>
+              <label class="input_name">机构ID</label>
               <input type="hidden" name="userId" id="userId" value="${map.userId}">
               <input type="hidden" name="oldInstitution" id="oldInstitution" value="${map.institution}">
               <input type="text" class="form-control input_width" value="${map.userId}" readonly="readonly">
+            </div>
+            <div class="checkbox input_block block_left">
+              <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数（登录并发）</label>
             </div>
             <div class="form-group input_block">
               <label class="input_name">机构名称</label>
               <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
-            </div>
-            <div class="checkbox input_block block_left">
-              <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数（登录并发）</label>
             </div>
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                 <div class="form-group input_block">
@@ -247,11 +247,6 @@
 				<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)" <?if(!isEmpty(limit.openWeChat.begin)){?>checked="checked"<?}?>>开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
 			</div>
             <div class="form-group input_block" <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"<?}?> id="wechatDiv">
-            	<div class="form-group input_block">
-                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-               		<input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil" value="${email!}">
-					<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
-				</div>
 	            <div class="form-group time_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                 	<div class="time_input">
@@ -259,6 +254,11 @@
 					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" value="${limit.openWeChat.end!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
 					</div>
                	</div>
+            	<div class="form-group input_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
+               		<input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil" value="${email!}">
+					<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
+				</div>
 			</div>
           <div id="multplediv">
           	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
