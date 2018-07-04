@@ -12,6 +12,20 @@ $(function(e){
 			$("#adminIP").val("");
 			$("#adminEmail").val("");
 			$("#administrator").hide();
+			$("#checks").prop('checked',false);
+			//机构子账号
+			$("#upperlimit").val("");
+			$("#sConcurrentcountber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
+			$("#sconcurrent_div").hide();
+			//统计分析
+			$("input:checkbox[id=statistics]:checked").each(function(){
+				$(this).prop('checked',false);
+			});
+			$("#tongji").val("");
+			$("#tongjiDiv").hide();
+			$("#checktongji").prop('checked',false);
 		}
 	});
 	//是否开通个人绑定机构
@@ -59,7 +73,7 @@ $(function(e){
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("100");
+			$("#upperlimit").val("");
 			$("#sConcurrentcountber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
