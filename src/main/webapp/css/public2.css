@@ -312,7 +312,7 @@ width: 140px; text-align: center; line-height: 36px; color: #484848; text-decora
 
 #export .note { border-top: 1px dotted #dfdfdf; padding-top: 5px; color: #ff6c00; margin-bottom: 15px; }
 .nodata h3 { text-align: center; font-size: 28px; color: #bfbfbf; font-weight: normal; line-height: 5em }
-.searchsug { display: none; position: relative; left:19%; right:261px; z-index:100; padding:0px ; background: #fff; border: 1px solid #ababab; border-top:0;_overflow: hidden;margin-left:3px;}
+.searchsug { display: none; position: absolute; left:19%; right:261px; z-index:100; padding:0px ; background: #fff; border: 1px solid #ababab; border-top:0;_overflow: hidden;margin-left:3px;}
 .searchsug li { color: #000; font: 14px arial; line-height: 25px; padding: 4px 8px; color:#417dc9; position: relative; cursor: default; }
 .bdsug-store-del { font-size: 12px; color: #666; text-decoration: underline; position: absolute; right: 8px; top: 0; cursor: pointer; display: none; }
 .searchsug li.bdsug-s { background: #f0f0f0 }
