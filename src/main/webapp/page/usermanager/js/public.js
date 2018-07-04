@@ -160,6 +160,14 @@ function checkTj(obj){
 		}
 		$("#tongji").val(checkedList.join());
 	}
+	var tongji=$("#tongji").val();
+	if(tongji==""){
+		$("input:checkbox[id=statistics]:checked").each(function(){
+			$(this).prop('checked',false);
+		});
+		$("#tongjiDiv").hide();
+		$("#checktongji").prop('checked',false);
+	}
 }
 //绑定个人继承权限
 function bindingInherited(value){
@@ -1418,6 +1426,14 @@ function validateFrom(){
 function fieldsCheck() {
 	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
 	bootstrapValidator.resetForm();
+	var msg='CRM工单号不能为空，请填写CRM工单号';
+	var type=$("#OrderType").val();
+	if(type=='inner'){
+		msg='申请部门不能为空，请填写申请部门';
+	}
+	$("#fromList").bootstrapValidator("addField","OrderContent", {
+		validators: {notEmpty: {message: msg}}
+	});
 	bootstrapValidator.validate();
 	return (bootstrapValidator.isValid());
 }

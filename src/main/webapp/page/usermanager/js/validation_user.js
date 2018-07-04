@@ -61,13 +61,6 @@ $(function() {/* 文档加载，执行一个函数 */
                     }
                 }
 			},
-			OrderContent: {
-                validators: {
-                    notEmpty: {
-                        message: '请填写工单对应信息'
-                    }
-                }	
-			},
 			adminOldName: {
                 validators: {
                     notEmpty: {
