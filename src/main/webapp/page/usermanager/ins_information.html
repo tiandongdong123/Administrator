@@ -170,12 +170,12 @@
 <div class="List_cont">
  <? for(pldata in pro.plList){ ?>
   <div class="list_option">
-	<input type="checkbox" <?if(!isEmpty(pldata.checked)){?>checked="checked"<?}?>>
+	<input type="checkbox" disabled="disabled" <?if(!isEmpty(pldata.checked)){?>checked="checked"<?}?>>
    <? if(!isEmpty(pldata.rp)){ ?>
 	<i onclick="showProduct(this,1)" class="icon_minus"></i>
 	   <ul style="display: none;" class="checkbox_list subset_list">
 	   	<?for(pd in pldata.rp){?>
-			<li><input type="checkbox" <?if(!isEmpty(pldata.product_id)&&(strutil.contain(pldata.product_id,pd.rid+"]")||strutil.contain(pldata.product_id,pd.rid+","))){?>checked="checked"<?}?> value="${pd.rid}"/>${pd.name}</li>
+			<li><input type="checkbox" disabled="disabled" <?if(!isEmpty(pldata.product_id)&&(strutil.contain(pldata.product_id,pd.rid+"]")||strutil.contain(pldata.product_id,pd.rid+","))){?>checked="checked"<?}?> value="${pd.rid}"/>${pd.name}</li>
 	   	<?}?>
 	   </ul>
    <?}?>
