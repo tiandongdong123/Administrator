@@ -68,13 +68,22 @@ $(function(e){
 	});
 	//开通统计分析
 	$("#checktongji").click(function(){
-		$("input:checkbox[id=statistics]:checked").each(function(){
-			$(this).prop('checked',false);
-		});
-		$("#tongji").val("");
 		if($(this).is(':checked')){
+			var checkedList = new Array();
+			$("input:checkbox[id=statistics]").each(function(){
+				$(this).prop('checked',true);
+				var val=$(this).val();
+				if(val!='all'){
+					checkedList.push(val);
+				}
+			});
+			$("#tongji").val(checkedList.join());
 			$("#tongjiDiv").show();
 		}else{
+			$("input:checkbox[id=statistics]:checked").each(function(){
+				$(this).prop('checked',false);
+			});
+			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 		}
 	});
