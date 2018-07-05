@@ -362,7 +362,7 @@
   </select>
     
   <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
-  	select user_id,institution from user where institution = #{institution} and userType=1
+  	select user_id,institution from user where <if test="institution != null and institution !=''">institution = #{institution} and </if>userType=1
   </select>
    <select id="findInstitutionAllUser" resultMap="BaseResultMap" resultType="java.lang.String">
   	select user_id,institution,userType from user where (userType=1 or userType=2) AND institution = #{institution}

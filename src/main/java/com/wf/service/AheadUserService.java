@@ -87,8 +87,7 @@ public interface AheadUserService {
 	void addUserAdminIp(InstitutionalUser user);
 	
 	/** 机构子账号处理 */
-	int addAccountRestriction(InstitutionalUser user);
-	int updateAccountRestriction(InstitutionalUser user);
+	int setAccountRestriction(InstitutionalUser user);
 	UserAccountRestriction getAccountRestriction(String userId);
 	
 	/** 添加余额信息 */

@@ -1441,7 +1441,7 @@ function checkemail(str){
 	}
 }
 
-function radioClick(addOrUpdate,isBatch){
+function radioClick(isBatch){
 	var $selectedvalue = $("input[name='managerType']:checked").val();
 	if ($selectedvalue =="new") {
 		$("#adminOldName").val("");
@@ -1462,7 +1462,7 @@ function radioClick(addOrUpdate,isBatch){
 			type:"post",
 			async: false,
 			url:"../auser/getOldAdminNameByInstitution.do",
-			data:{"institution":institution},
+			data:{"institution":institution,"batch":isBatch},
 			dataType:"json",
 			success:function(data){
 				if(null==data || ""==data){
@@ -1471,9 +1471,13 @@ function radioClick(addOrUpdate,isBatch){
 					$("#oldManager").hide();
 					$("#newManager").show();
 				}else{
-					$("#adminOldName option:not(:first)").remove();
+					$("#adminOldName option").remove();
 					for(var i in data){
 						$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
+					}
+					if(isBatch=="batch"){
+						$("#institution").val(data[i].institution);
+						getAdmin($("#adminOldName").get(0));
 					}
 					$("#newManager").hide();
 					$("#oldManager").show();

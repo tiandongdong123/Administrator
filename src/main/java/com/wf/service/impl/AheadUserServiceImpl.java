@@ -190,9 +190,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			this.addUserIp(com);
 		}
 		// 机构子账号限定
-		if (StringUtils.isNotBlank(com.getChecks())) {
-			this.addAccountRestriction(com);
-		}
+		this.setAccountRestriction(com);
 		// 添加党建管理员
 		this.setPartyAdmin(com);
 		// 添加机构管理员
@@ -218,7 +216,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			this.deleteUserIp(com.getUserId());
 		}
 		// 机构子账号限定
-		this.updateAccountRestriction(com);
+		this.setAccountRestriction(com);
 		// 党建管理员
 		this.setPartyAdmin(com);
 		// 机构管理员
@@ -247,13 +245,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
 			com.setIpSegment(ip);
 			this.updateUserIp(com);
-		}else{
-			this.deleteUserIp(com.getUserId());
 		}
 		// 机构子账号限定
-		if(StringUtils.isNotBlank(com.getChecks())){			
-			this.addAccountRestriction(com);
-		}
+		this.setAccountRestriction(com);
 		// 添加党建管理员
 		this.setPartyAdmin(com);
 		// 添加机构管理员
@@ -511,18 +505,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userIpMapper.insert(userIp);
 			}
 		}
-	}
-	
-	@Override
-	public int addAccountRestriction(InstitutionalUser com){
-		UserAccountRestriction acc = new UserAccountRestriction();
-		acc.setUserId(com.getUserId());
-		acc.setUpperlimit(com.getUpperlimit());
-		acc.setChargebacks(com.getChargebacks());
-		acc.setDownloadupperlimit(com.getDownloadupperlimit());
-		acc.setpConcurrentnumber(com.getpConcurrentnumber());
-		acc.setsConcurrentnumber(com.getsConcurrentnumber());
-		return userAccountRestrictionMapper.insert(acc);
 	}
 	
 	@Override
@@ -1408,9 +1390,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int updateAccountRestriction(InstitutionalUser com){
+	public int setAccountRestriction(InstitutionalUser com){
 		userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
-		if(StringUtils.isBlank(com.getChecks())){
+		if (com.getpConcurrentnumber() == null && com.getsConcurrentnumber() == null) {
 			return 0;
 		}
 		UserAccountRestriction acc = new UserAccountRestriction();
@@ -1422,7 +1404,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		acc.setsConcurrentnumber(com.getsConcurrentnumber());
 		return userAccountRestrictionMapper.insert(acc);
 	}
-
 	
 	@Override
 	public Person queryPersonInfo(String userId){

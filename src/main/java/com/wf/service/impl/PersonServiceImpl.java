@@ -61,7 +61,6 @@ public class PersonServiceImpl implements PersonService {
 	
 	@Override
 	public List<Map<String, Object>> getAllInstitutional(String institution) {
-		
 		return persondao.getAllInstitutional(institution);
 	}
 	
@@ -69,6 +68,5 @@ public class PersonServiceImpl implements PersonService {
 	public List<String> getAllInstitution(String institution) {
 		return persondao.getAllInstitution(institution);
 	}
-	
 	
 }
