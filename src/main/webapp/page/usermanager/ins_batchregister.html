@@ -17,132 +17,200 @@
              <div class="box-body">
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>登录方式</label>
-                  <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+                  <select class="form-control input_time" name="loginMode" id="loginMode" onchange="switchcs(this);">
                     <option value="1">用户名密码</option>
                     <option value="2">用户名密码+IP</option>
                   </select>
                 </div>
                 <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checkp">设置机构账号并发数</label>
+                  <label><input type="checkbox" id="checkp">设置机构账号并发数（登录并发）</label>
                 </div>
                 <div style="display: none;" id="pconcurrent_div">
                     <div class="form-group input_block">
-	                  <label class="input_name">机构账号并发数</label>
-	                  <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构账号并发数</label>
+	                  <input type="text" class="form-control input_time" name="pConcurrentnumber" id="pConcurrentnumber" maxlength="11">
 	                </div>
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
-                  <select class="form-control input_width" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'2','checked');">
-					<option value="">-添加项目-</option>
-					<?for(pro in project){?>					
-					<option proid="${pro.productDetail}" type="${pro.resourceType}" value="${pro.type}" id="${pro.id}">${pro.name}</option>
-					<?}?>
-                  </select>
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>国家</label>
+					<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion(this);">
+						<option value="China">中国</option>
+						<option value="foreign">外国</option>
+					</select>
                 </div>
-                <input type="hidden" id="count" value="-1"/>
-                <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checkuser" name="checkuser" value="true">开通管理员</label>
+                <div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>地区</label>
+					<select class="form-control input_time" name="PostCode" id="PostCode">
+						<?for(arr in arrayArea){?><option value="${arr.id}">${arr.name}</option><?}?>
+					</select>
                 </div>
-                <div id="administrator" style="display: none;">
-                	<div class="form-group input_block">
-                  		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
-                  		<input type="radio" name="managerType" value="old"  onclick="radioClick('','batch');"/>选择已有管理员
-                  		<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
-                	</div>
-	                <div id="newManager">
-		                <div class="form-group input_block">
-		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-		                  <input type="text" class="form-control input_width" name="adminname" id="adminname">
-		                </div>
-		                <div class="form-group input_block">
-		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
-		                  <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword">
-		                </div>
-		                <div class="form-group input_block">
-		                  <label class="input_name">管理员IP段</label>
-		                  <textarea class="form-control input_width" rows="3" name="adminIP" id="adminIP"></textarea>
-		                </div>
-		                <div class="form-group input_block">
-		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
-		                  <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
-		                </div>
-	                </div>
-	                <div class="form-group input_block" id="oldManager" style="display: none;">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-	                  <select class="form-control input_width" name="adminOldName" id="adminOldName">
-						<option value="">-请选择管理员ID-</option>
-	                  </select>
-	                </div>
-	                
+                <div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构类型</label>
+					<select class="form-control input_time" name="Organization" id="Organization">
+					<?for(organ in org){ ?><option value="${organ.name}">${organ.desc}</option><?}?>
+					</select>
                 </div>
-                <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
-	            </div>
-	            <div style="display: none;" id="sconcurrent_div">
-                  	<div class="form-group input_block">
-	                  <label class="input_name">设置子帐号上限</label>
-	                  <input type="text" class="form-control input_width" value="100" name="upperlimit" id="upperlimit">
+                <div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>工单类型</label>
+					<select class="form-control input_time" name="OrderType" id="OrderType" onchange="selectOrder(this);">
+						<option value="crm">CRM工单</option>
+						<option value="inner">内部工单</option>
+					</select>
+                </div>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b><span id="orderTypeSpan">CRM工单号</span></label>
+					<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" maxlength="50">
+				</div>
+                <div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
+					<select class="form-control input_time" name="proType" id="proType" onchange="selectType(this);">
+						<option value="">-请选择-</option>
+						<option value="Limit">资源下载</option>
+						<option value="Check">万方检测</option>
+						<option value="WFStats">万方分析</option>
+					</select>
+					<select class="form-control input_time" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'1','checked');"><option value="">-请选择-</option></select>
+                </div>
+                <div class="form-group input_block">
+					<label class="input_name">开通权限</label>
+					<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)">开通党建管理员</span>
+                </div>
+				<div id="partyDiv" style="display: none;">
+			        <div class="form-group input_block">
+		              	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+		              	<input type="radio" name="isTrial" value="isTrial"/>是
+		                <input type="radio" name="isTrial" value="notTrial"/>否
+			        </div>
+	                <div class="form-group input_block">
+	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
+	                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin">
 	                </div>
 	                <div class="form-group input_block">
-	                  <label class="input_name">设置子账号并发数</label>
-	                  <input type="text" class="form-control input_width" value="1" id="sConcurrentnumber" name="sConcurrentnumber">
+	                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
+	                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword">
 	                </div>
-		            <div class="form-group input_block">
-	                  <label class="input_name">子账号下载量上限/天</label>
-	                  <input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit">
+	                <div class="form-group time_block">
+	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                	<div class="time_input">
+						<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
+						<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
+						</div>
 	                </div>
-		            <div class="form-group input_block">
-	                  <label class="input_name">设置子账号扣款模式</label>
-	                  <select class="form-control input_width" name="chargebacks" id="chargebacks">
-						<option value="0">从机构账号扣款</option>
-						<option value="1">从机构子账号扣款</option>
-	                  </select>
-	               	</div>
                 </div>
                 <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checktongji">开通统计分析</label>
-	            </div>
-	            <div class="form-group input_block" style="display: none;" id="tongjiDiv">
-				 <input type="hidden" name="tongji" id="tongji" value="">
-                 <label class="input_name">功能模块</label>
-				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="all">全部&nbsp;&nbsp;
-				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
-				 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
-               	</div>
+                  <label><input type="checkbox" id="checkuser">开通机构管理员</label>
+                </div>
+                <div id="administrator" style="display: none;">
+           	        <div class="form-group input_block">
+                  		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+                  		<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
+                  		<input type="radio" name="managerType" value="old" onclick="radioClick();"/>选择已有机构管理员
+                	</div>
+					<div id="oldManager" class="form-group input_block" style="display: none;">
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+						<select class="form-control input_time" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+							<option value="">-请选择管理员ID-</option>
+						</select>
+					</div>
+                	<div id="newManager" class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+	                  <input type="text" class="form-control input_time" name="adminname" id="adminname" onfocus="input_onfocus(this);"/><span>支持英文大小写（大小写有区分）、数字0-9、下划线</span>
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
+	                  <input type="text" class="form-control input_time" name="adminpassword" id="adminpassword">
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name">管理员IP段</label>
+	                  <input type="text" class="form-control input_time" name="adminIP" id="adminIP">
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
+	                  <input type="text" class="form-control input_time" name="adminEmail" id="adminEmail">
+	                </div>
+	                <div class="checkbox input_block block_left">
+	                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
+		            </div>
+		            <div style="display: none;" id="sconcurrent_div">
+	                  	<div class="form-group input_block">
+		                  <label class="input_name">设置子帐号上限</label>
+		                  <input type="text" class="form-control input_time" value="100" name="upperlimit" id="upperlimit" maxlength="11">
+		                </div>
+		                <div class="form-group input_block">
+		                  <label class="input_name">设置子账号并发数</label>
+		                  <input type="text" class="form-control input_time" value="1" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
+		                </div>
+			            <div class="form-group input_block">
+		                  <label class="input_name">子账号下载量上限/天</label>
+		                  <input type="text" class="form-control input_time" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
+		                </div>
+			            <div class="form-group input_block">
+		                  <label class="input_name">设置子账号扣款模式</label>
+		                  <select class="form-control input_time" name="chargebacks" id="chargebacks">
+							<option value="0">从机构账号扣款</option>
+							<option value="1">从机构子账号扣款</option>
+		                  </select>
+		               	</div>
+	                </div>
+	                <div class="checkbox input_block block_left">
+	                  <label><input type="checkbox" id="checktongji">开通统计分析</label>
+		            </div>
+		            <div class="form-group input_block" style="display: none;" id="tongjiDiv">
+		             <input type="hidden" name="tongji" id="tongji" value="">
+	                 <label class="input_name">功能模块</label>
+					 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="all">全部&nbsp;&nbsp;
+					 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
+					 <input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
+	               	</div>
+                </div>
 				<div class="checkbox input_block block_left">
 					<label><input type="checkbox" id="user_dinding" name="openState" value="false">开通个人绑定机构</label>
 				</div>
-				<?includeFileTemplate("/page/usermanager/userBinding.html",{}){}?>
-				<!-- 
+				<?includeFileTemplate("/page/usermanager/userBinding.html",{}){}?> 
 				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="openApp" name="openApp" value="0">开通APP嵌入服务</label>
+					<label><input type="checkbox" id="openApp" name="openApp" value="0" onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
+				</div>
+				<div class="form-group time_block" style="display: none;" id="openAppDiv">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                	<div class="time_input">
+					<span><input type="text" class="Wdate" name="appBegintime" id="appBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span class="to">至</span>
+					<span><input type="text" class="Wdate" name="appEndtime" id="appEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})"></span>
+					</div>
 				</div>
 				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务</label>
+					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
 				</div>
-	            <div class="form-group input_block" style="display: none;" id="wechatDiv">
-                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-                 <input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil">
-				 <input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
-               	</div>  -->
+				<div style="display: none;" id="wechatDiv">
+		            <div class="form-group time_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                	<div class="time_input">
+					<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
+					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
+					</div>
+	               	</div>
+		            <div class="form-group input_block">
+	                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
+	                 <input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil">
+					 <input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
+	               	</div>
+               	</div>
                 <div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>上传文档</label>
 					<div class="btn btn-default">
 	                	<p>支持格式：<img src="../images/u301.png"/></p><input type="file" id="file" name="file"/>
 					</div>
                 </div>
-              </div>
-              <div id="multplediv"></div>
-			  <!-- 详情 -->
-              <div id="detail_0"></div>
-		        </form>
-               <div class="box-footer" style="text-align:center;">
-                <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" class="btn btn-primary" onclick="location=location;">重置</button>&nbsp;&nbsp;&nbsp;&nbsp;
+			  </div>
+			<input type="hidden" id="count" value="-1"/>
+			<div id="multplediv"></div>
+			<div id="detail_0"></div>
+			</form>
+			<div class="box-footer" style="text-align:center;">
+                <button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">保存并新增</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="reset" class="btn btn-primary" onclick="location=location;">取消</button>&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="javascript:void(0);" onclick="download1('机构账号批量模板（注册）');">
-                <img src="../images/u356.png" style="height: 25px;width: 30px;"/>下载模板</a>
-              </div>
+                <img src="../images/u356.png" style="height: 25px;width: 30px;"/>下载模板文件</a>
+			</div>
             </div>
          </div>
       </div>
