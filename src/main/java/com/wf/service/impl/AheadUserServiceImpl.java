@@ -182,89 +182,111 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean registerInfo(InstitutionalUser com) {
+	public boolean registerInfo(InstitutionalUser user) {
 		// 添加机构名称
-		this.addRegisterInfo(com);
+		this.addRegisterInfo(user);
 		// 添加用户IP
-		if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-			this.addUserIp(com);
+		if (user.getLoginMode().equals("0") || user.getLoginMode().equals("2")) {
+			this.addUserIp(user);
 		}
 		// 机构子账号限定
-		this.setAccountRestriction(com);
+		this.setAccountRestriction(user);
 		// 添加党建管理员
-		this.setPartyAdmin(com);
+		this.setPartyAdmin(user);
 		// 添加机构管理员
-		this.addAdmin(com);
+		this.addAdmin(user);
 		// 统计分析权限
-		this.addUserIns(com);
+		this.addUserIns(user);
 		// 开通用户角色
-		this.addWfksAccountidMapping(com);
+		this.addWfksAccountidMapping(user);
 		// 开通用户权限
-		this.addGroupInfo(com);
+		this.addGroupInfo(user);
 		return true;
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean updateinfo(InstitutionalUser com) {		
+	public boolean updateinfo(InstitutionalUser user) {		
 		// 修改机构名称
-		this.updateUserInfo(com);
+		this.updateUserInfo(user);
 		//修改用户IP
-		if (com.getLoginMode().equals("0") || com.getLoginMode().equals("2")) {
-			this.updateUserIp(com);
+		if (user.getLoginMode().equals("0") || user.getLoginMode().equals("2")) {
+			this.updateUserIp(user);
 		} else {
-			this.deleteUserIp(com.getUserId());
+			this.deleteUserIp(user.getUserId());
 		}
 		// 机构子账号限定
-		this.setAccountRestriction(com);
+		this.setAccountRestriction(user);
 		// 党建管理员
-		this.setPartyAdmin(com);
+		this.setPartyAdmin(user);
 		// 机构管理员
-		this.addAdmin(com);
+		this.addAdmin(user);
 		// 统计分析权限
-		this.addUserIns(com);
+		this.addUserIns(user);
 		// 用户权限
-		this.addWfksAccountidMapping(com);
+		this.addWfksAccountidMapping(user);
 		// 开通用户权限
-		this.addGroupInfo(com);
+		this.addGroupInfo(user);
 		//修改机构名称
-		if(!StringUtils.equals(com.getInstitution(), com.getOldInstitution())){
-			this.updateInstitution(com.getInstitution(),com.getOldInstitution());
+		if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
+			this.updateInstitution(user.getInstitution(),user.getOldInstitution());
 		}
 		return true;
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean batchRegisterInfo(InstitutionalUser com,Map<String,Object> map) {
+	public boolean batchRegisterInfo(InstitutionalUser user,Map<String,Object> map) {
 		// 添加机构名称
-		this.addRegisterInfo(com);
+		this.addRegisterInfo(user);
 		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
-		if ("2".equals(com.getLoginMode())) {
+		if ("2".equals(user.getLoginMode())) {
 			String ip=(String) map.get("ip");
 			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
-			com.setIpSegment(ip);
-			this.updateUserIp(com);
+			user.setIpSegment(ip);
+			this.updateUserIp(user);
 		}
 		// 机构子账号限定
-		this.setAccountRestriction(com);
+		this.setAccountRestriction(user);
 		// 添加党建管理员
-		this.setPartyAdmin(com);
+		this.setPartyAdmin(user);
 		// 添加机构管理员
-		this.addAdmin(com);
+		this.addAdmin(user);
 		//统计分线权限
-		this.addUserIns(com);
+		this.addUserIns(user);
 		// 开通用户角色
-		this.addWfksAccountidMapping(com);
+		this.addWfksAccountidMapping(user);
 		// 开通用户权限
-		this.addGroupInfo(com);
+		this.addGroupInfo(user);
 		return true;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean batchUpdateInfo(InstitutionalUser com) {
-		// TODO Auto-generated method stub
+	public boolean batchUpdateInfo(InstitutionalUser user,Map<String,Object> map) {
+		// 更新机构名称
+		this.addRegisterInfo(user);
+		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
+		if ("2".equals(user.getLoginMode())) {
+			String ip=(String) map.get("ip");
+			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+			user.setIpSegment(ip);
+			this.updateUserIp(user);
+		}else{
+			this.deleteUserIp(user.getUserId());
+		}
+		// 机构子账号限定
+		this.setAccountRestriction(user);
+		// 添加党建管理员
+		this.setPartyAdmin(user);
+		// 添加机构管理员
+		this.addAdmin(user);
+		//统计分线权限
+		this.addUserIns(user);
+		// 开通用户角色
+		this.addWfksAccountidMapping(user);
+		// 开通用户权限
+		this.addGroupInfo(user);
 		return false;
 	}
 	
@@ -1338,32 +1360,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			log.error("机构修改异常：", e);
 		}
 		return i;
-	}
-	
-	@Override
-	public int updateRegisterInfo(InstitutionalUser com,String pid,String adminId){
-		//批量更新机构账号(当前账号无管理员添加新的，已有管理员不做任何操作) 
-		Person p = new Person();
-		p.setUserId(com.getUserId());
-		p.setInstitution(com.getInstitution());
-		try {
-			if(StringUtils.isNotBlank(com.getPassword())){
-				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){				
-			if(com.getManagerType().equals("new")){					
-				p.setPid(com.getAdminname());
-			}else{
-				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
-			}
-		}else{
-			p.setPid("");
-		}
-		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
-		return personMapper.updateRegisterInfo(p);
 	}
 	
 	@Override

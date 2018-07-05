@@ -31,9 +31,9 @@ public interface AheadUserService {
 	/** 机构账号修改 **/
 	boolean updateinfo(InstitutionalUser user);
 	/**批量机构帐号注册**/
-	boolean batchRegisterInfo(InstitutionalUser com,Map<String,Object> map);
+	boolean batchRegisterInfo(InstitutionalUser user,Map<String,Object> map);
 	/**批量机构帐号注册**/
-	boolean batchUpdateInfo(InstitutionalUser user);
+	boolean batchUpdateInfo(InstitutionalUser user,Map<String,Object> map);
 	
 	/** 查询预警信息 */
 	WarningInfo findWarning();
@@ -52,9 +52,6 @@ public interface AheadUserService {
 	
 	/** 添加机构管理员 */
 	int addRegisterAdmin(InstitutionalUser user);
-	
-	/** 批量更新机构账号<批量修改>(当前账号无管理员添加新的，已有管理员不做任何操作) */
-	int updateRegisterInfo(InstitutionalUser com,String pid,String adminId);
 	
 	/** 更新机构管理员 */
 	int updateRegisterAdmin(InstitutionalUser user);
@@ -91,25 +88,25 @@ public interface AheadUserService {
 	UserAccountRestriction getAccountRestriction(String userId);
 	
 	/** 添加余额信息 */
-	int addProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int addProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
 
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto,String adminId) throws Exception;
+	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 添加系统次数信息 */
-	int addProjectNumber(InstitutionalUser com, ResourceDetailedDTO dto,String adminId) throws Exception;
+	int addProjectNumber(InstitutionalUser user, ResourceDetailedDTO dto,String adminId) throws Exception;
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 更新系统次数信息 */
-	int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
 	
 	/** 添加项目资源信息 */
-	void addProjectResources(InstitutionalUser com, ResourceDetailedDTO dto);
+	void addProjectResources(InstitutionalUser user, ResourceDetailedDTO dto);
 	
 	/** 更新项目资源信息 */
-	void updateProjectResources(InstitutionalUser com, ResourceDetailedDTO dto);
+	void updateProjectResources(InstitutionalUser user, ResourceDetailedDTO dto);
 
 	/** 通过userId更新用户ip */
 	void updateUserIp(InstitutionalUser user);
@@ -159,7 +156,7 @@ public interface AheadUserService {
 
 	/** 删除购买详情（权限） 
 	 * @param b */
-	void deleteResources(InstitutionalUser com, ResourceDetailedDTO dto, boolean b);
+	void deleteResources(InstitutionalUser user, ResourceDetailedDTO dto, boolean b);
 
 	/** 修改机构名称 */
 	void updateInstitution(String institution, String oldins);
@@ -168,7 +165,7 @@ public interface AheadUserService {
 	int updateUserInfo(InstitutionalUser user);
 
 	/** 删除购买项目（逻辑删除） */
-	int deleteAccount(InstitutionalUser com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int deleteAccount(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
@@ -235,9 +232,9 @@ public interface AheadUserService {
 	/** 获取  **/
 	UserInstitution getUserInstitution(String userId);
 	/**判断余额和限次是否为大于等于0*/
-	boolean checkLimit(InstitutionalUser com, ResourceDetailedDTO dto) throws Exception;
+	boolean checkLimit(InstitutionalUser user, ResourceDetailedDTO dto) throws Exception;
 	/**获取子账号列表*/
-	void updateSubaccount(InstitutionalUser com,String adminId) throws Exception;
+	void updateSubaccount(InstitutionalUser user,String adminId) throws Exception;
 	/** 保存机构用户权限 **/
 	void addWfksAccountidMapping(InstitutionalUser user);
 	/** 获取机构用户权限 **/
