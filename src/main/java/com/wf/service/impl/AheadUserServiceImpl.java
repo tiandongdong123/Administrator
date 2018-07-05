@@ -1717,6 +1717,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		userMap.put("upperlimit", uar.getUpperlimit());
 		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
+		userMap.put("pConcurrentnumber", uar.getpConcurrentnumber());
 		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());
 		userMap.put("chargebacks", uar.getChargebacks());
 	}

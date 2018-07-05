@@ -167,19 +167,19 @@
 				</div>
 				<div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
 					<div class="form-group input_block">
-						<label class="input_name">设置子帐号上限</label>
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
 						<input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">设置子账号并发数</label>
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号并发数</label>
 						<input type="text" class="form-control input_time" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">子账号下载量上限/天</label>
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>子账号下载量上限/天</label>
 						<input type="text" class="form-control input_time" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">设置子账号扣款模式</label>
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号扣款模式</label>
 						<select class="form-control input_time" name="chargebacks" id="chargebacks">
 							<option value="0" <?if(map.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
 							<option value="1" <?if(map.chargebacks==1){?>selected="selected"<?}?>>从机构子账号扣款</option>

@@ -74,7 +74,7 @@ $(function(e){
 			$("#sconcurrent_div").show();
 		}else{
 			$("#upperlimit").val("");
-			$("#sConcurrentcountber").val("");
+			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
