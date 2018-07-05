@@ -40,18 +40,7 @@ function submitForm(type){
 		removeAtrr();
 		return false;
 	}
-	var msg=validateUserId();
-	if(msg!="true"){
-		if(msg=='false'){
-			layer.msg("该机构ID已存在，请重新输入机构ID",{icon: 2});
-		}else if(msg=='old'){
-			layer.msg("该机构ID在老平台已存在，请重新输入机构ID",{icon: 2});
-		}else if(msg=='error'){
-			layer.msg("旧平台检验机构ID出现异常",{icon: 2});
-		}
-		removeAtrr();
-		return false;
-	}else if(ip!="" && !IpFormat(ip)){
+	if(ip!="" && !IpFormat(ip)){
 		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
 		removeAtrr();
 		return false;

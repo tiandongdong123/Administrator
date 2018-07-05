@@ -1407,26 +1407,6 @@ function setPerioSubject(data,num){
 	$.fn.zTree.init($("#perioInfoZtree_"+num), setting, data.ztreeJson);
 }
 
-
-//校验用户名是否已存在
-function validateUserId(){
-	var userId = $("#userId").val();
-	var msg = "";
-	$.ajax({
-	 	type : "post",
-	 	async:false,
-		url : "../auser/getPersion.do?t="+escape(new Date()),
-		data:{userId:userId},
-		dataType : "json",
-		success: function(data){
-			msg=data.flag;
-		}
-	});
-	return msg;
-}
-
-
-
 function validateFrom(){
 	var bool = false;
 	if(fieldsCheck()){

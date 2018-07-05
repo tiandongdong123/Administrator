@@ -26,7 +26,7 @@
             </div>
             <div class="form-group input_block">
               <label class="input_name">机构名称</label>
-              <input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+              <input type="text" class="form-control input_width" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
             </div>
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>

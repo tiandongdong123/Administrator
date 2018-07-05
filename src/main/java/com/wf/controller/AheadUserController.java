@@ -198,27 +198,6 @@ public class AheadUserController {
 	}
 	
 	/**
-	 *	验证机构用户名是否存在
-	 */
-	@RequestMapping("getPersion")
-	@ResponseBody
-	public JSONObject getPersion(String userId){
-		JSONObject object = new JSONObject();
-		Person p = aheadUserService.queryPersonInfo(userId);
-		if (p != null) {
-			object.put("flag", "false");
-			return object;
-		}
-		String msg = aheadUserService.validateOldUser(userId);
-		if (!"true".equals(msg)) {
-			object.put("flag", msg);
-			return object;
-		}
-		object.put("flag", "true");
-		return object;
-	}
-	
-	/**
 	 *	更新用户解冻/冻结状态
 	 */
 	@RequestMapping("setfreeze")
@@ -520,7 +499,7 @@ public class AheadUserController {
 			}
 			// 添加机构相关信息
 			boolean isSuccess = aheadUserService.registerInfo(user);
-			if (!isSuccess) {
+			if (!isSuccess) { //注册失败
 				this.addLogInfo(user.getUserId() + "注册失败", time);
 				errorMap.put("flag", "fail");
 				return errorMap;
@@ -1586,13 +1565,19 @@ public class AheadUserController {
 	
 	private void addLogInfo(String msg,long time){
 		if (log.isInfoEnabled()) {
-			log.info("，耗时:"+(System.currentTimeMillis()-time)+"ms");
+			log.info(msg+"，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 	}
 	
 	//机构信息注册
 	private Map<String,String> registerValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		//字段校验
 		errorMap = InstitutionUtils.getRegisterValidate(user);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//验证机构用户名是否存在
+		this.userValidate(user, errorMap);
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}
@@ -1605,6 +1590,25 @@ public class AheadUserController {
 		this.partyAdminValidate(user, errorMap);
 		if (errorMap.size() > 0) {
 			return errorMap;
+		}
+		return errorMap;
+	}
+	
+	//验证机构用户名是否存在
+	private Map<String,String> userValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		Person p = aheadUserService.queryPersonInfo(user.getUserId());
+		if (p != null) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail","该机构ID已存在，请重新输入机构ID");
+			return errorMap;
+		}
+		String msg = aheadUserService.validateOldUser(user.getUserId());
+		if ("old".equals(msg)) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail","该机构ID在老平台已存在，请重新输入机构ID");
+		}else if("error".equals(msg)){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail","旧平台检验机构ID出现异常");
 		}
 		return errorMap;
 	}
