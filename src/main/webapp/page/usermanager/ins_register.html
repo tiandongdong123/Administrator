@@ -16,12 +16,12 @@
               <div class="box-body">
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构名称</label>
-                  <input type="text" class="form-control input_width" name="institution" id="institution" maxlength="64" onfocus="input_onfocus(this);"  onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"/>
-				  <div class="searchsug" style="width:45%;height:auto;"><ul></ul></div>
+                  <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" onfocus="input_onfocus(this);"  onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"/>
+				  <div class="searchsug" style="width:45%;height:auto;"><ul></ul></div>&nbsp;&nbsp;支持中文字符、英文大小写字母（大小写有区分）、空格、数字、中英文小括号、横杠、下划线
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构ID</label>
-                  <input type="text" class="form-control input_width" name="userId" id="userId" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+                  <input type="text" class="form-control input_time" name="userId" id="userId" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">&nbsp;&nbsp;支持英文大小写（大小写有区分）、数字0-9、下划线
                 </div>
                 <div class="checkbox input_block block_left">
                   <label><input type="checkbox" id="checkp">设置机构账号并发数（登录并发）</label>
@@ -60,11 +60,11 @@
                 </div>
 				<div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b><span id="orderTypeSpan">CRM工单号</span></label>
-					<input type="text" class="form-control input_width" name="OrderContent" id="OrderContent" maxlength="50">
+					<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" maxlength="50">
 				</div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>登录方式</label>
-                  <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+                  <select class="form-control input_time" name="loginMode" id="loginMode" onchange="switchcs(this);">
                     <option value="1">用户名密码</option>
                     <option value="0">IP自动</option>
                     <option value="2">用户名密码+IP</option>
@@ -73,11 +73,11 @@
                 <div>
 				<div class="form-group input_block" id="upass">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>密码</label>
-					<input type="text" class="form-control input_width" name="password" id="password" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
+					<input type="text" class="form-control input_time" name="password" id="password" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
 				</div>
 				<div class="form-group input_block" id="ipvalue" style="display: none;">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
-					<textarea class="input_width" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'');" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
+					<textarea class="input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'');" onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"></textarea>
 					<span>
 					<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
 					<button type="button" onclick="deleteIP();" id="deleteIp">剔除IP冲突</button>
@@ -106,11 +106,11 @@
 			        </div>
 	                <div class="form-group input_block">
 	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
-	                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin">
+	                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin">
 	                </div>
 	                <div class="form-group input_block">
 	                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
-	                 	<input class="form-control input_width" type="text" name="partyPassword" id="partyPassword">
+	                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword">
 	                </div>
 	                <div class="form-group time_block">
 	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -131,25 +131,25 @@
                 	</div>
 					<div id="oldManager" class="form-group input_block" style="display: none;">
 						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-						<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+						<select class="form-control input_time" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
 							<option value="">-请选择管理员ID-</option>
 						</select>
 					</div>
                 	<div id="newManager" class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
-	                  <input type="text" class="form-control input_width" name="adminname" id="adminname" onfocus="input_onfocus(this);"/><span>支持英文大小写（大小写有区分）、数字0-9、下划线</span>
+	                  <input type="text" class="form-control input_time" name="adminname" id="adminname" onfocus="input_onfocus(this);"/><span>支持英文大小写（大小写有区分）、数字0-9、下划线</span>
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
-	                  <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword">
+	                  <input type="text" class="form-control input_time" name="adminpassword" id="adminpassword">
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
-	                  <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
+	                  <input type="text" class="form-control input_time" name="adminEmail" id="adminEmail">
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name">机构管理员IP段</label>
-	                  <input type="text" class="form-control input_width" name="adminIP" id="adminIP">
+	                  <input type="text" class="form-control input_time" name="adminIP" id="adminIP">
 	                </div>
 	                <div class="checkbox input_block block_left">
 	                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
@@ -157,19 +157,19 @@
 		            <div style="display: none;" id="sconcurrent_div">
 	                  	<div class="form-group input_block">
 		                  <label class="input_name">设置子帐号上限</label>
-		                  <input type="text" class="form-control input_width" value="100" name="upperlimit" id="upperlimit" maxlength="11">
+		                  <input type="text" class="form-control input_time" value="100" name="upperlimit" id="upperlimit" maxlength="11">
 		                </div>
 		                <div class="form-group input_block">
 		                  <label class="input_name">设置子账号并发数</label>
-		                  <input type="text" class="form-control input_width" value="1" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
+		                  <input type="text" class="form-control input_time" value="1" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
 		                </div>
 			            <div class="form-group input_block">
 		                  <label class="input_name">子账号下载量上限/天</label>
-		                  <input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
+		                  <input type="text" class="form-control input_time" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
 		                </div>
 			            <div class="form-group input_block">
 		                  <label class="input_name">设置子账号扣款模式</label>
-		                  <select class="form-control input_width" name="chargebacks" id="chargebacks">
+		                  <select class="form-control input_time" name="chargebacks" id="chargebacks">
 							<option value="0">从机构账号扣款</option>
 							<option value="1">从机构子账号扣款</option>
 		                  </select>
@@ -213,7 +213,7 @@
 	               	</div>
 		            <div class="form-group input_block">
 	                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-	                 	<input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil">
+	                 	<input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil">
 					 	<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
 	               	</div>
                	</div>

@@ -19,20 +19,21 @@
               <label class="input_name">机构ID</label>
               <input type="hidden" name="userId" id="userId" value="${map.userId}">
               <input type="hidden" name="oldInstitution" id="oldInstitution" value="${map.institution}">
-              <input type="text" class="form-control input_width" value="${map.userId}" readonly="readonly">
+              <input type="text" class="form-control input_time" value="${map.userId}" readonly="readonly">
             </div>
             <div class="checkbox input_block block_left">
               <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数（登录并发）</label>
             </div>
             <div class="form-group input_block">
               <label class="input_name">机构名称</label>
-              <input type="text" class="form-control input_width" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+              <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
+				&nbsp;&nbsp;支持中文字符、英文大小写字母（大小写有区分）、空格、数字、中英文小括号、横杠、下划线
             </div>
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                 <div class="form-group input_block">
                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构账号并发数</label>
-               <input type="text" class="form-control input_width" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}" maxlength="11">
+               <input type="text" class="form-control input_time" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}" maxlength="11">
              </div>
             </div>
 			<div class="form-group input_block">
@@ -64,11 +65,11 @@
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b><span id="orderTypeSpan">CRM工单号</span></label>
-				<input type="text" class="form-control input_width" name="OrderContent" id="OrderContent" value="${groupInfo.OrderContent!}" maxlength="50">
+				<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" value="${groupInfo.OrderContent!}" maxlength="50">
 			</div>
             <div class="form-group input_block">
               <label class="input_name">登录方式</label>
-              <select class="form-control input_width" name="loginMode" id="loginMode" onchange="switchcs(this);">
+              <select class="form-control input_time" name="loginMode" id="loginMode" onchange="switchcs(this);">
                 <option value="1" <?if(map.loginMode==1){ ?>selected="selected"<?}?>>用户名密码</option>
                 <option value="0" <?if(map.loginMode==0){ ?>selected="selected"<?}?>>IP自动</option>
                 <option value="2" <?if(map.loginMode==2){ ?>selected="selected"<?}?>>用户名密码+IP</option>
@@ -77,11 +78,11 @@
             <div>
              <div class="form-group input_block" id="upass" <?if(!isEmpty(map.password)&&map.loginMode!=0){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                <label class="input_name">密码</label>
-               <input type="text" class="form-control input_width" name="password" id="password" value="${map.password!}" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
+               <input type="text" class="form-control input_time" name="password" id="password" value="${map.password!}" onkeyup="this.value=this.value.replace(/\s+/g,'')" onafterpaste="this.value=this.value.replace(/\s+/g,'')">
              </div>
              <div class="form-group input_block" id="ipvalue" <?if(map.loginMode!=1){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                <label  class="input_name">账号IP段</label>
-               <textarea class="form-control input_width" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"
+               <textarea class="form-control input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"
                onafterpaste="this.value=this.value.replace(/[^.0-9\r\n-]/g,'')"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
 				<span>
 				<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
@@ -113,11 +114,11 @@
 		        </div>
                 <div class="form-group input_block">
                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
-                	<input type="text" class="form-control input_width" name="partyAdmin" id="partyAdmin" value="${party.partyAdmin!}">
+                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin" value="${party.partyAdmin!}">
                 </div>
                 <div class="form-group input_block">
                  	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
-                 	<input class="form-control input_width" type="text" name="partyPassword" id="partyPassword" value="${party.password!}">
+                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword" value="${party.password!}">
                 </div>
                 <div class="form-group time_block">
                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -138,7 +139,7 @@
 				</div>
 				<div id="oldManager" class="form-group input_block" <?if(isEmpty(map.pid)){?>style="display: none;"<?}?>>
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-					<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+					<select class="form-control input_time" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
 						<option value="">-请选择管理员ID-</option>
 						<?if(!isEmpty(admin)){?>
 						<?for(adm in admin){?><option value="${adm.userId}" <?if(adm.userId==map.pid){?>selected="selected"<?}?>>${adm.userId}</option><?}?>
@@ -147,19 +148,19 @@
 				</div>
                	<div id="newManager" class="form-group input_block" <?if(!isEmpty(map.pid)){?>style="display: none;"<?}?>>
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
-                  <input type="text" class="form-control input_width" name="adminname" id="adminname" value="${map.adminname}" onfocus="input_onfocus(this);"/><span>支持英文大小写（大小写有区分）、数字0-9、下划线</span>
+                  <input type="text" class="form-control input_time" name="adminname" id="adminname" value="${map.adminname}" onfocus="input_onfocus(this);"/><span>支持英文大小写（大小写有区分）、数字0-9、下划线</span>
                 </div>
 				<div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
-					<input type="text" class="form-control input_width" name="adminpassword" id="adminpassword" value="${map.adminpassword}">
+					<input type="text" class="form-control input_time" name="adminpassword" id="adminpassword" value="${map.adminpassword}">
 				</div>
 				<div class="form-group input_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
-					<input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
+					<input type="text" class="form-control input_time" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
 				</div>
 				<div class="form-group input_block">
 					<label class="input_name">机构管理员IP段</label>
-					<input type="text" class="form-control input_width" name="adminIP" id="adminIP" <?if(!isEmpty(map.adminIP)){?>value="${map.adminIP[0].beginIpAddressNumber}-${map.adminIP[0].endIpAddressNumber}"<?}?>>
+					<input type="text" class="form-control input_time" name="adminIP" id="adminIP" <?if(!isEmpty(map.adminIP)){?>value="${map.adminIP[0].beginIpAddressNumber}-${map.adminIP[0].endIpAddressNumber}"<?}?>>
 				</div>
 				<div class="checkbox input_block block_left">
 					<label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>checked="checked"<?}?>>是否开通机构子账号</label>
@@ -167,19 +168,19 @@
 				<div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
 					<div class="form-group input_block">
 						<label class="input_name">设置子帐号上限</label>
-						<input type="text" class="form-control input_width" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="11">
+						<input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">设置子账号并发数</label>
-						<input type="text" class="form-control input_width" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
+						<input type="text" class="form-control input_time" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">子账号下载量上限/天</label>
-						<input type="text" class="form-control input_width" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
+						<input type="text" class="form-control input_time" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="11">
 					</div>
 					<div class="form-group input_block">
 						<label class="input_name">设置子账号扣款模式</label>
-						<select class="form-control input_width" name="chargebacks" id="chargebacks">
+						<select class="form-control input_time" name="chargebacks" id="chargebacks">
 							<option value="0" <?if(map.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
 							<option value="1" <?if(map.chargebacks==1){?>selected="selected"<?}?>>从机构子账号扣款</option>
 						</select>
@@ -203,7 +204,7 @@
             <div id="dinding" >
             <div class="form-group input_block">
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
-                <select class="form-control input_width"  id="bindType" name="bindType"  >
+                <select class="form-control input_time"  id="bindType" name="bindType"  >
                     <>
                     <option value="0"<?if(bindInformation.bindType==0){?>selected = "selected"<?}?>>机构个人同时登录</option>
                     <option value="1"<?if(bindInformation.bindType==1){?>selected = "selected"<?}?>>机构登录</option>
@@ -213,17 +214,17 @@
             </div>
             <div class="form-group input_block">
                 <label class="input_name bind_num"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人上限</label>
-                <input type="text" class="form-control input_width" value="${bindInformation.bindLimit}" id="bindLimit" name="bindLimit">
+                <input type="text" class="form-control input_time" value="${bindInformation.bindLimit}" id="bindLimit" name="bindLimit">
 				<i class="wrong"></i>
 				<span class="mistaken"></span>
             </div>
             <div class="form-group input_block">
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人账号有效期(天)</label>
-                <input type="text" class="form-control input_width" value="${bindInformation.bindValidity}" id="bindValidity" name="bindValidity">
+                <input type="text" class="form-control input_time" value="${bindInformation.bindValidity}" id="bindValidity" name="bindValidity">
             </div>
             <div class="form-group input_block">
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人下载量上限/天</label>
-                <input type="text" class="form-control input_width" value="${bindInformation.downloadLimit}" id="downlaodLimit" name="downloadLimit">
+                <input type="text" class="form-control input_time" value="${bindInformation.downloadLimit}" id="downlaodLimit" name="downloadLimit">
             </div>
             <div class="form-group input_block">
                 <input type="hidden" name="bindAuthority" id="bindAuthority" value="资源下载">
@@ -256,7 +257,7 @@
                	</div>
             	<div class="form-group input_block">
                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-               		<input type="text" class="form-control input_width" name="weChatEamil" id="weChatEamil" value="${email!}">
+               		<input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil" value="${email!}">
 					<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
 				</div>
 			</div>
