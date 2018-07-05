@@ -41,7 +41,6 @@ import com.utils.InstitutionUtils;
 import com.utils.Organization;
 import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
-import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.InstitutionalUser;
@@ -548,7 +547,7 @@ public class AheadUserController {
 			if(errorMap.size()>0){
 				return errorMap;
 			}
-			allNum = user.getRdlist().size();
+			allNum = userList.size();
 			for (Map<String, Object> map : userList) {
 				// Excel表格中部分账号信息
 				user.setInstitution(map.get("institution").toString());
@@ -762,270 +761,275 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String,String> updateBatchRegister(MultipartFile file, InstitutionalUser com, BindAuthorityModel bindAuthorityModel, ModelAndView view,
-			HttpServletRequest req, HttpServletResponse res)throws Exception{
+	public Map<String, String> updateBatchRegister(MultipartFile file, InstitutionalUser user,
+			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
+		
 		long time=System.currentTimeMillis();
-		Map<String, String> hashmap = new HashMap<String, String>();
-		int in = 0;
-		List<Map<String, Object>> listmap=null;
+		Map<String, String> errorMap = new HashMap<String, String>();
+		int sucNum = 0;
+		int allNum=0;
 		try{
-			String adminId = CookieUtil.getCookie(req);
-			String adminIns = com.getAdminOldName().substring(com.getAdminOldName().indexOf("/")+1);
 			if (file == null || file.isEmpty()) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", "请上传附件");
-				return hashmap;
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "请上传附件");
+				return errorMap;
 			}
-			listmap = aheadUserService.getExcelData(file);
-			int maxSize = SettingUtil.getImportExcelMaxSize();
-			if (listmap.size() > maxSize) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", "批量更新最多可以一次更新" + maxSize + "条");
-				return hashmap;
+			List<Map<String, Object>> userList = aheadUserService.getExcelData(file);
+			allNum=userList.size();
+			errorMap = this.updateBatchValidate(file,user,userList);
+			if (errorMap.size() > 0) {
+				return errorMap;
 			}
-			for (int i = 0; i < listmap.size(); i++) {
-				Map<String, Object> map = listmap.get(i);
-				if ("".equals(map.get("userId"))) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail","用户ID不能为空");
-					return hashmap;
-				}
-				String userId=map.get("userId").toString();
-				Matcher m1 = paName.matcher(map.get("institution").toString());
-				Matcher m2 = pa.matcher(userId);
-				boolean flag1 = m1.find();
-				boolean flag2 = m2.find();
-				if (flag1 || flag2) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", flag1 ? "格式不对，请填写规范的机构名称" : "用户ID不能包含特殊字符");
-					return hashmap;
-				}
-				String password=(String) map.get("password");
-				if(password.contains(" ")){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "密码不能有空格");
-					return hashmap;
-				}
-				if ("2".equals(com.getLoginMode())) {
-					String ip = (String) map.get("ip");
-					if (StringUtils.isBlank(ip)) {
-						List<Map<String, Object>> ls = aheadUserService.listIpByUserId(userId);
-						if (ls == null || ls.size() == 0) {
-							hashmap.put("flag", "fail");
-							hashmap.put("fail", userId + "未添加有效IP");
-							return hashmap;
-						}
-					}
-					if (!IPConvertHelper.validateIp(ip)) {
-						hashmap.put("flag", "fail");
-						hashmap.put("fail", userId+"的IP不合法");
-						return hashmap;
-					}
-				}
-			}
-			List<ResourceDetailedDTO> list = com.getRdlist();
-			if (list == null || list.size() == 0) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", "请选择项目");
-				return hashmap;
-			}
-			for (int j = 0; j < list.size(); j++) {
-				ResourceDetailedDTO dto = list.get(j);
-				if (dto.getProjectid() != null) {
-					hashmap = InstitutionUtils.getProectValidate(dto, false, false);
-					if (hashmap.size() > 0) {
-						return hashmap;
-					}
-				} else {
-					list.remove(j--);
-				}
-			}
-			String institution="";
-			for(Map<String, Object> map : listmap){
-				if(!map.get("userId").equals("")){
-					//用户是否存在
-					Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
-					if(ps==null){
-						hashmap.put("flag", "fail");
-						hashmap.put("fail", map.get("userId")+"该用户不存在");
-						return hashmap;
-					}
-					if(StringUtils.isNotBlank(com.getCheckuser())){
-						if(map.get("institution").equals("")){
-							hashmap.put("flag", "fail");
-							hashmap.put("fail", "如开通管理员请填写机构名称");
-							return hashmap;
-						}else if(com.getManagerType().equals("old") && !map.get("institution").equals(adminIns)){
-							hashmap.put("flag", "fail");
-							hashmap.put("fail", map.get("userId")+"该用户机构名与管理员机构名不符");
-							return hashmap;
-						}
-					}
-					if(StringUtils.isNotBlank(com.getAdminname())){
-						if(StringUtils.equals(map.get("userId").toString(), com.getAdminname())){
-							hashmap.put("flag", "fail");
-							hashmap.put("fail",  "机构管理员ID和机构用户ID重复");
-							return hashmap;
-						}
-						String ins=map.get("institution").toString();
-						if("".equals(institution)){
-							institution=ins;
-						}
-						if(!StringUtils.equals(institution, ins)){
-							hashmap.put("flag", "fail");
-							hashmap.put("fail",  "机构名称不唯一");
-							return hashmap;
-						}
-					}
-
-					List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
-					for(Map<String, Object> pl : lm){
-						//判断如果重置金额或次数，不可存在负数
-						if(StringUtils.isNotBlank(com.getResetMoney()) || StringUtils.isNotBlank(com.getResetCount())){
-							if(Double.valueOf(pl.get("totalMoney").toString())<0){
-								hashmap.put("flag", "fail");
-								hashmap.put("fail", map.get("userId")+"的购买项目中存在负数(不能被重置)");
-								return hashmap;
-							}
-						}
-					}
-					if(list!=null){
-						//预加载校验页面项目是否和Excel中一致
-						for(ResourceDetailedDTO dto : list){
-							if(dto.getProjectid()!=null){
-								if(lm.toString().contains(dto.getProjectid())){
-									//continue;
-								}else{							
-									hashmap.put("flag", "fail");
-									hashmap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
-									return hashmap;
-								}
-							}
-							// 验证金额是否正确
-							String ptype = dto.getProjectType();
-							if (ptype.equals("balance") || ptype.equals("count")) {
-								com.setUserId(map.get("userId").toString());
-								for(Map<String, Object> pro : lm) {
-									if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-										if (ptype.equals("balance")) {
-											dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
-											dto.setPurchaseNumber(0);
-										} else {
-											dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
-											dto.setTotalMoney(0.0);
-										}
-										if (!aheadUserService.checkLimit(com, dto)) {
-											hashmap.put("flag", "fail");
-											hashmap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
-											return hashmap;
-										}
-									}
-								}
-							}
-						}
-					}
-				}else{
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "机构用户名必填");
-					return hashmap;
-				}
-			}
-			for(Map<String, Object> map : listmap){
+			allNum = userList.size();
+			for(Map<String, Object> map : userList){
 				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
 				//Excel表格中部分账号信息
 				if(map.get("institution")!=null && map.get("institution")!=""){				
-					com.setInstitution(map.get("institution").toString());
+					user.setInstitution(map.get("institution").toString());
 				}else{
-					com.setInstitution(ps.getInstitution());
+					user.setInstitution(ps.getInstitution());
 				}
 				if(map.get("password")!=null && map.get("password")!=""){
 					String password = String.valueOf(map.get("password"));
 					if (password.contains("不变")) {
 						password = "";
 					}
-					com.setPassword(password);
+					user.setPassword(password);
 				}else{
-					com.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
+					user.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
 				}
-				com.setUserId(map.get("userId").toString());
-				//更新机构账号
-				int resinfo = aheadUserService.updateRegisterInfo(com, null, adminId);
-				//统计分线权限
-				aheadUserService.addUserIns(com);
-				// 机构用户购买项目
-				//aheadUserService.add(com);
-				//保存IP
-				if ("2".equals(com.getLoginMode())) {
-					String ip=(String) map.get("ip");
-					ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
-					com.setIpSegment(ip);
-					aheadUserService.updateUserIp(com);
-				}else{
-					aheadUserService.deleteUserIp(com.getUserId());
-				}
+				user.setUserId(map.get("userId").toString());
+				//修改机构用户
+				aheadUserService.batchUpdateInfo(user,map);
+				//修改购买项目
+				this.batchUpdateProect(user,map,req);
 				//修改或开通个人绑定机构权限
-				bindAuthorityModel.setUserId(map.get("userId").toString());
-				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
-					ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
-					if (response.getServiceResult()==false){
-						hashmap.put("flag", "fail");
-						hashmap.put("fail",response.getResultMessage());
-						return hashmap;
-					}
-				}else {
-					int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
-					if (count>0){
-						aheadUserService.closeBindAuthority(bindAuthorityModel);
+				this.updateBindAuthorityModel(bindAuthorityModel,map);
+				//添加日期
+				this.addOperationLogs(user, "批量修改", req);
+				log.info("机构用户[" + user.getUserId() + "]修改成功");
+				sucNum++;
+			}
+			errorMap.put("flag", "success");
+			errorMap.put("success", "成功更新："+sucNum+"条");
+			log.info("批量修改成功："+sucNum+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
+		}catch(Exception e){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "成功更新"+sucNum+"条,更新失败"+(allNum-sucNum)+"条");
+			log.error("机构用户批量更新", e);
+		}
+		return errorMap;
+	}
+	
+	//批量修改机构项目
+	private void batchUpdateProect(InstitutionalUser user, Map<String, Object> map,
+			HttpServletRequest req) throws Exception {
+		List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+		String adminId = CookieUtil.getCookie(req);
+		for(ResourceDetailedDTO dto : user.getRdlist()){
+			for(Map<String, Object> pro : lm) {
+				if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
+					dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+					if(dto.getProjectType().equals("balance")){
+						if(aheadUserService.chargeProjectBalance(user, dto, adminId)>0){
+							aheadUserService.deleteResources(user,dto,false);
+							aheadUserService.updateProjectResources(user, dto);
+						}
+					}else if(dto.getProjectType().equals("time")){
+						//增加限时信息
+						if(aheadUserService.addProjectDeadline(user, dto,adminId)>0){
+							aheadUserService.deleteResources(user,dto,false);
+							aheadUserService.updateProjectResources(user, dto);
+						}
+					}else if(dto.getProjectType().equals("count")){
+						dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+						//增加次数信息
+						if(aheadUserService.chargeCountLimitUser(user, dto, adminId) > 0){
+							aheadUserService.deleteResources(user,dto,false);
+							aheadUserService.updateProjectResources(user, dto);
+						}
 					}
 				}
+			}
+		}
+		//子账号延期
+		aheadUserService.updateSubaccount(user,adminId);
+	}
+
+	private void updateBindAuthorityModel(BindAuthorityModel bindAuthorityModel,Map<String,Object> map) throws Exception {
+		bindAuthorityModel.setUserId(map.get("userId").toString());
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			aheadUserService.editBindAuthority(bindAuthorityModel);
+		}else {
+			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
+			if (count>0){
+				aheadUserService.closeBindAuthority(bindAuthorityModel);
+			}
+		}		
+	}
+
+	//批量机构更新机构用户验证
+	private Map<String, String> updateBatchValidate(MultipartFile file, InstitutionalUser user,
+			List<Map<String, Object>> userList) throws Exception {
+		
+		Map<String, String> errorMap = new HashMap<String, String>();
+		int maxSize = SettingUtil.getImportExcelMaxSize();
+		if (userList.size() > maxSize) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "批量更新最多可以一次更新" + maxSize + "条");
+			return errorMap;
+		}
+		for (int i = 0; i < userList.size(); i++) {
+			Map<String, Object> map = userList.get(i);
+			if ("".equals(map.get("userId"))) {
+				errorMap.put("flag", "fail");
+				errorMap.put("fail","用户ID不能为空");
+				return errorMap;
+			}
+			String userId=map.get("userId").toString();
+			Matcher m1 = paName.matcher(map.get("institution").toString());
+			Matcher m2 = pa.matcher(userId);
+			boolean flag1 = m1.find();
+			boolean flag2 = m2.find();
+			if (flag1 || flag2) {
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", flag1 ? "格式不对，请填写规范的机构名称" : "用户ID不能包含特殊字符");
+				return errorMap;
+			}
+			String password=(String) map.get("password");
+			if(password.contains(" ")){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "密码不能有空格");
+				return errorMap;
+			}
+			if ("2".equals(user.getLoginMode())) {
+				String ip = (String) map.get("ip");
+				if (StringUtils.isBlank(ip)) {
+					List<Map<String, Object>> ls = aheadUserService.listIpByUserId(userId);
+					if (ls == null || ls.size() == 0) {
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", userId + "未添加有效IP");
+						return errorMap;
+					}
+				}
+				if (!IPConvertHelper.validateIp(ip)) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", userId+"的IP不合法");
+					return errorMap;
+				}
+			}
+		}
+		List<ResourceDetailedDTO> list = user.getRdlist();
+		if (list == null || list.size() == 0) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "请选择项目");
+			return errorMap;
+		}
+		for (int j = 0; j < list.size(); j++) {
+			ResourceDetailedDTO dto = list.get(j);
+			if (dto.getProjectid() != null) {
+				errorMap = InstitutionUtils.getProectValidate(dto, false, false);
+				if (errorMap.size() > 0) {
+					return errorMap;
+				}
+			} else {
+				list.remove(j--);
+			}
+		}
+		user.setRdlist(list);
+		String institution="";
+		for(Map<String, Object> map : userList){
+			if(!map.get("userId").equals("")){
+				//用户是否存在
+				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
+				if(ps==null){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", map.get("userId")+"该用户不存在");
+					return errorMap;
+				}
+				if(StringUtils.isNotBlank(user.getCheckuser())){
+					if(map.get("institution").equals("")){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", "如开通管理员请填写机构名称");
+						return errorMap;
+					}else if(user.getManagerType().equals("old") && !map.get("institution").equals(user.getInstitution())){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", map.get("userId")+"该用户机构名与管理员机构名不符");
+						return errorMap;
+					}
+				}
+				if(StringUtils.isNotBlank(user.getAdminname())){
+					if(StringUtils.equals(map.get("userId").toString(), user.getAdminname())){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail",  "机构管理员ID和机构用户ID重复");
+						return errorMap;
+					}
+					String ins=map.get("institution").toString();
+					if("".equals(institution)){
+						institution=ins;
+					}
+					if(!StringUtils.equals(institution, ins)){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail",  "机构名称不唯一");
+						return errorMap;
+					}
+				}
+
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+				for(Map<String, Object> pl : lm){
+					//判断如果重置金额或次数，不可存在负数
+					if(StringUtils.isNotBlank(user.getResetMoney()) || StringUtils.isNotBlank(user.getResetCount())){
+						if(Double.valueOf(pl.get("totalMoney").toString())<0){
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", map.get("userId")+"的购买项目中存在负数(不能被重置)");
+							return errorMap;
+						}
+					}
+				}
 				if(list!=null){
+					//预加载校验页面项目是否和Excel中一致
 					for(ResourceDetailedDTO dto : list){
-						for(Map<String, Object> pro : lm) {
-							if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-								dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
-								if(dto.getProjectType().equals("balance")){
-									if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
-										aheadUserService.deleteResources(com,dto,false);
-										aheadUserService.updateProjectResources(com, dto);
+						if(dto.getProjectid()!=null){
+							if(lm.toString().contains(dto.getProjectid())){
+								//continue;
+							}else{							
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
+								return errorMap;
+							}
+						}
+						// 验证金额是否正确
+						String ptype = dto.getProjectType();
+						if (ptype.equals("balance") || ptype.equals("count")) {
+							user.setUserId(map.get("userId").toString());
+							for(Map<String, Object> pro : lm) {
+								if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
+									if (ptype.equals("balance")) {
+										dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+										dto.setPurchaseNumber(0);
+									} else {
+										dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+										dto.setTotalMoney(0.0);
 									}
-								}else if(dto.getProjectType().equals("time")){
-									//增加限时信息
-									if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
-										aheadUserService.deleteResources(com,dto,false);
-										aheadUserService.updateProjectResources(com, dto);
-									}
-								}else if(dto.getProjectType().equals("count")){
-									dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
-									//增加次数信息
-									if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
-										aheadUserService.deleteResources(com,dto,false);
-										aheadUserService.updateProjectResources(com, dto);
+									if (!aheadUserService.checkLimit(user, dto)) {
+										errorMap.put("flag", "fail");
+										errorMap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
+										return errorMap;
 									}
 								}
 							}
 						}
 					}
 				}
-				//子账号延期
-				aheadUserService.updateSubaccount(com,adminId);
-				if(resinfo>0){
-					in+=1;
-					log.info("机构用户["+com.getUserId()+"]修改成功");
-				}
-				this.addOperationLogs(com, "修改", req);;
+			}else{
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "机构用户名必填");
+				return errorMap;
 			}
-			hashmap.put("flag", "success");
-			hashmap.put("success", "成功更新："+in+"条");
-			log.info("批量修改成功："+in+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
-		}catch(Exception e){
-			hashmap.put("flag", "fail");
-			hashmap.put("fail", "成功更新"+in+"条,更新失败"+(listmap.size()-in)+"条");
-			log.error("机构用户批量更新", e);
 		}
-		return hashmap;
+		return errorMap;
 	}
-	
+
 	@RequestMapping("/worddownload")
 	public void worddownload(Model model,HttpServletResponse response,HttpServletRequest request) {
         // 下载本地文件
