@@ -24,17 +24,17 @@
             <div class="checkbox input_block block_left">
               <label><input type="checkbox" id="checkp" name="checks" value="true" <?if(!isEmpty(map.pConcurrentnumber)){?>checked="checked"<?}?>>设置机构账号并发数（登录并发）</label>
             </div>
-            <div class="form-group input_block">
-              <label class="input_name">机构名称</label>
-              <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
-			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
-				&nbsp;&nbsp;支持中文字符、英文大小写字母（大小写有区分）、空格、数字、中英文小括号、横杠、下划线
-            </div>
             <div id="pconcurrent_div" <?if(!isEmpty(map.pConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                 <div class="form-group input_block">
                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构账号并发数</label>
                <input type="text" class="form-control input_time" name="pConcurrentnumber" id="pConcurrentnumber" value="${map.pConcurrentnumber}" maxlength="9">
              </div>
+            </div>
+            <div class="form-group input_block">
+              <label class="input_name">机构名称</label>
+              <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
+				&nbsp;&nbsp;支持中文字符、英文大小写字母（大小写有区分）、空格、数字、中英文小括号、横杠、下划线
             </div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>国家</label>
