@@ -1384,8 +1384,157 @@ public class AheadUserController {
 	}
 	
 	/**
-	 *	删除购买项目 
+	 *	账号修改
 	 */
+	@RequestMapping("updateinfo")
+	@ResponseBody
+	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
+			HttpServletRequest req, HttpServletResponse res) {
+		
+		long time=System.currentTimeMillis();
+		Map<String,String> errorMap = new HashMap<String, String>();
+		try{
+			List<String> delList = new ArrayList<String>();
+			// 机构修改校验
+			errorMap = this.updateValidate(user, delList);
+			if (errorMap.size() > 0) {
+				return errorMap;
+			}
+			// 修改机构信息
+			boolean isSuccess = aheadUserService.updateinfo(user);
+			if (!isSuccess) { //修改失败
+				this.addLogInfo(user.getUserId() + "修改失败", time);
+				errorMap.put("flag", "fail");
+				return errorMap;
+			}
+			// 修改购买项目
+			this.updateProject(user, req, delList);
+			// 个人信息绑定
+			this.updateBindAuthorityModel(user, bindAuthorityModel);
+			// 添加日志
+			this.addLogInfo(user.getUserId() + "更新成功", time);
+			// 添加数据库统计日志
+			this.addOperationLogs(user, "注册", req);
+			errorMap.put("flag", "success");
+			return errorMap;
+		}catch(Exception e){
+			log.error("机构账号修改异常：", e);
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "机构账号修改异常");
+			return errorMap;
+		}
+	}
+	
+	//机构修改验证
+	private Map<String,String> updateValidate(InstitutionalUser user,List<String> delList) throws Exception{
+		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
+		Map<String,String> errorMap = InstitutionUtils.getUpdateValidate(user, delList, list);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		// 验证金额是否正确
+		for (ResourceDetailedDTO dto : list) {
+			String ptype = dto.getProjectType();
+			if (ptype.equals("balance") || ptype.equals("count")) {
+				if (!aheadUserService.checkLimit(user, dto)) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
+					return errorMap;
+				}
+			}
+		}
+		// 校验机构管理员
+		this.adminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		// 校验党建管理
+		this.partyAdminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		user.setRdlist(list);
+		return errorMap;
+	}
+
+	//添加机构用户购买项目
+	private void addProject(InstitutionalUser com,HttpServletRequest req) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		for(ResourceDetailedDTO dto : com.getRdlist()){
+			if(dto.getProjectType().equals("balance")){
+				if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("time")){
+				//增加限时信息
+				if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}else if(dto.getProjectType().equals("count")){
+				//增加次数信息
+				if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
+					aheadUserService.addProjectResources(com, dto);
+				}
+			}
+		}
+	}
+	
+	//个人信息绑定
+	private void addBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
+		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
+		if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
+			aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
+		}
+	}
+	
+	//个人信息绑定修改
+	private void updateBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
+		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
+		//修改或开通个人绑定机构权限
+		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
+			aheadUserService.editBindAuthority(bindAuthorityModel);
+		}else {
+			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
+			if (count>0){
+				aheadUserService.closeBindAuthority(bindAuthorityModel);
+			}
+		}
+	}
+	
+	//修改机构用户购买项目
+	private void updateProject(InstitutionalUser com,HttpServletRequest req,List<String> delList) throws Exception{
+		String adminId = CookieUtil.getCookie(req);
+		// 删除项目
+		if (delList.size() > 0) {
+			this.removeproject(req, delList);
+		}
+		for(ResourceDetailedDTO dto : com.getRdlist()){
+			if(dto.getProjectid()!=null){
+				if(dto.getProjectType().equals("balance")){
+					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}else if(dto.getProjectType().equals("time")){
+					//增加限时信息
+					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}else if(dto.getProjectType().equals("count")){
+					//增加次数信息
+					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
+						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
+					}
+				}
+			}
+		}
+		//子账号延期
+		aheadUserService.updateSubaccount(com,adminId);
+	}
+	
+	//删除购买项目 
 	private void removeproject(HttpServletRequest req,List<String> list) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
 		InstitutionalUser com = new InstitutionalUser();
@@ -1429,140 +1578,7 @@ public class AheadUserController {
 		this.addOperationLogs(com, "删除", req);;
 	}
 	
-	/**
-	 *	账号修改
-	 */
-	@RequestMapping("updateinfo")
-	@ResponseBody
-	public Map<String, String> updateinfo(InstitutionalUser com, BindAuthorityModel bindAuthorityModel,
-			HttpServletRequest req, HttpServletResponse res) {
-		
-		long time=System.currentTimeMillis();
-		Map<String,String> hashmap = new HashMap<String, String>();
-		try{
-			List<String> delList=new ArrayList<String>();
-			List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
-			// 机构修改校验
-			hashmap = InstitutionUtils.getUpdateValidate(com, delList, list);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			// 验证金额是否正确
-			for (ResourceDetailedDTO dto : list) {
-				String ptype = dto.getProjectType();
-				if (ptype.equals("balance") || ptype.equals("count")) {
-					if (!aheadUserService.checkLimit(com, dto)) {
-						hashmap.put("flag", "fail");
-						hashmap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
-						return hashmap;
-					}
-				}
-			}
-			// 校验机构管理员
-			this.adminValidate(com, hashmap);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			// 校验党建管理
-			this.partyAdminValidate(com, hashmap);
-			if (hashmap.size() > 0) {
-				return hashmap;
-			}
-			// 删除项目
-			if (delList.size() > 0) {
-				this.removeproject(req, delList);
-			}
-			com.setRdlist(list);
-			// 修改机构信息
-			boolean flag=aheadUserService.updateinfo(com);
-			//修改或开通个人绑定机构权限
-			if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
-				aheadUserService.editBindAuthority(bindAuthorityModel);
-			}else {
-				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
-				if (count>0){
-					aheadUserService.closeBindAuthority(bindAuthorityModel);
-				}
-			}
-			// 修改购买项目
-			this.updateProject(com, req, list);
-			
-			String logStr="";
-			if (flag) {
-				HttpClientUtil.updateUserData(com.getUserId(), com.getLoginMode());// 更新前台用户信息
-				hashmap.put("flag", "success");
-				logStr=com.getUserId()+"更新成功，耗时:"+(System.currentTimeMillis()-time)+"ms";
-			} else {
-				hashmap.put("flag", "fail");
-				logStr=com.getUserId()+"更新失败，耗时:"+(System.currentTimeMillis()-time)+"ms";
-			}
-			log.info(logStr);
-			this.addOperationLogs(com, "批量修改", req);
-		}catch(Exception e){
-			log.error("账号修改异常:", e);
-		}
-		return hashmap;
-	}
-	
-	//添加机构用户购买项目
-	private void addProject(InstitutionalUser com,HttpServletRequest req) throws Exception{
-		String adminId = CookieUtil.getCookie(req);
-		for(ResourceDetailedDTO dto : com.getRdlist()){
-			if(dto.getProjectType().equals("balance")){
-				if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
-					aheadUserService.addProjectResources(com, dto);
-				}
-			}else if(dto.getProjectType().equals("time")){
-				//增加限时信息
-				if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
-					aheadUserService.addProjectResources(com, dto);
-				}
-			}else if(dto.getProjectType().equals("count")){
-				//增加次数信息
-				if(aheadUserService.addProjectNumber(com, dto,adminId) > 0){
-					aheadUserService.addProjectResources(com, dto);
-				}
-			}
-		}
-	}
-	
-	//个人信息绑定
-	private void addBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
-		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
-		if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
-			aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
-		}
-	}
-	
-	//修改机构用户购买项目
-	private void updateProject(InstitutionalUser com,HttpServletRequest req,List<ResourceDetailedDTO> list) throws Exception{
-		String adminId = CookieUtil.getCookie(req);
-		for(ResourceDetailedDTO dto : list){
-			if(dto.getProjectid()!=null){
-				if(dto.getProjectType().equals("balance")){
-					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
-						aheadUserService.deleteResources(com,dto,false);
-						aheadUserService.updateProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("time")){
-					//增加限时信息
-					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
-						aheadUserService.deleteResources(com,dto,false);
-						aheadUserService.updateProjectResources(com, dto);
-					}
-				}else if(dto.getProjectType().equals("count")){
-					//增加次数信息
-					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
-						aheadUserService.deleteResources(com,dto,false);
-						aheadUserService.updateProjectResources(com, dto);
-					}
-				}
-			}
-		}
-		//子账号延期
-		aheadUserService.updateSubaccount(com,adminId);
-	}
-	
+	//添加日志
 	private void addLogInfo(String msg,long time){
 		if (log.isInfoEnabled()) {
 			log.info(msg+"，耗时:"+(System.currentTimeMillis()-time)+"ms");
