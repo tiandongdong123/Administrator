@@ -230,23 +230,27 @@ $(function(){
 function noChoose(){
     $(".mechanism_id").attr("disabled",false);
     $("#bindType").attr("disabled",false);
-    $("#bindType").attr("disabled",false);
     $("#bindLimit").attr("disabled",false);
     $("#bindValidity").attr("disabled",false);
     $("#downloadLimit").attr("disabled",false);
     $("#allInherited").attr("disabled",false);
     $(".selFirst").attr("disabled",false);
+    $('#openBindStart').attr('disabled',false);
+    $('#openBindEnd').attr('disabled',false);
+    $('#email').attr('disabled',false);
 }
 //设置disabled属性
 function yesChoose() {
     $(".mechanism_id").attr("disabled",true);
-    $("#bindType").attr("disabled",true);
     $("#bindType").attr("disabled",true);
     $("#bindLimit").attr("disabled",true);
     $("#bindValidity").attr("disabled",true);
     $("#downloadLimit").attr("disabled",true);
     $("#allInherited").attr("disabled",true);
     $(".selFirst").attr("disabled",true);
+    $('#openBindStart').attr('disabled',true);
+    $('#openBindEnd').attr('disabled',true);
+    $('#email').attr('disabled',true);
 }
 //修改
 function revise(){
@@ -321,6 +325,21 @@ function revise(){
             $(".wrongm").css("margin-left","10px");
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
+        }
+        if($('#bindType').find("option:selected").val() == '2'){
+            $('#fromList').bootstrapValidator('addField','email',{
+                validators : {
+                    notEmpty : {
+                        message : '请输入邮箱'
+                    },
+                    regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+                        message: '请输入正确的邮箱地址'
+                    },
+                }
+            });
+        }else{
+            $('#fromList').bootstrapValidator('addField','email');
         }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");

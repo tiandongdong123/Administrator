@@ -415,7 +415,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .pop {
 	display: none;
 	width: 876px;
-	height: 500px;
+	min-height: 468px;
 	background: #ffffff;
 	border: 1px solid #ccc;
 	position: fixed;
