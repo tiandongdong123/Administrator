@@ -67,16 +67,16 @@ function showAdm(id,pid,institution,e){
 					var html="";
 					var admin=data.admin;
 					var user=data.user;
-					if(admin!=null){
+					if(user!=null){
 						html+="该机构下的机构账号有：</br>";
-						var array=admin.split(",");
+						var array=user.split(",");
 						for(ar in array){
 							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
 						}
 					}
-					if(user!=null){
+					if(admin!=null){
 						html+="该机构下的机构管理员有：</br>";
-						var array=user.split(",");
+						var array=admin.split(",");
 						for(ar in array){
 							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
 						}
