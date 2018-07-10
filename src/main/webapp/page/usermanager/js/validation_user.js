@@ -123,22 +123,22 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-            qrEmail:{
-                message : '请输入邮箱',
-                validators : {
-                    notEmpty : {
-                        message : '请输入邮箱'
-                    },
-                    regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-                        regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
-                        message: '请输入正确的邮箱地址'
-                    },
-                }
-			},
-            startDay:{
+            // email:{
+             //    message : '请输入邮箱',
+             //    validators : {
+             //        notEmpty : {
+             //            message : '请输入邮箱'
+             //        },
+             //        regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+             //            regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+             //            message: '请输入正确的邮箱地址'
+             //        },
+             //    }
+			// },
+            openBindStart:{
                 enabled: false
 			},
-            endDay:{
+            openBindEnd:{
                 message : '请选择日期',
                 validators : {
                     notEmpty : {
@@ -154,7 +154,6 @@ $(function() {/* 文档加载，执行一个函数 */
 							}else{
                         		return true;
 							}
-                            //return isTrue;
                         }
                     }
                 }

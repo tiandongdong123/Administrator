@@ -51,6 +51,13 @@ $(document).ready(function(){
             },
         });
     });
+    $('#bindType').change(function(){
+        if($(this).find("option:selected").val() == '2'){
+            $('.qrEmail-box').show();
+        }else{
+            $('.qrEmail-box').hide();
+        }
+    });
     //机构id点击全部
     $(".tol_quota").click(function(){
         $(".allSelectText").text("");
@@ -231,6 +238,9 @@ function sunmit(){
         var downloadLimit = $("#downloadLimit").val();
         //绑定个人继承权限
         var bindAuthority = $("#bindAuthority").val();
+        var meEmail = $('#email').val();
+        var openBindStart = $('#openBindStart').val()+'00:00:00';
+        var openBindEnd = $('#openBindEnd').val()+'23:59:59';
         if(bool){
             return ;
         }
@@ -244,6 +254,9 @@ function sunmit(){
                 bindValidity:bindValidity,
                 downloadLimit:downloadLimit,
                 bindAuthority:bindAuthority,
+                email:meEmail,
+                openBindStart:openBindStart,
+                openBindEnd:openBindEnd
             },
             success: function(data){
                 $("#institution").val("");
