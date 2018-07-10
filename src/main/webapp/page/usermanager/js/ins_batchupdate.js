@@ -26,6 +26,21 @@ function submitForm(){
 		$(".wrong").css("display","inline");
 		$(".mistaken").css("display","none");
 	}
+    if($('#bindType').find("option:selected").val() == '2'){
+        $('#fromList').bootstrapValidator('addField','email',{
+            validators : {
+                notEmpty : {
+                    message : '请输入邮箱'
+                },
+                regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                    regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+                    message: '请输入正确的邮箱地址'
+                },
+            }
+        });
+    }else{
+        $('#fromList').bootstrapValidator('addField','email');
+    }
 	if(bool){
 		return ;
 	}
