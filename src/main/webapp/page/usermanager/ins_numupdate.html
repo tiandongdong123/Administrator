@@ -187,14 +187,14 @@
 					</div>
 				</div>
 				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="checktongji" <?if(strutil.contain(tongji,":1")){?>checked="checked"<?}?>>开通统计分析</label>
+					<label><input type="checkbox" id="checktongji" <?if(!isEmpty(tongji)){?>checked="checked"<?}?>>开通统计分析</label>
 				</div>
-				<div class="form-group input_block" <?if(!strutil.contain(tongji,":1")){?>style="display: none;"<?}?> id="tongjiDiv">
-					<input type="hidden" name="tongji" id="tongji" value="${map.tongji}">
+				<div class="form-group input_block" <?if(isEmpty(tongji)){?>style="display: none;"<?}?> id="tongjiDiv">
+					<input type="hidden" name="tongji" id="tongji" value="${tongji!}">
 					<label class="input_name">功能模块</label>
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all" <?if(!strutil.contain(tongji,":0")){?>checked="checked"<?}?>>全部&nbsp;&nbsp;
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(strutil.contain(tongji,"database_statistics\":1")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(strutil.contain(tongji,"resource_type_statistics\":1")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all" <?if(strutil.contain(tongji,"/,")){?>checked="checked"<?}?>>全部&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(strutil.contain(tongji,"database_statistics")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(strutil.contain(tongji,"resource_type_statistics")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
 				</div>
             </div>
             

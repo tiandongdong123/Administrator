@@ -1292,7 +1292,21 @@ public class AheadUserController {
 		getPartyAdmin(userId,view);
 		//数据分析权限
 		UserInstitution ins = aheadUserService.getUserInstitution(userId);
-		view.addObject("tongji", ins != null?ins.getStatisticalAnalysis():"");
+		String tongji="";
+		if(ins!=null){
+			String json = ins.getStatisticalAnalysis();
+			JSONObject obj = JSONObject.fromObject(json);
+			if (obj.getInt("database_statistics") == 1) {
+				tongji += "database_statistics";
+			}
+			if (obj.getInt("resource_type_statistics") == 1) {
+				if (tongji.length() > 0) {
+					tongji += ",";
+				}
+				tongji += "resource_type_statistics";
+			}
+		}
+		view.addObject("tongji",tongji);
 		//个人绑定机构权限
 		view.addObject("bindInformation",aheadUserService.getBindAuthority(userId));
 		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
