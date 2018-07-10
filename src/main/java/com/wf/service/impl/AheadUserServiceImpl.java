@@ -753,7 +753,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			acc.setOrganName(com.getInstitution());
 			acc.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 			acc.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-			boolean succ=groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(), adminId);
+			boolean succ=groupAccountUtil.deleteAccount(acc, httpRequest.getRemoteAddr(), adminId);
 			if(!succ){
 				flag=1;
 			}
@@ -927,6 +927,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(dto.getProjectid().equals("HistoryCheck")){
 			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(),"ViewHistoryCheck");
 		}
+	}
+	
+	/**
+     * 删除购买详情（权限）
+     * @return 
+     * */
+	@Override
+	public void deleteResources(String userId,String projectId){		
+		ProjectResources p = new ProjectResources();
+		p.setUserId(userId);
+		p.setProjectId(projectId);
+		projectResourcesMapper.deleteResources(p);
 	}
 	
 	/**
@@ -1635,7 +1647,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userMap.put("proList", projectList);
 			}
 			if(flag){
-				sortScore=100*sortScore;
+				sortScore+=100*sortScore;
 			}
 			userMap.put("score", sortScore);
 			long timeInf=System.currentTimeMillis()-time1;

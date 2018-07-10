@@ -157,6 +157,9 @@ public interface AheadUserService {
 	/** 删除购买详情（权限） 
 	 * @param b */
 	void deleteResources(InstitutionalUser user, ResourceDetailedDTO dto, boolean b);
+	/** 删除购买详情（权限） 
+	 * @param b */
+	void deleteResources(String userId,String projectId);
 
 	/** 修改机构名称 */
 	void updateInstitution(String institution, String oldins);

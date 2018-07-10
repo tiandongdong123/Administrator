@@ -1518,6 +1518,9 @@ public class AheadUserController {
 					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						if(StringUtils.equals(dto.getIschange(),"1")){
+							aheadUserService.deleteResources(com.getUserId(),"GTimeLimit");
+						}
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
@@ -1530,6 +1533,9 @@ public class AheadUserController {
 					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						if(StringUtils.equals(dto.getIschange(),"1")){
+							aheadUserService.deleteResources(com.getUserId(),"GBalanceLimit");
+						}
 					}
 				}
 			}
