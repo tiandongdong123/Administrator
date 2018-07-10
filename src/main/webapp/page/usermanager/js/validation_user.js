@@ -102,12 +102,7 @@ $(function() {/* 文档加载，执行一个函数 */
 				validators : {
 					notEmpty : {
 						message : '机构管理员密码不能为空，请填写正确的密码'
-					},
-                    stringLength: {/*长度提示*/
-                        min: 6,
-                        max: 16,
-                        message: '机构管理员密码长度必须在6-16位之间，请填写正确的密码'
-                    }
+					}
 				}
 			},
 			adminEmail: {
