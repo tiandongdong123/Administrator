@@ -1491,6 +1491,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
 			int sortScore=1+Integer.parseInt(userMap.get("loginMode").toString());
+			sortScore+=StringUtils.equals(userMap.get("isFreeze").toString(), "1")?10000:0;
 			boolean flag=false;//用户是否过期
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));

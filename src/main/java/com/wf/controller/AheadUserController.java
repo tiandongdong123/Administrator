@@ -2057,6 +2057,9 @@ public class AheadUserController {
 	@ResponseBody
 	public List<PayChannelModel> getProject(HttpServletRequest req, HttpServletResponse res){
 		String val=req.getParameter("val");
+		if(StringUtils.isEmpty(val)){
+			return null;
+		}
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		List<PayChannelModel> ls=new ArrayList<PayChannelModel>();
 		for(PayChannelModel pay:list){

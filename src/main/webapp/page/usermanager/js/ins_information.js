@@ -181,6 +181,7 @@ function delAdmin(userId,e){
 	preventBubble(e);
 	layer.alert('确定要移除机构管理员吗？',{
 		icon: 1,
+		title:['移除机构管理员',true],
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'],
 	    yes: function(){
@@ -205,7 +206,7 @@ function setAdmin(userId,pid,institution,e){
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['750px', '520px'],
-	    title: '机构管理员信息',
+	    title: '添加机构管理员',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: '../auser/goaddadmin.do?institution='+institution+'&userId='+userId
 	}); 

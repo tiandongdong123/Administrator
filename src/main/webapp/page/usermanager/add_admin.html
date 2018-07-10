@@ -51,6 +51,7 @@
 				},
 				beforeSend: function(){
 					$("#submit").attr({disabled: "disabled"});
+					$("#submit1").attr({disabled: "disabled"});
 				},
 				success: function(data){
 				   if(data == "true"){
@@ -66,6 +67,7 @@
 				},
 				complete: function(){
 					$("#submit").removeAttr("disabled");
+					$("#submit1").removeAttr("disabled");
 				}
 			});
 		}
@@ -78,55 +80,56 @@
           <input type="hidden" id="userId" value="${userId}">
           <input type="hidden" id="institution" value="${institution}">
           <form id="fromList" method="post">
+          <div class="box-body">
 				<div class="form-group input_block">
-					<label class="input_name">机构名称 </label>
+					<label class="input_name" style="width:25%">机构名称 </label>
 					<input type="text" class="form-control input_width" value="${institution}" disabled>
 				</div>
 				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
 					<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
 					<input type="radio" name="managerType" value="old" onclick="radioClick();"/>选择已有机构管理员
 				</div>
 				<div id="oldManager" class="form-group input_block" style="display: none;">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
 					<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
 						<option value="">-请选择管理员ID-</option>
 					</select>
 				</div>
                	<div id="newManager" class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
+                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
                   <input type="text" class="form-control input_width" name="adminname" id="adminname" onfocus="input_onfocus(this);"/>
                 </div>
 				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
 					<input type="text" class="form-control input_width" name="adminpassword" id="adminpassword">
 				</div>
 				<div class="form-group input_block">
-					<label class="input_name">机构管理员IP段</label>
-					<input type="text" class="form-control input_width" name="adminIP" id="adminIP">
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
+					<input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
 				</div>
 				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
-					<input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
+					<label class="input_name" style="width:25%">机构管理员IP段</label>
+					<input type="text" class="form-control input_width" name="adminIP" id="adminIP">
 				</div>
 				<div class="checkbox input_block block_left">
 					<label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
 				</div>
 				<div style="display: none;" id="sconcurrent_div">
 					<div class="form-group input_block">
-						<label class="input_name">设置子帐号上限</label>
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
 						<input type="text" class="form-control input_width" id="upperlimit" name="upperlimit" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">设置子账号并发数</label>
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号并发数</label>
 						<input type="text" class="form-control input_width" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">子账号下载量上限/天</label>
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>子账号下载量上限/天</label>
 						<input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit" maxlength="9">
 					</div>
 					<div class="form-group input_block">
-						<label class="input_name">设置子账号扣款模式</label>
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号扣款模式</label>
 						<select class="form-control input_width" name="chargebacks" id="chargebacks">
 							<option value="0">从机构账号扣款</option>
 							<option value="1">从机构子账号扣款</option>
@@ -138,15 +141,16 @@
 				</div>
 				<div class="form-group input_block" style="display: none;" id="tongjiDiv">
 					<input type="hidden" name="tongji" id="tongji" value="">
-					<label class="input_name">功能模块</label>
+					<label class="input_name" style="width:25%">功能模块</label>
 					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all">全部&nbsp;&nbsp;
 					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
 					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
 				</div>
+			</div>
         </form>
 		<div class="block_left">
 		  <button type="button" class="btn btn-primary" id="submit" onclick="addAdmin();">确认</button>
-		  <button type="button" class="btn btn-primary" onclick="cancelAdmin();">取消</button>
+		  <button type="button" class="btn btn-primary" id="submit1" onclick="cancelAdmin();">取消</button>
 		</div>
         </div>
         </div>
