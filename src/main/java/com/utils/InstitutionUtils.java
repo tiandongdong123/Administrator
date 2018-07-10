@@ -127,6 +127,11 @@ public class InstitutionUtils {
 			hashmap.put("fail", "机构管理员ID和党建管理员ID重复");
 			return hashmap;
 		}
+		// 校验app和微信app时间
+		hashmap = InstitutionUtils.DateValidate(user);
+		if (hashmap.size() > 0) {
+			return hashmap;
+		}
 		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
 		for (ResourceDetailedDTO dto : rdlist) {
 			if (!StringUtils.isEmpty(dto.getProjectname())) {
@@ -236,6 +241,11 @@ public class InstitutionUtils {
 			hashmap.put("fail", "机构管理员ID和党建管理员ID重复");
 			return hashmap;
 		}
+		// 校验app和微信app时间
+		hashmap = InstitutionUtils.DateValidate(user);
+		if (hashmap.size() > 0) {
+			return hashmap;
+		}
 		for (ResourceDetailedDTO dto : user.getRdlist()) {
 			if (StringUtils.isEmpty(dto.getProjectname())) {
 				delList.add(dto.getProjectid());
@@ -249,4 +259,45 @@ public class InstitutionUtils {
 		}
 		return hashmap;
 	}
+	
+	
+	public static Map<String,String> DateValidate(InstitutionalUser user){
+		Map<String,String> hashmap=new HashMap<String,String>();
+		if (StringUtils.isEmpty(user.getOpenApp())) {
+			if(StringUtils.isBlank(user.getAppBegintime())||StringUtils.isBlank(user.getAppEndtime())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通APP嵌入服务有效期不能为空，请正确填写有效期");
+				return hashmap;
+			}
+			if(DateUtil.stringToDate1(user.getAppBegintime())==null||DateUtil.stringToDate1(user.getAppEndtime())==null){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通APP嵌入服务有效期格式不正确，请正确填写有效期");
+				return hashmap;
+			}
+			if(DateUtil.stringToDate1(user.getAppBegintime()).getTime()>DateUtil.stringToDate1(user.getAppBegintime()).getTime()){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通APP嵌入服务有效期开始时间不能大于结束时间");
+				return hashmap;
+			}
+		}
+		if (StringUtils.isEmpty(user.getOpenWeChat())) {
+			if(StringUtils.isBlank(user.getWeChatBegintime())||StringUtils.isBlank(user.getWeChatEndtime())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通微信公众号嵌入服务有效期不能为空，请正确填写有效期");
+				return hashmap;
+			}
+			if(DateUtil.stringToDate1(user.getWeChatBegintime())==null||DateUtil.stringToDate1(user.getWeChatEndtime())==null){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通微信公众号嵌入服务有效期格式不正确，请正确填写有效期");
+				return hashmap;
+			}
+			if(DateUtil.stringToDate1(user.getWeChatBegintime()).getTime()>DateUtil.stringToDate1(user.getWeChatEndtime()).getTime()){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "开通微信公众号嵌入服务有效期开始时间不能大于结束时间");
+				return hashmap;
+			}
+		}
+		return hashmap;
+	}
+	
 }

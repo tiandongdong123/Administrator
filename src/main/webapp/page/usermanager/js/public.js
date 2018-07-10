@@ -1709,6 +1709,7 @@ function checkApp(obj){
 function selectType(obj){
 	var val=$(obj).val();
 	if(val==""){
+		$("#resourcePurchaseType").hide();
 		return;
 	}
 	$("#resourcePurchaseType").html('<option value="">-请选择-</option>');

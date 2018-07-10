@@ -1667,6 +1667,21 @@ public class AheadUserController {
 		if (StringUtils.isEmpty(com.getPartyLimit())) {
 			return hashmap;
 		}
+		if(StringUtils.isBlank(com.getPartyBegintime())||StringUtils.isBlank(com.getPartyEndtime())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "党建管理员有效期不能为空，请正确填写有效期");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(com.getPartyBegintime())==null||DateUtil.stringToDate1(com.getPartyEndtime())==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "党建管理员有效期格式不正确，请正确填写有效期");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(com.getPartyBegintime()).getTime()>DateUtil.stringToDate1(com.getPartyEndtime()).getTime()){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "党建管理员有效期开始时间不能大于结束时间");
+			return hashmap;
+		}
 		Person per=aheadUserService.queryPersonInfo(com.getPartyAdmin());
 		if(per==null){
 			return hashmap;
