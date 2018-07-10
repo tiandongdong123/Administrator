@@ -1,78 +1,55 @@
+<? directive dynamic map;?>
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-
-<script type="text/javascript">
-	function findSonList(){
-		$("#formid").submit();
-	}
-
-</script>
-
-  <div class="content-wrapper">
-    <section class="content-header"><h1>子账号列表</h1></section>
-
+<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/ins_sonaccount.js"></script>
+<div class="content-wrapper">
+	<section class="content-header"><h1>机构账号信息管理</h1></section>
+    <!-- Main content -->
     <section class="content">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="box box-primary">
-            <form id="formid" action="../auser/tosonaccountnumber.do" method="post">
-              <div class="box-body">
-                <input type="hidden" class="form-control" name="userId" value="${userId}">
-                <div class="form-group input_block">
-                  <label class="input_name">子账号用户名</label>
-                  <input type="text" class="form-control input_width" name="sonId" value="${sonId}">
-                </div>
-                <div id="example1_filter" class="form-group input_block">
-                	<label class="input_name">注册时间</label>
-	                	<input type="text" name="start_time" style="width: 185px;" class="Wdate" onclick="WdatePicker()" value="${start_time}">
-	                	-<input type="text" name="end_time" style="width: 185px;" class="Wdate" onclick="WdatePicker()" value="${end_time}">
-                </div>
-              </div>
-            </form>
-            <div class="box-footer" style="text-align:center;">
-               <button type="button" class="btn btn-primary" onclick="findSonList();">查询</button>
-            </div>
-              <div class="row">
-		       <div class="col-xs-12">
-		         <div class="box">
-		           <div class="box-body table-responsive no-padding">
-		             <table class="table table-hover">
-		               <tbody><tr>
-		                 <th>序号</th>
-		                 <th>子账号ID</th>
-		                 <th>密码</th>
-		                 <th>购买项目</th>
-		                 <th>注册时间</th>
-		               </tr>
-		               <? var i = 0; for(li in list){ i++;?>
-		               	<?if(list.~size>0){?>
-			               <tr>
-			                 <td>${i}</td>
-			                 <td>${li.userId}</td>
-			                 <td>${li.password}</td>
-			                 <? if(!isEmpty(li.sonProjectList)){ ?>
-			                 <td>
-				                 <? var j = 0; for(son in li.sonProjectList){ j++; ?>			                 	
-									${son.name};&nbsp;${son.beginDateTime}-${son.endDateTime};&nbsp;${son.balance}<?if(j<li.sonProjectList.~size){?></br><?}?>
-				                 <?}?>
-				             </td>
-			                 <?}else{?>
-			                 	<td></td>
-			                 <?}?>
-			                 <td>${li.registrationTime,dateFormat ="yyyy-MM-dd HH:mm:ss"}</td>
-			               </tr>
-		               	<?}?>
-		               <?}?>
-		             </tbody>
-		            </table>
-		           </div>
-		         </div>
-		       </div>
-      		  </div>
-              </div>
+	<div class="row">
+    	<div class="col-md-6">
+      	<div class="box box-primary">
+        <div class="box-body">
+		<!-- body start-->
+		<table style="width:60%">
+			<tr><td>
+			<label class="input_name">用户ID</label>
+			<input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+			</td></tr>
+			<tr><td>
+			<label class="input_name">机构名称</label>
+			<input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+			</td></tr>
+			<tr><td>
+			<label class="input_name">注册日期</label>
+			<span class="time_block"><input type="text" class="Wdate" name="start_time" id="start_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})"></span><span class="to"> 至 </span>
+			<span class="time_block"><input type="text" class="Wdate" name="end_time" id="end_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"></span>
+			</td></tr>
+		</table>
+		<input type="hidden" name="pid" id="pid" value="${map.pid!}">
+		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
+		</div>
+		<br/><br/>
+		<div style="overflow-y :auto;position:relative">
+			<div  class="box-body no-padding">
+				<div class="mailbox-controls">
+                	<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button>
+				</div>
+				<div class="table-responsive mailbox-messages">
+					<table class="table table-bordered table-striped" id="list"></table>
+				</div>
+				<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;"></div>
           </div>
-      </div>
-    </section>
-  </div>
+        </div>
+        <!-- body end -->
+        </div>
+        </div>
+        </div>
+	</div>
+</section>
+</div>	
 <?}?>
