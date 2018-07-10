@@ -272,7 +272,7 @@
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
            		<input type="hidden" name="rdlist[${i}].projectType" id="projectType_${pro.payChannelid}" value="${pro.type}"><?var marginleft=1000;?>
 				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=50;?>
-				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit('${pro.payChannelid}','${i}');"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></button>
+				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit(this,'${pro.payChannelid}','${i}');"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></button>
 				<?}?>
            		<button type="button" class="btn btn-primary btn-sm" style="margin-left:${marginleft}px;"
            		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>

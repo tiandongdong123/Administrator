@@ -479,7 +479,10 @@ function findPatentEcho(num){
 }
 
 //余额转化为限时，限时转化为余额
-function changeLimit(channelid,i){
+function changeLimit(obj,channelid,i){
+	$(obj).attr({disabled: "disabled"});
+	$("input[name='rdlist["+i+"].validityEndtime2']").val("");
+	$("input[name='rdlist["+i+"].validityStarttime2']").val("");
 	var msg="";
 	if(channelid=='GBalanceLimit'){
 		msg="确定要将余额账号转换为限时账号吗？";

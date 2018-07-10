@@ -1418,7 +1418,7 @@ public class AheadUserController {
 			// 添加日志
 			this.addLogInfo(user.getUserId() + "更新成功", time);
 			// 添加数据库统计日志
-			this.addOperationLogs(user, "注册", req);
+			this.addOperationLogs(user, "更新", req);
 			errorMap.put("flag", "success");
 			return errorMap;
 		}catch(Exception e){
