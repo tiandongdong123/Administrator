@@ -129,10 +129,15 @@ public class DateUtil {
     }
     
     public static String DateToFromatStr(Date date){
-    	SimpleDateFormat format = new SimpleDateFormat(formatPattern_Short);
-    	String time=format.format(date); 
-    	String [] str=time.split("-");
-        return str[0]+"年"+str[1]+"月"+str[2]+"日";  
+        try {  
+        	SimpleDateFormat format = new SimpleDateFormat(formatPattern_Short);
+        	String time=format.format(date); 
+        	String [] str=time.split("-");
+            return str[0]+"年"+str[1]+"月"+str[2]+"日";
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }
+        return null;
     } 
       
     //java中怎样计算两个时间如：“21:57”和“08:20”相差的分钟数、小时数 java计算两个时间差小时 分钟 秒 .  
