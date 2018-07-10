@@ -29,9 +29,9 @@ function submitForm(){
 	if(bool){
 		return ;
 	}
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 	    var data = new FormData($('#fromList')[0]);
@@ -57,11 +57,21 @@ function submitForm(){
 	    	}else{
 	    		layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 	    	}
-	    	$("#submit").removeAttr("disabled");
+	    	removeAtrr();
 	    });
 	}
 }
 
 function download1(title){
 	window.location.href='../auser/worddownload.do?title='+encodeURI(encodeURI(title));
+}
+
+function removeAtrr(){
+	$("#submit").removeAttr("disabled");
+	$("#submit1").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit").attr({disabled: "disabled"});
+	$("#submit1").attr({disabled: "disabled"});
 }

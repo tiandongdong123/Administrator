@@ -70,7 +70,7 @@ function submitForm(){
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
 	var userDinding = $("#user_dinding").prop('checked');
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(userDinding){
 		var reg = /^[1-9]\d*$/;
 		var bool = false;
@@ -99,18 +99,18 @@ function submitForm(){
 		}
 	}
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){
 		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
 		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 		var data = new FormData($('#fromList')[0]);
@@ -138,7 +138,7 @@ function submitForm(){
 					layer.msg("更新失败，请联系管理员", {icon: 2});
 				}
 			}
-			$("#submit").removeAttr("disabled");
+			removeAtrr();
 		});
 	}
 }
@@ -508,4 +508,14 @@ function changeLimit(channelid,i){
 	    	layer.closeAll();
 	    }
 	});
+}
+
+function removeAtrr(){
+	$("#submit").removeAttr("disabled");
+	$("#submit1").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit").attr({disabled: "disabled"});
+	$("#submit1").attr({disabled: "disabled"});
 }

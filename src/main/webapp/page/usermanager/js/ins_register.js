@@ -89,9 +89,11 @@ function submitForm(type){
 function removeAtrr(){
 	$("#submit1").removeAttr("disabled");
 	$("#submit2").removeAttr("disabled");
+	$("#submit3").removeAttr("disabled");
 }
 
 function addAtrr(){
 	$("#submit1").attr({disabled: "disabled"});
 	$("#submit2").attr({disabled: "disabled"});
+	$("#submit3").attr({disabled: "disabled"});
 }
