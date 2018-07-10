@@ -605,10 +605,10 @@ function selectProject(obj,flag,checked){
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
 			if($(obj).val()!="time"&&$(obj).val()!="count"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="9"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"></div>';
 			}
 			if($(obj).val()!="time"&&$(obj).val()!="balance"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="9"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="8"></div>';
 			}
 			if(projectid=='HistoryCheck'){
 				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
