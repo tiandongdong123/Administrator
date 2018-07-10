@@ -38,10 +38,15 @@ public class InstitutionUtils {
 		
 		map.put("userId",userId);
 		if (!StringUtil.isEmpty(ipSegment)) {
-			if(IPConvertHelper.validateOneIp(ipSegment)){
-				map.put("ipSegment", IPConvertHelper.IPToNumber(ipSegment));
+			if(ipSegment.contains("-")&&IPConvertHelper.validateDoubleIp(ipSegment)){
+				map.put("ipstart", IPConvertHelper.IPToNumber(ipSegment.split("-")[0]));
+				map.put("ipend", IPConvertHelper.IPToNumber(ipSegment.split("-")[1]));
+			}else if(IPConvertHelper.validateOneIp(ipSegment)){
+				map.put("ipstart", IPConvertHelper.IPToNumber(ipSegment));
+				map.put("ipend", IPConvertHelper.IPToNumber(ipSegment));
 			}else{
 				map.put("ipSegment", ipSegment);
+				map.put("ipError", "ipError");
 				flag=false;
 			}
 		}

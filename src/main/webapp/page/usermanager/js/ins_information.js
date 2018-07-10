@@ -43,7 +43,7 @@ function showAdm(id,pid,institution,e){
 	    type: 1, //page层 1div，2页面
 	    shadeClose: false,
 	    area: ['500px', '200px'],
-	    title: '修改机构信息',
+	    title: '修改机构名称',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#ins_"+id),
 	    btn: ['提交','取消'],
@@ -130,13 +130,17 @@ function updateInstitution(news,olds){
 function setfreeze(flag,obj,aid,e){
 	preventBubble(e);
 	var msg="";
+	var title="";
 	if(flag=='1'){
 		msg="确定要冻结机构账户吗？";
+		title="冻结机构账号";
 	}else{
 		msg="确定要解冻机构账户吗？";
+		title="解冻机构账号";
 	}
 	layer.alert(msg,{
 		icon: 1,
+		title : [title, true],
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'],
 	    yes: function(){
@@ -329,12 +333,13 @@ function btnBlack(obj,e){
 function findList(){
 	var ipSegment = $("#ipSegment").val();
 	if(ipSegment!=null&&ipSegment!=''){
-		if(!checkOneIp(ipSegment)){
-			$("#ipResult").html("ip格式不合法");
+		if(!checkOneIp(ipSegment)&&!IpFormat(ipSegment)){
+			$("#ipResult").html("IP格式不合法");
 			$("#ipSegment").css("border","1px solid red");
 			return false;
 		}
 	}
+	$("#ipResult").html("");
 	var institution = $("#institution").val();
 	if(institution!=null && institution!=""){
 		if(!institution.startWith("%") && !institution.endWith("%")){

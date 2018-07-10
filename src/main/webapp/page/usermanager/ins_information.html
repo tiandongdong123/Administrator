@@ -26,7 +26,7 @@
 				<tr><td>
 					<label class="input_name">IP</label>
 					<input type="text" class="form-control input_width" name="ipSegment" id="ipSegment" value="${map.ipSegment!}" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
-					<span id="ipResult" style="color:red"></span>
+					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span>
 				</td><td>
 					<label class="input_name">开通权限</label>
 					<select class="form-control input_width" name="openLimit" id="openLimit">
@@ -105,9 +105,9 @@
       <div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
         <table class="table table-hover">
 		<div class="form-group input_block">
-             <label class="input_name">机构名称：</label>
+             <label class="input_name">机构名称</label>
              <input type="hidden" class="form-control input_width" id="ins_hidden_${list.userId}" value="${list.institution}">
-             <input type="text" class="form-control input_width" id="institu_${list.userId}" value="${list.institution}">
+             <input type="text" class="form-control input_width" id="institu_${list.userId}" value="">
         </div>
         <tbody id="tbody_${list.userId}"></tbody>
        	</table>
@@ -116,10 +116,10 @@
      <div class="info_box_right">
       	<a href="../auser/numupdate.do?userId=${list.userId}" class="add_admin">账号修改</a>
         <div class="btn-group">
-			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">服务权限设置<span class="caret"></span></a>
+			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">账户管理<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
 			<li><a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a></li>
-			<li><a href="../auser/tosonaccountnumber.do?userId=${list.userId}" class="add_admin">子账号列表</a></li>
+			<li><a href="../auser/tosonaccountnumber.do?pid=${list.userId}" class="add_admin">子账号列表</a></li>
 			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a></li>
 			<li><?if(list.pid!=null&&list.pid!=""){?><a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
 				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}');" class="add_admin">添加机构管理员</a><?}?></li>

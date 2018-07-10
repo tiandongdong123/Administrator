@@ -1692,21 +1692,13 @@ public class AheadUserController {
 	 *	子账号列表页跳转
 	 */
 	@RequestMapping("tosonaccountnumber")
-	public ModelAndView toSonAccountNumber(String userId,String sonId,String start_time,String end_time){
+	public ModelAndView toSonAccountNumber(String userId,String start_time,String end_time,String pid){
 		ModelAndView view = new ModelAndView();
-		List<Map<String,Object>> list = aheadUserService.sonAccountNumber(userId,sonId,start_time,end_time);
-		for(Map<String,Object> p : list){
-			try{
-				p.put("password",PasswordHelper.decryptPassword(p.get("password").toString()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		//List<Map<String,Object>> list = aheadUserService.sonAccountNumber(userId,sonId,start_time,end_time);
 		view.addObject("userId",userId);
-		view.addObject("sonId",sonId);
 		view.addObject("start_time",start_time);
 		view.addObject("end_time",end_time);
-		view.addObject("list",list);
+		view.addObject("pid",pid);
 		view.setViewName("/page/usermanager/ins_sonaccount");
 		return view;
 	}
