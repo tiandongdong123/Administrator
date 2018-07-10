@@ -1723,6 +1723,7 @@ function selectType(obj){
 				var pro=data[i];
 				$("#resourcePurchaseType").append('<option proid="'+pro.productDetail+'" type="'+pro.resourceType+'" value="'+pro.type+'" id="'+pro.id+'">'+pro.name+'</option>');
 			}
+			$("#resourcePurchaseType").show();
 		}
 	});
 }
