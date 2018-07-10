@@ -1902,24 +1902,22 @@ function deleteIP(){
 	}
 	$("#ipSegment").val(ipHtml);
 }
-//验证金额
+//验证次数
+
 function checkNum(obj){
-	var value=obj.value.replace(/[^-\d]/g,'');
+	var val=obj.value;
 	var flag=false;
-	if(value.substr(0,1)=="-"){
+	if(val.substr(0,1)=="-"){
 		flag=true;
 	}
-	value=obj.value.replace(/[^\d]/g,'');
-	if(flag){
-		value="-"+value;
-	}
-	if(value=='-'||value==""){
-		value="0";
-	}
-	obj.value=parseInt(value);
+	val= val.replace(/[^\d]/g,""); //清除"数字"和"."以外的字符
+	val = val.replace(/^\./g,""); //验证第一个字符是数字
+	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+	obj.value=(flag?"-":"")+val;
 }
-
-//验证次数
+//验证金额
 function checkMoney(obj){
 	var val=obj.value;
 	var flag=false;

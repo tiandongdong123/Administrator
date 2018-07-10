@@ -157,9 +157,19 @@ public class InstitutionUtils {
 	public static Map<String,String> getProectValidate(ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
 		Map<String,String> hashmap=new HashMap<String,String>();
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
-		if (StringUtils.isBlank(dto.getValidityEndtime())) {
+		if(StringUtils.isBlank(dto.getValidityStarttime())||StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
 			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(dto.getValidityStarttime())==null||DateUtil.stringToDate1(dto.getValidityEndtime())==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限格式不正确，请正确填写时限");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(dto.getValidityStarttime()).getTime()>DateUtil.stringToDate1(dto.getValidityEndtime()).getTime()){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限开始时间不能大于结束时间");
 			return hashmap;
 		}
 		if(notBatch){
