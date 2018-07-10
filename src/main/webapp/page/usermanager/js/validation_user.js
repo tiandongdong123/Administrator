@@ -29,6 +29,20 @@ $(function() {/* 文档加载，执行一个函数 */
                     }
 				}
 			},
+			PostCode: {
+				validators : {
+					notEmpty : {
+						message : '地区不能为空，请选择地区'
+					}
+				}
+			},
+			Organization: {
+				validators : {
+					notEmpty : {
+						message : '机构类型不能为空，请选择机构类型'
+					}
+				}
+			},
 			password: {
 				validators : {
 					notEmpty : {
