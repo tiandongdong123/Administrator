@@ -123,6 +123,43 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
+            qrEmail:{
+                message : '请输入邮箱',
+                validators : {
+                    notEmpty : {
+                        message : '请输入邮箱'
+                    },
+                    regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+                        message: '请输入正确的邮箱地址'
+                    },
+                }
+			},
+            startDay:{
+                enabled: false
+			},
+            endDay:{
+                message : '请选择日期',
+                validators : {
+                    notEmpty : {
+                        message : '请选择日期'
+                    },
+                    callback:{
+                        message: '请选择日期',
+                        callback:function(value,validator,$field){
+                        	var startDay = validator.getFieldElements('startDay').val();
+                        	if(startDay == ''){
+                                validator.updateStatus('endDay', 'VALID');
+                        		return false;
+							}else{
+                        		return true;
+							}
+                            //return isTrue;
+                        }
+                    }
+                }
+
+            },
 			pullDepartment:{
 				message : '请输入领取部门',
 				validators : {
