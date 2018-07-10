@@ -1477,8 +1477,8 @@ function radioClick(isBatch){
 					}
 					if(isBatch=="batch"){
 						$("#institution").val(data[i].institution);
-						getAdmin($("#adminOldName").get(0));
 					}
+					getAdmin($("#adminOldName").get(0));
 					$("#newManager").hide();
 					$("#oldManager").show();
 				}
