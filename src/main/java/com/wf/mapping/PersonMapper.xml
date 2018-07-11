@@ -290,7 +290,7 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent=#{OrderContent}
     </if>
-	order by u.login_mode limit #{pageNum},#{pageSize}
+	order by u.is_freeze DESC,u.login_mode ASC limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
