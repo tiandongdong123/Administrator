@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.wf.bean.InstitutionalUser;
@@ -179,7 +180,7 @@ public class InstitutionUtils {
 					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
 					return hashmap;
 				}
-				if (dto.getTotalMoney()<=0&&isAdd) {
+				if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  projectname+"金额必须大于0");
 					return hashmap;
@@ -190,7 +191,7 @@ public class InstitutionUtils {
 					hashmap.put("fail",  projectname+"次数输入不正确，请正确填写次数");
 					return hashmap;
 				}
-				if (dto.getPurchaseNumber()<=0&&isAdd) {
+				if (!NumberUtils.isNumber(dto.getPurchaseNumber())||NumberUtils.toInt(dto.getPurchaseNumber())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  projectname+"次数必须大于0");
 					return hashmap;

@@ -17,11 +17,11 @@ public class ResourceDetailedDTO {
 	
 	private String validityEndtime;
 	
-	private Double totalMoney;
+	private String totalMoney;
 	
 	private String relatedIdAccountType;;
 	
-	private Integer purchaseNumber;
+	private String purchaseNumber;
 	
 	private String validityStarttime2;
 	
@@ -96,14 +96,6 @@ public class ResourceDetailedDTO {
 		this.validityEndtime = validityEndtime;
 	}
 
-	public Double getTotalMoney() {
-		return totalMoney;
-	}
-
-	public void setTotalMoney(Double totalMoney) {
-		this.totalMoney = totalMoney;
-	}
-
 	public String getRelatedIdAccountType() {
 		return relatedIdAccountType;
 	}
@@ -112,16 +104,24 @@ public class ResourceDetailedDTO {
 		this.relatedIdAccountType = relatedIdAccountType;
 	}
 
-	public Integer getPurchaseNumber() {
+	public String getMode() {
+		return mode;
+	}
+
+	public String getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalMoney(String totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+	public String getPurchaseNumber() {
 		return purchaseNumber;
 	}
 
-	public void setPurchaseNumber(Integer purchaseNumber) {
+	public void setPurchaseNumber(String purchaseNumber) {
 		this.purchaseNumber = purchaseNumber;
-	}
-
-	public String getMode() {
-		return mode;
 	}
 
 	public void setMode(String mode) {

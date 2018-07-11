@@ -584,7 +584,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			for(Map<String, Object> pro : lm) {
 				if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){						
-					dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+					dto.setTotalMoney(pro.get("totalMoney").toString());
 					if(dto.getProjectType().equals("balance")){
 						if(aheadUserService.addProjectBalance(user, dto,adminId) > 0){						
 							aheadUserService.addProjectResources(user, dto);
@@ -595,7 +595,7 @@ public class AheadUserController {
 							aheadUserService.addProjectResources(user, dto);
 						}
 					}else if(dto.getProjectType().equals("count")){
-						dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+						dto.setPurchaseNumber(pro.get("totalMoney").toString());
 						//增加次数信息
 						if(aheadUserService.addProjectNumber(user, dto,adminId) > 0){
 							aheadUserService.addProjectResources(user, dto);
@@ -829,7 +829,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			for(Map<String, Object> pro : lm) {
 				if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-					dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
+					dto.setTotalMoney(pro.get("totalMoney").toString());
 					if(dto.getProjectType().equals("balance")){
 						if(aheadUserService.chargeProjectBalance(user, dto, adminId)>0){
 							aheadUserService.deleteResources(user,dto,false);
@@ -842,7 +842,7 @@ public class AheadUserController {
 							aheadUserService.updateProjectResources(user, dto);
 						}
 					}else if(dto.getProjectType().equals("count")){
-						dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
+						dto.setPurchaseNumber(pro.get("totalMoney").toString());
 						//增加次数信息
 						if(aheadUserService.chargeCountLimitUser(user, dto, adminId) > 0){
 							aheadUserService.deleteResources(user,dto,false);
@@ -1005,11 +1005,11 @@ public class AheadUserController {
 							for(Map<String, Object> pro : lm) {
 								if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
 									if (ptype.equals("balance")) {
-										dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
-										dto.setPurchaseNumber(0);
+										dto.setTotalMoney(pro.get("totalMoney").toString());
+										dto.setPurchaseNumber("0");
 									} else {
-										dto.setPurchaseNumber(Integer.valueOf(pro.get("totalMoney").toString()));
-										dto.setTotalMoney(0.0);
+										dto.setPurchaseNumber(pro.get("totalMoney").toString());
+										dto.setTotalMoney("0.0");
 									}
 									if (!aheadUserService.checkLimit(user, dto)) {
 										errorMap.put("flag", "fail");
@@ -1574,9 +1574,9 @@ public class AheadUserController {
 			dto.setProjectname(projectname);
 			dto.setProjectType(type);
 			if ("balance".equals(type)) {
-				dto.setTotalMoney(balance);
+				dto.setTotalMoney(balance.toString());
 			} else if ("count".equals(type)) {
-				dto.setPurchaseNumber(balance.intValue());
+				dto.setPurchaseNumber(balance.toString());
 			}
 			int i = aheadUserService.deleteAccount(com, dto, adminId);
 			if (i > 0) {
@@ -2015,15 +2015,18 @@ public class AheadUserController {
 			if(list!=null &&list.size()>0){
 				for(ResourceDetailedDTO dto:list){
 					if(dto.getProjectid()!=null){
-						if (dto.getProjectType().equals("balance") && dto.getTotalMoney() == 0) {
+						if (dto.getProjectType().equals("balance")&& Double.parseDouble(dto.getTotalMoney()) == 0
+								&& StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+								&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
 							continue;
-						} else if (dto.getProjectType().equals("count")
-								&& dto.getPurchaseNumber() == 0) {
+						} else if (dto.getProjectType().equals("count")&& Integer.parseInt(dto.getPurchaseNumber()) == 0
+								&& StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
+								&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
 							continue;
 						} else if (dto.getProjectType().equals("time")) {
 							if (StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
 									&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
-							continue;
+								continue;
 							}
 						}
 						

@@ -563,7 +563,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
+		account.setBalance(BigDecimal.valueOf(Long.parseLong(dto.getTotalMoney())));
 		// 根据token可获取管理员登录信息
 		// String authToken = "Admin."+adminId;
 		// 调用添加注册余额限时账户方法
@@ -634,7 +634,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(dto.getPurchaseNumber());// 充值次数
+		account.setBalance(Integer.parseInt(dto.getPurchaseNumber()));// 充值次数
 		// 根据token可获取管理员登录信息
 		// String authToken = "Admin."+adminId;
 		// 调用添加注册余额限时账户方法
@@ -659,7 +659,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
     	
-    	if(dto.getPurchaseNumber()==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+    	if(Integer.parseInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
     		return 1;
     	}
@@ -671,7 +671,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		count.setBalance(dto.getPurchaseNumber());
+		count.setBalance(Integer.parseInt(dto.getPurchaseNumber()));
 		// 是否重置次数
 		boolean resetCount = false;
 		CountLimitAccount before = null;
@@ -707,7 +707,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
-		if (dto.getTotalMoney() == 0
+		if (Double.parseDouble(dto.getTotalMoney()) == 0
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 			return 1;
@@ -720,7 +720,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		account.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
+		account.setBalance(BigDecimal.valueOf(Long.parseLong(dto.getTotalMoney())));
 		// 根据token可获取管理员登录信息
 		// String authToken = "Admin."+adminId;
 		// 调用注册或充值余额限时账户方法
@@ -770,35 +770,35 @@ public class AheadUserServiceImpl implements AheadUserService{
     public boolean checkLimit(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
     	try{
 			if ("balance".equals(dto.getProjectType())) {
-				if (dto.getTotalMoney() == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				if (Integer.parseInt(dto.getTotalMoney()) == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 					return true;
 				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(dto.getTotalMoney()<=0){
+	    			if(Double.parseDouble(dto.getTotalMoney())<=0){
 	    				return false;
 	    			}
 	    			return true;
 	    		}
-	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
+	    		if(account.getBalance().intValue()+Double.parseDouble(dto.getTotalMoney())<0){
 	    			return false;
 	    		}
 			} else if ("count".equals(dto.getProjectType())) {
-				if (dto.getPurchaseNumber()==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				if (Integer.parseInt(dto.getPurchaseNumber())==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 					return true;
 				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(dto.getPurchaseNumber()<=0){
+	    			if(Integer.parseInt(dto.getPurchaseNumber())<=0){
 	    				return false;
 	    			}
 	    			return true;
 	    		}
-	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
+	    		if(account.getBalance()+Integer.parseInt(dto.getPurchaseNumber())<0){
 	    			return false;
 	    		}
 			}
@@ -2326,7 +2326,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(dto.getProjectType().equals("balance")){
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							dto.setTotalMoney(0.0);
+							dto.setTotalMoney("0.0");
 							this.chargeProjectBalance(com, dto, adminId);
 						}
 					}else if(dto.getProjectType().equals("time")){
@@ -2337,7 +2337,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}else if(dto.getProjectType().equals("count")){
 						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							dto.setPurchaseNumber(0);
+							dto.setPurchaseNumber("0");
 							this.chargeCountLimitUser(com, dto, adminId);
 						}
 					}
