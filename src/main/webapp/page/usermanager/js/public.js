@@ -54,7 +54,7 @@ $(function(e){
 		if($(this).is(':checked')){
 			$("#pconcurrent_div").show();
 		}else{
-			$("#pConcurrentcountber").val("");
+			$("#pConcurrentnumber").val("");
 			$("#pconcurrent_div").hide();
 		}
 	});

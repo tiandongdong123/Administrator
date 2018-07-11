@@ -40,6 +40,10 @@
 	    </set>
 	    where user_id = #{userId}
 	</update>
+	<update id="updateAccount" parameterType="com.wf.bean.UserAccountRestriction">
+	    update user_account_restriction set upperlimit = #{upperlimit},p_concurrentnumber = #{pConcurrentnumber},s_concurrentnumber = #{sConcurrentnumber},
+		chargebacks = #{chargebacks},downloadUpperLimit = #{downloadupperlimit} where user_id = #{userId}
+	</update>
   <select id="getAccountRestriction" resultMap="BaseResultMap" parameterType="java.lang.String">
 	select user_id,upperlimit,p_concurrentnumber,s_concurrentnumber,chargebacks,downloadUpperLimit from user_account_restriction where user_id=#{userId}
   </select> 

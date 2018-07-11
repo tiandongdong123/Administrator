@@ -893,6 +893,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			prs.setId(GetUuid.getId());
 			prs.setUserId(com.getUserId());
 			prs.setProjectId(dto.getProjectid());
+			prs.setResourceId(null);
+			prs.setContract(null);
+			prs.setProductid(null);
 			projectResourcesMapper.insert(prs);
 		}
 		if(dto.getProjectid().equals("HistoryCheck")){
@@ -1399,18 +1402,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Override
 	public int setAccountRestriction(InstitutionalUser com){
-		userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
 		if (com.getpConcurrentnumber() == null && com.getsConcurrentnumber() == null) {
-			return 0;
+			userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
+			return 1;
 		}
-		UserAccountRestriction acc = new UserAccountRestriction();
-		acc.setUserId(com.getUserId());
-		acc.setUpperlimit(com.getUpperlimit());
-		acc.setChargebacks(com.getChargebacks());
-		acc.setDownloadupperlimit(com.getDownloadupperlimit());
-		acc.setpConcurrentnumber(com.getpConcurrentnumber());
-		acc.setsConcurrentnumber(com.getsConcurrentnumber());
-		return userAccountRestrictionMapper.insert(acc);
+		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(com.getUserId());
+		if(account==null){
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(com.getUserId());
+			acc.setUpperlimit(com.getUpperlimit());
+			acc.setChargebacks(com.getChargebacks());
+			acc.setDownloadupperlimit(com.getDownloadupperlimit());
+			acc.setpConcurrentnumber(com.getpConcurrentnumber());
+			acc.setsConcurrentnumber(com.getsConcurrentnumber());
+			return userAccountRestrictionMapper.insert(acc);
+		}else{
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(com.getUserId());
+			acc.setpConcurrentnumber(com.getpConcurrentnumber());
+			acc.setUpperlimit(com.getUpperlimit());
+			acc.setChargebacks(com.getChargebacks());
+			acc.setDownloadupperlimit(com.getDownloadupperlimit());
+			acc.setsConcurrentnumber(com.getsConcurrentnumber());
+			return userAccountRestrictionMapper.updateAccount(acc);
+		}
 	}
 	
 	@Override
