@@ -1931,3 +1931,7 @@ function checkMoney(obj){
 	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
 	obj.value=(flag?"-":"")+val;
 }
+//校验ip
+function validateIPS(obj){
+	obj.value=obj.value.replace(/[^.0-9\r\n-]/g,'')
+}

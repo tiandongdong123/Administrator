@@ -131,7 +131,7 @@
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name">管理员IP段</label>
-	                  <input type="text" class="form-control input_time" name="adminIP" id="adminIP">
+	                  <input type="text" class="form-control input_time" name="adminIP" id="adminIP" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);">
 	                </div>
 	                <div class="checkbox input_block block_left">
 	                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
