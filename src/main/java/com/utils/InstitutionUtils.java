@@ -177,12 +177,12 @@ public class InstitutionUtils {
 			if (dto.getProjectType().equals("balance")) {
 				if (dto.getTotalMoney() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额不能为空，请填写金额");
+					hashmap.put("fail",  projectname+"金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
 				if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额必须大于0");
+					hashmap.put("fail",  projectname+"金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
 			} else if (dto.getProjectType().equals("count")) {
@@ -193,7 +193,7 @@ public class InstitutionUtils {
 				}
 				if (!NumberUtils.isNumber(dto.getPurchaseNumber())||NumberUtils.toInt(dto.getPurchaseNumber())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数必须大于0");
+					hashmap.put("fail",  projectname+"次数输入不正确，请正确填写次数");
 					return hashmap;
 				}
 			}

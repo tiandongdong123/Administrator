@@ -1583,7 +1583,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						if(!expired){
 							expired=account.getBalance().intValue()<0;
 						}
-						if(!expired){
+						if(!expired&&account.getBalance().intValue()>0){
 							flag=true;
 						}
 						extraData.put("expired",expired);
@@ -1624,7 +1624,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						if (!expired) {
 							expired = account.getBalance() < 0;
 						}
-						if(!expired){
+						if(!expired&&account.getBalance()>0){
 							flag=true;
 						}
 						extraData.put("expired",expired);

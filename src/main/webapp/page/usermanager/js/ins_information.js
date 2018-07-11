@@ -60,7 +60,7 @@ function showAdm(id,pid,institution,e){
 			}
 			var olds=$("#ins_hidden_"+id).val();
 			if(institution==olds){
-				layer.closeAll();
+				layer.msg('未修改机构名称', {icon: 2,time: 1000});
 				return false;
 			}
 			$.ajax({

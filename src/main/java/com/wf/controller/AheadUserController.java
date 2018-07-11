@@ -1013,7 +1013,7 @@ public class AheadUserController {
 									}
 									if (!aheadUserService.checkLimit(user, dto)) {
 										errorMap.put("flag", "fail");
-										errorMap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
+										errorMap.put("fail", ptype.equals("balance") ? "金额输入不正确，请正确填写金额！" : "项目次数不能小于0，请重新输入次数！");
 										return errorMap;
 									}
 								}
@@ -1442,7 +1442,7 @@ public class AheadUserController {
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				if (!aheadUserService.checkLimit(user, dto)) {
 					errorMap.put("flag", "fail");
-					errorMap.put("fail", ptype.equals("balance") ? "项目余额不能小于0，请重新输入金额！" : "项目次数不能小于0，请重新输入次数！");
+					errorMap.put("fail", ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数");
 					return errorMap;
 				}
 			}
