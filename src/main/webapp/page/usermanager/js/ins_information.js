@@ -46,7 +46,7 @@ function showAdm(id,pid,institution,e){
 	    title: '修改机构名称',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 	    content: $("#ins_"+id),
-	    btn: ['提交','取消'],
+	    btn: ['修改','取消'],
 		yes: function(){
 			var institution=$("#institu_"+id).val();
 			var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;

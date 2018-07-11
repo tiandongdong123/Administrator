@@ -1517,9 +1517,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
-			int sortScore=1+Integer.parseInt(userMap.get("loginMode").toString());
-			sortScore+=StringUtils.equals(userMap.get("isFreeze").toString(), "1")?10000:0;
-			boolean flag=false;//用户是否过期
+			int sortScore=Integer.parseInt(userMap.get("loginMode").toString());
+			boolean flag=false;//用户是否可用 true是不过气，false是过期
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
@@ -1584,6 +1583,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 						if(!expired){
 							expired=account.getBalance().intValue()<0;
 						}
+						if(!expired){
+							flag=true;
+						}
 						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
@@ -1597,7 +1599,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(account!=null){
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired = this.getExpired(account.getEndDateTime(),nextDay);
+						if(!expired){
+							flag=true;
+						}
+						extraData.put("expired", expired);
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("payChannelid", account.getPayChannelId());
@@ -1617,6 +1623,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 						boolean expired = this.getExpired(account.getEndDateTime(), nextDay);
 						if (!expired) {
 							expired = account.getBalance() < 0;
+						}
+						if(!expired){
+							flag=true;
 						}
 						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
@@ -1651,7 +1660,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(extraData.size()>0){
 					if((boolean) extraData.get("expired")){
 						oldList.add(extraData);
-						flag=true;
 					}else{
 						projectList.add(extraData);
 					}
@@ -1661,8 +1669,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
-			if(flag){
-				sortScore+=100*sortScore;
+			if(!flag){
+				sortScore=100+sortScore;
 			}
 			userMap.put("score", sortScore);
 			long timeInf=System.currentTimeMillis()-time1;
