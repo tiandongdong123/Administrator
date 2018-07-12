@@ -50,6 +50,10 @@ function submitForm(){
 		return false;
 	}else{
 		var data = new FormData($('#fromList')[0]);
+        var openBindStart = data.get('openBindStart');
+        var openBindEnd = data.get('openBindEnd');
+        data.set('openBindStart',openBindStart+' 00:00:00');
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
 		$.ajax({  
 			url: '../auser/addbatchRegister.do',  
 			type: 'POST',

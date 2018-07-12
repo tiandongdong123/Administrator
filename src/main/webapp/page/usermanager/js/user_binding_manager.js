@@ -363,6 +363,9 @@ function revise(){
             $("input[class='selFirst']:checked").each(function () {
                 bindAuthority.push($(this).val());
             });
+            var meEmail = $('#email').val();
+            var openBindStart = $('#openBindStart').val()+' 00:00:00';
+            var openBindEnd = $('#openBindEnd').val()+' 23:59:59';
             if(bool){
                 return ;
             }
@@ -376,6 +379,9 @@ function revise(){
                     bindValidity:bindValidity,
                     downloadLimit:downloadLimit,
                     bindAuthority:bindAuthority.join(),
+                    email:meEmail,
+                    openBindStart:openBindStart,
+                    openBindEnd:openBindEnd
                 },
                 success: function(data){
                     yesChoose();
