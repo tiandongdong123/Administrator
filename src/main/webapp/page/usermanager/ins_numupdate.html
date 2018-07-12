@@ -150,7 +150,6 @@
             <div class="form-group input_block">
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
                 <select class="form-control input_width"  id="bindType" name="bindType"  >
-                    <>
                     <option value="0"<?if(bindInformation.bindType==0){?>selected = "selected"<?}?>>机构个人同时登录</option>
                     <option value="1"<?if(bindInformation.bindType==1){?>selected = "selected"<?}?>>机构登录</option>
                     <option value="2"<?if(bindInformation.bindType==2){?>selected = "selected"<?}?>>线下扫描</option>
@@ -179,7 +178,7 @@
                 <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"miner")){?>checked="checked"<?}?>  class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
                 </div>
             </div>
-			<div class="form-group input_block qrEmail-box" style="display: none">
+			<div class="form-group input_block qrEmail-box" <?if(bindInformation.bindType==2){?>style="display:block"<?}else{?>style="display:none"<?}?>>
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>二维码发送邮箱</label>
 				<input type="text" class="form-control input_width" placeholder="请输入邮箱" id="email" name="email">
 			</div>
