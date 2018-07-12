@@ -285,6 +285,7 @@
             	</div>
             	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
             	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
+            	<input type="hidden" id="nextDay_${i}" value="${pro.nextDay!}">
             	<div class="time_input time_money" id="time_money_${i}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
 					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>

@@ -1964,6 +1964,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			itemsMap.put(wm.getRelatedidKey(), "trical");
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String nextDay = sdf.format(this.getDay());
 		//购买项目列表
 		List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 		for(WfksPayChannelResources wfks : wfList){
@@ -1985,6 +1986,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1998,6 +2000,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("name", pay.getName());
 					extraData.put("type", pay.getType());
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -2013,6 +2016,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("totalConsume", account.getTotalConsume());
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());

@@ -394,9 +394,36 @@ function validStandard(count,i){
 	}
 	return true;
 }
+//字符串转化为日期
+function StringToDate(dateStr){
+     var separator="-";
+     var dateArr = dateStr.split(separator);
+     var year = parseInt(dateArr[0]);
+     var month;
+     //处理月份为04这样的情况                         
+     if(dateArr[1].indexOf("0") == 0){
+         month = parseInt(dateArr[1].substring(1));
+     }else{
+          month = parseInt(dateArr[1]);
+     }
+     var day = parseInt(dateArr[2]);
+     var date = new Date(year,month -1,day);
+     return date;
+ }
 
 //是否试用
 function checkMode(num){
+	if($("#pro_mode_"+num).is(':checked')){
+		var nextDay=$("#nextDay_"+num).val();
+		if(nextDay!=undefined &&nextDay!=null){
+			var time=$("input[name='rdlist["+num+"].validityEndtime']").val();
+			if(time!=undefined &&time!=null&&StringToDate(nextDay)<=StringToDate(time)){
+				$("#pro_mode_"+num).prop('checked',false);
+				layer.msg("购买项目没有过有效期，不能转为试用",{icon: 2,time: 2000});
+				return false;
+			}
+		}
+	}
 	if($("#pro_mode_"+num).is(':checked')){
 		$("input[name='rdlist["+num+"].mode']").val('trical');
 	}else{
