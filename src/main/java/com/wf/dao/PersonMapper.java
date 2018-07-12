@@ -66,7 +66,9 @@ public interface PersonMapper {
 	List<Map<String, Object>> findInstitutionAdmin(@Param("institution")String institution, @Param("userId")String userId);
 
 	/** 通过机构账号查询机构子账号列表 */
-	List<Map<String, Object>> sonAccountNumber(Map<String, Object> map);
+	List<Object> sonAccountNumber(Map<String, Object> map);
+	/**统计条数**/
+	int sonAccountNumberCount(Map<String, Object> map);
 	
 	/** 更新机构名称 */
 	void updateAllInstitution(Map<String, Object> map);

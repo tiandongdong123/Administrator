@@ -119,7 +119,7 @@
 			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">账户管理<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
 			<li><a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a></li>
-			<li><a href="../auser/tosonaccountnumber.do?pid=${list.userId}" class="add_admin">子账号列表</a></li>
+			<li><a href="../auser/tosonaccount.do?pid=${list.userId}" class="add_admin">子账号列表</a></li>
 			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a></li>
 			<li><?if(list.pid!=null&&list.pid!=""){?><a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
 				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}');" class="add_admin">添加机构管理员</a><?}?></li>

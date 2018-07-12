@@ -131,13 +131,10 @@ public interface AheadUserService {
 	/** 根据user_id查询ip信息  */
 	List<Map<String, Object>> listIpByUserId(String userId);
 
-	/** 通过机构名称获取所属管理员 
-	 * @param pid */
+	/** 通过机构名称获取所属管理员  */
 	List<Map<String, Object>> findInstitutionAdmin(String institution, String userId);
-
-	/** 通过机构账号查询机构子账号列表 
-	 * @param sonId */
-	List<Map<String, Object>> sonAccountNumber(String userId, String sonId, String start_time, String end_time);
+	/** 通过机构名称获取所属管理员 */
+	PageList getSonaccount(Map<String,Object> map);
 
 	/** 获取购买项目 */
 	List<PayChannelModel> purchaseProject();

@@ -108,9 +108,12 @@
   
   <!-- 查询机构账号下机构子账号 -->
   <select id="sonAccountNumber" resultMap="BaseResultMap3" parameterType="java.util.Map">
-	select user_id,password,registration_time from user where pid = #{userId} and userType =3
+	select user_id,password,registration_time from user where userType =3
 	<if test="sonId != null and sonId != ''">
 		and user_id = #{sonId}
+	</if>
+	<if test="userId != null and userId != ''">
+		and user_id = #{userId}
 	</if>
 	<if test="start_time != null and start_time != ''">
 		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[>=]]> DATE_FORMAT(#{start_time},'%y-%c-%d')
@@ -118,7 +121,29 @@
 	<if test="end_time != null and end_time != ''">
 		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[<=]]> DATE_FORMAT(#{end_time},'%y-%c-%d')
 	</if>
-	order by registration_time desc
+	<if test="institution != null and institution != ''">
+		and institution = #{institution}
+	</if>
+	order by registration_time desc limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 查询机构账号下机构子账号 -->
+  <select id="sonAccountNumberCount" resultType="int" parameterType="java.util.Map">
+	select count(1) from user where userType =3
+	<if test="sonId != null and sonId != ''">
+		and user_id = #{sonId}
+	</if>
+	<if test="userId != null and userId != ''">
+		and user_id = #{userId}
+	</if>
+	<if test="start_time != null and start_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[>=]]> DATE_FORMAT(#{start_time},'%y-%c-%d')
+	</if>
+	<if test="end_time != null and end_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[<=]]> DATE_FORMAT(#{end_time},'%y-%c-%d')
+	</if>
+	<if test="institution != null and institution != ''">
+		and institution = #{institution}
+	</if>
   </select>
   
   <!-- 通过机构名称查询所属管理员 -->

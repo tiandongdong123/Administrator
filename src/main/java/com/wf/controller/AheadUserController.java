@@ -1726,14 +1726,35 @@ public class AheadUserController {
 	/**
 	 *	子账号列表页跳转
 	 */
-	@RequestMapping("tosonaccountnumber")
-	public ModelAndView toSonAccountNumber(String userId,String start_time,String end_time,String pid){
+	@RequestMapping("tosonaccount")
+	public ModelAndView tosonaccount(HttpServletRequest req){
 		ModelAndView view = new ModelAndView();
-		//List<Map<String,Object>> list = aheadUserService.sonAccountNumber(userId,sonId,start_time,end_time);
-		view.addObject("userId",userId);
-		view.addObject("start_time",start_time);
-		view.addObject("end_time",end_time);
-		view.addObject("pid",pid);
+		Map<String,Object> map=new HashMap<String,Object>();
+		String userId=req.getParameter("userId");
+		String start_time=req.getParameter("end_time");
+		String end_time=req.getParameter("end_time");
+		String pid=req.getParameter("pid");
+		String institution=req.getParameter("institution");
+		String pageNum=req.getParameter("pageNum");
+		String pageSize=req.getParameter("pageSize");
+		map.put("userId",userId);
+		map.put("start_time",start_time);
+		map.put("end_time",end_time);
+		map.put("pid",pid);
+		map.put("institution",institution);
+		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
+			view.addObject("map",map);
+			view.setViewName("/page/usermanager/ins_sonaccount");
+			return view;
+		}
+		map.put("pageNum", pageNum==null?1:Integer.parseInt(pageNum));
+		map.put("pageSize", pageSize==null?20:Integer.parseInt(pageSize));
+		PageList pageList = aheadUserService.getSonaccount(map);
+		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
+		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
+		map.put("pageList", pageList);
+		view.addObject("map",map);
+		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");
 		return view;
 	}

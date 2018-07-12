@@ -6,43 +6,97 @@
 <script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/ins_sonaccount.js"></script>
 <div class="content-wrapper">
-	<section class="content-header"><h1>机构账号信息管理</h1></section>
+	<section class="content-header"><h1>机构子账号信息管理</h1></section>
     <!-- Main content -->
     <section class="content">
 	<div class="row">
     	<div class="col-md-6">
       	<div class="box box-primary">
         <div class="box-body">
-		<!-- body start-->
+         <form action="../auser/tosonaccount.do" method="post" id="fromList">
 		<table style="width:60%">
 			<tr><td>
 			<label class="input_name">用户ID</label>
-			<input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+			<input type="text" class="form-control input_width" name="userId" id="userId" value="${userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			</td></tr>
 			<tr><td>
 			<label class="input_name">机构名称</label>
-			<input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
+			<input type="text" class="form-control input_width" name="institution" id="institution" value="${institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			</td></tr>
 			<tr><td>
 			<label class="input_name">注册日期</label>
-			<span class="time_block"><input type="text" class="Wdate" name="start_time" id="start_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})"></span><span class="to"> 至 </span>
-			<span class="time_block"><input type="text" class="Wdate" name="end_time" id="end_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"></span>
+			<span class="time_block"><input type="text" class="Wdate" name="start_time" id="start_time" value="${start_time!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})"></span><span class="to"> 至 </span>
+			<span class="time_block"><input type="text" class="Wdate" name="end_time" id="end_time" value="${end_time!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"></span>
 			</td></tr>
 		</table>
+		<?if(!isEmpty(map.pageList)){?>
+	        <input type="hidden" id="pageNum" name="pageNum" value="${map.pageList.pageNum}">
+	        <input type="hidden" id="pageSize" name="pageSize" value="${map.pageList.pageSize}">
+		<?}?>
 		<input type="hidden" name="pid" id="pid" value="${map.pid!}">
 		<div style="text-align: center;width: 550px;margin-top: 2%;">
-		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
+		 	<button type="submit" class="btn btn-primary" onclick="findList()">查询</button>
 		</div>
+		</form>
 		<br/><br/>
 		<div style="overflow-y :auto;position:relative">
 			<div  class="box-body no-padding">
 				<div class="mailbox-controls">
                 	<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button>
+                	<?if(!isEmpty(pid)){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="goInformation('${pid}');">返回</button><?}?>
 				</div>
 				<div class="table-responsive mailbox-messages">
-					<table class="table table-bordered table-striped" id="list"></table>
+					<table class="table table-bordered table-striped"><tbody>
+					<tr style='text-align: center;'>
+						<td class='mailbox-star'>序号</td>
+						<td class="mailbox-name">机构名称</td>
+						<td class="mailbox-name">机构ID</td>
+						<td class="mailbox-name">购买项目</td>
+						<td class="mailbox-name">购买数据库</td>
+						<td class="mailbox-name">子账号上线</td>
+						<td class="mailbox-name">自账号并发数</td>
+						<td class="mailbox-name">子账号下载量上限/天</td>
+						<td class="mailbox-name">子账号扣款模式</td>
+						<td class="mailbox-name">子账号余额上限</td>
+						<td class="mailbox-name">子账号类型</td>
+						<td class="mailbox-name">子账号名称</td>
+						<td class="mailbox-name">子账号密码</td>
+						<td class="mailbox-name">子账号IP</td>
+						<td class="mailbox-name">子账号余额</td>
+						<td class="mailbox-name">子账号次数</td>
+						<td class="mailbox-name">子账号权限</td>
+						<td class="mailbox-name">子账号有效期</td>
+						<td class="mailbox-name">子账号注册时间</td>
+					</tr>
+					<?if(!isEmpty(map.pageList)){?>
+					<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
+					<tr style='text-align: center;'>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>1</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>2</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>3</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>4</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>5</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>6</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>7</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>8</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>9</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>10</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>11</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>12</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>13</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>14</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>14</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>16</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>17</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>18</div></td>
+					<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>19</div></td>
+					</tr>
+					<?}}?>
+					</tbody>
+					</table>
 				</div>
-				<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;"></div>
+				<?if(!isEmpty(msg)&&(isEmpty(map.pageList)||map.pageList.totalRow==0)){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>
+				<?if(!isEmpty(map.pageList)&&map.pageList.totalRow>20){?><div id="page"></div><?}?>
           </div>
         </div>
         <!-- body end -->
