@@ -102,7 +102,6 @@ function submitForm(){
 		removeAtrr();
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){
-		alert("=="+ip+"===");
 		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
 		removeAtrr();
 		return false;
