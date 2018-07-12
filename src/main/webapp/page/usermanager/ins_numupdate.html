@@ -270,7 +270,7 @@
            		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}"><?var marginleft=1000;?>
-				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=50;?>
+				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=0;?>
 				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>
 				<?}?>
            		<button type="button" class="btn btn-primary btn-sm" style="margin-left:${marginleft}px;"

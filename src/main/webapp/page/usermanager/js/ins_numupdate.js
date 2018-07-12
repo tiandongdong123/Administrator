@@ -480,8 +480,6 @@ function findPatentEcho(num){
 
 //余额转化为限时，限时转化为余额
 function changeLimit(obj,i){
-	$("input[name='rdlist["+i+"].validityEndtime2']").val("");
-	$("input[name='rdlist["+i+"].validityStarttime2']").val("");
 	var channelid=$("#pro_GBalanceLimit").val();
 	if(channelid==undefined || channelid==null){
 		channelid=$("#pro_GTimeLimit").val();
@@ -504,7 +502,7 @@ function changeLimit(obj,i){
 			if(channelid=='GTimeLimit'){
 				$("#pro_"+channelid).attr("id","pro_GBalanceLimit");
 				$("#buttonspan_"+i).html("余额转限时");
-				$("#proname"+channelid).html('资源余额');
+				$("#proname"+i).html('资源余额');
 				$("input[name='rdlist["+i+"].projectname']").val('资源余额');
 				$("#pro_GBalanceLimit").val('GBalanceLimit');
 				$("input[name='rdlist["+i+"].projectType']").val('balance');
@@ -512,7 +510,7 @@ function changeLimit(obj,i){
 			}else if(channelid=='GBalanceLimit'){
 				$("#pro_"+channelid).attr("id","pro_GTimeLimit");
 				$("#buttonspan_"+i).html("限时转余额");
-				$("#proname"+channelid).html('资源限时');
+				$("#proname"+i).html('资源限时');
 				$("input[name='rdlist["+i+"].projectname']").val('资源限时');
 				$("#pro_GTimeLimit").val('GTimeLimit');
 				$("input[name='rdlist["+i+"].projectType']").val('time');

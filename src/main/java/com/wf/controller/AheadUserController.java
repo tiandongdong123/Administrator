@@ -1535,6 +1535,7 @@ public class AheadUserController {
 					//增加次数信息
 					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
 						aheadUserService.deleteResources(com,dto,false);
+						aheadUserService.updateProjectResources(com, dto);
 					}
 				}
 			}
