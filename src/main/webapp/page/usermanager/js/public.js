@@ -622,12 +622,22 @@ function selectProject(obj,flag,checked){
 	var proid = $(obj).find("option:selected").attr("proid");
 	checked = checked==""?"":"checked='checked'"
 	if(projectid.indexOf($("#pro_"+projectid).val())<0){
+		//去除余额转限时和限时转化余额度功能
+		if(projectid=="GTimeLimit"||projectid=="GBalanceLimit"){
+			var proLimit1=$("#pro_GBalanceLimit").val();
+			var proLimit2=$("#pro_GTimeLimit").val();
+			if(proLimit1!=undefined &&proLimit1!=null ||proLimit2!=undefined &&proLimit2!=null){
+				$("#buttonshow").hide();
+				$("#buttonshow").next().css("margin-left","1000px");
+				$("#changeFront").val("");
+			}
+		}
 		var text = '';
 		if($(obj).val()!=""){
 			text += '<div class="balance_block" name="full_div">';
 			text += '<div class="resources_title"><input type="hidden" name="rdlist['+count+'].projectid" id="pro_'+projectid+'" value="'+projectid+'"><span>'+proname+'</span>';
 			text += '<input type="hidden" name="rdlist['+count+'].projectname" value="'+proname+'"><input type="hidden" name="rdlist['+count+'].projectType" value="'+$(obj).val()+'">';
-			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><button type="button" class="btn btn-primary" style="margin-left:1000px;" onclick="delDiv(this,\''+count+'\',1);">删除</button></div>';
+			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><button type="button" class="btn btn-primary btn-sm" style="margin-left:1000px;" onclick="delDiv(this,\''+count+'\',1);">删除</button></div>';
 			text += '<div class="time_block"><div class="time_input">';
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
@@ -770,6 +780,7 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 		    		$(obj).parents(".balance_block").remove();
 		    		$("div[name='tabs_"+count+"']").remove();
 		    		$("#multplediv").append('<input type="hidden" name="rdlist['+count+'].projectid" value="'+json+'">');
+		    		
 	    			layer.closeAll();
 	    		}
 	    	}else{

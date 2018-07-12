@@ -1518,7 +1518,7 @@ public class AheadUserController {
 					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
-						if(StringUtils.equals(dto.getIschange(),"1")){
+						if(StringUtils.equals(com.getChangeFront(),"GTimeLimit")){
 							aheadUserService.deleteResources(com.getUserId(),"GTimeLimit");
 						}
 					}
@@ -1527,15 +1527,14 @@ public class AheadUserController {
 					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						if(StringUtils.equals(com.getChangeFront(),"GBalanceLimit")){
+							aheadUserService.deleteResources(com.getUserId(),"GBalanceLimit");
+						}
 					}
 				}else if(dto.getProjectType().equals("count")){
 					//增加次数信息
 					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
 						aheadUserService.deleteResources(com,dto,false);
-						aheadUserService.updateProjectResources(com, dto);
-						if(StringUtils.equals(dto.getIschange(),"1")){
-							aheadUserService.deleteResources(com.getUserId(),"GBalanceLimit");
-						}
 					}
 				}
 			}

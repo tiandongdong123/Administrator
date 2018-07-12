@@ -28,7 +28,6 @@ public class ResourceDetailedDTO {
 	private String validityEndtime2;
 	// 是否试用 trical--试用，formal--正常
 	private String mode;
-	private String ischange;//购买资源是否转化
 	
 	private List<ResourceLimitsDTO> rldto;
 	
@@ -128,14 +127,6 @@ public class ResourceDetailedDTO {
 		this.mode = mode;
 	}
 
-	public String getIschange() {
-		return ischange;
-	}
-
-	public void setIschange(String ischange) {
-		this.ischange = ischange;
-	}
-
 	public List<ResourceLimitsDTO> getRldto() {
 		return rldto;
 	}
@@ -154,7 +145,6 @@ public class ResourceDetailedDTO {
 				+ relatedIdAccountType + ", purchaseNumber=" + purchaseNumber
 				+ ", validityStarttime2=" + validityStarttime2
 				+ ", validityEndtime2=" + validityEndtime2
-				+ ", mode=" + mode + ", ischange=" + ischange
-				+ ", rldto=" + rldto+"]";
+				+ ", mode=" + mode + ", rldto=" + rldto+"]";
 	}
 }

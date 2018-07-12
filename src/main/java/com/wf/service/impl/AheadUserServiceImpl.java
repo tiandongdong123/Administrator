@@ -585,7 +585,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		
 		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
-				&& !StringUtils.equals("1", dto.getIschange())) {
+				&& StringUtils.equals(com.getChangeFront(), dto.getProjectid())) {
 			return 1;
 		}
 		// 创建一个限时账户
@@ -607,7 +607,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		} else {
 			flag = 0;
 		}
-		if(flag==1&&StringUtils.equals(dto.getIschange(),"1")){//限时转化为余额
+		if(flag==1&&StringUtils.equals(com.getChangeFront(),"GBalanceLimit")){//余额转化为限时
 			UserAccount acc = new UserAccount();
 			acc.setUserId(com.getUserId());
 			acc.setPayChannelId("GBalanceLimit");
@@ -746,7 +746,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		int flag = 0;
         boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
-		if(StringUtils.equals(dto.getIschange(),"1")){//限时转化为余额
+		if(StringUtils.equals(com.getChangeFront(),"GTimeLimit")){//限时转化为余额
 			UserAccount acc = new UserAccount();
 			acc.setUserId(com.getUserId());
 			acc.setPayChannelId("GTimeLimit");

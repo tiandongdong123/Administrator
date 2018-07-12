@@ -64,6 +64,8 @@ public class InstitutionalUser implements Serializable {
 	private String Organization;//机构类型
 	private String OrderType;//工单类型
 	private String OrderContent;//工单内容
+	
+	private String changeFront;//购买项目转换前
     
     private List<ResourceDetailedDTO> rdlist;
 
@@ -384,6 +386,14 @@ public class InstitutionalUser implements Serializable {
 
 	public void setWeChatEndtime(String weChatEndtime) {
 		this.weChatEndtime = weChatEndtime;
+	}
+
+	public String getChangeFront() {
+		return changeFront;
+	}
+
+	public void setChangeFront(String changeFront) {
+		this.changeFront = changeFront;
 	}
 
 	@Override

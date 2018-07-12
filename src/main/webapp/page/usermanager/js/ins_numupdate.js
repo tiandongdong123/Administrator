@@ -479,10 +479,17 @@ function findPatentEcho(num){
 }
 
 //余额转化为限时，限时转化为余额
-function changeLimit(obj,channelid,i){
-	$(obj).attr({disabled: "disabled"});
+function changeLimit(obj,i){
 	$("input[name='rdlist["+i+"].validityEndtime2']").val("");
 	$("input[name='rdlist["+i+"].validityStarttime2']").val("");
+	var channelid=$("#pro_GBalanceLimit").val();
+	if(channelid==undefined || channelid==null){
+		channelid=$("#pro_GTimeLimit").val();
+	}
+	var changeFront=$("#changeFront").val();
+	if(changeFront==null||changeFront==''){
+		$("#changeFront").val(channelid);
+	}
 	var msg="";
 	if(channelid=='GBalanceLimit'){
 		msg="确定要将余额账号转换为限时账号吗？";
@@ -494,20 +501,23 @@ function changeLimit(obj,channelid,i){
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'],
 	    yes: function(){
-	    	if(channelid=='GBalanceLimit'){
-	    		$("#proname"+i).html('资源限时');
-	    		$("#projectname_"+channelid).val('资源限时');
-	    		$("#pro_"+channelid).val('GTimeLimit');
-	    		$("#projectType_"+channelid).val('time');
-	    		$("#time_money_"+i).html('');
-	    	}else if(channelid=='GTimeLimit'){
-	    		$("#proname"+i).html('资源余额');
-	    		$("#projectname_"+channelid).val('资源余额');
-	    		$("#pro_"+channelid).val('GBalanceLimit');
-	    		$("#projectType_"+channelid).val('balance');
-	    		$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
-	    	}
-	    	$("#ischange_"+channelid).val('1');
+			if(channelid=='GTimeLimit'){
+				$("#pro_"+channelid).attr("id","pro_GBalanceLimit");
+				$("#buttonspan_"+channelid).html("余额转限时");
+				$("#proname"+channelid).html('资源余额');
+				$("#projectname_"+channelid).val('资源余额');
+				$("#pro_GBalanceLimit").val('GBalanceLimit');
+				$("#projectType_"+channelid).val('balance');
+				$("#time_money_"+channelid).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
+			}else if(channelid=='GBalanceLimit'){
+				$("#pro_"+channelid).attr("id","pro_GTimeLimit");
+				$("#buttonspan_"+i).html("限时转余额");
+				$("#proname"+i).html('资源限时');
+				$("#projectname_"+i).val('资源限时');
+				$("#pro_GTimeLimit").val('GTimeLimit');
+				$("#projectType_"+i).val('time');
+				$("#time_money_"+i).html('');
+			}
 	    	layer.closeAll();
 	    }
 	});
