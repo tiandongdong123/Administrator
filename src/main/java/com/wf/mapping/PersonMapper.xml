@@ -108,9 +108,9 @@
   
   <!-- 查询机构账号下机构子账号 -->
   <select id="sonAccountNumber" resultMap="BaseResultMap3" parameterType="java.util.Map">
-	select user_id,password,registration_time from user where userType =3
-	<if test="sonId != null and sonId != ''">
-		and user_id = #{sonId}
+	select user_id,password,registration_time,pid from user where userType =3
+	<if test="pid != null and pid != ''">
+		and pid = #{pid}
 	</if>
 	<if test="userId != null and userId != ''">
 		and user_id = #{userId}
@@ -129,8 +129,8 @@
   <!-- 查询机构账号下机构子账号 -->
   <select id="sonAccountNumberCount" resultType="int" parameterType="java.util.Map">
 	select count(1) from user where userType =3
-	<if test="sonId != null and sonId != ''">
-		and user_id = #{sonId}
+	<if test="pid != null and pid != ''">
+		and pid = #{pid}
 	</if>
 	<if test="userId != null and userId != ''">
 		and user_id = #{userId}

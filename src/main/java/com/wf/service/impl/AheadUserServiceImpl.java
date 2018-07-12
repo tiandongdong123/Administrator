@@ -1772,19 +1772,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
 						+ DateUtil.DateToFromatStr(wm.getEndtime()));
 				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
-				party.put("userId", per.getUserId());
-				try{
-					party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
-				}catch (Exception e){
-					log.error("密码转化异常：",e);
+				if(per!=null){
+					party.put("userId", per.getUserId());
+					try{
+						party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
+					}catch (Exception e){
+						log.error("密码转化异常：",e);
+					}
+					String json = String.valueOf(per.getExtend());
+					if(!StringUtils.isEmpty(json)){
+						JSONObject obj = JSONObject.fromObject(json);
+						party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
+					}
+					party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
+					userMap.put("party", party);
 				}
-				String json = String.valueOf(per.getExtend());
-				if(!StringUtils.isEmpty(json)){
-					JSONObject obj = JSONObject.fromObject(json);
-					party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
-				}
-				party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
-				userMap.put("party", party);
 			}
 		}
 	}
@@ -1890,8 +1892,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 		List<Object> userList = personMapper.sonAccountNumber(map);// 获取子账号列表
 		PageList pageList = new PageList();
 		if (userList.size()==0) {
+			pageList.setPageRow(userList);
+			pageList.setTotalRow(0);
 			return pageList;
 		}
+		Map<String, Object> userOne =(Map<String, Object>) userList.get(0);
+		UserAccountRestriction restriction=this.getAccountRestriction(String.valueOf(userOne.get("pid")));
 		for (Object object : userList) {
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId=userMap.get("userId").toString();
@@ -1932,13 +1938,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 							extraData.put("totalConsume", account.getTotalConsume());
 						}
 					}
-					if(extraData.size()>0){
+					if(extraData.size()>1){
 						projectList.add(extraData);
 					}
 				}
 			}catch(Exception e){
 				log.error("子账号"+userId+"调用接口异常",e);
 			}
+			userMap.put("restriction", restriction);
 			userMap.put("sonProjectList", projectList);
 		}			
 	

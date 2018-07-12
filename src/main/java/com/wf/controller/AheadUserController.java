@@ -1737,7 +1737,6 @@ public class AheadUserController {
 		String institution=req.getParameter("institution");
 		String pageNum=req.getParameter("pageNum");
 		String pageSize=req.getParameter("pageSize");
-		map.put("userId",userId);
 		map.put("start_time",start_time);
 		map.put("end_time",end_time);
 		map.put("pid",pid);
@@ -1747,12 +1746,24 @@ public class AheadUserController {
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}
+		if(!StringUtils.isEmpty(userId)){
+			Person person=aheadUserService.queryPersonInfo(userId);
+			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
+				view.addObject("map",map);
+				view.setViewName("/page/usermanager/ins_sonaccount");
+				return view;
+			}else if(person.getUsertype()==2){
+				map.put("pid",userId);
+				map.put("userId","");
+			}
+		}
 		map.put("pageNum", pageNum==null?1:Integer.parseInt(pageNum));
 		map.put("pageSize", pageSize==null?20:Integer.parseInt(pageSize));
 		PageList pageList = aheadUserService.getSonaccount(map);
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
 		map.put("pageList", pageList);
+		map.put("userId",userId);
 		view.addObject("map",map);
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");
