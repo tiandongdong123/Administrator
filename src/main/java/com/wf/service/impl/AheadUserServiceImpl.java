@@ -1750,9 +1750,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if("openApp".equals(wm.getRelatedidAccounttype())){
 				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
 						+DateUtil.DateToFromatStr(wm.getEndtime()));
+				userMap.put("openAppexpired", this.getExpired(wm.getEndtime(),this.getDay()));
 			}
 			if("openWeChat".equals(wm.getRelatedidAccounttype())){
-				Map<String,String> wechat=new HashMap<String,String>();
+				Map<String,Object> wechat=new HashMap<String,Object>();
 				wechat.put("time",  DateUtil.DateToFromatStr(wm.getBegintime())+"-"
 						+DateUtil.DateToFromatStr(wm.getEndtime()));
 				WfksUserSettingKey key=new WfksUserSettingKey();
@@ -1763,10 +1764,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(setting.length>0){
 					wechat.put("email", setting[0].getPropertyValue());
 				}
+				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
 				userMap.put("openWeChat", wechat);
 			}
 			if("PartyAdminTime".equals(wm.getRelatedidAccounttype())){
-				Map<String,String> party=new HashMap<String,String>();
+				Map<String,Object> party=new HashMap<String,Object>();
 				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
 						+ DateUtil.DateToFromatStr(wm.getEndtime()));
 				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
@@ -1781,6 +1783,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					JSONObject obj = JSONObject.fromObject(json);
 					party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
 				}
+				party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
 				userMap.put("party", party);
 			}
 		}
