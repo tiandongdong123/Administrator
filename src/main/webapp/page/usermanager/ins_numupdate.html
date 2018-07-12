@@ -267,8 +267,8 @@
            	<div class="resources_title">
            		<span name="proname" id="proname${i}">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
            		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
-           		<input type="hidden" name="rdlist[${i}].projectname" id="projectname_${i}" value="${pro.name}">
-           		<input type="hidden" name="rdlist[${i}].projectType" id="projectType_${i}" value="${pro.type}">
+           		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
+           		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
            		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}"><?var marginleft=1000;?>
 				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=50;?>
 				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>

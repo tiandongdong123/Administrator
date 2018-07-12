@@ -503,19 +503,19 @@ function changeLimit(obj,i){
 	    yes: function(){
 			if(channelid=='GTimeLimit'){
 				$("#pro_"+channelid).attr("id","pro_GBalanceLimit");
-				$("#buttonspan_"+channelid).html("余额转限时");
+				$("#buttonspan_"+i).html("余额转限时");
 				$("#proname"+channelid).html('资源余额');
-				$("#projectname_"+channelid).val('资源余额');
+				$("input[name='rdlist["+i+"].projectname']").val('资源余额');
 				$("#pro_GBalanceLimit").val('GBalanceLimit');
-				$("#projectType_"+channelid).val('balance');
-				$("#time_money_"+channelid).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
+				$("input[name='rdlist["+i+"].projectType']").val('balance');
+				$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
 			}else if(channelid=='GBalanceLimit'){
 				$("#pro_"+channelid).attr("id","pro_GTimeLimit");
 				$("#buttonspan_"+i).html("限时转余额");
-				$("#proname"+i).html('资源限时');
-				$("#projectname_"+i).val('资源限时');
+				$("#proname"+channelid).html('资源限时');
+				$("input[name='rdlist["+i+"].projectname']").val('资源限时');
 				$("#pro_GTimeLimit").val('GTimeLimit');
-				$("#projectType_"+i).val('time');
+				$("input[name='rdlist["+i+"].projectType']").val('time');
 				$("#time_money_"+i).html('');
 			}
 	    	layer.closeAll();
