@@ -60,13 +60,10 @@ $(function(){
         });
     });
     var prevNum;
-    $('html,body').click(function(){
-        $(".qr").hide();
-    });
-
-    $(document).on('click','.bindtype',function(e){
-        var e = e || window.event;
+    $('#database-table').on('click','.bindtype',function(e){
+        e = e || window.event;
         e.stopPropagation();
+        e.preventDefault();
         if($(this).text()=="线下扫描"){
             var num = $(this).data('num');
             if(num != prevNum){
@@ -75,54 +72,18 @@ $(function(){
                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+relocate+'&time='+(new Date()));
                 prevNum = num;
             }else{
-                $(".qr").show();
+                $('.qr').stop(true,true).toggle();
             }
         }
     })
-    // $(document).on("click",".bindtype",function(e){
-    //     var e = e || window.event;
-    //     e.stopPropagation();
-    //     if($(this).text()=="线下扫描"){
-    //         if($(this).data('num')==reset){
-    //             if(choose){
-    //                 $(".qr").show();
-    //                 choose = false;
-    //                 var userId = $(this).siblings(".userID").text();
-    //                 var num = $(this).data('num');
-    //                 reset=num;
-    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-    //             }else{
-    //                 $(".qr").hide();
-    //                 choose = true;
-    //                 reset=="";
-    //             }
-    //         }else {
-    //             if(choose){
-    //                 $(".qr").show();
-    //                 choose = false;
-    //                 var userId = $(this).siblings(".userID").text();
-    //                 var num = $(this).data('num');
-    //                 reset=num;
-    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-    //                 relocate=userId;
-    //             }else{
-    //                 $(".qr").show();
-    //                 choose = false;
-    //                 var userId = $(this).siblings(".userID").text();
-    //                 var num = $(this).data('num');
-    //                 reset=num;
-    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-    //                 relocate=userId;
-    //             }
-    //         }
-    //     }
-    // });
+    $('html,body').click(function(){
+        $(".qr").hide();
+    });
     //点击重置二维码
     $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId_qr = relocate;
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
-
     });
 
     //机构ID弹出框
