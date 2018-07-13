@@ -629,7 +629,6 @@ function selectProject(obj,flag,checked){
 			if(proLimit1!=undefined &&proLimit1!=null ||proLimit2!=undefined &&proLimit2!=null){
 				$("#buttonshow").hide();
 				$("#buttonshow").next().css("margin-left","1000px");
-				$("#changeFront").val("");
 			}
 		}
 		var text = '';

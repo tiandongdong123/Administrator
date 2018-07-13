@@ -1013,7 +1013,7 @@ public class AheadUserController {
 									}
 									if (!aheadUserService.checkLimit(user, dto)) {
 										errorMap.put("flag", "fail");
-										errorMap.put("fail", ptype.equals("balance") ? "金额输入不正确，请正确填写金额！" : "项目次数不能小于0，请重新输入次数！");
+										errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额！" : "项目次数不能小于0，请重新输入次数！"));
 										return errorMap;
 									}
 								}
@@ -1442,7 +1442,7 @@ public class AheadUserController {
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				if (!aheadUserService.checkLimit(user, dto)) {
 					errorMap.put("flag", "fail");
-					errorMap.put("fail", ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数");
+					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
 					return errorMap;
 				}
 			}
@@ -1512,24 +1512,24 @@ public class AheadUserController {
 		if (delList.size() > 0) {
 			this.removeproject(req, delList);
 		}
+		if (StringUtils.equals(com.getChangeFront(), "GTimeLimit")
+				|| StringUtils.equals(com.getChangeFront(), "GBalanceLimit")) {
+			if (aheadUserService.deleteChangeAccount(com, adminId) > 0) {
+				aheadUserService.deleteResources(com.getUserId(), com.getChangeFront());
+			}
+		}
 		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
 					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
-						if(StringUtils.equals(com.getChangeFront(),"GTimeLimit")){
-							aheadUserService.deleteResources(com.getUserId(),"GTimeLimit");
-						}
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
 					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
-						if(StringUtils.equals(com.getChangeFront(),"GBalanceLimit")){
-							aheadUserService.deleteResources(com.getUserId(),"GBalanceLimit");
-						}
 					}
 				}else if(dto.getProjectType().equals("count")){
 					//增加次数信息

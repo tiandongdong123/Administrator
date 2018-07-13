@@ -166,6 +166,8 @@ public interface AheadUserService {
 
 	/** 删除购买项目（逻辑删除） */
 	int deleteAccount(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
+	/** 删除购买项目（逻辑删除） */
+	int deleteChangeAccount(InstitutionalUser user, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);

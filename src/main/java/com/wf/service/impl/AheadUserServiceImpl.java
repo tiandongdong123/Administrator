@@ -550,6 +550,37 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return flag;
 	}
+	@Override
+	public int deleteChangeAccount(InstitutionalUser com, String adminId)throws Exception {
+		String channelId=com.getChangeFront();
+		Date beginDateTime=null;
+		Date endDateTime=null;
+		if ("GBalanceLimit".equals(channelId)) {
+    		wfks.accounting.handler.entity.BalanceLimitAccount infer = (wfks.accounting.handler.entity.BalanceLimitAccount)
+	    		accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
+    		if(infer==null){
+    			return 0;
+    		}
+    		beginDateTime=infer.getBeginDateTime();
+    		endDateTime=infer.getEndDateTime();
+		} else if ("GTimeLimit".equals(channelId)) {
+        	wfks.accounting.handler.entity.CountLimitAccount infer = (wfks.accounting.handler.entity.CountLimitAccount)
+            	accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
+    		if(infer==null){
+    			return 0;
+    		}
+    		beginDateTime=infer.getBeginDateTime();
+    		endDateTime=infer.getEndDateTime();
+		}
+		UserAccount account = new UserAccount();
+		account.setUserId(com.getUserId());
+		account.setPayChannelId(channelId);
+		account.setOrganName(com.getInstitution());
+		account.setBeginDateTime(beginDateTime);
+		account.setEndDateTime(endDateTime);
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId);
+		return isSuccess?1:0;
+	}
 	
 	@Override
 	public int addProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
@@ -606,18 +637,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			flag = 1;
 		} else {
 			flag = 0;
-		}
-		if(flag==1&&StringUtils.equals(com.getChangeFront(),"GBalanceLimit")){//余额转化为限时
-			UserAccount acc = new UserAccount();
-			acc.setUserId(com.getUserId());
-			acc.setPayChannelId("GBalanceLimit");
-			acc.setOrganName(com.getInstitution());
-			acc.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-			acc.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-			boolean succ=groupAccountUtil.deleteAccount(acc, httpRequest.getRemoteAddr(), adminId);
-			if(!succ){
-				flag=1;
-			}
 		}
 		return flag;
 	}
@@ -746,18 +765,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		int flag = 0;
         boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
-		if(StringUtils.equals(com.getChangeFront(),"GTimeLimit")){//限时转化为余额
-			UserAccount acc = new UserAccount();
-			acc.setUserId(com.getUserId());
-			acc.setPayChannelId("GTimeLimit");
-			acc.setOrganName(com.getInstitution());
-			acc.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-			acc.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-			boolean succ=groupAccountUtil.deleteAccount(acc, httpRequest.getRemoteAddr(), adminId);
-			if(!succ){
-				flag=1;
-			}
-		}
 		if (isSuccess) {
 			flag = 1;
 		} else {
@@ -782,7 +789,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    			}
 	    			return true;
 	    		}
-	    		if(account.getBalance().intValue()+Double.parseDouble(dto.getTotalMoney())<0){
+	    		if(account.getBalance().doubleValue()+Double.parseDouble(dto.getTotalMoney())<0){
 	    			return false;
 	    		}
 			} else if ("count".equals(dto.getProjectType())) {
