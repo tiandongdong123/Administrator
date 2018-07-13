@@ -59,42 +59,64 @@ $(function(){
             }
         });
     });
-    $(document).on("click",".bindtype",function(){
+    var prevNum;
+    $('html,body').click(function(){
+        $(".qr").hide();
+    });
+
+    $(document).on('click','.bindtype',function(e){
+        var e = e || window.event;
+        e.stopPropagation();
         if($(this).text()=="线下扫描"){
-            if($(this).data('num')==reset){
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                }else{
-                    $(".qr").hide();
-                    choose = true;
-                    reset=="";
-                }
-            }else {
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }else{
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }
+            var num = $(this).data('num');
+            if(num != prevNum){
+                $(".qr").show();
+                relocate = $(this).siblings(".userID").text();
+                $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+relocate+'&time='+(new Date()));
+                prevNum = num;
+            }else{
+                $(".qr").show();
             }
         }
-    });
+    })
+    // $(document).on("click",".bindtype",function(e){
+    //     var e = e || window.event;
+    //     e.stopPropagation();
+    //     if($(this).text()=="线下扫描"){
+    //         if($(this).data('num')==reset){
+    //             if(choose){
+    //                 $(".qr").show();
+    //                 choose = false;
+    //                 var userId = $(this).siblings(".userID").text();
+    //                 var num = $(this).data('num');
+    //                 reset=num;
+    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
+    //             }else{
+    //                 $(".qr").hide();
+    //                 choose = true;
+    //                 reset=="";
+    //             }
+    //         }else {
+    //             if(choose){
+    //                 $(".qr").show();
+    //                 choose = false;
+    //                 var userId = $(this).siblings(".userID").text();
+    //                 var num = $(this).data('num');
+    //                 reset=num;
+    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
+    //                 relocate=userId;
+    //             }else{
+    //                 $(".qr").show();
+    //                 choose = false;
+    //                 var userId = $(this).siblings(".userID").text();
+    //                 var num = $(this).data('num');
+    //                 reset=num;
+    //                 $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
+    //                 relocate=userId;
+    //             }
+    //         }
+    //     }
+    // });
     //点击重置二维码
     $(document).on("click",".reset",function(){
         $(".qr").show();
@@ -113,10 +135,13 @@ $(function(){
         var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType option:eq(0)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="机构登录"){
             $("#bindType option:eq(1)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="线下扫描"){
             $("#bindType option:eq(2)").prop("selected","selected");
+            $('.qrEmail-box').show();
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
         $("#bindValidity").val($(this).siblings(".bindValidity").text());
