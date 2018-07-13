@@ -272,6 +272,7 @@ function sunmit(){
         var meEmail = $('#email').val();
         var openBindStart = $('#openBindStart').val()+'00:00:00';
         var openBindEnd = $('#openBindEnd').val()+'23:59:59';
+        var isCheckedMe = $('#isPublishEmail').is(':checked');
         if(bool){
             return ;
         }
@@ -287,7 +288,8 @@ function sunmit(){
                 bindAuthority:bindAuthority,
                 email:meEmail,
                 openBindStart:openBindStart,
-                openBindEnd:openBindEnd
+                openBindEnd:openBindEnd,
+                send:isCheckedMe
             },
             success: function(data){
                 $("#institution").val("");
