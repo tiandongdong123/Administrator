@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.protobuf.Timestamp;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -808,7 +809,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	/**
 	 * 添加标准配置参数
-	 * @param dto
+	 * @param rdto
 	 * @param com
 	 */
 	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
@@ -1034,7 +1035,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	/**
 	 * 获取标准对象
 	 * @param dto
-	 * @param Terms
+	 * @param com
 	 */
 	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
 		com.alibaba.fastjson.JSONObject obj=null;
@@ -1995,6 +1996,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
 			bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
 			bindAuthorityModel.setBindAuthority(authorityList.toString());
+			bindAuthorityModel.setEmail(response.getItems(0).getEmail());
+			bindAuthorityModel.setOpenBindStart(new Date(response.getItems(0).getOpenStart().getSeconds()*1000));
+			bindAuthorityModel.setOpenBindEnd(new Date(response.getItems(0).getOpenEnd().getSeconds()*1000));
 		}else {
 			bindAuthorityModel.setOpenState(false);
 		}
