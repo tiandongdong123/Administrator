@@ -642,10 +642,10 @@ function selectProject(obj,flag,checked){
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
 			if($(obj).val()!="time"&&$(obj).val()!="count"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="9"></div>';
 			}
 			if($(obj).val()!="time"&&$(obj).val()!="balance"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="8"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="9"></div>';
 			}
 			if(projectid=='HistoryCheck'){
 				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
@@ -1945,7 +1945,9 @@ function deleteIP(){
 function checkNum(obj){
 	var val=obj.value;
 	var flag=false;
+	var len=8;
 	if(val.substr(0,1)=="-"){
+		len=9;
 		flag=true;
 	}
 	val= val.replace(/[^\d]/g,""); //清除"数字"和"."以外的字符
@@ -1953,13 +1955,18 @@ function checkNum(obj){
 	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
 	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+	if(val.length>len){
+		val=val.substring(0, len);
+	}
 	obj.value=(flag?"-":"")+val;
 }
 //验证金额
 function checkMoney(obj){
 	var val=obj.value;
 	var flag=false;
+	var len=8;
 	if(val.substr(0,1)=="-"){
+		len=9;
 		flag=true;
 	}
 	val= val.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
@@ -1967,6 +1974,9 @@ function checkMoney(obj){
 	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
 	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
 	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+	if(val.length>len){
+		val=val.substring(0, len);
+	}
 	obj.value=(flag?"-":"")+val;
 }
 //校验ip

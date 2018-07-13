@@ -770,7 +770,7 @@ public class AheadUserServiceImpl implements AheadUserService{
     public boolean checkLimit(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
     	try{
 			if ("balance".equals(dto.getProjectType())) {
-				if (Integer.parseInt(dto.getTotalMoney()) == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+				if (Double.parseDouble(dto.getTotalMoney()) == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 					return true;
 				}

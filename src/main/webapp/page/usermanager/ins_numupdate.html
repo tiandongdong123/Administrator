@@ -288,10 +288,10 @@
             	<input type="hidden" id="nextDay_${i}" value="${pro.nextDay!}">
             	<div class="time_input time_money" id="time_money_${i}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
-					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
+					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="9"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
             	<?}?>
             	<?if(pro.type!='time'&&pro.type!='balance'){?>
-					<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
+					<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0" onkeyup="checkNum(this);" onafterpaste="checkNum(this);" maxlength="9"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
             	<?}?>
 				</div>
             	<?if(pro.payChannelid=='HistoryCheck'){?>

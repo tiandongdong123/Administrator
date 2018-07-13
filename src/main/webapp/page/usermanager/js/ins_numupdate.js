@@ -506,7 +506,7 @@ function changeLimit(obj,i){
 				$("input[name='rdlist["+i+"].projectname']").val('资源余额');
 				$("#pro_GBalanceLimit").val('GBalanceLimit');
 				$("input[name='rdlist["+i+"].projectType']").val('balance');
-				$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="8"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
+				$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="9"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
 			}else if(channelid=='GBalanceLimit'){
 				$("#pro_"+channelid).attr("id","pro_GTimeLimit");
 				$("#buttonspan_"+i).html("限时转余额");
