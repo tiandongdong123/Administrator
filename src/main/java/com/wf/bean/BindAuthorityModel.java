@@ -34,6 +34,8 @@ public class BindAuthorityModel {
     private String bindAuthority;
     //邮箱
     private String email;
+    //是否发送邮箱
+    private Boolean send;
 
     public Boolean getOpenState() {
         return openState;
@@ -115,6 +117,14 @@ public class BindAuthorityModel {
         this.email = email;
     }
 
+    public Boolean getSend() {
+        return send;
+    }
+
+    public void setSend(Boolean send) {
+        this.send = send;
+    }
+
     @Override
     public String toString() {
         return "BindAuthorityModel{" +
@@ -128,6 +138,7 @@ public class BindAuthorityModel {
                 ", downloadLimit=" + downloadLimit +
                 ", bindAuthority='" + bindAuthority + '\'' +
                 ", email='" + email + '\'' +
+                ", send=" + send +
                 '}';
     }
 }
