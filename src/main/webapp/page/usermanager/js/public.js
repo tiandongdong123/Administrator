@@ -1456,15 +1456,6 @@ function validateFrom(){
 
 function fieldsCheck() {
 	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
-	bootstrapValidator.resetForm();
-	var msg='CRM工单号不能为空，请填写CRM工单号';
-	var type=$("#OrderType").val();
-	if(type=='inner'){
-		msg='申请部门不能为空，请填写申请部门';
-	}
-	$("#fromList").bootstrapValidator("addField","OrderContent", {
-		validators: {notEmpty: {message: msg}}
-	});
 	bootstrapValidator.validate();
 	return (bootstrapValidator.isValid());
 }
@@ -1816,12 +1807,21 @@ function checkParty(obj){
 //工单类型
 function selectOrder(obj){
 	var type=$("#OrderType").val();
+	var msg="";
 	if(type=='crm'){
 		$("#orderTypeSpan").html("CRM工单号");
+		msg='CRM工单号不能为空，请填写CRM工单号';
 	}else{
 		$("#orderTypeSpan").html("申请部门");
+		msg='申请部门不能为空，请填写申请部门';
 	}
 	$("#OrderContent").val("");
+	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+	$("#fromList").bootstrapValidator("addField","OrderContent", {
+		validators: {notEmpty: {message: msg}}
+	});
+	bootstrapValidator.validate();
+	return (bootstrapValidator.isValid());
 }
 //选择国家
 var arrayArea="";
