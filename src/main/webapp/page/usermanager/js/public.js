@@ -1821,8 +1821,6 @@ function selectOrder(obj){
 	$("#fromList").bootstrapValidator("addField","OrderContent", {
 		validators: {notEmpty: {message: msg}}
 	});
-	bootstrapValidator.validate();
-	return (bootstrapValidator.isValid());
 }
 //选择国家
 var arrayArea="";
