@@ -84,7 +84,8 @@ public interface AheadUserService {
 	void addUserAdminIp(InstitutionalUser user);
 	
 	/** 机构子账号处理 */
-	int setAccountRestriction(InstitutionalUser user);
+	int setAccountRestriction(InstitutionalUser user,boolean isReset);
+	int setPartAccountRestriction(InstitutionalUser user);
 	UserAccountRestriction getAccountRestriction(String userId);
 	
 	/** 添加余额信息 */
@@ -239,6 +240,8 @@ public interface AheadUserService {
 	void updateSubaccount(InstitutionalUser user,String adminId) throws Exception;
 	/** 保存机构用户权限 **/
 	void addWfksAccountidMapping(InstitutionalUser user);
+	/** 修改机构用户权限 **/
+	void updateWfksAccountidMapping(InstitutionalUser user);
 	/** 获取机构用户权限 **/
 	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
 	WfksAccountidMapping[] getWfksAccountid(String userId,String type);

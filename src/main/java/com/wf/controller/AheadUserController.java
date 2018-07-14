@@ -229,7 +229,7 @@ public class AheadUserController {
 		int resinfo = aheadUserService.updatePid(map);
 		InstitutionalUser com=new InstitutionalUser();
 		com.setUserId(userId);
-		aheadUserService.setAccountRestriction(com);
+		aheadUserService.setPartAccountRestriction(com);
 		aheadUserService.addUserIns(com);
 		if(resinfo>0){
 			return "true";
@@ -274,7 +274,7 @@ public class AheadUserController {
 			map.put("pid", com.getAdminOldName());
 		}
 		// 机构子账号权限
-		aheadUserService.setAccountRestriction(com);
+		aheadUserService.setPartAccountRestriction(com);
 		// 统计分析权限
 		aheadUserService.addUserIns(com);
 		map.put("userId", com.getUserId());
@@ -666,23 +666,6 @@ public class AheadUserController {
 			}
 			allNum = userList.size();
 			for(Map<String, Object> map : userList){
-				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
-				//Excel表格中部分账号信息
-				if(map.get("institution")!=null && map.get("institution")!=""){				
-					user.setInstitution(map.get("institution").toString());
-				}else{
-					user.setInstitution(ps.getInstitution());
-				}
-				if(map.get("password")!=null && map.get("password")!=""){
-					String password = String.valueOf(map.get("password"));
-					if (password.contains("不变")) {
-						password = "";
-					}
-					user.setPassword(password);
-				}else{
-					user.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
-				}
-				user.setUserId(map.get("userId").toString());
 				//修改机构用户
 				aheadUserService.batchUpdateInfo(user,map);
 				//修改购买项目
