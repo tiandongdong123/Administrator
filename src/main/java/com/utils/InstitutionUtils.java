@@ -340,6 +340,19 @@ public class InstitutionUtils {
 			errorMap.put("fail", "购买项目不能为空，请选择购买项目");
 			return errorMap;
 		}
+		Map<String,String> userMap=new HashMap<String,String>();
+		for (int i = 0; i < userList.size(); i++) {
+			Map<String, Object> map = userList.get(i);
+			String userId=map.get("userId")==null?"":map.get("userId").toString();
+			if(!StringUtils.isEmpty(userId)){
+				if(userMap.get(userId)!=null){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "批量中出现多个"+userId+",请填写不重复的机构ID");
+					return errorMap;
+				}
+				userMap.put(userId, userId);
+			}
+		}
 		//删除不合法的购买项目
 		for (int j = 0; j < rdList.size(); j++) {
 			ResourceDetailedDTO dto = rdList.get(j);
