@@ -1353,11 +1353,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(row != null){
 						if(rowNum==0){
 							str = ExcelUtil.readExcelTitle(row);
-							if (str.length <= 4) {
+							if (str.length <= 5) {
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "模版文件的列未按照规范排版，请下载标准的模版文件");
 								break;
-							}else if(!"机构名称_institution".equals(str[0])){
+							}
+							if(!"机构名称_institution".equals(str[0])){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "机构名称列不存在或位置错误，请下载标准的模版文件");
 								break;
