@@ -21,6 +21,7 @@ public class InstitutionUtils {
 	private static Pattern pa = Pattern.compile("[^0-9a-zA-Z-_]");
 	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
+	private static Integer maxData=99999999;
 
 	/**
 	 * 校验机构用户查询条件
@@ -356,7 +357,12 @@ public class InstitutionUtils {
 			Map<String, Object> map = userList.get(i);
 			String userId=map.get("userId")==null?"":map.get("userId").toString();
 			String institution=map.get("institution")==null?"":map.get("institution").toString();
-			if ("".equals(userId)) {
+			String password=map.get("password")==null?"":map.get("password").toString();
+			if (StringUtils.isEmpty(userId)&&StringUtils.isEmpty(institution)&&StringUtils.isEmpty(password)) {
+				userList.remove(i--);
+				continue;
+			}
+			if (StringUtils.isEmpty(userId)) {
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "机构ID不能为空，请填写规范的机构ID");
 				return errorMap;
@@ -378,7 +384,6 @@ public class InstitutionUtils {
 				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
 				return errorMap;
 			}
-			String password=map.get("password")==null?"":map.get("password").toString();
 			if("".equals(password)||password.contains(" ")){
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码"));
@@ -447,35 +452,36 @@ public class InstitutionUtils {
 				boolean isWrong=true;
 				for(Map<String, Object> pro : lm) {
 					if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
-						String totalMoney=pro.get("totalMoney").toString();
-						if(totalMoney.contains(" ")){
+						
+						String totalMoney = pro.get("totalMoney") == null ? "" : pro.get("totalMoney").toString();
+						if (StringUtils.isEmpty(totalMoney) || !NumberUtils.isNumber(totalMoney)
+								|| Double.parseDouble(totalMoney) <= 0) {
 							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
-									+ (dto.getProjectType().equals("balance") ? "金额不能有空格，请填写正确的金额"
-											: "次数不能有空格，请填写正确的次数"));
-							return errorMap;
-						}
-						if(!NumberUtils.isNumber(totalMoney)){
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
+							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
 											: "次数输入不正确，请正确填写次数"));
 							return errorMap;
 						}
 						if (dto.getProjectType().equals("balance")) {
-							if(Double.parseDouble(totalMoney)<=0){
+							if(Double.parseDouble(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
-										+  "金额必须大于0，请正确填写金额");
+								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
+										+  "金额输入过大，请正确填写金额");
 								return errorMap;
 							}
 							dto.setTotalMoney(totalMoney);
 							isWrong=false;
 						} else if (dto.getProjectType().equals("count")) {
-							if(Integer.parseInt(totalMoney)<=0){
+							if(Integer.parseInt(totalMoney)!=Double.parseDouble(totalMoney)){
 								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
-										+  "次数必须大于0，请正确填写金额");
+								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
+										+  "次数不能含有小数，请正确填写次数");
+								return errorMap;
+							}
+							if(Integer.parseInt(totalMoney)>maxData){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
+										+  "次数输入过大，请正确填写次数");
 								return errorMap;
 							}
 							dto.setPurchaseNumber(totalMoney);

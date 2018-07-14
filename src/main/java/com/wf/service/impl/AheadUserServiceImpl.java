@@ -1368,7 +1368,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 								break;
 							}else if(!"密码_password".equals(str[2])){
 								errorMap.put("flag", "fail");
-								errorMap.put("fail", "机构ID列不存在或位置错误，请下载标准的模版文件");
+								errorMap.put("fail", "密码列不存在或位置错误，请下载标准的模版文件");
 								break;
 							}else if(!"账号IP段_ip".equals(str[3])){
 								errorMap.put("flag", "fail");

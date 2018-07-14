@@ -666,19 +666,19 @@ public class AheadUserController {
 				return errorMap;
 			}
 			allNum=userList.size();
-			errorMap = this.updateBatchValidate(file,user,userList);
+			errorMap = this.batchUpdateValidate(userList,user);
 			if (errorMap.size() > 0) {
 				return errorMap;
 			}
 			allNum = userList.size();
-			for(Map<String, Object> map : userList){
-				//修改机构用户
-				aheadUserService.batchUpdateInfo(user,map);
-				//修改购买项目
-				this.batchUpdateProect(user,map,req);
-				//修改或开通个人绑定机构权限
-				this.updateBindAuthorityModel(bindAuthorityModel,map);
-				//添加日期
+			for (Map<String, Object> map : userList) {
+				// 修改机构用户
+				aheadUserService.batchUpdateInfo(user, map);
+				// 修改购买项目
+				this.updateProject(user, req, null);
+				// 修改或开通个人绑定机构权限
+				this.updateBindAuthorityModel(bindAuthorityModel, map);
+				// 添加日期
 				this.addOperationLogs(user, "批量修改", req);
 				log.info("机构用户[" + user.getUserId() + "]修改成功");
 				sucNum++;
@@ -694,41 +694,7 @@ public class AheadUserController {
 		return errorMap;
 	}
 	
-	//批量修改机构项目
-	private void batchUpdateProect(InstitutionalUser user, Map<String, Object> map,
-			HttpServletRequest req) throws Exception {
-		List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
-		String adminId = CookieUtil.getCookie(req);
-		for(ResourceDetailedDTO dto : user.getRdlist()){
-			for(Map<String, Object> pro : lm) {
-				if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-					dto.setTotalMoney(pro.get("totalMoney").toString());
-					if(dto.getProjectType().equals("balance")){
-						if(aheadUserService.chargeProjectBalance(user, dto, adminId)>0){
-							aheadUserService.deleteResources(user,dto,false);
-							aheadUserService.updateProjectResources(user, dto);
-						}
-					}else if(dto.getProjectType().equals("time")){
-						//增加限时信息
-						if(aheadUserService.addProjectDeadline(user, dto,adminId)>0){
-							aheadUserService.deleteResources(user,dto,false);
-							aheadUserService.updateProjectResources(user, dto);
-						}
-					}else if(dto.getProjectType().equals("count")){
-						dto.setPurchaseNumber(pro.get("totalMoney").toString());
-						//增加次数信息
-						if(aheadUserService.chargeCountLimitUser(user, dto, adminId) > 0){
-							aheadUserService.deleteResources(user,dto,false);
-							aheadUserService.updateProjectResources(user, dto);
-						}
-					}
-				}
-			}
-		}
-		//子账号延期
-		aheadUserService.updateSubaccount(user,adminId);
-	}
-
+	//修改个人绑定机构
 	private void updateBindAuthorityModel(BindAuthorityModel bindAuthorityModel,Map<String,Object> map) throws Exception {
 		bindAuthorityModel.setUserId(map.get("userId").toString());
 		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
@@ -740,9 +706,60 @@ public class AheadUserController {
 			}
 		}		
 	}
-
+	
+	//批量添加校验
+	private Map<String,String> batchUpdateValidate(List<Map<String, Object>> userList,InstitutionalUser user) throws Exception{
+		Map<String,String> errorMap = new HashMap<String, String>();
+		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList);
+		if(errorMap.size()>0){
+			return errorMap;
+		}
+		errorMap=this.getUpdateUserValidate(user, userList);
+		if(errorMap.size()>0){
+			return errorMap;
+		}
+		// 校验机构管理员
+		this.adminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		// 校验党建管理
+		this.partyAdminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		return errorMap;
+	}
+	
+	//批量验证excel中的机构是否存在
+	private Map<String, String> getUpdateUserValidate(InstitutionalUser user,
+			List<Map<String, Object>> userList) {
+		Map<String, String> errorMap = new HashMap<String, String>();
+		for(Map<String, Object> map : userList){
+			String userId=String.valueOf(map.get("userId"));
+			Person p = aheadUserService.queryPersonInfo(userId);
+			String msg = aheadUserService.validateOldUser(userId);
+			if(p!=null){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", map.get("userId")+"该机构ID已存在，请重新输入机构ID");
+				return errorMap;
+			}
+			if(msg.equals("old")){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", map.get("userId")+"该机构ID在老平台已存在，请重新输入机构ID");
+				return errorMap;
+			}
+			if(msg.equals("error")){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "旧平台检验机构ID出现异常");
+				return errorMap;
+			}		
+		}
+		return errorMap;
+	}
+	
 	//批量机构更新机构用户验证
-	private Map<String, String> updateBatchValidate(MultipartFile file, InstitutionalUser user,
+	private Map<String, String> test(MultipartFile file, InstitutionalUser user,
 			List<Map<String, Object>> userList) throws Exception {
 		
 		Map<String, String> errorMap = new HashMap<String, String>();
@@ -1383,7 +1400,7 @@ public class AheadUserController {
 	private void updateProject(InstitutionalUser com,HttpServletRequest req,List<String> delList) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
 		// 删除项目
-		if (delList.size() > 0) {
+		if (delList!=null&&delList.size() > 0) {
 			this.removeproject(req, delList);
 		}
 		if (StringUtils.equals(com.getChangeFront(), "GTimeLimit")
