@@ -85,7 +85,15 @@ $(function(){
         var userId_qr = relocate;
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
     });
+    $(document).on('click','sendEmail',function(){
+        $.ajax({
+            url:'',
+            data:'',
+            success:function(){
 
+            }
+        });
+    });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
         $(".mechanism_id").css("border-color","#d2d6de");
