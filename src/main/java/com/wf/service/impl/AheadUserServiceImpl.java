@@ -564,7 +564,7 @@ public class AheadUserServiceImpl implements AheadUserService{
     		beginDateTime=infer.getBeginDateTime();
     		endDateTime=infer.getEndDateTime();
 		} else if ("GTimeLimit".equals(channelId)) {
-        	wfks.accounting.handler.entity.CountLimitAccount infer = (wfks.accounting.handler.entity.CountLimitAccount)
+        	wfks.accounting.handler.entity.TimeLimitAccount infer = (wfks.accounting.handler.entity.TimeLimitAccount)
             	accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
     		if(infer==null){
     			return 0;
