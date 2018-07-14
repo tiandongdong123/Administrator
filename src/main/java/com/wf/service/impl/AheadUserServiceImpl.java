@@ -806,45 +806,27 @@ public class AheadUserServiceImpl implements AheadUserService{
     }
 	
 	@Override
-    public boolean checkLimit(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
+    public Double checkValue(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
     	try{
 			if ("balance".equals(dto.getProjectType())) {
-				if (Double.parseDouble(dto.getTotalMoney()) == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
-					return true;
-				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(Double.parseDouble(dto.getTotalMoney())<=0){
-	    				return false;
-	    			}
-	    			return true;
+	    			return Double.parseDouble(dto.getTotalMoney());
 	    		}
-	    		if(account.getBalance().doubleValue()+Double.parseDouble(dto.getTotalMoney())<0){
-	    			return false;
-	    		}
+	    		return account.getBalance().doubleValue()+Double.parseDouble(dto.getTotalMoney());
 			} else if ("count".equals(dto.getProjectType())) {
-				if (Integer.parseInt(dto.getPurchaseNumber())==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
-					return true;
-				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(Integer.parseInt(dto.getPurchaseNumber())<=0){
-	    				return false;
-	    			}
-	    			return true;
+	    			return Double.parseDouble(dto.getPurchaseNumber());
 	    		}
-	    		if(account.getBalance()+Integer.parseInt(dto.getPurchaseNumber())<0){
-	    			return false;
-	    		}
+	    		return Double.parseDouble(dto.getPurchaseNumber())+account.getBalance();
 			}
         } catch (Exception e) {
         	e.printStackTrace();
         }
-		return true;
+		return -1D;
     }
     
 	

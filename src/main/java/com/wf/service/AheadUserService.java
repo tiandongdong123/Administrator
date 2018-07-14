@@ -234,8 +234,8 @@ public interface AheadUserService {
 	List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit);
 	/** 获取  **/
 	UserInstitution getUserInstitution(String userId);
-	/**判断余额和限次是否为大于等于0*/
-	boolean checkLimit(InstitutionalUser user, ResourceDetailedDTO dto) throws Exception;
+	/**判断余额和限次是否为大于等于0,是否大于最大值*/
+	Double checkValue(InstitutionalUser user, ResourceDetailedDTO dto) throws Exception;
 	/**获取子账号列表*/
 	void updateSubaccount(InstitutionalUser user,String adminId) throws Exception;
 	/** 保存机构用户权限 **/

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -583,7 +582,7 @@ public class AheadUserController {
 	//批量添加校验
 	private Map<String,String> batchRegisterValidate(List<Map<String, Object>> userList,InstitutionalUser user) throws Exception{
 		Map<String,String> errorMap = new HashMap<String, String>();
-		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList);
+		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList,true);
 		if(errorMap.size()>0){
 			return errorMap;
 		}
@@ -710,7 +709,7 @@ public class AheadUserController {
 	//批量添加校验
 	private Map<String,String> batchUpdateValidate(List<Map<String, Object>> userList,InstitutionalUser user) throws Exception{
 		Map<String,String> errorMap = new HashMap<String, String>();
-		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList);
+		errorMap=InstitutionUtils.getBatchRegisterValidate(user, userList,false);
 		if(errorMap.size()>0){
 			return errorMap;
 		}
@@ -731,65 +730,17 @@ public class AheadUserController {
 		return errorMap;
 	}
 	
-	//批量验证excel中的机构是否存在
+	//批量修改验证excel中的机构是否存在
 	private Map<String, String> getUpdateUserValidate(InstitutionalUser user,
-			List<Map<String, Object>> userList) {
+			List<Map<String, Object>> userList) throws Exception{
 		Map<String, String> errorMap = new HashMap<String, String>();
 		for(Map<String, Object> map : userList){
-			String userId=String.valueOf(map.get("userId"));
-			Person p = aheadUserService.queryPersonInfo(userId);
-			String msg = aheadUserService.validateOldUser(userId);
-			if(p!=null){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", map.get("userId")+"该机构ID已存在，请重新输入机构ID");
-				return errorMap;
-			}
-			if(msg.equals("old")){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", map.get("userId")+"该机构ID在老平台已存在，请重新输入机构ID");
-				return errorMap;
-			}
-			if(msg.equals("error")){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "旧平台检验机构ID出现异常");
-				return errorMap;
-			}		
-		}
-		return errorMap;
-	}
-	
-	//批量机构更新机构用户验证
-	private Map<String, String> test(MultipartFile file, InstitutionalUser user,
-			List<Map<String, Object>> userList) throws Exception {
-		
-		Map<String, String> errorMap = new HashMap<String, String>();
-		int maxSize = SettingUtil.getImportExcelMaxSize();
-		if (userList.size() > maxSize) {
-			errorMap.put("flag", "fail");
-			errorMap.put("fail", "批量更新最多可以一次更新" + maxSize + "条");
-			return errorMap;
-		}
-		for (int i = 0; i < userList.size(); i++) {
-			Map<String, Object> map = userList.get(i);
-			if ("".equals(map.get("userId"))) {
-				errorMap.put("flag", "fail");
-				errorMap.put("fail","用户ID不能为空");
-				return errorMap;
-			}
+			//用户是否存在
 			String userId=map.get("userId").toString();
-			Matcher m1 = paName.matcher(map.get("institution").toString());
-			Matcher m2 = pa.matcher(userId);
-			boolean flag1 = m1.find();
-			boolean flag2 = m2.find();
-			if (flag1 || flag2) {
+			Person ps = aheadUserService.queryPersonInfo(userId);
+			if(ps==null){
 				errorMap.put("flag", "fail");
-				errorMap.put("fail", flag1 ? "格式不对，请填写规范的机构名称" : "用户ID不能包含特殊字符");
-				return errorMap;
-			}
-			String password=(String) map.get("password");
-			if(password.contains(" ")){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "密码不能有空格");
+				errorMap.put("fail", map.get("userId")+"该用户不存在");
 				return errorMap;
 			}
 			if ("2".equals(user.getLoginMode())) {
@@ -798,123 +749,28 @@ public class AheadUserController {
 					List<Map<String, Object>> ls = aheadUserService.listIpByUserId(userId);
 					if (ls == null || ls.size() == 0) {
 						errorMap.put("flag", "fail");
-						errorMap.put("fail", userId + "未添加有效IP");
+						errorMap.put("fail", userId + "未添加有效IP段");
 						return errorMap;
 					}
-				}
-				if (!IPConvertHelper.validateIp(ip)) {
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", userId+"的IP不合法");
-					return errorMap;
 				}
 			}
-		}
-		List<ResourceDetailedDTO> list = user.getRdlist();
-		if (list == null || list.size() == 0) {
-			errorMap.put("flag", "fail");
-			errorMap.put("fail", "请选择项目");
-			return errorMap;
-		}
-		for (int j = 0; j < list.size(); j++) {
-			ResourceDetailedDTO dto = list.get(j);
-			if (dto.getProjectid() != null) {
-				errorMap = InstitutionUtils.getProectValidate(user,dto, false, false);
-				if (errorMap.size() > 0) {
-					return errorMap;
-				}
-			} else {
-				list.remove(j--);
-			}
-		}
-		user.setRdlist(list);
-		String institution="";
-		for(Map<String, Object> map : userList){
-			if(!map.get("userId").equals("")){
-				//用户是否存在
-				Person ps = aheadUserService.queryPersonInfo(map.get("userId").toString());
-				if(ps==null){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", map.get("userId")+"该用户不存在");
-					return errorMap;
-				}
-				if(StringUtils.isNotBlank(user.getCheckuser())){
-					if(map.get("institution").equals("")){
+			List<ResourceDetailedDTO> rdList = user.getRdlist();
+			for(ResourceDetailedDTO dto : rdList){
+				// 验证金额是否正确
+				String ptype = dto.getProjectType();
+				if (ptype.equals("balance") || ptype.equals("count")) {
+					user.setUserId(userId);
+					Double val = aheadUserService.checkValue(user, dto);
+					if (val < 0) {
 						errorMap.put("flag", "fail");
-						errorMap.put("fail", "如开通管理员请填写机构名称");
+						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
 						return errorMap;
-					}else if(user.getManagerType().equals("old") && !map.get("institution").equals(user.getInstitution())){
+					}else if(val>InstitutionUtils.maxData){
 						errorMap.put("flag", "fail");
-						errorMap.put("fail", map.get("userId")+"该用户机构名与管理员机构名不符");
+						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
 						return errorMap;
 					}
 				}
-				if(StringUtils.isNotBlank(user.getAdminname())){
-					if(StringUtils.equals(map.get("userId").toString(), user.getAdminname())){
-						errorMap.put("flag", "fail");
-						errorMap.put("fail",  "机构管理员ID和机构用户ID重复");
-						return errorMap;
-					}
-					String ins=map.get("institution").toString();
-					if("".equals(institution)){
-						institution=ins;
-					}
-					if(!StringUtils.equals(institution, ins)){
-						errorMap.put("flag", "fail");
-						errorMap.put("fail",  "机构名称不唯一");
-						return errorMap;
-					}
-				}
-
-				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
-				for(Map<String, Object> pl : lm){
-					//判断如果重置金额或次数，不可存在负数
-					if(StringUtils.isNotBlank(user.getResetMoney()) || StringUtils.isNotBlank(user.getResetCount())){
-						if(Double.valueOf(pl.get("totalMoney").toString())<0){
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", map.get("userId")+"的购买项目中存在负数(不能被重置)");
-							return errorMap;
-						}
-					}
-				}
-				if(list!=null){
-					//预加载校验页面项目是否和Excel中一致
-					for(ResourceDetailedDTO dto : list){
-						if(dto.getProjectid()!=null){
-							if(lm.toString().contains(dto.getProjectid())){
-								//continue;
-							}else{							
-								errorMap.put("flag", "fail");
-								errorMap.put("fail", map.get("userId")+"该用户购买的项目无法匹配");
-								return errorMap;
-							}
-						}
-						// 验证金额是否正确
-						String ptype = dto.getProjectType();
-						if (ptype.equals("balance") || ptype.equals("count")) {
-							user.setUserId(map.get("userId").toString());
-							for(Map<String, Object> pro : lm) {
-								if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
-									if (ptype.equals("balance")) {
-										dto.setTotalMoney(pro.get("totalMoney").toString());
-										dto.setPurchaseNumber("0");
-									} else {
-										dto.setPurchaseNumber(pro.get("totalMoney").toString());
-										dto.setTotalMoney("0.0");
-									}
-									if (!aheadUserService.checkLimit(user, dto)) {
-										errorMap.put("flag", "fail");
-										errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额！" : "项目次数不能小于0，请重新输入次数！"));
-										return errorMap;
-									}
-								}
-							}
-						}
-					}
-				}
-			}else{
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "机构用户名必填");
-				return errorMap;
 			}
 		}
 		return errorMap;
@@ -1330,9 +1186,14 @@ public class AheadUserController {
 		for (ResourceDetailedDTO dto : list) {
 			String ptype = dto.getProjectType();
 			if (ptype.equals("balance") || ptype.equals("count")) {
-				if (!aheadUserService.checkLimit(user, dto)) {
+				Double val = aheadUserService.checkValue(user, dto);
+				if (val < 0) {
 					errorMap.put("flag", "fail");
-					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
+					return errorMap;
+				}else if(val>InstitutionUtils.maxData){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
 					return errorMap;
 				}
 			}

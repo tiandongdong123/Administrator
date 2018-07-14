@@ -21,7 +21,7 @@ public class InstitutionUtils {
 	private static Pattern pa = Pattern.compile("[^0-9a-zA-Z-_]");
 	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
-	private static Integer maxData=99999999;
+	public static Integer maxData=99999999;
 
 	/**
 	 * 校验机构用户查询条件
@@ -326,12 +326,12 @@ public class InstitutionUtils {
 		return hashmap;
 	}
 
-	public static Map<String,String> getBatchRegisterValidate(InstitutionalUser user,List<Map<String, Object>> userList) {
+	public static Map<String,String> getBatchRegisterValidate(InstitutionalUser user,List<Map<String, Object>> userList,boolean isRegister) {
 		Map<String,String> errorMap = new HashMap<String, String>();
 		int maxSize = SettingUtil.getImportExcelMaxSize();
 		if (userList.size() > maxSize) {
 			errorMap.put("flag", "fail");
-			errorMap.put("fail", "批量注册最多可以一次注册" + maxSize + "条");
+			errorMap.put("fail", isRegister?("批量注册最多可以一次注册" + maxSize + "条"):("批量修改最多可以一次注册" + maxSize + "条"));
 			return errorMap;
 		}
 		List<ResourceDetailedDTO> rdList = user.getRdlist();
@@ -373,50 +373,56 @@ public class InstitutionUtils {
 				errorMap.put("fail", "账号" + userId + "格式不对，请填写规范的机构ID");
 				return errorMap;
 			}
-			if("".equals(institution)){
+			if("".equals(institution)&&isRegister){
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
 				return errorMap;
 			}
-			Matcher insM = paName.matcher(institution);
-			if (insM.find()) {
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
-				return errorMap;
+			if(!StringUtils.isEmpty(institution)){//机构名称注册的时候不能为空，修改的时候可以为空
+				Matcher insM = paName.matcher(institution);
+				if (insM.find()) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
+					return errorMap;
+				}
 			}
 			if("".equals(password)||password.contains(" ")){
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码"));
 				return errorMap;
 			}
-			Matcher passMatcher = passsName.matcher(password);
-			if(passMatcher.find()){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号"+userId+"的密码不能有中文，请填写正确的密码");
-				return errorMap;
-			}
-			if(password.length()<6||password.length()>16){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码");
-				return errorMap;
+			if(!StringUtils.isEmpty(password)){//批量注册的时候必须填写密码，批量修改的时候密码可以为空
+				Matcher passMatcher = passsName.matcher(password);
+				if(passMatcher.find()){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的密码不能有中文，请填写正确的密码");
+					return errorMap;
+				}
+				if(password.length()<6||password.length()>16){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码");
+					return errorMap;
+				}
 			}
 			
 			if ("2".equals(user.getLoginMode())) {
 				String ip=map.get("ip")==null?"":map.get("ip").toString();
-				if(StringUtils.isEmpty(ip)){
+				if(StringUtils.isEmpty(ip)&&isRegister){
 					errorMap.put("flag", "fail");
 					errorMap.put("fail", "账号"+userId+"的IP段不能为空，请填写规范的IP段");
 					return errorMap;
 				}
-				if(ip.contains(" ")){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的IP段有空格，请填写规范的IP段");
-					return errorMap;
-				}
-				if (!IPConvertHelper.validateIp(ip)) {
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的IP段不合法，请填写规范的IP段");
-					return errorMap;
+				if(!StringUtils.isEmpty(ip)){
+					if(ip.contains(" ")){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", "账号"+userId+"的IP段有空格，请填写规范的IP段");
+						return errorMap;
+					}
+					if (!IPConvertHelper.validateIp(ip)) {
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", "账号"+userId+"的IP段不合法，请填写规范的IP段");
+						return errorMap;
+					}
 				}
 			}
 			//机构管理员的校验
@@ -455,7 +461,7 @@ public class InstitutionUtils {
 						
 						String totalMoney = pro.get("totalMoney") == null ? "" : pro.get("totalMoney").toString();
 						if (StringUtils.isEmpty(totalMoney) || !NumberUtils.isNumber(totalMoney)
-								|| Double.parseDouble(totalMoney) <= 0) {
+								|| Double.parseDouble(totalMoney) <= 0&&isRegister) {
 							errorMap.put("flag", "fail");
 							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
