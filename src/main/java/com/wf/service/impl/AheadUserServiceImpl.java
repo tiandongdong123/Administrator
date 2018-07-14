@@ -1335,7 +1335,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 *	读取Excel机构账号信息 
 	 */
 	@Override
-	public List<Map<String, Object>> getExcelData(MultipartFile file){
+	public List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,String> errorMap){
 		//用户信息
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		String[] str = null;
@@ -1353,7 +1353,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(row != null){
 						if(rowNum==0){
 							str = ExcelUtil.readExcelTitle(row);
-							continue;
+							if (str.length <= 4) {
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "模版文件的列未按照规范排版，请下载标准的模版文件");
+								break;
+							}else if(!"机构名称_institution".equals(str[0])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "机构名称列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"机构ID_userId".equals(str[1])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "机构ID列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"密码_password".equals(str[2])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "机构ID列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"账号IP段_ip".equals(str[3])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号IP段列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else{
+								continue;
+							}
 						}
 						map.put("institution", ExcelUtil.getValue(row.getCell(0)).trim());
 						map.put("userId", ExcelUtil.getValue(row.getCell(1)).trim());

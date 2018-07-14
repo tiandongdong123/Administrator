@@ -542,7 +542,10 @@ public class AheadUserController {
 		int sucNum = 0;
 		int allNum=0;
 		try{
-			List<Map<String, Object>> userList = aheadUserService.getExcelData(file);
+			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap);
+			if(errorMap.size()>0){
+				return errorMap;
+			}
 			errorMap=this.batchRegisterValidate(userList, user);
 			if(errorMap.size()>0){
 				return errorMap;
@@ -658,7 +661,10 @@ public class AheadUserController {
 				errorMap.put("fail", "请上传附件");
 				return errorMap;
 			}
-			List<Map<String, Object>> userList = aheadUserService.getExcelData(file);
+			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap);
+			if(errorMap.size()>0){
+				return errorMap;
+			}
 			allNum=userList.size();
 			errorMap = this.updateBatchValidate(file,user,userList);
 			if (errorMap.size() > 0) {
