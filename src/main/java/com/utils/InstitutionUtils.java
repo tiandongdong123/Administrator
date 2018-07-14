@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -15,6 +17,10 @@ import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 
 public class InstitutionUtils {
+	
+	private static Pattern pa = Pattern.compile("[^0-9a-zA-Z-_]");
+	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
+	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
 
 	/**
 	 * 校验机构用户查询条件
@@ -173,7 +179,7 @@ public class InstitutionUtils {
 			hashmap.put("fail", projectname+"时限开始时间不能大于结束时间");
 			return hashmap;
 		}
-		if(notBatch){
+		if(notBatch){//单个注册或修改
 			if (dto.getProjectType().equals("balance")) {
 				if (dto.getTotalMoney() == null) {
 					hashmap.put("flag", "fail");
@@ -197,6 +203,8 @@ public class InstitutionUtils {
 					return hashmap;
 				}
 			}
+		}else{
+			
 		}
 		if (dto.getRldto() != null) {
 			boolean flag = true;// 判断是否有选中的数据库
@@ -308,6 +316,180 @@ public class InstitutionUtils {
 			}
 		}
 		return hashmap;
+	}
+
+	public static Map<String,String> getBatchRegisterValidate(InstitutionalUser user,List<Map<String, Object>> userList) {
+		Map<String,String> errorMap = new HashMap<String, String>();
+		int maxSize = SettingUtil.getImportExcelMaxSize();
+		if (userList.size() > maxSize) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "批量注册最多可以一次注册" + maxSize + "条");
+			return errorMap;
+		}
+		List<ResourceDetailedDTO> rdList = user.getRdlist();
+		if (rdList == null || rdList.size() == 0) {
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "购买项目不能为空，请选择购买项目");
+			return errorMap;
+		}
+		//删除不合法的购买项目
+		for (int j = 0; j < rdList.size(); j++) {
+			ResourceDetailedDTO dto = rdList.get(j);
+			if (StringUtils.isEmpty(dto.getProjectid())) {
+				rdList.remove(j--);
+			}else{
+				errorMap = InstitutionUtils.getProectValidate(dto, false, true);
+				if (errorMap.size() > 0) {
+					return errorMap;
+				}
+			}
+		}
+		String ins="";
+		for (int i = 0; i < userList.size(); i++) {
+			Map<String, Object> map = userList.get(i);
+			String userId=map.get("userId")==null?"":map.get("userId").toString();
+			String institution=map.get("institution")==null?"":map.get("institution").toString();
+			if ("".equals(userId)) {
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "机构ID不能为空，请填写规范的机构ID");
+				return errorMap;
+			}
+			Matcher userM = pa.matcher(userId);
+			if (userM.find()) {
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号" + userId + "格式不对，请填写规范的机构ID");
+				return errorMap;
+			}
+			if("".equals(institution)){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
+				return errorMap;
+			}
+			Matcher insM = paName.matcher(institution);
+			if (insM.find()) {
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
+				return errorMap;
+			}
+			String password=map.get("password")==null?"":map.get("password").toString();
+			if("".equals(password)||password.contains(" ")){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码"));
+				return errorMap;
+			}
+			Matcher passMatcher = passsName.matcher(password);
+			if(passMatcher.find()){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号"+userId+"的密码不能有中文，请填写正确的密码");
+				return errorMap;
+			}
+			if(password.length()<6||password.length()>16){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码");
+				return errorMap;
+			}
+			
+			if ("2".equals(user.getLoginMode())) {
+				String ip=map.get("ip")==null?"":map.get("ip").toString();
+				if(StringUtils.isEmpty(ip)){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的IP段不能为空，请填写规范的IP段");
+					return errorMap;
+				}
+				if(ip.contains(" ")){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的IP段有空格，请填写规范的IP段");
+					return errorMap;
+				}
+				if (!IPConvertHelper.validateIp(ip)) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "账号"+userId+"的IP段不合法，请填写规范的IP段");
+					return errorMap;
+				}
+			}
+			//机构管理员的校验
+			String adminId=StringUtils.isEmpty(user.getAdminname())?user.getAdminOldName():user.getAdminname();
+			if(userId.equals(adminId)){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail",  "机构管理员ID和机构用户ID重复");
+				return errorMap;
+			}
+			if("".equals(ins)){
+				ins=institution;
+			}
+			if(!StringUtils.equals(institution, ins)){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail",  "批量导入的机构用户名称必须是一个机构名称");
+				return errorMap;
+			}
+			if(user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "机构管理员"+adminId+"不属于"+institution+"的机构管理员");
+				return errorMap;
+			}
+			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+			//预加载校验页面项目是否和Excel中一致
+			//验证金额，次数
+			int size=rdList.size();
+			for(ResourceDetailedDTO dto : rdList){
+				String projectId=dto.getProjectid();
+				if (projectId.contains("TimeLimit")) {
+					size--;
+					continue;
+				}
+				boolean isWrong=true;
+				for(Map<String, Object> pro : lm) {
+					if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
+						String totalMoney=pro.get("totalMoney").toString();
+						if(totalMoney.contains(" ")){
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
+									+ (dto.getProjectType().equals("balance") ? "金额不能有空格，请填写正确的金额"
+											: "次数不能有空格，请填写正确的次数"));
+							return errorMap;
+						}
+						if(!NumberUtils.isNumber(totalMoney)){
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
+									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
+											: "次数输入不正确，请正确填写次数"));
+							return errorMap;
+						}
+						if (dto.getProjectType().equals("balance")) {
+							if(Double.parseDouble(totalMoney)<=0){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
+										+  "金额必须大于0，请正确填写金额");
+								return errorMap;
+							}
+							dto.setTotalMoney(totalMoney);
+							isWrong=false;
+						} else if (dto.getProjectType().equals("count")) {
+							if(Integer.parseInt(totalMoney)<=0){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号"+ userId+ "的" + dto.getProjectname()
+										+  "次数必须大于0，请正确填写金额");
+								return errorMap;
+							}
+							dto.setPurchaseNumber(totalMoney);
+							isWrong=false;
+						}
+					}
+				}
+				if(isWrong){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", userId+"用户购买项目无法匹配，请核对正确并填写");
+					return errorMap;
+				}
+			}
+			if(size!=lm.size()){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", userId+"用户购买项目无法匹配，请核对正确并填写");
+				return errorMap;
+			}
+		}
+		user.setRdlist(rdList);
+		return errorMap;
 	}
 	
 }

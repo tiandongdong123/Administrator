@@ -223,7 +223,7 @@
  </update>
  
   <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
-   select u.user_id,u.password,u.admin_email from user u WHERE u.user_id = #{pid}
+   select u.user_id,u.password,u.admin_email,institution from user u WHERE u.user_id = #{pid}
   </select>
   
  <update id="updateAllInstitution" parameterType="java.util.Map">

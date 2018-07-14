@@ -79,11 +79,11 @@ $(function() {/* 文档加载，执行一个函数 */
 			file: {
                 validators: {
                     notEmpty: {
-                        message: '请上传文件'
+                        message: '上传文档不能为空，请选择上传文档'
                     },
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^.*\.(?:xlsx)$/,
-                        message: '附件必须是以xlsx结尾的excel'
+                        message: '上传文档格式不对，请选择规定格式的文档上传'
                     }
                 }
 			},
