@@ -186,6 +186,20 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
+			appEndtime: {
+				validators : {
+					notEmpty : {
+						message : '开通APP嵌入服务有效期不能为空，请正确填写有效期'
+					}
+				}
+			},
+			weChatEndtime: {
+				validators : {
+					notEmpty : {
+						message : '开通微信公众号嵌入服务有效期不能为空，请正确填写有效期'
+					}
+				}
+			},
 			weChatEamil: {
 				validators : {
 					notEmpty : {
