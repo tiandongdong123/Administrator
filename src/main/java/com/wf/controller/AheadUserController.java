@@ -812,7 +812,7 @@ public class AheadUserController {
 		for (int j = 0; j < list.size(); j++) {
 			ResourceDetailedDTO dto = list.get(j);
 			if (dto.getProjectid() != null) {
-				errorMap = InstitutionUtils.getProectValidate(dto, false, false);
+				errorMap = InstitutionUtils.getProectValidate(user,dto, false, false);
 				if (errorMap.size() > 0) {
 					return errorMap;
 				}

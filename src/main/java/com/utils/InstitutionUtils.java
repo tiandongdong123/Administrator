@@ -146,7 +146,7 @@ public class InstitutionUtils {
 			}
 		}
 		for (ResourceDetailedDTO dto : list) {
-			hashmap = InstitutionUtils.getProectValidate(dto, true, true);
+			hashmap = InstitutionUtils.getProectValidate(user,dto, true, true);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -161,7 +161,7 @@ public class InstitutionUtils {
 	 * @param isBatch false是批量,true是非批量
 	 * @return
 	 */
-	public static Map<String,String> getProectValidate(ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
+	public static Map<String,String> getProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
 		Map<String,String> hashmap=new HashMap<String,String>();
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if(StringUtils.isBlank(dto.getValidityStarttime())||StringUtils.isBlank(dto.getValidityEndtime())) {
@@ -189,6 +189,13 @@ public class InstitutionUtils {
 				if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
 					hashmap.put("fail",  projectname+"金额输入不正确，请正确填写金额");
+					return hashmap;
+				}
+				if ("GTimeLimit".equals(user.getChangeFront())
+						&& "GBalanceLimit".equals(dto.getProjectid())
+						&& NumberUtils.toDouble(dto.getTotalMoney()) <= 0) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", projectname + "金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
 			} else if (dto.getProjectType().equals("count")) {
@@ -270,7 +277,7 @@ public class InstitutionUtils {
 				delList.add(dto.getProjectid());
 				continue;
 			}
-			hashmap = InstitutionUtils.getProectValidate(dto, true, false);
+			hashmap = InstitutionUtils.getProectValidate(user,dto, true, false);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -338,7 +345,7 @@ public class InstitutionUtils {
 			if (StringUtils.isEmpty(dto.getProjectid())) {
 				rdList.remove(j--);
 			}else{
-				errorMap = InstitutionUtils.getProectValidate(dto, false, true);
+				errorMap = InstitutionUtils.getProectValidate(user,dto, false, true);
 				if (errorMap.size() > 0) {
 					return errorMap;
 				}
