@@ -1500,6 +1500,9 @@ function radioClick(isBatch){
 					$("#newManager").show();
 				}else{
 					$("#adminOldName option").remove();
+					if(isBatch=="batch"){
+						$("#adminOldName").append("<option value=''>--请选择--</option>");
+					}
 					for(var i in data){
 						$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
 					}
