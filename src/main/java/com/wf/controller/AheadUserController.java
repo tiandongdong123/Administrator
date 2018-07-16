@@ -1449,16 +1449,18 @@ public class AheadUserController {
 			hashmap.put("fail", "党建管理员的ID已经被占用");
 			return hashmap;
 		}
-		WfksAccountidMapping[] maping= aheadUserService.getWfksAccountidByRelatedidKey(com.getPartyAdmin());
-		if (maping == null) {
-			return hashmap;
-		}
-		for (WfksAccountidMapping wfks : maping) {
-			if ("PartyAdminTime".equals(wfks.getRelatedidAccounttype())
-					&& !wfks.getIdKey().equals(com.getUserId())) {
-				hashmap.put("flag", "fail");
-				hashmap.put("fail", "该党建管理员ID已经存在，请重新输入党建管理员ID");
+		if(com.getManagerType().equals("new")){
+			WfksAccountidMapping[] maping= aheadUserService.getWfksAccountidByRelatedidKey(com.getPartyAdmin());
+			if (maping == null) {
 				return hashmap;
+			}
+			for (WfksAccountidMapping wfks : maping) {
+				if ("PartyAdminTime".equals(wfks.getRelatedidAccounttype())
+						&& !wfks.getIdKey().equals(com.getUserId())) {
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", "该党建管理员ID已经存在，请重新输入党建管理员ID");
+					return hashmap;
+				}
 			}
 		}
 		return hashmap;
