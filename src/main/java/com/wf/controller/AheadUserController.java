@@ -1542,8 +1542,8 @@ public class AheadUserController {
 				map.put("userId","");
 			}
 		}
-		map.put("pageNum", pageNum==null?1:Integer.parseInt(pageNum));
-		map.put("pageSize", pageSize==null?20:Integer.parseInt(pageSize));
+		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
 		PageList pageList = aheadUserService.getSonaccount(map);
 		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量

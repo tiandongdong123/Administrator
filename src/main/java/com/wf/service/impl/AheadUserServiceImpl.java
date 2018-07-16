@@ -1964,17 +1964,51 @@ public class AheadUserServiceImpl implements AheadUserService{
 			pageList.setTotalRow(0);
 			return pageList;
 		}
-		Map<String, Object> userOne =(Map<String, Object>) userList.get(0);
-		UserAccountRestriction restriction=this.getAccountRestriction(String.valueOf(userOne.get("pid")));
 		for (Object object : userList) {
 			Map<String, Object> userMap = (Map<String,Object>) object;
-			String userId=userMap.get("userId").toString();
-			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			try{
-				List<WfksPayChannelResources> list = wfksMapper.selectByUserId(userId);// 获取父账号购买项目
-				for(WfksPayChannelResources wfks : list){
+				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
+			}catch (Exception e){
+				log.error("密码转化异常：",e);
+			}
+			String userId=userMap.get("userId").toString();
+			String pid=userMap.get("pid").toString();
+			//子账号权限
+			UserAccountRestriction restriction=this.getAccountRestriction(pid);
+			if(restriction!=null){
+				userMap.put("chargebacks", restriction.getChargebacks());
+				userMap.put("upperlimit", restriction.getUpperlimit());
+				userMap.put("sConcurrentnumber", restriction.getsConcurrentnumber());
+				userMap.put("downloadupperlimit", restriction.getDownloadupperlimit());
+			}
+			//子账号ip
+			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
+			if(list_ip.size()>0){
+				for(Map<String, Object> userIp : list_ip){
+					String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
+					String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
+					userIp.put("ip", beginIpAddressNumber+"-"+endIpAddressNumber);
+				}
+				userMap.put("list_ip", list_ip);
+			}
+			//购买项目
+			List<PayChannelModel> list_ = this.purchaseProject();
+			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
+			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(pid);// 获取父账号购买项目
+			for(PayChannelModel pay:list_){
+				for(WfksPayChannelResources res:listWfks){
+					if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
+						wfList.add(res);
+					}
+				}
+			}
+			//调用接口查询支付信息
+			//List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
+			Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+			try{
+				for(WfksPayChannelResources wfks : wfList){
 					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
-					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+					//Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 					if(pay.getType().equals("balance")){
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
 						if(account!=null){
@@ -1982,17 +2016,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
 							extraData.put("balance", account.getBalance());
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
 						}
 					}else if(pay.getType().equals("time")){
 						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
 						if(account!=null){
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("name", pay.getName());
+							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
 						}
 					}else if(pay.getType().equals("count")){
 						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
@@ -2000,21 +2032,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 							extraData.put("name", pay.getName());
 							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
-							extraData.put("balance", account.getBalance());
-							extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-							extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-							extraData.put("totalConsume", account.getTotalConsume());
+							extraData.put("count", account.getBalance());
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
 						}
 					}
 					if(extraData.size()>1){
-						projectList.add(extraData);
+						//projectList.add(extraData);
+						break;
 					}
 				}
 			}catch(Exception e){
 				log.error("子账号"+userId+"调用接口异常",e);
 			}
-			userMap.put("restriction", restriction);
-			userMap.put("sonProjectList", projectList);
+			userMap.put("data", extraData);
 		}			
 	
 		pageList.setPageRow(userList);
