@@ -334,14 +334,13 @@ function revise(){
                     notEmpty : {
                         message : '请输入邮箱'
                     },
-                    regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-                        regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+                    emailAddress: {/* 只需加此键值对，包含正则表达式，和提示 */
                         message: '请输入正确的邮箱地址'
-                    },
+                    }
                 }
             });
         }else{
-            $('#fromList').bootstrapValidator('addField','email');
+            $('#fromList').bootstrapValidator('removeField','email');
         }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");

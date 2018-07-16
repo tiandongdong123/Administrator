@@ -1,4 +1,5 @@
 $(function() {/* 文档加载，执行一个函数 */
+
 	$('#fromList').bootstrapValidator({
 		message : 'This value is not valid',
 		feedbackIcons : {/* input状态样式图片 */
@@ -226,6 +227,7 @@ $(function() {/* 文档加载，执行一个函数 */
 			},
 		}
 	})
+    $('#fromList').bootstrapValidator('removeField','email');
 });
 
 function fieldsCheck() {
