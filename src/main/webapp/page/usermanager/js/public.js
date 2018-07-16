@@ -13,6 +13,13 @@ $(function(e){
 			$("#administrator").hide();
 		}
 	});
+    function today(){
+        var today=new Date();
+        var h=today.getFullYear();
+        var m=today.getMonth()+1;
+        var d=today.getDate();
+        return h+"-"+m+"-"+d;
+    }
 	//是否开通个人绑定机构
 	$("#user_dinding").click(function(){
 		if($(this).is(':checked')){
@@ -22,6 +29,7 @@ $(function(e){
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
+			$('#openBindStart').val(today());
 		}else{
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");

@@ -123,18 +123,6 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-            // email:{
-             //    message : '请输入邮箱',
-             //    validators : {
-             //        notEmpty : {
-             //            message : '请输入邮箱'
-             //        },
-             //        regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-             //            regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
-             //            message: '请输入正确的邮箱地址'
-             //        },
-             //    }
-			// },
             openBindStart:{
                 enabled: false
 			},
@@ -216,14 +204,14 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			bindType:{
-				message : '请输入绑定模式',
-				validators : {
-					notEmpty : {/*非空提示*/
-						message : '请输入绑定模式'
-					},
-				}
-			},
+			// bindType:{
+			// 	message : '请输入绑定模式',
+			// 	validators : {
+			// 		notEmpty : {/*非空提示*/
+			// 			message : '请输入绑定模式'
+			// 		},
+			// 	}
+			// },
 			weChatEamil: {
 				message : '请输入链接发送邮箱',
 				validators : {

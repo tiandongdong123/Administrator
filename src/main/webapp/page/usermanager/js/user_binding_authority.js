@@ -51,13 +51,6 @@ $(document).ready(function(){
             },
         });
     });
-    $('#bindType').change(function(){
-        if($(this).find("option:selected").val() == '2'){
-            $('.qrEmail-box').show();
-        }else{
-            $('.qrEmail-box').hide();
-        }
-    });
     //机构id点击全部
     $(".tol_quota").click(function(){
         $(".allSelectText").text("");
