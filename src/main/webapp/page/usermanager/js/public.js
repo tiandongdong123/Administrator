@@ -1471,12 +1471,12 @@ function checkemail(str){
 
 function radioClick(isBatch){
 	var $selectedvalue = $("input[name='managerType']:checked").val();
+	$("#adminOldName").val("");
+	$("#adminname").val("");
+	$("#adminpassword").val("");
+	$("#adminIP").val("");
+	$("#adminEmail").val("");
 	if ($selectedvalue =="new") {
-		$("#adminOldName").val("");
-		$("#adminname").val("");
-		$("#adminpassword").val("");
-		$("#adminIP").val("");
-		$("#adminEmail").val("");
 		$("#oldManager").hide();
 		$("#newManager").show();
 	}else {
