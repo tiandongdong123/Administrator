@@ -395,7 +395,7 @@ public class InstitutionUtils {
 				Matcher insM = paName.matcher(institution);
 				if (insM.find()) {
 					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
+					errorMap.put("fail", "账号"+userId+"的机构名称格式不对，请填写规范的机构名称");
 					return errorMap;
 				}
 			}
