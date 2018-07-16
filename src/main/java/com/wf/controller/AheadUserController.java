@@ -89,7 +89,11 @@ public class AheadUserController {
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
 	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
-	
+	//二维码邮箱是否勾选
+	private static String DEFAULT = "default";
+	private static String SELECT = "select";
+	private static String UNSELECT = "unselect";
+
 	/**
 	 *	判断ip段是否重复
 	 */
@@ -793,8 +797,9 @@ public class AheadUserController {
 				bindAuthorityModel.setUserId(map.get("userId").toString());
 				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
+					log.info("成功开通个人绑定机构权限");
 				}
-				log.info("成功开通个人绑定机构权限");
+
 
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
@@ -1416,6 +1421,7 @@ public class AheadUserController {
 		view.addObject("bindInformation",bindInformation);
 		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
 		map.put("proList", proList);
+		map.put(DEFAULT,UNSELECT);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
@@ -1638,6 +1644,18 @@ public class AheadUserController {
 		}catch(Exception e){
 			log.error("账号修改异常:", e);
 		}
+		String userId = bindAuthorityModel.getUserId();
+		String email = bindAuthorityModel.getEmail();
+		//TODO 发送邮箱
+		/*try{
+			if (bindAuthorityModel.getSend()){
+
+
+			}
+		}catch (Exception e){
+			log.error("发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+			throw e;
+		}*/
 		return hashmap;
 	}
 	
