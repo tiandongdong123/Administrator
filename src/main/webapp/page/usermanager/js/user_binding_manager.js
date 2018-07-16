@@ -86,11 +86,19 @@ $(function(){
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
     });
     $(document).on('click','sendEmail',function(){
+        var userId = $("#userId").val();
+        var bindEmail = $(this).next().find('.email-text').text();
         $.ajax({
-            url:'',
-            data:'',
+            url:'../bindAuhtority/sendMailQRCode.do',
+            data:{
+                userId:userId,
+                bindEmail:bindEmail,
+            },
             success:function(){
-
+                layer.msg('发送成功', {icon: 1});
+            },
+            error:function(){
+                layer.msg('发送失败', {icon: 2});
             }
         });
     });
