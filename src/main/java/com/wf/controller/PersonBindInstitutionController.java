@@ -208,7 +208,6 @@ public class PersonBindInstitutionController {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 endTime = calendar.getTime();
             }
-            ;
         } catch (ParseException e) {
             log.error("转换时间出错", e);
         }
@@ -510,6 +509,9 @@ public class PersonBindInstitutionController {
     @RequestMapping("/sendMailQRCode")
     @ResponseBody
     public String sendMailQRCode(String bindEmail, String userId) {
+        if (bindEmail == null || userId == null) {
+            return null;
+        }
         if (wfMailUtil.sendQRCodeMail(bindEmail, userId, bindAccountChannel)) {
             return "true";
         } else {
