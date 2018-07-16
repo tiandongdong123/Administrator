@@ -85,7 +85,7 @@ $(function(){
         var userId_qr = relocate;
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
     });
-    $(document).on('click','sendEmail',function(){
+    $(document).on('click','.sendEmail',function(){
         var userId = $("#userId").val();
         var bindEmail = $(this).next().find('.email-text').text();
         $.ajax({
