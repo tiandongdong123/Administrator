@@ -648,7 +648,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		
 		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
-				&& StringUtils.equals(com.getChangeFront(), dto.getProjectid())) {
+				&& !StringUtils.equals(com.getChangeFront(), "GTimeLimit")) {
 			return 1;
 		}
 		// 创建一个限时账户
