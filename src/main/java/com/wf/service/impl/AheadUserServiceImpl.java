@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -1975,7 +1976,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					.setBindLimit(bindAuthorityModel.getBindLimit())
 					.setBindValidity(bindAuthorityModel.getBindValidity())
 					.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
-					.addAllBindAuthority(authorityList);
+					.addAllBindAuthority(authorityList)
+					.setEmail(bindAuthorityModel.getEmail())
+					.setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getTime()))
+					.setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getTime()));
 			bindAuthorityChannel.getBlockingStub().openBindAuthority(request.build());
 	}
 
@@ -2029,7 +2033,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 				.setBindLimit(bindAuthorityModel.getBindLimit())
 				.setBindValidity(bindAuthorityModel.getBindValidity())
 				.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
-				.addAllBindAuthority(authorityList);
+				.addAllBindAuthority(authorityList)
+				.setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getSeconds()*1000))
+				.setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getSeconds()*1000))
+				.setEmail(bindAuthorityModel.getEmail());
 		return  bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
 	}
 
