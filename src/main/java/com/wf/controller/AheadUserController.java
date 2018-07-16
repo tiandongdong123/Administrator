@@ -568,6 +568,18 @@ public class AheadUserController {
 			}
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
+				String userId = bindAuthorityModel.getUserId();
+				String email = bindAuthorityModel.getEmail();
+				//TODO 发送邮箱
+				/*try{
+					if (bindAuthorityModel.getSend()){
+
+
+					}
+				}catch (Exception e){
+					log.error("机构用户注册，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+					throw e;
+				}*/
 			}
 			int resinfo = aheadUserService.addRegisterInfo(com);
 			if (StringUtils.isNotBlank(com.getChecks())) {
@@ -798,6 +810,18 @@ public class AheadUserController {
 				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
 					log.info("成功开通个人绑定机构权限");
+					String userId = bindAuthorityModel.getUserId();
+					String email = bindAuthorityModel.getEmail();
+					//TODO 发送邮箱
+					/*try{
+						if (bindAuthorityModel.getSend()){
+
+
+						}
+					}catch (Exception e){
+						log.error("机构用户批量注册，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+						throw e;
+					}*/
 				}
 
 
@@ -1074,6 +1098,18 @@ public class AheadUserController {
 						hashmap.put("fail",response.getResultMessage());
 						return hashmap;
 					}
+					String userId = bindAuthorityModel.getUserId();
+					String email = bindAuthorityModel.getEmail();
+					//TODO 发送邮箱
+					/*try{
+						if (bindAuthorityModel.getSend()){
+
+
+						}
+					}catch (Exception e){
+						log.error("机构用户批量更新，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+						throw e;
+					}*/
 				}else {
 					int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 					if (count>0){
@@ -1599,6 +1635,18 @@ public class AheadUserController {
 					hashmap.put("fail","修改个人绑定机构权限失败");
 					return hashmap;
 				}
+				String userId = bindAuthorityModel.getUserId();
+				String email = bindAuthorityModel.getEmail();
+				//TODO 发送邮箱
+				/*try{
+					if (bindAuthorityModel.getSend()){
+
+
+					}
+				}catch (Exception e){
+					log.error("账号修改，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+					throw e;
+				}*/
 			}else {
 				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 				if (count>0){
