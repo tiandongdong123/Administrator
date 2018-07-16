@@ -2034,8 +2034,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				.setBindValidity(bindAuthorityModel.getBindValidity())
 				.setDownloadLimit(bindAuthorityModel.getDownloadLimit())
 				.addAllBindAuthority(authorityList)
-				.setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getSeconds()*1000))
-				.setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getSeconds()*1000))
+				.setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getTime()))
+				.setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getTime()))
 				.setEmail(bindAuthorityModel.getEmail());
 		return  bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
 	}
