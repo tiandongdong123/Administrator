@@ -316,7 +316,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				log.error("密码转化异常", e);
 			}
 		}
-		user.setAdminname(ps.getPid());
+		if (StringUtils.isEmpty(user.getAdminname()) && StringUtils.isEmpty(user.getAdminOldName())) {
+			user.setAdminname(ps.getPid());
+		}
 		user.setUserId(userId);
 	}
 	
