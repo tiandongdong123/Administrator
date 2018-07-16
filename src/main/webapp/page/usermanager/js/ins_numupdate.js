@@ -94,6 +94,7 @@ function submitForm(){
 			$(".wrong").css("display","inline");
 			$(".mistaken").css("display","none");
 		}
+
         if($('#bindType').find("option:selected").val() == '2'){
             $('#fromList').bootstrapValidator('addField','email',{
                 validators : {
@@ -133,6 +134,8 @@ function submitForm(){
         var openBindEnd = data.get('openBindEnd');
         data.set('openBindStart',openBindStart+' 00:00:00');
         data.set('openBindEnd',openBindEnd+' 23:59:59');
+        var isCheckedMe = $('#isPublishEmail').is(':checked');
+        data.append('send',isCheckedMe);
 		$.ajax({
 			url: '../auser/updateinfo.do',
 			type: 'POST',

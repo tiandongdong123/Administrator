@@ -59,50 +59,41 @@ $(function(){
             }
         });
     });
-    $(document).on("click",".bindtype",function(){
+    var prevNum;
+    $('#database-table').on('click','.bindtype',function(e){
+        e = e || window.event;
+        e.stopPropagation();
+        e.preventDefault();
         if($(this).text()=="线下扫描"){
-            if($(this).data('num')==reset){
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                }else{
-                    $(".qr").hide();
-                    choose = true;
-                    reset=="";
-                }
-            }else {
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }else{
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }
+            var num = $(this).data('num');
+            if(num != prevNum){
+                $(".qr").show();
+                relocate = $(this).siblings(".userID").text();
+                $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+relocate+'&time='+(new Date()));
+                prevNum = num;
+            }else{
+                $('.qr').stop(true,true).toggle();
             }
         }
+    })
+    $('html,body').click(function(){
+        $(".qr").hide();
     });
     //点击重置二维码
     $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId_qr = relocate;
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
-
     });
+    $(document).on('click','sendEmail',function(){
+        $.ajax({
+            url:'',
+            data:'',
+            success:function(){
 
+            }
+        });
+    });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
         $(".mechanism_id").css("border-color","#d2d6de");
@@ -113,10 +104,13 @@ $(function(){
         var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType option:eq(0)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="机构登录"){
             $("#bindType option:eq(1)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="线下扫描"){
             $("#bindType option:eq(2)").prop("selected","selected");
+            $('.qrEmail-box').show();
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
         $("#bindValidity").val($(this).siblings(".bindValidity").text());
@@ -366,6 +360,7 @@ function revise(){
             var meEmail = $('#email').val();
             var openBindStart = $('#openBindStart').val()+' 00:00:00';
             var openBindEnd = $('#openBindEnd').val()+' 23:59:59';
+            var isCheckedMe = $('#isPublishEmail').is(':checked');
             if(bool){
                 return ;
             }
@@ -381,7 +376,8 @@ function revise(){
                     bindAuthority:bindAuthority.join(),
                     email:meEmail,
                     openBindStart:openBindStart,
-                    openBindEnd:openBindEnd
+                    openBindEnd:openBindEnd,
+                    send:isCheckedMe
                 },
                 success: function(data){
                     yesChoose();

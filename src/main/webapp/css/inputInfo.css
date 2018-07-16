@@ -523,19 +523,30 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .qr{
 	display: none;
-	width: 250px;
 	height: 250px;
 	border:1px solid #ccc;
 	position: fixed;
 	background: #fff;
 	margin-left: 30%;
+	padding-right:24px;
+	text-align: center;
 }
 .reset{
 	position: absolute;
-	bottom: 5px;
+	bottom:74px;
 	right: 10px;
 	cursor: pointer;
 }
+.sendEmail{
+	position: absolute;
+	bottom: 36px;
+	right: 10px;
+	cursor: pointer;
+}
+.qr-email-text{
+	text-align: center;
+	width: 110%;
+ }
 .picture{
 	width: 200px;
 	height: 200px;
