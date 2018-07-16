@@ -448,9 +448,9 @@ public class InstitutionUtils {
 			if("".equals(ins)){
 				ins=institution;
 			}
-			if(!StringUtils.equals(institution, ins)){
+			if(!StringUtils.equals(institution, ins)&&!StringUtils.isEmpty(adminId)){
 				errorMap.put("flag", "fail");
-				errorMap.put("fail",  "批量导入的机构用户名称必须是一个机构名称");
+				errorMap.put("fail",  "批量中添加了机构管理员，文档中的机构名称必须是一个机构名称");
 				return errorMap;
 			}
 			if(user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){

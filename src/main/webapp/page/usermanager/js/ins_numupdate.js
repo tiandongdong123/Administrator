@@ -133,7 +133,14 @@ function submitForm(){
 	    		});
 			}else{
 				if(data.fail!=null){
-					layer.msg(data.fail, {icon: 2});
+		    		layer.alert(data.fail, {
+		    			icon: 2,
+		    		    skin: 'layui-layer-molv',
+		    		    btn: ['确定'], //按钮
+		    		    yes: function(){
+		    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+		    		    }
+		    		});
 				}else{
 					layer.msg("更新失败，请联系管理员", {icon: 2});
 				}

@@ -495,7 +495,12 @@ public class AheadUserController {
 			// 添加机构相关信息
 			aheadUserService.registerInfo(user);
 			// 添加购买项目
-			this.addProject(user, req);
+			String msg=this.addProject(user, req);
+			if(msg.length()>0){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "添加购买项目失败,分别是:"+msg);
+				return errorMap;
+			}
 			// 个人信息绑定
 			this.addBindAuthorityModel(user, bindAuthorityModel);
 			// 添加日志
@@ -555,7 +560,12 @@ public class AheadUserController {
 				// 添加机构信息
 				aheadUserService.batchRegisterInfo(user, map);
 				// 添加购买项目
-				this.addProject(user, req);
+				String msg=this.addProject(user, req);
+				if(msg.length()>0){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构账号"+map.get("userId")+"添加购买项目失败,失败的购买项目分别是:"+msg);
+					return errorMap;
+				}
 				// 个人绑定机构权限
 				bindAuthorityModel.setUserId(map.get("userId").toString());
 				if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
@@ -666,7 +676,12 @@ public class AheadUserController {
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
 				// 修改购买项目
-				this.updateProject(user, req, null);
+				String msg=this.updateProject(user, req, null);
+				if(msg.length()>0){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构账号"+map.get("userId")+"添加购买项目失败,失败的购买项目分别是:"+msg);
+					return errorMap;
+				}
 				// 修改或开通个人绑定机构权限
 				this.updateBindAuthorityModel(bindAuthorityModel, map);
 				// 添加日期
@@ -1149,7 +1164,12 @@ public class AheadUserController {
 			// 修改机构信息
 			aheadUserService.updateinfo(user);
 			// 修改购买项目
-			this.updateProject(user, req, delList);
+			String msg=this.updateProject(user, req, delList);
+			if(msg.length()>0){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "添加购买项目失败,分别是:"+msg);
+				return errorMap;
+			}
 			// 个人信息绑定
 			this.updateBindAuthorityModel(user, bindAuthorityModel);
 			// 添加日志
@@ -1208,26 +1228,34 @@ public class AheadUserController {
 	}
 
 	//添加机构用户购买项目
-	private void addProject(InstitutionalUser user,HttpServletRequest req) throws Exception{
+	private String addProject(InstitutionalUser user,HttpServletRequest req) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
+		StringBuilder sb=new StringBuilder();
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				//增加余额信息
 				if(aheadUserService.addProjectBalance(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+				}else{
+					sb.append(dto.getProjectname()+" ");
 				}
 			}else if(dto.getProjectType().equals("time")){
 				//增加限时信息
 				if(aheadUserService.addProjectDeadline(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+				}else{
+					sb.append(dto.getProjectname()+" ");
 				}
 			}else if(dto.getProjectType().equals("count")){
 				//增加次数信息
 				if(aheadUserService.addProjectNumber(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+				}else{
+					sb.append(dto.getProjectname()+" ");
 				}
 			}
 		}
+		return sb.toString();
 	}
 	
 	//个人信息绑定
@@ -1253,7 +1281,7 @@ public class AheadUserController {
 	}
 	
 	//修改机构用户购买项目
-	private void updateProject(InstitutionalUser com,HttpServletRequest req,List<String> delList) throws Exception{
+	private String updateProject(InstitutionalUser com,HttpServletRequest req,List<String> delList) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
 		// 删除项目
 		if (delList!=null&&delList.size() > 0) {
@@ -1265,30 +1293,38 @@ public class AheadUserController {
 				aheadUserService.deleteResources(com.getUserId(), com.getChangeFront());
 			}
 		}
+		StringBuilder sb=new StringBuilder();
 		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
 					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+					}else{
+						sb.append(dto.getProjectname());
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
 					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+					}else{
+						sb.append(dto.getProjectname());
 					}
 				}else if(dto.getProjectType().equals("count")){
 					//增加次数信息
 					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+					}else{
+						sb.append(dto.getProjectname());
 					}
 				}
 			}
 		}
 		//子账号延期
 		aheadUserService.updateSubaccount(com,adminId);
+		return sb.toString();
 	}
 	
 	//删除购买项目 
