@@ -2,6 +2,7 @@ package com.wf.controller;
 
 import com.google.protobuf.util.Timestamps;
 import com.utils.QRCodeUtil;
+import com.utils.WFMailUtil;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.model.BindSearchParameter;
@@ -46,6 +47,8 @@ public class PersonBindInstitutionController {
     @Autowired
     private PersonMapper personMapper;
 
+    @Autowired
+    private WFMailUtil wfMailUtil;
 
     private static final Logger log = Logger.getLogger(PersonBindInstitutionController.class);
 
@@ -497,4 +500,20 @@ public class PersonBindInstitutionController {
         return modelList;
     }
 
+    /**
+     * 将二维码发送给指定的邮箱
+     *
+     * @param bindEmail 接收人
+     * @param userId    机构账号id
+     * @return
+     */
+    @RequestMapping("/sendMailQRCode")
+    @ResponseBody
+    public String sendMailQRCode(String bindEmail, String userId) {
+        if (wfMailUtil.sendQRCodeMail(bindEmail, userId, bindAccountChannel)) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.utils;
 
+
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.rpc.bindauthority.BindType;
 import com.wanfangdata.rpc.bindauthority.CodeDetail;
@@ -44,7 +45,7 @@ public class WFMailUtil {
      * @throws MessagingException
      * @throws IOException
      */
-    public String sendMail(String bindEmail, String userId, BindAccountChannel bindAccountChannel) throws MessagingException, IOException {
+    public Boolean sendQRCodeMail(String bindEmail, String userId, BindAccountChannel bindAccountChannel)  {
         try {
             //生成二维码文件
             CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
@@ -54,10 +55,10 @@ public class WFMailUtil {
             //生成二维码转成BASE64格式
             String QRCode = ImgUtil.imgToBase64(url);
             activateMail(bindEmail, userId, QRCode);
-            return "true";
+            return true;
         } catch (Exception e) {
             log.error("发送邮件失败，userId" + userId, e);
-            return "false";
+            return false;
         }
     }
 
