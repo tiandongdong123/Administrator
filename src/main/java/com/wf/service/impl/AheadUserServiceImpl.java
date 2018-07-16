@@ -812,21 +812,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			return Double.parseDouble(dto.getTotalMoney());
+	    			return -Double.MAX_VALUE;
 	    		}
 	    		return account.getBalance().doubleValue()+Double.parseDouble(dto.getTotalMoney());
 			} else if ("count".equals(dto.getProjectType())) {
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			return Double.parseDouble(dto.getPurchaseNumber());
+	    			return -Double.MAX_VALUE;
 	    		}
 	    		return Double.parseDouble(dto.getPurchaseNumber())+account.getBalance();
 			}
         } catch (Exception e) {
         	e.printStackTrace();
         }
-		return -1D;
+		return -Double.MAX_VALUE;
     }
     
 	

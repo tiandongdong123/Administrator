@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,8 +85,6 @@ public class AheadUserController {
 	private RedisUtil redis = new RedisUtil();
 	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
-	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
-	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
 	
 	/**
@@ -761,7 +758,11 @@ public class AheadUserController {
 				if (ptype.equals("balance") || ptype.equals("count")) {
 					user.setUserId(userId);
 					Double val = aheadUserService.checkValue(user, dto);
-					if (val < 0) {
+					if(val==-Double.MAX_VALUE){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+						return errorMap;
+					}else if (val < 0) {
 						errorMap.put("flag", "fail");
 						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
 						return errorMap;
@@ -1187,7 +1188,11 @@ public class AheadUserController {
 			String ptype = dto.getProjectType();
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				Double val = aheadUserService.checkValue(user, dto);
-				if (val < 0) {
+				if(val==-Double.MAX_VALUE){
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+					return errorMap;
+				}else if (val < 0) {
 					errorMap.put("flag", "fail");
 					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
 					return errorMap;

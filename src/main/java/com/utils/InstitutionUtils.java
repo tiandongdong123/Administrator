@@ -481,6 +481,15 @@ public class InstitutionUtils {
 											: "次数输入不正确，请正确填写次数"));
 							return errorMap;
 						}
+						if ((!StringUtils.isEmpty(user.getResetCount())&&dto.getProjectType().equals("time") || !StringUtils
+								.isEmpty(user.getResetMoney())&&dto.getProjectType().equals("balance"))
+								&& Double.parseDouble(totalMoney) <= 0) {
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
+									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
+											: "次数输入不正确，请正确填写次数"));
+							return errorMap;
+						}
 						if (dto.getProjectType().equals("balance")) {
 							if(Double.parseDouble(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
