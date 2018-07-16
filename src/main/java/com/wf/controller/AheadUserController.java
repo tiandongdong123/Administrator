@@ -592,11 +592,6 @@ public class AheadUserController {
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}
-		// 校验党建管理
-		this.partyAdminValidate(user, errorMap);
-		if (errorMap.size() > 0) {
-			return errorMap;
-		}
 		return errorMap;
 	}
 	
@@ -716,11 +711,6 @@ public class AheadUserController {
 		}
 		// 校验机构管理员
 		this.adminValidate(user, errorMap);
-		if (errorMap.size() > 0) {
-			return errorMap;
-		}
-		// 校验党建管理
-		this.partyAdminValidate(user, errorMap);
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}

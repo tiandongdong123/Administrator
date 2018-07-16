@@ -248,8 +248,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		// 机构子账号限定
 		this.setAccountRestriction(user,true);
-		// 添加党建管理员
-		this.setPartyAdmin(user);
 		// 添加机构管理员
 		this.addAdmin(user);
 		//统计分线权限
@@ -280,10 +278,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 机构子账号限定
 		if (user.getpConcurrentnumber() == null && user.getsConcurrentnumber() == null) {
 			this.setAccountRestriction(user,false);
-		}
-		// 添加党建管理员
-		if(!StringUtils.isEmpty(user.getPartyLimit())){
-			this.setPartyAdmin(user);
 		}
 		// 添加机构管理员
 		if (!StringUtils.isEmpty(user.getAdminname())
