@@ -1701,7 +1701,7 @@ public class AheadUserController {
 
 			}
 		}catch (Exception e){
-			log.error("发送邮箱出现异常！userId："+userId+"   email:"+email,e);
+			log.error("账号修改，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
 			throw e;
 		}*/
 		return hashmap;
