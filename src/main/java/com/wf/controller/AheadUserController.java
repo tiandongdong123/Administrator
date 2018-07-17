@@ -17,6 +17,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -496,9 +497,9 @@ public class AheadUserController {
 			aheadUserService.registerInfo(user);
 			// 添加购买项目
 			String msg=this.addProject(user, req);
-			if(msg.length()>0){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "添加购买项目失败,分别是:"+msg);
+			if(msg.length()>0&&msg.contains("失败")){
+				errorMap.put("flag", "error");
+				errorMap.put("fail", msg);
 				return errorMap;
 			}
 			// 个人信息绑定
@@ -561,9 +562,9 @@ public class AheadUserController {
 				aheadUserService.batchRegisterInfo(user, map);
 				// 添加购买项目
 				String msg=this.addProject(user, req);
-				if(msg.length()>0){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构账号"+map.get("userId")+"添加购买项目失败,失败的购买项目分别是:"+msg);
+				if(msg.length()>0&&msg.contains("失败")){
+					errorMap.put("flag", "error");
+					errorMap.put("fail", "机构账号"+map.get("userId")+"</br>:"+msg);
 					return errorMap;
 				}
 				// 个人绑定机构权限
@@ -677,9 +678,10 @@ public class AheadUserController {
 				aheadUserService.batchUpdateInfo(user, map);
 				// 修改购买项目
 				String msg=this.updateProject(user, req, null);
-				if(msg.length()>0){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构账号"+map.get("userId")+"添加购买项目失败,失败的购买项目分别是:"+msg);
+				if(msg.length()>0&&msg.contains("失败")){
+					errorMap.put("flag", "error");
+					errorMap.put("userId", map.get("userId")+"");
+					errorMap.put("fail", "机构账号"+map.get("userId")+"</br>:"+msg);
 					return errorMap;
 				}
 				// 修改或开通个人绑定机构权限
@@ -763,10 +765,12 @@ public class AheadUserController {
 				if (ptype.equals("balance") || ptype.equals("count")) {
 					user.setUserId(userId);
 					Double val = aheadUserService.checkValue(user, dto);
-					if(val==-Double.MAX_VALUE){
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
-						return errorMap;
+					if (val == -Double.MAX_VALUE) {
+						if((NumberUtils.toDouble(dto.getTotalMoney()) <= 0 && ptype.equals("balance")) || (NumberUtils.toInt(dto.getPurchaseNumber()) <= 0 && ptype.equals("count"))){
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+							return errorMap;
+						}
 					}else if (val < 0) {
 						errorMap.put("flag", "fail");
 						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
@@ -1165,9 +1169,9 @@ public class AheadUserController {
 			aheadUserService.updateinfo(user);
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
-			if(msg.length()>0){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "添加购买项目失败,分别是:"+msg);
+			if(msg.length()>0&&msg.contains("失败")){
+				errorMap.put("flag", "error");
+				errorMap.put("fail", msg);
 				return errorMap;
 			}
 			// 个人信息绑定
@@ -1198,10 +1202,12 @@ public class AheadUserController {
 			String ptype = dto.getProjectType();
 			if (ptype.equals("balance") || ptype.equals("count")) {
 				Double val = aheadUserService.checkValue(user, dto);
-				if(val==-Double.MAX_VALUE){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
-					return errorMap;
+				if (val == -Double.MAX_VALUE) {
+					if((NumberUtils.toDouble(dto.getTotalMoney()) <= 0 && ptype.equals("balance")) || (NumberUtils.toInt(dto.getPurchaseNumber()) <= 0 && ptype.equals("count"))){
+						errorMap.put("flag", "fail");
+						errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+						return errorMap;
+					}
 				}else if (val < 0) {
 					errorMap.put("flag", "fail");
 					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
@@ -1230,32 +1236,36 @@ public class AheadUserController {
 	//添加机构用户购买项目
 	private String addProject(InstitutionalUser user,HttpServletRequest req) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
-		StringBuilder sb=new StringBuilder();
+		StringBuilder right=new StringBuilder();
+		StringBuilder wrong=new StringBuilder();
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				//增加余额信息
 				if(aheadUserService.addProjectBalance(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
-					sb.append(dto.getProjectname()+" ");
+					wrong.append(dto.getProjectname()+"添加失败</br>");
 				}
 			}else if(dto.getProjectType().equals("time")){
 				//增加限时信息
 				if(aheadUserService.addProjectDeadline(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
-					sb.append(dto.getProjectname()+" ");
+					wrong.append(dto.getProjectname()+"添加失败</br>");
 				}
 			}else if(dto.getProjectType().equals("count")){
 				//增加次数信息
 				if(aheadUserService.addProjectNumber(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
+					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
-					sb.append(dto.getProjectname()+" ");
+					wrong.append(dto.getProjectname()+"添加失败</br>");
 				}
 			}
 		}
-		return sb.toString();
+		return right.append(wrong).toString();
 	}
 	
 	//个人信息绑定
@@ -1293,38 +1303,42 @@ public class AheadUserController {
 				aheadUserService.deleteResources(com.getUserId(), com.getChangeFront());
 			}
 		}
-		StringBuilder sb=new StringBuilder();
+		StringBuilder right=new StringBuilder();
+		StringBuilder wrong=new StringBuilder();
 		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
 					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						right.append(dto.getProjectname()+"添加成功</br>");
 					}else{
-						sb.append(dto.getProjectname());
+						wrong.append(dto.getProjectname()+"添加失败</br>");
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
 					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						right.append(dto.getProjectname()+"添加成功</br>");
 					}else{
-						sb.append(dto.getProjectname());
+						wrong.append(dto.getProjectname()+"添加失败</br>");
 					}
 				}else if(dto.getProjectType().equals("count")){
 					//增加次数信息
 					if(aheadUserService.chargeCountLimitUser(com, dto, adminId) > 0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
+						right.append(dto.getProjectname()+"添加成功</br>");
 					}else{
-						sb.append(dto.getProjectname());
+						wrong.append(dto.getProjectname()+"添加失败</br>");
 					}
 				}
 			}
 		}
 		//子账号延期
 		aheadUserService.updateSubaccount(com,adminId);
-		return sb.toString();
+		return right.append(wrong).toString();
 	}
 	
 	//删除购买项目 

@@ -75,11 +75,13 @@ function submitForm(type){
 	    		    }
 	    		});
 			}else{
-				if(data.fail!=null){
+				if(data.flag=='fail'){
+					layer.msg(data.fail, {icon: 2});
+				}else if(data.flag=='error'){
 		    		layer.alert(data.fail, {
 		    			icon: 2,
 		    		    skin: 'layui-layer-molv',
-		    		    btn: ['确定'], //按钮
+		    		    btn: ['继续添加'], //按钮
 		    		    yes: function(){
 		    		    	window.location.href='../auser/numupdate.do?userId='+userId;
 		    		    }

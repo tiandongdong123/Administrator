@@ -25,6 +25,12 @@
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select pay_channelId,user_id from wfks_pay_channel_resources where user_id = #{userId,jdbcType=VARCHAR} GROUP BY pay_channelId
   </select>
+    <!-- 查询一个用户购买项目下的资源库 -->
+  <select id="selectProjectLibraryName" resultMap="BaseResultMap2" parameterType="java.util.Map" >
+    select GROUP_CONCAT(dm.table_name) table_name,wkfs.pay_channelId
+    from wfks_pay_channel_resources wkfs LEFT JOIN datamanager dm 
+    on wkfs.resource_id = dm.product_source_code where pay_channelId = #{payChannelid} and user_id = #{userId} GROUP BY pay_channelId
+  </select>
   
   <!-- 查询一个用户购买项目下的资源库 -->
   <select id="selectProjectLibrary" resultMap="BaseResultMap2" parameterType="java.util.Map" >
