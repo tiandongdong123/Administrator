@@ -525,6 +525,8 @@ function changeLimit(obj,i){
 				$("#pro_GTimeLimit").val('GTimeLimit');
 				$("input[name='rdlist["+i+"].projectType']").val('time');
 				$("#time_money_"+i).html('');
+				$("input[name='rdlist["+i+"].validityEndtime2']").val('');
+				$("input[name='rdlist["+i+"].validityStarttime2']").val('');
 			}
 	    	layer.closeAll();
 	    }

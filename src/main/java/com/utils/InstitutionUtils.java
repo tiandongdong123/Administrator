@@ -192,6 +192,11 @@ public class InstitutionUtils {
 					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
+				if(NumberUtils.toDouble(dto.getTotalMoney())<=0&&StringUtils.isEmpty(dto.getValidityStarttime2())){
+					hashmap.put("flag", "fail");
+					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
+					return hashmap;
+				}
 			} else if (dto.getProjectType().equals("count")) {
 				if (dto.getPurchaseNumber() == null) {
 					hashmap.put("flag", "fail");
