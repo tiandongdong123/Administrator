@@ -611,89 +611,36 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		//创建一个余额账户
-		BalanceLimitAccount account = new BalanceLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(BigDecimal.valueOf(Double.parseDouble(dto.getTotalMoney())));
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-		boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId, false);
+	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+			if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
+					&& StringUtils.isEmpty(com.getChangeFront())) {
+				return 1;
+			}
+			
+			// 创建一个限时账户
+			TimeLimitAccount account = new TimeLimitAccount();
+			account.setUserId(com.getUserId());// 机构用户名
+			account.setOrganName(com.getInstitution());// 机构名称
+			account.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
+			// 根据token可获取管理员登录信息
+			// String authToken = "Admin."+adminId;
+			// 调用添加注册余额限时账户方法
+			// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
+			boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId);//提交注册或充值请求
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("添加时异常：",e);
 		}
-		return flag;
-	}
-	
-	@Override
-	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
-				&& StringUtils.isEmpty(com.getChangeFront())) {
-			return 1;
-		}
-		// 创建一个限时账户
-		TimeLimitAccount account = new TimeLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-		boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId);//提交注册或充值请求
-		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
-		}
-		return flag;
-	}
-	
-	@Override
-	public int addProjectNumber(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		// 创建一个次数账户
-		CountLimitAccount account = new CountLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(Integer.parseInt(dto.getPurchaseNumber()));// 充值次数
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息，userIP，auto_token
-        boolean isSuccess = groupAccountUtil.addCountLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId,false);
-        int flag = 0;
-		if (isSuccess) {
-        	flag = 1;
-        } else {
-        	flag = 0;
-        }
 		return flag;
 	}
 	
@@ -703,46 +650,48 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @throws Exception
      */
 	@Override
-	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-    	
-    	if(Integer.parseInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
-    		return 1;
-    	}
-		// 需要更新的数据
-		CountLimitAccount count = new CountLimitAccount();
-		count.setUserId(com.getUserId());// 机构用户名
-		count.setOrganName(com.getInstitution());// 机构名称
-		count.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		count.setBalance(Integer.parseInt(dto.getPurchaseNumber()));
-		// 是否重置次数
-		boolean resetCount = false;
-		CountLimitAccount before = null;
-		if (StringUtils.isNotBlank(com.getResetCount())) {
-	    	wfks.accounting.handler.entity.CountLimitAccount oldNum = (wfks.accounting.handler.entity.CountLimitAccount)
-    	    	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-	    	if(oldNum!=null){
-	    		//更新前的数据
-	    		before = new CountLimitAccount();
-	    		before.setUserId(com.getUserId());//机构用户名
-	    		before.setOrganName(com.getInstitution());//机构名称
-	    		before.setPayChannelId(oldNum.getPayChannelId());//支付渠道id
-	    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
-	    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
-	    		before.setBalance(oldNum.getBalance());//充值次数
-	    	}
-	    	resetCount = true;
-		}
-        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+	    	if(Integer.parseInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
+	    		return 1;
+	    	}
+			// 需要更新的数据
+			CountLimitAccount count = new CountLimitAccount();
+			count.setUserId(com.getUserId());// 机构用户名
+			count.setOrganName(com.getInstitution());// 机构名称
+			count.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			count.setBalance(Integer.parseInt(dto.getPurchaseNumber()));
+			// 是否重置次数
+			boolean resetCount = false;
+			CountLimitAccount before = null;
+			if (StringUtils.isNotBlank(com.getResetCount())) {
+		    	wfks.accounting.handler.entity.CountLimitAccount oldNum = (wfks.accounting.handler.entity.CountLimitAccount)
+	    	    	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+		    	if(oldNum!=null){
+		    		//更新前的数据
+		    		before = new CountLimitAccount();
+		    		before.setUserId(com.getUserId());//机构用户名
+		    		before.setOrganName(com.getInstitution());//机构名称
+		    		before.setPayChannelId(oldNum.getPayChannelId());//支付渠道id
+		    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
+		    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
+		    		before.setBalance(oldNum.getBalance());//充值次数
+		    	}
+		    	resetCount = true;
+			}
+	        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("修改限次异常：",e);
 		}
 		return flag;
     }
@@ -751,52 +700,55 @@ public class AheadUserServiceImpl implements AheadUserService{
      * 为机构余额账户充值
      */
 	@Override
-	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
+	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		
 		if (Double.parseDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 			return 1;
 		}
-		// 需要更新的数据
-		BalanceLimitAccount account = new BalanceLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		account.setBalance(BigDecimal.valueOf(Double.parseDouble(dto.getTotalMoney())));
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用注册或充值余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息，userIP，auto_token
-		// 是否重置金额
-		boolean resetMoney = false;
-		BalanceLimitAccount before = null;
-		if (StringUtils.isNotBlank(com.getResetMoney())) {
-    		wfks.accounting.handler.entity.BalanceLimitAccount oldBlance = (wfks.accounting.handler.entity.BalanceLimitAccount)
-    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-            if(oldBlance!=null){
-            	//更新前信息
-            	before = new BalanceLimitAccount();
-            	before.setUserId(com.getUserId());//机构用户名
-            	before.setOrganName(com.getInstitution());//机构名称
-            	before.setPayChannelId(oldBlance.getPayChannelId());//支付渠道id
-            	before.setBeginDateTime(oldBlance.getBeginDateTime());
-            	before.setEndDateTime(oldBlance.getEndDateTime());
-            	before.setBalance(oldBlance.getBalance());
-            }
-			resetMoney = true;
-		}
 		int flag = 0;
-        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+			// 需要更新的数据
+			BalanceLimitAccount account = new BalanceLimitAccount();
+			account.setUserId(com.getUserId());// 机构用户名
+			account.setOrganName(com.getInstitution());// 机构名称
+			account.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			account.setBalance(BigDecimal.valueOf(Double.parseDouble(dto.getTotalMoney())));
+			// 根据token可获取管理员登录信息
+			// String authToken = "Admin."+adminId;
+			// 调用注册或充值余额限时账户方法
+			// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
+			// 第二个参数起传递账户信息，userIP，auto_token
+			// 是否重置金额
+			boolean resetMoney = false;
+			BalanceLimitAccount before = null;
+			if (StringUtils.isNotBlank(com.getResetMoney())) {
+	    		wfks.accounting.handler.entity.BalanceLimitAccount oldBlance = (wfks.accounting.handler.entity.BalanceLimitAccount)
+	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+	            if(oldBlance!=null){
+	            	//更新前信息
+	            	before = new BalanceLimitAccount();
+	            	before.setUserId(com.getUserId());//机构用户名
+	            	before.setOrganName(com.getInstitution());//机构名称
+	            	before.setPayChannelId(oldBlance.getPayChannelId());//支付渠道id
+	            	before.setBeginDateTime(oldBlance.getBeginDateTime());
+	            	before.setEndDateTime(oldBlance.getEndDateTime());
+	            	before.setBalance(oldBlance.getBalance());
+	            }
+				resetMoney = true;
+			}
+	        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("异常：",e);
 		}
 		return flag;
     }

@@ -560,11 +560,13 @@ public class AheadUserController {
 				user.setPassword(String.valueOf(map.get("password")));
 				// 添加机构信息
 				aheadUserService.batchRegisterInfo(user, map);
+				//导入金额和次数
+				InstitutionUtils.importData(user,map);
 				// 添加购买项目
 				String msg=this.addProject(user, req);
 				if(msg.length()>0&&msg.contains("失败")){
 					errorMap.put("flag", "error");
-					errorMap.put("fail", "机构账号"+map.get("userId")+"</br>:"+msg);
+					errorMap.put("fail", "执行到机构账号"+user.getUserId()+"异常:</br>"+msg);
 					return errorMap;
 				}
 				// 个人绑定机构权限
@@ -676,12 +678,14 @@ public class AheadUserController {
 			for (Map<String, Object> map : userList) {
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
+				//导入金额和次数
+				InstitutionUtils.importData(user,map);
 				// 修改购买项目
 				String msg=this.updateProject(user, req, null);
 				if(msg.length()>0&&msg.contains("失败")){
 					errorMap.put("flag", "error");
 					errorMap.put("userId", map.get("userId")+"");
-					errorMap.put("fail", "机构账号"+map.get("userId")+"</br>:"+msg);
+					errorMap.put("fail", "执行到机构账号"+user.getUserId()+"异常:</br>"+msg);
 					return errorMap;
 				}
 				// 修改或开通个人绑定机构权限
@@ -1238,10 +1242,12 @@ public class AheadUserController {
 		String adminId = CookieUtil.getCookie(req);
 		StringBuilder right=new StringBuilder();
 		StringBuilder wrong=new StringBuilder();
+		user.setResetCount("true");
+		user.setResetMoney("true");
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				//增加余额信息
-				if(aheadUserService.addProjectBalance(user, dto,adminId) > 0){
+				if(aheadUserService.chargeProjectBalance(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
@@ -1257,7 +1263,7 @@ public class AheadUserController {
 				}
 			}else if(dto.getProjectType().equals("count")){
 				//增加次数信息
-				if(aheadUserService.addProjectNumber(user, dto,adminId) > 0){
+				if(aheadUserService.chargeCountLimitUser(user, dto,adminId) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{

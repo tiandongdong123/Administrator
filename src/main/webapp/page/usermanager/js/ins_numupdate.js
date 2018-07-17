@@ -137,6 +137,7 @@ function submitForm(){
 				}else if(data.flag=='error'){
 		    		layer.alert(data.fail, {
 		    			icon: 2,
+		    			title: '提示',
 		    		    skin: 'layui-layer-molv',
 		    		    btn: ['继续添加'], //按钮
 		    		    yes: function(){

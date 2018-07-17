@@ -184,35 +184,26 @@ public class InstitutionUtils {
 			if (dto.getProjectType().equals("balance")) {
 				if (dto.getTotalMoney() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额输入不正确，请正确填写金额");
+					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
 				if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"金额输入不正确，请正确填写金额");
-					return hashmap;
-				}
-				if ("GTimeLimit".equals(user.getChangeFront())
-						&& "GBalanceLimit".equals(dto.getProjectid())
-						&& NumberUtils.toDouble(dto.getTotalMoney()) <= 0) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname + "金额输入不正确，请正确填写金额");
+					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
 					return hashmap;
 				}
 			} else if (dto.getProjectType().equals("count")) {
 				if (dto.getPurchaseNumber() == null) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数输入不正确，请正确填写次数");
+					hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
 					return hashmap;
 				}
 				if (!NumberUtils.isNumber(dto.getPurchaseNumber())||NumberUtils.toInt(dto.getPurchaseNumber())<=0&&isAdd) {
 					hashmap.put("flag", "fail");
-					hashmap.put("fail",  projectname+"次数输入不正确，请正确填写次数");
+					hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
 					return hashmap;
 				}
 			}
-		}else{
-			
 		}
 		if (dto.getRldto() != null) {
 			boolean flag = true;// 判断是否有选中的数据库
@@ -497,13 +488,12 @@ public class InstitutionUtils {
 										+  "金额输入过大，请正确填写金额");
 								return errorMap;
 							}
-							dto.setTotalMoney(totalMoney);
 							isWrong=false;
 						} else if (dto.getProjectType().equals("count")) {
 							if(Integer.parseInt(totalMoney)!=Double.parseDouble(totalMoney)){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "次数不能含有小数，请正确填写次数");
+										+  "次数输入不正确，请正确填写次数");
 								return errorMap;
 							}
 							if(Integer.parseInt(totalMoney)>maxData){
@@ -512,7 +502,6 @@ public class InstitutionUtils {
 										+  "次数输入过大，请正确填写次数");
 								return errorMap;
 							}
-							dto.setPurchaseNumber(totalMoney);
 							isWrong=false;
 						}
 					}
@@ -531,6 +520,22 @@ public class InstitutionUtils {
 		}
 		user.setRdlist(rdList);
 		return errorMap;
+	}
+
+	public static void importData(InstitutionalUser user, Map<String, Object> map) {
+		List<ResourceDetailedDTO> rdList=user.getRdlist();
+		List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+		for(ResourceDetailedDTO dto : rdList){
+			for(Map<String, Object> pro : lm) {
+				if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
+					if (dto.getProjectType().equals("balance")) {
+						dto.setTotalMoney(pro.get("totalMoney").toString());
+					} else if (dto.getProjectType().equals("count")) {
+						dto.setPurchaseNumber(pro.get("totalMoney").toString());
+					}
+				}
+			}
+		}
 	}
 	
 }

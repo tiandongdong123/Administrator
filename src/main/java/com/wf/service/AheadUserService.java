@@ -88,20 +88,14 @@ public interface AheadUserService {
 	int setPartAccountRestriction(InstitutionalUser user);
 	UserAccountRestriction getAccountRestriction(String userId);
 	
-	/** 添加余额信息 */
-	int addProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
-
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId) throws Exception;
-
-	/** 添加系统次数信息 */
-	int addProjectNumber(InstitutionalUser user, ResourceDetailedDTO dto,String adminId) throws Exception;
+	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId);
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
 	
 	/** 更新系统次数信息 */
-	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
 	
 	/** 添加项目资源信息 */
 	void addProjectResources(InstitutionalUser user, ResourceDetailedDTO dto);
