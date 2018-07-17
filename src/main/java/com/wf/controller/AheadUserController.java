@@ -1846,11 +1846,11 @@ public class AheadUserController {
 			if(list!=null &&list.size()>0){
 				for(ResourceDetailedDTO dto:list){
 					if(dto.getProjectid()!=null){
-						if (dto.getProjectType().equals("balance")&& Double.parseDouble(dto.getTotalMoney()) == 0
+						if (dto.getProjectType().equals("balance")&& NumberUtils.toDouble(dto.getTotalMoney()) == 0
 								&& StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
 								&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
 							continue;
-						} else if (dto.getProjectType().equals("count")&& Integer.parseInt(dto.getPurchaseNumber()) == 0
+						} else if (dto.getProjectType().equals("count")&& NumberUtils.toInt(dto.getPurchaseNumber()) == 0
 								&& StringUtils.equals(dto.getValidityEndtime(),dto.getValidityEndtime2())
 								&& StringUtils.equals(dto.getValidityStarttime(),dto.getValidityStarttime2())) {
 							continue;

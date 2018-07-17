@@ -754,7 +754,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
-		if (Double.parseDouble(dto.getTotalMoney()) == 0
+		if (Double.parseDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 			return 1;
