@@ -13,12 +13,15 @@ $(function(e){
 			$("#administrator").hide();
 		}
 	});
-    function today(){
+    function meGetDate(){
         var today=new Date();
-        var h=today.getFullYear();
-        var m=today.getMonth()+1;
-        var d=today.getDate();
-        return h+"-"+m+"-"+d;
+        var year=today.getFullYear();
+        var month=today.getMonth()+1;
+        var day=today.getDate();
+        var newTime = year + '-' +
+            (month < 10? '0' + month : month) + '-' +
+            (day < 10? '0' + day : day)
+        return newTime;
     }
 	//是否开通个人绑定机构
 	$("#user_dinding").click(function(){
@@ -29,7 +32,7 @@ $(function(e){
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
-			$('#openBindStart').val(today());
+			$('#openBindStart').val(meGetDate());
 		}else{
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
