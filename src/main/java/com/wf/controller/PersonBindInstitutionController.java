@@ -518,4 +518,44 @@ public class PersonBindInstitutionController {
             return "false";
         }
     }
+
+    /**
+     * 根据机构id展示信息
+     *
+     * @param userId 机构id
+     * @return
+     */
+    @RequestMapping("/showBindInfo")
+    @ResponseBody
+    public BindAuthorityModel showBindInfo(String userId) {
+        if (userId == null || "".equals(userId)) {
+            log.info("账号不能为空");
+            return null;
+        }
+        try {
+            SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+            SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+            List<AccountAuthority> itemsList = response.getItemsList();
+            BindAuthorityModel bindModel = new BindAuthorityModel();
+            if (itemsList != null && itemsList.size() > 0) {
+                bindModel.setUserId(itemsList.get(0).getUserId());
+                bindModel.setEmail(itemsList.get(0).getEmail());
+                bindModel.setBindLimit(itemsList.get(0).getBindLimit());
+                bindModel.setBindValidity(itemsList.get(0).getBindValidity());
+                bindModel.setOpenBindStart(new Date(Timestamps.toMillis(itemsList.get(0).getOpenStart())));
+                bindModel.setOpenBindEnd(new Date(Timestamps.toMillis(itemsList.get(0).getOpenEnd())));
+                bindModel.setDownloadLimit(itemsList.get(0).getDownloadLimit());
+                bindModel.setBindType(itemsList.get(0).getBindType().getNumber());
+                StringBuffer allAuthority = new StringBuffer();
+                for (AccountAuthority accountAuthority : itemsList) {
+                    allAuthority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority()) + "、");
+                }
+                bindModel.setBindAuthority(allAuthority.toString().substring(0, allAuthority.length() - 1));
+            }
+            return bindModel;
+        } catch (Exception e) {
+            log.error("根据账号id查询数据出错，账号：" + userId, e);
+        }
+        return null;
+    }
 }
