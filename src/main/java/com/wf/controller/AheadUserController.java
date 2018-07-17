@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.*;
+import com.wanfangdata.grpcchannel.BindAccountChannel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -32,11 +34,6 @@ import wfks.accounting.setting.PayChannelModel;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
-import com.utils.CookieUtil;
-import com.utils.DateUtil;
-import com.utils.HttpClientUtil;
-import com.utils.IPConvertHelper;
-import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
@@ -83,7 +80,13 @@ public class AheadUserController {
 
 	@Autowired
 	private LogService logService;
-	
+
+	@Autowired
+	private WFMailUtil wfMailUtil;
+
+	@Autowired
+	private BindAccountChannel bindAccountChannel;
+
 	private RedisUtil redis = new RedisUtil();
 	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
@@ -570,16 +573,20 @@ public class AheadUserController {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 				String userId = bindAuthorityModel.getUserId();
 				String email = bindAuthorityModel.getEmail();
-				//TODO 发送邮箱
-				/*try{
-					if (bindAuthorityModel.getSend()){
-
-
+				//发送邮箱
+				try {
+					if (bindAuthorityModel.getSend()) {
+						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+							log.info("机构用户注册，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+							hashmap.put("emailFlag", "success");
+						} else {
+							throw new Exception("发送邮件失败");
+						}
 					}
-				}catch (Exception e){
-					log.error("机构用户注册，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
-					throw e;
-				}*/
+				} catch (Exception e) {
+					log.error("机构用户注册，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+					hashmap.put("emailFlag", "fail");
+				}
 			}
 			int resinfo = aheadUserService.addRegisterInfo(com);
 			if (StringUtils.isNotBlank(com.getChecks())) {
@@ -812,19 +819,21 @@ public class AheadUserController {
 					log.info("成功开通个人绑定机构权限");
 					String userId = bindAuthorityModel.getUserId();
 					String email = bindAuthorityModel.getEmail();
-					//TODO 发送邮箱
-					/*try{
-						if (bindAuthorityModel.getSend()){
-
-
+					// 发送邮箱
+					try {
+						if (bindAuthorityModel.getSend()) {
+							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+								log.info("机构用户批量注册，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+								hashmap.put("emailFlag", "success");
+							} else {
+								throw new Exception("发送邮件失败");
+							}
 						}
-					}catch (Exception e){
-						log.error("机构用户批量注册，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
-						throw e;
-					}*/
+					} catch (Exception e) {
+						log.error("机构用户批量注册，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+						hashmap.put("emailFlag", "fail");
+					}
 				}
-
-
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
 					for(Map<String, Object> pro : lm) {
@@ -1100,16 +1109,20 @@ public class AheadUserController {
 					}
 					String userId = bindAuthorityModel.getUserId();
 					String email = bindAuthorityModel.getEmail();
-					//TODO 发送邮箱
-					/*try{
-						if (bindAuthorityModel.getSend()){
-
-
+					//发送邮箱
+					try {
+						if (bindAuthorityModel.getSend()) {
+							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+								log.info("机构用户批量更新，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+								hashmap.put("emailFlag", "success");
+							} else {
+								throw new Exception("发送邮件失败");
+							}
 						}
-					}catch (Exception e){
-						log.error("机构用户批量更新，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
-						throw e;
-					}*/
+					} catch (Exception e) {
+						log.error("机构用户批量更新，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+						hashmap.put("emailFlag", "fail");
+					}
 				}else {
 					int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 					if (count>0){
@@ -1637,19 +1650,23 @@ public class AheadUserController {
 				}
 				String userId = bindAuthorityModel.getUserId();
 				String email = bindAuthorityModel.getEmail();
-				//TODO 发送邮箱
-				/*try{
-					if (bindAuthorityModel.getSend()){
-
-
+				//发送邮箱
+				try {
+					if (bindAuthorityModel.getSend()) {
+						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+							log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+							hashmap.put("emailFlag", "success");
+						} else {
+							throw new Exception("发送邮件失败");
+						}
 					}
-				}catch (Exception e){
-					log.error("账号修改，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
-					throw e;
-				}*/
-			}else {
+				} catch (Exception e) {
+					log.error("账号修改，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+					hashmap.put("emailFlag", "fail");
+				}
+			} else {
 				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
-				if (count>0){
+				if (count > 0) {
 					aheadUserService.closeBindAuthority(bindAuthorityModel);
 				}
 			}
@@ -1694,16 +1711,20 @@ public class AheadUserController {
 		}
 		String userId = bindAuthorityModel.getUserId();
 		String email = bindAuthorityModel.getEmail();
-		//TODO 发送邮箱
-		/*try{
-			if (bindAuthorityModel.getSend()){
-
-
+		//发送邮箱
+		try {
+			if (bindAuthorityModel.getSend()) {
+				if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+					hashmap.put("emailFlag", "success");
+				} else {
+					throw new Exception("发送邮件失败");
+				}
 			}
-		}catch (Exception e){
-			log.error("账号修改，发送邮箱出现异常！userId："+userId+"   email:"+email,e);
-			throw e;
-		}*/
+		} catch (Exception e) {
+			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+			hashmap.put("emailFlag", "fail");
+		}
 		return hashmap;
 	}
 	
