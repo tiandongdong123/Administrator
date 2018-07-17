@@ -66,6 +66,19 @@ $(function(){
         e.preventDefault();
         if($(this).text()=="线下扫描"){
             var num = $(this).data('num');
+            $.ajax({
+                url:'../bindAuhtority/showBindInfo.do',
+                type:'post',
+                dataType:'json',
+                data:{
+                    userId:$(this).siblings(".userID").text()
+                },
+                async:true,
+                success:function(data){
+                    var email = data.email;
+                    $('.email-text').text(email);
+                }
+            })
             if(num != prevNum){
                 $(".qr").show();
                 relocate = $(this).siblings(".userID").text();
@@ -104,6 +117,25 @@ $(function(){
     });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
+        var userId = $.trim($(this).text());
+        $.ajax({
+            url:'../bindAuhtority/showBindInfo.do',
+            type:'post',
+            dataType:'json',
+            data:{
+                userId:userId
+            },
+            async:true,
+            success:function(data){
+                console.log(data);
+                var openBindStart = meGetDate(data.openBindEnd);
+                var openBindEnd = meGetDate(data.openBindEnd);
+                var email = data.email;
+                $('#openBindStart').val(openBindStart);
+                $('#openBindEnd').val(openBindEnd);
+                $('#email').val(email);
+            }
+        })
         $(".mechanism_id").css("border-color","#d2d6de");
         $(".backdrop").show();
         $(".pop").show();

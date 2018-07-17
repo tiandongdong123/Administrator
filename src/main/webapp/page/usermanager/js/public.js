@@ -1,4 +1,14 @@
 var zhongZtr=null,perioZtr=null,patentZtr=null;var count = 0;
+function meGetDate(time){
+    var today=time ? new Date(time) : new Date();
+    var year=today.getFullYear();
+    var month=today.getMonth()+1;
+    var day=today.getDate();
+    var newTime = year + '-' +
+        (month < 10? '0' + month : month) + '-' +
+        (day < 10? '0' + day : day)
+    return newTime;
+}
 $(function(e){
 	$("input[name='quotaName']").prop("checked",true);
 	//是否开通管理员
@@ -13,16 +23,7 @@ $(function(e){
 			$("#administrator").hide();
 		}
 	});
-    function meGetDate(){
-        var today=new Date();
-        var year=today.getFullYear();
-        var month=today.getMonth()+1;
-        var day=today.getDate();
-        var newTime = year + '-' +
-            (month < 10? '0' + month : month) + '-' +
-            (day < 10? '0' + day : day)
-        return newTime;
-    }
+
 	//是否开通个人绑定机构
 	$("#user_dinding").click(function(){
 		if($(this).is(':checked')){
