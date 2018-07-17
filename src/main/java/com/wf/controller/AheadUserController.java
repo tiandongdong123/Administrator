@@ -577,14 +577,14 @@ public class AheadUserController {
 				try {
 					if (bindAuthorityModel.getSend()) {
 						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-							log.info("机构用户注册，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+							log.info("机构用户注册，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 							hashmap.put("emailFlag", "success");
 						} else {
 							throw new Exception("发送邮件失败");
 						}
 					}
 				} catch (Exception e) {
-					log.error("机构用户注册，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+					log.error("机构用户注册，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 					hashmap.put("emailFlag", "fail");
 				}
 			}
@@ -823,29 +823,29 @@ public class AheadUserController {
 					try {
 						if (bindAuthorityModel.getSend()) {
 							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-								log.info("机构用户批量注册，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+								log.info("机构用户批量注册，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 								hashmap.put("emailFlag", "success");
 							} else {
 								throw new Exception("发送邮件失败");
 							}
 						}
 					} catch (Exception e) {
-						log.error("机构用户批量注册，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+						log.error("机构用户批量注册，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 						hashmap.put("emailFlag", "fail");
 					}
 				}
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
 					for(Map<String, Object> pro : lm) {
-						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){						
+						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
 							dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
 							if(dto.getProjectType().equals("balance")){
-								if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){						
+								if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
 									aheadUserService.addProjectResources(com, dto);
 								}
 							}else if(dto.getProjectType().equals("time")){
 								//增加限时信息
-								if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){						
+								if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
 									aheadUserService.addProjectResources(com, dto);
 								}
 							}else if(dto.getProjectType().equals("count")){
@@ -1113,14 +1113,14 @@ public class AheadUserController {
 					try {
 						if (bindAuthorityModel.getSend()) {
 							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-								log.info("机构用户批量更新，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+								log.info("机构用户批量更新，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 								hashmap.put("emailFlag", "success");
 							} else {
 								throw new Exception("发送邮件失败");
 							}
 						}
 					} catch (Exception e) {
-						log.error("机构用户批量更新，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+						log.error("机构用户批量更新，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 						hashmap.put("emailFlag", "fail");
 					}
 				}else {
@@ -1654,14 +1654,14 @@ public class AheadUserController {
 				try {
 					if (bindAuthorityModel.getSend()) {
 						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-							log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+							log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 							hashmap.put("emailFlag", "success");
 						} else {
 							throw new Exception("发送邮件失败");
 						}
 					}
 				} catch (Exception e) {
-					log.error("账号修改，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+					log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 					hashmap.put("emailFlag", "fail");
 				}
 			} else {
@@ -1715,14 +1715,14 @@ public class AheadUserController {
 		try {
 			if (bindAuthorityModel.getSend()) {
 				if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "email:" + email);
+					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 					hashmap.put("emailFlag", "success");
 				} else {
 					throw new Exception("发送邮件失败");
 				}
 			}
 		} catch (Exception e) {
-			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "   email:" + email, e);
+			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 			hashmap.put("emailFlag", "fail");
 		}
 		return hashmap;
