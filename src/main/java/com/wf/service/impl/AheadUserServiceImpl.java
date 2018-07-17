@@ -644,7 +644,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		
 		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
-				&& !StringUtils.equals(com.getChangeFront(), "GTimeLimit")) {
+				&& !StringUtils.equals(com.getChangeFront(), "GBalanceLimit")) {
 			return 1;
 		}
 		// 创建一个限时账户
@@ -1982,7 +1982,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userMap.put("downloadupperlimit", restriction.getDownloadupperlimit());
 			}
 			//子账号ip
-			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
+			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
 			if(list_ip.size()>0){
 				for(Map<String, Object> userIp : list_ip){
 					String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
@@ -1993,11 +1993,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			//购买项目
 			List<PayChannelModel> list_ = this.purchaseProject();
-			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
-			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(pid);// 获取父账号购买项目
+			List<Map<String, String>> wfList=new ArrayList<Map<String, String>>();
+			List<Map<String, String>> listWfks = wfksMapper.selectProjectLibraryName(pid);// 获取父账号购买项目
 			for(PayChannelModel pay:list_){
-				for(WfksPayChannelResources res:listWfks){
-					if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
+				for(Map<String, String> res:listWfks){
+					if(StringUtils.equals(pay.getId(), res.get("payChannelid"))){
 						wfList.add(res);
 					}
 				}
@@ -2006,34 +2006,37 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 			try{
-				for(WfksPayChannelResources wfks : wfList){
-					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
+				for(Map<String, String> wfks : wfList){
+					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.get("payChannelid"));
 					//Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 					if(pay.getType().equals("balance")){
-						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
+						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
 						if(account!=null){
 							extraData.put("name", pay.getName());
 							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
 							extraData.put("balance", account.getBalance());
 							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
 						}
 					}else if(pay.getType().equals("time")){
-						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
+						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
 						if(account!=null){
 							extraData.put("name", pay.getName());
 							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
 							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
 						}
 					}else if(pay.getType().equals("count")){
-						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),userId), new HashMap<String,String>());
+						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
 						if(account!=null){
 							extraData.put("name", pay.getName());
 							extraData.put("payChannelid", account.getPayChannelId());
 							extraData.put("type", pay.getType());
 							extraData.put("count", account.getBalance());
 							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
 						}
 					}
 					if(extraData.size()>1){

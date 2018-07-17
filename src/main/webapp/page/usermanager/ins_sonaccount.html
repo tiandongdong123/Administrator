@@ -55,7 +55,7 @@
 						<td class="mailbox-name">购买项目</td>
 						<td class="mailbox-name">购买数据库</td>
 						<td class="mailbox-name">子账号上限</td>
-						<td class="mailbox-name">自账号并发数</td>
+						<td class="mailbox-name">自账号并发数上限</td>
 						<td class="mailbox-name">子账号下载量上限/天</td>
 						<td class="mailbox-name">子账号扣款模式</td>
 						<td class="mailbox-name">子账号余额上限</td>
@@ -76,9 +76,9 @@
 					<td class='mailbox-star'><div style='width:100px;'>${list.institution!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.pid!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.data.name!}</div></td>
-					<td class='mailbox-star'><div style='width:100px;'>${list.data.name!}</div></td>
+					<td class='mailbox-star'><div style='width:100px;'>${list.data.resouceName!}</div></td>
 					<td class='mailbox-star'><div style='width:60px;'>${list.upperlimit!}</div></td>
-					<td class='mailbox-star'><div style='width:70px;'>${list.sConcurrentnumber!}</div></td>
+					<td class='mailbox-star'><div style='width:100px;'>${list.sConcurrentnumber!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.downloadupperlimit!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.data.balance!}</div></td>
