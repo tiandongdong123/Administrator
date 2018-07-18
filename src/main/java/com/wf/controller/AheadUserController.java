@@ -1648,22 +1648,6 @@ public class AheadUserController {
 					hashmap.put("fail","修改个人绑定机构权限失败");
 					return hashmap;
 				}
-				String userId = bindAuthorityModel.getUserId();
-				String email = bindAuthorityModel.getEmail();
-				//发送邮箱
-				try {
-					if (bindAuthorityModel.getSend()) {
-						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-							log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
-							hashmap.put("emailFlag", "success");
-						} else {
-							throw new Exception("发送邮件失败");
-						}
-					}
-				} catch (Exception e) {
-					log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
-					hashmap.put("emailFlag", "fail");
-				}
 			} else {
 				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 				if (count > 0) {

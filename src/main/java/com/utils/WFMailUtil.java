@@ -53,7 +53,7 @@ public class WFMailUtil {
             GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
             GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().getQRCode(codeRequest);
             String url = codeResponse.getCiphertext();
-            log.info("生成的二维码：url" + url);
+            log.info("生成的二维码字符串：url" + url);
             //生成二维码转成BASE64格式
             String QRCode = ImgUtil.imgToBase64(url);
             log.info("二维码转成BASE64格式：QRCode" + QRCode + ",userId:" + userId + ",bindEmail:" + bindEmail);

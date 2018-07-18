@@ -509,13 +509,12 @@ public class PersonBindInstitutionController {
     @RequestMapping("/sendMailQRCode")
     @ResponseBody
     public String sendMailQRCode(String bindEmail, String userId) {
-        log.info("开始将二维码发送至指定的邮箱：userId" + userId + ",bindEmail:" + bindEmail);
         if (bindEmail == null || userId == null) {
             log.info("userId和bindEmail不能为空");
             return null;
         }
+        log.info("开始将二维码发送至指定的邮箱：userId" + userId + ",bindEmail:" + bindEmail);
         if (wfMailUtil.sendQRCodeMail(bindEmail, userId, bindAccountChannel)) {
-            log.info("二维码发送至指定的邮箱成功：userId" + userId + ",bindEmail:" + bindEmail);
             return "true";
         } else {
             return "false";
