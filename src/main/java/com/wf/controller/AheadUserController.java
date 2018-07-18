@@ -689,7 +689,8 @@ public class AheadUserController {
 					return errorMap;
 				}
 				// 修改或开通个人绑定机构权限
-				this.updateBindAuthorityModel(bindAuthorityModel, map);
+				String userId=map.get("userId").toString();
+				this.updateBindAuthorityModel(bindAuthorityModel, userId);
 				// 添加日期
 				this.addOperationLogs(user, "批量修改", req);
 				log.info("机构用户[" + user.getUserId() + "]修改成功");
@@ -707,8 +708,11 @@ public class AheadUserController {
 	}
 	
 	//修改个人绑定机构
-	private void updateBindAuthorityModel(BindAuthorityModel bindAuthorityModel,Map<String,Object> map) throws Exception {
-		bindAuthorityModel.setUserId(map.get("userId").toString());
+	private void updateBindAuthorityModel(BindAuthorityModel bindAuthorityModel,String userId) throws Exception {
+		if(bindAuthorityModel.getOpenState()==null){
+			return;
+		}
+		bindAuthorityModel.setUserId(userId);
 		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 			aheadUserService.editBindAuthority(bindAuthorityModel);
 		}else {
