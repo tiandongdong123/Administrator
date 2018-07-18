@@ -681,8 +681,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
 		    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
 		    		before.setBalance(oldNum.getBalance());//充值次数
+		    		resetCount = true;
 		    	}
-		    	resetCount = true;
 			}
 	        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
 			if (isSuccess) {
@@ -738,8 +738,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	            	before.setBeginDateTime(oldBlance.getBeginDateTime());
 	            	before.setEndDateTime(oldBlance.getEndDateTime());
 	            	before.setBalance(oldBlance.getBalance());
+	            	resetMoney = true;
 	            }
-				resetMoney = true;
 			}
 	        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
 			if (isSuccess) {
