@@ -763,26 +763,37 @@ public class AheadUserController {
 				}
 			}
 			List<ResourceDetailedDTO> rdList = user.getRdlist();
+			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			for(ResourceDetailedDTO dto : rdList){
-				// 验证金额是否正确
-				String ptype = dto.getProjectType();
-				if (ptype.equals("balance") || ptype.equals("count")) {
-					user.setUserId(userId);
-					Double val = aheadUserService.checkValue(user, dto);
-					if (val == -Double.MAX_VALUE) {
-						if((NumberUtils.toDouble(dto.getTotalMoney()) <= 0 && ptype.equals("balance")) || (NumberUtils.toInt(dto.getPurchaseNumber()) <= 0 && ptype.equals("count"))){
+				for(Map<String, Object> pro : lm) {
+					if (!StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
+						continue;
+					}
+					// 验证金额是否正确
+					String ptype = dto.getProjectType();
+					if (ptype.equals("balance") || ptype.equals("count")) {
+						user.setUserId(userId);
+						if(ptype.equals("balance")){
+							dto.setTotalMoney(pro.get("totalMoney").toString());
+						}else if(ptype.equals("count")){
+							dto.setPurchaseNumber(pro.get("totalMoney").toString());
+						}
+						Double val = aheadUserService.checkValue(user, dto);
+						if (val == -Double.MAX_VALUE) {
+							if((NumberUtils.toDouble(dto.getTotalMoney()) <= 0 && ptype.equals("balance")) || (NumberUtils.toInt(dto.getPurchaseNumber()) <= 0 && ptype.equals("count"))){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+								return errorMap;
+							}
+						}else if (val < 0) {
 							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
+							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
+							return errorMap;
+						}else if(val>InstitutionUtils.maxData){
+							errorMap.put("flag", "fail");
+							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
 							return errorMap;
 						}
-					}else if (val < 0) {
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
-						return errorMap;
-					}else if(val>InstitutionUtils.maxData){
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
-						return errorMap;
 					}
 				}
 			}
