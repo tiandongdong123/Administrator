@@ -277,7 +277,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			this.deleteUserIp(user.getUserId());
 		}
 		// 机构子账号限定
-		if (user.getpConcurrentnumber() == null && user.getsConcurrentnumber() == null) {
+		if (user.getpConcurrentnumber() != null || user.getsConcurrentnumber() != null) {
 			this.setAccountRestriction(user,false);
 		}
 		// 添加机构管理员
@@ -1402,7 +1402,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			return 1;
 		}
 		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(user.getUserId());
-		if(account==null){
+		if(account==null||isReset){
+			if(isReset){
+				userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());
+			}
 			UserAccountRestriction acc = new UserAccountRestriction();
 			acc.setUserId(user.getUserId());
 			acc.setUpperlimit(user.getUpperlimit());
@@ -1414,11 +1417,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}else{
 			UserAccountRestriction acc = new UserAccountRestriction();
 			acc.setUserId(user.getUserId());
-			acc.setpConcurrentnumber(user.getpConcurrentnumber());
-			acc.setUpperlimit(user.getUpperlimit());
-			acc.setChargebacks(user.getChargebacks());
-			acc.setDownloadupperlimit(user.getDownloadupperlimit());
-			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			if(user.getpConcurrentnumber()!=null){
+				acc.setpConcurrentnumber(user.getpConcurrentnumber());
+			}else{
+				acc.setpConcurrentnumber(account.getpConcurrentnumber());
+			}
+			if(user.getsConcurrentnumber()!=null){
+				acc.setUpperlimit(user.getUpperlimit());
+				acc.setChargebacks(user.getChargebacks());
+				acc.setDownloadupperlimit(user.getDownloadupperlimit());
+				acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			}else{
+				acc.setUpperlimit(account.getUpperlimit());
+				acc.setChargebacks(account.getChargebacks());
+				acc.setDownloadupperlimit(account.getDownloadupperlimit());
+				acc.setsConcurrentnumber(account.getsConcurrentnumber());
+			}
 			return userAccountRestrictionMapper.updateAccount(acc);
 		}
 	}
