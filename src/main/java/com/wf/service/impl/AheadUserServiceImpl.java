@@ -1313,17 +1313,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 						List<Map<String, String>> li = new ArrayList<Map<String, String>>();
 						for(int i = 3; i < str.length; i++){
 							Map<String,String> m = new HashMap<String, String>();
-							if(StringUtils.isNotBlank(ExcelUtil.getValue(row.getCell(i)))){
-								String title = str[i].substring(str[i].indexOf("_") + 1,str[i].length());
-								if ("IP".equals(title.toUpperCase())) {
-									map.put("ip",ExcelUtil.getValue(row.getCell(i)).replace(" ", ""));
-								} else {
-									m.put("projectid", title);
-									m.put("totalMoney", ExcelUtil.getValue(row.getCell(i)));
-									li.add(m);
-								}
-							}else{
-								continue;
+							String title = str[i].substring(str[i].indexOf("_") + 1,str[i].length());
+							if ("IP".equals(title.toUpperCase())) {
+								map.put("ip",ExcelUtil.getValue(row.getCell(i)).replace(" ", ""));
+							} else {
+								m.put("projectid", title);
+								m.put("totalMoney", ExcelUtil.getValue(row.getCell(i)));
+								li.add(m);
 							}
 						}
 						map.put("projectList", li);

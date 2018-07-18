@@ -457,17 +457,15 @@ public class InstitutionUtils {
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			//预加载校验页面项目是否和Excel中一致
 			//验证金额，次数
-			int size=rdList.size();
 			for(ResourceDetailedDTO dto : rdList){
 				String projectId=dto.getProjectid();
 				if (projectId.contains("TimeLimit")) {
-					size--;
 					continue;
 				}
-				boolean isWrong=true;
+				boolean isRight=true;
 				for(Map<String, Object> pro : lm) {
 					if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
-						
+						isRight=false;
 						String totalMoney = pro.get("totalMoney") == null ? "" : pro.get("totalMoney").toString();
 						if (StringUtils.isEmpty(totalMoney) || !NumberUtils.isNumber(totalMoney)
 								|| NumberUtils.toDouble(totalMoney) <= 0&&isRegister) {
@@ -493,7 +491,6 @@ public class InstitutionUtils {
 										+  "金额输入过大，请正确填写金额");
 								return errorMap;
 							}
-							isWrong=false;
 						} else if (dto.getProjectType().equals("count")) {
 							if(NumberUtils.toInt(totalMoney)!=NumberUtils.toDouble(totalMoney)){
 								errorMap.put("flag", "fail");
@@ -507,20 +504,14 @@ public class InstitutionUtils {
 										+  "次数输入过大，请正确填写次数");
 								return errorMap;
 							}
-							isWrong=false;
 						}
 					}
 				}
-				if(isWrong){
+				if(isRight){
 					errorMap.put("flag", "fail");
 					errorMap.put("fail", userId+"用户购买项目无法匹配，请核对正确并填写");
 					return errorMap;
 				}
-			}
-			if(size!=lm.size()){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", userId+"用户购买项目无法匹配，请核对正确并填写");
-				return errorMap;
 			}
 		}
 		user.setRdlist(rdList);
