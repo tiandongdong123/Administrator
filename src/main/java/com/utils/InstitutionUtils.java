@@ -470,7 +470,7 @@ public class InstitutionUtils {
 						
 						String totalMoney = pro.get("totalMoney") == null ? "" : pro.get("totalMoney").toString();
 						if (StringUtils.isEmpty(totalMoney) || !NumberUtils.isNumber(totalMoney)
-								|| Double.parseDouble(totalMoney) <= 0&&isRegister) {
+								|| NumberUtils.toDouble(totalMoney) <= 0&&isRegister) {
 							errorMap.put("flag", "fail");
 							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
@@ -479,7 +479,7 @@ public class InstitutionUtils {
 						}
 						if ((!StringUtils.isEmpty(user.getResetCount())&&dto.getProjectType().equals("time") || !StringUtils
 								.isEmpty(user.getResetMoney())&&dto.getProjectType().equals("balance"))
-								&& Double.parseDouble(totalMoney) <= 0) {
+								&& NumberUtils.toDouble(totalMoney) <= 0) {
 							errorMap.put("flag", "fail");
 							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
@@ -487,7 +487,7 @@ public class InstitutionUtils {
 							return errorMap;
 						}
 						if (dto.getProjectType().equals("balance")) {
-							if(Double.parseDouble(totalMoney)>maxData){
+							if(NumberUtils.toDouble(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
 										+  "金额输入过大，请正确填写金额");
@@ -495,13 +495,13 @@ public class InstitutionUtils {
 							}
 							isWrong=false;
 						} else if (dto.getProjectType().equals("count")) {
-							if(Integer.parseInt(totalMoney)!=Double.parseDouble(totalMoney)){
+							if(NumberUtils.toInt(totalMoney)!=NumberUtils.toDouble(totalMoney)){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
 										+  "次数输入不正确，请正确填写次数");
 								return errorMap;
 							}
-							if(Integer.parseInt(totalMoney)>maxData){
+							if(NumberUtils.toInt(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
 										+  "次数输入过大，请正确填写次数");

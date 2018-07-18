@@ -26,6 +26,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -653,7 +654,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
 		try{
-	    	if(Integer.parseInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+	    	if(NumberUtils.toInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
 	    		return 1;
 	    	}
@@ -665,7 +666,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 			count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-			count.setBalance(Integer.parseInt(dto.getPurchaseNumber()));
+			count.setBalance(NumberUtils.toInt(dto.getPurchaseNumber()));
 			// 是否重置次数
 			boolean resetCount = false;
 			CountLimitAccount before = null;
@@ -702,7 +703,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		
-		if (Double.parseDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
+		if (NumberUtils.toDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 			return 1;
@@ -717,7 +718,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-			account.setBalance(BigDecimal.valueOf(Double.parseDouble(dto.getTotalMoney())));
+			account.setBalance(BigDecimal.valueOf(NumberUtils.toDouble(dto.getTotalMoney())));
 			// 根据token可获取管理员登录信息
 			// String authToken = "Admin."+adminId;
 			// 调用注册或充值余额限时账户方法
@@ -762,14 +763,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	    		if(account==null){
 	    			return -Double.MAX_VALUE;
 	    		}
-	    		return account.getBalance().doubleValue()+Double.parseDouble(dto.getTotalMoney());
+	    		return account.getBalance().doubleValue()+NumberUtils.toDouble(dto.getTotalMoney());
 			} else if ("count".equals(dto.getProjectType())) {
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
 	    			return -Double.MAX_VALUE;
 	    		}
-	    		return Double.parseDouble(dto.getPurchaseNumber())+account.getBalance();
+	    		return NumberUtils.toDouble(dto.getPurchaseNumber())+account.getBalance();
 			}
         } catch (Exception e) {
         	e.printStackTrace();
