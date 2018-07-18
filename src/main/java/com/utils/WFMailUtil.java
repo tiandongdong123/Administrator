@@ -58,6 +58,7 @@ public class WFMailUtil {
             String QRCode = ImgUtil.imgToBase64(url);
             log.info("二维码转成BASE64格式：QRCode" + QRCode + ",userId:" + userId + ",bindEmail:" + bindEmail);
             activateMail(bindEmail, userId, QRCode);
+            log.info("二维码发送至指定的邮箱成功：userId" + userId + ",bindEmail:" + bindEmail);
             return true;
         } catch (Exception e) {
             log.error("发送邮件失败，userId" + userId, e);
