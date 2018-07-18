@@ -35,11 +35,11 @@ public class ImgUtil {
             e.printStackTrace();
         }
         //直接写入文件
-        File outputFile = new File("d:/new.png");
+        File outputFile = new File("/new.png");
         MatrixToImageWriter.writeToFile(bitMatrix, format, outputFile);
 
         //通过流写入文件，不需要flush()
-        OutputStream os1 = new FileOutputStream("d:/new2.png");
+        OutputStream os1 = new FileOutputStream("/new2.png");
         MatrixToImageWriter.writeToStream(bitMatrix, format, os1);
 
         BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
