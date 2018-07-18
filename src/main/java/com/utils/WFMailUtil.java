@@ -47,13 +47,16 @@ public class WFMailUtil {
      */
     public Boolean sendQRCodeMail(String bindEmail, String userId, BindAccountChannel bindAccountChannel)  {
         try {
+            log.info("开始生成二维码文件：userId" + userId + ",bindEmail:" + bindEmail);
             //生成二维码文件
             CodeDetail codeDetail = CodeDetail.newBuilder().setBindId(userId).setBindType(BindType.LINE_SCAN).build();
             GetCodeRequest codeRequest = GetCodeRequest.newBuilder().addCodeDetails(codeDetail).build();
             GetCodeResponse codeResponse = bindAccountChannel.getBlockingStub().getQRCode(codeRequest);
             String url = codeResponse.getCiphertext();
+            log.info("生成的二维码：url" + url);
             //生成二维码转成BASE64格式
             String QRCode = ImgUtil.imgToBase64(url);
+            log.info("二维码转成BASE64格式：QRCode" + QRCode + ",userId:" + userId + ",bindEmail:" + bindEmail);
             activateMail(bindEmail, userId, QRCode);
             return true;
         } catch (Exception e) {
@@ -120,11 +123,13 @@ public class WFMailUtil {
      * @return
      */
     private String getMailContent(String pagePath, String userId, String QRCode) {
+        log.info("编辑邮箱发送内容：pagePath" + pagePath + ",userId:" + userId + ",QRCode:" +QRCode);
         String resultContent = this.getFileContent(pagePath, "UTF-8");
         if (StringUtils.isNotBlank(resultContent)) {
             resultContent = resultContent.replaceAll("\\$\\{userId\\}", userId);
             resultContent = resultContent.replaceAll("\\$\\{QRCode\\}", QRCode);
         }
+        log.info("邮箱发送内容：resultContent" + resultContent);
         return resultContent;
     }
 
