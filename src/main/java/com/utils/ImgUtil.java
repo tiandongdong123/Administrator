@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Hashtable;
-
+import org.apache.log4j.Logger;
 public class ImgUtil {
-
+    private static final Logger log = Logger.getLogger(ImgUtil.class);
     /**
      * 将String类型转成BASE64格式
      *
@@ -32,16 +32,8 @@ public class ImgUtil {
         try {
             bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height, hints);
         } catch (WriterException e) {
-            e.printStackTrace();
+            log.error("将String类型转成BASE64格式出错,url：" + url, e);
         }
-        //直接写入文件
-        File outputFile = new File("/new.png");
-        MatrixToImageWriter.writeToFile(bitMatrix, format, outputFile);
-
-        //通过流写入文件，不需要flush()
-        OutputStream os1 = new FileOutputStream("/new2.png");
-        MatrixToImageWriter.writeToStream(bitMatrix, format, os1);
-
         BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
         ByteArrayOutputStream os = new ByteArrayOutputStream();//新建流。
         ImageIO.write(image, format, os);//利用ImageIO类提供的write方法，将bi以png图片的数据模式写入流。
