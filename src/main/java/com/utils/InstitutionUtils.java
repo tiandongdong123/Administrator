@@ -395,12 +395,12 @@ public class InstitutionUtils {
 					return errorMap;
 				}
 			}
-			if("".equals(password)||password.contains(" ")){
+			if(StringUtils.isBlank(password)&&isRegister){//批量注册的时候必须填写密码，批量修改的时候密码可以为空
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码"));
 				return errorMap;
 			}
-			if(!StringUtils.isEmpty(password)){//批量注册的时候必须填写密码，批量修改的时候密码可以为空
+			if(!StringUtils.isBlank(password)){
 				Matcher passMatcher = passsName.matcher(password);
 				if(passMatcher.find()){
 					errorMap.put("flag", "fail");
