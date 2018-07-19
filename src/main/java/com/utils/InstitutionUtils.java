@@ -488,7 +488,7 @@ public class InstitutionUtils {
 							if(NumberUtils.toDouble(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "金额输入过大，请正确填写金额");
+										+  "修改后金额大于最大值，请正确填写金额");
 								return errorMap;
 							}
 						} else if (dto.getProjectType().equals("count")) {
@@ -501,7 +501,7 @@ public class InstitutionUtils {
 							if(NumberUtils.toInt(totalMoney)>maxData){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "次数输入过大，请正确填写次数");
+										+  "修改后次数大于最大值，请正确填写次数");
 								return errorMap;
 							}
 						}

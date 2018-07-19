@@ -22,8 +22,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.wf.bean.Card;
-
 public class ExportExcel {
 		/**
 		 * 这是一个通用的方法，利用了JAVA的反射机制，可以将放置在JAVA集合中并且符号一定条件的数据以EXCEL 的形式输出到指定IO设备上
@@ -1003,6 +1001,71 @@ public class ExportExcel {
 				e.printStackTrace();
 			}	
 		}
+	
+	//机构子账号导出
+	public String exportExccel3(HttpServletResponse response, List<Object> list,int column,int maxSize) {
+		
+		List<String> namelist=new ArrayList<String>();
+		namelist.add("机构名称");
+		namelist.add("机构ID");
+		namelist.add("购买项目");
+		namelist.add("购买数据库");
+		namelist.add("子账号上限");
+		namelist.add("自账号并发数上限");
+		namelist.add("子账号下载量上限/天");
+		namelist.add("子账号扣款模式");
+		namelist.add("子账号余额上限");
+		namelist.add("子账号类型");
+		namelist.add("子账号名称");
+		namelist.add("子账号密码");
+		namelist.add("子账号IP");
+		namelist.add("子账号余额");
+		namelist.add("子账号次数");
+		namelist.add("子账号权限");
+		namelist.add("子账号有效期");
+		namelist.add("子账号注册时间");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = sdf.format(new Date());
+		String newpate = date + ".xlsx";
+		try {
+			// 工作区
+			XSSFWorkbook wb = new XSSFWorkbook();
+			// 创建第二个sheet
+			List<List<Object>> tempList = this.createList(list, column);
+			int index=0;
+			for(List<Object> temp:tempList){
+				index+=1;
+				XSSFSheet sheet = wb.createSheet("机构子账号"+(tempList.size()==1?"":index));
+				XSSFRow row = sheet.createRow(0);
+				for (int i = 0; i < namelist.size(); i++) {
+					row.createCell(i).setCellValue(namelist.get(i));
+				}
+				for (int i = 0; i < temp.size(); i++) {
+					Map<String, Object> map=(Map<String, Object>) temp.get(i);
+					// 创建第一个sheet
+					// 生成第一行
+					row = sheet.createRow(i + 1);
+					// 给这一行的第一列赋值
+					row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
+					row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
+					row.createCell(2).setCellValue(String.valueOf(map.get("password")));
+					row.createCell(3).setCellValue(String.valueOf(map.get("value")));
+					row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+				}
+			}
+			// 设置Content-Disposition
+			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
+			OutputStream out = response.getOutputStream();
+			// 写文件
+			wb.write(out);
+			// 关闭输出流
+			out.close();
+			return date;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 		
 	private <T> List<List<T>> createList(List<T> targe, int size) {
 		List<List<T>> listArr = new ArrayList<List<T>>();

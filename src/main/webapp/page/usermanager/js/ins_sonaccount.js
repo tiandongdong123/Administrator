@@ -39,7 +39,12 @@ function findList(){
 
 //导出
 function exportexecl(){
-	window.location.href="../content/exportMessage.do?branch="+branch+"&colums="+clum+"&human="+human+"&startTime="+startTime+"&endTime="+endTime;
+	var institution=$("#institution").val();
+	var start_time=$("#start_time").val();
+	var end_time=$("#end_time").val();
+	var pid=$("#pid").val();
+	var userId=$("#userId").val();
+	window.location.href="../auser/exportSonAccount.do?userId="+userId+"&institution="+institution+"&start_time="+start_time+"&end_time="+end_time+"&pid="+pid+"&t="+new Date();
 }
 //跳转到机构查询页
 function goInformation(pid){

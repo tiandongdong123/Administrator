@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import wfks.accounting.setting.PayChannelModel;
 
 import com.alibaba.citrus.util.StringUtil;
+import com.exportExcel.ExportExcel;
 import com.redis.RedisUtil;
 import com.utils.AuthorityLimit;
 import com.utils.CookieUtil;
@@ -795,7 +796,7 @@ public class AheadUserController {
 							return errorMap;
 						}else if(val>InstitutionUtils.maxData){
 							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
+							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "修改后的金额大于最大值，请正确填写金额" : "修改后的次数大于最大值，请正确填写次数"));
 							return errorMap;
 						}
 					}
@@ -1233,7 +1234,7 @@ public class AheadUserController {
 					return errorMap;
 				}else if(val>InstitutionUtils.maxData){
 					errorMap.put("flag", "fail");
-					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "剩余金额过大，请正确填写金额" : "剩余次数过大，请正确填写次数"));
+					errorMap.put("fail", dto.getProjectname()+(ptype.equals("balance") ? "修改后的金额大于最大值，请正确填写金额" : "修改后的次数大于最大值，请正确填写次数"));
 					return errorMap;
 				}
 			}
@@ -1572,6 +1573,9 @@ public class AheadUserController {
 				view.addObject("map",map);
 				view.setViewName("/page/usermanager/ins_sonaccount");
 				return view;
+			}else if(person.getUsertype()==3){
+				map.put("pid",userId);
+				map.put("userId",userId);
 			}else if(person.getUsertype()==2){
 				map.put("pid",userId);
 				map.put("userId","");
@@ -1588,6 +1592,42 @@ public class AheadUserController {
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");
 		return view;
+	}
+	
+	/**
+	 * 子账号导出功能
+	 */
+	@RequestMapping("exportSonAccount")
+	public void exportSonAccount(HttpServletRequest request, HttpServletResponse response,
+			String userId, String institution, String pid, String start_time, String end_time) {
+		
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("start_time",start_time);
+		map.put("end_time",end_time);
+		map.put("pid",pid);
+		map.put("institution",institution);
+		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
+			return;
+		}
+		if(!StringUtils.isEmpty(userId)){
+			Person person=aheadUserService.queryPersonInfo(userId);
+			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
+				return;
+			}else if(person.getUsertype()==3){
+				map.put("pid",userId);
+				map.put("userId",userId);
+			}else if(person.getUsertype()==2){
+				map.put("pid",userId);
+				map.put("userId","");
+			}
+		}
+		int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
+		int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
+		map.put("pageNum", "0");
+		map.put("pageSize", column*maxSize);
+		PageList pageList = aheadUserService.getSonaccount(map);
+		ExportExcel exc= new ExportExcel();
+		exc.exportExccel3(response,pageList.getPageRow(),column,maxSize);
 	}
 	
 	/**
