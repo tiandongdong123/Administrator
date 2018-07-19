@@ -127,7 +127,6 @@ $(function(){
             },
             async:true,
             success:function(data){
-                console.log(data);
                 var openBindStart = meGetDate(data.openBindEnd);
                 var openBindEnd = meGetDate(data.openBindEnd);
                 var email = data.email;
