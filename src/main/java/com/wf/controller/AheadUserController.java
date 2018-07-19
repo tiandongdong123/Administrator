@@ -576,7 +576,9 @@ public class AheadUserController {
 				//发送邮箱
 				try {
 					if (bindAuthorityModel.getSend()) {
-						if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+						List<String> userIdList=new ArrayList<>();
+						userIdList.add(userId);
+						if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
 							log.info("机构用户注册，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 							hashmap.put("emailFlag", "success");
 						} else {
@@ -826,7 +828,7 @@ public class AheadUserController {
                                 Map<String, Object> userIdMap = listmap.get(i);
                                 userIdList.add(userIdMap.get("userId").toString());
                             }
-                            if (wfMailUtil.sendQRCodesMail(email, userIdList, bindAccountChannel)) {
+                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
                                 log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
                                         + userIdList.toString() + "，email:" + email);
                                 hashmap.put("emailFlag", "success");
@@ -1122,7 +1124,7 @@ public class AheadUserController {
                                 Map<String, Object> userIdMap = listmap.get(i);
                                 userIdList.add(userIdMap.get("userId").toString());
                             }
-                            if (wfMailUtil.sendQRCodesMail(email, userIdList, bindAccountChannel)) {
+                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
                                 log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
                                 hashmap.put("emailFlag", "success");
                             } else {
@@ -1709,7 +1711,9 @@ public class AheadUserController {
 		//发送邮箱
 		try {
 			if (bindAuthorityModel.getSend()) {
-				if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
+				List<String> userIdList=new ArrayList<>();
+				userIdList.add(userId);
+				if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
 					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
 					hashmap.put("emailFlag", "success");
 				} else {
