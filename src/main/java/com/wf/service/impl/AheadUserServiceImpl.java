@@ -285,7 +285,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 添加机构管理员
 		if (!StringUtils.isEmpty(user.getAdminname())
 				|| !StringUtils.isEmpty(user.getAdminOldName())) {
-			this.addAdmin(user);
+			if(!StringUtils.isEmpty(user.getAdminpassword())){
+				this.addAdmin(user);
+			}
 		}
 		// 统计分线权限
 		if (!StringUtils.isEmpty(user.getTongji())) {
@@ -318,6 +320,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			} catch (Exception e) {
 				log.error("密码转化异常", e);
 			}
+		}
+		if (StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())) {
+			user.setAdminname(ps.getPid());
 		}
 		user.setUserId(userId);
 	}
@@ -497,7 +502,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(StringUtils.isNotBlank(com.getAdminname())){
 			p.setPid(com.getAdminname());
 		}else if(StringUtils.isNotBlank(com.getAdminOldName())){
-			p.setPid(com.getAdminname());
+			p.setPid(com.getAdminOldName());
 		}else{
 			p.setPid("");
 		}

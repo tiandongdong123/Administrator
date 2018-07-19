@@ -766,6 +766,18 @@ public class AheadUserController {
 						return errorMap;
 					}
 				}
+				WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId,"openApp");
+				if (mapping.length > 0) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构账号"+userId+"开通了APP嵌入服务，登录方式不能为用户名密码+IP");
+					return errorMap;
+				}
+				mapping = aheadUserService.getWfksAccountid(userId, "openWeChat");
+				if (mapping.length > 0) {
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构账号"+userId+"开通了微信公众号嵌入服务，登录方式不能为用户名密码+IP");
+					return errorMap;
+				}
 			}
 			List<ResourceDetailedDTO> rdList = user.getRdlist();
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
