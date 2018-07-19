@@ -1486,6 +1486,9 @@ function radioClick(isBatch){
 			layer.msg("请输入机构名称",{icon: 2});
 			return;
 		}
+		if(isBatch=="batch"){
+			institution="";
+		}
 		$.ajax({
 			type:"post",
 			async: false,
@@ -1790,7 +1793,6 @@ function getAdmin(obj){
 			$("#adminIP").val(ip);
 			$("#adminEmail").val(data.adminEmail);
 			$("#institution").val(data.institution);
-		
 		}
 	});
 }
