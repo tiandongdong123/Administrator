@@ -330,6 +330,18 @@ public class InstitutionUtils {
 			errorMap.put("fail", isRegister?("批量注册最多可以一次注册" + maxSize + "条"):("批量修改最多可以一次注册" + maxSize + "条"));
 			return errorMap;
 		}
+		if ("2".equals(user.getLoginMode())&&!isRegister) {
+			if(!StringUtils.isEmpty(user.getOpenApp())){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "开通了APP嵌入服务，登录方式不能为用户名密码+IP");
+				return errorMap;
+			}
+			if(!StringUtils.isEmpty(user.getOpenWeChat())){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "开通了微信公众号嵌入服务，登录方式不能为用户名密码+IP");
+				return errorMap;
+			}
+		}
 		List<ResourceDetailedDTO> rdList = user.getRdlist();
 		if (rdList == null || rdList.size() == 0) {
 			errorMap.put("flag", "fail");

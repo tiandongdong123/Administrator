@@ -292,11 +292,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			this.addUserIns(user);
 		}
 		// 开通用户角色
-		if ("2".equals(user.getLoginMode())) {//选择用户名密码加IP 应该删除APP和微信绑定
-			wfksAccountidMappingMapper.deleteByUserIdAndType(user.getUserId(),"Limit");
-		}else{
-			this.updateWfksAccountidMapping(user);
-		}
+		this.updateWfksAccountidMapping(user);
 		// 开通用户权限
 		this.addGroupInfo(user);
 		return false;
