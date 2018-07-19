@@ -514,7 +514,9 @@ public class PersonBindInstitutionController {
             return null;
         }
         log.info("开始将二维码发送至指定的邮箱：userId" + userId + ",bindEmail:" + bindEmail);
-        if (wfMailUtil.sendQRCodeMail(bindEmail, userId, bindAccountChannel)) {
+        List<String> userIdList=new ArrayList<>();
+        userIdList.add(userId);
+        if (wfMailUtil.sendQRCodeMail(bindEmail, userIdList, bindAccountChannel)) {
             return "true";
         } else {
             return "false";
