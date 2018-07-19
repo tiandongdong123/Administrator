@@ -13,9 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -1017,6 +1025,7 @@ public class ExportExcel {
 		namelist.add("子账号余额上限");
 		namelist.add("子账号类型");
 		namelist.add("子账号名称");
+		namelist.add("子账号ID");
 		namelist.add("子账号密码");
 		namelist.add("子账号IP");
 		namelist.add("子账号余额");
@@ -1029,14 +1038,14 @@ public class ExportExcel {
 		String newpate = date + ".xlsx";
 		try {
 			// 工作区
-			XSSFWorkbook wb = new XSSFWorkbook();
+			HSSFWorkbook wb = new HSSFWorkbook();
 			// 创建第二个sheet
 			List<List<Object>> tempList = this.createList(list, column);
 			int index=0;
 			for(List<Object> temp:tempList){
 				index+=1;
-				XSSFSheet sheet = wb.createSheet("机构子账号"+(tempList.size()==1?"":index));
-				XSSFRow row = sheet.createRow(0);
+				HSSFSheet sheet = wb.createSheet("机构子账号"+(tempList.size()==1?"":index));
+				HSSFRow row = sheet.createRow(0);
 				for (int i = 0; i < namelist.size(); i++) {
 					row.createCell(i).setCellValue(namelist.get(i));
 				}
@@ -1046,11 +1055,58 @@ public class ExportExcel {
 					// 生成第一行
 					row = sheet.createRow(i + 1);
 					// 给这一行的第一列赋值
-					row.createCell(0).setCellValue(String.valueOf(map.get("cardTypeName")));
-					row.createCell(1).setCellValue(String.valueOf(map.get("cardNum")));
-					row.createCell(2).setCellValue(String.valueOf(map.get("password")));
-					row.createCell(3).setCellValue(String.valueOf(map.get("value")));
-					row.createCell(4).setCellValue(String.valueOf(map.get("validStart")) + "--"+ String.valueOf(map.get("validEnd")));
+					Map<String,Object> data=(Map<String, Object>) map.get("data");
+					row.createCell(0).setCellValue(formatStr(map.get("institution")));
+					row.createCell(1).setCellValue(formatStr(map.get("pid")));
+					row.createCell(2).setCellValue(data==null?"":formatStr(data.get("name")));
+					row.createCell(3).setCellValue(data==null?"":formatStr(data.get("resouceName")));
+					row.createCell(4).setCellValue(formatStr(map.get("upperlimit")));
+					row.createCell(5).setCellValue(formatStr(map.get("sConcurrentnumber")));
+					row.createCell(6).setCellValue(formatStr(map.get("downloadupperlimit")));
+					if("0".equals(formatStr(map.get("chargebacks")))){
+						row.createCell(7).setCellValue("从机构账号扣款");
+					}else if("1".equals(formatStr(map.get("chargebacks")))){
+						row.createCell(7).setCellValue("从机构子账号扣款");
+					}else{
+						row.createCell(7).setCellValue("");
+					}
+					row.createCell(8).setCellValue("");
+					if("0".equals(formatStr(map.get("userRoles")))){
+						row.createCell(9).setCellValue("子账号");
+					}else if("20".equals(formatStr(map.get("userRoles")))){
+						row.createCell(9).setCellValue("学生账号");
+					}else{
+						row.createCell(9).setCellValue("");
+					}
+					row.createCell(10).setCellValue(formatStr(map.get("userRealname")));
+					row.createCell(11).setCellValue(formatStr(map.get("userId")));
+					row.createCell(12).setCellValue(formatStr(map.get("password")));
+					List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
+					if(listip!=null&&listip.size()>0){
+						StringBuffer sb=new StringBuffer();
+						for(Map<String,String> ipMap:listip){
+							if(sb.length()>0){
+								sb.append("\r\n");
+							}
+							sb.append(ipMap.get("ip"));
+						}
+						HSSFCellStyle cellStyle=wb.createCellStyle();       
+						cellStyle.setWrapText(true); 
+						row.createCell(13).setCellStyle(cellStyle);                          
+						row.createCell(13).setCellValue(new HSSFRichTextString(sb.toString())); 
+					}else{
+						row.createCell(13).setCellValue("");
+					}
+					if("1".equals(formatStr(map.get("chargebacks")))){
+						row.createCell(14).setCellValue(formatStr(data.get("balance")));
+						row.createCell(15).setCellValue(formatStr(data.get("count")));
+					}else{
+						row.createCell(14).setCellValue("");
+						row.createCell(15).setCellValue("");
+					}
+					row.createCell(16).setCellValue(formatStr(data.get("name")));
+					row.createCell(17).setCellValue(formatStr(data.get("time")));
+					row.createCell(18).setCellValue(formatStr(map.get("registrationTime")));
 				}
 			}
 			// 设置Content-Disposition
@@ -1065,6 +1121,13 @@ public class ExportExcel {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	private String formatStr(Object obj){
+		if(obj==null||StringUtils.isBlank(obj.toString())){
+			return "";
+		}
+		return obj.toString();
 	}
 		
 	private <T> List<List<T>> createList(List<T> targe, int size) {

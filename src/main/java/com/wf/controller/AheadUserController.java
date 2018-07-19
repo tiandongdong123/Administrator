@@ -1606,9 +1606,9 @@ public class AheadUserController {
 		map.put("end_time",end_time);
 		map.put("pid",pid);
 		map.put("institution",institution);
-		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
-			return;
-		}
+//		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
+//			return;
+//		}
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
@@ -1621,13 +1621,17 @@ public class AheadUserController {
 				map.put("userId","");
 			}
 		}
-		int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
-		int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
-		map.put("pageNum", "0");
-		map.put("pageSize", column*maxSize);
-		PageList pageList = aheadUserService.getSonaccount(map);
-		ExportExcel exc= new ExportExcel();
-		exc.exportExccel3(response,pageList.getPageRow(),column,maxSize);
+		try{
+			int column = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxColumnSize"));
+			int maxSize = NumberUtils.toInt(SettingUtil.getSetting("sheetMaxSize"));
+			map.put("pageNum", 0);
+			map.put("pageSize", column*maxSize==0?100:column*maxSize);
+			PageList pageList = aheadUserService.getSonaccount(map);
+			ExportExcel exc= new ExportExcel();
+			exc.exportExccel3(response,pageList.getPageRow(),column,maxSize);
+		}catch(Exception e){
+			log.error("导出excel异常：",e);
+		}
 	}
 	
 	/**

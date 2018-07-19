@@ -61,6 +61,7 @@
 						<td class="mailbox-name">子账号余额上限</td>
 						<td class="mailbox-name">子账号类型</td>
 						<td class="mailbox-name">子账号名称</td>
+						<td class="mailbox-name">子账号ID</td>
 						<td class="mailbox-name">子账号密码</td>
 						<td class="mailbox-name">子账号IP</td>
 						<td class="mailbox-name">子账号余额</td>
@@ -81,13 +82,14 @@
 					<td class='mailbox-star'><div style='width:100px;'>${list.sConcurrentnumber!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.downloadupperlimit!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></div></td>
-					<td class='mailbox-star'><div style='width:100px;'>${list.data.balance!}</div></td>
+					<td class='mailbox-star'><div style='width:100px;'></div></td>
 					<td class='mailbox-star'><div style='width:100px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.userRealname!}</div></td>
+					<td class='mailbox-star'><div style='width:100px;'>${list.userId!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.password!}</div></td>
 					<td class='mailbox-star'><div style='width:180px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></div></td>
-					<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==0){?>${list.data.balance!}<?}?></div></td>
-					<td class='mailbox-star'><div style='width:100px;'>${list.data.count!}</div></td>
+					<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==1){?>${list.data.balance!}<?}?></div></td>
+					<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==1){?>${list.data.count!}<?}?></div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.data.name!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.data.time!}</div></td>
 					<td class='mailbox-star'><div style='width:100px;'>${list.registrationTime!}</div></td>
