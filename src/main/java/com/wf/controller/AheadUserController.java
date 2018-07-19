@@ -817,23 +817,29 @@ public class AheadUserController {
 				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
 					log.info("成功开通个人绑定机构权限");
-					String userId = bindAuthorityModel.getUserId();
 					String email = bindAuthorityModel.getEmail();
-					// 发送邮箱
-					try {
-						if (bindAuthorityModel.getSend()) {
-							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-								log.info("机构用户批量注册，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
-								hashmap.put("emailFlag", "success");
-							} else {
-								throw new Exception("发送邮件失败");
-							}
-						}
-					} catch (Exception e) {
-						log.error("机构用户批量注册，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
-						hashmap.put("emailFlag", "fail");
-					}
-				}
+                    List<String> userIdList = new ArrayList<>();
+                    // 发送邮箱
+                    try {
+                        if (bindAuthorityModel.getSend()) {
+                            for (int i = 0; i < listmap.size(); i++) {
+                                Map<String, Object> userIdMap = listmap.get(i);
+                                userIdList.add(userIdMap.get("userId").toString());
+                            }
+                            if (wfMailUtil.sendQRCodesMail(email, userIdList, bindAccountChannel)) {
+                                log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
+                                        + userIdList.toString() + "，email:" + email);
+                                hashmap.put("emailFlag", "success");
+                            } else {
+                                throw new Exception("发送邮件失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userIdList.toString()
+                                + "，email:" + email, e);
+                        hashmap.put("emailFlag", "fail");
+                    }
+                }
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
 					for(Map<String, Object> pro : lm) {
@@ -1107,22 +1113,27 @@ public class AheadUserController {
 						hashmap.put("fail",response.getResultMessage());
 						return hashmap;
 					}
-					String userId = bindAuthorityModel.getUserId();
 					String email = bindAuthorityModel.getEmail();
+                    List<String> userIdList = new ArrayList<>();
 					//发送邮箱
-					try {
-						if (bindAuthorityModel.getSend()) {
-							if (wfMailUtil.sendQRCodeMail(email, userId, bindAccountChannel)) {
-								log.info("机构用户批量更新，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
-								hashmap.put("emailFlag", "success");
-							} else {
-								throw new Exception("发送邮件失败");
-							}
-						}
-					} catch (Exception e) {
-						log.error("机构用户批量更新，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
-						hashmap.put("emailFlag", "fail");
-					}
+                    try {
+                        if (bindAuthorityModel.getSend()) {
+                            for (int i = 0; i < listmap.size(); i++) {
+                                Map<String, Object> userIdMap = listmap.get(i);
+                                userIdList.add(userIdMap.get("userId").toString());
+                            }
+                            if (wfMailUtil.sendQRCodesMail(email, userIdList, bindAccountChannel)) {
+                                log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
+                                hashmap.put("emailFlag", "success");
+                            } else {
+                                throw new Exception("发送邮件失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("机构用户批量更新，发送邮箱出现异常！userIdList:" + userIdList.toString()
+                                + "，email:" + email, e);
+                        hashmap.put("emailFlag", "fail");
+                    }
 				}else {
 					int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 					if (count>0){
