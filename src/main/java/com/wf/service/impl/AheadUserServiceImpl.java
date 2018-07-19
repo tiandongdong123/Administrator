@@ -271,8 +271,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if ("2".equals(user.getLoginMode())) {
 			String ip=(String) map.get("ip");
 			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
-			user.setIpSegment(ip);
-			this.updateUserIp(user);
+			if(!StringUtils.isEmpty(ip)){
+				user.setIpSegment(ip);
+				this.updateUserIp(user);
+			}
 		}else{
 			this.deleteUserIp(user.getUserId());
 		}
