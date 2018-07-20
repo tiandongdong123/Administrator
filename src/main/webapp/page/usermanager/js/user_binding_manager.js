@@ -100,7 +100,7 @@ $(function(){
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
     });
     $(document).on('click','.sendEmail',function(){
-        var userId = $("#userId").val();
+        var userId = relocate;
         var bindEmail = $(this).next().find('.email-text').text();
         $.ajax({
             url:'../bindAuhtority/sendMailQRCode.do',

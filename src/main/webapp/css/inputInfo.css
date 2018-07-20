@@ -535,6 +535,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	position: absolute;
 	bottom:74px;
 	right: 10px;
+	color: rgb(12, 96, 194);
 	cursor: pointer;
 }
 .sendEmail{
@@ -542,6 +543,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	bottom: 36px;
 	right: 10px;
 	cursor: pointer;
+	color: rgb(12, 96, 194);
 }
 .qr-email-text{
 	text-align: center;
