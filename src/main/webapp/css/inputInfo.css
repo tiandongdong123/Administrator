@@ -545,7 +545,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .qr-email-text{
 	text-align: center;
-	width: 110%;
+	width: 100%;
+	text-indent: 20px;
  }
 .picture{
 	width: 200px;

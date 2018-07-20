@@ -1,4 +1,5 @@
 var already = true;
+var prevNum;
 $(function(){
     var page_show=20;
     redq();
@@ -59,7 +60,7 @@ $(function(){
             }
         });
     });
-    var prevNum;
+
     $('#database-table').on('click','.bindtype',function(e){
         e = e || window.event;
         e.stopPropagation();
@@ -398,7 +399,12 @@ function revise(){
             var meEmail = $('#email').val();
             var openBindStart = $('#openBindStart').val()+' 00:00:00';
             var openBindEnd = $('#openBindEnd').val()+' 23:59:59';
-            var isCheckedMe = $('#isPublishEmail').is(':checked');
+            var isCheckedMe;
+            if($('#bindType').find("option:selected").val() == '2'){
+                isCheckedMe = $('#isPublishEmail').is(':checked');
+            }else{
+                isCheckedMe = false;
+            }
             if(bool){
                 return ;
             }
@@ -463,6 +469,7 @@ function inquiry(){
     if (pageSize == null) {
         pageSize = 20;
     }
+    prevNum = 0;
     $.ajax({
         type:"POST",
         data:{
