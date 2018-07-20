@@ -4,7 +4,7 @@
 
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/alike.js"></script>
-<script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/validation_user2.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/ins_batchupdate.js"></script>
   <div class="content-wrapper">
     <section class="content-header"><h1>批量机构账号修改</h1></section>
@@ -34,7 +34,8 @@
                 </div>
                 <div class="form-group input_block">
 					<label class="input_name">国家</label>
-					<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion(this);">
+					<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion2(this);">
+						<option value="">--请选择--</option>
 						<option value="China">中国</option>
 						<option value="foreign">外国</option>
 					</select>
@@ -43,7 +44,6 @@
 					<label class="input_name">地区</label>
 					<select class="form-control input_time" name="PostCode" id="PostCode">
 						<option value="">--请选择--</option>
-						<?for(arr in arrayArea){?><option value="${arr.id}">${arr.name}</option><?}?>
 					</select>
                 </div>
                 <div class="form-group input_block">
@@ -55,7 +55,8 @@
                 </div>
                 <div class="form-group input_block">
 					<label class="input_name">工单类型</label>
-					<select class="form-control input_time" name="OrderType" id="OrderType" onchange="selectOrder(this);">
+					<select class="form-control input_time" name="OrderType" id="OrderType" onchange="selectOrder2(this);">
+						<option value="">--请选择--</option>
 						<option value="crm">CRM工单</option>
 						<option value="inner">内部工单</option>
 					</select>

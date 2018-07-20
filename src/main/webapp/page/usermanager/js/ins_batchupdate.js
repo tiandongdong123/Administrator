@@ -29,6 +29,11 @@ function submitForm(){
 	if(bool){
 		return ;
 	}
+	var type=$("#OrderType").val();
+	if(type=='crm'||type=='inner'){
+		$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
+		$('#fromList').bootstrapValidator('removeField', 'OrderContent');
+	}
 	addAtrr();
 	if(!validateFrom()){
 		removeAtrr();
@@ -84,4 +89,62 @@ function removeAtrr(){
 function addAtrr(){
 	$("#submit").attr({disabled: "disabled"});
 	$("#submit1").attr({disabled: "disabled"});
+}
+
+//工单类型
+function selectOrder2(obj){
+	var type=$("#OrderType").val();
+	var msg="";
+	if(type=='crm'){
+		$("#orderTypeSpan").html("CRM工单号");
+		msg='CRM工单号不能为空，请填写CRM工单号';
+	}else if(type=='inner'){
+		$("#orderTypeSpan").html("申请部门");
+		msg='申请部门不能为空，请填写申请部门';
+	}else{
+		$("#orderTypeSpan").html("CRM工单号");
+	}
+	$("#OrderContent").val("");
+	if(type=='crm'||type=='inner'){
+		$("#fromList").bootstrapValidator("addField","OrderContent", {
+			validators: {notEmpty: {message: msg}}
+		});
+	}else{
+		$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
+		$('#fromList').bootstrapValidator('removeField', 'OrderContent');
+	}
+}
+//选择国家
+function selectRegion2(obj){
+	var region=$(obj).val();
+	if(region=='foreign'){
+		$("#PostCode").html('<option value="none">无</option>');
+		$("#PostCode").val('none');
+	}else if(region=='China'){
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/getRegion.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				var area='<option value="">--请选择--</option>';
+				var arrayArea=data;
+				for(var i=0;i<arrayArea.length;i++){
+					area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
+				}
+				$("#PostCode").html(area);
+			}
+		});
+	}else{
+		$("#PostCode").html('<option value="">--请选择--</option>');
+	}
+	if(region=='China'){
+		$("#fromList").bootstrapValidator("addField","PostCode", {
+			validators: {notEmpty: {message: "地区不能为空，请选择地区"}}
+		});
+	}else{
+		$("#fromList").data("bootstrapValidator").updateStatus("PostCode","NOT_VALIDATED",null);
+		$('#fromList').bootstrapValidator('removeField', 'PostCode');
+	}
 }

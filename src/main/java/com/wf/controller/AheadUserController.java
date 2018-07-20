@@ -466,6 +466,15 @@ public class AheadUserController {
 	}
 	
 	/**
+	 * 获取地区
+	 */
+	@RequestMapping("getRegion")
+	@ResponseBody
+	public JSONArray getRegion(HttpServletResponse httpResponse){
+		return SettingUtil.getRegionCode();
+	}
+	
+	/**
 	 *	机构用户注册跳转
 	 */
 	@RequestMapping("register")
@@ -642,7 +651,6 @@ public class AheadUserController {
 	@RequestMapping("batchupdate")
 	public ModelAndView batchUpdate(){
 		ModelAndView view = new ModelAndView();
-		view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchupdate");
 		return view;
