@@ -256,8 +256,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 开通用户角色
 		this.addWfksAccountidMapping(user);
 		// 开通用户权限
-		this.addGroupInfo(user);
+		this.setGroupInfo(user);
 		return true;
+	}
+	
+	// 修改开通用户权限 没有就是默认不修改
+	private void setGroupInfo(InstitutionalUser user) {
+		GroupInfo info = this.getGroupInfo(user.getUserId());
+		if (StringUtils.isEmpty(user.getOrganization())) {
+			info.setOrganization(user.getOrganization());
+		}
+		if (StringUtils.isEmpty(user.getOrderType())) {
+			info.setOrderType(user.getOrderType());
+			info.setOrderContent(user.getOrderContent());
+		}
+		if (StringUtils.isEmpty(user.getPostCode())) {
+			info.setCountryRegion(user.getCountryRegion());
+			info.setPostCode(user.getPostCode());
+		}
+		if (!StringUtils.isEmpty(user.getAdminname())) {
+			info.setPid(user.getAdminname());
+		} else if (!StringUtils.isEmpty(user.getAdminname())) {
+			info.setPid(user.getAdminOldName());
+		}
+		this.updateGroupInfo(user);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)

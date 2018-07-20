@@ -1019,7 +1019,7 @@ public class ExportExcel {
 		namelist.add("购买项目");
 		namelist.add("购买数据库");
 		namelist.add("子账号上限");
-		namelist.add("自账号并发数上限");
+		namelist.add("子账号并发数上限");
 		namelist.add("子账号下载量上限/天");
 		namelist.add("子账号扣款模式");
 		namelist.add("子账号余额上限");

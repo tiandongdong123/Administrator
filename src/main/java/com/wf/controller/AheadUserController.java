@@ -1618,9 +1618,9 @@ public class AheadUserController {
 		map.put("end_time",end_time);
 		map.put("pid",pid);
 		map.put("institution",institution);
-//		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
-//			return;
-//		}
+		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
+			return;
+		}
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){

@@ -394,7 +394,7 @@ public class InstitutionUtils {
 				errorMap.put("fail", "账号" + userId + "格式不对，请填写规范的机构ID");
 				return errorMap;
 			}
-			if(StringUtils.isBlank(institution)&&isRegister){
+			if(StringUtils.isBlank(institution)){
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
 				return errorMap;
