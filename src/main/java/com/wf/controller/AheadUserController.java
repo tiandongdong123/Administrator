@@ -573,20 +573,21 @@ public class AheadUserController {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
 				String userId = bindAuthorityModel.getUserId();
 				String email = bindAuthorityModel.getEmail();
+				List<String> userIdList=new ArrayList<>();
+				userIdList.add(userId);
 				//发送邮箱
 				try {
 					if (bindAuthorityModel.getSend()) {
-						List<String> userIdList=new ArrayList<>();
-						userIdList.add(userId);
+
 						if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
-							log.info("机构用户注册，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
+							log.info("机构用户注册，发送邮件成功，userIdList：" + userIdList.toString() + "，email:" + email);
 							hashmap.put("emailFlag", "success");
 						} else {
 							throw new Exception("发送邮件失败");
 						}
 					}
 				} catch (Exception e) {
-					log.error("机构用户注册，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
+					log.error("机构用户注册，发送邮箱出现异常！userIdList：" + userIdList.toString() + "，email:" + email, e);
 					hashmap.put("emailFlag", "fail");
 				}
 			}

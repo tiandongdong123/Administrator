@@ -153,7 +153,31 @@ public class PersonBindInstitutionController {
                     .setBindLimit(bindAuthorityModel.getBindLimit())
                     .setBindValidity(bindAuthorityModel.getBindValidity())
                     .setDownloadLimit(bindAuthorityModel.getDownloadLimit())
-                    .addAllBindAuthority(authorityList);
+                    .addAllBindAuthority(authorityList)
+                    .setEmail(bindAuthorityModel.getEmail())
+                    .setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getTime()))
+                    .setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getTime()));
+            //发送邮箱
+            String email = bindAuthorityModel.getEmail();
+            List<String> userIdList = new ArrayList<>();
+            for (String userId : userIds) {
+                userIdList.add(userId);
+            }
+            Map<String,String> hashmap = new HashMap<String, String>();
+            try {
+                if (bindAuthorityModel.getSend()) {
+
+                    if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                        log.info("机构用户注册，发送邮件成功，userIdList：" + userIdList.toString() + "，email:" + email);
+                        hashmap.put("emailFlag", "success");
+                    } else {
+                        throw new Exception("发送邮件失败");
+                    }
+                }
+            } catch (Exception e) {
+                log.error("机构用户注册，发送邮箱出现异常！userIdList：" + userIdList.toString() + "，email:" + email, e);
+                hashmap.put("emailFlag", "fail");
+            }
             ServiceResponse response = bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
             if (response.getServiceResult()) {
                 return true;
