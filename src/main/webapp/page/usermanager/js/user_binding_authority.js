@@ -139,6 +139,7 @@ function submitNew(){
     }else{
         $('#fromList').bootstrapValidator('removeField','email');
     }
+    $("#fromList").data('bootstrapValidator').resetForm();
     if(!validateFrom()){
         $("#submit").removeAttr("disabled");
         bool = true;

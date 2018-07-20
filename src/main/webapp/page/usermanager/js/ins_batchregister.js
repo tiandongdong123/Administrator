@@ -40,6 +40,7 @@ function submitForm(){
     }else{
         $('#fromList').bootstrapValidator('removeField','email');
     }
+    $("#fromList").data('bootstrapValidator').resetForm();
 	if(bool){
 		return ;
 	}

@@ -130,19 +130,17 @@ $(function() {/* 文档加载，执行一个函数 */
             openBindEnd:{
                 message : '请选择日期',
                 validators : {
-                    notEmpty : {
-                        message : '请选择日期'
-                    },
                     callback:{
-                        message: '请选择日期',
-                        callback:function(value,validator,$field){
-                        	var startDay = validator.getFieldElements('startDay').val();
-                        	if(startDay == ''){
-                                validator.updateStatus('endDay', 'VALID');
+                        callback:function(value,validator){
+                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
+                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
+                        	if(!startDay){
                         		return false;
-							}else{
-                        		return true;
 							}
+                            if(!endDay){
+                                return false;
+                            }
+							return true;
                         }
                     }
                 }
@@ -228,6 +226,14 @@ $(function() {/* 文档加载，执行一个函数 */
 		}
 	})
     $('#fromList').bootstrapValidator('removeField','email');
+    $('#openBindStart').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
+    $('#openBindEnd').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
 });
 
 function fieldsCheck() {
