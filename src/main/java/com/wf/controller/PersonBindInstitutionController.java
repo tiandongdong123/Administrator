@@ -533,7 +533,7 @@ public class PersonBindInstitutionController {
     @RequestMapping("/sendMailQRCode")
     @ResponseBody
     public String sendMailQRCode(String bindEmail, String userId) {
-        if (bindEmail == null || userId == null) {
+        if (bindEmail == null || "".equals(bindEmail)||userId == null||"".equals(userId)){
             log.info("userId和bindEmail不能为空");
             return null;
         }
