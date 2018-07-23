@@ -1016,23 +1016,22 @@ public class ExportExcel {
 		List<String> namelist=new ArrayList<String>();
 		namelist.add("机构名称");
 		namelist.add("机构ID");
-		namelist.add("购买项目");
-		namelist.add("购买数据库");
 		namelist.add("子账号上限");
 		namelist.add("子账号并发数上限");
 		namelist.add("子账号下载量上限/天");
 		namelist.add("子账号扣款模式");
-		namelist.add("子账号余额上限");
 		namelist.add("子账号类型");
 		namelist.add("子账号名称");
 		namelist.add("子账号ID");
 		namelist.add("子账号密码");
 		namelist.add("子账号IP");
+		namelist.add("子账号注册时间");
+		namelist.add("子账号权限");
+		namelist.add("购买数据库");
+		namelist.add("子账号有效期");
 		namelist.add("子账号余额");
 		namelist.add("子账号次数");
-		namelist.add("子账号权限");
-		namelist.add("子账号有效期");
-		namelist.add("子账号注册时间");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = sdf.format(new Date());
 		String newpate = date + ".xlsx";
@@ -1058,29 +1057,26 @@ public class ExportExcel {
 					Map<String,Object> data=(Map<String, Object>) map.get("data");
 					row.createCell(0).setCellValue(formatStr(map.get("institution")));
 					row.createCell(1).setCellValue(formatStr(map.get("pid")));
-					row.createCell(2).setCellValue(data==null?"":formatStr(data.get("name")));
-					row.createCell(3).setCellValue(data==null?"":formatStr(data.get("resouceName")));
-					row.createCell(4).setCellValue(formatStr(map.get("upperlimit")));
-					row.createCell(5).setCellValue(formatStr(map.get("sConcurrentnumber")));
-					row.createCell(6).setCellValue(formatStr(map.get("downloadupperlimit")));
+					row.createCell(2).setCellValue(formatStr(map.get("upperlimit")));
+					row.createCell(3).setCellValue(formatStr(map.get("sConcurrentnumber")));
+					row.createCell(4).setCellValue(formatStr(map.get("downloadupperlimit")));
 					if("0".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(7).setCellValue("从机构账号扣款");
+						row.createCell(5).setCellValue("从机构账号扣款");
 					}else if("1".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(7).setCellValue("从机构子账号扣款");
+						row.createCell(5).setCellValue("从机构子账号扣款");
 					}else{
-						row.createCell(7).setCellValue("");
+						row.createCell(5).setCellValue("");
 					}
-					row.createCell(8).setCellValue("");
 					if("0".equals(formatStr(map.get("userRoles")))){
-						row.createCell(9).setCellValue("子账号");
+						row.createCell(6).setCellValue("子账号");
 					}else if("20".equals(formatStr(map.get("userRoles")))){
-						row.createCell(9).setCellValue("学生账号");
+						row.createCell(6).setCellValue("学生账号");
 					}else{
-						row.createCell(9).setCellValue("");
+						row.createCell(6).setCellValue("");
 					}
-					row.createCell(10).setCellValue(formatStr(map.get("userRealname")));
-					row.createCell(11).setCellValue(formatStr(map.get("userId")));
-					row.createCell(12).setCellValue(formatStr(map.get("password")));
+					row.createCell(7).setCellValue(formatStr(map.get("userRealname")));
+					row.createCell(8).setCellValue(formatStr(map.get("userId")));
+					row.createCell(9).setCellValue(formatStr(map.get("password")));
 					List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
 					if(listip!=null&&listip.size()>0){
 						StringBuffer sb=new StringBuffer();
@@ -1092,21 +1088,22 @@ public class ExportExcel {
 						}
 						HSSFCellStyle cellStyle=wb.createCellStyle();       
 						cellStyle.setWrapText(true); 
-						row.createCell(13).setCellStyle(cellStyle);                          
-						row.createCell(13).setCellValue(new HSSFRichTextString(sb.toString())); 
+						row.createCell(10).setCellStyle(cellStyle);                          
+						row.createCell(10).setCellValue(new HSSFRichTextString(sb.toString())); 
 					}else{
-						row.createCell(13).setCellValue("");
+						row.createCell(10).setCellValue("");
 					}
+					row.createCell(11).setCellValue(formatStr(map.get("registrationTime")));
+					row.createCell(12).setCellValue(formatStr(data.get("time")));
+					row.createCell(13).setCellValue(data==null?"":formatStr(data.get("name")));
+					row.createCell(14).setCellValue(data==null?"":formatStr(data.get("resouceName")));
 					if("1".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(14).setCellValue(formatStr(data.get("balance")));
-						row.createCell(15).setCellValue(formatStr(data.get("count")));
+						row.createCell(15).setCellValue(formatStr(data.get("balance")));
+						row.createCell(16).setCellValue(formatStr(data.get("count")));
 					}else{
-						row.createCell(14).setCellValue("");
 						row.createCell(15).setCellValue("");
+						row.createCell(16).setCellValue("");
 					}
-					row.createCell(16).setCellValue(formatStr(data.get("name")));
-					row.createCell(17).setCellValue(formatStr(data.get("time")));
-					row.createCell(18).setCellValue(formatStr(map.get("registrationTime")));
 				}
 			}
 			// 设置Content-Disposition

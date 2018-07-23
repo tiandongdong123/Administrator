@@ -351,25 +351,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	//添加机构管理员
-	private void addAdmin(InstitutionalUser com){
-		if (StringUtils.isEmpty(com.getManagerType())) {
+	private void addAdmin(InstitutionalUser user){
+		if (StringUtils.isEmpty(user.getManagerType())) {
 			return;
 		}
-		if("new".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminname())||
-				"old".equals(com.getManagerType())&&StringUtils.isEmpty(com.getAdminOldName())){
+		if("new".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminname())||
+				"old".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminOldName())){
 			return;
 		}
-		String adminId = com.getManagerType().equals("new") ? com.getAdminname() : com
+		String adminId = user.getManagerType().equals("new") ? user.getAdminname() : user
 				.getAdminOldName();
 		Person per=this.queryPersonInfo(adminId);
 		if(per!=null){
-			this.updateRegisterAdmin(com);
+			this.updateRegisterAdmin(user);
 		}else{
-			this.addRegisterAdmin(com);
+			this.addRegisterAdmin(user);
 		}
-		if(StringUtils.isNotBlank(com.getAdminIP())){
-			this.deleteUserIp(com.getAdminname());
-			this.addUserAdminIp(com);
+		if(StringUtils.isNotBlank(user.getAdminIP())){
+			this.deleteUserIp(adminId);
+			this.addUserAdminIp(user);
 		}
 	}
 
@@ -557,7 +557,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int updateRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
-		per.setUserId(com.getAdminname());
+		if(!StringUtils.isEmpty(com.getAdminname())){
+			per.setUserId(com.getAdminname());
+		}else if(!StringUtils.isEmpty(com.getAdminOldName())){
+			per.setUserId(com.getAdminOldName());
+		}else{
+			return 0;
+		}
+		
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 		} catch (Exception e) {
@@ -576,7 +583,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(ip.contains("-")){
 				UserIp userIp = new UserIp();
 				userIp.setId(GetUuid.getId());
-				userIp.setUserId(com.getAdminname());
+				if(!StringUtils.isEmpty(com.getAdminname())){
+					userIp.setUserId(com.getAdminname());
+				}else if(!StringUtils.isEmpty(com.getAdminOldName())){
+					userIp.setUserId(com.getAdminOldName());
+				}
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
 				userIp.setSort(index++);

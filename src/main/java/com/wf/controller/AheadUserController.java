@@ -796,7 +796,8 @@ public class AheadUserController {
 					}
 					// 验证金额是否正确
 					String ptype = dto.getProjectType();
-					if (ptype.equals("balance") || ptype.equals("count")) {
+					if (StringUtils.isEmpty(user.getResetMoney()) && ptype.equals("balance")
+							|| StringUtils.isEmpty(user.getResetCount()) && ptype.equals("count")) {
 						user.setUserId(userId);
 						if(ptype.equals("balance")){
 							dto.setTotalMoney(pro.get("totalMoney").toString());
@@ -1568,22 +1569,18 @@ public class AheadUserController {
 	 *	子账号列表页跳转
 	 */
 	@RequestMapping("tosonaccount")
-	public ModelAndView tosonaccount(HttpServletRequest req){
+	public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
+			String pid, String start_time, String end_time, String pageNum, String pageSize) {
 		ModelAndView view = new ModelAndView();
 		Map<String,Object> map=new HashMap<String,Object>();
-		String userId=req.getParameter("userId");
-		String start_time=req.getParameter("end_time");
-		String end_time=req.getParameter("end_time");
-		String pid=req.getParameter("pid");
-		String institution=req.getParameter("institution");
-		String pageNum=req.getParameter("pageNum");
-		String pageSize=req.getParameter("pageSize");
 		map.put("start_time",start_time);
 		map.put("end_time",end_time);
 		map.put("pid",pid);
 		map.put("institution",institution);
-		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
-			view.addObject("map",map);
+		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(pid)
+				&& StringUtils.isEmpty(institution) && StringUtil.isEmpty(start_time)
+				&& StringUtil.isEmpty(end_time)) {
+			view.addObject("map", map);
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}
@@ -1595,7 +1592,7 @@ public class AheadUserController {
 				return view;
 			}else if(person.getUsertype()==3){
 				map.put("pid",userId);
-				map.put("userId",userId);
+				map.put("userId","");
 			}else if(person.getUsertype()==2){
 				map.put("pid",userId);
 				map.put("userId","");
@@ -1608,6 +1605,9 @@ public class AheadUserController {
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
 		map.put("pageList", pageList);
 		map.put("userId",userId);
+		if (map.get("pid") != null) {
+			map.remove("pid");
+		}
 		view.addObject("map",map);
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");
@@ -1626,7 +1626,9 @@ public class AheadUserController {
 		map.put("end_time",end_time);
 		map.put("pid",pid);
 		map.put("institution",institution);
-		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(pid)&&StringUtils.isEmpty(institution)){
+		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(pid)
+				&& StringUtils.isEmpty(institution) && StringUtil.isEmpty(start_time)
+				&& StringUtil.isEmpty(end_time)) {
 			return;
 		}
 		if(!StringUtils.isEmpty(userId)){
