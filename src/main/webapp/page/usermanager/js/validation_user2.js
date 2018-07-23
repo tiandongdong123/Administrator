@@ -48,13 +48,6 @@ $(function() {/* 文档加载，执行一个函数 */
 					}
 				}
 			},
-			OrderContent:{
-				validators : {
-					notEmpty : {
-						message : 'CRM工单号不能为空，请填写CRM工单号'
-					}
-				}
-			},
 			resourcePurchaseType: {
                 validators: {
                     notEmpty: {

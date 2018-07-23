@@ -207,7 +207,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
 	@Override
-	public boolean updateinfo(InstitutionalUser user) {		
+	public boolean updateinfo(InstitutionalUser user) {
 		// 修改机构名称
 		this.updateUserInfo(user);
 		//修改用户IP
@@ -256,30 +256,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 开通用户角色
 		this.addWfksAccountidMapping(user);
 		// 开通用户权限
-		this.setGroupInfo(user);
+		this.addGroupInfo(user);
 		return true;
-	}
-	
-	// 修改开通用户权限 没有就是默认不修改
-	private void setGroupInfo(InstitutionalUser user) {
-		GroupInfo info = this.getGroupInfo(user.getUserId());
-		if (StringUtils.isEmpty(user.getOrganization())) {
-			info.setOrganization(user.getOrganization());
-		}
-		if (StringUtils.isEmpty(user.getOrderType())) {
-			info.setOrderType(user.getOrderType());
-			info.setOrderContent(user.getOrderContent());
-		}
-		if (StringUtils.isEmpty(user.getPostCode())) {
-			info.setCountryRegion(user.getCountryRegion());
-			info.setPostCode(user.getPostCode());
-		}
-		if (!StringUtils.isEmpty(user.getAdminname())) {
-			info.setPid(user.getAdminname());
-		} else if (!StringUtils.isEmpty(user.getAdminname())) {
-			info.setPid(user.getAdminOldName());
-		}
-		this.updateGroupInfo(user);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
@@ -318,8 +296,32 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 开通用户角色
 		this.updateWfksAccountidMapping(user);
 		// 开通用户权限
-		this.addGroupInfo(user);
+		this.setGroupInfo(user);
 		return false;
+	}
+	
+	// 修改开通用户权限 没有就是默认不修改
+	private void setGroupInfo(InstitutionalUser user) {
+		GroupInfo info = this.getGroupInfo(user.getUserId());
+		if (StringUtils.isEmpty(user.getOrganization())) {
+			info.setOrganization(info.getOrganization());
+		}
+		if (StringUtils.isEmpty(user.getOrderType())) {
+			info.setOrderType(info.getOrderType());
+			info.setOrderContent(info.getOrderContent());
+		}
+		if (StringUtils.isEmpty(user.getPostCode())) {
+			info.setCountryRegion(info.getCountryRegion());
+			info.setPostCode(info.getPostCode());
+		}
+		if (!StringUtils.isEmpty(user.getAdminname())) {
+			info.setPid(user.getAdminname());
+		} else if (!StringUtils.isEmpty(user.getAdminname())) {
+			info.setPid(user.getAdminOldName());
+		}else{
+			info.setPid(info.getPid());
+		}
+		this.updateGroupInfo(info);
 	}
 	
 	//用户保持默认设置
@@ -2606,14 +2608,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateGroupInfo(InstitutionalUser com) {
-		GroupInfo info=new GroupInfo();
-		info.setUserId(com.getUserId());
-		info.setCountryRegion(com.getCountryRegion());
-		info.setOrderType(com.getOrderType());
-		info.setOrderContent(com.getOrderContent());
-		info.setPostCode(com.getPostCode());
-		info.setOrganization(com.getOrganization());
+	public int updateGroupInfo(GroupInfo info) {
 		return groupInfoMapper.updateGroupInfo(info);
 	}
 

@@ -257,7 +257,7 @@ public interface AheadUserService {
 	 * @param com
 	 * @return
 	 */
-	int updateGroupInfo(InstitutionalUser user);
+	int updateGroupInfo(GroupInfo info);
 	
 	/**
 	 * 根据userId查询机构用户权限
