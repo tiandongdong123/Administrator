@@ -373,8 +373,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}else{
 			this.addRegisterAdmin(user);
 		}
+		this.deleteUserIp(adminId);
 		if(StringUtils.isNotBlank(user.getAdminIP())){
-			this.deleteUserIp(adminId);
 			this.addUserAdminIp(user);
 		}
 	}
