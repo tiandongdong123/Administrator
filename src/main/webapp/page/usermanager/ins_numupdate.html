@@ -269,12 +269,14 @@
            		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
            		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
-           		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}"><?var marginleft=1000;?>
-				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){ marginleft=0;?>
-				<button type="button" class="btn btn-primary btn-sm" style="margin-left:950px;" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>
+           		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
+           		<span style="float:right;margin-right:150px;">
+				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){?>
+				<button type="button" class="btn btn-primary btn-sm" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>
 				<?}?>
-           		<button type="button" class="btn btn-primary btn-sm" style="margin-left:${marginleft}px;"
+           		<button type="button" class="btn btn-primary btn-sm"
            		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
+           		</span>
            	</div>
            	<div class="time_block">
             	<div class="time_input">

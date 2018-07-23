@@ -343,7 +343,10 @@ public class InstitutionUtils {
 			}
 		}
 		List<ResourceDetailedDTO> rdList = user.getRdlist();
-		if (rdList == null || rdList.size() == 0) {
+		if(rdList==null){
+			rdList=new ArrayList<ResourceDetailedDTO>();
+		}
+		if (rdList.size() == 0 && isRegister) {
 			errorMap.put("flag", "fail");
 			errorMap.put("fail", "购买项目不能为空，请选择购买项目");
 			return errorMap;
@@ -461,7 +464,7 @@ public class InstitutionUtils {
 				errorMap.put("fail",  "批量中添加了机构管理员，文档中的机构名称必须是一个机构名称");
 				return errorMap;
 			}
-			if(user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){
+			if(!StringUtils.isEmpty(user.getManagerType())&&user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", "机构管理员"+adminId+"不属于"+institution+"的机构管理员");
 				return errorMap;

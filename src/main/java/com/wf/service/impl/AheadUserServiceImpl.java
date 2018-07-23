@@ -302,26 +302,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	// 修改开通用户权限 没有就是默认不修改
 	private void setGroupInfo(InstitutionalUser user) {
-		GroupInfo info = this.getGroupInfo(user.getUserId());
-		if (StringUtils.isEmpty(user.getOrganization())) {
-			info.setOrganization(info.getOrganization());
+		GroupInfo groupInfo = this.getGroupInfo(user.getUserId());
+		if (!StringUtils.isEmpty(user.getOrganization())) {
+			groupInfo.setOrganization(user.getOrganization());
 		}
-		if (StringUtils.isEmpty(user.getOrderType())) {
-			info.setOrderType(info.getOrderType());
-			info.setOrderContent(info.getOrderContent());
+		if (!StringUtils.isEmpty(user.getOrderType())&&!StringUtils.isEmpty(user.getOrderContent())) {
+			groupInfo.setOrderType(user.getOrderType());
+			groupInfo.setOrderContent(user.getOrderContent());
 		}
-		if (StringUtils.isEmpty(user.getPostCode())) {
-			info.setCountryRegion(info.getCountryRegion());
-			info.setPostCode(info.getPostCode());
+		if (!StringUtils.isEmpty(user.getCountryRegion())
+				&& !StringUtils.isEmpty(user.getPostCode())) {
+			groupInfo.setCountryRegion(user.getCountryRegion());
+			groupInfo.setPostCode(user.getPostCode());
 		}
 		if (!StringUtils.isEmpty(user.getAdminname())) {
-			info.setPid(user.getAdminname());
+			groupInfo.setPid(user.getAdminname());
 		} else if (!StringUtils.isEmpty(user.getAdminname())) {
-			info.setPid(user.getAdminOldName());
-		}else{
-			info.setPid(info.getPid());
+			groupInfo.setPid(user.getAdminOldName());
 		}
-		this.updateGroupInfo(info);
+		this.updateGroupInfo(groupInfo);
 	}
 	
 	//用户保持默认设置
@@ -1312,7 +1311,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(row != null){
 						if(rowNum==0){
 							str = ExcelUtil.readExcelTitle(row);
-							if (str.length < 5) {
+							if (str.length < 4) {
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "模版文件的列未按照规范排版，请下载标准的模版文件");
 								break;

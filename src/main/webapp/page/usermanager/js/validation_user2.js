@@ -48,13 +48,6 @@ $(function() {/* 文档加载，执行一个函数 */
 					}
 				}
 			},
-			resourcePurchaseType: {
-                validators: {
-                    notEmpty: {
-                        message: '购买项目不能为空，请选择购买项目'
-                    }
-                }
-			},
 			file: {
                 validators: {
                     notEmpty: {

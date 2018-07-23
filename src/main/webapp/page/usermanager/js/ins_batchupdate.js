@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
+	$('#fromList').bootstrapValidator('removeField', 'OrderContent');
 	$("input[name='openState']").prop("checked",false);
 	$("input[name='resourceType']").prop("checked",false);
 	$("input[id='resourceInherited']").prop("checked",true);
@@ -30,10 +32,6 @@ function submitForm(){
 		return ;
 	}
 	var type=$("#OrderType").val();
-	if(type=='crm'||type=='inner'){
-		$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
-		$('#fromList').bootstrapValidator('removeField', 'OrderContent');
-	}
 	addAtrr();
 	if(!validateFrom()){
 		removeAtrr();

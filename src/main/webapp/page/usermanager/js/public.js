@@ -23,6 +23,7 @@ $(function(e){
 			$("input:checkbox[id=statistics]:checked").each(function(){
 				$(this).prop('checked',false);
 			});
+			$("input:radio[name=managerType]").prop('checked',false);
 			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 			$("#checktongji").prop('checked',false);
@@ -636,7 +637,7 @@ function selectProject(obj,flag,checked){
 			text += '<div class="balance_block" name="full_div">';
 			text += '<div class="resources_title"><input type="hidden" name="rdlist['+count+'].projectid" id="pro_'+projectid+'" value="'+projectid+'"><span>'+proname+'</span>';
 			text += '<input type="hidden" name="rdlist['+count+'].projectname" value="'+proname+'"><input type="hidden" name="rdlist['+count+'].projectType" value="'+$(obj).val()+'">';
-			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><button type="button" class="btn btn-primary btn-sm" style="margin-left:1000px;" onclick="delDiv(this,\''+count+'\',1);">删除</button></div>';
+			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><span style="float:right;margin-right:150px;"><button type="button" class="btn btn-primary btn-sm" onclick="delDiv(this,\''+count+'\',1);">删除</button></span></div>';
 			text += '<div class="time_block"><div class="time_input">';
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
