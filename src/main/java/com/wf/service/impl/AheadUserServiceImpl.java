@@ -317,7 +317,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		if (!StringUtils.isEmpty(user.getAdminname())) {
 			groupInfo.setPid(user.getAdminname());
-		} else if (!StringUtils.isEmpty(user.getAdminname())) {
+		} else if (!StringUtils.isEmpty(user.getAdminOldName())) {
 			groupInfo.setPid(user.getAdminOldName());
 		}
 		this.updateGroupInfo(groupInfo);
