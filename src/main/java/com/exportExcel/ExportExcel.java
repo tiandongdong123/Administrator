@@ -21,9 +21,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -1048,62 +1046,80 @@ public class ExportExcel {
 				for (int i = 0; i < namelist.size(); i++) {
 					row.createCell(i).setCellValue(namelist.get(i));
 				}
+				int rowNum=1;
 				for (int i = 0; i < temp.size(); i++) {
 					Map<String, Object> map=(Map<String, Object>) temp.get(i);
 					// 创建第一个sheet
-					// 生成第一行
-					row = sheet.createRow(i + 1);
-					// 给这一行的第一列赋值
-					Map<String,Object> data=(Map<String, Object>) map.get("data");
-					row.createCell(0).setCellValue(formatStr(map.get("institution")));
-					row.createCell(1).setCellValue(formatStr(map.get("pid")));
-					row.createCell(2).setCellValue(formatStr(map.get("upperlimit")));
-					row.createCell(3).setCellValue(formatStr(map.get("sConcurrentnumber")));
-					row.createCell(4).setCellValue(formatStr(map.get("downloadupperlimit")));
-					if("0".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(5).setCellValue("从机构账号扣款");
-					}else if("1".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(5).setCellValue("从机构子账号扣款");
-					}else{
-						row.createCell(5).setCellValue("");
-					}
-					if("0".equals(formatStr(map.get("userRoles")))){
-						row.createCell(6).setCellValue("子账号");
-					}else if("20".equals(formatStr(map.get("userRoles")))){
-						row.createCell(6).setCellValue("学生账号");
-					}else{
-						row.createCell(6).setCellValue("");
-					}
-					row.createCell(7).setCellValue(formatStr(map.get("userRealname")));
-					row.createCell(8).setCellValue(formatStr(map.get("userId")));
-					row.createCell(9).setCellValue(formatStr(map.get("password")));
-					List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
-					if(listip!=null&&listip.size()>0){
-						StringBuffer sb=new StringBuffer();
-						for(Map<String,String> ipMap:listip){
-							if(sb.length()>0){
-								sb.append("\r\n");
-							}
-							sb.append(ipMap.get("ip"));
+					List<Map<String, Object>> dataList= (java.util.List<Map<String, Object>>) map.get("data");
+					int length=dataList.size()==0?1:dataList.size();
+					for(int j=0;j<length;j++){
+						row = sheet.createRow(rowNum++);
+						row.createCell(0).setCellValue(formatStr(map.get("institution")));
+						row.createCell(1).setCellValue(formatStr(map.get("pid")));
+						row.createCell(2).setCellValue(formatStr(map.get("upperlimit")));
+						row.createCell(3).setCellValue(formatStr(map.get("sConcurrentnumber")));
+						row.createCell(4).setCellValue(formatStr(map.get("downloadupperlimit")));
+						if("0".equals(formatStr(map.get("chargebacks")))){
+							row.createCell(5).setCellValue("从机构账号扣款");
+						}else if("1".equals(formatStr(map.get("chargebacks")))){
+							row.createCell(5).setCellValue("从机构子账号扣款");
+						}else{
+							row.createCell(5).setCellValue("");
 						}
-						HSSFCellStyle cellStyle=wb.createCellStyle();       
-						cellStyle.setWrapText(true); 
-						row.createCell(10).setCellStyle(cellStyle);                          
-						row.createCell(10).setCellValue(new HSSFRichTextString(sb.toString())); 
-					}else{
-						row.createCell(10).setCellValue("");
+						if("0".equals(formatStr(map.get("userRoles")))){
+							row.createCell(6).setCellValue("子账号");
+						}else if("20".equals(formatStr(map.get("userRoles")))){
+							row.createCell(6).setCellValue("学生账号");
+						}else{
+							row.createCell(6).setCellValue("");
+						}
+						row.createCell(7).setCellValue(formatStr(map.get("userRealname")));
+						row.createCell(8).setCellValue(formatStr(map.get("userId")));
+						row.createCell(9).setCellValue(formatStr(map.get("password")));
+						List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
+						if(listip!=null&&listip.size()>0){
+							StringBuffer sb=new StringBuffer();
+							for(Map<String,String> ipMap:listip){
+								if(sb.length()>0){
+									sb.append("\r\n");
+								}
+								sb.append(ipMap.get("ip"));
+							}
+							HSSFCellStyle cellStyle=wb.createCellStyle();       
+							cellStyle.setWrapText(true); 
+							row.createCell(10).setCellStyle(cellStyle);                          
+							row.createCell(10).setCellValue(new HSSFRichTextString(sb.toString())); 
+						}else{
+							row.createCell(10).setCellValue("");
+						}
+						row.createCell(11).setCellValue(formatStr(map.get("registrationTime")));
+						Map<String,Object> dataMap=null;
+						if(dataList.size()>0){
+							dataMap=dataList.get(j);
+						}
+						row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("name")));
+						row.createCell(13).setCellValue(dataMap==null?"":formatStr(dataMap.get("resouceName")));
+						row.createCell(14).setCellValue(dataMap==null?"":formatStr(dataMap.get("time")));
+						if("1".equals(formatStr(map.get("chargebacks")))){
+							row.createCell(15).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
+							row.createCell(16).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
+						}else{
+							row.createCell(15).setCellValue("");
+							row.createCell(16).setCellValue("");
+						}
 					}
-					row.createCell(11).setCellValue(formatStr(map.get("registrationTime")));
-					row.createCell(12).setCellValue(formatStr(data.get("time")));
-					row.createCell(13).setCellValue(data==null?"":formatStr(data.get("name")));
-					row.createCell(14).setCellValue(data==null?"":formatStr(data.get("resouceName")));
-					if("1".equals(formatStr(map.get("chargebacks")))){
-						row.createCell(15).setCellValue(formatStr(data.get("balance")));
-						row.createCell(16).setCellValue(formatStr(data.get("count")));
-					}else{
-						row.createCell(15).setCellValue("");
-						row.createCell(16).setCellValue("");
-					}
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 0,0));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 1,1));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 2,2));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 3,3));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 4,4));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 5,5));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 6,6));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 7,7));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 8,8));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 9,9));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 10,10));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 11,11));
 				}
 			}
 			// 设置Content-Disposition
