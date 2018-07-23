@@ -265,8 +265,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public boolean batchUpdateInfo(InstitutionalUser user,Map<String,Object> map) {
 		//默认用户的各种设置
 		this.setDefaultUser(user, map);
+		//查询旧的机构名称
+		Person per=this.queryPersonInfo(user.getUserId());
 		// 更新机构名称
 		this.updateUserInfo(user);
+		//更改
+		if(!StringUtils.isEmpty(per.getInstitution())&&!StringUtils.equals(user.getInstitution(), per.getInstitution())){
+			this.updateInstitution(user.getInstitution(),per.getInstitution());
+		}
 		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
 		if ("2".equals(user.getLoginMode())) {
 			String ip=(String) map.get("ip");
