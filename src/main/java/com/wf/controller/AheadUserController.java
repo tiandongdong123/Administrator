@@ -1570,21 +1570,18 @@ public class AheadUserController {
 	 */
 	@RequestMapping("tosonaccount")
 	public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
-			String pid, String start_time, String end_time, String pageNum, String pageSize) {
+			String start_time, String end_time, String pageNum, String pageSize,String isBack) {
 		ModelAndView view = new ModelAndView();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start_time",start_time);
 		map.put("end_time",end_time);
-		map.put("pid",pid);
 		map.put("institution",institution);
-		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(pid)
-				&& StringUtils.isEmpty(institution) && StringUtil.isEmpty(start_time)
-				&& StringUtil.isEmpty(end_time)) {
+		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
+				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
 			view.addObject("map", map);
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}
-		boolean isFather=StringUtils.isEmpty(pid)?true:false;
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
@@ -1606,9 +1603,7 @@ public class AheadUserController {
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
 		map.put("pageList", pageList);
 		map.put("userId",userId);
-		if (isFather) {
-			map.remove("pid");
-		}
+		map.put("isBack", isBack);
 		view.addObject("map",map);
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");

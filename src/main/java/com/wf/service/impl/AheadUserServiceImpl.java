@@ -2010,12 +2010,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			//调用接口查询支付信息
-			//List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
-			Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			try{
 				for(Map<String, String> wfks : wfList){
 					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.get("payChannelid"));
-					//Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 					if(pay.getType().equals("balance")){
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
 						if(account!=null){
@@ -2047,14 +2046,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 						}
 					}
 					if(extraData.size()>1){
-						//projectList.add(extraData);
-						break;
+						projectList.add(extraData);
 					}
 				}
 			}catch(Exception e){
 				log.error("子账号"+userId+"调用接口异常",e);
 			}
-			userMap.put("data", extraData);
+			userMap.put("data", projectList);
 		}			
 	
 		pageList.setPageRow(userList);
