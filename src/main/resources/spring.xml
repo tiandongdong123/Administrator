@@ -180,4 +180,13 @@
     <bean id="channel" class="com.wanfangdata.grpcchannel.GrpcChannel"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>
 	<bean id="bindAccountChannel" class="com.wanfangdata.grpcchannel.BindAccountChannel"/>
+
+	<!--邮箱发送链接信息验证-->
+	<bean id="sendEmailConfig" class="com.utils.WFMailUtil">
+		<constructor-arg name="FROM" value="deliver@wanfangdata.com.cn"/>
+		<constructor-arg name="PWD" value="soft@123"/>
+		<constructor-arg name="TITLE" value="请验证"/>
+		<constructor-arg name="HOST" value="mail.wanfangdata.com.cn"/>
+		<constructor-arg name="SMTP" value="smtp"/>
+	</bean>
 </beans>  

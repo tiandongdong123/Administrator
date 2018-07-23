@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.*;
+import com.wanfangdata.grpcchannel.BindAccountChannel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -32,11 +34,6 @@ import wfks.accounting.setting.PayChannelModel;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.redis.RedisUtil;
-import com.utils.CookieUtil;
-import com.utils.DateUtil;
-import com.utils.HttpClientUtil;
-import com.utils.IPConvertHelper;
-import com.utils.SettingUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
@@ -83,13 +80,23 @@ public class AheadUserController {
 
 	@Autowired
 	private LogService logService;
-	
+
+	@Autowired
+	private WFMailUtil wfMailUtil;
+
+	@Autowired
+	private BindAccountChannel bindAccountChannel;
+
 	private RedisUtil redis = new RedisUtil();
 	
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 	private Pattern pa = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5]");
 	private Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
-	
+	//二维码邮箱是否勾选
+	private static String DEFAULT = "default";
+	private static String SELECT = "select";
+	private static String UNSELECT = "unselect";
+
 	/**
 	 *	判断ip段是否重复
 	 */
@@ -564,6 +571,25 @@ public class AheadUserController {
 			}
 			if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
 				aheadUserService.openBindAuthority(bindAuthorityModel);// 成功开通个人绑定机构权限
+				String userId = bindAuthorityModel.getUserId();
+				String email = bindAuthorityModel.getEmail();
+				List<String> userIdList=new ArrayList<>();
+				userIdList.add(userId);
+				//发送邮箱
+				try {
+					if (bindAuthorityModel.getSend()) {
+
+						if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+							log.info("机构用户注册，发送邮件成功，userIdList：" + userIdList.toString() + "，email:" + email);
+							hashmap.put("emailFlag", "success");
+						} else {
+							throw new Exception("发送邮件失败");
+						}
+					}
+				} catch (Exception e) {
+					log.error("机构用户注册，发送邮箱出现异常！userIdList：" + userIdList.toString() + "，email:" + email, e);
+					hashmap.put("emailFlag", "fail");
+				}
 			}
 			int resinfo = aheadUserService.addRegisterInfo(com);
 			if (StringUtils.isNotBlank(com.getChecks())) {
@@ -793,21 +819,42 @@ public class AheadUserController {
 				bindAuthorityModel.setUserId(map.get("userId").toString());
 				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
-				}
-				log.info("成功开通个人绑定机构权限");
-
+					log.info("成功开通个人绑定机构权限");
+					String email = bindAuthorityModel.getEmail();
+                    List<String> userIdList = new ArrayList<>();
+                    // 发送邮箱
+                    try {
+                        if (bindAuthorityModel.getSend()) {
+                            for (int i = 0; i < listmap.size(); i++) {
+                                Map<String, Object> userIdMap = listmap.get(i);
+                                userIdList.add(userIdMap.get("userId").toString());
+                            }
+                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                                log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
+                                        + userIdList.toString() + "，email:" + email);
+                                hashmap.put("emailFlag", "success");
+                            } else {
+                                throw new Exception("发送邮件失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userIdList.toString()
+                                + "，email:" + email, e);
+                        hashmap.put("emailFlag", "fail");
+                    }
+                }
 				List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 				for(ResourceDetailedDTO dto : list){
 					for(Map<String, Object> pro : lm) {
-						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){						
+						if(dto.getProjectid()!=null && dto.getProjectid().equals(pro.get("projectid"))){
 							dto.setTotalMoney(Double.valueOf(pro.get("totalMoney").toString()));
 							if(dto.getProjectType().equals("balance")){
-								if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){						
+								if(aheadUserService.addProjectBalance(com, dto,adminId) > 0){
 									aheadUserService.addProjectResources(com, dto);
 								}
 							}else if(dto.getProjectType().equals("time")){
 								//增加限时信息
-								if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){						
+								if(aheadUserService.addProjectDeadline(com, dto,adminId) > 0){
 									aheadUserService.addProjectResources(com, dto);
 								}
 							}else if(dto.getProjectType().equals("count")){
@@ -1069,6 +1116,27 @@ public class AheadUserController {
 						hashmap.put("fail",response.getResultMessage());
 						return hashmap;
 					}
+					String email = bindAuthorityModel.getEmail();
+                    List<String> userIdList = new ArrayList<>();
+					//发送邮箱
+                    try {
+                        if (bindAuthorityModel.getSend()) {
+                            for (int i = 0; i < listmap.size(); i++) {
+                                Map<String, Object> userIdMap = listmap.get(i);
+                                userIdList.add(userIdMap.get("userId").toString());
+                            }
+                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                                log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
+                                hashmap.put("emailFlag", "success");
+                            } else {
+                                throw new Exception("发送邮件失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("机构用户批量更新，发送邮箱出现异常！userIdList:" + userIdList.toString()
+                                + "，email:" + email, e);
+                        hashmap.put("emailFlag", "fail");
+                    }
 				}else {
 					int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 					if (count>0){
@@ -1416,6 +1484,7 @@ public class AheadUserController {
 		view.addObject("bindInformation",bindInformation);
 		List<Map<String, Object>> proList=aheadUserService.getProjectInfo(userId);
 		map.put("proList", proList);
+		map.put(DEFAULT,UNSELECT);
 		view.addObject("map",map);
 		List<PayChannelModel> list = aheadUserService.purchaseProject();
 		view.addObject("project",list);
@@ -1593,9 +1662,9 @@ public class AheadUserController {
 					hashmap.put("fail","修改个人绑定机构权限失败");
 					return hashmap;
 				}
-			}else {
+			} else {
 				int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
-				if (count>0){
+				if (count > 0) {
 					aheadUserService.closeBindAuthority(bindAuthorityModel);
 				}
 			}
@@ -1637,6 +1706,24 @@ public class AheadUserController {
 			log.info(logStr);
 		}catch(Exception e){
 			log.error("账号修改异常:", e);
+		}
+		String userId = bindAuthorityModel.getUserId();
+		String email = bindAuthorityModel.getEmail();
+		//发送邮箱
+		try {
+			if (bindAuthorityModel.getSend()) {
+				List<String> userIdList=new ArrayList<>();
+				userIdList.add(userId);
+				if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
+					hashmap.put("emailFlag", "success");
+				} else {
+					throw new Exception("发送邮件失败");
+				}
+			}
+		} catch (Exception e) {
+			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
+			hashmap.put("emailFlag", "fail");
 		}
 		return hashmap;
 	}

@@ -125,6 +125,21 @@ function submitNew(){
         $(".wrongm").css("display","inline");
         $(".mistakenm").css("display","none");
     }
+    if($('#bindType').find("option:selected").val() == '2'){
+        $('#fromList').bootstrapValidator('addField','email',{
+            validators : {
+                notEmpty : {
+                    message : '请输入邮箱'
+                },
+                emailAddress: {/* 只需加此键值对，包含正则表达式，和提示 */
+                    message: '请输入正确的邮箱地址'
+                }
+            }
+        });
+    }else{
+        $('#fromList').bootstrapValidator('removeField','email');
+    }
+    $("#fromList").data('bootstrapValidator').resetForm();
     if(!validateFrom()){
         $("#submit").removeAttr("disabled");
         bool = true;
@@ -148,6 +163,7 @@ function submitNew(){
         $("input[class='selFirst']:checked").each(function () {
             bindAuthority.push($(this).val());
         });
+
         if(bool){
             return ;
         }
@@ -211,6 +227,21 @@ function sunmit(){
         $(".wrongm").css("display","inline");
         $(".mistakenm").css("display","none");
     }
+    if($('#bindType').find("option:selected").val() == '2'){
+        $('#fromList').bootstrapValidator('addField','email',{
+            validators : {
+                notEmpty : {
+                    message : '请输入邮箱'
+                },
+                regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                    regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
+                    message: '请输入正确的邮箱地址'
+                },
+            }
+        });
+    }else{
+        $('#fromList').bootstrapValidator('removeField','email');
+    }
     if(!validateFrom()){
         $("#submit").removeAttr("disabled");
         bool = true;
@@ -231,6 +262,10 @@ function sunmit(){
         var downloadLimit = $("#downloadLimit").val();
         //绑定个人继承权限
         var bindAuthority = $("#bindAuthority").val();
+        var meEmail = $('#email').val();
+        var openBindStart = $('#openBindStart').val()+'00:00:00';
+        var openBindEnd = $('#openBindEnd').val()+'23:59:59';
+        var isCheckedMe = $('#isPublishEmail').is(':checked');
         if(bool){
             return ;
         }
@@ -244,6 +279,10 @@ function sunmit(){
                 bindValidity:bindValidity,
                 downloadLimit:downloadLimit,
                 bindAuthority:bindAuthority,
+                email:meEmail,
+                openBindStart:openBindStart,
+                openBindEnd:openBindEnd,
+                send:isCheckedMe
             },
             success: function(data){
                 $("#institution").val("");

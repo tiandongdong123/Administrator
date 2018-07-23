@@ -415,7 +415,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .pop {
 	display: none;
 	width: 876px;
-	height: 500px;
+	min-height: 468px;
 	background: #ffffff;
 	border: 1px solid #ccc;
 	position: fixed;
@@ -523,19 +523,33 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 }
 .qr{
 	display: none;
-	width: 250px;
 	height: 250px;
 	border:1px solid #ccc;
 	position: fixed;
 	background: #fff;
 	margin-left: 30%;
+	padding-right:24px;
+	text-align: center;
 }
 .reset{
 	position: absolute;
-	bottom: 5px;
+	bottom:74px;
 	right: 10px;
+	color: rgb(12, 96, 194);
 	cursor: pointer;
 }
+.sendEmail{
+	position: absolute;
+	bottom: 36px;
+	right: 10px;
+	cursor: pointer;
+	color: rgb(12, 96, 194);
+}
+.qr-email-text{
+	text-align: center;
+	width: 100%;
+	text-indent: 20px;
+ }
 .picture{
 	width: 200px;
 	height: 200px;

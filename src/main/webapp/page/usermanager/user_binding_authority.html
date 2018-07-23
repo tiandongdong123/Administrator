@@ -33,6 +33,11 @@
                                 <div class="show_mechanism" style="margin: -5px 0 0 637px;"></div>
                             </div>
                             <div class="form-group input_block">
+                                <label class="dinding_name input_name" style="position: relative;top: -4px;margin-left: 406px;"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                                <input type="text" id="openBindStart" name="openBindStart" class="form-control input_time" placeholder="年 /月/日"  onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; "/>
+                                至 <input type="text" id="openBindEnd" name="openBindEnd" class="form-control input_time" placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;"/>
+                            </div>
+                            <div class="form-group input_block">
                                 <label class="dinding_name" style="margin-left: 406px;"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
                                 <select class="form-control dinding_input"  id="bindType" name="bindType">
                                     <option value="0" selected = "selected">机构个人同时登录</option>
@@ -60,6 +65,13 @@
                                 <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
                                 <input type="checkbox"  checked="checked" name="resourceType" class="selFirst" id="resourceInherited" onclick="bindingInherited()" value="资源下载">资源下载&nbsp;&nbsp;
                                 <input type="checkbox"  name="resourceType" class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
+                            </div>
+                            <div class="form-group input_block qrEmail-box" style="display: none">
+                                <label class="dinding_name" style="margin-left: 406px;"><b style="color: #FF0000;margin-right: 5px;">*</b>二维码发送邮箱</label>
+                                <input type="text" class="form-control dinding_input" placeholder="请输入邮箱" id="email" name="email">
+                                <label>
+                                    <input type="checkbox" class="isPublishEmail" id="isPublishEmail" style="margin:0 5px"/>发送二维码
+                                </label>
                             </div>
                             <div class="binding_button" style="margin-left:490px;">
                                 <button type="button" class="btn btn-primary" style="margin-right: 40px" onclick="submitNew();">保存并新增</button>

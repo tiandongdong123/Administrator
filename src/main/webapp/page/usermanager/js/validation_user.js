@@ -1,4 +1,5 @@
 $(function() {/* 文档加载，执行一个函数 */
+
 	$('#fromList').bootstrapValidator({
 		message : 'This value is not valid',
 		feedbackIcons : {/* input状态样式图片 */
@@ -123,6 +124,28 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
+            openBindStart:{
+                enabled: false
+			},
+            openBindEnd:{
+                message : '请选择日期',
+                validators : {
+                    callback:{
+                        callback:function(value,validator){
+                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
+                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
+                        	if(!startDay){
+                        		return false;
+							}
+                            if(!endDay){
+                                return false;
+                            }
+							return true;
+                        }
+                    }
+                }
+
+            },
 			pullDepartment:{
 				message : '请输入领取部门',
 				validators : {
@@ -180,14 +203,14 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			bindType:{
-				message : '请输入绑定模式',
-				validators : {
-					notEmpty : {/*非空提示*/
-						message : '请输入绑定模式'
-					},
-				}
-			},
+			// bindType:{
+			// 	message : '请输入绑定模式',
+			// 	validators : {
+			// 		notEmpty : {/*非空提示*/
+			// 			message : '请输入绑定模式'
+			// 		},
+			// 	}
+			// },
 			weChatEamil: {
 				message : '请输入链接发送邮箱',
 				validators : {
@@ -202,6 +225,15 @@ $(function() {/* 文档加载，执行一个函数 */
 			},
 		}
 	})
+    $('#fromList').bootstrapValidator('removeField','email');
+    $('#openBindStart').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
+    $('#openBindEnd').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
 });
 
 function fieldsCheck() {

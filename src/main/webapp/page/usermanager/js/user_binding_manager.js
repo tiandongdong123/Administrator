@@ -1,4 +1,5 @@
 var already = true;
+var prevNum;
 $(function(){
     var page_show=20;
     redq();
@@ -59,52 +60,82 @@ $(function(){
             }
         });
     });
-    $(document).on("click",".bindtype",function(){
+
+    $('#database-table').on('click','.bindtype',function(e){
+        e = e || window.event;
+        e.stopPropagation();
+        e.preventDefault();
         if($(this).text()=="线下扫描"){
-            if($(this).data('num')==reset){
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                }else{
-                    $(".qr").hide();
-                    choose = true;
-                    reset=="";
+            var num = $(this).data('num');
+            $.ajax({
+                url:'../bindAuhtority/showBindInfo.do',
+                type:'post',
+                dataType:'json',
+                data:{
+                    userId:$(this).siblings(".userID").text()
+                },
+                async:true,
+                success:function(data){
+                    var email = data.email;
+                    $('.email-text').text(email);
                 }
-            }else {
-                if(choose){
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }else{
-                    $(".qr").show();
-                    choose = false;
-                    var userId = $(this).siblings(".userID").text();
-                    var num = $(this).data('num');
-                    reset=num;
-                    $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+userId+'&time='+(new Date()));
-                    relocate=userId;
-                }
+            })
+            if(num != prevNum){
+                $(".qr").show();
+                relocate = $(this).siblings(".userID").text();
+                $('.picture').attr('src','../bindAuhtority/getQRCode.do?userId='+relocate+'&time='+(new Date()));
+                prevNum = num;
+            }else{
+                $('.qr').stop(true,true).toggle();
             }
         }
+    })
+    $('html,body').click(function(){
+        $(".qr").hide();
     });
     //点击重置二维码
     $(document).on("click",".reset",function(){
         $(".qr").show();
         var userId_qr = relocate;
         $('.picture').attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
-
     });
-
+    $(document).on('click','.sendEmail',function(){
+        var userId = relocate;
+        var bindEmail = $(this).next().find('.email-text').text();
+        $.ajax({
+            url:'../bindAuhtority/sendMailQRCode.do',
+            data:{
+                userId:userId,
+                bindEmail:bindEmail,
+            },
+            success:function(){
+                layer.msg('发送成功', {icon: 1});
+            },
+            error:function(){
+                layer.msg('发送失败', {icon: 2});
+            }
+        });
+    });
     //机构ID弹出框
     $(document).on("click",".userID",function(){
+        var userId = $.trim($(this).text());
+        $.ajax({
+            url:'../bindAuhtority/showBindInfo.do',
+            type:'post',
+            dataType:'json',
+            data:{
+                userId:userId
+            },
+            async:true,
+            success:function(data){
+                var openBindStart = meGetDate(data.openBindEnd);
+                var openBindEnd = meGetDate(data.openBindEnd);
+                var email = data.email;
+                $('#openBindStart').val(openBindStart);
+                $('#openBindEnd').val(openBindEnd);
+                $('#email').val(email);
+            }
+        })
         $(".mechanism_id").css("border-color","#d2d6de");
         $(".backdrop").show();
         $(".pop").show();
@@ -113,10 +144,13 @@ $(function(){
         var bindtype = $(this).siblings(".bindtype").text();
         if(bindtype=="机构个人同时登录"){
             $("#bindType option:eq(0)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="机构登录"){
             $("#bindType option:eq(1)").prop("selected","selected");
+            $('.qrEmail-box').hide();
         }else if(bindtype=="线下扫描"){
             $("#bindType option:eq(2)").prop("selected","selected");
+            $('.qrEmail-box').show();
         }
         $("#bindLimit").val($(this).siblings(".bindLimit").text());
         $("#bindValidity").val($(this).siblings(".bindValidity").text());
@@ -230,23 +264,27 @@ $(function(){
 function noChoose(){
     $(".mechanism_id").attr("disabled",false);
     $("#bindType").attr("disabled",false);
-    $("#bindType").attr("disabled",false);
     $("#bindLimit").attr("disabled",false);
     $("#bindValidity").attr("disabled",false);
     $("#downloadLimit").attr("disabled",false);
     $("#allInherited").attr("disabled",false);
     $(".selFirst").attr("disabled",false);
+    $('#openBindStart').attr('disabled',false);
+    $('#openBindEnd').attr('disabled',false);
+    $('#email').attr('disabled',false);
 }
 //设置disabled属性
 function yesChoose() {
     $(".mechanism_id").attr("disabled",true);
-    $("#bindType").attr("disabled",true);
     $("#bindType").attr("disabled",true);
     $("#bindLimit").attr("disabled",true);
     $("#bindValidity").attr("disabled",true);
     $("#downloadLimit").attr("disabled",true);
     $("#allInherited").attr("disabled",true);
     $(".selFirst").attr("disabled",true);
+    $('#openBindStart').attr('disabled',true);
+    $('#openBindEnd').attr('disabled',true);
+    $('#email').attr('disabled',true);
 }
 //修改
 function revise(){
@@ -322,6 +360,20 @@ function revise(){
             $(".wrongm").css("display","inline");
             $(".mistakenm").css("display","none");
         }
+        if($('#bindType').find("option:selected").val() == '2'){
+            $('#fromList').bootstrapValidator('addField','email',{
+                validators : {
+                    notEmpty : {
+                        message : '请输入邮箱'
+                    },
+                    emailAddress: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        message: '请输入正确的邮箱地址'
+                    }
+                }
+            });
+        }else{
+            $('#fromList').bootstrapValidator('removeField','email');
+        }
         if(!validateFrom()){
             $("#submit").removeAttr("disabled");
             bool = true;
@@ -344,6 +396,15 @@ function revise(){
             $("input[class='selFirst']:checked").each(function () {
                 bindAuthority.push($(this).val());
             });
+            var meEmail = $('#email').val();
+            var openBindStart = $('#openBindStart').val()+' 00:00:00';
+            var openBindEnd = $('#openBindEnd').val()+' 23:59:59';
+            var isCheckedMe;
+            if($('#bindType').find("option:selected").val() == '2'){
+                isCheckedMe = $('#isPublishEmail').is(':checked');
+            }else{
+                isCheckedMe = false;
+            }
             if(bool){
                 return ;
             }
@@ -357,6 +418,10 @@ function revise(){
                     bindValidity:bindValidity,
                     downloadLimit:downloadLimit,
                     bindAuthority:bindAuthority.join(),
+                    email:meEmail,
+                    openBindStart:openBindStart,
+                    openBindEnd:openBindEnd,
+                    send:isCheckedMe
                 },
                 success: function(data){
                     yesChoose();
@@ -404,6 +469,7 @@ function inquiry(){
     if (pageSize == null) {
         pageSize = 20;
     }
+    prevNum = 0;
     $.ajax({
         type:"POST",
         data:{
