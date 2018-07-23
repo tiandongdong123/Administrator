@@ -5,6 +5,7 @@ $(function(e){
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
 			$("#administrator").show();
+			resetAdminValidate();
 		}else{
 			$("#adminname").val("");
 			$("#adminOldName").val("");
@@ -103,6 +104,13 @@ $(function(e){
 		}
 	});
 });
+//充值机构管理员的验证
+function resetAdminValidate(){
+	$("#fromList").data("bootstrapValidator").updateStatus("adminname","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminOldName","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminpassword","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminEmail","NOT_VALIDATED",null);
+}
 //校验绑定个人上限
 function check(){
 	var reg = /^[1-9]\d*$/;
@@ -1477,6 +1485,8 @@ function radioClick(isBatch){
 	$("#adminpassword").val("");
 	$("#adminIP").val("");
 	$("#adminEmail").val("");
+	//去除验证提示
+	resetAdminValidate();
 	if ($selectedvalue =="new") {
 		$("#oldManager").hide();
 		$("#newManager").show();
