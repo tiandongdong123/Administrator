@@ -164,7 +164,7 @@
   
   <!-- 查询相似机构名称 -->
   <select id="queryInstitution" resultType="java.lang.String" parameterType="java.lang.String">
-	select institution from user where userType = 2 and institution like CONCAT('%',#{institution},'%') limit 0,5
+	select DISTINCT institution from user where userType = 2 and institution like CONCAT('%',#{institution},'%') limit 0,5
   </select>
   
   <!-- 通过主键ID查询用户信息 -->
