@@ -1584,6 +1584,7 @@ public class AheadUserController {
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}
+		boolean isFather=StringUtils.isEmpty(pid)?true:false;
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
@@ -1591,8 +1592,8 @@ public class AheadUserController {
 				view.setViewName("/page/usermanager/ins_sonaccount");
 				return view;
 			}else if(person.getUsertype()==3){
-				map.put("pid",userId);
-				map.put("userId","");
+				map.put("pid","");
+				map.put("userId",userId);
 			}else if(person.getUsertype()==2){
 				map.put("pid",userId);
 				map.put("userId","");
@@ -1605,7 +1606,7 @@ public class AheadUserController {
 		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
 		map.put("pageList", pageList);
 		map.put("userId",userId);
-		if (map.get("pid") != null) {
+		if (isFather) {
 			map.remove("pid");
 		}
 		view.addObject("map",map);
