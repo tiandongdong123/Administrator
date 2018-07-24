@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.wanfangdata:usermanager-grpc-api:1.2018.167">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/wanfangdata/usermanager-grpc-api/1.2018.167/usermanager-grpc-api-1.2018.167.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/wanfangdata/usermanager-grpc-api/1.2018.167/usermanager-grpc-api-1.2018.167-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/wanfangdata/usermanager-grpc-api/1.2018.167/usermanager-grpc-api-1.2018.167-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
