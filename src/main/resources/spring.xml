@@ -185,7 +185,7 @@
 	<bean id="sendEmailConfig" class="com.utils.WFMailUtil">
 		<constructor-arg name="FROM" value="deliver@wanfangdata.com.cn"/>
 		<constructor-arg name="PWD" value="soft@123"/>
-		<constructor-arg name="TITLE" value="请验证"/>
+		<constructor-arg name="TITLE" value="万方数据个人绑定机构线下扫描二维码"/>
 		<constructor-arg name="HOST" value="mail.wanfangdata.com.cn"/>
 		<constructor-arg name="SMTP" value="smtp"/>
 	</bean>
