@@ -52,8 +52,12 @@ function submitForm(){
 	    var data = new FormData($('#fromList')[0]);
         var openBindStart = data.get('openBindStart');
         var openBindEnd = data.get('openBindEnd');
-        data.set('openBindStart',openBindStart+' 00:00:00');
-        data.set('openBindEnd',openBindEnd+' 23:59:59');
+        if(openBindStart){
+            data.set('openBindStart',openBindStart+' 00:00:00');
+        }
+        if(openBindEnd){
+            data.set('openBindEnd',openBindEnd+' 00:00:00');
+        }
         var isCheckedMe = $('#isPublishEmail').is(':checked');
         data.append('send',isCheckedMe);
 	    $.ajax({  
