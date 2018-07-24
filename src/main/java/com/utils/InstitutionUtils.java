@@ -466,7 +466,7 @@ public class InstitutionUtils {
 			}
 			if(!StringUtils.isEmpty(user.getManagerType())&&user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){
 				errorMap.put("flag", "fail");
-				errorMap.put("fail", "机构名称"+institution+"与机构管理员"+adminId+"的机构名称不一致");
+				errorMap.put("fail", "机构管理员"+adminId+"不属于"+institution+"的机构管理员");
 				return errorMap;
 			}
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
