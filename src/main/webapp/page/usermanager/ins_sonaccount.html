@@ -29,6 +29,8 @@
 			<span class="time_block"><input type="text" class="Wdate" name="end_time" id="end_time" value="${map.end_time!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"></span>
 			</td></tr>
 		</table>
+		<input type="hidden" id="isBack" name="isBack" value="${map.isBack!}">
+		<input type="hidden" id="goPage" name="goPage" value="">
 		<?if(!isEmpty(map.pageList)){?>
 	        <input type="hidden" id="pageNum" name="pageNum" value="${map.pageList.pageNum!}">
 	        <input type="hidden" id="pageSize" name="pageSize" value="${map.pageList.pageSize!}">
@@ -43,7 +45,7 @@
 			<div  class="box-body no-padding">
 				<div class="mailbox-controls">
                 	<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button>
-                	<?if(!isEmpty(map.pid)){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="goInformation('${map.pid}');">返回</button><?}?>
+                	<?if(!isEmpty(map.isBack)){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="goInformation('${map.pid}');">返回</button><?}?>
 				</div>
 				<div class="table-responsive mailbox-messages">
 					<table class="table table-bordered table-striped"><tbody>

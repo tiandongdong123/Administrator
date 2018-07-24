@@ -1570,7 +1570,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("tosonaccount")
 	public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
-			String start_time, String end_time, String pageNum, String pageSize,String isBack) {
+			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage) {
 		ModelAndView view = new ModelAndView();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start_time",start_time);
@@ -1581,6 +1581,9 @@ public class AheadUserController {
 			view.addObject("map", map);
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
+		}else if(StringUtils.isEmpty(goPage)){
+			pageNum=null;
+			pageSize=null;
 		}
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);

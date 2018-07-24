@@ -23,6 +23,7 @@ function goPage(curr){
 	        jump: function (obj,first){
 				if(!first){
 					$("#pageNum").val(obj.curr);
+					$("#goPage").val("1");
 					$("#fromList").submit();
 				}
 	        }
@@ -34,6 +35,7 @@ function goPage(curr){
 
 //数据提交
 function findList(){
+	$("#goPage").val("");
 	$("#fromList").submit();
 }
 
