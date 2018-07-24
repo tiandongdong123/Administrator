@@ -25,7 +25,7 @@
     <!-- XXL-CONF配置解析器 --> 
     <bean id="xxlConfPropertyPlaceholderConfigurer" class="com.xxl.conf.core.spring.XxlConfPropertyPlaceholderConfigurer" />
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-		<property name="slowSqlMillis" value="3" />
+		<property name="slowSqlMillis" value="1000" />
 		<property name="logSlowSql" value="true" />
 		<property name="mergeSql" value="true" />
 		<property name="dbType" value="mysql" />
