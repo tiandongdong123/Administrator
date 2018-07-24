@@ -1910,6 +1910,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public Map<String, Object> findInfoByPid(String pid){
 		Map<String, Object> map = personMapper.findInfoByPid(pid);
+		if(map==null){
+			return new HashMap<String,Object>();
+		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
