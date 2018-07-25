@@ -313,7 +313,7 @@
 		and info.OrderType=#{OrderType}
     </if>
     <if test="OrderContent != null and OrderContent !=''">
-		and info.OrderContent=#{OrderContent}
+		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
 	order by u.login_mode limit #{pageNum},#{pageSize}
   </select>
@@ -373,7 +373,7 @@
 		and info.OrderType=#{OrderType}
     </if>
     <if test="OrderContent != null and OrderContent !=''">
-		and info.OrderContent=#{OrderContent}
+		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
   </select>
   
