@@ -1508,7 +1508,7 @@ public class AheadUserController {
 		return hashmap;
 	}
 	
-	//验证机构管理员
+	//验证党建管理员
 	private Map<String,String> partyAdminValidate(InstitutionalUser com,Map<String,String> hashmap) throws Exception{
 		if (StringUtils.isEmpty(com.getPartyLimit())) {
 			return hashmap;
@@ -1537,18 +1537,19 @@ public class AheadUserController {
 			hashmap.put("fail", "党建管理员的ID已经被占用");
 			return hashmap;
 		}
-		if(com.getManagerType().equals("new")){
-			WfksAccountidMapping[] maping= aheadUserService.getWfksAccountidByRelatedidKey(com.getPartyAdmin());
-			if (maping == null) {
+		if(StringUtils.isEmpty(com.getPartyAdmin())){
+			return hashmap;
+		}
+		WfksAccountidMapping[] maping= aheadUserService.getWfksAccountidByRelatedidKey(com.getPartyAdmin());
+		if (maping == null) {
+			return hashmap;
+		}
+		for (WfksAccountidMapping wfks : maping) {
+			if ("PartyAdminTime".equals(wfks.getRelatedidAccounttype())
+					&& !wfks.getIdKey().equals(com.getUserId())) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", "该党建管理员ID已经存在，请重新输入党建管理员ID");
 				return hashmap;
-			}
-			for (WfksAccountidMapping wfks : maping) {
-				if ("PartyAdminTime".equals(wfks.getRelatedidAccounttype())
-						&& !wfks.getIdKey().equals(com.getUserId())) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", "该党建管理员ID已经存在，请重新输入党建管理员ID");
-					return hashmap;
-				}
 			}
 		}
 		return hashmap;
