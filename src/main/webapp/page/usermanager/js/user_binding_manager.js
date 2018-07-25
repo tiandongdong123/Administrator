@@ -128,7 +128,7 @@ $(function(){
             },
             async:true,
             success:function(data){
-                var openBindStart = meGetDate(data.openBindEnd);
+                var openBindStart = meGetDate(data.openBindStart);
                 var openBindEnd = meGetDate(data.openBindEnd);
                 var email = data.email;
                 $('#openBindStart').val(openBindStart);
