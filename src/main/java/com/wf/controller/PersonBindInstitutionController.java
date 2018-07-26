@@ -330,10 +330,9 @@ public class PersonBindInstitutionController {
         }
 
         List<BindAccountModel> pageList = new ArrayList<>();
-        PagerModel<BindSearchParameter> formList =new PagerModel();
         //设置分页
         if (modelList == null || modelList.size() == 0) {
-            model.addAttribute("pager", formList);
+            model.addAttribute("pager", new PagerModel());
             model.addAttribute("upPage", upPage);
         }
         else{
@@ -351,7 +350,7 @@ public class PersonBindInstitutionController {
             }
 
             String actionUrl = "/bindAuhtority/searchBindInfo.do";
-            formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
+            PagerModel<BindSearchParameter>  formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
             model.addAttribute("pager", formList);
             model.addAttribute("upPage", upPage);
         }
