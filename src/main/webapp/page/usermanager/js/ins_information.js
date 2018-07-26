@@ -14,6 +14,23 @@ $(function(){
 		var pictures = $(this).siblings('.pictures');
 		pictures.attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
 	});
+    $(document).on("click",".pic-sendEmail",function(){
+        var userId_qr = $(this).parents(".info_cont").find(".user_qrCode").text();
+        var bindEmail = $(this).parents(".info_cont").find('.email-text').text();
+        $.ajax({
+            url:'../bindAuhtority/sendMailQRCode.do',
+            data:{
+                userId:userId_qr,
+                bindEmail:bindEmail,
+            },
+            success:function(){
+                layer.msg('发送成功', {icon: 1});
+            },
+            error:function(){
+                layer.msg('发送失败', {icon: 2});
+            }
+        });
+    });
 });
 
 //全局点击事件(隐藏服务权限div)

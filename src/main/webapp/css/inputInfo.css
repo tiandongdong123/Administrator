@@ -609,28 +609,39 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	padding-left: 42px;
 	padding-bottom: 10px;
 	float: left;
+	width: 1311px;
+}
+.user_bind-rt{
+	float:left;
+	width: 1035px;
 }
 .show_1{
 	overflow: hidden;
 }
 .qr_picture{
-	background: #fff;
+	position: relative;
 	float: right;
-	margin-right: 270px;
-	margin-top: -12px;
+	width: 235px;
+	right: 68px;
 }
 .pictures{
 	width: 200px;
 	height: 200px;
 	border: 1px solid #ccc;
-	margin: 12px 25px;
-	position: relative;
 }
 .resets{
-	position: absolute;
-	bottom: 5px;
-	right: 229px;
 	cursor: pointer;
+	position: absolute;
+	bottom: 36px;
+	right: 0;
+	color:rgb(12, 96, 194);
+}
+.pic-sendEmail{
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	color:rgb(12, 96, 194);
 }
 .userid_choose{
 	overflow: hidden;
