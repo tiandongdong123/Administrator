@@ -426,15 +426,26 @@
 <?}}?>
 			<?if(list.bindAuthority!=null){?>
 			<div class="user_bind" >
-				<span style="color: #0099ff">个人绑定机构</span>
-				<div class="bind"><span>绑定模式：</span><span class="bind_type">${list.bindAuthority.bindType}</span></div>
-				<div class="bind"><span>绑定个人上限：</span><span>${list.bindAuthority.bindLimit}</span></div>
-				<div class="bind"><span>绑定个人账号有效期：</span><span>${list.bindAuthority.bindValidity}</span></div>
-				<div class="bind"><span>绑定个人下载量上限/天：</span><span>${list.bindAuthority.downloadLimit}</span></div>
-				<div class="bind"><span>绑定个人继承权限：</span><span>${list.bindAuthority.bindAuthority}</span></div>
+				<span style="color: #0099ff;float:left;">个人绑定机构</span>
+				<div class="user_bind-rt">
+					<div class="bind"><span>开通时限：</span><span>${list.bindAuthority.openTimeLimitState,'yyyy年MM月dd'}</span> - <span>${list.bindAuthority.openTimeLimitEnd,'yyyy年MM月dd'}</span></div>
+					<div class="bind"><span>绑定模式：</span><span class="bind_type">${list.bindAuthority.bindType}</span></div>
+					<div class="bind"><span>绑定个人上限：</span><span>${list.bindAuthority.bindLimit}</span></div>
+					<div class="bind"><span>绑定个人账号有效期：</span><span>${list.bindAuthority.bindValidity}</span></div>
+					<div class="bind"><span>绑定个人下载量上限/天：</span><span>${list.bindAuthority.downloadLimit}</span></div>
+					<div class="bind"><span>绑定个人继承权限：</span><span>${list.bindAuthority.bindAuthority}</span></div>
+					<?if(list.bindAuthority.bindType=="线下扫描"){?>
+					<div class="bind"><span>二维码发送邮箱：</span><span class="email-text">${list.bindAuthority.email}</span></div>
+					<?}?>
+				</div>
+
 			</div>
 			<?if(list.bindAuthority.bindType=="线下扫描"){?>
-			<div class="qr_picture"><img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures"><span class="resets">重置</span></div>
+			<div class="qr_picture">
+				<img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures">
+				<span class="resets">重置</span>
+				<span class="pic-sendEmail">发送</span>
+			</div>
 			<?}?>
 			<?}?>
 </div>
