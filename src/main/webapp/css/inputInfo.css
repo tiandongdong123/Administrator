@@ -527,7 +527,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	border:1px solid #ccc;
 	position: fixed;
 	background: #fff;
-	margin-left: 30%;
+	margin-left: 393px;
+	margin-top:37px;
 	padding-right:24px;
 	text-align: center;
 }

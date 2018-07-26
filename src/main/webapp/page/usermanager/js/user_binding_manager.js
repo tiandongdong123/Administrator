@@ -67,6 +67,10 @@ $(function(){
         e.preventDefault();
         if($(this).text()=="线下扫描"){
             var num = $(this).data('num');
+            var offLeft = $(this).offset().left;
+            var selfWidth = $(this).outerWidth();
+            var leftWidth = $('.main-sidebar').outerWidth();
+            $(".qr").css({'marginLeft':(offLeft+selfWidth-leftWidth-30)+'px'});
             $.ajax({
                 url:'../bindAuhtority/showBindInfo.do',
                 type:'post',
