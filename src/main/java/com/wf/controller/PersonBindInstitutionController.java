@@ -332,7 +332,11 @@ public class PersonBindInstitutionController {
         List<BindAccountModel> pageList = new ArrayList<>();
 
         //设置分页
-        if (modelList != null && modelList.size() > 0) {
+        if (modelList == null || modelList.size() == 0) {
+            model.addAttribute("pager", null);
+            model.addAttribute("upPage", upPage);
+        }
+        else{
             int page = parameter.getPage();
             int pageSize = parameter.getPageSize();
             int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
