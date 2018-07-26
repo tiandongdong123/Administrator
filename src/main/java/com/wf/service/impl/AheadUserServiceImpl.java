@@ -1531,7 +1531,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				bindAuthorityModel.setBindValidity(response.getItems(0).getBindValidity());
 				bindAuthorityModel.setDownloadLimit(response.getItems(0).getDownloadLimit());
 				bindAuthorityModel.setBindAuthority(authority.toString().substring(0,authority.length()-1));
-
+				bindAuthorityModel.setOpenTimeLimitState(new Date(response.getItems(0).getOpenStart().getSeconds()*1000));
+				bindAuthorityModel.setOpenTimeLimitEnd(new Date(response.getItems(0).getOpenEnd().getSeconds()*1000));
+				bindAuthorityModel.setEmail(response.getItems(0).getEmail());
 				userMap.put("bindAuthority", bindAuthorityModel);
 			}
 			long timeSea=System.currentTimeMillis()-time3;
