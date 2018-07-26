@@ -332,24 +332,28 @@ public class PersonBindInstitutionController {
         List<BindAccountModel> pageList = new ArrayList<>();
 
         //设置分页
-        int page = parameter.getPage();
-        int pageSize = parameter.getPageSize();
-        int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
-        int remainder = modelList.size() % pageSize;
-        if (remainder == 0) {
-            remainder = pageSize;
-        }
-        if (page == allPage) {
-            pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
-        } else {
-            pageList = modelList.subList((page - 1) * pageSize, page * pageSize);
-        }
+        if (modelList != null && modelList.size() > 0) {
+            int page = parameter.getPage();
+            int pageSize = parameter.getPageSize();
+            int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
+            int remainder = modelList.size() % pageSize;
+            if (remainder == 0) {
+                remainder = pageSize;
+            }
+            if (modelList.size() == 0) {
+                pageList = null;
+            }
+            if (page == allPage) {
+                pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
+            } else {
+                pageList = modelList.subList((page - 1) * pageSize, page * pageSize);
+            }
 
-        String actionUrl = "/bindAuhtority/searchBindInfo.do";
-        PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
-        model.addAttribute("pager", formList);
-        model.addAttribute("upPage", upPage);
-
+            String actionUrl = "/bindAuhtority/searchBindInfo.do";
+            PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
+            model.addAttribute("pager", formList);
+            model.addAttribute("upPage", upPage);
+        }
         return "/page/usermanager/user_binding_table";
     }
 
