@@ -340,9 +340,6 @@ public class PersonBindInstitutionController {
             if (remainder == 0) {
                 remainder = pageSize;
             }
-            if (modelList.size() == 0) {
-                pageList = null;
-            }
             if (page == allPage) {
                 pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
             } else {
