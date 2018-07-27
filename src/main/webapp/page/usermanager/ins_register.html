@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构ID</label>
-                  <input type="text" class="form-control input_time" name="userId" id="userId" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">&nbsp;&nbsp;支持英文大小写（大小写有区分）、数字0-9、下划线
+                  <input type="text" class="form-control input_time" name="userId" id="userId" onblur="validatePeron(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">&nbsp;&nbsp;支持英文大小写（大小写有区分）、数字0-9、下划线
                 </div>
                 <div class="checkbox input_block block_left">
                   <label><input type="checkbox" id="checkp">设置机构账号并发数（登录并发）</label>

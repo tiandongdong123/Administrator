@@ -172,6 +172,20 @@ public class AheadUserController {
 		return aheadUserService.findInfoByPid(pid);
 	}
 	
+	@RequestMapping("getPerson")
+	@ResponseBody
+	public Map<String,String> getPerson(String userId){
+		InstitutionalUser user=new InstitutionalUser();
+		user.setUserId(userId);
+		Map<String,String> errorMap = new HashMap<String, String>();
+		try {
+			errorMap=this.userValidate(user, errorMap);
+		} catch (Exception e) {
+			log.error("查询异常：",e);
+		}
+		return errorMap;
+	}
+	
 	
 	/**
 	 *	查询相似机构管理员
@@ -1597,6 +1611,7 @@ public class AheadUserController {
 		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
 				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
 			view.addObject("map", map);
+			map.put("userId",userId);
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}else if(StringUtils.isEmpty(goPage)){
@@ -1607,6 +1622,8 @@ public class AheadUserController {
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
 				view.addObject("map",map);
+				view.addObject("msg", "0");
+				map.put("userId",userId);
 				view.setViewName("/page/usermanager/ins_sonaccount");
 				return view;
 			}else if(person.getUsertype()==3){
@@ -1635,21 +1652,28 @@ public class AheadUserController {
 	 * 子账号导出功能
 	 */
 	@RequestMapping("exportSonAccount")
-	public void exportSonAccount(HttpServletRequest request, HttpServletResponse response,String userId, String institution,
+	public ModelAndView exportSonAccount(HttpServletRequest request, HttpServletResponse response,String userId, String institution,
 			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage) {
-		
+		ModelAndView view = new ModelAndView();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start_time",start_time);
 		map.put("end_time",end_time);
 		map.put("institution",institution);
 		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
 				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
-			return;
+			map.put("userId",userId);
+			view.addObject("map",map);
+			view.setViewName("/page/usermanager/ins_sonaccount");
+			return view;
 		}
 		if(!StringUtils.isEmpty(userId)){
 			Person person=aheadUserService.queryPersonInfo(userId);
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
-				return;
+				map.put("userId",userId);
+				view.addObject("msg", "0");
+				view.addObject("map",map);
+				view.setViewName("/page/usermanager/ins_sonaccount");
+				return view;
 			}else if(person.getUsertype()==3){
 				map.put("pid","");
 				map.put("userId",userId);
@@ -1669,6 +1693,12 @@ public class AheadUserController {
 		}catch(Exception e){
 			log.error("导出excel异常：",e);
 		}
+		map.put("userId",userId);
+		map.put("isBack", isBack);
+		view.addObject("map",map);
+		view.addObject("msg", "0");
+		view.setViewName("/page/usermanager/ins_sonaccount");
+		return view;
 	}
 	
 	/**

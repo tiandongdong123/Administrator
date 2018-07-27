@@ -107,3 +107,22 @@ function addAtrr(){
 	$("#submit2").attr({disabled: "disabled"});
 	$("#submit3").attr({disabled: "disabled"});
 }
+
+//验证机构用户是否存在
+function validatePeron(obj){
+	var userId=$(obj).val();
+	if(userId!=''){
+		$.ajax({
+			type:"post",
+			async: false,
+			url:"../auser/getPerson.do?t="+new Date(),
+			data:{"userId":userId},
+			dataType:"json",
+			success:function(data){
+				if(data.flag=="fail"){
+					layer.msg(data.fail,{icon: 2});
+				}
+			}
+		});
+	}
+}
