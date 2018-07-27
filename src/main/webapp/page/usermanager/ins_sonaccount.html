@@ -47,59 +47,78 @@
                 	<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button>
                 	<?if(!isEmpty(map.isBack)){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="goInformation('${map.pid}');">返回</button><?}?>
 				</div>
-				<div class="table-responsive mailbox-messages">
-					<table class="table table-bordered table-striped"><tbody>
+				<div>
+					<table border="1" style="font-size:10px;"><tbody>
 					<tr style='text-align: center;'>
-						<td class='mailbox-star'>序号</td>
-						<td class="mailbox-name">机构名称</td>
-						<td class="mailbox-name">机构ID</td>
-						<td class="mailbox-name">子账号上限</td>
-						<td class="mailbox-name">子账号并发数上限</td>
-						<td class="mailbox-name">子账号下载量上限/天</td>
-						<td class="mailbox-name">子账号扣款模式</td>
-						<td class="mailbox-name">子账号类型</td>
-						<td class="mailbox-name">子账号名称</td>
-						<td class="mailbox-name">子账号ID</td>
-						<td class="mailbox-name">子账号密码</td>
-						<td class="mailbox-name">子账号IP</td>
-						<td class="mailbox-name">子账号注册时间</td>
-						<td class="mailbox-name">子账号权限</td>
-						<td class="mailbox-name">购买数据库</td>
-						<td class="mailbox-name">子账号有效期</td>
-						<td class="mailbox-name">子账号余额</td>
-						<td class="mailbox-name">子账号次数</td>
+						<td>序号</td>
+						<td>机构名称</td>
+						<td>机构ID</td>
+						<td>子账号上限</td>
+						<td>子账号并发数上限</td>
+						<td>子账号下载量上限/天</td>
+						<td>子账号扣款模式</td>
+						<td>子账号类型</td>
+						<td>子账号名称</td>
+						<td>子账号ID</td>
+						<td>子账号密码</td>
+						<td>子账号IP</td>
+						<td>子账号注册时间</td>
+						<td>子账号权限</td>
+						<td>购买数据库</td>
+						<td>子账号有效期</td>
+						<td>子账号余额</td>
+						<td>子账号次数</td>
 					</tr>
-					<?if(!isEmpty(map.pageList)){?>
-					<? var i=0; for(list in map.pageList.pageRow){ i++; ?>
-					<tr style='text-align: center;'>
-					<td class='mailbox-star'><div style='width:20px;'>${i+20*(map.pageList.pageNum-1)}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.institution!}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.pid!}</div></td>
-					<td class='mailbox-star'><div style='width:60px;'>${list.upperlimit!}</div></td>
-					<td class='mailbox-star'><div style='width:100px;'>${list.sConcurrentnumber!}</div></td>
-					<td class='mailbox-star'><div style='width:100px;'>${list.downloadupperlimit!}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.userRealname!}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.userId!}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.password!}</div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:180px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></div></td>
-					<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</div></td>
-					<td colspan="5" width=100% height=100% margin-bottom="0"><table class="table" width=100% height=100% margin-bottom="0"><tbody>
-					<? if(!isEmpty(list.data)){ for(data in list.data){ ?>
-					<tr>
-						<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${data.name!}</div></td>
-						<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${data.resouceName!}</div></td>
-						<td class='mailbox-star'><div style='word-break:break-all;width:100px;'>${data.time!}</div></td>
-						<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==1){?>${data.balance!}<?}?></div></td>
-						<td class='mailbox-star'><div style='width:100px;'><?if(list.chargebacks==1){?>${data.count!}<?}?></div></td>
-					</tr>
-					<?}}?></tbody>
-					</table>
-					</td>
-					</tr>
-					<?}}?>
 					</tbody>
+					<?if(!isEmpty(map.pageList)){?>
+					<? var i=0; for(list in map.pageList.pageRow){ i++;?>
+					<? var rows=0;?>
+					<? if(!isEmpty(list.data)){ for(data in list.data){?>
+						<tr style='text-align: center;'>
+						<?if(rows<1){rows=rows+1;?>
+						<td rowspan="${list.data.~size}" style='width:20px;'>${i+20*(map.pageList.pageNum-1)}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.institution!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.pid!}</td>
+						<td rowspan="${list.data.~size}" style='width:60px;'>${list.upperlimit!}</td>
+						<td rowspan="${list.data.~size}" style='width:60px;'>${list.sConcurrentnumber!}</td>
+						<td rowspan="${list.data.~size}" style='width:70px;'>${list.downloadupperlimit!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:60px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.userRealname!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.userId!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:80px;'>${list.password!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:150px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:60px;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
+						<?}?>
+						<td style='word-break:break-all;width:100px;'>${data.name!}</td>
+						<td style='word-break:break-all;width:100px;'>${data.resouceName!}</td>
+						<td style='word-break:break-all;width:100px;'>${data.time!}</td>
+						<td style='width:60px;'><?if(list.chargebacks==1){?>${data.balance!}<?}?></td>
+						<td style='width:60px;'><?if(list.chargebacks==1){?>${data.count!}<?}?></td>
+						</tr>
+					<?}}else{?>
+						<tr style='text-align: center;'>
+						<td style='width:20px;'>${i+20*(map.pageList.pageNum-1)}</td>
+						<td style='word-break:break-all;width:100px;'>${list.institution!}</td>
+						<td style='word-break:break-all;width:100px;'>${list.pid!}</td>
+						<td style='width:60px;'>${list.upperlimit!}</td>
+						<td style='width:60px;'>${list.sConcurrentnumber!}</td>
+						<td style='width:70px;'>${list.downloadupperlimit!}</td>
+						<td style='word-break:break-all;width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></td>
+						<td style='word-break:break-all;width:60px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
+						<td style='word-break:break-all;width:100px;'>${list.userRealname!}</td>
+						<td style='word-break:break-all;width:100px;'>${list.userId!}</td>
+						<td style='word-break:break-all;width:80px;'>${list.password!}</td>
+						<td style='word-break:break-all;width:150px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
+						<td style='word-break:break-all;width:60px;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
+						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
+						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
+						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
+						<td style='width:60px;'>&nbsp;</td>
+						<td style='width:60px;'>&nbsp;</td>
+						</tr>
+					<?}?>
+					<?}}?>
 					</table>
 				</div>
 				<?if(!isEmpty(msg)&&(isEmpty(map.pageList)||map.pageList.totalRow==0)){?><div style="text-align:center;"><span style="color:red">查询无结果</span><div><?}?>

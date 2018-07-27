@@ -416,10 +416,9 @@ function queryOrder(obj){
 function queryType(){
 	var val=$("#proType").val();
 	if(val==""){
-		$("#resource").hide();
+		$("#resource_td").hide();
 		return;
 	}
-	$("#resource").show();
 	$("#resource").html('<option value="">--请选择--</option>');
 	var oldresource=$("#oldresource").val();
 	$.ajax({
@@ -436,7 +435,35 @@ function queryType(){
 					type='selected="selected"';
 				}
 				$("#resource").append('<option value="'+pro.id+'"'+type+'>'+pro.name+'</option>');
+				$("#resource_td").show();
 			}
 		}
 	});
+}
+
+//显示更多菜单
+function showMore(){
+	var isHidden=$("#isHidden").val();
+	$("#openLimit").val('');
+	$("#Organization").val('');
+	$("#PostCode").val('');
+	$("#OrderType").val('');
+	$("#proType").val('');
+	$("#OrderContent").val('');
+	$("#resource").val('');
+	if(isHidden=='0'){
+		$("#isHidden").val('1');
+		$("#openlimit_td").show();
+		$("#organization_id").show();
+		$("#postcode_id").show();
+		$("#ordertype_id").show();
+		$("#protype_id").show();
+	}else{
+		$("#isHidden").val('0');
+		$("#openlimit_td").hide();
+		$("#organization_id").hide();
+		$("#postcode_id").hide();
+		$("#ordertype_id").hide();
+		$("#protype_id").hide();
+	}
 }

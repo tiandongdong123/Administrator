@@ -15,61 +15,63 @@
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
 			<div class="form-group input_block">
-			<table style="width:60%">
+			<table style="width:900px;">
 				<tr><td>
 					<label class="input_name">用户ID</label>
 					<input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 				</td><td>
 					<label class="input_name">机构名称</label>
 					<input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
-				</td></tr>
+				</td><td></td></tr>
 				<tr><td>
 					<label class="input_name">IP</label>
 					<input type="text" class="form-control input_width" name="ipSegment" id="ipSegment" value="${map.ipSegment!}" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
 					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span>
-				</td><td>
+				</td><td id="openlimit_td" <?if(isEmpty(map.openLimit)){?>style="display:none;"<?}?>>
 					<label class="input_name">开通权限</label>
 					<select class="form-control input_width" name="openLimit" id="openLimit">
 		                <option value="">--请选择--</option>
 		                <?for(auth in Authority){ ?><option value="${auth.name}" <?if(!isEmpty(map.openLimit)&&map.openLimit==auth.name){ ?>selected="selected"<?}?>>${auth.desc}</option><?}?>
 	                </select>
-				</td></tr>
-				<tr><td>
+				</td><td></td></tr>
+				<tr><td id="organization_id" <?if(isEmpty(map.Organization)){?>style="display:none;"<?}?>>
 					<label class="input_name">机构类型</label>
 					<select class="form-control input_width" name="Organization" id="Organization">
 						<option value="">--请选择--</option>
 						<?for(organ in org){ ?><option value="${organ.name}" <?if(!isEmpty(map.Organization)&&map.Organization==organ.name){ ?>selected="selected"<?}?>>${organ.desc}</option><?}?>
 					</select>
-				</td><td>
+				</td><td id="postcode_id" <?if(isEmpty(map.PostCode)){?>style="display:none;"<?}?>>
 					<label class="input_name">地区</label>
 					<select class="form-control input_width" name="PostCode" id="PostCode">
 						<option value="">--请选择--</option>
 						<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(map.PostCode)&&map.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
 						<option value="none" <?if(!isEmpty(map.PostCode)&&map.PostCode=='none'){ ?>selected="selected"<?}?>>无</option>
 					</select>
-				</td></tr>
-				<tr><td>
+				</td><td></td></tr>
+				<tr><td id="ordertype_id" <?if(isEmpty(map.OrderType)){?>style="display:none;"<?}?>>
 					<label class="input_name">工单类型</label>
 					<select class="form-control input_width" name="OrderType" id="OrderType" onchange="queryOrder(this);">
 						<option value="">--请选择--</option>
 						<option value="crm" <?if(!isEmpty(map.OrderType)&&map.OrderType=='crm'){?>selected="selected"<?}?>>CRM工单</option>
 						<option value="inner" <?if(!isEmpty(map.OrderType)&&map.OrderType=='inner'){?>selected="selected"<?}?>>内部工单</option>
 					</select>
-				</td><td>
+				</td><td id="protype_id" <?if(isEmpty(map.proType)){?>style="display:none;"<?}?>>
 					<label class="input_name">购买项目</label>
-					<select class="form-control input_time" name="proType" id="proType" onchange="queryType();">
+					<select class="form-control input_width" name="proType" id="proType" onchange="queryType();">
 						<option value="">--请选择--</option>
 						<option value="Limit" <?if(!isEmpty(map.proType)&&map.proType=='Limit'){?>selected="selected"<?}?>>资源下载</option>
 						<option value="Check" <?if(!isEmpty(map.proType)&&map.proType=='Check'){?>selected="selected"<?}?>>万方检测</option>
 						<option value="WFStats" <?if(!isEmpty(map.proType)&&map.proType=='WFStats'){?>selected="selected"<?}?>>万方分析</option>
 					</select>
-					<select class="form-control input_width" style="display:none;" name="resource" id="resource"><option value="">--请选择--</option></select>
-					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}">
-				</td></tr>
-				<tr id="ordercontent_td" <?if(isEmpty(map.OrderType)||map.OrderType!='inner'){?>style="display:none;"<?}?>><td>
-					<label class="input_name">申请部门</label>
-					<input type="text" class="form-control input_width" name="OrderContent" id="OrderContent" value="${map.OrderContent!}">
 				</td><td></td></tr>
+				<tr><td>
+				<div id="ordercontent_td" <?if(isEmpty(map.OrderType)||map.OrderType!='inner'){?>style="display:none;"<?}?>><label class="input_name">申请部门</label>
+					<input type="text" class="form-control input_width" name="OrderContent" id="OrderContent" value="${map.OrderContent!}"></div>
+				</td><td>
+				<div id="resource_td" <?if(isEmpty(map.resource)){?>style="display:none;"<?}?>><label class="input_name"></label>
+				<select class="form-control input_width" name="resource" id="resource"><option value="">--请选择--</option></select>
+					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}">
+				</div></td></tr>
 			</table>
 			</div>
             <?if(!isEmpty(map.pageList)){?>
@@ -80,6 +82,8 @@
         </form>
         <div class="box-footer" style="text-align:center;">
 			<button type="button" class="btn btn-primary" onclick="findList();">查询</button>
+			<input type="hidden" id="isHidden" name="isHidden" value="0">
+			<a href="javascript:;" onclick="showMore();return false;" class="add_admin">更多查询条件</a>
         </div>
 	<?if(!isEmpty(map.pageList)){?>
 	<div class="container01">

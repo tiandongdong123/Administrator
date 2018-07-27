@@ -764,6 +764,17 @@ public class AheadUserController {
 				errorMap.put("fail", map.get("userId")+"该用户不存在");
 				return errorMap;
 			}
+			if(ps.getLoginMode()==0){
+				if("1".equals(user.getLoginMode())){//用户名密码
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构"+map.get("userId")+"的登录方式不匹配，不为用户名密码");
+					return errorMap;
+				}else if("2".equals(user.getLoginMode())){//用户名密码+IP
+					errorMap.put("flag", "fail");
+					errorMap.put("fail", "机构"+map.get("userId")+"的登录方式不匹配，不为用户名密码+IP");
+					return errorMap;
+				}
+			}
 			if ("2".equals(user.getLoginMode())) {
 				String ip = (String) map.get("ip");
 				if (StringUtils.isBlank(ip)) {
@@ -1032,6 +1043,7 @@ public class AheadUserController {
 				Person person=aheadUserService.queryPersonInfo(userId);
 				if (person == null || person.getUsertype() == 0 || person.getUsertype() == 3) {
 					view.setViewName("/page/usermanager/ins_information");
+					map.put("ipSegment", query.getIpSegment());
 					view.addObject("map", map);
 					return view;
 				}
@@ -1151,26 +1163,31 @@ public class AheadUserController {
 	//获得党建信息
 	private void getPartyAdmin(String userId, ModelAndView view) {
 		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId, "PartyAdminTime");
-		if(mapping.length>0){
-			Authority author=new Authority();
-			Person per = personservice.findById(mapping[0].getRelatedidKey());
-			author.setPartyAdmin(per.getUserId());
-			author.setBegintime(DateUtil.dateToString2(mapping[0].getBegintime()));
-			author.setEndtime(DateUtil.dateToString2(mapping[0].getEndtime()));
-			try {
-				author.setPassword(PasswordHelper.decryptPassword(per.getPassword()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			String json = String.valueOf(per.getExtend());
-			if(!StringUtils.isEmpty(json)){
-				JSONObject obj = JSONObject.fromObject(json);
-				String id=String.valueOf(obj.get("RelatedGroupId"));
-				author.setUserId(id);
-				author.setTrial(obj.getBoolean("IsTrialPartyAdminTime"));
-			}
-			view.addObject("party",author);
+		if(mapping==null||mapping.length==0){
+			return;
 		}
+		Authority author=new Authority();
+		Person per = personservice.findById(mapping[0].getRelatedidKey());
+		if(per==null){
+			return;
+		}
+		author.setPartyAdmin(per.getUserId());
+		author.setBegintime(DateUtil.dateToString2(mapping[0].getBegintime()));
+		author.setEndtime(DateUtil.dateToString2(mapping[0].getEndtime()));
+		try {
+			author.setPassword(PasswordHelper.decryptPassword(per.getPassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String json = String.valueOf(per.getExtend());
+		if(!StringUtils.isEmpty(json)){
+			JSONObject obj = JSONObject.fromObject(json);
+			String id=String.valueOf(obj.get("RelatedGroupId"));
+			author.setUserId(id);
+			author.setTrial(obj.getBoolean("IsTrialPartyAdminTime"));
+		}
+		view.addObject("party",author);
+	
 	}
 	
 	//余额转限时，限时转余额
@@ -1618,17 +1635,15 @@ public class AheadUserController {
 	 * 子账号导出功能
 	 */
 	@RequestMapping("exportSonAccount")
-	public void exportSonAccount(HttpServletRequest request, HttpServletResponse response,
-			String userId, String institution, String pid, String start_time, String end_time) {
+	public void exportSonAccount(HttpServletRequest request, HttpServletResponse response,String userId, String institution,
+			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage) {
 		
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start_time",start_time);
 		map.put("end_time",end_time);
-		map.put("pid",pid);
 		map.put("institution",institution);
-		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(pid)
-				&& StringUtils.isEmpty(institution) && StringUtil.isEmpty(start_time)
-				&& StringUtil.isEmpty(end_time)) {
+		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
+				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
 			return;
 		}
 		if(!StringUtils.isEmpty(userId)){
@@ -1636,7 +1651,7 @@ public class AheadUserController {
 			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
 				return;
 			}else if(person.getUsertype()==3){
-				map.put("pid",userId);
+				map.put("pid","");
 				map.put("userId",userId);
 			}else if(person.getUsertype()==2){
 				map.put("pid",userId);
