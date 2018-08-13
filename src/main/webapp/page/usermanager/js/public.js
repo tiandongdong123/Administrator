@@ -1869,18 +1869,18 @@ function validateIp(ip,userId,object){
 					var msg="";
 					if(data.tableIP!=null){
 						errorIP=data.errorIP;
-						msg="<font style='color:red'>以下IP段存在冲突</font></br>"+data.errorIP+"<font style='color:red'>相冲突账号</font></br>"+data.tableIP;
+						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>";
 					}else{
 						msg="IP格式错误:"+data.errorIP;
 					}
 					layer.tips(msg, object, {
-						tips: [3, '#3595CC'],
+						tips: [3, '#FFFFFF'],
 						area: ['260px', ''], //宽高
 						time: 0
 					});
 				}else{
 					layer.tips("无冲突", object, {
-						tips: [3, '#3595CC'],
+						tips: [3, '#FFFFFF'],
 						area: ['260px', ''], //宽高
 						time: 2000
 					});
