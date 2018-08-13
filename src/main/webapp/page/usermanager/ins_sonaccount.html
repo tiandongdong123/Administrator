@@ -49,14 +49,11 @@
 				</div>
 				<div>
 					<table border="1" style="font-size:10px;"><tbody>
+					<?if(!isEmpty(map.pageList)){?>
 					<tr style='text-align: center;'>
 						<td>序号</td>
 						<td>机构名称</td>
 						<td>机构ID</td>
-						<td>子账号上限</td>
-						<td>子账号并发数上限</td>
-						<td>子账号下载量上限/天</td>
-						<td>子账号扣款模式</td>
 						<td>子账号类型</td>
 						<td>子账号名称</td>
 						<td>子账号ID</td>
@@ -69,6 +66,7 @@
 						<td>子账号余额</td>
 						<td>子账号次数</td>
 					</tr>
+					<?}?>
 					</tbody>
 					<?if(!isEmpty(map.pageList)){?>
 					<? var i=0; for(list in map.pageList.pageRow){ i++;?>
@@ -76,46 +74,38 @@
 					<? if(!isEmpty(list.data)){ for(data in list.data){?>
 						<tr style='text-align: center;'>
 						<?if(rows<1){rows=rows+1;?>
-						<td rowspan="${list.data.~size}" style='width:20px;'>${i+20*(map.pageList.pageNum-1)}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.institution!}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.pid!}</td>
-						<td rowspan="${list.data.~size}" style='width:60px;'>${list.upperlimit!}</td>
-						<td rowspan="${list.data.~size}" style='width:60px;'>${list.sConcurrentnumber!}</td>
-						<td rowspan="${list.data.~size}" style='width:70px;'>${list.downloadupperlimit!}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:60px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.userRealname!}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:100px;'>${list.userId!}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:80px;'>${list.password!}</td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:150px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
-						<td rowspan="${list.data.~size}" style='word-break:break-all;width:60px;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
+						<td rowspan="${list.data.~size}" style='width:30px;'>${i+20*(map.pageList.pageNum-1)}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:8%;'>${list.institution!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:8%;'>${list.pid!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:5%;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:8%;'>${list.userRealname!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:8%;'>${list.userId!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:5%;'>${list.password!}</td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:10%;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
+						<td rowspan="${list.data.~size}" style='word-break:break-all;width:6%;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
 						<?}?>
-						<td style='word-break:break-all;width:100px;'>${data.name!}</td>
-						<td style='word-break:break-all;width:100px;'>${data.resouceName!}</td>
-						<td style='word-break:break-all;width:100px;'>${data.time!}</td>
-						<td style='width:60px;'><?if(list.chargebacks==1){?>${data.balance!}<?}?></td>
-						<td style='width:60px;'><?if(list.chargebacks==1){?>${data.count!}<?}?></td>
+						<td style='word-break:break-all;width:9%;'>${data.name!}</td>
+						<td style='word-break:break-all;width:9%;'>${data.resouceName!}</td>
+						<td style='word-break:break-all;width:9%;'>${data.time!}</td>
+						<td style='width:6%;'><?if(list.chargebacks==1){?>${data.balance!}<?}?></td>
+						<td style='width:6%;'><?if(list.chargebacks==1){?>${data.count!}<?}?></td>
 						</tr>
 					<?}}else{?>
 						<tr style='text-align: center;'>
-						<td style='width:20px;'>${i+20*(map.pageList.pageNum-1)}</td>
-						<td style='word-break:break-all;width:100px;'>${list.institution!}</td>
-						<td style='word-break:break-all;width:100px;'>${list.pid!}</td>
-						<td style='width:60px;'>${list.upperlimit!}</td>
-						<td style='width:60px;'>${list.sConcurrentnumber!}</td>
-						<td style='width:70px;'>${list.downloadupperlimit!}</td>
-						<td style='word-break:break-all;width:100px;'><?if(list.chargebacks==0){?>从机构账号扣款<?}?><?if(list.chargebacks==1){?>从机构子账号扣款<?}?></td>
-						<td style='word-break:break-all;width:60px;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
-						<td style='word-break:break-all;width:100px;'>${list.userRealname!}</td>
-						<td style='word-break:break-all;width:100px;'>${list.userId!}</td>
-						<td style='word-break:break-all;width:80px;'>${list.password!}</td>
-						<td style='word-break:break-all;width:150px;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
-						<td style='word-break:break-all;width:60px;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
-						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
-						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
-						<td style='word-break:break-all;width:100px;'>&nbsp;</td>
-						<td style='width:60px;'>&nbsp;</td>
-						<td style='width:60px;'>&nbsp;</td>
+						<td style='width:30px;'>${i+20*(map.pageList.pageNum-1)}</td>
+						<td style='word-break:break-all;width:8%;'>${list.institution!}</td>
+						<td style='word-break:break-all;width:8%;'>${list.pid!}</td>
+						<td style='word-break:break-all;width:5%;'><?if(list.userRoles==0){?>子账号<?}?><?if(list.userRoles==20){?>学生账号<?}?></td>
+						<td style='word-break:break-all;width:8%;'>${list.userRealname!}</td>
+						<td style='word-break:break-all;width:8%;'>${list.userId!}</td>
+						<td style='word-break:break-all;width:5%;'>${list.password!}</td>
+						<td style='word-break:break-all;width:10%;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
+						<td style='word-break:break-all;width:6%;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
+						<td style='word-break:break-all;width:9%;'>&nbsp;</td>
+						<td style='word-break:break-all;width:9%;'>&nbsp;</td>
+						<td style='word-break:break-all;width:9%;'>&nbsp;</td>
+						<td style='width:6%;'>&nbsp;</td>
+						<td style='width:6%;'>&nbsp;</td>
 						</tr>
 					<?}?>
 					<?}}?>

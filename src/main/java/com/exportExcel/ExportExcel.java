@@ -1014,10 +1014,6 @@ public class ExportExcel {
 		List<String> namelist=new ArrayList<String>();
 		namelist.add("机构名称");
 		namelist.add("机构ID");
-		namelist.add("子账号上限");
-		namelist.add("子账号并发数上限");
-		namelist.add("子账号下载量上限/天");
-		namelist.add("子账号扣款模式");
 		namelist.add("子账号类型");
 		namelist.add("子账号名称");
 		namelist.add("子账号ID");
@@ -1056,26 +1052,16 @@ public class ExportExcel {
 						row = sheet.createRow(rowNum++);
 						row.createCell(0).setCellValue(formatStr(map.get("institution")));
 						row.createCell(1).setCellValue(formatStr(map.get("pid")));
-						row.createCell(2).setCellValue(formatStr(map.get("upperlimit")));
-						row.createCell(3).setCellValue(formatStr(map.get("sConcurrentnumber")));
-						row.createCell(4).setCellValue(formatStr(map.get("downloadupperlimit")));
-						if("0".equals(formatStr(map.get("chargebacks")))){
-							row.createCell(5).setCellValue("从机构账号扣款");
-						}else if("1".equals(formatStr(map.get("chargebacks")))){
-							row.createCell(5).setCellValue("从机构子账号扣款");
-						}else{
-							row.createCell(5).setCellValue("");
-						}
 						if("0".equals(formatStr(map.get("userRoles")))){
-							row.createCell(6).setCellValue("子账号");
+							row.createCell(2).setCellValue("子账号");
 						}else if("20".equals(formatStr(map.get("userRoles")))){
-							row.createCell(6).setCellValue("学生账号");
+							row.createCell(2).setCellValue("学生账号");
 						}else{
-							row.createCell(6).setCellValue("");
+							row.createCell(2).setCellValue("");
 						}
-						row.createCell(7).setCellValue(formatStr(map.get("userRealname")));
-						row.createCell(8).setCellValue(formatStr(map.get("userId")));
-						row.createCell(9).setCellValue(formatStr(map.get("password")));
+						row.createCell(3).setCellValue(formatStr(map.get("userRealname")));
+						row.createCell(4).setCellValue(formatStr(map.get("userId")));
+						row.createCell(5).setCellValue(formatStr(map.get("password")));
 						List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
 						if(listip!=null&&listip.size()>0){
 							StringBuffer sb=new StringBuffer();
@@ -1087,25 +1073,25 @@ public class ExportExcel {
 							}
 							HSSFCellStyle cellStyle=wb.createCellStyle();       
 							cellStyle.setWrapText(true); 
-							row.createCell(10).setCellStyle(cellStyle);                          
-							row.createCell(10).setCellValue(new HSSFRichTextString(sb.toString())); 
+							row.createCell(6).setCellStyle(cellStyle);                          
+							row.createCell(6).setCellValue(new HSSFRichTextString(sb.toString())); 
 						}else{
-							row.createCell(10).setCellValue("");
+							row.createCell(6).setCellValue("");
 						}
-						row.createCell(11).setCellValue(formatStr(map.get("registrationTime")));
+						row.createCell(7).setCellValue(formatStr(map.get("registrationTime")));
 						Map<String,Object> dataMap=null;
 						if(dataList.size()>0){
 							dataMap=dataList.get(j);
 						}
-						row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("name")));
-						row.createCell(13).setCellValue(dataMap==null?"":formatStr(dataMap.get("resouceName")));
-						row.createCell(14).setCellValue(dataMap==null?"":formatStr(dataMap.get("time")));
+						row.createCell(8).setCellValue(dataMap==null?"":formatStr(dataMap.get("name")));
+						row.createCell(9).setCellValue(dataMap==null?"":formatStr(dataMap.get("resouceName")));
+						row.createCell(10).setCellValue(dataMap==null?"":formatStr(dataMap.get("time")));
 						if("1".equals(formatStr(map.get("chargebacks")))){
-							row.createCell(15).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
-							row.createCell(16).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
+							row.createCell(11).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
+							row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
 						}else{
-							row.createCell(15).setCellValue("");
-							row.createCell(16).setCellValue("");
+							row.createCell(11).setCellValue("");
+							row.createCell(12).setCellValue("");
 						}
 					}
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 0,0));
