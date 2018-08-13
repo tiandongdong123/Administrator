@@ -67,8 +67,8 @@ function submitForm(){
 			}else{
 				layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 			}
+			removeAtrr();
 		});
-		removeAtrr();
 	}
 }
 
