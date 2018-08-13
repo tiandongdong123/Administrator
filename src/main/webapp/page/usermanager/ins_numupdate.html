@@ -102,164 +102,7 @@
 				<option value="0">-请选择-</option>
 				</select>
 			</div>
-			<div class="form-group input_block">
-				<label class="input_name">开通权限</label>
-				<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</span>
-			</div>
-			<div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"<?}?>>
-		        <div class="form-group input_block">
-	              	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-	              	<input type="radio" name="isTrial" value="isTrial" <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"<?}?>/>是
-	                <input type="radio" name="isTrial" value="notTrial" <?if(!isEmpty(party)&&party.trial==false){?>checked="checked"<?}?>/>否
-		        </div>
-                <div class="form-group input_block">
-                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
-                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin" value="${party.partyAdmin!}" maxlength="100">
-                </div>
-                <div class="form-group input_block">
-                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
-                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword" value="${party.password!}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');" onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
-                </div>
-                <div class="form-group time_block">
-                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                	<div class="time_input">
-					<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" value="${party.begintime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
-					<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" value="${party.endtime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
-					</div>
-                </div>
-			</div>
-            <div class="checkbox input_block block_left">
-              <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>开通机构管理员</label>
-            </div>
-            <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
-				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
-					<input type="radio" name="managerType" value="new" onclick="radioClick();" <?if(isEmpty(map.pid)){?>checked="checked"<?}?>/>创建新管理员
-					<input type="radio" name="managerType" value="old" onclick="radioClick();" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>/>选择已有机构管理员
-				</div>
-				<div id="oldManager" class="form-group input_block" <?if(isEmpty(map.pid)){?>style="display: none;"<?}?>>
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-					<select class="form-control input_time" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
-						<option value="">-请选择管理员ID-</option>
-						<?if(!isEmpty(admin)){?>
-						<?for(adm in admin){?><option value="${adm.userId}" <?if(adm.userId==map.pid){?>selected="selected"<?}?>>${adm.userId}</option><?}?>
-						<?}?>
-					</select>
-				</div>
-               	<div id="newManager" class="form-group input_block" <?if(!isEmpty(map.pid)){?>style="display: none;"<?}?>>
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
-                  <input type="text" class="form-control input_time" name="adminname" id="adminname" value="${map.adminname}" onfocus="input_onfocus(this);" maxlength="100"/>
-                </div>
-				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
-					<input type="text" class="form-control input_time" name="adminpassword" id="adminpassword" value="${map.adminpassword}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');" onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
-				</div>
-				<div class="form-group input_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
-					<input type="text" class="form-control input_time" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
-				</div>
-				<div class="form-group input_block">
-					<label class="input_name">机构管理员IP段</label>
-					<input type="text" class="form-control input_time" name="adminIP" id="adminIP" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);" <?if(!isEmpty(map.adminIP)){?>value="${map.adminIP[0].beginIpAddressNumber}-${map.adminIP[0].endIpAddressNumber}"<?}?>>
-				</div>
-				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>checked="checked"<?}?>>是否开通机构子账号</label>
-				</div>
-				<div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
-					<div class="form-group input_block">
-						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
-						<input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="9">
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号并发数上限</label>
-						<input type="text" class="form-control input_time" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="9">
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>子账号下载量上限/天</label>
-						<input type="text" class="form-control input_time" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="9">
-					</div>
-					<div class="form-group input_block">
-						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号扣款模式</label>
-						<select class="form-control input_time" name="chargebacks" id="chargebacks">
-							<option value="0" <?if(map.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
-						</select>
-					</div>
-				</div>
-				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="checktongji" <?if(!isEmpty(tongji)){?>checked="checked"<?}?>>开通统计分析</label>
-				</div>
-				<div class="form-group input_block" <?if(isEmpty(tongji)){?>style="display: none;"<?}?> id="tongjiDiv">
-					<input type="hidden" name="tongji" id="tongji" value="${tongji!}">
-					<label class="input_name">功能模块</label>
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all" <?if(strutil.contain(tongji,"database_statistics")||strutil.contain(tongji,"resource_type_statistics")){?>checked="checked"<?}?>>全部&nbsp;&nbsp;
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(strutil.contain(tongji,"database_statistics")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
-					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(strutil.contain(tongji,"resource_type_statistics")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
-				</div>
-            </div>
-            
-			<div class="checkbox input_block block_left">
-				<label><input type="checkbox" id="user_dinding" name="openState"<?if(bindInformation.openState){?>checked="checked"<?}?>>开通个人绑定机构</label>
-			</div>
-            <div id="dinding" >
-            <div class="form-group input_block">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
-                <select class="form-control input_time"  id="bindType" name="bindType"  >
-                    <>
-                    <option value="0"<?if(bindInformation.bindType==0){?>selected = "selected"<?}?>>机构个人同时登录</option>
-                    <option value="1"<?if(bindInformation.bindType==1){?>selected = "selected"<?}?>>机构登录</option>
-                    <option value="2"<?if(bindInformation.bindType==2){?>selected = "selected"<?}?>>线下扫描</option>
-
-                </select>
-            </div>
-            <div class="form-group input_block">
-                <label class="input_name bind_num"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人上限</label>
-                <input type="text" class="form-control input_time" value="${bindInformation.bindLimit}" id="bindLimit" name="bindLimit">
-				<i class="wrong"></i>
-				<span class="mistaken"></span>
-            </div>
-            <div class="form-group input_block">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人账号有效期(天)</label>
-                <input type="text" class="form-control input_time" value="${bindInformation.bindValidity}" id="bindValidity" name="bindValidity">
-            </div>
-            <div class="form-group input_block">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人下载量上限/天</label>
-                <input type="text" class="form-control input_time" value="${bindInformation.downloadLimit}" id="downlaodLimit" name="downloadLimit">
-            </div>
-            <div class="form-group input_block">
-                <input type="hidden" name="bindAuthority" id="bindAuthority" value="资源下载">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人继承权限</label>
-                <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
-                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"resource")){?>checked="checked"<?}?>  class="selFirst" id="resourceInherited" onclick="bindingInherited()" value="资源下载">资源下载&nbsp;&nbsp;
-                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"miner")){?>checked="checked"<?}?>  class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
-                </div>
-            </div>
-			<div class="checkbox input_block block_left">
-				<label><input type="checkbox" id="openApp" name="openApp" value="0" <?if(!isEmpty(limit.openApp.begintime)){?>checked="checked"<?}?> onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
-			</div>
-			<div class="form-group time_block" <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"<?}?> id="openAppDiv">
-				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-               	<div class="time_input">
-				<span><input type="text" class="Wdate" name="appBegintime" id="appBegintime" value="${limit.openApp.begin!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span class="to">至</span>
-				<span><input type="text" class="Wdate" name="appEndtime" id="appEndtime" value="${limit.openApp.end!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})"></span>
-				</div>
-			</div>
-			<div class="checkbox input_block block_left">
-				<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,1)" <?if(!isEmpty(limit.openWeChat.begin)){?>checked="checked"<?}?>>开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
-			</div>
-            <div <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"<?}?> id="wechatDiv">
-	            <div class="form-group time_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                	<div class="form-group time_input">
-					<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" value="${limit.openWeChat.begin!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
-					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" value="${limit.openWeChat.end!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
-					</div>
-               	</div>
-            	<div class="form-group input_block">
-                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
-               		<input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil" value="${email!}">
-					<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
-				</div>
-			</div>
+			<!-- 购买项目展示开始 -->
           <div id="multplediv">
           	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
           	<div class="balance_block" name="full_div">
@@ -836,23 +679,182 @@
 			</div>
 			</div>
 		</div>
-     <?}?>
+	     <?}?>
+		</div>
 	</div>
-</div>
-<!-- 详情结束 -->
-<?}?>
-         	<?}?>
-       </li>
-<? j++; }?>
-</ul>
+	<!-- 详情结束 -->
+	<?}}?>
+	</li>
+	<? j++; }?>
+	</ul>
+		</div>
+	  <?}?>
 	</div>
-  <?}?>
-</div>
-<? i++;}} ?>
-<!-- 详情 -->
-</div>
-<div id="detail_0"></div>
-</form>
+	<? i++;}}?>
+	<!-- 详情 -->
+	</div>
+			<!-- 购买项目展示结束 -->
+			
+			<div class="form-group input_block">
+				<label class="input_name">开通权限</label>
+				<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</span>
+			</div>
+			<div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"<?}?>>
+		        <div class="form-group input_block">
+	              	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	              	<input type="radio" name="isTrial" value="isTrial" <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"<?}?>/>是
+	                <input type="radio" name="isTrial" value="notTrial" <?if(!isEmpty(party)&&party.trial==false){?>checked="checked"<?}?>/>否
+		        </div>
+                <div class="form-group input_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
+                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin" value="${party.partyAdmin!}" maxlength="100">
+                </div>
+                <div class="form-group input_block">
+                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
+                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword" value="${party.password!}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');" onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
+                </div>
+                <div class="form-group time_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                	<div class="time_input">
+					<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" value="${party.begintime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
+					<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" value="${party.endtime!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
+					</div>
+                </div>
+			</div>
+            <div class="checkbox input_block block_left">
+              <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>>开通机构管理员</label>
+            </div>
+            <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+					<input type="radio" name="managerType" value="new" onclick="radioClick();" <?if(isEmpty(map.pid)){?>checked="checked"<?}?>/>创建新管理员
+					<input type="radio" name="managerType" value="old" onclick="radioClick();" <?if(!isEmpty(map.pid)){?>checked="checked"<?}?>/>选择已有机构管理员
+				</div>
+				<div id="oldManager" class="form-group input_block" <?if(isEmpty(map.pid)){?>style="display: none;"<?}?>>
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+					<select class="form-control input_time" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+						<option value="">-请选择管理员ID-</option>
+						<?if(!isEmpty(admin)){?>
+						<?for(adm in admin){?><option value="${adm.userId}" <?if(adm.userId==map.pid){?>selected="selected"<?}?>>${adm.userId}</option><?}?>
+						<?}?>
+					</select>
+				</div>
+               	<div id="newManager" class="form-group input_block" <?if(!isEmpty(map.pid)){?>style="display: none;"<?}?>>
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
+                  <input type="text" class="form-control input_time" name="adminname" id="adminname" value="${map.adminname}" onfocus="input_onfocus(this);" maxlength="100"/>
+                </div>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
+					<input type="text" class="form-control input_time" name="adminpassword" id="adminpassword" value="${map.adminpassword}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');" onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
+					<input type="text" class="form-control input_time" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name">机构管理员IP段</label>
+					<input type="text" class="form-control input_time" name="adminIP" id="adminIP" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);" <?if(!isEmpty(map.adminIP)){?>value="${map.adminIP[0].beginIpAddressNumber}-${map.adminIP[0].endIpAddressNumber}"<?}?>>
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checks" name="checks" value="true" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>checked="checked"<?}?>>是否开通机构子账号</label>
+				</div>
+				<div id="sconcurrent_div" <?if(!isEmpty(map.upperlimit)&&!isEmpty(map.sConcurrentnumber)){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
+					<div class="form-group input_block">
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
+						<input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit" id="upperlimit" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号并发数上限</label>
+						<input type="text" class="form-control input_time" value="${map.sConcurrentnumber}" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>子账号下载量上限/天</label>
+						<input type="text" class="form-control input_time" value="${map.downloadupperlimit}" id="downloadupperlimit" name="downloadupperlimit" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号扣款模式</label>
+						<select class="form-control input_time" name="chargebacks" id="chargebacks">
+							<option value="0" <?if(map.chargebacks==0){?>selected="selected"<?}?>>从机构账号扣款</option>
+						</select>
+					</div>
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checktongji" <?if(!isEmpty(tongji)){?>checked="checked"<?}?>>开通统计分析</label>
+				</div>
+				<div class="form-group input_block" <?if(isEmpty(tongji)){?>style="display: none;"<?}?> id="tongjiDiv">
+					<input type="hidden" name="tongji" id="tongji" value="${tongji!}">
+					<label class="input_name">功能模块</label>
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all" <?if(strutil.contain(tongji,"database_statistics")||strutil.contain(tongji,"resource_type_statistics")){?>checked="checked"<?}?>>全部&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics" <?if(strutil.contain(tongji,"database_statistics")){?>checked="checked"<?}?>>数据库使用统计&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics" <?if(strutil.contain(tongji,"resource_type_statistics")){?>checked="checked"<?}?>>资源类型使用统计&nbsp;&nbsp;
+				</div>
+            </div>
+            
+			<div class="checkbox input_block block_left">
+				<label><input type="checkbox" id="user_dinding" name="openState"<?if(bindInformation.openState){?>checked="checked"<?}?>>开通个人绑定机构</label>
+			</div>
+            <div id="dinding" >
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
+                <select class="form-control input_time"  id="bindType" name="bindType"  >
+                    <>
+                    <option value="0"<?if(bindInformation.bindType==0){?>selected = "selected"<?}?>>机构个人同时登录</option>
+                    <option value="1"<?if(bindInformation.bindType==1){?>selected = "selected"<?}?>>机构登录</option>
+                    <option value="2"<?if(bindInformation.bindType==2){?>selected = "selected"<?}?>>线下扫描</option>
+
+                </select>
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name bind_num"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人上限</label>
+                <input type="text" class="form-control input_time" value="${bindInformation.bindLimit}" id="bindLimit" name="bindLimit">
+				<i class="wrong"></i>
+				<span class="mistaken"></span>
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人账号有效期(天)</label>
+                <input type="text" class="form-control input_time" value="${bindInformation.bindValidity}" id="bindValidity" name="bindValidity">
+            </div>
+            <div class="form-group input_block">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人下载量上限/天</label>
+                <input type="text" class="form-control input_time" value="${bindInformation.downloadLimit}" id="downlaodLimit" name="downloadLimit">
+            </div>
+            <div class="form-group input_block">
+                <input type="hidden" name="bindAuthority" id="bindAuthority" value="资源下载">
+                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定个人继承权限</label>
+                <input type="checkbox"  name="resourceType" id="allInherited" onclick="bindingInherited('all')">全部&nbsp;&nbsp;
+                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"resource")){?>checked="checked"<?}?>  class="selFirst" id="resourceInherited" onclick="bindingInherited()" value="资源下载">资源下载&nbsp;&nbsp;
+                <input type="checkbox"  name="resourceType"<?if(!isEmpty(bindInformation.bindAuthority)&&strutil.contain(bindInformation.bindAuthority,"miner")){?>checked="checked"<?}?>  class="selFirst" id="wanInherited" onclick="bindingInherited()" value="万方分析">万方分析
+                </div>
+            </div>
+			<div class="checkbox input_block block_left">
+				<label><input type="checkbox" id="openApp" name="openApp" value="0" <?if(!isEmpty(limit.openApp.begintime)){?>checked="checked"<?}?> onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
+			</div>
+			<div class="form-group time_block" <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"<?}?> id="openAppDiv">
+				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+               	<div class="time_input">
+				<span><input type="text" class="Wdate" name="appBegintime" id="appBegintime" value="${limit.openApp.begin!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span class="to">至</span>
+				<span><input type="text" class="Wdate" name="appEndtime" id="appEndtime" value="${limit.openApp.end!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})"></span>
+				</div>
+			</div>
+			<div class="checkbox input_block block_left">
+				<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,1)" <?if(!isEmpty(limit.openWeChat.begin)){?>checked="checked"<?}?>>开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
+			</div>
+            <div <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"<?}?> id="wechatDiv">
+	            <div class="form-group time_block">
+					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                	<div class="form-group time_input">
+					<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" value="${limit.openWeChat.begin!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
+					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" value="${limit.openWeChat.end!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
+					</div>
+               	</div>
+            	<div class="form-group input_block">
+                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
+               		<input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil" value="${email!}">
+					<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
+				</div>
+			</div>
+		<div id="detail_0"></div>
+		</form>
 		<input type="hidden" id="count" value="${i}">
 		<div class="box-footer block_left">
 			<button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">保存</button>

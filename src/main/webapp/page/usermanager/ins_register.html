@@ -98,6 +98,8 @@
 					<option value="">-请选择-</option>
 					</select>
                 </div>
+                <input type="hidden" id="count" value="-1"/>
+                <div id="multplediv"></div>
                 <div class="form-group input_block">
 					<label class="input_name">开通权限</label>
 					<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)">开通党建管理员</span>
@@ -220,8 +222,6 @@
 					 	<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
 	               	</div>
                	</div>
-                <input type="hidden" id="count" value="-1"/>
-                <div id="multplediv"></div>
 				<div class="box-footer block_left">
 					<button type="button" class="btn btn-primary" id="submit1" onclick="submitForm(0);">保存并新增</button>
 					<button type="button" class="btn btn-primary" id="submit2" onclick="submitForm(1);">保存</button>
