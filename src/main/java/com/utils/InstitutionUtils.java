@@ -147,7 +147,7 @@ public class InstitutionUtils {
 			}
 		}
 		for (ResourceDetailedDTO dto : list) {
-			hashmap = InstitutionUtils.getProectValidate(user,dto, true, true);
+			hashmap = InstitutionUtils.getProectValidate(user,dto, true);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -162,7 +162,7 @@ public class InstitutionUtils {
 	 * @param isBatch false是批量,true是非批量
 	 * @return
 	 */
-	public static Map<String,String> getProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean notBatch,boolean isAdd){
+	public static Map<String,String> getProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean isAdd){
 		Map<String,String> hashmap=new HashMap<String,String>();
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if(StringUtils.isBlank(dto.getValidityStarttime())||StringUtils.isBlank(dto.getValidityEndtime())) {
@@ -180,35 +180,76 @@ public class InstitutionUtils {
 			hashmap.put("fail", projectname+"时限开始时间不能大于结束时间");
 			return hashmap;
 		}
-		if(notBatch){//单个注册或修改
-			if (dto.getProjectType().equals("balance")) {
-				if (dto.getTotalMoney() == null) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
-					return hashmap;
-				}
-				if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
-					return hashmap;
-				}
-				if(NumberUtils.toDouble(dto.getTotalMoney())<=0&&StringUtils.isEmpty(dto.getValidityStarttime2())){
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
-					return hashmap;
-				}
-			} else if (dto.getProjectType().equals("count")) {
-				if (dto.getPurchaseNumber() == null) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
-					return hashmap;
-				}
-				if (!NumberUtils.isNumber(dto.getPurchaseNumber())||NumberUtils.toInt(dto.getPurchaseNumber())<=0&&isAdd) {
-					hashmap.put("flag", "fail");
-					hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
-					return hashmap;
+		//单个注册或修改
+		if (dto.getProjectType().equals("balance")) {
+			if (dto.getTotalMoney() == null) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
+				return hashmap;
+			}
+			if (!NumberUtils.isNumber(dto.getTotalMoney())||NumberUtils.toDouble(dto.getTotalMoney())<=0&&isAdd) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
+				return hashmap;
+			}
+			if(NumberUtils.toDouble(dto.getTotalMoney())<=0&&StringUtils.isEmpty(dto.getValidityStarttime2())){
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname+"金额输入不正确，请正确填写金额");
+				return hashmap;
+			}
+		} else if (dto.getProjectType().equals("count")) {
+			if (dto.getPurchaseNumber() == null) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
+				return hashmap;
+			}
+			if (!NumberUtils.isNumber(dto.getPurchaseNumber())||NumberUtils.toInt(dto.getPurchaseNumber())<=0&&isAdd) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname+"次数输入不正确，请正确填写次数");
+				return hashmap;
+			}
+		}
+		if (dto.getRldto() != null) {
+			boolean flag = true;// 判断是否有选中的数据库
+			for (ResourceLimitsDTO rldto : dto.getRldto()) {
+				if (rldto.getResourceid() != null) {
+					flag = false;
+					break;
 				}
 			}
+			if (flag) {
+				hashmap.put("flag", "fail");
+				hashmap.put("fail", projectname + "数据库不能为空，请选择数据库");
+				return hashmap;
+			}
+		}
+		return hashmap;
+	}
+	
+	
+	/**
+	 *  注册或者修改机构用户的非空校验
+	 * @param dto
+	 * @param isBatch false是批量,true是非批量
+	 * @return
+	 */
+	public static Map<String,String> getBatchProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean isAdd){
+		Map<String,String> hashmap=new HashMap<String,String>();
+		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
+		if(StringUtils.isBlank(dto.getValidityStarttime())||StringUtils.isBlank(dto.getValidityEndtime())) {
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限不能为空，请填写时限");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(dto.getValidityStarttime())==null||DateUtil.stringToDate1(dto.getValidityEndtime())==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限格式不正确，请正确填写时限");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(dto.getValidityStarttime()).getTime()>DateUtil.stringToDate1(dto.getValidityEndtime()).getTime()){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname+"时限开始时间不能大于结束时间");
+			return hashmap;
 		}
 		if (dto.getRldto() != null) {
 			boolean flag = true;// 判断是否有选中的数据库
@@ -274,7 +315,7 @@ public class InstitutionUtils {
 				delList.add(dto.getProjectid());
 				continue;
 			}
-			hashmap = InstitutionUtils.getProectValidate(user,dto, true, false);
+			hashmap = InstitutionUtils.getProectValidate(user,dto, false);
 			if (hashmap.size() > 0) {
 				return hashmap;
 			}
@@ -370,12 +411,37 @@ public class InstitutionUtils {
 			if (StringUtils.isEmpty(dto.getProjectid())) {
 				rdList.remove(j--);
 			}else{
-				errorMap = InstitutionUtils.getProectValidate(user,dto, false, true);
+				errorMap = InstitutionUtils.getBatchProectValidate(user,dto, true);
 				if (errorMap.size() > 0) {
 					return errorMap;
 				}
 			}
 		}
+//		//验证购买项目是否匹配
+//		Map<String,Object> projectMap=new HashMap<String,Object>();
+//		for (int i = 0; i < userList.size(); i++) {
+//			Map<String, Object> map = userList.get(i);
+//			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+//			for(Map<String, Object> pro:lm){
+//				if(NumberUtils.isNumber(String.valueOf(pro.get("totalMoney")))){
+//					projectMap.put(String.valueOf(pro.get("projectid")), String.valueOf(pro.get("projectid")));
+//				}
+//			}
+//		}
+//		for (Map.Entry<String, Object> entry : projectMap.entrySet()) {
+//			boolean isNull=true;
+//			for(ResourceDetailedDTO dto : rdList){
+//				if(StringUtils.equals(entry.getKey(), dto.getProjectid())){
+//					isNull=false;
+//				}
+//			}
+//			if(isNull){
+//				errorMap.put("flag", "fail");
+//				errorMap.put("fail", "购买项目无法匹配，请核对正确并填写");
+//				return errorMap;
+//			}
+//		}
+//		//验证excel内容
 		String ins="";
 		for (int i = 0; i < userList.size(); i++) {
 			Map<String, Object> map = userList.get(i);
@@ -473,10 +539,6 @@ public class InstitutionUtils {
 			//预加载校验页面项目是否和Excel中一致
 			//验证金额，次数
 			for(ResourceDetailedDTO dto : rdList){
-				String projectId=dto.getProjectid();
-				if (projectId.contains("TimeLimit")) {
-					continue;
-				}
 				boolean isRight=true;
 				for(Map<String, Object> pro : lm) {
 					if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
