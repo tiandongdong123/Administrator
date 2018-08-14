@@ -95,6 +95,7 @@ function submitForm(){
 			$(".mistaken").css("display","none");
 		}
 		if(bool){
+			removeAtrr();
 			return ;
 		}
 	}
