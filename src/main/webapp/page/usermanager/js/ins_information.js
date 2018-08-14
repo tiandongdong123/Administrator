@@ -85,19 +85,24 @@ function showAdm(id,pid,institution,e){
 							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
 						}
 					}
-					html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
-					$("#adminInstitution").html(html);
-					layer.open({
-					    type: 1, //page层 1div，2页面
-					    shadeClose: false,
-					    area: ['600px', '300px'],
-					    title: '确认',
-					    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-					    content: $("#adminInstitution"),
-					    btn: ['确定','取消'],
-						yes: function(){
-							updateInstitution(institution,olds);//更新机构名称
+					if(user!=null&&admin!=null){
+						html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
+					}else if(admin==null){
+						var array=user.split(",");
+						if(array.length>1){
+							html+="确定要同时修改所有机构账号的机构名称吗？";
+						}else{
+							html+="确定要修改机构账号的机构名称吗？";
 						}
+					}
+					layer.alert(html,{
+						icon: 1,
+						title : ["确认", true],
+					    skin: 'layui-layer-molv',
+					    btn: ['确定','取消'],
+					    yes: function(){
+					    	updateInstitution(institution,olds,id);//更新机构名称
+					    }
 					});
 				}
 			});
@@ -109,7 +114,7 @@ function showAdm(id,pid,institution,e){
 }
 
 //更新机构名称
-function updateInstitution(news,olds){
+function updateInstitution(news,olds,id){
 	$.ajax({
 		type : "post",
 		url : "../auser/updateins.do",
@@ -119,6 +124,7 @@ function updateInstitution(news,olds){
 				layer.msg('管理员信息更新成功', {icon: 1});
 			}else{
 				layer.msg('管理员信息更新失败', {icon: 2});
+				return;
 			}
 			layer.closeAll();
 			if($("#institution").val()!=""){

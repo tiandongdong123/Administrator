@@ -982,13 +982,9 @@ public class AheadUserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			aheadUserService.updateInstitution(institution,oldins);
+			map.put("flag", "true");
 		}catch(Exception e){
 			log.error("更新机构名称异常:",e);
-		}
-		int i=0;
-		if(i>0){
-			map.put("flag", "true");
-		}else{
 			map.put("flag", "false");
 		}
 		return map;

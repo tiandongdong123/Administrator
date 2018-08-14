@@ -106,17 +106,6 @@
           <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.groupInfo.OrderType=='inner'){?>申请部门：<?}?>${list.groupInfo.OrderContent!}</span>
           <?}?>
       </div>
-      <div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
-        <table class="table table-hover">
-		<div class="form-group input_block">
-             <label class="input_name">机构名称</label>
-             <input type="hidden" class="form-control input_width" id="ins_hidden_${list.userId}" value="${list.institution}">
-             <input type="text" class="form-control input_width" id="institu_${list.userId}" value="${list.institution}">
-        </div>
-        <tbody id="tbody_${list.userId}"></tbody>
-       	</table>
-     </div>
-     <div class="box-body table-responsive no-padding" style="display: none;" id="adminInstitution"></div>
      <div class="info_box_right">
       	<a href="../auser/numupdate.do?userId=${list.userId}" class="add_admin">账号修改</a>
         <div class="btn-group">
@@ -139,6 +128,16 @@
         </a>
      </div>
  	</div>
+	<div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
+		<table class="table table-hover">
+		<div class="form-group input_block">
+             <label class="input_name">机构名称</label>
+             <input type="hidden" class="form-control input_width" id="ins_hidden_${list.userId}" value="${list.institution}">
+             <input type="text" class="form-control input_width" id="institu_${list.userId}" value="${list.institution}">
+        </div>
+        <tbody id="tbody_${list.userId}"></tbody>
+       	</table>
+	</div>
 	<div id="show_${i}" <?if(i<6){?>style="display:black;"<?}else{?>style="display:none;"<?}?>>
 	<div class="user_info">
 		<span class="user_qrCode">${list.userId}</span>
