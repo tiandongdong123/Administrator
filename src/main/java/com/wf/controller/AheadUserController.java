@@ -692,7 +692,6 @@ public class AheadUserController {
 			if(errorMap.size()>0){
 				return errorMap;
 			}
-			allNum=userList.size();
 			errorMap = this.batchUpdateValidate(userList,user);
 			if (errorMap.size() > 0) {
 				return errorMap;
