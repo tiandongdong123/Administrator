@@ -114,46 +114,104 @@ function submitForm(){
 		removeAtrr();
 		return false;
 	}else{
-		var data = new FormData($('#fromList')[0]);
-		$.ajax({
-			url: '../auser/updateinfo.do',
-			type: 'POST',
-			data: data,
-			cache: false,
-			processData: false,
-			contentType: false
-		}).done(function(data){
-			if(data.flag=="success"){
-	    		layer.alert("更新成功", {
-	    			icon: 1,
-	    		    skin: 'layui-layer-molv',
-	    		    btn: ['确定'], //按钮
-	    		    yes: function(){
-	    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
-	    		    }
-	    		});
-			}else{
-				if(data.flag=='fail'){
-					layer.msg(data.fail, {icon: 2});
-				}else if(data.flag=='error'){
-		    		layer.alert(data.fail, {
-		    			icon: 2,
-		    			title: '提示',
-		    		    skin: 'layui-layer-molv',
-		    		    btn: ['继续添加'], //按钮
-		    		    yes: function(){
-		    		    	window.location.href='../auser/numupdate.do?userId='+userId;
-		    		    }
-		    		});
-				}else{
-					layer.msg("更新失败，请联系管理员", {icon: 2});
-				}
-			}
-			removeAtrr();
-		});
+		var olds=$("#oldInstitution").val();
+		var institution=$("#institution").val();
+		if(olds!=institution){
+			 validateUserInstitution(olds,institution);
+		}else{
+			updateUser();
+		}
 	}
 }
 
+function validateUserInstitution(olds,institution){
+	$.ajax({
+		type : "post",
+		url : "../auser/findInstitutionAllUser.do",
+		data:{"institution":olds},
+		success: function(data){
+			var html="";
+			var admin=data.admin;
+			var user=data.user;
+			var num=0;
+			if(user!=null){
+				html+="该机构下的机构账号有：</br>";
+				var array=user.split(",");
+				for(ar in array){
+					html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+				}
+				num+=array.length;
+			}
+			if(admin!=null){
+				html+="该机构下的机构管理员有：</br>";
+				var array=admin.split(",");
+				for(ar in array){
+					html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+				}
+				num+=array.length;
+			}
+			if(num>1){
+				if(user!=null&&admin!=null){
+					html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
+				}else if(admin==null){
+					html+="确定要同时修改所有机构账号的机构名称吗？";
+				}
+				layer.alert(html,{
+					icon: 1,
+					title : ["确认", true],
+				    skin: 'layui-layer-molv',
+				    btn: ['确定','取消'],
+				    yes: function(){
+				    	updateUser();
+				    }
+				});
+			}else{
+		    	updateUser();
+			}
+		}
+	});
+}
+
+function updateUser(){
+	var data = new FormData($('#fromList')[0]);
+	$.ajax({
+		url: '../auser/updateinfo.do',
+		type: 'POST',
+		data: data,
+		cache: false,
+		processData: false,
+		contentType: false
+	}).done(function(data){
+		if(data.flag=="success"){
+    		layer.alert("更新成功", {
+    			icon: 1,
+    		    skin: 'layui-layer-molv',
+    		    btn: ['确定'], //按钮
+    		    yes: function(){
+    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+    		    }
+    		});
+		}else{
+			if(data.flag=='fail'){
+				layer.msg(data.fail, {icon: 2});
+			}else if(data.flag=='error'){
+	    		layer.alert(data.fail, {
+	    			icon: 2,
+	    			title: '提示',
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['继续添加'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+	    		    }
+	    		});
+			}else{
+				layer.msg("更新失败，请联系管理员", {icon: 2});
+			}
+		}
+		removeAtrr();
+	});
+
+}
 
 function openItems(count,i,type){
 	$("#tabs_custom_"+count+"_"+i).find("li").removeClass("active");

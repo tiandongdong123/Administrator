@@ -71,12 +71,14 @@ function showAdm(id,pid,institution,e){
 					var html="";
 					var admin=data.admin;
 					var user=data.user;
+					var userNum=0,adminNum=0;
 					if(user!=null){
 						html+="该机构下的机构账号有：</br>";
 						var array=user.split(",");
 						for(ar in array){
 							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
 						}
+						userNum=array.length;
 					}
 					if(admin!=null){
 						html+="该机构下的机构管理员有：</br>";
@@ -84,16 +86,14 @@ function showAdm(id,pid,institution,e){
 						for(ar in array){
 							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
 						}
+						adminNum=array.length;
 					}
-					if(user!=null&&admin!=null){
+					if(userNum>0&&adminNum>0){
 						html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
-					}else if(admin==null){
-						var array=user.split(",");
-						if(array.length>1){
-							html+="确定要同时修改所有机构账号的机构名称吗？";
-						}else{
-							html+="确定要修改机构账号的机构名称吗？";
-						}
+					}else if(adminNum==0&&userNum>1){
+						html+="确定要同时修改所有机构账号的机构名称吗？";
+					}else{
+						html="确定要修改机构账号的机构名称吗？";
 					}
 					layer.alert(html,{
 						icon: 1,
