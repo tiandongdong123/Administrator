@@ -283,7 +283,7 @@
     	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and u.userType =2  
+		and u.institution like CONCAT('%',#{institution},'%') and u.userType =2  
 	</if>
 	<if test="ipstart != null and ipstart != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipstart} and up.end_ip_address_number <![CDATA[>=]]>#{ipend}) and u.userType =2
@@ -343,7 +343,7 @@
     	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and userType =2  
+		and u.institution like CONCAT('%',#{institution},'%') and userType =2  
 	</if>
 	<if test="ipstart != null and ipstart != ''">
 		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipstart} and up.end_ip_address_number <![CDATA[>=]]>#{ipend}) and u.userType =2

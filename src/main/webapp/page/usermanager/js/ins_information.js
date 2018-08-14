@@ -413,16 +413,18 @@ function queryOrder(obj){
 	var type=$("#OrderType").val();
 	$("#OrderContent").val("");
 	if(type=='inner'){
-		$("#ordercontent_td").show();
+		$("#sqbm_span").show();
+		$("#order_span").show();
 	}else{
-		$("#ordercontent_td").hide();
+		$("#sqbm_span").hide();
+		$("#order_span").hide();
 	}
 }
 //选择购买项目
 function queryType(){
 	var val=$("#proType").val();
 	if(val==""){
-		$("#resource_td").hide();
+		$("#resource_span").hide();
 		return;
 	}
 	$("#resource").html('<option value="">--请选择--</option>');
@@ -441,15 +443,15 @@ function queryType(){
 					type='selected="selected"';
 				}
 				$("#resource").append('<option value="'+pro.id+'"'+type+'>'+pro.name+'</option>');
-				$("#resource_td").show();
+				$("#resource_span").show();
 			}
 		}
 	});
 }
 
 //显示更多菜单
-function showMore(){
-	var isHidden=$("#isHidden").val();
+function showMore(obj){
+	var isSimple=$("#isSimple").val();
 	$("#openLimit").val('');
 	$("#Organization").val('');
 	$("#PostCode").val('');
@@ -457,19 +459,27 @@ function showMore(){
 	$("#proType").val('');
 	$("#OrderContent").val('');
 	$("#resource").val('');
-	if(isHidden=='0'){
-		$("#isHidden").val('1');
-		$("#openlimit_td").show();
-		$("#organization_id").show();
-		$("#postcode_id").show();
-		$("#ordertype_id").show();
-		$("#protype_id").show();
+	if(isSimple=='1'){
+		$("#isSimple").val('0');
+		$("#message1").show();
+		$("#message2").hide();
+		$("#userId1").attr("name","userId");
+		$("#institution1").attr("name","institution");
+		$("#ipSegment1").attr("name","ipSegment");
+		$("#userId2").removeAttr("name");
+		$("#institution2").removeAttr("name");
+		$("#ipSegment2").removeAttr("name");
+		$(obj).html("更多查询条件");
 	}else{
-		$("#isHidden").val('0');
-		$("#openlimit_td").hide();
-		$("#organization_id").hide();
-		$("#postcode_id").hide();
-		$("#ordertype_id").hide();
-		$("#protype_id").hide();
+		$("#isSimple").val('1');
+		$("#message2").show();
+		$("#message1").hide();
+		$("#userId1").removeAttr("name");
+		$("#institution1").removeAttr("name");
+		$("#ipSegment1").removeAttr("name");
+		$("#userId2").attr("name","userId");
+		$("#institution2").attr("name","institution");
+		$("#ipSegment2").attr("name","ipSegment");
+		$(obj).html("精简查询条件");
 	}
 }

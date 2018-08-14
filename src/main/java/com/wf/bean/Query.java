@@ -21,6 +21,7 @@ public class Query implements Serializable{
 	private String OrderContent;//申请部门
 	private String pageNum;// 第几页
 	private String pageSize;// 每页条数
+	private String isSimple;//是否精简
 	public String getUserId() {
 		return userId;
 	}
@@ -93,5 +94,10 @@ public class Query implements Serializable{
 	public void setPageSize(String pageSize) {
 		this.pageSize = pageSize;
 	}
-
+	public String getIsSimple() {
+		return isSimple;
+	}
+	public void setIsSimple(String isSimple) {
+		this.isSimple = isSimple;
+	}
 }

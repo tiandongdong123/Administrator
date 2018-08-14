@@ -1015,6 +1015,7 @@ public class AheadUserController {
 		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
 		map.put("start_time", start_time);
 		map.put("end_time", end_time);
+		map.put("isSimple", "0");
 		if(ipSegment!=null&&!ipSegment.equals("")){			
 			map.put("ipSegment", ipSegment);
 		}
@@ -1025,7 +1026,7 @@ public class AheadUserController {
 		view.addObject("arrayArea", SettingUtil.getRegionCode());//地区地区
 		view.addObject("org", Organization.values());//机构账户类型
 		view.addObject("Authority", AuthorityLimit.values());//权限
-		view.addObject("msg", "0");
+		view.addObject("msg", "0");	
 		view.setViewName("/page/usermanager/ins_information");
 		return view;
 	}
