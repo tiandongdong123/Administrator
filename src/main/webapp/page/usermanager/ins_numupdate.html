@@ -65,7 +65,7 @@
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>
-				<span id="orderTypeSpan"><?if(!isEmpty(groupInfo)&&groupInfo.OrderType=='crm'){?>CRM工单号<?}?><?if(!isEmpty(groupInfo)&&groupInfo.OrderType=='inner'){?>申请部门<?}?></span></label>
+				<span id="orderTypeSpan"><?if(isEmpty(groupInfo)||groupInfo.OrderType=='crm'){?>CRM工单号<?}?><?if(!isEmpty(groupInfo)&&groupInfo.OrderType=='inner'){?>申请部门<?}?></span></label>
 				<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" value="${groupInfo.OrderContent!}" maxlength="50">
 			</div>
             <div class="form-group input_block">
