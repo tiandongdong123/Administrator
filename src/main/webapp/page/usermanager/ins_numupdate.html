@@ -694,10 +694,9 @@
 	<!-- 详情 -->
 	</div>
 			<!-- 购买项目展示结束 -->
-			
-			<div class="form-group input_block">
-				<label class="input_name">开通权限</label>
-				<input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</span>
+			<div class="checkbox form-group input_block">
+				<label class="input_name" style="font-weight: 700;">开通权限</label>
+				<label><input type="checkbox" name="partyLimit" value="0" onclick="checkParty(this)" <?if(!isEmpty(party)){?>checked="checked"<?}?>>开通党建管理员</label>
 			</div>
 			<div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"<?}?>>
 		        <div class="form-group input_block">
