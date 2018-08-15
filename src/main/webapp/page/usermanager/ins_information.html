@@ -13,16 +13,16 @@
   <div class="row">
     <div class="col-md-6">
       <div class="box box-primary">
-        <div class="box-body" sytle="text-align:center;">
+        <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
-	  		<table id="message1"<?if(map.isSimple=='1'){?>style="display:none"<?}?>>
+	  		<table id="message1" style="margin:0 auto;<?if(map.isSimple=='1'){?>display:none;<?}?>">
 	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" name="userId" id="userId1" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" name="institution" id="institution1" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			</tr>
 	  			<tr><td class="alal">IP</td><td class="arar"><input type="text" name="ipSegment" id="ipSegment1" value="${map.ipSegment!}" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
 					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span></td></tr>
 			</table>
-			<table id="message2" <?if(map.isSimple=='0'){?>style="display:none"<?}?>>
+			<table id="message2"  style="margin:0 auto;<?if(map.isSimple=='0'){?>display:none;<?}?>">
 	  			<tr>
 		  			<td class="alal">用户ID</td>
 		  			<td class="arar"><input type="text" name="" id="userId2" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>

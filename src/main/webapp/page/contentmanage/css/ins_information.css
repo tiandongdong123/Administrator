@@ -1,10 +1,10 @@
 .arar select{
-	width: 250px;
+	width: 300px;
 	height: 30px;
 }
 .arar input{
 	height: 30px;
-	width: 250px;
+	width: 300px;
 }
 .alal{
 	text-align: right;
@@ -33,4 +33,7 @@
 #message2 select{
 	padding: 2px 2px 2px 4px;
 }
-
+.table th, .table td {
+text-align: center;
+vertical-align: middle!important;
+}
