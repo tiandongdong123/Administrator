@@ -463,23 +463,41 @@ function showMore(obj){
 		$("#isSimple").val('0');
 		$("#message1").show();
 		$("#message2").hide();
+		var userId=$("#userId2").val();
+		var institution=$("#institution2").val();
+		var ipSegment=$("#ipSegment2").val();
+		$("#userId2").val("");
+		$("#institution2").val("");
+		$("#ipSegment2").val("");
 		$("#userId1").attr("name","userId");
 		$("#institution1").attr("name","institution");
 		$("#ipSegment1").attr("name","ipSegment");
 		$("#userId2").removeAttr("name");
 		$("#institution2").removeAttr("name");
 		$("#ipSegment2").removeAttr("name");
+		$("#userId1").val(userId);
+		$("#institution1").val(institution);
+		$("#ipSegment1").val(ipSegment);
 		$(obj).html("更多查询条件");
 	}else{
 		$("#isSimple").val('1');
 		$("#message2").show();
 		$("#message1").hide();
+		var userId=$("#userId1").val();
+		var institution=$("#institution1").val();
+		var ipSegment=$("#ipSegment1").val();
+		$("#userId1").val("");
+		$("#institution1").val("");
+		$("#ipSegment1").val("");
 		$("#userId1").removeAttr("name");
 		$("#institution1").removeAttr("name");
 		$("#ipSegment1").removeAttr("name");
 		$("#userId2").attr("name","userId");
 		$("#institution2").attr("name","institution");
 		$("#ipSegment2").attr("name","ipSegment");
+		$("#userId2").val(userId);
+		$("#institution2").val(institution);
+		$("#ipSegment2").val(ipSegment);
 		$(obj).html("精简查询条件");
 	}
 }
