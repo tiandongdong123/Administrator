@@ -261,19 +261,19 @@
    <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map" >
    select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend from user u
     <if test="ginfo !=null">
-    	left join GroupInfo info on u.user_id=info.Userid
+    	inner join GroupInfo info on u.user_id=info.Userid
     </if>
     <if test="mapping !=null and mapping !=''">
-    	left join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    	inner join wfks_accountid_mapping wf on u.user_id= wf.id_key
     </if>
     <if test="resource !=null and resource !=''">
-		left join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
+		inner join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
     </if>
     <if test="tongji != null and tongji != ''">
-		left join user_institution ins on u.user_id=ins.user_id
+		inner join user_institution ins on u.user_id=ins.user_id
     </if>
     <if test="Subaccount != null and Subaccount!= ''">
-		left join user_account_restriction res on u.user_id=res.user_id
+		inner join user_account_restriction res on u.user_id=res.user_id
     </if>
      WHERE 1=1
     <if test="userId !=null and userId !=''">
@@ -318,19 +318,19 @@
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
 	select count(1) from user u 
 	<if test="ginfo !=null">
-    	left join GroupInfo info on u.user_id=info.Userid
+    	inner join GroupInfo info on u.user_id=info.Userid
     </if>
     <if test="mapping !=null and mapping !=''">
-    	left join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    	inner join wfks_accountid_mapping wf on u.user_id= wf.id_key
     </if>
     <if test="resource !=null and resource !=''">
-		left join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
+		inner join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
     </if>
     <if test="tongji != null and tongji != ''">
-		left join user_institution ins on u.user_id=ins.user_id
+		inner join user_institution ins on u.user_id=ins.user_id
     </if>
     <if test="Subaccount != null and Subaccount!= ''">
-		left join user_account_restriction res on u.user_id=res.user_id
+		inner join user_account_restriction res on u.user_id=res.user_id
     </if>
 	WHERE 1=1
     <if test="userId !=null and userId !=''">
