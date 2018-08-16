@@ -17,6 +17,13 @@ $(function(){
 	if($("#proType").val()!=''){
 		queryType();
 	}
+	if($("#OrderType").val()=='inner'){
+		$("#sqbm_span").show();
+		$("#order_span").show();
+	}else{
+		$("#sqbm_span").hide();
+		$("#order_span").hide();
+	}
 });
 
 //全局点击事件(隐藏服务权限div)
@@ -459,6 +466,9 @@ function showMore(obj){
 	$("#proType").val('');
 	$("#OrderContent").val('');
 	$("#resource").val('');
+	$("#sqbm_span").hide();
+	$("#order_span").hide();
+	$("#resource_span").hide();
 	if(isSimple=='1'){
 		$("#isSimple").val('0');
 		$("#message1").show();
