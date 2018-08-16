@@ -315,7 +315,7 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
-	order by u.login_mode limit #{pageNum},#{pageSize}
+	order by u.login_mode ASC,u.is_freeze DESC limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
