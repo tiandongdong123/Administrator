@@ -45,7 +45,7 @@ public interface AheadUserService {
 	int addWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);
 
 	/** 获取Excel机构用户 */
-	List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,String> errorMap);
+	List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,Object> errorMap,List<Map<String,String>> errorList);
 	
 	/** 机构账号注册 */
 	int addRegisterInfo(InstitutionalUser user);

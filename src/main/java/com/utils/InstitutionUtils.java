@@ -236,8 +236,8 @@ public class InstitutionUtils {
 	 * @param isBatch false是批量,true是非批量
 	 * @return
 	 */
-	public static Map<String,String> getBatchProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean isAdd){
-		Map<String,String> hashmap=new HashMap<String,String>();
+	public static Map<String,Object> getBatchProectValidate(InstitutionalUser user,ResourceDetailedDTO dto,boolean isAdd){
+		Map<String,Object> hashmap=new HashMap<>();
 		String projectname=dto.getProjectname()==null?"":dto.getProjectname();
 		if(StringUtils.isBlank(dto.getValidityStarttime())||StringUtils.isBlank(dto.getValidityEndtime())) {
 			hashmap.put("flag", "fail");
@@ -366,8 +366,8 @@ public class InstitutionUtils {
 		return hashmap;
 	}
 
-	public static Map<String,String> getBatchRegisterValidate(InstitutionalUser user,List<Map<String, Object>> userList,boolean isRegister) {
-		Map<String,String> errorMap = new HashMap<String, String>();
+	public static Map<String,Object> getBatchRegisterValidate(InstitutionalUser user,List<Map<String, Object>> userList,boolean isRegister,List<Map<String,String>> errorList) {
+		Map<String,Object> errorMap = new HashMap<>();
 		int maxSize = SettingUtil.getImportExcelMaxSize();
 		if (userList.size() > maxSize) {
 			errorMap.put("flag", "fail");
@@ -395,19 +395,6 @@ public class InstitutionUtils {
 			errorMap.put("fail", "购买项目不能为空，请选择购买项目");
 			return errorMap;
 		}
-		Map<String,String> userMap=new HashMap<String,String>();
-		for (int i = 0; i < userList.size(); i++) {
-			Map<String, Object> map = userList.get(i);
-			String userId=map.get("userId")==null?"":map.get("userId").toString();
-			if(!StringUtils.isEmpty(userId)){
-				if(userMap.get(userId)!=null){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "批量中出现多个"+userId+",请填写不重复的机构ID");
-					return errorMap;
-				}
-				userMap.put(userId, userId);
-			}
-		}
 		//删除不合法的购买项目
 		for (int j = 0; j < rdList.size(); j++) {
 			ResourceDetailedDTO dto = rdList.get(j);
@@ -420,6 +407,7 @@ public class InstitutionUtils {
 				}
 			}
 		}
+		
 //		//验证购买项目是否匹配
 //		Map<String,Object> projectMap=new HashMap<String,Object>();
 //		for (int i = 0; i < userList.size(); i++) {
@@ -444,7 +432,22 @@ public class InstitutionUtils {
 //				return errorMap;
 //			}
 //		}
-//		//验证excel内容
+		
+		Map<String,String> userMap=new HashMap<String,String>();
+		for (int i = 0; i < userList.size(); i++) {
+			Map<String, Object> map = userList.get(i);
+			String userId=map.get("userId")==null?"":map.get("userId").toString();
+			if(!StringUtils.isEmpty(userId)){
+				if(userMap.get(userId)!=null){
+					String institution=map.get("institution")==null?"":map.get("institution").toString();
+					String msg="批量中出现多个"+userId+",请填写不重复的机构ID";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
+				}
+				userMap.put(userId, userId);
+			}
+		}
+
+		//验证excel内容
 		String ins="";
 		for (int i = 0; i < userList.size(); i++) {
 			Map<String, Object> map = userList.get(i);
@@ -456,87 +459,74 @@ public class InstitutionUtils {
 				continue;
 			}
 			if (StringUtils.isEmpty(userId)) {
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "机构ID不能为空，请填写规范的机构ID");
-				return errorMap;
+				String msg="机构ID不能为空，请填写规范的机构ID";
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			Matcher userM = pa.matcher(userId);
 			if (userM.find()) {
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号" + userId + "格式不对，请填写规范的机构ID");
-				return errorMap;
+				String msg="账号" + userId + "格式不对，请填写规范的机构ID";
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			if(StringUtils.isBlank(institution)){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号"+userId+"的机构名称不能为空，请填写规范的机构名称");
-				return errorMap;
+				String msg="账号"+userId+"的机构名称不能为空，请填写规范的机构名称";
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			if(!StringUtils.isEmpty(institution)){//机构名称注册的时候不能为空，修改的时候可以为空
 				Matcher insM = paName.matcher(institution);
 				if (insM.find()) {
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的机构名称格式不对，请填写规范的机构名称");
-					return errorMap;
+					String msg="账号"+userId+"的机构名称格式不对，请填写规范的机构名称";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
 			}
 			if(StringUtils.isBlank(password)&&isRegister){//批量注册的时候必须填写密码，批量修改的时候密码可以为空
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码"));
-				return errorMap;
+				String msg="账号"+userId+("".equals(password)?"的密码不能为空，请填写正确的密码":"的密码不能有空格，请填写正确的密码");
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			if(!StringUtils.isBlank(password)){
 				Matcher passMatcher = passsName.matcher(password);
 				if(passMatcher.find()){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的密码不能有中文，请填写正确的密码");
-					return errorMap;
+					String msg="账号"+userId+"的密码不能有中文，请填写正确的密码";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
 				if(password.length()<6||password.length()>16){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码");
-					return errorMap;
+					String msg="账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
 			}
 			
 			if ("2".equals(user.getLoginMode())) {
 				String ip=map.get("ip")==null?"":map.get("ip").toString();
 				if(StringUtils.isEmpty(ip)&&isRegister){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "账号"+userId+"的IP段不能为空，请填写规范的IP段");
-					return errorMap;
+					String msg="账号"+userId+"的IP段不能为空，请填写规范的IP段";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
 				if(!StringUtils.isEmpty(ip)){
 					if(ip.contains(" ")){
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", "账号"+userId+"的IP段有空格，请填写规范的IP段");
-						return errorMap;
+						String msg="账号"+userId+"的IP段有空格，请填写规范的IP段";
+						InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 					}
 					if (!IPConvertHelper.validateIp(ip)) {
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", "账号"+userId+"的IP段不合法，请填写规范的IP段");
-						return errorMap;
+						String msg="账号"+userId+"的IP段不合法，请填写规范的IP段";
+						InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 					}
 				}
 			}
 			//机构管理员的校验
 			String adminId=StringUtils.isEmpty(user.getAdminname())?user.getAdminOldName():user.getAdminname();
-			if(userId.equals(adminId)){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail",  "机构管理员ID和机构用户ID重复");
-				return errorMap;
+			if(!StringUtils.isEmpty(adminId)&&userId.equals(adminId)){
+				String msg="机构管理员ID和机构用户ID重复";
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			if("".equals(ins)){
 				ins=institution;
 			}
-			if(!StringUtils.equals(institution, ins)&&!StringUtils.isEmpty(adminId)){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail",  "批量中添加了机构管理员，文档中的机构名称必须是一个机构名称");
-				return errorMap;
+			if(!StringUtils.isEmpty(ins)&&!StringUtils.isEmpty(institution)&&!StringUtils.equals(institution, ins)&&!StringUtils.isEmpty(adminId)){
+				String msg="批量中添加了机构管理员，文档中的机构名称必须是一个机构名称";
+				InstitutionUtils.addErrorMap(userId,"",msg,errorList);
 			}
 			if(!StringUtils.isEmpty(user.getManagerType())&&user.getManagerType().equals("old") && !institution.equals(user.getInstitution())){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "机构管理员"+adminId+"不属于"+institution+"的机构管理员");
-				return errorMap;
+				String msg="机构管理员"+adminId+"不属于"+institution+"的机构管理员";
+				InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 			}
 			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
 			//预加载校验页面项目是否和Excel中一致
@@ -549,53 +539,91 @@ public class InstitutionUtils {
 						String totalMoney = pro.get("totalMoney") == null ? "" : pro.get("totalMoney").toString();
 						if (StringUtils.isEmpty(totalMoney) || !NumberUtils.isNumber(totalMoney)
 								|| NumberUtils.toDouble(totalMoney) <= 0&&isRegister) {
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
+							
+							String msg="账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
-											: "次数输入不正确，请正确填写次数"));
-							return errorMap;
+											: "次数输入不正确，请正确填写次数");
+							InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 						}
 						if ((!StringUtils.isEmpty(user.getResetCount())&&dto.getProjectType().equals("time") || !StringUtils
 								.isEmpty(user.getResetMoney())&&dto.getProjectType().equals("balance"))
 								&& NumberUtils.toDouble(totalMoney) <= 0) {
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号" + userId + "的" + dto.getProjectname()
+							
+							String msg="账号" + userId + "的" + dto.getProjectname()
 									+ (dto.getProjectType().equals("balance") ? "金额输入不正确，请正确填写金额"
-											: "次数输入不正确，请正确填写次数"));
-							return errorMap;
+											: "次数输入不正确，请正确填写次数");
+							InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 						}
 						if (dto.getProjectType().equals("balance")) {
 							if(NumberUtils.toDouble(totalMoney)>maxData){
-								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "金额大于最大值，请正确填写金额");
-								return errorMap;
+								String msg="账号"+ userId + "的" + dto.getProjectname()
+										+  "金额大于最大值，请正确填写金额";
+								InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 							}
 						} else if (dto.getProjectType().equals("count")) {
 							if(NumberUtils.toInt(totalMoney)!=NumberUtils.toDouble(totalMoney)){
-								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "次数输入不正确，请正确填写次数");
-								return errorMap;
+								String msg="账号"+ userId + "的" + dto.getProjectname()
+										+  "次数输入不正确，请正确填写次数";
+								InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 							}
 							if(NumberUtils.toInt(totalMoney)>maxData){
-								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+ userId + "的" + dto.getProjectname()
-										+  "修改后次数大于最大值，请正确填写次数");
-								return errorMap;
+								String msg="账号"+ userId + "的" + dto.getProjectname()
+										+  "修改后次数大于最大值，请正确填写次数";
+								InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 							}
 						}
 					}
 				}
 				if(isRight){
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", userId+"用户购买项目无法匹配，请核对正确并填写");
-					return errorMap;
+					String msg=userId+"用户购买项目无法匹配，请核对正确并填写";
+					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
 			}
 		}
 		user.setRdlist(rdList);
 		return errorMap;
+	}
+	
+	public static void addErrorMap(String userId,String institution,String msg,List<Map<String,String>> errorList){
+		Map<String,String> error=new HashMap<String,String>();
+		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(institution)){
+			error.put("userId", "");
+			error.put("institution", "");
+			error.put("fail",msg);
+		}else if(!StringUtils.isEmpty(userId)&&StringUtils.isEmpty(institution)){
+			boolean isExits=true;
+			for(int i=0;i<errorList.size();i++){
+				Map<String,String> map=errorList.get(i);
+				if(StringUtils.equals(map.get("userId"), userId)){
+					map.put("fail",map.get("fail")+"<br>"+msg);
+					isExits=false;
+				}
+			}
+			if(isExits){
+				error.put("userId", userId);
+				error.put("institution", "");
+				error.put("fail",msg);
+			}
+		}else if(StringUtils.isEmpty(userId)&&!StringUtils.isEmpty(institution)){
+			boolean isExits=true;
+			for(int i=0;i<errorList.size();i++){
+				Map<String,String> map=errorList.get(i);
+				if(StringUtils.equals(map.get("institution"), institution)){
+					map.put("fail",map.get("fail")+"<br>"+msg);
+					isExits=false;
+				}
+			}
+			if(isExits){
+				error.put("userId", "");
+				error.put("institution", institution);
+				error.put("fail",msg);
+			}
+		}else{
+			error.put("userId", userId);
+			error.put("institution", institution);
+			error.put("fail",msg);
+		}
+		errorList.add(error);
 	}
 
 	public static void importData(InstitutionalUser user, Map<String, Object> map) {

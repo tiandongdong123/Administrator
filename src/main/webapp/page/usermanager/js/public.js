@@ -1993,3 +1993,15 @@ function checkMoney(obj){
 function validateIPS(obj){
 	obj.value=obj.value.replace(/[^.0-9\r\n-]/g,'')
 }
+//批量展示错误信息
+function showError(data){
+	var html='<table border="1" style="margin:0 auto;font-size:10px;text-align:center;"><tr><td>机构名称</td><td>机构账号ID</td><td>错误信息</td></tr>';
+	for(var i in data){
+		var userId=data[i].userId==undefined?"":data[i].userId;
+		var institution=data[i].institution==undefined?"":data[i].institution;
+		var fail=data[i].fail==undefined?"":data[i].fail;
+		html += '<tr><td>'+userId+'</td><td>'+institution+'</td><td style="color:red;">'+fail+'</td></tr>';
+	}
+	html+="</table>";
+	$("#errorList").html(html);
+}

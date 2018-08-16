@@ -1306,7 +1306,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 *	读取Excel机构账号信息 
 	 */
 	@Override
-	public List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,String> errorMap){
+	public List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,Object> errorMap,List<Map<String,String>> errorList){
 		//用户信息
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		String[] str = null;
@@ -1329,11 +1329,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 								errorMap.put("fail", "模版文件的列未按照规范排版，请下载标准的模版文件");
 								break;
 							}
-							if(!"机构名称_institution".equals(str[0])){
+							if(!"机构名称(必填)_institution".equals(str[0])){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "机构名称列不存在或位置错误，请下载标准的模版文件");
 								break;
-							}else if(!"机构ID_userId".equals(str[1])){
+							}else if(!"机构ID(必填)_userId".equals(str[1])){
 								errorMap.put("flag", "fail");
 								errorMap.put("fail", "机构ID列不存在或位置错误，请下载标准的模版文件");
 								break;
@@ -1365,11 +1365,32 @@ public class AheadUserServiceImpl implements AheadUserService{
 								li.add(m);
 							}
 						}
-						map.put("projectList", li);
+						boolean flag=false;
+						Map<String, String> eMap=new HashMap<String,String>();
+						for (Object v : map.values()) {
+							if(!StringUtils.isEmpty((String)v)){
+								flag=true;
+							}
+						}
+						for(Map<String,String> m:li){
+							if(!StringUtils.isEmpty(m.get("totalMoney"))){
+								flag=true;
+							}
+						}
+						if(flag&&StringUtils.isEmpty((String)map.get("institution"))&&StringUtils.isEmpty((String)map.get("userId"))){
+							eMap.put("fail", "第"+(rowNum+1)+"行数据无机构名称和机构ID");
+							errorList.add(eMap);
+						}else if(!flag){
+							continue;
+						}else{
+							map.put("projectList", li);
+						}
 					}else{
 						System.out.println("Excel中某列为空");
 					}
-					list.add(map);
+					if(map.size()>0){
+						list.add(map);
+					}
 				}
 			}else{
 				System.out.println("无法找到sheet页");
@@ -1835,6 +1856,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(setting.length>0){
 					wechat.put("email", setting[0].getPropertyValue());
 				}
+				System.out.println(userId);
 				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
 				userMap.put("openWeChat", wechat);
 			}

@@ -11,6 +11,7 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
+	$("#errorList").html("");
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
 	if($("#bindLimit").val()==""){
@@ -67,7 +68,9 @@ function submitForm(){
 	    		    	window.location.href='../auser/batchupdate.do';
 	    		    }
 	    		});
-	    	}else{
+			}else if(data.flag=='list'){
+				showError(data.fail);
+			}else{
 	    		layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 	    	}
 	    	removeAtrr();

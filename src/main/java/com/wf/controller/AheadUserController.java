@@ -560,20 +560,26 @@ public class AheadUserController {
 	 */
 	@RequestMapping("addbatchRegister")
 	@ResponseBody
-	public Map<String, String> addbatchRegister(MultipartFile file, InstitutionalUser user,
+	public Map<String, Object> addbatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
 		
 		long time=System.currentTimeMillis();
-		Map<String,String> errorMap = new HashMap<String, String>();
+		Map<String,Object> errorMap = new HashMap<>();
+		List<Map<String,String>> errorList=new ArrayList<>();
 		int sucNum = 0;
 		int allNum=0;
 		try{
-			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap);
+			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap,errorList);
 			if(errorMap.size()>0){
 				return errorMap;
 			}
-			errorMap=this.batchRegisterValidate(userList, user);
+			errorMap=this.batchRegisterValidate(userList, user,errorList);
 			if(errorMap.size()>0){
+				return errorMap;
+			}
+			if(errorList.size()>0){
+				errorMap.put("flag", "list");
+				errorMap.put("fail", errorList);
 				return errorMap;
 			}
 			allNum = userList.size();
@@ -614,49 +620,45 @@ public class AheadUserController {
 	}
 
 	//批量添加校验
-	private Map<String,String> batchRegisterValidate(List<Map<String, Object>> userList,InstitutionalUser user) throws Exception{
-		Map<String,String> errorMap = new HashMap<String, String>();
-		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList,true);
+	private Map<String,Object> batchRegisterValidate(List<Map<String, Object>> userList,InstitutionalUser user,List<Map<String,String>> errorList) throws Exception{
+		Map<String,Object> errorMap = new HashMap<>();
+		errorMap=InstitutionUtils.getBatchRegisterValidate(user,userList,true,errorList);
 		if(errorMap.size()>0){
 			return errorMap;
 		}
-		errorMap=this.getUserValidate(user, userList);
-		if(errorMap.size()>0){
-			return errorMap;
-		}
+		this.getUserValidate(user, userList,errorList);
 		// 校验机构管理员
-		this.adminValidate(user, errorMap);
-		if (errorMap.size() > 0) {
-			return errorMap;
+		Map<String,String> error = new HashMap<>();
+		this.adminValidate(user, error);
+		if (error.size() > 0) {
+			String fail=(String) error.get("fail");
+			InstitutionUtils.addErrorMap(user.getUserId(),user.getInstitution(),fail,errorList);
 		}
+		errorMap.clear();
 		return errorMap;
 	}
 	
 	//批量验证excel中的机构是否存在
-	private Map<String, String> getUserValidate(InstitutionalUser user,
-			List<Map<String, Object>> userList) {
-		Map<String, String> errorMap = new HashMap<String, String>();
+	private void getUserValidate(InstitutionalUser user,
+			List<Map<String, Object>> userList,List<Map<String,String>> errorList) {
 		for(Map<String, Object> map : userList){
 			String userId=String.valueOf(map.get("userId"));
+			String institution=String.valueOf(map.get("institution"));
 			Person p = aheadUserService.queryPersonInfo(userId);
 			String msg = aheadUserService.validateOldUser(userId);
 			if(p!=null){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", map.get("userId")+"该机构ID已存在，请重新输入机构ID");
-				return errorMap;
+				String fail="该机构ID已存在，请重新输入机构ID";
+				InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 			}
 			if(msg.equals("old")){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", map.get("userId")+"该机构ID在老平台已存在，请重新输入机构ID");
-				return errorMap;
+				String fail="该机构ID在老平台已存在，请重新输入机构ID";
+				InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 			}
 			if(msg.equals("error")){
-				errorMap.put("flag", "fail");
-				errorMap.put("fail", "旧平台检验机构ID出现异常");
-				return errorMap;
+				String fail="旧平台检验机构ID出现异常";
+				InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 			}		
 		}
-		return errorMap;
 	}
 
 	/**
@@ -675,11 +677,11 @@ public class AheadUserController {
 	 */
 	@RequestMapping("updatebatchregister")
 	@ResponseBody
-	public Map<String, String> updateBatchRegister(MultipartFile file, InstitutionalUser user,
+	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
 		
 		long time=System.currentTimeMillis();
-		Map<String, String> errorMap = new HashMap<String, String>();
+		Map<String, Object> errorMap = new HashMap<>();
 		int sucNum = 0;
 		int allNum=0;
 		try{
@@ -688,12 +690,18 @@ public class AheadUserController {
 				errorMap.put("fail", "请上传附件");
 				return errorMap;
 			}
-			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap);
+			List<Map<String,String>> errorList=new ArrayList<>();
+			List<Map<String, Object>> userList = aheadUserService.getExcelData(file,errorMap,errorList);
 			if(errorMap.size()>0){
 				return errorMap;
 			}
-			errorMap = this.batchUpdateValidate(userList,user);
+			errorMap = this.batchUpdateValidate(userList,user,errorList);
 			if (errorMap.size() > 0) {
+				return errorMap;
+			}
+			if(errorList.size()>0){
+				errorMap.put("flag", "list");
+				errorMap.put("fail", errorList);
 				return errorMap;
 			}
 			allNum = userList.size();
@@ -746,46 +754,49 @@ public class AheadUserController {
 	}
 	
 	//批量添加校验
-	private Map<String,String> batchUpdateValidate(List<Map<String, Object>> userList,InstitutionalUser user) throws Exception{
-		Map<String,String> errorMap = new HashMap<String, String>();
-		errorMap=InstitutionUtils.getBatchRegisterValidate(user, userList,false);
+	private Map<String,Object> batchUpdateValidate(List<Map<String, Object>> userList,InstitutionalUser user,List<Map<String,String>> errorList) throws Exception{
+		Map<String,Object> errorMap = new HashMap<>();
+		errorMap=InstitutionUtils.getBatchRegisterValidate(user, userList,false,errorList);
 		if(errorMap.size()>0){
 			return errorMap;
 		}
-		errorMap=this.getUpdateUserValidate(user, userList);
+		this.getUpdateUserValidate(user, userList,errorList);
 		if(errorMap.size()>0){
 			return errorMap;
 		}
 		// 校验机构管理员
-		this.adminValidate(user, errorMap);
-		if (errorMap.size() > 0) {
-			return errorMap;
+		Map<String,String> error=new HashMap<String,String>();
+		this.adminValidate(user, error);
+		if (error.size() > 0) {
+			String fail=error.get("fail");
+			InstitutionUtils.addErrorMap(user.getUserId(),user.getInstitution(),fail,errorList);
 		}
+		errorMap.clear();
 		return errorMap;
 	}
 	
 	//批量修改验证excel中的机构是否存在
-	private Map<String, String> getUpdateUserValidate(InstitutionalUser user,
-			List<Map<String, Object>> userList) throws Exception{
+	private void getUpdateUserValidate(InstitutionalUser user,
+			List<Map<String, Object>> userList,List<Map<String, String>> errorList) throws Exception{
 		Map<String, String> errorMap = new HashMap<String, String>();
 		for(Map<String, Object> map : userList){
 			//用户是否存在
 			String userId=map.get("userId").toString();
+			String institution=map.get("institution").toString();
 			Person ps = aheadUserService.queryPersonInfo(userId);
 			if(ps==null){
+				String fail=userId+"该用户不存在";
 				errorMap.put("flag", "fail");
-				errorMap.put("fail", map.get("userId")+"该用户不存在");
-				return errorMap;
-			}
-			if(ps.getLoginMode()==0){
+				errorMap.put("fail", fail);
+				InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
+				return;
+			}else if(ps.getLoginMode()==0){
 				if("1".equals(user.getLoginMode())){//用户名密码
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构"+map.get("userId")+"的登录方式不匹配，不为用户名密码");
-					return errorMap;
+					String fail="机构"+userId+"的登录方式不匹配，不为用户名密码";
+					InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 				}else if("2".equals(user.getLoginMode())){//用户名密码+IP
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构"+map.get("userId")+"的登录方式不匹配，不为用户名密码+IP");
-					return errorMap;
+					String fail="机构"+userId+"的登录方式不匹配，不为用户名密码+IP";
+					InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 				}
 			}
 			if ("2".equals(user.getLoginMode())) {
@@ -793,22 +804,19 @@ public class AheadUserController {
 				if (StringUtils.isBlank(ip)) {
 					List<Map<String, Object>> ls = aheadUserService.listIpByUserId(userId);
 					if (ls == null || ls.size() == 0) {
-						errorMap.put("flag", "fail");
-						errorMap.put("fail", userId + "未添加有效IP段");
-						return errorMap;
+						String fail=userId + "未添加有效IP段";
+						InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 					}
 				}
 				WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId,"openApp");
 				if (mapping.length > 0) {
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构账号"+userId+"开通了APP嵌入服务，登录方式不能为用户名密码+IP");
-					return errorMap;
+					String fail="机构账号"+userId+"开通了APP嵌入服务，登录方式不能为用户名密码+IP";
+					InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 				}
 				mapping = aheadUserService.getWfksAccountid(userId, "openWeChat");
 				if (mapping.length > 0) {
-					errorMap.put("flag", "fail");
-					errorMap.put("fail", "机构账号"+userId+"开通了微信公众号嵌入服务，登录方式不能为用户名密码+IP");
-					return errorMap;
+					String fail="机构账号"+userId+"开通了微信公众号嵌入服务，登录方式不能为用户名密码+IP";
+					InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 				}
 			}
 			List<ResourceDetailedDTO> rdList = user.getRdlist();
@@ -831,24 +839,20 @@ public class AheadUserController {
 						Double val = aheadUserService.checkValue(user, dto);
 						if (val == -Double.MAX_VALUE) {
 							if((NumberUtils.toDouble(dto.getTotalMoney()) <= 0 && ptype.equals("balance")) || (NumberUtils.toInt(dto.getPurchaseNumber()) <= 0 && ptype.equals("count"))){
-								errorMap.put("flag", "fail");
-								errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数"));
-								return errorMap;
+								String fail="账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "金额输入不正确，请正确填写金额" : "次数输入不正确，请正确填写次数");
+								InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 							}
 						}else if (val < 0) {
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数"));
-							return errorMap;
+							String fail="账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "剩余金额不能小于0，请正确填写金额" : "剩余次数不能小于0，请正确填写次数");
+							InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 						}else if(val>InstitutionUtils.maxData){
-							errorMap.put("flag", "fail");
-							errorMap.put("fail", "账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "修改后的金额大于最大值，请正确填写金额" : "修改后的次数大于最大值，请正确填写次数"));
-							return errorMap;
+							String fail="账号"+userId+"的"+dto.getProjectname()+(ptype.equals("balance") ? "修改后的金额大于最大值，请正确填写金额" : "修改后的次数大于最大值，请正确填写次数");
+							InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
 						}
 					}
 				}
 			}
 		}
-		return errorMap;
 	}
 
 	@RequestMapping("/worddownload")
