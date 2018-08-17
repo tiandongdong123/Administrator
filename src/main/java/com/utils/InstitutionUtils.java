@@ -408,30 +408,30 @@ public class InstitutionUtils {
 			}
 		}
 		
-//		//验证购买项目是否匹配
-//		Map<String,Object> projectMap=new HashMap<String,Object>();
-//		for (int i = 0; i < userList.size(); i++) {
-//			Map<String, Object> map = userList.get(i);
-//			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
-//			for(Map<String, Object> pro:lm){
-//				if(NumberUtils.isNumber(String.valueOf(pro.get("totalMoney")))){
-//					projectMap.put(String.valueOf(pro.get("projectid")), String.valueOf(pro.get("projectid")));
-//				}
-//			}
-//		}
-//		for (Map.Entry<String, Object> entry : projectMap.entrySet()) {
-//			boolean isNull=true;
-//			for(ResourceDetailedDTO dto : rdList){
-//				if(StringUtils.equals(entry.getKey(), dto.getProjectid())){
-//					isNull=false;
-//				}
-//			}
-//			if(isNull){
-//				errorMap.put("flag", "fail");
-//				errorMap.put("fail", "购买项目无法匹配，请核对正确并填写");
-//				return errorMap;
-//			}
-//		}
+		//验证购买项目是否匹配
+		Map<String,Object> projectMap=new HashMap<String,Object>();
+		for (int i = 0; i < userList.size(); i++) {
+			Map<String, Object> map = userList.get(i);
+			List<Map<String, Object>> lm =  (List<Map<String, Object>>) map.get("projectList");
+			for(Map<String, Object> pro:lm){
+				if(NumberUtils.isNumber(String.valueOf(pro.get("totalMoney")))){
+					projectMap.put(String.valueOf(pro.get("projectid")), String.valueOf(pro.get("projectid")));
+				}
+			}
+		}
+		for (Map.Entry<String, Object> entry : projectMap.entrySet()) {
+			boolean isNull=true;
+			for(ResourceDetailedDTO dto : rdList){
+				if(StringUtils.equals(entry.getKey(), dto.getProjectid())){
+					isNull=false;
+				}
+			}
+			if(isNull){
+				errorMap.put("flag", "fail");
+				errorMap.put("fail", "购买项目无法匹配，请核对正确并填写");
+				return errorMap;
+			}
+		}
 		
 		Map<String,String> userMap=new HashMap<String,String>();
 		for (int i = 0; i < userList.size(); i++) {
