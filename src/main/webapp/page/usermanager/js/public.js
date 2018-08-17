@@ -1995,7 +1995,7 @@ function validateIPS(obj){
 }
 //批量展示错误信息
 function showError(data){
-	var html='<table border="1" style="margin:0 auto;font-size:10px;text-align:center;"><tr><td>机构名称</td><td>机构账号ID</td><td>错误信息</td></tr>';
+	var html='<table border="1" style="margin:0 auto;font-size:10px;text-align:center;"><tr><td>机构账号ID</td><td>机构名称</td><td>错误信息</td></tr>';
 	for(var i in data){
 		var userId=data[i].userId==undefined?"":data[i].userId;
 		var institution=data[i].institution==undefined?"":data[i].institution;
