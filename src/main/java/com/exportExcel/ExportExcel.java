@@ -1086,13 +1086,8 @@ public class ExportExcel {
 						row.createCell(8).setCellValue(dataMap==null?"":formatStr(dataMap.get("name")));
 						row.createCell(9).setCellValue(dataMap==null?"":formatStr(dataMap.get("resouceName")));
 						row.createCell(10).setCellValue(dataMap==null?"":formatStr(dataMap.get("time")));
-						if("1".equals(formatStr(map.get("chargebacks")))){
-							row.createCell(11).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
-							row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
-						}else{
-							row.createCell(11).setCellValue("");
-							row.createCell(12).setCellValue("");
-						}
+						row.createCell(11).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
+						row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
 					}
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 0,0));
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 1,1));
@@ -1102,10 +1097,6 @@ public class ExportExcel {
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 5,5));
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 6,6));
 					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 7,7));
-					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 8,8));
-					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 9,9));
-					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 10,10));
-					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 11,11));
 				}
 			}
 			// 设置Content-Disposition

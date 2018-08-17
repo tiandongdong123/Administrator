@@ -84,11 +84,11 @@
 						<td rowspan="${list.data.~size}" style='word-break:break-all;width:10%;'><?if(!isEmpty(list.list_ip)){ var g=0; for(info in list.list_ip){ g++;?>${info.ip}<?if(g<list.list_ip.~size){?></br><?}?><?}?><?}?></td>
 						<td rowspan="${list.data.~size}" style='word-break:break-all;width:6%;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
 						<?}?>
-						<td style='word-break:break-all;width:9%;'>${data.name!}</td>
-						<td style='word-break:break-all;width:9%;'>${data.resouceName!}</td>
-						<td style='word-break:break-all;width:9%;'>${data.time!}</td>
-						<td style='width:6%;'><?if(list.chargebacks==1){?>${data.balance!}<?}?></td>
-						<td style='width:6%;'><?if(list.chargebacks==1){?>${data.count!}<?}?></td>
+						<td style='word-break:break-all;width:9%;' class="${list.userId!}">${data.name!}</td>
+						<td style='word-break:break-all;width:9%;' class="${list.userId!}">${data.resouceName!}</td>
+						<td style='word-break:break-all;width:9%;' class="${list.userId!}">${data.time!}</td>
+						<td style='width:6%;' class="${list.userId!}">${data.balance!}</td>
+						<td style='width:6%;' class="${list.userId!}">${data.count!}</td>
 						</tr>
 					<?}}else{?>
 						<tr style='text-align: center;'>

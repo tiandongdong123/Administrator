@@ -2001,14 +2001,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			String userId=userMap.get("userId").toString();
 			String pid=userMap.get("pid").toString();
-			//子账号权限
-			UserAccountRestriction restriction=this.getAccountRestriction(pid);
-			if(restriction!=null){
-				userMap.put("chargebacks", restriction.getChargebacks());
-				userMap.put("upperlimit", restriction.getUpperlimit());
-				userMap.put("sConcurrentnumber", restriction.getsConcurrentnumber());
-				userMap.put("downloadupperlimit", restriction.getDownloadupperlimit());
-			}
 			//子账号ip
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
 			if(list_ip.size()>0){
