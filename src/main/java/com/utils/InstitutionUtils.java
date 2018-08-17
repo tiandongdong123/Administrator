@@ -532,6 +532,10 @@ public class InstitutionUtils {
 			//预加载校验页面项目是否和Excel中一致
 			//验证金额，次数
 			for(ResourceDetailedDTO dto : rdList){
+				String projectId=dto.getProjectid();
+				if (projectId.contains("TimeLimit")) {
+					continue;
+				}
 				boolean isRight=true;
 				for(Map<String, Object> pro : lm) {
 					if (StringUtils.equals(dto.getProjectid(),String.valueOf(pro.get("projectid")))) {
@@ -609,7 +613,7 @@ public class InstitutionUtils {
 			for(int i=0;i<errorList.size();i++){
 				Map<String,String> map=errorList.get(i);
 				if(StringUtils.equals(map.get("institution"), institution)){
-					map.put("fail",map.get("fail")+"<br>"+msg);
+					map.put("fail",InstitutionUtils.repeatStr(map,msg));
 					isExits=false;
 				}
 			}
@@ -619,11 +623,35 @@ public class InstitutionUtils {
 				error.put("fail",msg);
 			}
 		}else{
-			error.put("userId", userId);
-			error.put("institution", institution);
-			error.put("fail",msg);
+			boolean isExits=true;
+			for(int i=0;i<errorList.size();i++){
+				Map<String,String> map=errorList.get(i);
+				if(StringUtils.equals(map.get("institution"), institution)&&StringUtils.equals(map.get("userId"), userId)){
+					map.put("fail",InstitutionUtils.repeatStr(map,msg));
+					isExits=false;
+				}
+			}
+			if(isExits){
+				error.put("userId", userId);
+				error.put("institution", institution);
+				error.put("fail",msg);
+			}
 		}
 		errorList.add(error);
+	}
+	
+	private static String repeatStr(Map<String,String> map,String msg){
+		String fail=map.get("fail");
+		if(StringUtils.isEmpty(fail)){
+			return msg;
+		}
+		String[] fails=fail.split("<br>");
+		for(int i=0;i<fails.length;i++){
+			if(StringUtils.equals(fails[i], msg)){
+				return fail;
+			}
+		}
+		return fail+"<br>"+msg;
 	}
 
 	public static void importData(InstitutionalUser user, Map<String, Object> map) {
