@@ -1983,6 +1983,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return limap;
 	}
+	
 	@Override
 	public PageList getSonaccount(Map<String,Object> map) {
 		List<Object> userList = personMapper.sonAccountNumber(map);// 获取子账号列表
@@ -2020,6 +2021,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(StringUtils.equals(pay.getId(), res.get("payChannelid"))){
 						wfList.add(res);
 					}
+				}
+			}
+			//获取继承主账号的权限
+			List<Map<String, Object>> tempList = new ArrayList<Map<String, Object>>();
+			WfksAccountidMapping[] mapping = this.getWfksAccountidLimit(userId,"Group");
+			if(mapping!=null){
+				for(WfksAccountidMapping wf:mapping){
+					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+					extraData.put("payChannelid", wf.getRelatedidAccounttype());
+					for(PayChannelModel pay:list_){
+						if(pay.getId().equals(wf.getRelatedidAccounttype())){
+							extraData.put("name", pay.getName());
+							extraData.put("type", pay.getType());
+							break;
+						}
+					}
+					for(Map<String, String> wfks : wfList){
+						if(StringUtils.equals(wfks.get("payChannelid"),wf.getRelatedidAccounttype())){
+							extraData.put("resouceName", wfks.get("tableName"));
+						}
+					}
+					tempList.add(extraData);
 				}
 			}
 			//调用接口查询支付信息
@@ -2065,9 +2088,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}catch(Exception e){
 				log.error("子账号"+userId+"调用接口异常",e);
 			}
+			for(Map<String, Object> temp:tempList){
+				boolean exists=true;
+				for(Map<String, Object> project:projectList){
+					if (StringUtils.equals(String.valueOf(temp.get("payChannelid")),String.valueOf(project.get("payChannelid")))) {
+						exists = false;
+					}
+				}
+				if(exists){
+					projectList.add(temp);
+				}
+			}
 			userMap.put("data", projectList);
-		}			
-	
+		}
 		pageList.setPageRow(userList);
 		pageList.setTotalRow(personMapper.sonAccountNumberCount(map));
 		return pageList;
