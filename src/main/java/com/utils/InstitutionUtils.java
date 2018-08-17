@@ -593,7 +593,7 @@ public class InstitutionUtils {
 		if(StringUtils.isEmpty(userId)&&StringUtils.isEmpty(institution)){
 			error.put("userId", "");
 			error.put("institution", "");
-			error.put("fail",msg);
+			error.put("fail",InstitutionUtils.repeatStr(null,msg));
 		}else if(!StringUtils.isEmpty(userId)&&StringUtils.isEmpty(institution)){
 			boolean isExits=true;
 			for(int i=0;i<errorList.size();i++){
@@ -606,7 +606,7 @@ public class InstitutionUtils {
 			if(isExits){
 				error.put("userId", userId);
 				error.put("institution", "");
-				error.put("fail",msg);
+				error.put("fail",InstitutionUtils.repeatStr(null,msg));
 			}
 		}else if(StringUtils.isEmpty(userId)&&!StringUtils.isEmpty(institution)){
 			boolean isExits=true;
@@ -620,7 +620,7 @@ public class InstitutionUtils {
 			if(isExits){
 				error.put("userId", "");
 				error.put("institution", institution);
-				error.put("fail",msg);
+				error.put("fail",InstitutionUtils.repeatStr(null,msg));
 			}
 		}else{
 			boolean isExits=true;
@@ -634,24 +634,27 @@ public class InstitutionUtils {
 			if(isExits){
 				error.put("userId", userId);
 				error.put("institution", institution);
-				error.put("fail",msg);
+				error.put("fail",InstitutionUtils.repeatStr(null,msg));
 			}
 		}
 		errorList.add(error);
 	}
 	
 	private static String repeatStr(Map<String,String> map,String msg){
+		if(map==null){
+			return "1、"+msg;
+		}
 		String fail=map.get("fail");
 		if(StringUtils.isEmpty(fail)){
-			return msg;
+			return "1、"+msg;
 		}
 		String[] fails=fail.split("<br>");
 		for(int i=0;i<fails.length;i++){
-			if(StringUtils.equals(fails[i], msg)){
+			if(StringUtils.equals(fails[i].replace((i+1)+"、", ""), msg)){
 				return fail;
 			}
 		}
-		return fail+"<br>"+msg;
+		return fail+"<br>"+(fails.length+1)+"、"+msg;
 	}
 
 	public static void importData(InstitutionalUser user, Map<String, Object> map) {
