@@ -52,3 +52,14 @@ function exportexecl(){
 function goInformation(pid){
 	window.location.href='../auser/information.do?userId='+pid;
 }
+
+function showTd(id,obj){
+	var type=$(obj).attr("type");
+	if(type=="0"){
+		$("."+id+":gt(4)").show();
+		$(obj).attr("type","1");
+	}else{
+		$("."+id+":gt(4)").hide();
+		$(obj).attr("type","0");
+	}
+}

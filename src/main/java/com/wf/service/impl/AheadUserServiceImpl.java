@@ -2030,6 +2030,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				for(WfksAccountidMapping wf:mapping){
 					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 					extraData.put("payChannelid", wf.getRelatedidAccounttype());
+					if (wf.getBegintime() != null && wf.getEndtime() != null) {
+						extraData.put("time",sdfSimp.format(wf.getBegintime()) + "-" + sdfSimp.format(wf.getEndtime()));
+					}
 					for(PayChannelModel pay:list_){
 						if(pay.getId().equals(wf.getRelatedidAccounttype())){
 							extraData.put("name", pay.getName());
