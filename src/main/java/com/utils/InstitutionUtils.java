@@ -568,7 +568,7 @@ public class InstitutionUtils {
 							}
 							if(NumberUtils.toInt(totalMoney)>maxData){
 								String msg="账号"+ userId + "的" + dto.getProjectname()
-										+  "修改后次数大于最大值，请正确填写次数";
+										+  "次数大于最大值，请正确填写次数";
 								InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 							}
 						}
