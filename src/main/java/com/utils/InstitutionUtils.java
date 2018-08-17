@@ -371,7 +371,7 @@ public class InstitutionUtils {
 		int maxSize = SettingUtil.getImportExcelMaxSize();
 		if (userList.size() > maxSize) {
 			errorMap.put("flag", "fail");
-			errorMap.put("fail", isRegister?("批量注册最多可以一次注册" + maxSize + "条"):("批量修改最多可以一次注册" + maxSize + "条"));
+			errorMap.put("fail", isRegister?("批量注册最多可以一次注册" + maxSize + "条"):("批量修改最多可以一次修改" + maxSize + "条"));
 			return errorMap;
 		}
 		if ("2".equals(user.getLoginMode())&&!isRegister) {
