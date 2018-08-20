@@ -1871,7 +1871,7 @@ function validateIp(ip,userId,object){
 						errorIP=data.errorIP;
 						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>";
 					}else{
-						msg="IP格式错误:"+data.errorIP;
+						msg="<font style='color:red'>IP格式错误:</font></br><font style='color:#000000'>"+data.errorIP+"</font>";
 					}
 					layer.tips(msg, object, {
 						tips: [3, '#FFFFFF'],
@@ -1879,7 +1879,7 @@ function validateIp(ip,userId,object){
 						time: 0
 					});
 				}else{
-					layer.tips("无冲突", object, {
+					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
 						tips: [3, '#FFFFFF'],
 						area: ['260px', ''], //宽高
 						time: 2000
@@ -1925,11 +1925,10 @@ function checkIP(){
 		return;
 	}
 	if(!IpFormat(ip)){
-		var  msg="<font style='color:#999'>IP段格式错误：</font>";
+		var  msg="<font style='color:red''>IP段格式错误：</font>";
 		for(var ar in IpArray){
-			msg+="<br><font style='color:red'>"+IpArray[ar]+"</font>";
+			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
 		}
-		alert(msg);
 		layer.tips(msg, "#checkIp", {
 			tips: [3, '#FFFFFF'],
 			area: ['260px', ''], //宽高
