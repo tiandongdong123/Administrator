@@ -1893,30 +1893,48 @@ function validateIp(ip,userId,object){
 }
 
 //校验多行ip对
+var IpArray=new Array();
 function IpFormat(str){
+	IpArray=new Array();
 	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
 	var ip = str.split("\n");
+	var isTrue=true;
 	for(i in ip){
 		if(ip[i]!=""){
 			if(ipLimigLineRegex.test(ip[i])){
 				continue;
 			}else{
-				return false;
+				IpArray.push(ip[i]);
+				isTrue=false;
 			}
 		}
 	}
-	return true;
+	return isTrue;
 }
 
 //检查IP
 function checkIP(){
 	var ip = $("#ipSegment").val();
 	if(ip==""){
-		layer.msg("请输入IP",{icon: 2});
+		var msg="<font style='color:red'>IP不存在</font>";
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['260px', ''], //宽高
+			time: 2000
+		});
 		return;
 	}
 	if(!IpFormat(ip)){
-		layer.msg("IP段格式有误",{icon: 2});
+		var  msg="<font style='color:#999'>IP段格式错误：</font>";
+		for(var ar in IpArray){
+			msg+="<br><font style='color:red'>"+IpArray[ar]+"</font>";
+		}
+		alert(msg);
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['260px', ''], //宽高
+			time: 10000
+		});
 		return;
 	}
 	var userId = $("#userId").val();
@@ -1928,9 +1946,6 @@ function deleteIP(){
 	layer.closeAll();
 	var ipSegment = $("#ipSegment").val();
 	if (ipSegment == "") {
-		layer.msg("请输入IP", {
-			icon : 2
-		});
 		return;
 	}
 	var ips = ipSegment.split("\n");
@@ -1941,6 +1956,14 @@ function deleteIP(){
 			continue;
 		}
 		var flag = false;
+		for(var ar in IpArray){
+			if(IpArray[ar]==""){
+				continue;
+			}
+			if (ips[ip]==IpArray[ar]) {
+				flag = true;
+			}
+		}
 		for (var ar in array) {
 			if(array[ar]==""){
 				continue;
