@@ -1876,13 +1876,15 @@ function validateIp(ip,userId,object){
 					layer.tips(msg, object, {
 						tips: [3, '#FFFFFF'],
 						area: ['260px', ''], //宽高
+						closeBtn :1,
 						time: 0
 					});
 				}else{
 					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
 						tips: [3, '#FFFFFF'],
 						area: ['260px', ''], //宽高
-						time: 2000
+						closeBtn :1,
+						time: 0
 					});
 					bool = false;
 				}
@@ -1902,12 +1904,12 @@ function IpFormat(str){
 	for(i in ip){
 		if(ip[i]!=""){
 			var ips=ip[i].split("-");
-			if(ips!=2){
+			if(ips.length!=2){
 				IpArray.push(ip[i]);
 				isTrue=false;
 				continue;
 			}else{
-				if(ips[0].split(".")!=4||ips[1].split(".")!=4){
+				if(ips[0].split(".").length!=4||ips[1].split(".").length!=4){
 					IpArray.push(ip[i]);
 					isTrue=false;
 					continue;
@@ -1932,7 +1934,8 @@ function checkIP(){
 		layer.tips(msg, "#checkIp", {
 			tips: [3, '#FFFFFF'],
 			area: ['260px', ''], //宽高
-			time: 2000
+			closeBtn :1,
+			time: 0
 		});
 		return;
 	}
@@ -1944,7 +1947,8 @@ function checkIP(){
 		layer.tips(msg, "#checkIp", {
 			tips: [3, '#FFFFFF'],
 			area: ['260px', ''], //宽高
-			time: 10000
+			closeBtn :1,
+			time: 0
 		});
 		return;
 	}
