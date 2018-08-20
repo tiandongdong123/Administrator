@@ -1901,6 +1901,18 @@ function IpFormat(str){
 	var isTrue=true;
 	for(i in ip){
 		if(ip[i]!=""){
+			var ips=ip[i].split("-");
+			if(ips!=2){
+				IpArray.push(ip[i]);
+				isTrue=false;
+				continue;
+			}else{
+				if(ips[0].split(".")!=4||ips[1].split(".")!=4){
+					IpArray.push(ip[i]);
+					isTrue=false;
+					continue;
+				}
+			}
 			if(ipLimigLineRegex.test(ip[i])){
 				continue;
 			}else{
