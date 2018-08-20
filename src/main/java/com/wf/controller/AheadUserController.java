@@ -110,7 +110,7 @@ public class AheadUserController {
 			long end=IPConvertHelper.IPToNumber(endIp);
 			if(begin>end){
 				map.put("flag", "true");
-				map.put("errorIP", beginIp+"-"+endIp);
+				map.put("errorIP", beginIp+"-"+endIp+"结束IP大于开始IP");
 			}
 			UserIp user=new UserIp();
 			user.setUserId(userId);
