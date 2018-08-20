@@ -24,6 +24,15 @@ $(function(){
 		$("#sqbm_span").hide();
 		$("#order_span").hide();
 	}
+	$("#queryTable").bind("keydown",function(e){
+        // 兼容FF和IE和Opera    
+	    var theEvent = e || window.event;    
+	    var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
+	    if (code == 13) {    
+	    	//回车执行查询
+	    	$("#queryButton").click();
+		}
+	});
 });
 
 //全局点击事件(隐藏服务权限div)

@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
 <script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/ins_sonaccount.js"></script>
-<div class="content-wrapper">
+<div class="content-wrapper" id="queryTable">
 	<section class="content-header"><h1>机构子账号信息管理</h1></section>
     <!-- Main content -->
     <section class="content">
@@ -37,7 +37,7 @@
 	        <input type="hidden" id="totalRow" name="totalRow" value="${map.pageList.totalRow!}">
 		<?}?>
 		<div style="text-align: center;width: 550px;margin-top: 2%;">
-		 	<button type="submit" class="btn btn-primary" onclick="findList()">查询</button>
+		 	<button type="submit" class="btn btn-primary" onclick="findList()" id="queryButton">查询</button>
 		</div>
 		</form>
 		<br/><br/>

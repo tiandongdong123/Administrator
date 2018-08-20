@@ -3,6 +3,15 @@ $(function(){
 		$("#userId").text($(".parameter").val());
 		findList();
 	}
+	$("#queryTable").bind("keydown",function(e){
+        // 兼容FF和IE和Opera    
+	    var theEvent = e || window.event;    
+	    var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
+	    if (code == 13) {    
+	    	//回车执行查询
+	    	$("#queryButton").click();
+		}
+	});
 	goPage();
 });
 //分页
