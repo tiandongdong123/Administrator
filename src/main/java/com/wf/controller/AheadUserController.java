@@ -110,7 +110,7 @@ public class AheadUserController {
 			long end=IPConvertHelper.IPToNumber(endIp);
 			if(begin>end){
 				map.put("flag", "true");
-				map.put("errorIP", beginIp+"-"+endIp+"结束IP大于开始IP");
+				map.put("errorIP", beginIp+"-"+endIp+" 开始IP大于结束IP");
 			}
 			UserIp user=new UserIp();
 			user.setUserId(userId);
@@ -121,6 +121,7 @@ public class AheadUserController {
 		if(map.size()==0){
 			List<Map<String,Object>> bool = aheadUserService.validateIp(list);
 			if(bool.size()>0){
+				int index=1;
 				for(Map<String,Object> mbo : bool){
 					if(StringUtils.equals(String.valueOf(mbo.get("userId")), userId)){
 						continue;
@@ -140,7 +141,7 @@ public class AheadUserController {
 						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
 							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
-							sb.append(userid+","+IPConvertHelper.NumberToIP(begin)
+							sb.append("("+(index++)+") "+userid+","+IPConvertHelper.NumberToIP(begin)
 									+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
 						}
 					}
@@ -789,7 +790,7 @@ public class AheadUserController {
 				errorMap.put("flag", "fail");
 				errorMap.put("fail", fail);
 				InstitutionUtils.addErrorMap(userId,institution,fail,errorList);
-				return;
+				continue;
 			}else if(ps.getLoginMode()==0){
 				if("1".equals(user.getLoginMode())){//用户名密码
 					String fail="机构"+userId+"的登录方式不匹配，不为用户名密码";
@@ -1602,7 +1603,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("tosonaccount")
 	public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
-			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage) {
+			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage,String pid) {
 		ModelAndView view = new ModelAndView();
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start_time",start_time);
@@ -1612,6 +1613,10 @@ public class AheadUserController {
 				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
 			view.addObject("map", map);
 			map.put("userId",userId);
+			map.put("isBack", isBack);
+			if ("true".equals(isBack)) {
+				map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
+			}
 			view.setViewName("/page/usermanager/ins_sonaccount");
 			return view;
 		}else if(StringUtils.isEmpty(goPage)){
@@ -1624,6 +1629,10 @@ public class AheadUserController {
 				view.addObject("map",map);
 				view.addObject("msg", "0");
 				map.put("userId",userId);
+				map.put("isBack", isBack);
+				if ("true".equals(isBack)) {
+					map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
+				}
 				view.setViewName("/page/usermanager/ins_sonaccount");
 				return view;
 			}else if(person.getUsertype()==3){
@@ -1642,6 +1651,9 @@ public class AheadUserController {
 		map.put("pageList", pageList);
 		map.put("userId",userId);
 		map.put("isBack", isBack);
+		if ("true".equals(isBack)) {
+			map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
+		}
 		view.addObject("map",map);
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");

@@ -67,8 +67,10 @@ function showTd(id,obj){
 	if(type=="0"){
 		$("."+id+":gt(4)").show();
 		$(obj).attr("type","1");
+		$(obj).attr("src","../img/up.png");
 	}else{
 		$("."+id+":gt(4)").hide();
 		$(obj).attr("type","0");
+		$(obj).attr("src","../img/down.png");
 	}
 }

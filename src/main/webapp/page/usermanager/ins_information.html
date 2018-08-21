@@ -500,8 +500,8 @@
 				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.admin.userId}</span></div>
 				<div class="bind"><span>机构管理员密码：</span><span>${list.admin.password}</span></div>
 				<div class="bind"><span>机构管理员邮箱：</span><span>${list.admin.adminEmail}</span></div>
-				<div class="bind"><span>机构管理员IP：</span><span>
-				<?if(!isEmpty(list.admin.adminIP)){for(listIp in list.admin.adminIP){?>${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber} <?}}?></span></div>
+				<?if(!isEmpty(list.admin.adminIP)){?><div class="bind"><span>机构管理员IP：</span><span>
+				<?for(listIp in list.admin.adminIP){?>${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber} <?}?></span></div><?}?>
 			</div>
 			<?}?>
 			<!-- 机构管理员结束 -->

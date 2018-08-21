@@ -650,10 +650,10 @@ function selectProject(obj,flag,checked){
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
 			if($(obj).val()!="time"&&$(obj).val()!="count"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this,0);" onafterpaste="checkMoney(this,0);"></div>';
 			}
 			if($(obj).val()!="time"&&$(obj).val()!="balance"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this);" onafterpaste="checkNum(this);"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this,0);" onafterpaste="checkNum(this,0);"></div>';
 			}
 			if(projectid=='HistoryCheck'){
 				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
@@ -1875,14 +1875,14 @@ function validateIp(ip,userId,object){
 					}
 					layer.tips(msg, object, {
 						tips: [3, '#FFFFFF'],
-						area: ['260px', ''], //宽高
+						area: ['350px', ''], //宽高
 						closeBtn :1,
 						time: 0
 					});
 				}else{
 					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
 						tips: [3, '#FFFFFF'],
-						area: ['260px', ''], //宽高
+						area: ['350px', ''], //宽高
 						closeBtn :1,
 						time: 0
 					});
@@ -1933,7 +1933,7 @@ function checkIP(){
 		var msg="<font style='color:red'>IP不存在</font>";
 		layer.tips(msg, "#checkIp", {
 			tips: [3, '#FFFFFF'],
-			area: ['260px', ''], //宽高
+			area: ['350px', ''], //宽高
 			closeBtn :1,
 			time: 0
 		});
@@ -1946,7 +1946,7 @@ function checkIP(){
 		}
 		layer.tips(msg, "#checkIp", {
 			tips: [3, '#FFFFFF'],
-			area: ['260px', ''], //宽高
+			area: ['350px', ''], //宽高
 			closeBtn :1,
 			time: 0
 		});
@@ -1995,7 +1995,7 @@ function deleteIP(){
 }
 //验证次数
 var maxData=99999999;
-function checkNum(obj){
+function checkNum(obj,num){
 	var val=obj.value;
 	var flag=false;
 	if(val.substr(0,1)=="-"){
@@ -2008,10 +2008,10 @@ function checkNum(obj){
 	if(parseFloat(val)>maxData){
 		val=val.substring(0,8);
 	}
-	obj.value=(flag?"-":"")+val;
+	obj.value=(flag&&(num==1)?"-":"")+val;
 }
 //验证金额
-function checkMoney(obj){
+function checkMoney(obj,num){
 	var val=obj.value;
 	var flag=false;
 	if(val.substr(0,1)=="-"){
@@ -2025,7 +2025,7 @@ function checkMoney(obj){
 	if(parseFloat(val)>maxData){
 		val=val.substring(0,8);
 	}
-	obj.value=(flag?"-":"")+val;
+	obj.value=(flag&&(num==1)?"-":"")+val;
 }
 //校验ip
 function validateIPS(obj){
@@ -2033,12 +2033,12 @@ function validateIPS(obj){
 }
 //批量展示错误信息
 function showError(data){
-	var html='<table border="1" style="margin:0 auto;font-size:10px;"><tr style="text-align:center;"><td width="10%">机构账号ID</td><td width="10%">机构名称</td><td width="30%">错误信息</td></tr>';
+	var html='<table border="1" style="margin:0 auto;font-size:10px;"><tr style="text-align:center;"><td width="10%" style="padding-top:6px;padding-bottom:6px;">机构账号ID</td><td width="10%">机构名称</td><td width="30%">错误信息</td></tr>';
 	for(var i in data){
 		var userId=data[i].userId==undefined?"":data[i].userId;
 		var institution=data[i].institution==undefined?"":data[i].institution;
 		var fail=data[i].fail==undefined?"":data[i].fail;
-		html += '<tr style="text-align:left;"><td>'+userId+'</td><td>'+institution+'</td><td style="color:red;">'+fail+'</td></tr>';
+		html += '<tr style="text-align:left;"><td style="padding-top:6px;padding-bottom:6px;">'+userId+'</td><td>'+institution+'</td><td style="color:red;">'+fail+'</td></tr>';
 	}
 	html+="</table>";
 	$("#errorList").html(html);
