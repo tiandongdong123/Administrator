@@ -165,6 +165,7 @@ function validateUserInstitution(olds,institution){
 				    	updateUser();
 				    }
 				});
+				removeAtrr();
 			}else{
 		    	updateUser();
 			}
