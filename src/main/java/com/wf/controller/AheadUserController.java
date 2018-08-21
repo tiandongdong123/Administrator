@@ -141,7 +141,7 @@ public class AheadUserController {
 						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
 							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
-							sb.append("("+(index++)+") "+userid+","+IPConvertHelper.NumberToIP(begin)
+							sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
 									+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
 						}
 					}
