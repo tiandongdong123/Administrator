@@ -14,7 +14,7 @@
 	function logout(){
 		window.location.href="../user/logout.do";
 	}
-     
+
     $(function(){
     	$(".active").parents("li").addClass("active");
     	$.ajax({
@@ -25,7 +25,7 @@
     		$('.notifications-menu').empty();
     		var html = "";
     		if(data.num > 0){
-    		
+
 	    		html = '<a href="javascript:void(0);" onclick="updateRemind();" class="dropdown-toggle" data-toggle="dropdown">'
 	                 + '<i class="fa fa-bell-o"></i>'
 	              	 + '<span class="label label-danger">'+data.num+'</span>'
@@ -54,7 +54,7 @@
           		   // +'<ul class="dropdown-menu">'
            		    //+'<li class="header">暂无消息</li>'
           		   // +'</ul>';
-	    		
+
 	    		}
     			$('.notifications-menu').append(html);
     		}
@@ -143,7 +143,10 @@
 		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../auser/pay_order.do"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
 		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_bind.do"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
           		</ul>
-            </li>
+              </li>
+              <li>
+                  <a href="../userStatistics/statisticsInfo.do"><i class="fa fa-circle-o"></i>用户统计<i class="fa fa-angle-left pull-right"></i></a>
+              </li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"统计分析")){?>style="display:none"<?}?>>
@@ -248,10 +251,10 @@
 	           	<a href="#"><i class="fa fa-circle-o"></i>配置管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
 		            <li <?if(!strutil.contain(session.purviews,"数据库配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="dataManager.do"){ ?>class="active"<?}?>><a href="../system/dataManager.do"><i class="fa fa-circle-o"></i> 数据库配置管理</a></li>
-			        <li <?if(!strutil.contain(session.purviews,"资源单价配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManager.do"){ ?>class="active"<?}?>><a href="../system/resourceManager.do"><i class="fa fa-circle-o"></i> 资源单价配置管理</a></li>			  
+			        <li <?if(!strutil.contain(session.purviews,"资源单价配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManager.do"){ ?>class="active"<?}?>><a href="../system/resourceManager.do"><i class="fa fa-circle-o"></i> 资源单价配置管理</a></li>
             		<li <?if(!strutil.contain(session.purviews,"产品类型设置")){?>style="display:block"<?}?> <? if(session.menu_first=="prductType.do"){ ?>class="active"<?}?>><a href="../system/prductType.do"><i class="fa fa-circle-o"></i> 产品类型设置</a>
             		<li <?if(!strutil.contain(session.purviews,"平台配置管理")){?>style="display:block"<?}?> <? if(session.menu_first=="sonSystem.do"){ ?>class="active"<?}?>><a href="../system/sonSystem.do"><i class="fa fa-circle-o"></i> 平台配置管理</a>
-            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:block"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../system/unitSystem.do"><i class="fa fa-circle-o"></i> 单位设置</a>    
+            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:block"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../system/unitSystem.do"><i class="fa fa-circle-o"></i> 单位设置</a>
 	         	</ul>
             </li>
            <!--  <li <?if(!strutil.contain(session.purviews,"日志记录管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../system/logManager.do"><i class="fa fa-circle-o"></i>日志记录管理</a></li> -->
@@ -260,7 +263,7 @@
           	<li><a href="../log/getLog.do"><i class="fa fa-circle-o"></i>后台日志管理</a></li>
           </ul>
         </li>
-        
+
          <li class="treeview" <?if(!strutil.contain(session.purviews,"原文发现管理")){?>style="display:none"<?}?>>
           <a href="#">
             <i class="fa fa-laptop"></i>
@@ -273,7 +276,7 @@
           	<li <?if(!strutil.contain(session.purviews,"资源授权")){?>style="display:none"<?}?><? if(session.menu_first=="qikan-shouquanpeizhi.do"){ ?>class="active"<?}?>><a href="../dataSource/qikan-shouquanpeizhi.do"><i class="fa fa-circle-o"></i>资源授权</a></li>
           </ul>
         </li>
-        
+
         <li class="treeview" <?if(!strutil.contain(session.purviews,"solr下撤管理")){?>style="display:none"<?}?>>
           <a href="#">
             <i class="fa fa-laptop"></i>
@@ -285,7 +288,7 @@
             <li <?if(!strutil.contain(session.purviews,"solr黑名单查询")){?>style="display:none"<?}?><? if(session.menu_first=="solrQuery.do"){ ?>class="active"<?}?>><a href="../solr/solrQuery.do"><i class="fa fa-circle-o"></i>solr黑名单查询</a></li>
           </ul>
         </li>
-        
+
       </ul>
     </section>
   </aside>
