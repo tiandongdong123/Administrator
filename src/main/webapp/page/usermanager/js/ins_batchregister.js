@@ -27,6 +27,21 @@ function submitForm(){
 		$(".wrong").css("display","inline");
 		$(".mistaken").css("display","none");
 	}
+    if($('#bindType').find("option:selected").val() == '2'){
+        $('#fromList').bootstrapValidator('addField','email',{
+            validators : {
+                notEmpty : {
+                    message : '请输入邮箱'
+                },
+                emailAddress: {/* 只需加此键值对，包含正则表达式，和提示 */
+                    message: '请输入正确的邮箱地址'
+                }
+            }
+        });
+    }else{
+        $('#fromList').bootstrapValidator('removeField','email');
+    }
+    $("#fromList").data('bootstrapValidator').resetForm();
 	if(bool){
 		return ;
 	}
@@ -36,6 +51,16 @@ function submitForm(){
 		return false;
 	}else{
 		var data = new FormData($('#fromList')[0]);
+        var openBindStart = data.get('openBindStart');
+        var openBindEnd = data.get('openBindEnd');
+        if(openBindStart){
+            data.set('openBindStart',openBindStart+' 00:00:00');
+        }
+        if(openBindEnd){
+            data.set('openBindEnd',openBindEnd+' 23:59:59');
+        }
+        var isCheckedMe = $('#isPublishEmail').is(':checked');
+        data.append('send',isCheckedMe);
 		$.ajax({  
 			url: '../auser/addbatchRegister.do',  
 			type: 'POST',
