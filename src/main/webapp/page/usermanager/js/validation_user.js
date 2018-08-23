@@ -128,6 +128,28 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
+            openBindStart:{
+                enabled: false
+			},
+            openBindEnd:{
+                message : '请选择日期',
+                validators : {
+                    callback:{
+                        callback:function(value,validator){
+                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
+                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
+                        	if(!startDay){
+                        		return false;
+							}
+                            if(!endDay){
+                                return false;
+                            }
+							return true;
+                        }
+                    }
+                }
+
+            },
 			pullDepartment:{
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -179,13 +201,6 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
-			bindType:{
-				validators : {
-					notEmpty : {/*非空提示*/
-						message : '请输入绑定模式'
-					},
-				}
-			},
 			appEndtime: {
 				validators : {
 					notEmpty : {
@@ -200,6 +215,14 @@ $(function() {/* 文档加载，执行一个函数 */
 					}
 				}
 			},
+			// bindType:{
+			// 	message : '请输入绑定模式',
+			// 	validators : {
+			// 		notEmpty : {/*非空提示*/
+			// 			message : '请输入绑定模式'
+			// 		},
+			// 	}
+			// },
 			weChatEamil: {
 				validators : {
 					notEmpty : {
@@ -287,4 +310,20 @@ $(function() {/* 文档加载，执行一个函数 */
 			},
 		}
 	})
+	
+    $('#fromList').bootstrapValidator('removeField','email');
+    $('#openBindStart').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
+    $('#openBindEnd').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+    })
 });
+
+function fieldsCheck() {
+	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+	bootstrapValidator.validate();
+	return (bootstrapValidator.isValid());
+}

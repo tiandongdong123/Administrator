@@ -1,4 +1,14 @@
 var zhongZtr=null,perioZtr=null,patentZtr=null;var count = 0;
+function meGetDate(time){
+    var today=time ? new Date(time) : new Date();
+    var year=today.getFullYear();
+    var month=today.getMonth()+1;
+    var day=today.getDate();
+    var newTime = year + '-' +
+        (month < 10? '0' + month : month) + '-' +
+        (day < 10? '0' + day : day)
+    return newTime;
+}
 $(function(e){
 	$("input[name='quotaName']").prop("checked",true);
 	//是否开通管理员
@@ -30,6 +40,7 @@ $(function(e){
 			$("#checktongji").prop('checked',false);
 		}
 	});
+
 	//是否开通个人绑定机构
 	$("#user_dinding").click(function(){
 		if($(this).is(':checked')){
@@ -39,6 +50,7 @@ $(function(e){
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
+			$('#openBindStart').val(meGetDate());
 		}else{
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
@@ -103,6 +115,13 @@ $(function(e){
 			$("#tongjiDiv").hide();
 		}
 	});
+    $('#bindType').change(function(){
+        if($(this).find("option:selected").val() == '2'){
+            $('.qrEmail-box').show();
+        }else{
+            $('.qrEmail-box').hide();
+        }
+    });
 });
 //充值机构管理员的验证
 function resetAdminValidate(){
@@ -1955,6 +1974,37 @@ function checkIP(){
 	var userId = $("#userId").val();
 	validateIp(ip,userId,"#checkIp");
 }
+$(function(){
+    var meDatePicker = (function () {
+        return {
+            datePicker: function (target, obeject, isStartTime) {
+                var compareTime = function (startdate, enddate) {
+                    return (Date.parse(startdate) < Date.parse(enddate)) ? true : false;
+                }
+                target.focus(function () {
+                    WdatePicker({
+                        autoUpdateOnChanged: false,
+                        readOnly: false,
+                        onpicked: function () {
+                            if (isStartTime) {
+                                if (!compareTime(target.val(), obeject.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            } else {
+                                if (!compareTime(obeject.val(), target.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            }
+                            $(this).blur()
+                        }
+                    })
+                })
+            }
+        }
+    })();
+    meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
+    meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+})
 
 //剔除IP
 function deleteIP(){
