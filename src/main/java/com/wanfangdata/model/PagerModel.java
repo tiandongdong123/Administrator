@@ -74,7 +74,7 @@ public class PagerModel<T> {
     /**
      * 构造方法，只构造空页.
      */
-    public PagerModel() throws Exception {
+    public PagerModel()  {
         this(1, 0, 10, new ArrayList(), "", null);
     }
 

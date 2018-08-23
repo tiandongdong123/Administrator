@@ -2,6 +2,7 @@ package com.wf.controller;
 
 import com.google.protobuf.util.Timestamps;
 import com.utils.QRCodeUtil;
+import com.utils.WFMailUtil;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.grpcchannel.BindAuthorityChannel;
 import com.wanfangdata.model.BindSearchParameter;
@@ -46,6 +47,8 @@ public class PersonBindInstitutionController {
     @Autowired
     private PersonMapper personMapper;
 
+    @Autowired
+    private WFMailUtil wfMailUtil;
 
     private static final Logger log = Logger.getLogger(PersonBindInstitutionController.class);
 
@@ -150,7 +153,31 @@ public class PersonBindInstitutionController {
                     .setBindLimit(bindAuthorityModel.getBindLimit())
                     .setBindValidity(bindAuthorityModel.getBindValidity())
                     .setDownloadLimit(bindAuthorityModel.getDownloadLimit())
-                    .addAllBindAuthority(authorityList);
+                    .addAllBindAuthority(authorityList)
+                    .setEmail(bindAuthorityModel.getEmail())
+                    .setOpenStart(Timestamps.fromMillis(bindAuthorityModel.getOpenBindStart().getTime()))
+                    .setOpenEnd(Timestamps.fromMillis(bindAuthorityModel.getOpenBindEnd().getTime()));
+            //发送邮箱
+            String email = bindAuthorityModel.getEmail();
+            List<String> userIdList = new ArrayList<>();
+            for (String userId : userIds) {
+                userIdList.add(userId);
+            }
+            Map<String,String> hashmap = new HashMap<String, String>();
+            try {
+                if (bindAuthorityModel.getSend()) {
+
+                    if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                        log.info("机构用户注册，发送邮件成功，userIdList：" + userIdList.toString() + "，email:" + email);
+                        hashmap.put("emailFlag", "success");
+                    } else {
+                        throw new Exception("发送邮件失败");
+                    }
+                }
+            } catch (Exception e) {
+                log.error("机构用户注册，发送邮箱出现异常！userIdList：" + userIdList.toString() + "，email:" + email, e);
+                hashmap.put("emailFlag", "fail");
+            }
             ServiceResponse response = bindAuthorityChannel.getBlockingStub().editBindAuthority(request.build());
             if (response.getServiceResult()) {
                 return true;
@@ -205,7 +232,6 @@ public class PersonBindInstitutionController {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 endTime = calendar.getTime();
             }
-            ;
         } catch (ParseException e) {
             log.error("转换时间出错", e);
         }
@@ -304,26 +330,30 @@ public class PersonBindInstitutionController {
         }
 
         List<BindAccountModel> pageList = new ArrayList<>();
-
         //设置分页
-        int page = parameter.getPage();
-        int pageSize = parameter.getPageSize();
-        int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
-        int remainder = modelList.size() % pageSize;
-        if (remainder == 0) {
-            remainder = pageSize;
+        if (modelList == null || modelList.size() == 0) {
+            model.addAttribute("pager", new PagerModel());
+            model.addAttribute("upPage", upPage);
         }
-        if (page == allPage) {
-            pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
-        } else {
-            pageList = modelList.subList((page - 1) * pageSize, page * pageSize);
+        else{
+            int page = parameter.getPage();
+            int pageSize = parameter.getPageSize();
+            int allPage = modelList.size() % pageSize == 0 ? modelList.size() / pageSize : modelList.size() / pageSize + 1;
+            int remainder = modelList.size() % pageSize;
+            if (remainder == 0) {
+                remainder = pageSize;
+            }
+            if (page == allPage) {
+                pageList = modelList.subList((page - 1) * pageSize, (page - 1) * pageSize + remainder);
+            } else {
+                pageList = modelList.subList((page - 1) * pageSize, page * pageSize);
+            }
+
+            String actionUrl = "/bindAuhtority/searchBindInfo.do";
+            PagerModel<BindSearchParameter>  formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
+            model.addAttribute("pager", formList);
+            model.addAttribute("upPage", upPage);
         }
-
-        String actionUrl = "/bindAuhtority/searchBindInfo.do";
-        PagerModel<BindSearchParameter> formList = new PagerModel<BindSearchParameter>(page, modelList.size(), pageSize, pageList, actionUrl, parameter);
-        model.addAttribute("pager", formList);
-        model.addAttribute("upPage", upPage);
-
         return "/page/usermanager/user_binding_table";
     }
 
@@ -497,4 +527,67 @@ public class PersonBindInstitutionController {
         return modelList;
     }
 
+    /**
+     * 将二维码发送给指定的邮箱
+     *
+     * @param bindEmail 接收人
+     * @param userId    机构账号id
+     * @return
+     */
+    @RequestMapping("/sendMailQRCode")
+    @ResponseBody
+    public String sendMailQRCode(String bindEmail, String userId) {
+        if (bindEmail == null || "".equals(bindEmail)||userId == null||"".equals(userId)){
+            log.info("userId和bindEmail不能为空");
+            return null;
+        }
+        log.info("开始将二维码发送至指定的邮箱：userId" + userId + ",bindEmail:" + bindEmail);
+        List<String> userIdList=new ArrayList<>();
+        userIdList.add(userId);
+        if (wfMailUtil.sendQRCodeMail(bindEmail, userIdList, bindAccountChannel)) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    /**
+     * 根据机构id展示信息
+     *
+     * @param userId 机构id
+     * @return
+     */
+    @RequestMapping("/showBindInfo")
+    @ResponseBody
+    public BindAuthorityModel showBindInfo(String userId) {
+        if (userId == null || "".equals(userId)) {
+            log.info("账号不能为空");
+            return null;
+        }
+        try {
+            SearchAccountAuthorityRequest.Builder request = SearchAccountAuthorityRequest.newBuilder().setUserId(userId);
+            SearchAccountAuthorityResponse response = bindAuthorityChannel.getBlockingStub().searchAccountAuthority(request.build());
+            List<AccountAuthority> itemsList = response.getItemsList();
+            BindAuthorityModel bindModel = new BindAuthorityModel();
+            if (itemsList != null && itemsList.size() > 0) {
+                bindModel.setUserId(itemsList.get(0).getUserId());
+                bindModel.setEmail(itemsList.get(0).getEmail());
+                bindModel.setBindLimit(itemsList.get(0).getBindLimit());
+                bindModel.setBindValidity(itemsList.get(0).getBindValidity());
+                bindModel.setOpenBindStart(new Date(Timestamps.toMillis(itemsList.get(0).getOpenStart())));
+                bindModel.setOpenBindEnd(new Date(Timestamps.toMillis(itemsList.get(0).getOpenEnd())));
+                bindModel.setDownloadLimit(itemsList.get(0).getDownloadLimit());
+                bindModel.setBindType(itemsList.get(0).getBindType().getNumber());
+                StringBuffer allAuthority = new StringBuffer();
+                for (AccountAuthority accountAuthority : itemsList) {
+                    allAuthority.append(bindAuthorityMapping.getAuthorityCn(accountAuthority.getBindAuthority()) + "、");
+                }
+                bindModel.setBindAuthority(allAuthority.toString().substring(0, allAuthority.length() - 1));
+            }
+            return bindModel;
+        } catch (Exception e) {
+            log.error("根据账号id查询数据出错，账号：" + userId, e);
+        }
+        return null;
+    }
 }

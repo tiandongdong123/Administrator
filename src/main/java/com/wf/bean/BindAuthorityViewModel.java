@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import java.util.Date;
+
 public class BindAuthorityViewModel {
 
     //是否开通个人绑定机构状态
@@ -16,6 +18,15 @@ public class BindAuthorityViewModel {
     private Integer downloadLimit;
     //绑定个人继承权限
     private String bindAuthority;
+
+    //开通时限开始时间
+    private Date openTimeLimitState;
+
+    //开通时限结束时间
+    private Date openTimeLimitEnd;
+
+    //二维码邮箱
+    private String email;
 
     public Boolean getOpenState() {
         return openState;
@@ -73,16 +84,43 @@ public class BindAuthorityViewModel {
         this.bindAuthority = bindAuthority;
     }
 
+    public Date getOpenTimeLimitState() {
+        return openTimeLimitState;
+    }
+
+    public void setOpenTimeLimitState(Date openTimeLimitState) {
+        this.openTimeLimitState = openTimeLimitState;
+    }
+
+    public Date getOpenTimeLimitEnd() {
+        return openTimeLimitEnd;
+    }
+
+    public void setOpenTimeLimitEnd(Date openTimeLimitEnd) {
+        this.openTimeLimitEnd = openTimeLimitEnd;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
-        return "BindAuthorityModel{" +
+        return "BindAuthorityViewModel{" +
                 "openState=" + openState +
                 ", userId='" + userId + '\'' +
-                ", bindType=" + bindType +
+                ", bindType='" + bindType + '\'' +
                 ", bindLimit=" + bindLimit +
                 ", bindValidity=" + bindValidity +
                 ", downloadLimit=" + downloadLimit +
                 ", bindAuthority='" + bindAuthority + '\'' +
+                ", openTimeLimitState=" + openTimeLimitState +
+                ", openTimeLimitEnd=" + openTimeLimitEnd +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
