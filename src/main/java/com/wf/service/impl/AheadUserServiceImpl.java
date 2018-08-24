@@ -2044,12 +2044,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 							break;
 						}
 					}
+					boolean isExists=false;
 					for(Map<String, String> wfks : wfList){
 						if(StringUtils.equals(wfks.get("payChannelid"),wf.getRelatedidAccounttype())){
 							extraData.put("resouceName", wfks.get("tableName"));
+							isExists=true;
 						}
 					}
-					tempList.add(extraData);
+					if(isExists){
+						tempList.add(extraData);
+					}
 				}
 			}
 			//调用接口查询支付信息
