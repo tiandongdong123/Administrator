@@ -27,7 +27,9 @@
 		  			<td class="alal">用户ID</td>
 		  			<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="userId"<?}?> id="userId2" value="<?if(map.isSimple=='1'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 					<td class="alal">机构名称</td>
-					<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="institution"<?}?> id="institution2" value="<?if(map.isSimple=='1'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td></tr>
+					<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="institution"<?}?> id="institution2" value="<?if(map.isSimple=='1'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
+					<td class="arar"></td>
+				</tr>
 	  			<tr>
 		  			<td class="alal">IP</td>
 		  			<td class="arar">
@@ -39,6 +41,7 @@
 			                <option value="">--请选择--</option>
 			                <?for(auth in Authority){ ?><option value="${auth.name}" <?if(!isEmpty(map.openLimit)&&map.openLimit==auth.name){ ?>selected="selected"<?}?>>${auth.desc}</option><?}?>
 		                </select></td>
+		            <td class="arar"></td>
 				</tr>
 	  			<tr>
 		  			<td class="alal">机构类型</td>
@@ -55,6 +58,7 @@
 						<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(map.PostCode)&&map.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
 						<option value="none" <?if(!isEmpty(map.PostCode)&&map.PostCode=='none'){ ?>selected="selected"<?}?>>无</option>
 					</select></td>
+					<td class="arar"></td>
 				</tr>
 	  			<tr>
 		  			<td class="alal">工单类型</td>
@@ -72,14 +76,16 @@
 						<option value="Check" <?if(!isEmpty(map.proType)&&map.proType=='Check'){?>selected="selected"<?}?>>万方检测</option>
 						<option value="WFStats" <?if(!isEmpty(map.proType)&&map.proType=='WFStats'){?>selected="selected"<?}?>>万方分析</option>
 					</select></td>
+					<td class="arar"><span id="resource_span" style="display:none">	
+					<select name="resource" id="resource"><option value="">--请选择--</option></select>
+					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}"></span></td>
 				</tr>
 	  			<tr>
 		  			<td class="alal"><span id="sqbm_span" style="display:none">申请部门</span></td>
 		  			<td class="arar"><span id="order_span" style="display:none"><input type="text" name="OrderContent" id="OrderContent" value="${map.OrderContent!}"></span></td>
 					<td class="alal"></td>
-					<td class="arar"><span id="resource_span" style="display:none">	
-					<select name="resource" id="resource"><option value="">--请选择--</option></select>
-					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}"></span></td>
+					<td class="arar"></td>
+					<td class="arar"></td>
 				</tr>
 			</table>
             <?if(!isEmpty(map.pageList)){?>
