@@ -227,7 +227,7 @@ function updateUser(){
 	    			icon: 2,
 	    			title: '提示',
 	    		    skin: 'layui-layer-molv',
-	    		    btn: ['继续添加'], //按钮
+	    		    btn: ['继续修改'], //按钮
 	    		    yes: function(){
 	    		    	window.location.href='../auser/numupdate.do?userId='+userId;
 	    		    }
