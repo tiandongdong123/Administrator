@@ -78,9 +78,9 @@
 						<td rowspan="${list.data.~size}" style='word-break:break-all;width:6%;'>${list.registrationTime!,"yyyy-MM-dd hh:mm:ss"}</td>
 						<?}?>
 						<?if(index==1&&list.data.~size>1){?>
-						<td style='word-break:break-all;width:9%;position: relative;' class="${i!}">${data.name!}<img style="position:absolute;right:0;bottom:0;cursor: pointer;" src="../img/down.png"  onclick="showTd(${i!},this);" type="0"/></td>
+						<td style='word-break:break-all;width:9%;position: relative;' class="${i!}" height="30px;">${data.name!}<img style="position:absolute;right:0;bottom:0;cursor: pointer;" src="../img/down.png"  onclick="showTd(${i!},this);" type="0"/></td>
 						<?}else{?>
-							<td style='word-break:break-all;width:9%;<?if(index>1){?>display:none;<?}?>' class="${i!}"><span></span>${data.name!}</td>
+							<td style='word-break:break-all;width:9%;position: relative;<?if(index>1){?>display:none;<?}?>' class="${i!}" height="30px;"><span></span>${data.name!}</td>
 						<?}?>
 						<td style='word-break:break-all;width:9%;<?if(index>1){?>display:none;<?}?>' class="${i!}">${data.resouceName!}</td>
 						<td style='word-break:break-all;width:9%;<?if(index>1){?>display:none;<?}?>' class="${i!}">${data.time!}</td>
