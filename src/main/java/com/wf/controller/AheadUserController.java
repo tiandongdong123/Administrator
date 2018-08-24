@@ -13,8 +13,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.utils.*;
-import com.wanfangdata.grpcchannel.BindAccountChannel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -1629,24 +1627,6 @@ public class AheadUserController {
 				hashmap.put("fail", "该机构管理员ID已经存在，请重新输入机构管理员ID");
 				return hashmap;	
 			}
-		}
-		String userId = bindAuthorityModel.getUserId();
-		String email = bindAuthorityModel.getEmail();
-		//发送邮箱
-		try {
-			if (bindAuthorityModel.getSend()) {
-				List<String> userIdList=new ArrayList<>();
-				userIdList.add(userId);
-				if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
-					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
-					hashmap.put("emailFlag", "success");
-				} else {
-					throw new Exception("发送邮件失败");
-				}
-			}
-		} catch (Exception e) {
-			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
-			hashmap.put("emailFlag", "fail");
 		}
 		return hashmap;
 	}

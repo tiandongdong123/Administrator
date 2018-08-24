@@ -303,10 +303,7 @@ $(function() {/* 文档加载，执行一个函数 */
 			},
 		}
 	})
-<<<<<<< HEAD
 	
-=======
->>>>>>> origin/master
     $('#fromList').bootstrapValidator('removeField','email');
     $('#openBindStart').mousedown(function(){
         $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
