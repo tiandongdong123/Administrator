@@ -1752,6 +1752,37 @@ function checkWeChat(obj,type) {
 	}
 	$("#openWeChatspan").html("");
 }
+$(function(){
+    var meDatePicker = (function () {
+        return {
+            datePicker: function (target, obeject, isStartTime) {
+                var compareTime = function (startdate, enddate) {
+                    return (Date.parse(startdate) < Date.parse(enddate)) ? true : false;
+                }
+                target.focus(function () {
+                    WdatePicker({
+                        autoUpdateOnChanged: false,
+                        readOnly: false,
+                        onpicked: function () {
+                            if (isStartTime) {
+                                if (!compareTime(target.val(), obeject.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            } else {
+                                if (!compareTime(obeject.val(), target.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            }
+                            $(this).blur()
+                        }
+                    })
+                })
+            }
+        }
+    })();
+    meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
+    meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+})
 
 //开通APP嵌入服务
 function checkApp(obj){
