@@ -9,6 +9,7 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
+	$("#errorList").html("");
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
 	if($("#bindLimit").val()==""){
@@ -44,9 +45,9 @@ function submitForm(){
 	if(bool){
 		return ;
 	}
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 		var data = new FormData($('#fromList')[0]);
@@ -77,16 +78,39 @@ function submitForm(){
 	    		    	window.location.href='../auser/batchregister.do';
 	    		    }
 	    		});
-			}else if(data.flag=="fail"){
-				layer.msg(data.fail,{icon: 2});
+			}else if(data.flag=='fail'){
+				layer.msg(data.fail, {icon: 2});
+			}else if(data.flag=='error'){
+	    		layer.alert(data.fail, {
+	    			icon: 2,
+	    		    skin: 'layui-layer-molv',
+	    		    title: '提示',
+	    		    btn: ['继续添加'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/batchregister.do';
+	    		    }
+	    		});
+			}else if(data.flag=='list'){
+				showError(data.fail);
 			}else{
 				layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 			}
+			removeAtrr();
 		});
-		$("#submit").removeAttr("disabled");
 	}
 }
 
+
 function download1(title){
 	window.location.href='../auser/worddownload.do?title='+encodeURI(encodeURI(title));
+}
+
+function removeAtrr(){
+	$("#submit").removeAttr("disabled");
+	$("#submit1").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit").attr({disabled: "disabled"});
+	$("#submit1").attr({disabled: "disabled"});
 }

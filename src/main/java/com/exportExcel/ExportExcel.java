@@ -13,7 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -21,8 +27,6 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.wf.bean.Card;
 
 public class ExportExcel {
 		/**
@@ -1003,6 +1007,118 @@ public class ExportExcel {
 				e.printStackTrace();
 			}	
 		}
+	
+	//机构子账号导出
+	public String exportExccel3(HttpServletResponse response, List<Object> list,int column,int maxSize) {
+		
+		List<String> namelist=new ArrayList<String>();
+		namelist.add("机构名称");
+		namelist.add("机构ID");
+		namelist.add("子账号类型");
+		namelist.add("子账号名称");
+		namelist.add("子账号ID");
+		namelist.add("子账号密码");
+		namelist.add("子账号IP");
+		namelist.add("子账号注册时间");
+		namelist.add("子账号权限");
+		namelist.add("购买数据库");
+		namelist.add("子账号有效期");
+		namelist.add("子账号余额");
+		namelist.add("子账号次数");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = sdf.format(new Date());
+		String newpate = date + ".xlsx";
+		try {
+			// 工作区
+			HSSFWorkbook wb = new HSSFWorkbook();
+			// 创建第二个sheet
+			List<List<Object>> tempList = this.createList(list, column);
+			int index=0;
+			for(List<Object> temp:tempList){
+				index+=1;
+				HSSFSheet sheet = wb.createSheet("机构子账号"+(tempList.size()==1?"":index));
+				HSSFRow row = sheet.createRow(0);
+				for (int i = 0; i < namelist.size(); i++) {
+					row.createCell(i).setCellValue(namelist.get(i));
+				}
+				int rowNum=1;
+				for (int i = 0; i < temp.size(); i++) {
+					Map<String, Object> map=(Map<String, Object>) temp.get(i);
+					// 创建第一个sheet
+					List<Map<String, Object>> dataList= (java.util.List<Map<String, Object>>) map.get("data");
+					int length=dataList.size()==0?1:dataList.size();
+					for(int j=0;j<length;j++){
+						row = sheet.createRow(rowNum++);
+						row.createCell(0).setCellValue(formatStr(map.get("institution")));
+						row.createCell(1).setCellValue(formatStr(map.get("pid")));
+						if("0".equals(formatStr(map.get("userRoles")))){
+							row.createCell(2).setCellValue("子账号");
+						}else if("20".equals(formatStr(map.get("userRoles")))){
+							row.createCell(2).setCellValue("学生账号");
+						}else{
+							row.createCell(2).setCellValue("");
+						}
+						row.createCell(3).setCellValue(formatStr(map.get("userRealname")));
+						row.createCell(4).setCellValue(formatStr(map.get("userId")));
+						row.createCell(5).setCellValue(formatStr(map.get("password")));
+						List<Map<String,String>> listip=(List<Map<String,String>>) map.get("list_ip");
+						if(listip!=null&&listip.size()>0){
+							StringBuffer sb=new StringBuffer();
+							for(Map<String,String> ipMap:listip){
+								if(sb.length()>0){
+									sb.append("\r\n");
+								}
+								sb.append(ipMap.get("ip"));
+							}
+							HSSFCellStyle cellStyle=wb.createCellStyle();       
+							cellStyle.setWrapText(true); 
+							row.createCell(6).setCellStyle(cellStyle);                          
+							row.createCell(6).setCellValue(new HSSFRichTextString(sb.toString())); 
+						}else{
+							row.createCell(6).setCellValue("");
+						}
+						row.createCell(7).setCellValue(formatStr(map.get("registrationTime")));
+						Map<String,Object> dataMap=null;
+						if(dataList.size()>0){
+							dataMap=dataList.get(j);
+						}
+						row.createCell(8).setCellValue(dataMap==null?"":formatStr(dataMap.get("name")));
+						row.createCell(9).setCellValue(dataMap==null?"":formatStr(dataMap.get("resouceName")));
+						row.createCell(10).setCellValue(dataMap==null?"":formatStr(dataMap.get("time")));
+						row.createCell(11).setCellValue(dataMap==null?"":formatStr(dataMap.get("balance")));
+						row.createCell(12).setCellValue(dataMap==null?"":formatStr(dataMap.get("count")));
+					}
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 0,0));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 1,1));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 2,2));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 3,3));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 4,4));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 5,5));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 6,6));
+					sheet.addMergedRegion(new CellRangeAddress(rowNum-length, rowNum-1, 7,7));
+				}
+			}
+			// 设置Content-Disposition
+			response.setHeader("Content-Disposition", "attachment;filename=" + newpate);
+			OutputStream out = response.getOutputStream();
+			// 写文件
+			wb.write(out);
+			// 关闭输出流
+			out.close();
+			return date;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
+	private String formatStr(Object obj){
+		if(obj==null||StringUtils.isBlank(obj.toString())){
+			return "";
+		}
+		return obj.toString();
+	}
 		
 	private <T> List<List<T>> createList(List<T> targe, int size) {
 		List<List<T>> listArr = new ArrayList<List<T>>();

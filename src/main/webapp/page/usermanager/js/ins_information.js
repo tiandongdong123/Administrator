@@ -14,6 +14,25 @@ $(function(){
 		var pictures = $(this).siblings('.pictures');
 		pictures.attr('src','../bindAuhtority/resetQRCode.do?userId='+userId_qr+'&time='+(new Date()));
 	});
+	if($("#proType").val()!=''){
+		queryType();
+	}
+	if($("#OrderType").val()=='inner'){
+		$("#sqbm_span").show();
+		$("#order_span").show();
+	}else{
+		$("#sqbm_span").hide();
+		$("#order_span").hide();
+	}
+	$("#queryTable").bind("keydown",function(e){
+        // 兼容FF和IE和Opera    
+	    var theEvent = e || window.event;    
+	    var code = theEvent.keyCode || theEvent.which || theEvent.charCode;    
+	    if (code == 13) {    
+	    	//回车执行查询
+	    	$("#queryButton").click();
+		}
+	});
     $(document).on("click",".pic-sendEmail",function(){
         var userId_qr = $(this).parents(".info_cont").find(".user_qrCode").text();
         var bindEmail = $(this).parents(".info_cont").find('.email-text').text();
@@ -52,72 +71,99 @@ function preventBubble(event){
 //查询机构下管理员、并修改
 function showAdm(id,pid,institution,e){
 	preventBubble(e);
+	//弹出结果集
+	layer.open({
+	    type: 1, //page层 1div，2页面
+	    shadeClose: false,
+	    area: ['500px', '200px'],
+	    title: '修改机构名称',
+	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+	    content: $("#ins_"+id),
+	    btn: ['修改','取消'],
+		yes: function(){
+			var institution=$("#institu_"+id).val();
+			var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
+			if(institution==null||institution==""){
+				layer.msg('机构名称不能为空，请填写规范的机构名称', {icon: 2,time: 1000});
+				return false;
+			}
+			if(!reg.test(institution)){
+				layer.msg('格式不对，请填写规范的机构名称', {icon: 2,time: 1000});
+				return false;
+			}
+			var olds=$("#ins_hidden_"+id).val();
+			if(institution==olds){
+				layer.msg('未修改机构名称', {icon: 2,time: 1000});
+				return false;
+			}
+			$.ajax({
+				type : "post",
+				url : "../auser/findInstitutionAllUser.do",
+				data:{"institution":olds},
+				success: function(data){
+					var html="";
+					var admin=data.admin;
+					var user=data.user;
+					var userNum=0,adminNum=0;
+					if(user!=null){
+						html+="该机构下的机构账号有：</br>";
+						var array=user.split(",");
+						for(ar in array){
+							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+						}
+						userNum=array.length;
+					}
+					if(admin!=null){
+						html+="该机构下的机构管理员有：</br>";
+						var array=admin.split(",");
+						for(ar in array){
+							html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+						}
+						adminNum=array.length;
+					}
+					if(userNum>0&&adminNum>0){
+						html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
+					}else if(adminNum==0&&userNum>1){
+						html+="确定要同时修改所有机构账号的机构名称吗？";
+					}else{
+						html="确定要修改机构账号的机构名称吗？";
+					}
+					layer.alert(html,{
+						icon: 1,
+						title : ["确认", true],
+					    skin: 'layui-layer-molv',
+					    btn: ['确定','取消'],
+					    yes: function(){
+					    	updateInstitution(institution,olds,id);//更新机构名称
+					    }
+					});
+				}
+			});
+	    },
+	    end: function(){
+	    	preventBubble(e);
+	    }
+	});
+}
+
+//更新机构名称
+function updateInstitution(news,olds,id){
 	$.ajax({
 		type : "post",
-		url : "../auser/findins.do",
-		data:{institution:institution,userId:id},
+		url : "../auser/updateins.do",
+		data:{"institution":news,"oldins":olds},
 		success: function(data){
-			var text = '<tr><th>管理员ID</th><th>密码</th><th>管理员IP段</th><th>管理员邮箱</th><th>管理机构账号数</th></tr>';
-			for(var i = 0;i < data.length; i++){
-				text += '<tr><td><input type="hidden" id="adminId_'+id+'_'+i+'" value="'+data[i].userId+'">'+data[i].userId+'</td>';
-				text += '<td><input type="text" style="width:200px;" id="adminpassword_'+id+'_'+i+'" value="'+data[i].password+'"></td>';
-				if(data[i].adminIP!=null && data[i].adminIP.length>0){					
-					text += '<td><textarea style="margin: 0px; width: 300px; height: 44px;" id="adminIP_'+id+'_'+i+'">';
-					for(var j = 0;j < data[i].adminIP.length; j++){						
-						text += data[i].adminIP[j].beginIpAddressNumber+'-'+data[i].adminIP[j].endIpAddressNumber
-					}
-					text += '</textarea></td>';
-				}else{
-					text += '<td><textarea style="margin: 0px; width: 300px; height: 44px;" id="adminIP_'+id+'_'+i+'"></textarea></td>';
-				}
-				text += '<td><input type="text" style="width:200px;" id="adminEmail_'+id+'_'+i+'" value="'+data[i].adminEmail+'"></td>';
-				text += '<td>'+data[i].num+'</td>';
+			if(data.flag=="true"){
+				layer.msg('管理员信息更新成功', {icon: 1});
+			}else{
+				layer.msg('管理员信息更新失败', {icon: 2});
+				return;
 			}
-			$("#tbody_"+id).html(text);
-			//弹出结果集
-			layer.open({
-			    type: 1, //page层 1div，2页面
-			    shadeClose: false,
-			    area: ['1100px', '500px'],
-			    title: '修改机构信息',
-			    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-			    content: $("#ins_"+id),
-			    btn: ['提交','取消'],
-				yes: function(){
-					var count = $("#tbody_"+id+" tr").length-1;
-					var customerArray = new Array();
-					for(var i = 0; i < count; i++){
-						customerArray.push({adminId: $("#adminId_"+id+"_"+i).val(), adminpassword: $("#adminpassword_"+id+"_"+i).val(),adminIP: $("#adminIP_"+id+"_"+i).val(),
-							adminEmail: $("#adminEmail_"+id+"_"+i).val()});
-					}
-					var institution=$("#institu_"+id).val();
-					var reg = /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]+$/;
-					if(!reg.test(institution)){
-						layer.msg('请填写规范的机构名称', {icon: 2,time: 1000});
-						return false;
-					}
-					$.ajax({
-						type : "post",
-						url : "../auser/updateins.do",
-						data:{"institution":institution,"oldins":$("#ins_hidden_"+id).val(),"adminList":JSON.stringify(customerArray)},
-						success: function(data){
-							if(data.flag=="true"){
-								layer.msg('管理员信息更新成功', {icon: 1});
-							}else{
-								layer.msg('更新失败', {icon: 2});
-							}
-							layer.closeAll();
-							if($("#institution").val()!=""){
-								$("#institution").val($("#institu_"+id).val());
-							}							
-							findList();
-						}
-					});
-			    },
-			    end: function(){
-			    	preventBubble(e);
-			    }
-			});
+			layer.closeAll();
+			if($("#institution").val()!=""){
+				$("#institution").val($("#institu_"+id).val());
+			}
+			findList();
 		}
 	});
 }
@@ -126,19 +172,37 @@ function showAdm(id,pid,institution,e){
 //锁定/解锁切换
 function setfreeze(flag,obj,aid,e){
 	preventBubble(e);
-	$.ajax({
-		type : "post",
-		url : "../auser/setfreeze.do",
-		data:{aid : aid,flag:flag},
-		success: function(data){
-			if(flag==2){
-				$(obj).removeClass('icon_close').addClass('icon_open');
-				$(obj).attr("onclick","setfreeze(1,this,'"+aid+"');")
-			}else{
-				$(obj).removeClass('icon_open').addClass('icon_close');
-				$(obj).attr("onclick","setfreeze(2,this,'"+aid+"');")
-			}
-		}
+	var msg="";
+	var title="";
+	if(flag=='1'){
+		msg="确定要冻结机构账户吗？";
+		title="冻结机构账号";
+	}else{
+		msg="确定要解冻机构账户吗？";
+		title="解冻机构账号";
+	}
+	layer.alert(msg,{
+		icon: 1,
+		title : [title, true],
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		url : "../auser/setfreeze.do",
+	    		data:{aid : aid,flag:flag},
+	    		success: function(data){
+	    			if(flag==2){
+	    				$(obj).removeClass('icon_close').addClass('icon_open');
+	    				$(obj).attr("onclick","setfreeze(1,this,'"+aid+"');")
+	    			}else{
+	    				$(obj).removeClass('icon_open').addClass('icon_close');
+	    				$(obj).attr("onclick","setfreeze(2,this,'"+aid+"');")
+	    			}
+	    			layer.closeAll();
+	    		}
+	    	});
+	    }
 	});
 }
 
@@ -156,31 +220,38 @@ function unfolded(flag,obj,index){
 }
 
 //移除管理员
-function delAdmin(aid,e){
+function delAdmin(userId,e){
 	preventBubble(e);
-	$.ajax({
-		type : "post",
-		url : "../auser/deladmin.do",
-		data:{"aid":aid},
-		success: function(data){
-		   if(data == "true"){
-			   layer.msg('移除成功', {icon: 1});
-			   findList();
-		   }
-		}
+	layer.alert('确定要移除机构管理员吗？',{
+		icon: 1,
+		title:['移除机构管理员',true],
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		url : "../auser/deladmin.do",
+	    		data:{"userId":userId},
+	    		success: function(data){
+	    		   if(data == "true"){
+	    			   layer.msg('移除成功', {icon: 1});
+	    			   findList();
+	    		   }
+	    		}
+	    	});
+	    }
 	});
 }
 
 //添加/更新管理员
-function setAdmin(userId,pid,institution,flag,e){
+function setAdmin(userId,pid,institution,e){
 	preventBubble(e);
-	$("#aid").val(userId);
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['750px', '520px'],
-	    title: '机构管理员信息',
+	    title: '添加机构管理员',
 	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: 'goaddadmin.do?pid='+pid+"&institution="+institution+"&userId="+userId+"&flag="+flag
+	    content: '../auser/goaddadmin.do?institution='+institution+'&userId='+userId
 	}); 
 }
 
@@ -302,30 +373,17 @@ function btnBlack(obj,e){
 	}
 }
 
-
-//服务权限设置弹窗
-function showAuthority(msg,title,userId,e){
-	preventBubble(e);
-	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['750px', '520px'],
-	    title: title,
-	    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-	    content: 'showAuthority.do?msg='+msg+'&userId='+userId
-	}); 
-}
-
-
 //数据提交
 function findList(){
 	var ipSegment = $("#ipSegment").val();
 	if(ipSegment!=null&&ipSegment!=''){
-		if(!checkIP(ipSegment)){
-			$("#ipResult").html("ip格式不合法");
+		if(!checkOneIp(ipSegment)&&!IpFormat(ipSegment)){
+			$("#ipResult").html("IP格式不合法");
 			$("#ipSegment").css("border","1px solid red");
 			return false;
 		}
 	}
+	$("#ipResult").html("");
 	var institution = $("#institution").val();
 	if(institution!=null && institution!=""){
 		if(!institution.startWith("%") && !institution.endWith("%")){
@@ -336,6 +394,12 @@ function findList(){
 			institution = "%" + institution;
 		}
 		$("#institution").val(institution);
+	}
+	var proType=$("#proType").val();
+	var resource=$("#resource").val();
+	if(proType!=''&&resource==''){
+		layer.msg('请选择具体的购买项目', {icon: 2});
+		return false;
 	}
 	$("#pageNum").val(1);
 	$("#fromList").submit();
@@ -353,7 +417,7 @@ String.prototype.endWith=function(str){
 }
 
 //校验ip
-function checkIP(val){
+function checkOneIp(val){
 	// ip地址
 	if (val.startWith("0.")) {
 		return false;
@@ -375,4 +439,101 @@ String.prototype.startWith=function(str){
 String.prototype.endWith=function(str){     
   var reg=new RegExp(str+"$");     
   return reg.test(this);        
+}
+
+//工单类型
+function queryOrder(obj){
+	var type=$("#OrderType").val();
+	$("#OrderContent").val("");
+	if(type=='inner'){
+		$("#sqbm_span").show();
+		$("#order_span").show();
+	}else{
+		$("#sqbm_span").hide();
+		$("#order_span").hide();
+	}
+}
+//选择购买项目
+function queryType(){
+	var val=$("#proType").val();
+	if(val==""){
+		$("#resource_span").hide();
+		return;
+	}
+	$("#resource").html('<option value="">--请选择--</option>');
+	var oldresource=$("#oldresource").val();
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getProject.do",
+		data:{"val":val},
+		dataType:"json",
+		success:function(data){
+			for(var i in data){
+				var pro=data[i];
+				var type="";
+				if(pro.id==oldresource){
+					type='selected="selected"';
+				}
+				$("#resource").append('<option value="'+pro.id+'"'+type+'>'+pro.name+'</option>');
+				$("#resource_span").show();
+			}
+		}
+	});
+}
+
+//显示更多菜单
+function showMore(obj){
+	var isSimple=$("#isSimple").val();
+	$("#openLimit").val('');
+	$("#Organization").val('');
+	$("#PostCode").val('');
+	$("#OrderType").val('');
+	$("#proType").val('');
+	$("#OrderContent").val('');
+	$("#resource").val('');
+	$("#sqbm_span").hide();
+	$("#order_span").hide();
+	$("#resource_span").hide();
+	if(isSimple=='1'){
+		$("#isSimple").val('0');
+		$("#message1").show();
+		$("#message2").hide();
+		$("#userId1").attr("name","userId");
+		$("#institution1").attr("name","institution");
+		$("#ipSegment1").attr("name","ipSegment");
+		$("#userId2").removeAttr("name");
+		$("#institution2").removeAttr("name");
+		$("#ipSegment2").removeAttr("name");
+		var userId=$("#userId2").val();
+		var institution=$("#institution2").val();
+		var ipSegment=$("#ipSegment2").val();
+		$("#userId2").val("");
+		$("#institution2").val("");
+		$("#ipSegment2").val("");
+		$("#userId1").val(userId);
+		$("#institution1").val(institution);
+		$("#ipSegment1").val(ipSegment);
+		$(obj).html("更多查询条件");
+	}else{
+		$("#isSimple").val('1');
+		$("#message2").show();
+		$("#message1").hide();
+		$("#userId1").removeAttr("name");
+		$("#institution1").removeAttr("name");
+		$("#ipSegment1").removeAttr("name");
+		$("#userId2").attr("name","userId");
+		$("#institution2").attr("name","institution");
+		$("#ipSegment2").attr("name","ipSegment");
+		var userId=$("#userId1").val();
+		var institution=$("#institution1").val();
+		var ipSegment=$("#ipSegment1").val();
+		$("#userId1").val("");
+		$("#institution1").val("");
+		$("#ipSegment1").val("");
+		$("#userId2").val(userId);
+		$("#institution2").val(institution);
+		$("#ipSegment2").val(ipSegment);
+		$(obj).html("精简查询条件");
+	}
 }

@@ -108,9 +108,12 @@
   
   <!-- 查询机构账号下机构子账号 -->
   <select id="sonAccountNumber" resultMap="BaseResultMap3" parameterType="java.util.Map">
-	select user_id,password,registration_time from user where pid = #{userId} and userType =3
-	<if test="sonId != null and sonId != ''">
-		and user_id = #{sonId}
+	select institution,pid,userType,user_roles,user_realname,user_id,password,registration_time from user where userType =3
+	<if test="pid != null and pid != ''">
+		and pid = #{pid}
+	</if>
+	<if test="userId != null and userId != ''">
+		and user_id = #{userId}
 	</if>
 	<if test="start_time != null and start_time != ''">
 		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[>=]]> DATE_FORMAT(#{start_time},'%y-%c-%d')
@@ -118,7 +121,29 @@
 	<if test="end_time != null and end_time != ''">
 		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[<=]]> DATE_FORMAT(#{end_time},'%y-%c-%d')
 	</if>
-	order by registration_time desc
+	<if test="institution != null and institution != ''">
+		and institution = #{institution}
+	</if>
+	order by registration_time desc limit #{pageNum},#{pageSize}
+  </select>
+  <!-- 查询机构账号下机构子账号 -->
+  <select id="sonAccountNumberCount" resultType="int" parameterType="java.util.Map">
+	select count(1) from user where userType =3
+	<if test="pid != null and pid != ''">
+		and pid = #{pid}
+	</if>
+	<if test="userId != null and userId != ''">
+		and user_id = #{userId}
+	</if>
+	<if test="start_time != null and start_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[>=]]> DATE_FORMAT(#{start_time},'%y-%c-%d')
+	</if>
+	<if test="end_time != null and end_time != ''">
+		and DATE_FORMAT(registration_time,'%y-%c-%d') <![CDATA[<=]]> DATE_FORMAT(#{end_time},'%y-%c-%d')
+	</if>
+	<if test="institution != null and institution != ''">
+		and institution = #{institution}
+	</if>
   </select>
   
   <!-- 通过机构名称查询所属管理员 -->
@@ -139,7 +164,7 @@
   
   <!-- 查询相似机构名称 -->
   <select id="queryInstitution" resultType="java.lang.String" parameterType="java.lang.String">
-	select institution from user where userType = 2 and institution like CONCAT('%',#{institution},'%') limit 0,5
+	select DISTINCT institution from user where userType = 2 and institution like CONCAT('%',#{institution},'%') limit 0,5
   </select>
   
   <!-- 通过主键ID查询用户信息 -->
@@ -198,7 +223,7 @@
  </update>
  
   <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
-   select u.user_id,u.password,u.admin_email from user u WHERE u.user_id = #{pid}
+   select u.user_id,u.password,u.admin_email,institution from user u WHERE u.user_id = #{pid}
   </select>
   
  <update id="updateAllInstitution" parameterType="java.util.Map">
@@ -232,48 +257,25 @@
  <select id="findListIns" resultMap="BaseResultMap2">
    select user_id,institution from user WHERE userType =2
  </select>
- 
- <select id="findListInfo" resultMap="BaseResultMap2" parameterType="java.util.Map">
-   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-    from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-        and ((u.user_id = #{userId} and u.userType = 2) or
-        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
-        (u.pid = #{userId} and u.userType = 2))
-    </if>
-	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and u.userType =2  
-	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
-	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and u.userType =2
-	</if>
-	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
-  </select>
   
-  <select id="findListCount" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u WHERE 1=1
-    <if test="userId !=null and userId !=''"><!-- 精确查询 -->
-        and ((u.user_id = #{userId} and u.userType = 2) or
-        (u.user_id = (select pid from user where user_id = #{userId} and userType = 3)) or
-        (u.pid = #{userId} and u.userType = 2))
+   <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map" >
+   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,u.extend from user u
+    <if test="ginfo !=null">
+    	inner join GroupInfo info on u.user_id=info.Userid
     </if>
-	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and userType =2  
-	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
-	</if>
-	<if test="adminname != null and adminname != ''">
-		and u.pid = #{adminname} and userType =2
-	</if>
-  </select>
-  
-   <select id="findListInfoSimp" resultMap="BaseResultMap2" parameterType="java.util.Map">
-   select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze
-    from user u WHERE 1=1
+    <if test="mapping !=null and mapping !=''">
+    	inner join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    </if>
+    <if test="resource !=null and resource !=''">
+		inner join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
+    </if>
+    <if test="tongji != null and tongji != ''">
+		inner join user_institution ins on u.user_id=ins.user_id
+    </if>
+    <if test="Subaccount != null and Subaccount!= ''">
+		inner join user_account_restriction res on u.user_id=res.user_id
+    </if>
+     WHERE 1=1
     <if test="userId !=null and userId !=''">
     	and u.user_id = #{userId}
     </if>
@@ -281,16 +283,56 @@
     	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and u.userType =2  
+		and u.institution like CONCAT('%',#{institution},'%') and u.userType =2  
 	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
+	<if test="ipstart != null and ipstart != ''">
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipstart} and up.end_ip_address_number <![CDATA[>=]]>#{ipend}) and u.userType =2
 	</if>
-	GROUP BY u.user_id order by u.login_mode limit #{pageNum},#{pageSize}
+    <if test="mapping !=null and mapping !=''">
+    	and wf.relatedid_accounttype=#{mapping}
+    </if>
+    <if test="admin != null and admin!= ''">
+		and u.pid is not null and u.pid!=''
+    </if>
+    <if test="tongji != null and tongji!= ''">
+		and ins.statistical_analysis like '%1%'
+    </if>
+    <if test="Subaccount != null and Subaccount!= ''">
+		and res.user_id is not null
+    </if>
+    <if test="Organization != null and Organization !=''">
+		and info.Organization=#{Organization}
+    </if>
+    <if test="PostCode != null and PostCode !=''">
+		and info.PostCode=#{PostCode}
+    </if>
+    <if test="OrderType != null and OrderType !=''">
+		and info.OrderType=#{OrderType}
+    </if>
+    <if test="OrderContent != null and OrderContent !=''">
+		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
+    </if>
+	order by u.login_mode ASC,u.is_freeze DESC limit #{pageNum},#{pageSize}
   </select>
   
   <select id="findListCountSimp" resultType="int" parameterType="java.util.Map">
-	select count(1) from user u WHERE 1=1
+	select count(1) from user u 
+	<if test="ginfo !=null">
+    	inner join GroupInfo info on u.user_id=info.Userid
+    </if>
+    <if test="mapping !=null and mapping !=''">
+    	inner join wfks_accountid_mapping wf on u.user_id= wf.id_key
+    </if>
+    <if test="resource !=null and resource !=''">
+		inner join (select DISTINCT user_id from wfks_pay_channel_resources where pay_channelId=#{resource}) pay on u.user_id=pay.user_id
+    </if>
+    <if test="tongji != null and tongji != ''">
+		inner join user_institution ins on u.user_id=ins.user_id
+    </if>
+    <if test="Subaccount != null and Subaccount!= ''">
+		inner join user_account_restriction res on u.user_id=res.user_id
+    </if>
+	WHERE 1=1
     <if test="userId !=null and userId !=''">
     	and u.user_id = #{userId}
     </if>
@@ -298,11 +340,35 @@
     	and u.pid = #{pid}
     </if>
 	<if test="institution != null and institution != ''"><!-- 模糊查询 -->
-		and u.institution like #{institution} and userType =2  
+		and u.institution like CONCAT('%',#{institution},'%') and userType =2  
 	</if>
-	<if test="ipSegment != null and ipSegment != ''">
-		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipSegment} and up.end_ip_address_number <![CDATA[>=]]>#{ipSegment}) and u.userType =2
+	<if test="ipstart != null and ipstart != ''">
+		and u.user_id in(select user_id from user_ip up where up.begin_ip_address_number <![CDATA[<=]]>#{ipstart} and up.end_ip_address_number <![CDATA[>=]]>#{ipend}) and u.userType =2
 	</if>
+    <if test="mapping !=null and mapping !=''">
+    	and wf.relatedid_accounttype=#{mapping}
+    </if>
+    <if test="admin != null and admin!= ''">
+		and u.pid is not null and u.pid!=''
+    </if>
+    <if test="tongji != null and tongji!= ''">
+		and ins.statistical_analysis like '%1%'
+    </if>
+    <if test="Subaccount != null and Subaccount!= ''">
+		and res.user_id is not null
+    </if>
+    <if test="Organization != null and Organization !=''">
+		and info.Organization=#{Organization}
+    </if>
+    <if test="PostCode != null and PostCode !=''">
+		and info.PostCode=#{PostCode}
+    </if>
+    <if test="OrderType != null and OrderType !=''">
+		and info.OrderType=#{OrderType}
+    </if>
+    <if test="OrderContent != null and OrderContent !=''">
+		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
+    </if>
   </select>
   
   <select id="findUserById" resultMap="BaseResultMap2" parameterType="java.lang.String">
@@ -315,10 +381,10 @@
   </select>
     
   <select id="getAllInstitutional" resultMap="BaseResultMap" resultType="java.lang.String">
-  	select user_id,institution from user where userType=1
-  	<if test="null!=institution and ''!=institution">
-  		and institution = #{institution}
-  	</if>
+  	select user_id,institution from user where <if test="institution != null and institution !=''">institution = #{institution} and </if>userType=1
+  </select>
+   <select id="findInstitutionAllUser" resultMap="BaseResultMap" resultType="java.lang.String">
+  	select user_id,institution,userType from user where (userType=1 or userType=2) AND institution = #{institution}
   </select>
   
   <select id="getUserTypeByUserId"  resultType="java.lang.String">

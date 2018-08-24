@@ -11,4 +11,8 @@ public interface UserAccountRestrictionMapper {
     int insert(UserAccountRestriction record);
     
     int update(UserAccountRestriction record);
+    int updateAccount(UserAccountRestriction record);
+    
+    UserAccountRestriction getAccountRestriction(String userId);
+    
 }

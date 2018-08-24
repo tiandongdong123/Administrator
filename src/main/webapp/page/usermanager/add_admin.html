@@ -12,9 +12,12 @@
 <script type="text/javascript" src="../page/usermanager/js/public.js"></script>
 <script type="text/javascript" src="../page/usermanager/js/validation_user.js"></script>
 <script type="text/javascript">
-
-
-	function addOrUpateAdminInfo(){
+	//关闭弹出层
+	function cancelAdmin(){
+		 parent.layer.closeAll();
+	}
+	//新增机构管理员
+	function addAdmin(){
 		var adminname = $("#adminname").val().trim();
 		var adminpassword = $("#adminpassword").val().trim();
 		var adminEmail = $("#adminEmail").val().trim();
@@ -34,10 +37,21 @@
 					"userId" : $("#userId").val(),
 					"institution" : $("#institution").val(),
 					"managerType" : $("input[name='managerType']:checked").val(),
-					"adminOldName" : $("#adminOldName").val()
+					"adminOldName" : $("#adminOldName").val(),
+					"adminname" : $("#adminname").val(),
+					"adminpassword" : $("#adminpassword").val(),
+					"adminIP" : $("#adminIP").val(),
+					"adminEmail" : $("#adminEmail").val(),
+					"checks" : $("#checks").val(),
+					"upperlimit" : $("#upperlimit").val(),
+					"sConcurrentnumber" : $("#sConcurrentnumber").val(),
+					"downloadupperlimit" : $("#downloadupperlimit").val(),
+					"chargebacks" : $("#chargebacks").val(),
+					"tongji" : $("#tongji").val()
 				},
 				beforeSend: function(){
 					$("#submit").attr({disabled: "disabled"});
+					$("#submit1").attr({disabled: "disabled"});
 				},
 				success: function(data){
 				   if(data == "true"){
@@ -47,13 +61,13 @@
 				   }else{
 					   layer.msg('操作失败', {icon: 2});
 				   }
-				   //window.close();
 				   if(data == "true"){
 					   window.parent.findList();
 				   }
 				},
 				complete: function(){
 					$("#submit").removeAttr("disabled");
+					$("#submit1").removeAttr("disabled");
 				}
 			});
 		}
@@ -66,42 +80,76 @@
           <input type="hidden" id="userId" value="${userId}">
           <input type="hidden" id="institution" value="${institution}">
           <form id="fromList" method="post">
-          
-	          <div class="form-group input_block">
-              		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
-              		<input type="radio" name="managerType" value="old"  onclick="radioClick('update');"/>选择已有管理员
-                  	<input type="radio" checked="checked" name="managerType" value="new" onclick="radioClick();"/>创建新管理员
-	         </div>
-          	<div id="newManager">
-          		<div id="administrator">
-                <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-                  <input type="text" class="form-control input_width" name="adminname" id="adminname" <?if(flag=='1'){?>readonly="readonly"<?}?> value="${map.userId!}">
+          <div class="box-body">
+				<div class="form-group input_block">
+					<label class="input_name" style="width:25%">机构名称 </label>
+					<input type="text" class="form-control input_width" value="${institution}" disabled>
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
+					<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
+					<input type="radio" name="managerType" value="old" onclick="radioClick();"/>选择已有机构管理员
+				</div>
+				<div id="oldManager" class="form-group input_block" style="display: none;">
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
+					<select class="form-control input_width" name="adminOldName" id="adminOldName" onchange="getAdmin(this);">
+						<option value="">-请选择管理员ID-</option>
+					</select>
+				</div>
+               	<div id="newManager" class="form-group input_block">
+                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员ID</label>
+                  <input type="text" class="form-control input_width" name="adminname" id="adminname" onfocus="input_onfocus(this);"/>
                 </div>
-                <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员密码</label>
-                  <input type="text" class="form-control input_width" name="adminpassword" id="adminpassword" value="${map.password!}">
-                </div>
-                <div class="form-group input_block">
-                  <label class="input_name">管理员IP段</label>
-                  <textarea class="form-control input_width" style="margin: 0px; width: 324px; height: 215px;" rows="3" name="adminIP" id="adminIP"><?if(!isEmpty(map.adminIP)){?><?for(ip in map.adminIP){?>${ip.beginIpAddressNumber}-${ip.endIpAddressNumber}&#13;&#10;<?}?><?}?></textarea>
-                </div>
-                <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员邮箱</label>
-                  <input type="text" class="form-control input_width" name="adminEmail" id="adminEmail" value="${map.adminEmail!}">
-                </div>
-             </div>
-          </div>
-         <div class="form-group input_block" id="oldManager" style="display: none;">
-          <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员ID</label>
-          <select class="form-control input_width" name="adminOldName" id="adminOldName">
-			<option value="">-请选择管理员ID-</option>
-          </select>
-         </div>
+				<div class="form-group input_block">
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员密码</label>
+					<input type="text" class="form-control input_width" name="adminpassword" id="adminpassword">
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>机构管理员邮箱</label>
+					<input type="text" class="form-control input_width" name="adminEmail" id="adminEmail">
+				</div>
+				<div class="form-group input_block">
+					<label class="input_name" style="width:25%">机构管理员IP段</label>
+					<input type="text" class="form-control input_width" name="adminIP" id="adminIP">
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
+				</div>
+				<div style="display: none;" id="sconcurrent_div">
+					<div class="form-group input_block">
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
+						<input type="text" class="form-control input_width" id="upperlimit" name="upperlimit" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号并发数上限</label>
+						<input type="text" class="form-control input_width" id="sConcurrentnumber" name="sConcurrentnumber" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>子账号下载量上限/天</label>
+						<input type="text" class="form-control input_width" id="downloadupperlimit" name="downloadupperlimit" maxlength="9">
+					</div>
+					<div class="form-group input_block">
+						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子账号扣款模式</label>
+						<select class="form-control input_width" name="chargebacks" id="chargebacks">
+							<option value="0">从机构账号扣款</option>
+						</select>
+					</div>
+				</div>
+				<div class="checkbox input_block block_left">
+					<label><input type="checkbox" id="checktongji">开通统计分析</label>
+				</div>
+				<div class="form-group input_block" style="display: none;" id="tongjiDiv">
+					<input type="hidden" name="tongji" id="tongji" value="">
+					<label class="input_name" style="width:25%">功能模块</label>
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="all">全部&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="database_statistics">数据库使用统计&nbsp;&nbsp;
+					<input type="checkbox" id="statistics" onclick="checkTj(this)" value="resource_type_statistics">资源类型使用统计&nbsp;&nbsp;
+				</div>
+			</div>
         </form>
 		<div class="block_left">
-		  <button type="button" class="btn btn-primary" id="submit" onclick="addOrUpateAdminInfo();">提交</button>
-		  <button type="button" class="btn btn-primary" onclick="location=location;">重置</button>
+		  <button type="button" class="btn btn-primary" id="submit" onclick="addAdmin();">确认</button>
+		  <button type="button" class="btn btn-primary" id="submit1" onclick="cancelAdmin();">取消</button>
 		</div>
         </div>
         </div>

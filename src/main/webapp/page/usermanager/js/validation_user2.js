@@ -1,5 +1,4 @@
 $(function() {/* 文档加载，执行一个函数 */
-
 	$('#fromList').bootstrapValidator({
 		message : 'This value is not valid',
 		feedbackIcons : {/* input状态样式图片 */
@@ -30,27 +29,6 @@ $(function() {/* 文档加载，执行一个函数 */
                     }
 				}
 			},
-			PostCode: {
-				validators : {
-					notEmpty : {
-						message : '地区不能为空，请选择地区'
-					}
-				}
-			},
-			Organization: {
-				validators : {
-					notEmpty : {
-						message : '机构类型不能为空，请选择机构类型'
-					}
-				}
-			},
-			OrderContent:{
-				validators : {
-					notEmpty : {
-						message : 'CRM工单号不能为空，请填写CRM工单号'
-					}
-				}
-			},
 			password: {
 				validators : {
 					notEmpty : {
@@ -69,13 +47,6 @@ $(function() {/* 文档加载，执行一个函数 */
 						message : '账号IP段不能为空，请填写规范的IP段'
 					}
 				}
-			},
-			resourcePurchaseType: {
-                validators: {
-                    notEmpty: {
-                        message: '购买项目不能为空，请选择购买项目'
-                    }
-                }
 			},
 			file: {
                 validators: {
@@ -129,28 +100,6 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-            openBindStart:{
-                enabled: false
-			},
-            openBindEnd:{
-                message : '请选择日期',
-                validators : {
-                    callback:{
-                        callback:function(value,validator){
-                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
-                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
-                        	if(!startDay){
-                        		return false;
-							}
-                            if(!endDay){
-                                return false;
-                            }
-							return true;
-                        }
-                    }
-                }
-
-            },
 			pullDepartment:{
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -199,6 +148,13 @@ $(function() {/* 文档加载，执行一个函数 */
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '个人继承权限不能为空，请选择权限'
+					},
+				}
+			},
+			bindType:{
+				validators : {
+					notEmpty : {/*非空提示*/
+						message : '请输入绑定模式'
 					},
 				}
 			},
@@ -303,23 +259,4 @@ $(function() {/* 文档加载，执行一个函数 */
 			},
 		}
 	})
-<<<<<<< HEAD
-	
-=======
->>>>>>> origin/master
-    $('#fromList').bootstrapValidator('removeField','email');
-    $('#openBindStart').mousedown(function(){
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
-    })
-    $('#openBindEnd').mousedown(function(){
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
-    })
 });
-
-function fieldsCheck() {
-	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
-	bootstrapValidator.validate();
-	return (bootstrapValidator.isValid());
-}

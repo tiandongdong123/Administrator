@@ -1,0 +1,39 @@
+.arar select{
+	width: 300px;
+	height: 30px;
+}
+.arar input{
+	height: 30px;
+	width: 300px;
+}
+.alal{
+	text-align: right;
+}
+.arar{
+	text-align: left;
+}
+#message1{
+	margin-left: 50px;
+}
+#message1 td{
+	padding-left: 15px;
+	padding-top: 10px;
+}
+#message1 select{
+	padding: 2px 2px 2px 4px;
+}
+
+#message2{
+	margin-left: 50px;
+}
+#message2 td{
+	padding-left: 15px;
+	padding-top: 10px;
+}
+#message2 select{
+	padding: 2px 2px 2px 4px;
+}
+.table th, .table td {
+text-align: center;
+vertical-align: middle!important;
+}

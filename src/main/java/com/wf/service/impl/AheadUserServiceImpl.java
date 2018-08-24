@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -39,6 +42,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.account.AccountDao;
@@ -81,11 +86,10 @@ import com.wanfangdata.rpc.bindauthority.SearchBindDetailsResponse;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wanfangdata.setting.BindAuthorityMapping;
 import com.webservice.WebServiceUtils;
-import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.BindAuthorityViewModel;
-import com.wf.bean.CommonEntity;
+import com.wf.bean.GroupInfo;
+import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Mail;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
@@ -94,7 +98,6 @@ import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserAccountRestriction;
-import com.wf.bean.UserBoughtItems;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -105,15 +108,14 @@ import com.wf.bean.WfksUserSetting;
 import com.wf.bean.WfksUserSettingKey;
 import com.wf.controller.GroupAccountUtil;
 import com.wf.dao.AheadUserMapper;
-import com.wf.dao.AuthoritySettingMapper;
 import com.wf.dao.DatamanagerMapper;
+import com.wf.dao.GroupInfoMapper;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.ProjectBalanceMapper;
 import com.wf.dao.ProjectResourcesMapper;
 import com.wf.dao.ResourcePriceMapper;
 import com.wf.dao.StandardUnitMapper;
 import com.wf.dao.UserAccountRestrictionMapper;
-import com.wf.dao.UserBoughtItemsMapper;
 import com.wf.dao.UserInstitutionMapper;
 import com.wf.dao.UserIpMapper;
 import com.wf.dao.WfksAccountidMappingMapper;
@@ -137,61 +139,38 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 	@Autowired
 	private AheadUserMapper aheadUserMapper;
-	
 	@Autowired
 	private PersonMapper personMapper;
-	
 	@Autowired
 	private AccountDao accountDao;
-	
 	@Autowired
 	private ProjectBalanceMapper projectBalanceMapper;
-	
 	@Autowired
 	private ProjectResourcesMapper projectResourcesMapper;
-	
 	@Autowired
 	private ResourcePriceMapper resourcePriceMapper;
-	
 	@Autowired
 	private UserIpMapper userIpMapper;
-	
 	@Autowired
 	private UserAccountRestrictionMapper userAccountRestrictionMapper;
-	
 	@Autowired
 	private DatamanagerMapper datamanagerMapper;
-	
 	@Autowired
 	private WfksPayChannelResourcesMapper wfksMapper;
-	
 	@Autowired
 	private WfksAccountidMappingMapper wfksAccountidMappingMapper;
-	
 	@Autowired
 	private WfksUserSettingMapper wfksUserSettingMapper;
-	
-	@Autowired
-	private AuthoritySettingMapper authoritySettingMapper;
-	
 	@Autowired
 	private StandardUnitMapper standardUnitMapper;
 	@Autowired
 	private UserInstitutionMapper userInstitutionMapper;
 	@Autowired
-	UserBoughtItemsMapper userBoughtItemsMapper;
-	/**
-	 * 机构操作类
-	 * */
+	private GroupInfoMapper groupInfoMapper;
 	@Autowired
-	private GroupAccountUtil groupAccountUtil;
-	
-	/**
-	 * 用来获取ip
-	 * */
+	private GroupAccountUtil groupAccountUtil;//机构操作类
 	@Autowired
-	private HttpServletRequest httpRequest;
-	
+	private HttpServletRequest httpRequest;//用来获取ip
 	/**
 	 * 个人修改接口
 	 * */
@@ -203,7 +182,200 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private BindAccountChannel  bindAccountChannel;
 	@Autowired
 	private BindAuthorityMapping bindAuthorityMapping;
+	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean registerInfo(InstitutionalUser user) {
+		// 添加机构名称
+		this.addRegisterInfo(user);
+		// 添加用户IP
+		if (user.getLoginMode().equals("0") || user.getLoginMode().equals("2")) {
+			this.addUserIp(user);
+		}
+		// 机构子账号限定
+		this.setAccountRestriction(user,true);
+		// 添加党建管理员
+		this.setPartyAdmin(user);
+		// 添加机构管理员
+		this.addAdmin(user);
+		// 统计分析权限
+		this.addUserIns(user);
+		// 开通用户角色
+		this.addWfksAccountidMapping(user);
+		// 开通用户权限
+		this.addGroupInfo(user);
+		return true;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean updateinfo(InstitutionalUser user) {
+		// 修改机构名称
+		this.updateUserInfo(user);
+		//修改用户IP
+		if (user.getLoginMode().equals("0") || user.getLoginMode().equals("2")) {
+			this.updateUserIp(user);
+		} else {
+			this.deleteUserIp(user.getUserId());
+		}
+		// 机构子账号限定
+		this.setAccountRestriction(user,true);
+		// 党建管理员
+		this.setPartyAdmin(user);
+		// 机构管理员
+		this.addAdmin(user);
+		// 统计分析权限
+		this.addUserIns(user);
+		// 用户权限
+		this.addWfksAccountidMapping(user);
+		// 开通用户权限
+		this.addGroupInfo(user);
+		//修改机构名称
+		if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
+			this.updateInstitution(user.getInstitution(),user.getOldInstitution());
+		}
+		return true;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean batchRegisterInfo(InstitutionalUser user,Map<String,Object> map) {
+		// 添加机构名称
+		this.addRegisterInfo(user);
+		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
+		if ("2".equals(user.getLoginMode())) {
+			String ip=(String) map.get("ip");
+			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+			user.setIpSegment(ip);
+			this.updateUserIp(user);
+		}
+		// 机构子账号限定
+		this.setAccountRestriction(user,true);
+		// 添加机构管理员
+		this.addAdmin(user);
+		//统计分线权限
+		this.addUserIns(user);
+		// 开通用户角色
+		this.addWfksAccountidMapping(user);
+		// 开通用户权限
+		this.addGroupInfo(user);
+		return true;
+	}
 
+	@Transactional(propagation = Propagation.REQUIRED , readOnly = false)
+	@Override
+	public boolean batchUpdateInfo(InstitutionalUser user,Map<String,Object> map) {
+		//默认用户的各种设置
+		this.setDefaultUser(user, map);
+		// 更新机构名称
+		this.updateUserInfo(user);
+		// 添加用户IP 批量的登录方式(用户密码、用户密码+IP)
+		if ("2".equals(user.getLoginMode())) {
+			String ip=(String) map.get("ip");
+			ip=ip.replace("\r\n", "\n").replace("\n", "\r\n");
+			if(!StringUtils.isEmpty(ip)){
+				user.setIpSegment(ip);
+				this.updateUserIp(user);
+			}
+		}else{
+			this.deleteUserIp(user.getUserId());
+		}
+		// 机构子账号限定
+		if (user.getpConcurrentnumber() != null || user.getsConcurrentnumber() != null) {
+			this.setAccountRestriction(user,false);
+		}
+		// 添加机构管理员
+		if (!StringUtils.isEmpty(user.getAdminname())
+				|| !StringUtils.isEmpty(user.getAdminOldName())) {
+			if(!StringUtils.isEmpty(user.getAdminpassword())){
+				this.addAdmin(user);
+			}
+		}
+		// 统计分线权限
+		if (!StringUtils.isEmpty(user.getTongji())) {
+			this.addUserIns(user);
+		}
+		// 开通用户角色
+		this.updateWfksAccountidMapping(user);
+		// 开通用户权限
+		this.setGroupInfo(user);
+		return false;
+	}
+	
+	// 修改开通用户权限 没有就是默认不修改
+	private void setGroupInfo(InstitutionalUser user) {
+		GroupInfo groupInfo = this.getGroupInfo(user.getUserId());
+		if (!StringUtils.isEmpty(user.getOrganization())) {
+			groupInfo.setOrganization(user.getOrganization());
+		}
+		if (!StringUtils.isEmpty(user.getOrderType())&&!StringUtils.isEmpty(user.getOrderContent())) {
+			groupInfo.setOrderType(user.getOrderType());
+			groupInfo.setOrderContent(user.getOrderContent());
+		}
+		if (!StringUtils.isEmpty(user.getCountryRegion())
+				&& !StringUtils.isEmpty(user.getPostCode())) {
+			groupInfo.setCountryRegion(user.getCountryRegion());
+			groupInfo.setPostCode(user.getPostCode());
+		}
+		if (!StringUtils.isEmpty(user.getAdminname())) {
+			groupInfo.setPid(user.getAdminname());
+		} else if (!StringUtils.isEmpty(user.getAdminOldName())) {
+			groupInfo.setPid(user.getAdminOldName());
+		}
+		this.updateGroupInfo(groupInfo);
+	}
+	
+	//用户保持默认设置
+	private void setDefaultUser(InstitutionalUser user,Map<String,Object> map){
+		String userId=map.get("userId").toString();
+		String institution=map.get("institution")==null?"":map.get("institution").toString();
+		String password=map.get("password")==null?"":map.get("password").toString();
+		Person ps = this.queryPersonInfo(userId);
+		// Excel表格中部分账号信息
+		if (!StringUtils.isEmpty(institution)) {
+			user.setInstitution(institution);
+		} else {
+			user.setInstitution(ps.getInstitution());
+		}
+		if (!StringUtils.isEmpty(password)) {
+			user.setPassword(password);
+		} else {
+			try {
+				user.setPassword(PasswordHelper.decryptPassword(ps.getPassword()));
+			} catch (Exception e) {
+				log.error("密码转化异常", e);
+			}
+		}
+		if (StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())) {
+			if(StringUtils.equals(institution, ps.getInstitution())){
+				user.setAdminname(ps.getPid());
+			}
+		}
+		user.setUserId(userId);
+	}
+	
+	//添加机构管理员
+	private void addAdmin(InstitutionalUser user){
+		if (StringUtils.isEmpty(user.getManagerType())) {
+			return;
+		}
+		if("new".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminname())||
+				"old".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminOldName())){
+			return;
+		}
+		String adminId = user.getManagerType().equals("new") ? user.getAdminname() : user
+				.getAdminOldName();
+		Person per=this.queryPersonInfo(adminId);
+		if(per!=null){
+			this.updateRegisterAdmin(user);
+		}else{
+			this.addRegisterAdmin(user);
+		}
+		this.deleteUserIp(adminId);
+		if(StringUtils.isNotBlank(user.getAdminIP())){
+			this.addUserAdminIp(user);
+		}
+	}
 
 	/**
      * 调用接口验证老平台用户是否存在 
@@ -338,7 +510,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int addRegisterInfo(CommonEntity com){
+	public int addRegisterInfo(InstitutionalUser com){
 		//机构账号注册
 		Person p = new Person();
 		p.setUserId(com.getUserId());
@@ -354,16 +526,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			e.printStackTrace();
 		}
 		p.setUsertype(2);
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){	
-			if(com.getManagerType().equals("new")){
-				p.setPid(com.getAdminname());
-			}else{
-				if(com.getAdminOldName().indexOf("/")!=-1){
-					p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
-				}else{
-					p.setPid(com.getAdminOldName());
-				}
-			}
+		if(StringUtils.isNotBlank(com.getAdminname())){
+			p.setPid(com.getAdminname());
+		}else if(StringUtils.isNotBlank(com.getAdminOldName())){
+			p.setPid(com.getAdminOldName());
+		}else{
+			p.setPid("");
 		}
 		p.setIsFreeze(2);
 		p.setRegistrationTime(DateUtil.getStringDate());
@@ -371,7 +539,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addRegisterAdmin(CommonEntity com){
+	public int addRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
 		per.setUserId(com.getAdminname());
@@ -390,10 +558,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateRegisterAdmin(CommonEntity com){
+	public int updateRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
-		per.setUserId(com.getAdminname());
+		if(!StringUtils.isEmpty(com.getAdminname())){
+			per.setUserId(com.getAdminname());
+		}else if(!StringUtils.isEmpty(com.getAdminOldName())){
+			per.setUserId(com.getAdminOldName());
+		}else{
+			return 0;
+		}
+		
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 		} catch (Exception e) {
@@ -405,14 +580,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public void addUserAdminIp(CommonEntity com){
-		String[] arr_ip = com.getAdminIP().split("\r\n");
+	public void addUserAdminIp(InstitutionalUser com){
+		String[] arr_ip = com.getAdminIP().replace("\r\n", "\n").split("\n");
 		int index=0;
 		for(String ip : arr_ip){
 			if(ip.contains("-")){
 				UserIp userIp = new UserIp();
 				userIp.setId(GetUuid.getId());
-				userIp.setUserId(com.getAdminname());
+				if(!StringUtils.isEmpty(com.getAdminname())){
+					userIp.setUserId(com.getAdminname());
+				}else if(!StringUtils.isEmpty(com.getAdminOldName())){
+					userIp.setUserId(com.getAdminOldName());
+				}
 				userIp.setBeginIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-"))));
 				userIp.setEndIpAddressNumber(IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length())));
 				userIp.setSort(index++);
@@ -422,19 +601,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int addAccountRestriction(CommonEntity com){
-		UserAccountRestriction acc = new UserAccountRestriction();
-		acc.setUserId(com.getUserId());
-		acc.setUpperlimit(com.getUpperlimit());
-		acc.setChargebacks(com.getChargebacks());
-		acc.setDownloadupperlimit(com.getDownloadupperlimit());
-		acc.setpConcurrentnumber(com.getpConcurrentnumber());
-		acc.setsConcurrentnumber(com.getsConcurrentnumber());
-		return userAccountRestrictionMapper.insert(acc);
-	}
-	
-	@Override
-	public int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId)
+	public int deleteAccount(InstitutionalUser com, ResourceDetailedDTO dto, String adminId)
 			throws Exception {
 		
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
@@ -454,90 +621,69 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return flag;
 	}
-	
 	@Override
-	public int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		//创建一个余额账户
-		BalanceLimitAccount account = new BalanceLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-		boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId, false);
-		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+	public int deleteChangeAccount(InstitutionalUser com, String adminId)throws Exception {
+		String channelId=com.getChangeFront();
+		Date beginDateTime=null;
+		Date endDateTime=null;
+		if ("GBalanceLimit".equals(channelId)) {
+    		wfks.accounting.handler.entity.BalanceLimitAccount infer = (wfks.accounting.handler.entity.BalanceLimitAccount)
+	    		accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
+    		if(infer==null){
+    			return 0;
+    		}
+    		beginDateTime=infer.getBeginDateTime();
+    		endDateTime=infer.getEndDateTime();
+		} else if ("GTimeLimit".equals(channelId)) {
+        	wfks.accounting.handler.entity.TimeLimitAccount infer = (wfks.accounting.handler.entity.TimeLimitAccount)
+            	accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
+    		if(infer==null){
+    			return 0;
+    		}
+    		beginDateTime=infer.getBeginDateTime();
+    		endDateTime=infer.getEndDateTime();
 		}
-		return flag;
+		UserAccount account = new UserAccount();
+		account.setUserId(com.getUserId());
+		account.setPayChannelId(channelId);
+		account.setOrganName(com.getInstitution());
+		account.setBeginDateTime(beginDateTime);
+		account.setEndDateTime(endDateTime);
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId);
+		return isSuccess?1:0;
 	}
 	
 	@Override
-	public int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
-			return 1;
-		}
-		// 创建一个限时账户
-		TimeLimitAccount account = new TimeLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-		boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId);//提交注册或充值请求
+	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+			if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
+					&& StringUtils.isEmpty(com.getChangeFront())) {
+				return 1;
+			}
+			
+			// 创建一个限时账户
+			TimeLimitAccount account = new TimeLimitAccount();
+			account.setUserId(com.getUserId());// 机构用户名
+			account.setOrganName(com.getInstitution());// 机构名称
+			account.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
+			// 根据token可获取管理员登录信息
+			// String authToken = "Admin."+adminId;
+			// 调用添加注册余额限时账户方法
+			// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
+			boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId);//提交注册或充值请求
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("添加时异常：",e);
 		}
-		return flag;
-	}
-	
-	@Override
-	public int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-		
-		// 创建一个次数账户
-		CountLimitAccount account = new CountLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));// 失效时间，可以精确到秒
-		account.setBalance(dto.getPurchaseNumber());// 充值次数
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用添加注册余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息，userIP，auto_token
-        boolean isSuccess = groupAccountUtil.addCountLimitAccount(null, account, httpRequest.getRemoteAddr(), adminId,false);
-        int flag = 0;
-		if (isSuccess) {
-        	flag = 1;
-        } else {
-        	flag = 0;
-        }
 		return flag;
 	}
 	
@@ -547,46 +693,48 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @throws Exception
      */
 	@Override
-	public int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
-    	
-    	if(dto.getPurchaseNumber()==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
-    		return 1;
-    	}
-		// 需要更新的数据
-		CountLimitAccount count = new CountLimitAccount();
-		count.setUserId(com.getUserId());// 机构用户名
-		count.setOrganName(com.getInstitution());// 机构名称
-		count.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		count.setBalance(dto.getPurchaseNumber());
-		// 是否重置次数
-		boolean resetCount = false;
-		CountLimitAccount before = null;
-		if (StringUtils.isNotBlank(com.getResetCount())) {
-	    	wfks.accounting.handler.entity.CountLimitAccount oldNum = (wfks.accounting.handler.entity.CountLimitAccount)
-    	    	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-	    	if(oldNum!=null){
-	    		//更新前的数据
-	    		before = new CountLimitAccount();
-	    		before.setUserId(com.getUserId());//机构用户名
-	    		before.setOrganName(com.getInstitution());//机构名称
-	    		before.setPayChannelId(oldNum.getPayChannelId());//支付渠道id
-	    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
-	    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
-	    		before.setBalance(oldNum.getBalance());//充值次数
-	    	}
-	    	resetCount = true;
-		}
-        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+	    	if(NumberUtils.toInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
+					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
+	    		return 1;
+	    	}
+			// 需要更新的数据
+			CountLimitAccount count = new CountLimitAccount();
+			count.setUserId(com.getUserId());// 机构用户名
+			count.setOrganName(com.getInstitution());// 机构名称
+			count.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			count.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			count.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			count.setBalance(NumberUtils.toInt(dto.getPurchaseNumber()));
+			// 是否重置次数
+			boolean resetCount = false;
+			CountLimitAccount before = null;
+			if (StringUtils.isNotBlank(com.getResetCount())) {
+		    	wfks.accounting.handler.entity.CountLimitAccount oldNum = (wfks.accounting.handler.entity.CountLimitAccount)
+	    	    	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+		    	if(oldNum!=null){
+		    		//更新前的数据
+		    		before = new CountLimitAccount();
+		    		before.setUserId(com.getUserId());//机构用户名
+		    		before.setOrganName(com.getInstitution());//机构名称
+		    		before.setPayChannelId(oldNum.getPayChannelId());//支付渠道id
+		    		before.setBeginDateTime(oldNum.getBeginDateTime());//生效时间，可以精确到秒
+		    		before.setEndDateTime(oldNum.getEndDateTime());//失效时间，可以精确到秒
+		    		before.setBalance(oldNum.getBalance());//充值次数
+		    		resetCount = true;
+		    	}
+			}
+	        boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("修改限次异常：",e);
 		}
 		return flag;
     }
@@ -595,96 +743,81 @@ public class AheadUserServiceImpl implements AheadUserService{
      * 为机构余额账户充值
      */
 	@Override
-	public int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId)
-			throws Exception {
+	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		
-		if (dto.getTotalMoney() == 0
+		if (NumberUtils.toDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
 			return 1;
 		}
-		// 需要更新的数据
-		BalanceLimitAccount account = new BalanceLimitAccount();
-		account.setUserId(com.getUserId());// 机构用户名
-		account.setOrganName(com.getInstitution());// 机构名称
-		account.setPayChannelId(dto.getProjectid());// 支付渠道id
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
-		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
-		account.setBalance(BigDecimal.valueOf(dto.getTotalMoney()));
-		// 根据token可获取管理员登录信息
-		// String authToken = "Admin."+adminId;
-		// 调用注册或充值余额限时账户方法
-		// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
-		// 第二个参数起传递账户信息，userIP，auto_token
-		// 是否重置金额
-		boolean resetMoney = false;
-		BalanceLimitAccount before = null;
-		if (StringUtils.isNotBlank(com.getResetMoney())) {
-    		wfks.accounting.handler.entity.BalanceLimitAccount oldBlance = (wfks.accounting.handler.entity.BalanceLimitAccount)
-    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
-            if(oldBlance!=null){
-            	//更新前信息
-            	before = new BalanceLimitAccount();
-            	before.setUserId(com.getUserId());//机构用户名
-            	before.setOrganName(com.getInstitution());//机构名称
-            	before.setPayChannelId(oldBlance.getPayChannelId());//支付渠道id
-            	before.setBeginDateTime(oldBlance.getBeginDateTime());
-            	before.setEndDateTime(oldBlance.getEndDateTime());
-            	before.setBalance(oldBlance.getBalance());
-            }
-			resetMoney = true;
-		}
-        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
 		int flag = 0;
-		if (isSuccess) {
-			flag = 1;
-		} else {
-			flag = 0;
+		try{
+			// 需要更新的数据
+			BalanceLimitAccount account = new BalanceLimitAccount();
+			account.setUserId(com.getUserId());// 机构用户名
+			account.setOrganName(com.getInstitution());// 机构名称
+			account.setPayChannelId(dto.getProjectid());// 支付渠道id
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
+			account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
+			account.setBalance(BigDecimal.valueOf(NumberUtils.toDouble(dto.getTotalMoney())));
+			// 根据token可获取管理员登录信息
+			// String authToken = "Admin."+adminId;
+			// 调用注册或充值余额限时账户方法
+			// 第一个参数如果是充值，就传入充值前的账户信息，如果是注册就传入null
+			// 第二个参数起传递账户信息，userIP，auto_token
+			// 是否重置金额
+			boolean resetMoney = false;
+			BalanceLimitAccount before = null;
+			if (StringUtils.isNotBlank(com.getResetMoney())) {
+	    		wfks.accounting.handler.entity.BalanceLimitAccount oldBlance = (wfks.accounting.handler.entity.BalanceLimitAccount)
+	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
+	            if(oldBlance!=null){
+	            	//更新前信息
+	            	before = new BalanceLimitAccount();
+	            	before.setUserId(com.getUserId());//机构用户名
+	            	before.setOrganName(com.getInstitution());//机构名称
+	            	before.setPayChannelId(oldBlance.getPayChannelId());//支付渠道id
+	            	before.setBeginDateTime(oldBlance.getBeginDateTime());
+	            	before.setEndDateTime(oldBlance.getEndDateTime());
+	            	before.setBalance(oldBlance.getBalance());
+	            	resetMoney = true;
+	            }
+			}
+	        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
+			if (isSuccess) {
+				flag = 1;
+			} else {
+				flag = 0;
+			}
+		}catch(Exception e){
+			log.error("异常：",e);
 		}
 		return flag;
     }
 	
 	@Override
-    public boolean checkLimit(CommonEntity com,ResourceDetailedDTO dto) throws Exception{
+    public Double checkValue(InstitutionalUser com,ResourceDetailedDTO dto) throws Exception{
     	try{
 			if ("balance".equals(dto.getProjectType())) {
-				if (dto.getTotalMoney() == 0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
-					return true;
-				}
 	    		wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)
     	    		accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(dto.getTotalMoney()<=0){
-	    				return false;
-	    			}
-	    			return true;
+	    			return -Double.MAX_VALUE;
 	    		}
-	    		if(account.getBalance().intValue()+dto.getTotalMoney()<0){
-	    			return false;
-	    		}
+	    		return account.getBalance().doubleValue()+NumberUtils.toDouble(dto.getTotalMoney());
 			} else if ("count".equals(dto.getProjectType())) {
-				if (dto.getPurchaseNumber()==0 && StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-						&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
-					return true;
-				}
 	        	wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)
                 	accountDao.get(new AccountId(dto.getProjectid(),com.getUserId()), new HashMap<String,String>());
 	    		if(account==null){
-	    			if(dto.getPurchaseNumber()<=0){
-	    				return false;
-	    			}
-	    			return true;
+	    			return -Double.MAX_VALUE;
 	    		}
-	    		if(account.getBalance()+dto.getPurchaseNumber()<0){
-	    			return false;
-	    		}
+	    		return NumberUtils.toDouble(dto.getPurchaseNumber())+account.getBalance();
 			}
         } catch (Exception e) {
         	e.printStackTrace();
         }
-		return true;
+		return -Double.MAX_VALUE;
     }
     
 	
@@ -693,7 +826,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @如后期无扩展此方法可以与updateProjectResources方法合并优化
      * */
 	@Override
-	public void addProjectResources(CommonEntity com,ResourceDetailedDTO dto){
+	public void addProjectResources(InstitutionalUser com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
 			delUserSetting(dto,com);
@@ -744,7 +877,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @如后期无扩展此方法可以与addProjectResources方法合并优化
      * */
 	@Override
-	public void updateProjectResources(CommonEntity com,ResourceDetailedDTO dto){
+	public void updateProjectResources(InstitutionalUser com,ResourceDetailedDTO dto){
 		List<ResourceLimitsDTO> list = dto.getRldto();
 		if(list!=null){
 			delUserSetting(dto,com);
@@ -772,6 +905,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			prs.setId(GetUuid.getId());
 			prs.setUserId(com.getUserId());
 			prs.setProjectId(dto.getProjectid());
+			prs.setResourceId(null);
+			prs.setContract(null);
+			prs.setProductid(null);
 			projectResourcesMapper.insert(prs);
 		}
 		if(dto.getProjectid().equals("HistoryCheck")){
@@ -796,7 +932,7 @@ public class AheadUserServiceImpl implements AheadUserService{
      * @return 
      * */
 	@Override
-	public void deleteResources(CommonEntity com, ResourceDetailedDTO dto,boolean b){		
+	public void deleteResources(InstitutionalUser com, ResourceDetailedDTO dto,boolean b){		
 		ProjectResources p = new ProjectResources();
 		p.setUserId(com.getUserId());
 		if(!b){			
@@ -809,11 +945,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	/**
+     * 删除购买详情（权限）
+     * @return 
+     * */
+	@Override
+	public void deleteResources(String userId,String projectId){		
+		ProjectResources p = new ProjectResources();
+		p.setUserId(userId);
+		p.setProjectId(projectId);
+		projectResourcesMapper.deleteResources(p);
+	}
+	
+	/**
 	 * 添加标准配置参数
 	 * @param rdto
 	 * @param com
 	 */
-	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, CommonEntity com) {
+	private void addUserSetting(ResourceDetailedDTO detail,ResourceLimitsDTO rdto, InstitutionalUser com) {
 		if (STANDARD.equals(rdto.getResourceid())) {
 			com.alibaba.fastjson.JSONObject obj = getStandard(rdto, com);
 			//查询数据库，验证标准机构是否存在
@@ -891,7 +1039,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param detail
 	 * @param com
 	 */
-	private void delUserSetting(ResourceDetailedDTO detail, CommonEntity com){
+	private void delUserSetting(ResourceDetailedDTO detail, InstitutionalUser com){
 		// 先删除再添加
 		WfksUserSettingKey key=new WfksUserSettingKey();
 		key.setUserType(detail.getProjectid());
@@ -1038,7 +1186,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param dto
 	 * @param com
 	 */
-	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,CommonEntity com){
+	private static com.alibaba.fastjson.JSONObject getStandard(ResourceLimitsDTO dto,InstitutionalUser com){
 		com.alibaba.fastjson.JSONObject obj=null;
 		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(standardtypes.contains("质检出版社")){
@@ -1160,7 +1308,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 *	读取Excel机构账号信息 
 	 */
 	@Override
-	public List<Map<String, Object>> getExcelData(MultipartFile file){
+	public List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,Object> errorMap,List<Map<String,String>> errorList){
 		//用户信息
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		String[] str = null;
@@ -1178,7 +1326,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(row != null){
 						if(rowNum==0){
 							str = ExcelUtil.readExcelTitle(row);
-							continue;
+							if (str.length < 4) {
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "模版文件的列未按照规范排版，请下载标准的模版文件");
+								break;
+							}
+							if(!"机构名称(必填)_institution".equals(str[0])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "机构名称列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"机构ID(必填)_userId".equals(str[1])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "机构ID列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"密码_password".equals(str[2])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "密码列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else if(!"账号IP段_ip".equals(str[3])){
+								errorMap.put("flag", "fail");
+								errorMap.put("fail", "账号IP段列不存在或位置错误，请下载标准的模版文件");
+								break;
+							}else{
+								continue;
+							}
 						}
 						map.put("institution", ExcelUtil.getValue(row.getCell(0)).trim());
 						map.put("userId", ExcelUtil.getValue(row.getCell(1)).trim());
@@ -1187,24 +1358,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 						List<Map<String, String>> li = new ArrayList<Map<String, String>>();
 						for(int i = 3; i < str.length; i++){
 							Map<String,String> m = new HashMap<String, String>();
-							if(StringUtils.isNotBlank(ExcelUtil.getValue(row.getCell(i)))){
-								String title = str[i].substring(str[i].indexOf("_") + 1,str[i].length());
-								if ("IP".equals(title.toUpperCase())) {
-									map.put("ip",ExcelUtil.getValue(row.getCell(i)).replace(" ", ""));
-								} else {
-									m.put("projectid", title);
-									m.put("totalMoney", ExcelUtil.getValue(row.getCell(i)));
-									li.add(m);
-								}
-							}else{
-								continue;
+							String title = str[i].substring(str[i].indexOf("_") + 1,str[i].length());
+							if ("IP".equals(title.toUpperCase())) {
+								map.put("ip",ExcelUtil.getValue(row.getCell(i)).replace(" ", ""));
+							} else {
+								m.put("projectid", title);
+								m.put("totalMoney", ExcelUtil.getValue(row.getCell(i)));
+								li.add(m);
 							}
 						}
-						map.put("projectList", li);
+						boolean flag=false;
+						Map<String, String> eMap=new HashMap<String,String>();
+						for (Object v : map.values()) {
+							if(!StringUtils.isEmpty((String)v)){
+								flag=true;
+							}
+						}
+						for(Map<String,String> m:li){
+							if(!StringUtils.isEmpty(m.get("totalMoney"))){
+								flag=true;
+							}
+						}
+						if(flag&&StringUtils.isEmpty((String)map.get("institution"))&&StringUtils.isEmpty((String)map.get("userId"))){
+							eMap.put("fail", "第"+(rowNum+1)+"行数据无机构名称和机构ID");
+							errorList.add(eMap);
+						}else if(!flag){
+							continue;
+						}else{
+							map.put("projectList", li);
+						}
 					}else{
 						System.out.println("Excel中某列为空");
 					}
-					list.add(map);
+					if(map.size()>0){
+						list.add(map);
+					}
 				}
 			}else{
 				System.out.println("无法找到sheet页");
@@ -1216,65 +1404,39 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int updateUserInfo(CommonEntity com,String adminId){
-		//账号修改
-		Person p = new Person();
-		p.setUserId(com.getUserId());
-		p.setInstitution(com.getInstitution());
+	public int updateUserInfo(InstitutionalUser com) {
+		int i = 0;
 		try {
-			if(StringUtils.isNotBlank(com.getPassword())){
+			// 账号修改
+			Person p = new Person();
+			p.setUserId(com.getUserId());
+			p.setInstitution(com.getInstitution());
+			if (StringUtils.isNotBlank(com.getPassword())) {
 				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){			
-			if(com.getManagerType().equals("new")){
+			if (!StringUtils.isEmpty(com.getAdminname())) {
 				p.setPid(com.getAdminname());
-			}else{
+			} else if (!StringUtils.isEmpty(com.getAdminOldName())) {
 				p.setPid(com.getAdminOldName());
+			} else {
+				p.setPid("");
 			}
-		}else{
-			p.setPid("");
-		}
-		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
-		return personMapper.updateRegisterInfo(p);
-	}
-	
-	@Override
-	public int updateRegisterInfo(CommonEntity com,String pid,String adminId){
-		//批量更新机构账号(当前账号无管理员添加新的，已有管理员不做任何操作) 
-		Person p = new Person();
-		p.setUserId(com.getUserId());
-		p.setInstitution(com.getInstitution());
-		try {
-			if(StringUtils.isNotBlank(com.getPassword())){
-				p.setPassword(PasswordHelper.encryptPassword(com.getPassword()));
-			}
+			p.setLoginMode(Integer.parseInt(com.getLoginMode()));
+			i = personMapper.updateRegisterInfo(p);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("机构修改异常：", e);
 		}
-		if(StringUtils.isNotBlank(com.getAdminname()) || StringUtils.isNotBlank(com.getAdminOldName())){				
-			if(com.getManagerType().equals("new")){					
-				p.setPid(com.getAdminname());
-			}else{
-				p.setPid(com.getAdminOldName().substring(0, com.getAdminOldName().indexOf("/")));
-			}
-		}else{
-			p.setPid("");
-		}
-		p.setLoginMode(Integer.parseInt(com.getLoginMode()));
-		return personMapper.updateRegisterInfo(p);
+		return i;
 	}
 	
 	@Override
-	public void updateUserIp(CommonEntity com){
+	public void updateUserIp(InstitutionalUser com){
 		userIpMapper.deleteUserIp(com.getUserId());
 		addUserIp(com);
 	}
 	
 	@Override
-	public void addUserIp(CommonEntity com){
+	public void addUserIp(InstitutionalUser com){
 		String[] arr_ip = com.getIpSegment().split("\r\n");
 		int index=0;
 		for(String ip : arr_ip){
@@ -1291,21 +1453,74 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int updateAccountRestriction(CommonEntity com){
-		userAccountRestrictionMapper.deleteAccountRestriction(com.getUserId());
-		if(StringUtils.isBlank(com.getChecks())){
-			return 0;
+	public int setAccountRestriction(InstitutionalUser user, boolean isReset) {
+		if (user.getpConcurrentnumber() == null && user.getsConcurrentnumber() == null) {
+			if(isReset){
+				userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());
+			}
+			return 1;
 		}
-		UserAccountRestriction acc = new UserAccountRestriction();
-		acc.setUserId(com.getUserId());
-		acc.setUpperlimit(com.getUpperlimit());
-		acc.setChargebacks(com.getChargebacks());
-		acc.setDownloadupperlimit(com.getDownloadupperlimit());
-		acc.setpConcurrentnumber(com.getpConcurrentnumber());
-		acc.setsConcurrentnumber(com.getsConcurrentnumber());
-		return userAccountRestrictionMapper.insert(acc);
+		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(user.getUserId());
+		if(account==null||isReset){
+			if(isReset){
+				userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());
+			}
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(user.getUserId());
+			acc.setUpperlimit(user.getUpperlimit());
+			acc.setChargebacks(user.getChargebacks());
+			acc.setDownloadupperlimit(user.getDownloadupperlimit());
+			acc.setpConcurrentnumber(user.getpConcurrentnumber());
+			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			return userAccountRestrictionMapper.insert(acc);
+		}else{
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(user.getUserId());
+			if(user.getpConcurrentnumber()!=null){
+				acc.setpConcurrentnumber(user.getpConcurrentnumber());
+			}else{
+				acc.setpConcurrentnumber(account.getpConcurrentnumber());
+			}
+			if(user.getsConcurrentnumber()!=null){
+				acc.setUpperlimit(user.getUpperlimit());
+				acc.setChargebacks(user.getChargebacks());
+				acc.setDownloadupperlimit(user.getDownloadupperlimit());
+				acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			}else{
+				acc.setUpperlimit(account.getUpperlimit());
+				acc.setChargebacks(account.getChargebacks());
+				acc.setDownloadupperlimit(account.getDownloadupperlimit());
+				acc.setsConcurrentnumber(account.getsConcurrentnumber());
+			}
+			return userAccountRestrictionMapper.updateAccount(acc);
+		}
 	}
-
+	
+	@Override
+	public int setPartAccountRestriction(InstitutionalUser user) {
+		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(user.getUserId());
+		if(account==null){
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(user.getUserId());
+			acc.setUpperlimit(user.getUpperlimit());
+			acc.setChargebacks(user.getChargebacks());
+			acc.setDownloadupperlimit(user.getDownloadupperlimit());
+			acc.setpConcurrentnumber(user.getpConcurrentnumber());
+			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			return userAccountRestrictionMapper.insert(acc);
+		}else{
+			UserAccountRestriction acc = new UserAccountRestriction();
+			acc.setUserId(user.getUserId());
+			//切记此处不能传机构用户并发数
+			acc.setpConcurrentnumber(account.getpConcurrentnumber());
+			acc.setUpperlimit(user.getUpperlimit());
+			acc.setChargebacks(user.getChargebacks());
+			acc.setDownloadupperlimit(user.getDownloadupperlimit());
+			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			return userAccountRestrictionMapper.updateAccount(acc);
+		}
+	}
+	
 	
 	@Override
 	public Person queryPersonInfo(String userId){
@@ -1381,7 +1596,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public PageList findListInfo(Map<String, Object> map){
+	public PageList findListInfo(Map<String, Object> map) throws Exception{
 		//1、筛选user
 		long time=System.currentTimeMillis();
 		List<Object> userList = personMapper.findListInfoSimp(map);
@@ -1396,10 +1611,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
+			int sortScore=Integer.parseInt(userMap.get("loginMode").toString());
+			boolean flag=false;//用户是否可用 true是不过气，false是过期
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
-				e.printStackTrace();
+				log.error("密码转化异常：",e);
 			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
 			if(userMap.get("loginMode")!=null&&!userMap.get("loginMode").toString().equals("1")){
@@ -1411,8 +1628,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				userMap.put("list_ip", list_ip);
 			}
-			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
+			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			for(PayChannelModel pay:list_){
 				for(WfksPayChannelResources res:listWfks){
 					if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
@@ -1420,21 +1637,32 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+
+			//查询权限信息
 			Map<String,String> itemsMap=new HashMap<String,String>();
-			for(UserBoughtItems item:items){
-				if(item.getMode().equals("trical")){
-					itemsMap.put(item.getTransteroutType(), item.getMode());
-				}
+			String viewChack="ViewHistoryCheck";
+			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
+			//查询机构管理员
+			String pid=userMap.get("pid")==null?"":userMap.get("pid").toString();
+			if(!"".equals(pid)){
+				userMap.put("admin", this.findInfoByPid(pid));
 			}
+			//查询机构子账号
+			this.getAccount(userMap);
+			//查询统计分析
+			UserInstitution ins=this.getUserInstitution(userId);
+			if(ins!=null){
+				userMap.put("tongji", ins.getStatisticalAnalysis());
+			}
+			userMap.put("groupInfo", this.getGroupInfo(userId));
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> oldList = new ArrayList<Map<String, Object>>();
 			for(WfksPayChannelResources wfks : wfList){
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
-					WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
-					extraData.put("ViewHistoryCheck", mapping==null?"不可以":"可以");
+					extraData.put("ViewHistoryCheck", viewChack);
 				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 				if(pay.getType().equals("balance")){
@@ -1445,7 +1673,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired=this.getExpired(account.getEndDateTime(),nextDay);
+						if(!expired){
+							expired=account.getBalance().intValue()<0;
+						}
+						if(!expired&&account.getBalance().intValue()>0){
+							flag=true;
+						}
+						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
@@ -1458,7 +1693,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(account!=null){
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired = this.getExpired(account.getEndDateTime(),nextDay);
+						if(!expired){
+							flag=true;
+						}
+						extraData.put("expired", expired);
 						extraData.put("name", pay.getName());
 						extraData.put("type", pay.getType());
 						extraData.put("payChannelid", account.getPayChannelId());
@@ -1475,7 +1714,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 						extraData.put("balance", account.getBalance());
 						extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 						extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
-						extraData.put("expired", this.getExpired(account.getEndDateTime(),nextDay));
+						boolean expired = this.getExpired(account.getEndDateTime(), nextDay);
+						if (!expired) {
+							expired = account.getBalance() < 0;
+						}
+						if(!expired&&account.getBalance()>0){
+							flag=true;
+						}
+						extraData.put("expired",expired);
 						extraData.put("totalConsume", account.getTotalConsume());
 						extraData.put("payChannelid", account.getPayChannelId());
 						extraData.put("mode", itemsMap.get(account.getPayChannelId()));
@@ -1505,13 +1751,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(plList.size()>0 && plList.get(0).get("tableName")!=null){					
 					extraData.put("plList", data);
 				}
-				if(extraData.size()>0){					
-					projectList.add(extraData);
+				if(extraData.size()>0){
+					if((boolean) extraData.get("expired")){
+						oldList.add(extraData);
+					}else{
+						projectList.add(extraData);
+					}
 				}
 			}
+			projectList.addAll(oldList);
 			if(projectList.size()>0){				
 				userMap.put("proList", projectList);
 			}
+			if(!flag){
+				sortScore=100+sortScore;
+			}
+			userMap.put("score", sortScore);
 			long timeInf=System.currentTimeMillis()-time1;
 			//查询个人绑定机构权限
 			long time3=System.currentTimeMillis();
@@ -1540,17 +1795,103 @@ public class AheadUserServiceImpl implements AheadUserService{
 			log.info("数据库耗时:"+timeSql+"ms,接口耗时:"+timeInf+"ms,个人绑定机构耗时:"+timeSea+"ms");
 		}
 		log.info(userList.toString());
+		//对userList排序
+		Collections.sort(userList, new Comparator<Object>() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				Map<String, Object> map1 = (Map<String, Object>) o1;
+				Map<String, Object> map2 = (Map<String, Object>) o2;
+				int num1 = Integer.parseInt(map1.get("score").toString());
+				int num2 = Integer.parseInt(map2.get("score").toString());
+				if (num1 > num2) {
+					return 1;
+				} else if (num1 < num2) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		});
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
 		pageList.setTotalRow(i);
 		return pageList;
 	}
 	
+	//机构子账号
+	private void getAccount(Map<String, Object> userMap) {
+		UserAccountRestriction uar=this.getAccountRestriction(userMap.get("userId").toString());
+		if(uar==null){
+			return;
+		}
+		userMap.put("upperlimit", uar.getUpperlimit());
+		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
+		userMap.put("pConcurrentnumber", uar.getpConcurrentnumber());
+		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());
+		userMap.put("chargebacks", uar.getChargebacks());
+	}
+
+	//获取权限信息
+	private void getUserAccountidMapping(String userId, Map<String, String> itemsMap,
+			Map<String, Object> userMap, String viewCheck) throws Exception{
+		
+		WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountidByIdKey(userId);
+		for (WfksAccountidMapping wm : mapping) {
+			if ("trical".equals(wm.getRelatedidAccounttype())) {
+				itemsMap.put(wm.getRelatedidKey(), "trical");
+			}
+			if ("ViewHistoryCheck".equals(wm.getRelatedidAccounttype())) {
+				viewCheck = "可以";
+			}
+			if("openApp".equals(wm.getRelatedidAccounttype())){
+				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
+						+DateUtil.DateToFromatStr(wm.getEndtime()));
+				userMap.put("openAppexpired", this.getExpired(wm.getEndtime(),this.getDay()));
+			}
+			if("openWeChat".equals(wm.getRelatedidAccounttype())){
+				Map<String,Object> wechat=new HashMap<String,Object>();
+				wechat.put("time",  DateUtil.DateToFromatStr(wm.getBegintime())+"-"
+						+DateUtil.DateToFromatStr(wm.getEndtime()));
+				WfksUserSettingKey key=new WfksUserSettingKey();
+				key.setUserId(userId);
+				key.setUserType("WeChat");
+				key.setPropertyName("email");
+				WfksUserSetting[] setting=wfksUserSettingMapper.selectByUserId(key);
+				if(setting.length>0){
+					wechat.put("email", setting[0].getPropertyValue());
+				}
+				System.out.println(userId);
+				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
+				userMap.put("openWeChat", wechat);
+			}
+			if("PartyAdminTime".equals(wm.getRelatedidAccounttype())){
+				Map<String,Object> party=new HashMap<String,Object>();
+				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
+						+ DateUtil.DateToFromatStr(wm.getEndtime()));
+				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
+				if(per!=null){
+					party.put("userId", per.getUserId());
+					try{
+						party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
+					}catch (Exception e){
+						log.error("密码转化异常：",e);
+					}
+					String json = String.valueOf(per.getExtend());
+					if(!StringUtils.isEmpty(json)){
+						JSONObject obj = JSONObject.fromObject(json);
+						party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
+					}
+					party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
+					userMap.put("party", party);
+				}
+			}
+		}
+	}
+
 	@Override
 	public Map<String, Object> selectBalanceById(String userId){
 		return projectBalanceMapper.selectBalanceById(userId);
 	}
-	
 	
 	@Override
 	public int updateAllPid(String pid,String old_pid){
@@ -1595,19 +1936,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public Map<String, Object> findInfoByPid(String pid){
 		Map<String, Object> map = personMapper.findInfoByPid(pid);
+		if(map==null){
+			return new HashMap<String,Object>();
+		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
+			for(Map<String, Object> userIp : list_ip){
+				String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
+				userIp.put("beginIpAddressNumber", beginIpAddressNumber);
+				String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
+				userIp.put("endIpAddressNumber", endIpAddressNumber);
+			}
+			map.put("adminIP", list_ip);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("获取机构管理员信息失败：", e);
 		}
-		List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
-		for(Map<String, Object> userIp : list_ip){
-			String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
-			userIp.put("beginIpAddressNumber", beginIpAddressNumber);
-			String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
-			userIp.put("endIpAddressNumber", endIpAddressNumber);
-		}
-		map.put("adminIP", list_ip);
 		return map;
 	}
 
@@ -1643,66 +1987,130 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return limap;
 	}
-
+	
 	@Override
-	public List<Map<String,Object>> sonAccountNumber(String userId, String sonId, String start_time, String end_time){
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("sonId", sonId);
-		map.put("userId", userId);
-		map.put("start_time", start_time);
-		map.put("end_time", end_time);
-		List<Map<String, Object>> lm = personMapper.sonAccountNumber(map);// 获取子账号列表
-		List<WfksPayChannelResources> list = wfksMapper.selectByUserId(userId);// 获取父账号购买项目
-		if (lm.size() > 0 && list.size() > 0) {
-			for (Map<String, Object> ma : lm) {
-				String id=ma.get("userId").toString();
-				List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
-				try{
-					for(WfksPayChannelResources wfks : list){
-						PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
-						Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
-						if(pay.getType().equals("balance")){
-							wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-							if(account!=null){
-								extraData.put("name", pay.getName());
-								extraData.put("payChannelid", account.getPayChannelId());
-								extraData.put("type", pay.getType());
-								extraData.put("balance", account.getBalance());
-								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-							}
-						}else if(pay.getType().equals("time")){
-							wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-							if(account!=null){
-								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-								extraData.put("payChannelid", account.getPayChannelId());
-								extraData.put("name", pay.getName());
-								extraData.put("type", pay.getType());
-							}
-						}else if(pay.getType().equals("count")){
-							wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.getPayChannelid(),id), new HashMap<String,String>());
-							if(account!=null){
-								extraData.put("name", pay.getName());
-								extraData.put("payChannelid", account.getPayChannelId());
-								extraData.put("type", pay.getType());
-								extraData.put("balance", account.getBalance());
-								extraData.put("beginDateTime", sdfSimp.format(account.getBeginDateTime()));
-								extraData.put("endDateTime", sdfSimp.format(account.getEndDateTime()));
-								extraData.put("totalConsume", account.getTotalConsume());
-							}
-						}
-						if(extraData.size()>0){
-							projectList.add(extraData);
+	public PageList getSonaccount(Map<String,Object> map) {
+		List<Object> userList = personMapper.sonAccountNumber(map);// 获取子账号列表
+		PageList pageList = new PageList();
+		if (userList.size()==0) {
+			pageList.setPageRow(userList);
+			pageList.setTotalRow(0);
+			return pageList;
+		}
+		for (Object object : userList) {
+			Map<String, Object> userMap = (Map<String,Object>) object;
+			try{
+				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
+			}catch (Exception e){
+				log.error("密码转化异常：",e);
+			}
+			String userId=userMap.get("userId").toString();
+			String pid=userMap.get("pid").toString();
+			//子账号ip
+			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
+			if(list_ip.size()>0){
+				for(Map<String, Object> userIp : list_ip){
+					String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
+					String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
+					userIp.put("ip", beginIpAddressNumber+"-"+endIpAddressNumber);
+				}
+				userMap.put("list_ip", list_ip);
+			}
+			//购买项目
+			List<PayChannelModel> list_ = this.purchaseProject();
+			List<Map<String, String>> wfList=new ArrayList<Map<String, String>>();
+			List<Map<String, String>> listWfks = wfksMapper.selectProjectLibraryName(pid);// 获取父账号购买项目
+			for(PayChannelModel pay:list_){
+				for(Map<String, String> res:listWfks){
+					if(StringUtils.equals(pay.getId(), res.get("payChannelid"))){
+						wfList.add(res);
+					}
+				}
+			}
+			//获取继承主账号的权限
+			List<Map<String, Object>> tempList = new ArrayList<Map<String, Object>>();
+			WfksAccountidMapping[] mapping = this.getWfksAccountidLimit(userId,"Group");
+			if(mapping!=null){
+				for(WfksAccountidMapping wf:mapping){
+					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+					extraData.put("payChannelid", wf.getRelatedidAccounttype());
+					if (wf.getBegintime() != null && wf.getEndtime() != null) {
+						extraData.put("time",sdfSimp.format(wf.getBegintime()) + "-" + sdfSimp.format(wf.getEndtime()));
+					}
+					for(PayChannelModel pay:list_){
+						if(pay.getId().equals(wf.getRelatedidAccounttype())){
+							extraData.put("name", pay.getName());
+							extraData.put("type", pay.getType());
+							break;
 						}
 					}
-				}catch(Exception e){
-					log.error("子账号"+id+"调用接口异常",e);
+					for(Map<String, String> wfks : wfList){
+						if(StringUtils.equals(wfks.get("payChannelid"),wf.getRelatedidAccounttype())){
+							extraData.put("resouceName", wfks.get("tableName"));
+						}
+					}
+					tempList.add(extraData);
 				}
-				ma.put("sonProjectList", projectList);
-			}			
+			}
+			//调用接口查询支付信息
+			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
+			try{
+				for(Map<String, String> wfks : wfList){
+					PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.get("payChannelid"));
+					Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
+					if(pay.getType().equals("balance")){
+						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
+						if(account!=null){
+							extraData.put("name", pay.getName());
+							extraData.put("payChannelid", account.getPayChannelId());
+							extraData.put("type", pay.getType());
+							extraData.put("balance", account.getBalance());
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
+						}
+					}else if(pay.getType().equals("time")){
+						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
+						if(account!=null){
+							extraData.put("name", pay.getName());
+							extraData.put("payChannelid", account.getPayChannelId());
+							extraData.put("type", pay.getType());
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
+						}
+					}else if(pay.getType().equals("count")){
+						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(wfks.get("payChannelid"),userId), new HashMap<String,String>());
+						if(account!=null){
+							extraData.put("name", pay.getName());
+							extraData.put("payChannelid", account.getPayChannelId());
+							extraData.put("type", pay.getType());
+							extraData.put("count", account.getBalance());
+							extraData.put("time", sdfSimp.format(account.getBeginDateTime())+"-"+sdfSimp.format(account.getEndDateTime()));
+							extraData.put("resouceName", wfks.get("tableName"));
+						}
+					}
+					if(extraData.size()>1){
+						projectList.add(extraData);
+					}
+				}
+			}catch(Exception e){
+				log.error("子账号"+userId+"调用接口异常",e);
+			}
+			for(Map<String, Object> temp:tempList){
+				boolean exists=true;
+				for(Map<String, Object> project:projectList){
+					if (StringUtils.equals(String.valueOf(temp.get("payChannelid")),String.valueOf(project.get("payChannelid")))) {
+						exists = false;
+					}
+				}
+				if(exists){
+					projectList.add(temp);
+				}
+			}
+			userMap.put("data", projectList);
 		}
-		return lm;
+		pageList.setPageRow(userList);
+		pageList.setTotalRow(personMapper.sonAccountNumberCount(map));
+		return pageList;
 	}
 
 	@Override
@@ -1719,14 +2127,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 		}
-		List<UserBoughtItems> items=this.getUserBoughtItems(userId);
+		WfksAccountidMapping[] tricals=wfksAccountidMappingMapper.getWfksAccountid(userId, "trical");
 		Map<String,String> itemsMap=new HashMap<String,String>();
-		for(UserBoughtItems item:items){
-			if(item.getMode().equals("trical")){
-				itemsMap.put(item.getTransteroutType(), item.getMode());
-			}
+		for(WfksAccountidMapping wm:tricals){
+			itemsMap.put(wm.getRelatedidKey(), "trical");
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String nextDay = sdf.format(this.getDay());
 		//购买项目列表
 		List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 		for(WfksPayChannelResources wfks : wfList){
@@ -1734,7 +2141,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> extraData = new HashMap<String, Object>();//购买的项目
 			//已发表论文检测项目特殊处理
 			if(wfks.getPayChannelid().equals("HistoryCheck")){
-				WfksAccountidMapping mapping = wfksAccountidMappingMapper.selectByUserId(userId,"ViewHistoryCheck");
+				WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountid(userId,"ViewHistoryCheck");
 				extraData.put("ViewHistoryCheck", mapping==null?"not":"is");
 			}
 			PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
@@ -1748,6 +2155,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("beginDateTime", sdf.format(account.getBeginDateTime()));
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1761,6 +2169,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("name", pay.getName());
 					extraData.put("type", pay.getType());
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1776,6 +2185,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					extraData.put("endDateTime", sdf.format(account.getEndDateTime()));
 					extraData.put("totalConsume", account.getTotalConsume());
 					extraData.put("mode", itemsMap.get(account.getPayChannelId()));
+					extraData.put("nextDay", nextDay);
 					//查询条件
 					libdata.put("userId", account.getUserId());
 					libdata.put("payChannelid", account.getPayChannelId());
@@ -1830,34 +2240,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public WfksAccountidMapping getAddauthority(String userId,String msg){
-		return wfksAccountidMappingMapper.selectByUserId(userId,msg);
-	}
-
-	@Override
-	public WfksAccountidMapping[] getAddauthorityByUserId(String userId) {
-		return wfksAccountidMappingMapper.selectAllByUserId(userId);
+	public WfksAccountidMapping[] getWfksAccountid(String userId,String type){
+		return wfksAccountidMappingMapper.getWfksAccountid(userId,type);
 	}
 	
 	@Override
-	public WfksUserSetting getUserSetting(String userId,String msg){
-		WfksUserSettingKey key = new WfksUserSettingKey();
-		key.setUserType("Group");
-		key.setUserId(userId);
-		key.setPropertyName(msg);
-		return wfksUserSettingMapper.selectByPrimaryKey(key);
+	public WfksAccountidMapping[] getWfksAccountidLimit(String userId,String type){
+		return wfksAccountidMappingMapper.getWfksAccountidLimit(userId,type);
 	}
-
 	@Override
-	public WfksUserSetting[] getUserSettingByUserId(String userId) {
-		WfksUserSettingKey key = new WfksUserSettingKey();
-		key.setUserType("Group");
-		key.setUserId(userId);
-		return wfksUserSettingMapper.selectByUserId(key);
+	public WfksAccountidMapping[] getWfksAccountidByRelatedidKey(String relatedidKey) {
+		return wfksAccountidMappingMapper.getWfksAccountidByRelatedidKey(relatedidKey);
 	}
 	
 	@Override
-	public WfksUserSetting[] getUserSetting2(String userId,String type) {
+	public WfksUserSetting[] getUserSetting(String userId,String type) {
 		WfksUserSettingKey key = new WfksUserSettingKey();
 		key.setUserType(type);
 		key.setUserId(userId);
@@ -1865,66 +2262,60 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	
 	@Override
-	public int setAddauthority(Authority authority,Person person){
-		String type = authority.getRelatedIdAccountType();
-		String userId=authority.getUserId();
-		String partyAdmin=authority.getPartyAdmin();
-		String password = authority.getPassword();
-		String authorityType=authority.getAuthorityType();
+	public int setPartyAdmin(InstitutionalUser com){
+		String type = "PartyAdminTime";
+		String userId=com.getUserId();
+		String partyAdmin=com.getPartyAdmin();
+		String password = com.getPartyPassword();
+		String partyLimit=com.getPartyLimit();
 		int i = wfksAccountidMappingMapper.deleteByUserId(userId,type);
-		if("is".equals(authorityType) && !type.equals("UserLogReport")){
-			WfksAccountidMapping am = new WfksAccountidMapping();
-			am.setMappingid(GetUuid.getId());
-			am.setIdAccounttype("Group");
-			am.setIdKey(userId);
-			am.setRelatedidAccounttype(type);
-			am.setRelatedidKey(partyAdmin);
+		WfksUserSetting setting = new WfksUserSetting();
+		setting.setUserId(userId);
+		setting.setUserType("Group");
+		setting.setPropertyName(type);
+		setting.setPropertyValue(partyAdmin);
+		i = wfksUserSettingMapper.deleteByUserId(setting);
+		if(!StringUtils.isEmpty(partyLimit)){
+			WfksAccountidMapping mapping = new WfksAccountidMapping();
+			mapping.setMappingid(GetUuid.getId());
+			mapping.setIdAccounttype("Group");
+			mapping.setIdKey(userId);
+			mapping.setRelatedidAccounttype(type);
+			mapping.setRelatedidKey(partyAdmin);
 			try{
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-				am.setBegintime(sd.parse(authority.getBegintime()));
-				am.setEndtime(sd.parse(authority.getEndtime()));
-				am.setLastUpdatetime(sd.parse(sd.format(new Date())));
+				mapping.setBegintime(sd.parse(com.getPartyBegintime()));
+				mapping.setEndtime(sd.parse(com.getPartyEndtime()));
+				mapping.setLastUpdatetime(sd.parse(sd.format(new Date())));
 			}catch(ParseException e){
 				e.printStackTrace();
 			}
-			i = wfksAccountidMappingMapper.insert(am);
-			if(StringUtils.isNoneBlank(partyAdmin) && StringUtils.isNoneBlank(password)){
-				Person per = new Person();
-				per.setUserId(partyAdmin);
-				try {
-					per.setPassword(PasswordHelper.encryptPassword(password));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				per.setLoginMode(1);	//密码登录
-				per.setUsertype(4);	//服务权限用户
-				per.setIsFreeze(2);	//解冻
-				per.setRegistrationTime(DateUtil.getStringDate());
-				JSONObject json = new JSONObject();
-				json.put("RelatedGroupId", userId);
-				if("isTrial".equals(authority.getTrial())){//是否试用
-					json.put("IsTrialPartyAdminTime", true);
-				}else{
-					json.put("IsTrialPartyAdminTime", false);
-				}
-				per.setExtend(json.toString());
-				if(person!=null){
-					i = personMapper.updateRegisterAdmin(per);
-				}else{
-					i = personMapper.addRegisterAdmin(per);
-				}
-				
+			i = wfksAccountidMappingMapper.insert(mapping);
+			i = wfksUserSettingMapper.insert(setting);
+			Person per = new Person();
+			per.setUserId(partyAdmin);
+			try {
+				per.setPassword(PasswordHelper.encryptPassword(password));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		}
-		if(type.equals("UserLogReport") || type.equals("PartyAdminTime")){
-			WfksUserSetting us = new WfksUserSetting();
-			us.setUserId(userId);
-			us.setUserType("Group");
-			us.setPropertyName(type);
-			us.setPropertyValue(type.equals("UserLogReport")?"Authorization":partyAdmin);
-			i = wfksUserSettingMapper.deleteByUserId(us);
-			if("is".equals(authorityType)){
-				i = wfksUserSettingMapper.insert(us);
+			per.setLoginMode(1);	//密码登录
+			per.setUsertype(4);	//服务权限用户
+			per.setIsFreeze(2);	//解冻
+			per.setRegistrationTime(DateUtil.getStringDate());
+			JSONObject json = new JSONObject();
+			json.put("RelatedGroupId", userId);
+			if("isTrial".equals(com.getIsTrial())){//是否试用
+				json.put("IsTrialPartyAdminTime", true);
+			}else{
+				json.put("IsTrialPartyAdminTime", false);
+			}
+			per.setExtend(json.toString());
+			Person person = this.queryPersonInfo(partyAdmin);
+			if (person != null) {
+				i = personMapper.updateRegisterAdmin(per);
+			} else {
+				i = personMapper.addRegisterAdmin(per);
 			}
 		}
 		return i;
@@ -1933,11 +2324,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Person> queryPersonInId(List<String> userIds) {
 		return personMapper.queryPersonInId(userIds);
-	}
-
-	@Override
-	public List<AuthoritySetting> getAuthoritySettingList() {
-		return authoritySettingMapper.getAuthoritySettingList();
 	}
 
 	@Override
@@ -1950,7 +2336,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public void addUserIns(CommonEntity com) {
+	public void addUserIns(InstitutionalUser com) {
 		// 添加统计分析
 		String tongji = com.getTongji();
 		userInstitutionMapper.deleteUserIns(com.getUserId());
@@ -2101,138 +2487,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public void addUserBoughtItems(CommonEntity com) {
-		userBoughtItemsMapper.delete(com.getUserId(),null,null);
-		List<ResourceDetailedDTO> rdlist = com.getRdlist();
-		//APP嵌入
-		if(!StringUtils.isEmpty(com.getOpenApp())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openApp");
-			item.setFeature("function");
-			userBoughtItemsMapper.insert(item);
-		}
-		//微信嵌入
-		//1、先删除
-		WfksUserSettingKey key=new WfksUserSettingKey();
-		key.setUserId(com.getUserId());
-		key.setUserType("WeChat");
-		key.setPropertyName("email");
-		wfksUserSettingMapper.deleteByUserId(key);
-		//2、再添加
-		if(!StringUtils.isEmpty(com.getOpenWeChat())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openWeChat");
-			item.setFeature("function");
-			userBoughtItemsMapper.insert(item);
-			//微信嵌入服务要发邮件
-			if(!StringUtils.isEmpty(com.getSendMail())){
-				Mail mail=new Mail();
-				mail.setReceiver(com.getWeChatEamil());
-				mail.setName("后台管理");
-				mail.setSubject("已开通微信公众号嵌入服务");
-				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
-				SendMail2 util=new SendMail2();
-				util.sendEmail(mail);
-			}
-			//微信嵌入服务保存邮件地址
-			WfksUserSetting setting=new WfksUserSetting();
-			setting.setUserType("WeChat");
-			setting.setUserId(com.getUserId());
-			setting.setPropertyName("email");
-			setting.setPropertyValue(com.getWeChatEamil());
-			wfksUserSettingMapper.insert(setting);
-		}
-		//是否添加使用
-		for(ResourceDetailedDTO dto:rdlist){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType(dto.getProjectid());
-			if(StringUtils.equals(dto.getMode(), "trical")){
-				item.setMode("trical");
-			}else{
-				item.setMode("formal");
-			}
-			item.setFeature("resource");
-			userBoughtItemsMapper.insert(item);
-		}
-	}
-	
-	@Override
-	public void updateUserBoughtItems(CommonEntity com) {
-		List<ResourceDetailedDTO> rdlist = com.getRdlist();
-		//APP嵌入
-		if(!StringUtils.isEmpty(com.getOpenApp())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openApp");
-			item.setFeature("function");
-			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
-			userBoughtItemsMapper.insert(item);
-		}
-		//微信嵌入
-		if(!StringUtils.isEmpty(com.getOpenWeChat())){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType("");
-			item.setMode("openWeChat");
-			item.setFeature("function");
-			userBoughtItemsMapper.delete(item.getUserId(),null,item.getMode());
-			userBoughtItemsMapper.insert(item);
-			//微信嵌入服务要发邮件
-			if(!StringUtils.isEmpty(com.getSendMail())){
-				Mail mail=new Mail();
-				mail.setReceiver(com.getWeChatEamil());
-				mail.setName("后台管理");
-				mail.setSubject("已开通微信公众号嵌入服务");
-				mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
-				SendMail2 util=new SendMail2();
-				util.sendEmail(mail);
-			}
-			//微信嵌入服务保存邮件地址
-			WfksUserSetting setting=new WfksUserSetting();
-			setting.setUserType("WeChat");
-			setting.setUserId(com.getUserId());
-			setting.setPropertyName("email");
-			setting.setPropertyValue(com.getWeChatEamil());
-			WfksUserSettingKey key=new WfksUserSettingKey();
-			key.setUserId(setting.getUserId());
-			key.setUserType(setting.getUserType());
-			key.setPropertyName(setting.getPropertyName());
-			wfksUserSettingMapper.deleteByUserId(key);
-			wfksUserSettingMapper.insert(setting);
-		}
-		//是否添加试用
-		for(ResourceDetailedDTO dto:rdlist){
-			UserBoughtItems item=new UserBoughtItems();
-			item.setId(GetUuid.getId());
-			item.setUserId(com.getUserId());
-			item.setTransteroutType(dto.getProjectid());
-			if(StringUtils.equals(dto.getMode(), "trical")){
-				item.setMode("trical");
-				item.setFeature("resource");
-				userBoughtItemsMapper.delete(item.getUserId(), item.getTransteroutType(), null);
-				userBoughtItemsMapper.insert(item);
-			}
-		}
-	}
-
-	@Override
-	public List<UserBoughtItems> getUserBoughtItems(String userId) {
-		return userBoughtItemsMapper.getUserBoughtItemsList(userId);
-	}
-
-	@Override
-	public void updateSubaccount(CommonEntity com,String adminId) throws Exception{
+	public void updateSubaccount(InstitutionalUser com,String adminId) throws Exception{
 		long time=System.currentTimeMillis();
 		String pid = com.getUserId();
 		List<String> ls = personMapper.getSubaccount(pid);
@@ -2253,7 +2508,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(dto.getProjectType().equals("balance")){
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							dto.setTotalMoney(0.0);
+							dto.setTotalMoney("0.0");
 							this.chargeProjectBalance(com, dto, adminId);
 						}
 					}else if(dto.getProjectType().equals("time")){
@@ -2264,7 +2519,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}else if(dto.getProjectType().equals("count")){
 						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							dto.setPurchaseNumber(0);
+							dto.setPurchaseNumber("0");
 							this.chargeCountLimitUser(com, dto, adminId);
 						}
 					}
@@ -2275,5 +2530,166 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(log.isInfoEnabled()){
 			log.info("子账号延期处理，耗时："+(System.currentTimeMillis()-time)+"ms");
 		}
+	}
+	
+	@Override
+	public void addWfksAccountidMapping(InstitutionalUser com) {
+		//先删除再添加
+		wfksAccountidMappingMapper.deleteByUserIdAndType(com.getUserId(),"Limit");
+		// APP嵌入
+		setOpenApp(com);
+		// 微信嵌入
+		setWebChat(com);
+		// 是否添加使用
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		for(ResourceDetailedDTO dto:rdlist){
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				am.setRelatedidAccounttype("trical");
+				am.setRelatedidKey(dto.getProjectid());;
+			}else{
+				continue;
+			}
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+	
+	}
+	
+	@Override
+	public void updateWfksAccountidMapping(InstitutionalUser com) {
+		// APP嵌入
+		if(!StringUtils.isEmpty(com.getOpenApp())){
+			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(), "openApp");
+			setOpenApp(com);
+		}
+		// 微信嵌入
+		if(!StringUtils.isEmpty(com.getOpenWeChat())){
+			wfksAccountidMappingMapper.deleteByUserId(com.getUserId(), "openWeChat");
+			setWebChat(com);
+		}
+		// 是否添加使用
+		List<ResourceDetailedDTO> rdlist = com.getRdlist();
+		for(ResourceDetailedDTO dto:rdlist){
+			WfksAccountidMapping am = new WfksAccountidMapping();
+			am.setMappingid(GetUuid.getId());
+			am.setIdAccounttype("Limit");
+			am.setIdKey(com.getUserId());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				am.setRelatedidAccounttype("trical");
+				am.setRelatedidKey(dto.getProjectid());;
+			}else{
+				continue;
+			}
+			wfksAccountidMappingMapper.deleteByIdKeyRelatedId(com.getUserId(), dto.getProjectid());
+			am.setBegintime(null);
+			am.setEndtime(null);
+			am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+			wfksAccountidMappingMapper.insert(am);
+		}
+	
+	}
+	
+	//APP嵌入
+	private void setOpenApp(InstitutionalUser com){
+		if(StringUtils.isEmpty(com.getOpenApp())){
+			return;
+		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("openApp");
+		am.setRelatedidKey("");
+		am.setBegintime(DateUtil.stringToDate1(com.getAppBegintime()));
+		am.setEndtime(DateUtil.stringToDate1(com.getAppEndtime()));
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+	}
+	
+	//微信嵌入
+	private void setWebChat(InstitutionalUser com){
+		//1、先删除
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserId(com.getUserId());
+		key.setUserType("WeChat");
+		key.setPropertyName("email");
+		wfksUserSettingMapper.deleteByUserId(key);
+		//2、再添加
+		if(StringUtils.isEmpty(com.getOpenWeChat())){
+			return;
+		}
+		WfksAccountidMapping am = new WfksAccountidMapping();
+		am.setMappingid(GetUuid.getId());
+		am.setIdAccounttype("Limit");
+		am.setIdKey(com.getUserId());
+		am.setRelatedidAccounttype("openWeChat");
+		am.setRelatedidKey("");
+		am.setBegintime(DateUtil.stringToDate1(com.getWeChatBegintime()));
+		am.setEndtime(DateUtil.stringToDate1(com.getWeChatEndtime()));
+		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
+		wfksAccountidMappingMapper.insert(am);
+		//微信嵌入服务要发邮件
+		if(!StringUtils.isEmpty(com.getSendMail())){
+			Mail mail=new Mail();
+			mail.setReceiver(com.getWeChatEamil());
+			mail.setName("后台管理");
+			mail.setSubject("已开通微信公众号嵌入服务");
+			mail.setMessage(SettingUtil.getSetting("WeChatAppUrl")+Des.enDes(com.getUserId(),com.getPassword()));
+			SendMail2 util=new SendMail2();
+			util.sendEmail(mail);
+		}
+		//微信嵌入服务保存邮件地址
+		WfksUserSetting setting=new WfksUserSetting();
+		setting.setUserType("WeChat");
+		setting.setUserId(com.getUserId());
+		setting.setPropertyName("email");
+		setting.setPropertyValue(com.getWeChatEamil());
+		wfksUserSettingMapper.insert(setting);
+	}
+
+	@Override
+	public List<Person> findInstitutionAllUser(String institution) {
+		return personMapper.findInstitutionAllUser(institution);
+	}
+
+	@Override
+	public UserAccountRestriction getAccountRestriction(String userId) {
+		return userAccountRestrictionMapper.getAccountRestriction(userId);
+	}
+
+	@Override
+	public int addGroupInfo(InstitutionalUser com) {
+		groupInfoMapper.deleteGroupInfo(com.getUserId());
+		GroupInfo info=new GroupInfo();
+		info.setUserId(com.getUserId());
+		info.setInstitution(com.getInstitution());
+		info.setOrganization(com.getOrganization());
+		if(!StringUtils.isEmpty(com.getAdminname())){
+			info.setPid(com.getAdminname());
+		}else{
+			info.setPid(com.getAdminOldName());
+		}
+		info.setCountryRegion(com.getCountryRegion());
+		info.setOrderType(com.getOrderType());
+		info.setOrderContent(com.getOrderContent());
+		info.setPostCode(com.getPostCode());
+		
+		return groupInfoMapper.insertGroupInfo(info);
+	}
+	
+	@Override
+	public int updateGroupInfo(GroupInfo info) {
+		return groupInfoMapper.updateGroupInfo(info);
+	}
+
+	@Override
+	public GroupInfo getGroupInfo(String userId) {
+		return groupInfoMapper.getGroupInfo(userId);
 	}
 }

@@ -17,6 +17,7 @@ $(function(){
 				type:"post",
 				data:{"value":institution},
 				success:function(data){
+					$(".searchsug").html("<ul></ul>");
 					var ul=$("#"+institution_name).siblings("div").find("ul");
 					var div=$("#"+institution_name).siblings("div");
 					ul.html("");

@@ -8,15 +8,9 @@ public class Authority {
 	
 	private String userId;
 	
-	private String authorityType;
-	
-	private String relatedIdAccountType;
-	
-	private String trial;
+	private boolean trial;
 	
 	private String partyAdmin;
-	
-	private String oldPartyAdmin;
 	
 	private String password;
 	
@@ -32,27 +26,11 @@ public class Authority {
 		this.userId = userId;
 	}
 
-	public String getAuthorityType() {
-		return authorityType;
-	}
-
-	public void setAuthorityType(String authorityType) {
-		this.authorityType = authorityType;
-	}
-	
-	public String getRelatedIdAccountType() {
-		return relatedIdAccountType;
-	}
-
-	public void setRelatedIdAccountType(String relatedIdAccountType) {
-		this.relatedIdAccountType = relatedIdAccountType;
-	}
-
-	public String getTrial() {
+	public boolean getTrial() {
 		return trial;
 	}
 
-	public void setTrial(String trial) {
+	public void setTrial(boolean trial) {
 		this.trial = trial;
 	}
 	
@@ -62,14 +40,6 @@ public class Authority {
 
 	public void setPartyAdmin(String partyAdmin) {
 		this.partyAdmin = partyAdmin;
-	}
-
-	public String getOldPartyAdmin() {
-		return oldPartyAdmin;
-	}
-
-	public void setOldPartyAdmin(String oldPartyAdmin) {
-		this.oldPartyAdmin = oldPartyAdmin;
 	}
 
 	public String getPassword() {
@@ -98,11 +68,8 @@ public class Authority {
 
 	@Override
 	public String toString() {
-		return "Authority [userId=" + userId + ", authorityType="
-				+ authorityType + ", relatedIdAccountType="
-				+ relatedIdAccountType + ", trial=" + trial + ", partyAdmin="
-				+ partyAdmin + ", oldPartyAdmin=" + oldPartyAdmin
-				+ ", password=" + password + ", begintime=" + begintime
+		return "Authority [userId=" + userId + ", trial=" + trial + ", partyAdmin="
+				+ partyAdmin + ", password=" + password + ", begintime=" + begintime
 				+ ", endtime=" + endtime + "]";
 	}
 	

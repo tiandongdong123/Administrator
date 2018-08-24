@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 
+import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -53,21 +56,19 @@ public class ExcelUtil {
 
     
     public static Workbook getWorkBook(MultipartFile file) {  
-        //获得文件名  
-        String fileName = file.getOriginalFilename();
         //创建Workbook工作薄对象，表示整个excel  
         Workbook workbook = null;  
         try {  
             InputStream is = file.getInputStream();  
             //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象  
-            if(fileName.endsWith(xls)){  
+            if(POIFSFileSystem.hasPOIFSHeader(is)){  
                 //2003  
                 workbook = new HSSFWorkbook(is);  
-            }else if(fileName.endsWith(xlsx)){  
+            }else if(POIXMLDocument.hasOOXMLHeader(is)){  
                 //2007  
-                workbook = new XSSFWorkbook(is);  
+                workbook = new XSSFWorkbook(OPCPackage.open(is));  
             }  
-        } catch (IOException e) {  
+        } catch (Exception e) {  
             e.printStackTrace();
         }  
         return workbook;

@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$("input[name='openState']").prop("checked",false);
 	$("input[name='resourceType']").prop("checked",false);
 	$("input[id='resourceInherited']").prop("checked",true);
+	$("#loginMode").val("1");
 	//绑定个人上限的提示
 	$("#bindLimit").keyup(function(){
 		check();
@@ -9,7 +10,7 @@ $(document).ready(function(){
 });
 
 //提交事件
-function submitForm(){
+function submitForm(type){
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
 	if($("#bindLimit").val()==""){
@@ -49,32 +50,21 @@ function submitForm(){
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}
-	var msg=validateUserId();
-	if(msg!="true"){
-		if(msg=='false'){
-			layer.msg("该机构ID已存在",{icon: 2});
-		}else if(msg=='old'){
-			layer.msg("该机构ID在旧平台已存在",{icon: 2});
-		}else if(msg=='error'){
-			layer.msg("旧平台校验机构ID异常",{icon: 2});
-		}
-		$("#submit").removeAttr("disabled");
-		return false;
-	}else if(ip!="" && !IpFormat(ip)){
-		layer.msg("机构账号IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+	if(ip!="" && !IpFormat(ip)){
+		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
+		removeAtrr();
 		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
-		layer.msg("管理员IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
+		removeAtrr();
 		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 	   var data = new FormData($('#fromList')[0]);
@@ -102,37 +92,62 @@ function submitForm(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['确定'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/register.do';
+	    		    	if(type==0){
+	    		    		window.location.href='../auser/register.do';
+	    		    	}else{
+	    		    		window.location.href='../auser/information.do?userId='+userId;
+	    		    	}
 	    		    }
 	    		});
 			}else{
-				if(data.fail!=null){
+				if(data.flag=='fail'){
 					layer.msg(data.fail, {icon: 2});
+				}else if(data.flag=='error'){
+		    		layer.alert(data.fail, {
+		    			icon: 2,
+		    			title: '提示',
+		    		    skin: 'layui-layer-molv',
+		    		    btn: ['继续添加'], //按钮
+		    		    yes: function(){
+		    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+		    		    }
+		    		});
 				}else{
 					layer.msg("注册失败", {icon: 2});
 				}
 			}
-	    	$("#submit").removeAttr("disabled");
+	    	removeAtrr();
 	    });
 	}
 }
 
-function validatePasAndIp(){
-	var loginMode = $("#loginMode").val();
-	var value = false;
-	if(loginMode=='1'){
-		if($("#password").val().length > 0){			
-			value = true;
-		}
-	}else if(loginMode=='0'){
-		if($("#ipSegment").val().length > 0){
-			value = true;
-		}
-	}else if(loginMode=='2'){
-		if($("#ipSegment").val().length > 0&&$("#password").val().length > 0){
-			value = true;
-		}
-	}
-	return value;
+function removeAtrr(){
+	$("#submit1").removeAttr("disabled");
+	$("#submit2").removeAttr("disabled");
+	$("#submit3").removeAttr("disabled");
 }
 
+function addAtrr(){
+	$("#submit1").attr({disabled: "disabled"});
+	$("#submit2").attr({disabled: "disabled"});
+	$("#submit3").attr({disabled: "disabled"});
+}
+
+//验证机构用户是否存在
+function validatePeron(obj){
+	var userId=$(obj).val();
+	if(userId!=''){
+		$.ajax({
+			type:"post",
+			async: false,
+			url:"../auser/getPerson.do?t="+new Date(),
+			data:{"userId":userId},
+			dataType:"json",
+			success:function(data){
+				if(data.flag=="fail"){
+					layer.msg(data.fail,{icon: 2});
+				}
+			}
+		});
+	}
+}

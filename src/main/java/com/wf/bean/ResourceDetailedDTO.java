@@ -17,19 +17,17 @@ public class ResourceDetailedDTO {
 	
 	private String validityEndtime;
 	
-	private Double totalMoney;
+	private String totalMoney;
 	
 	private String relatedIdAccountType;;
 	
-	private Integer purchaseNumber;
+	private String purchaseNumber;
 	
 	private String validityStarttime2;
 	
 	private String validityEndtime2;
 	// 是否试用 trical--试用，formal--正常
 	private String mode;
-	// 功能分类 resource--资源，function--功能
-	private String feature;
 	
 	private List<ResourceLimitsDTO> rldto;
 	
@@ -97,14 +95,6 @@ public class ResourceDetailedDTO {
 		this.validityEndtime = validityEndtime;
 	}
 
-	public Double getTotalMoney() {
-		return totalMoney;
-	}
-
-	public void setTotalMoney(Double totalMoney) {
-		this.totalMoney = totalMoney;
-	}
-
 	public String getRelatedIdAccountType() {
 		return relatedIdAccountType;
 	}
@@ -113,28 +103,28 @@ public class ResourceDetailedDTO {
 		this.relatedIdAccountType = relatedIdAccountType;
 	}
 
-	public Integer getPurchaseNumber() {
-		return purchaseNumber;
-	}
-
-	public void setPurchaseNumber(Integer purchaseNumber) {
-		this.purchaseNumber = purchaseNumber;
-	}
-
 	public String getMode() {
 		return mode;
 	}
 
+	public String getTotalMoney() {
+		return totalMoney;
+	}
+
+	public void setTotalMoney(String totalMoney) {
+		this.totalMoney = totalMoney;
+	}
+
+	public String getPurchaseNumber() {
+		return purchaseNumber;
+	}
+
+	public void setPurchaseNumber(String purchaseNumber) {
+		this.purchaseNumber = purchaseNumber;
+	}
+
 	public void setMode(String mode) {
 		this.mode = mode;
-	}
-
-	public String getFeature() {
-		return feature;
-	}
-
-	public void setFeature(String feature) {
-		this.feature = feature;
 	}
 
 	public List<ResourceLimitsDTO> getRldto() {
@@ -155,8 +145,6 @@ public class ResourceDetailedDTO {
 				+ relatedIdAccountType + ", purchaseNumber=" + purchaseNumber
 				+ ", validityStarttime2=" + validityStarttime2
 				+ ", validityEndtime2=" + validityEndtime2
-				+ ", mode=" + mode
-				+ ", feature=" + feature
-				+ ", rldto=" + rldto+"]";
+				+ ", mode=" + mode + ", rldto=" + rldto+"]";
 	}
 }
