@@ -9,6 +9,7 @@ import java.util.Properties;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -131,4 +132,41 @@ public class SettingUtil {
 		}
 		return map;
 	}
+	
+	
+	/**
+	 * 获取区域编码
+	 * 
+	 * @return
+	 */
+	public static String getCollection(String key) {
+		try {
+			UpdateHandler up = new UpdateHandler() {
+				@Override
+				public void Handle(String s, String s1) {}
+			};
+			String xml = Setting.get("/PqConfigs/SolrUrl.xml", up);
+			if(StringUtils.isEmpty(xml)){
+				return "";
+			}
+			Document document = null;
+			try {
+				document = DocumentHelper.parseText(xml);
+				Element root = document.getRootElement();
+				List<Element> list = root.elements();
+				for (Element e : list) {
+					String core = e.attribute("key").getValue();
+					if (StringUtils.equals(key, core)) {
+						return e.attribute("value").getValue();
+					}
+				}
+			} catch (DocumentException e) {
+				log.error("String转xml异常", e);
+			}
+		} catch (Exception e) {
+			log.error("获取配置文件SolrUrl.xml失败", e);
+		}
+		return "";
+	}
+	
 }

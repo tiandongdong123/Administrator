@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
+import com.utils.SettingUtil;
 import com.utils.SolrService;
 import com.wf.bean.DeleteArticle;
 import com.wf.bean.PageList;
@@ -65,7 +66,6 @@ public class SolrManagerController {
 	
 	private static final String front="stringIS_";
 	
-	private RedisUtil redis = new RedisUtil();
 	/**
 	 * 跳转到下撤界面
 	 * @param model
@@ -155,8 +155,8 @@ public class SolrManagerController {
 				map.put("msg", msg);
 				return map;
 			}
-			String core = this.getCore(model);
-			if (core == null || "".equals(core)) {
+			String core = SettingUtil.getCollection(model);
+			if (StringUtils.isEmpty(core) || "".equals(core)) {
 				String msg = "根据" + model + "查询到的core为空";
 				log.info(msg);
 				map.put("msg", msg);
@@ -556,10 +556,7 @@ public class SolrManagerController {
 	private String tbooks(String id){//工具书ID
 		return front+"ref_b_id:("+id+")";
 	}
-	//获取core
-	private String getCore(String key) {
-		return redis.get(key, 3);//solr核存在db3中
-	}
+	
 	//获取的值用空格分开
 	private String getIdValues(String val){
 		val=val.replaceAll("\r", " ");
