@@ -42,4 +42,3 @@ public class ImgUtil {
         return str;
     }
 }
->>>>>>> origin/master
