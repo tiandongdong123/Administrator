@@ -87,7 +87,7 @@
                <textarea class="form-control input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
 				<span>
 				<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
-				<button type="button" onclick="deleteIP();" id="deleteIp">剔除IP冲突</button>
+				<button type="button" onclick="deleteIP();" id="deleteIp">剔除冲突IP</button>
 				</span>
              </div>
             </div>

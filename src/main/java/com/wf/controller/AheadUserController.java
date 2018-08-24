@@ -43,6 +43,7 @@ import com.utils.SettingUtil;
 import com.utils.WFMailUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
+import com.wanfangdata.rpc.bindauthority.ServiceResponse;
 import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.InstitutionalUser;
@@ -597,8 +598,9 @@ public class AheadUserController {
 			allNum = userList.size();
 			for (Map<String, Object> map : userList) {
 				// Excel表格中部分账号信息
+				String userId=map.get("userId").toString();
 				user.setInstitution(map.get("institution").toString());
-				user.setUserId(map.get("userId").toString());
+				user.setUserId(userId);
 				user.setPassword(String.valueOf(map.get("password")));
 				// 添加机构信息
 				aheadUserService.batchRegisterInfo(user, map);
@@ -611,37 +613,32 @@ public class AheadUserController {
 					errorMap.put("fail", "执行到机构账号"+user.getUserId()+"异常:</br>"+msg);
 					return errorMap;
 				}
-				// 个人绑定机构权限
-				bindAuthorityModel.setUserId(map.get("userId").toString());
-				if (bindAuthorityModel.getOpenState() != null && bindAuthorityModel.getOpenState()) {
+				bindAuthorityModel.setUserId(userId);
+				if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
 					aheadUserService.openBindAuthority(bindAuthorityModel);
-				}
+					log.info("成功开通个人绑定机构权限");
+					String email = bindAuthorityModel.getEmail();
+                    List<String> userIdList = new ArrayList<>();
+                    // 发送邮箱
+                    try {
+                        if (bindAuthorityModel.getSend()) {
+                        	userIdList.add(userId);
+                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                                log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
+                                        + userIdList.toString() + "，email:" + email);
+                            } else {
+                            	log.info("发送邮件失败");
+                                //throw new Exception("发送邮件失败");
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userId + "，email:" + email, e);
+                    }
+                }
 				this.addOperationLogs(user, "批量注册", req);
 				log.info("机构用户[" + user.getUserId() + "]注册成功");
 				sucNum++;
 			}
-            // 发送邮箱
-        	String email = bindAuthorityModel.getEmail();
-            List<String> userIdList = new ArrayList<>();
-            try {
-                if (bindAuthorityModel.getSend()) {
-                    for (int i = 0; i < userList.size(); i++) {
-                        Map<String, Object> userIdMap = userList.get(i);
-                        userIdList.add(userIdMap.get("userId").toString());
-                    }
-                    if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
-                        log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
-                                + userIdList.toString() + "，email:" + email);
-                        errorMap.put("emailFlag", "success");
-                    } else {
-                        throw new Exception("发送邮件失败");
-                    }
-                }
-            } catch (Exception e) {
-                log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userIdList.toString()
-                        + "，email:" + email, e);
-                errorMap.put("emailFlag", "fail");
-            }
 			errorMap.put("flag", "success");
 			errorMap.put("success", "成功导入："+sucNum+"条");
 			log.info("批量注册成功："+sucNum+"条，耗时:"+(System.currentTimeMillis()-time)+"ms");
@@ -776,9 +773,32 @@ public class AheadUserController {
 		if(bindAuthorityModel.getOpenState()==null){
 			return;
 		}
+		//修改或开通个人绑定机构权限
 		bindAuthorityModel.setUserId(userId);
 		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
-			aheadUserService.editBindAuthority(bindAuthorityModel);
+			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
+			if (response.getServiceResult()==false){
+				log.info(response.getResultMessage());
+			}
+			String email = bindAuthorityModel.getEmail();
+			//发送邮箱
+            try {
+                if (bindAuthorityModel.getSend()) {
+                	 List<String> userIdList = new ArrayList<>();
+                	userIdList.add(userId);
+                    if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+                        log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
+                        //hashmap.put("emailFlag", "success");
+                    } else {
+                    	log.info("发送邮件失败");
+                        //throw new Exception("发送邮件失败");
+                    }
+                }
+            } catch (Exception e) {
+                log.error("机构用户批量更新，发送邮箱出现异常！userIdList:" + userId
+                        + "，email:" + email, e);
+                //hashmap.put("emailFlag", "fail");
+            }
 		}else {
 			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 			if (count>0){
@@ -1391,6 +1411,9 @@ public class AheadUserController {
 				if (bindAuthorityModel.getSend()) {
 					if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
 						log.info("机构用户注册，发送邮件成功，userIdList：" + userIdList.toString() + "，email:" + email);
+					} else {
+						//throw new Exception("发送邮件失败");
+						log.error("发送邮件失败");
 					}
 				}
 			} catch (Exception e) {
@@ -1404,12 +1427,32 @@ public class AheadUserController {
 		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
 		//修改或开通个人绑定机构权限
 		if (bindAuthorityModel.getOpenState()!=null&&bindAuthorityModel.getOpenState()){
-			aheadUserService.editBindAuthority(bindAuthorityModel);
-		}else {
+			ServiceResponse response =  aheadUserService.editBindAuthority(bindAuthorityModel);
+			if (response.getServiceResult()==false){
+				log.error("修改个人绑定机构权限失败");
+			}
+		} else {
 			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
-			if (count>0){
+			if (count > 0) {
 				aheadUserService.closeBindAuthority(bindAuthorityModel);
 			}
+		}
+		String userId = bindAuthorityModel.getUserId();
+		String email = bindAuthorityModel.getEmail();
+		//发送邮箱
+		try {
+			if (bindAuthorityModel.getSend()) {
+				List<String> userIdList=new ArrayList<>();
+				userIdList.add(userId);
+				if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+					log.info("账号修改，发送邮件成功，userId：+userId：" + userId + "，email:" + email);
+				} else {
+					//throw new Exception("发送邮件失败");
+					log.info("发送邮件失败");
+				}
+			}
+		} catch (Exception e) {
+			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 		}
 	}
 	
