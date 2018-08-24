@@ -200,6 +200,7 @@ function updateUser(){
         data.set('openBindEnd',openBindEnd+' 23:59:59');
     }
     var isCheckedMe = $('#isPublishEmail').is(':checked');
+    var userId = $("#userId").val();
     data.append('send',isCheckedMe);
 	$.ajax({
 		url: '../auser/updateinfo.do',
