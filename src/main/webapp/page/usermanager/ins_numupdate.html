@@ -46,7 +46,7 @@
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>地区</label>
 				<select class="form-control input_time" name="PostCode" id="PostCode">
-				<?if(!isEmpty(groupInfo)&&groupInfo.PostCode!='none'){ ?>
+				<?if(isEmpty(groupInfo)||groupInfo.PostCode!='none'){ ?>
 				<option value="">--请选择--</option>
 				<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(groupInfo)&&groupInfo.PostCode==arr.id){?>selected="selected"<?}?>>${arr.name}</option><?}?>
 				<?}?>
