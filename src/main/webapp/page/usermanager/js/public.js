@@ -1898,6 +1898,9 @@ function selectRegion(obj){
 		$("#PostCode").html('<option value="none">无</option>');
 		$("#fromList").data("bootstrapValidator").updateStatus("PostCode","NOT_VALIDATED",null);
 	}else{
+		if(arrayArea==""||arrayArea==null){
+			arrayArea=$("#allRegion").html();
+		}
 		$("#PostCode").html(arrayArea);
 		var bootstrapValidator = $("#fromList").data('bootstrapValidator');
 		$("#fromList").bootstrapValidator("addField","PostCode", {
