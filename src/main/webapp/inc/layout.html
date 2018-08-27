@@ -179,20 +179,18 @@
             <li <? if(session.menu_first=="pay.do"){ ?>class="active"<?}?>><a href="../auser/pay.do"><i class="fa fa-circle-o"></i> 充值管理</a></li>
           </ul>
         </li>
-        <li class="treeview" <?if(!strutil.contain(session.purviews,"广告管理")){?>style="display:none"<?}?>>
-          <a href="#">
-            <i class="fa fa-pie-chart"></i><span>广告管理</span><i class="fa fa-angle-left pull-right"></i>
-          </a>
-          <ul class="treeview-menu menu-open" style="display: block;">
-            <li <? if(session.menu_first=="search_adMessage_result.do"){ ?>class="active"<?}?>><a href="../auser/search_adMessage_result.do"><i class="fa fa-circle-o"></i> 广告管理</a></li>
-          </ul>
-        </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"内容管理")){?>style="display:none"<?}?>>
           <a href="#">
             <i class="fa fa-edit"></i><span>内容管理</span><i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu menu-open" style="display: block;">
 	        <li <?if(!strutil.contain(session.purviews,"资讯管理")){?>style="display:none"<?}?><? if(session.menu_first=="message.do"){ ?>class="active"<?}?>><a href="../content/message.do"><i class="fa fa-circle-o"></i>资讯管理</a></li>
+            <li <?if(!strutil.contain(session.purviews,"广告管理")){?>style="display:none"<?}?>>
+	           	<a href="#"><i class="fa fa-circle-o"></i>广告管理<i class="fa fa-angle-left pull-right"></i></a>
+	           	<ul class="treeview-menu menu-open" style="display: block;">
+		            <li <? if(session.menu_first=="search_adMessage_result.do"){ ?>class="active"<?}?>><a href="../auser/search_adMessage_result.do"><i class="fa fa-circle-o"></i> 广告信息管理</a></li>
+	         	</ul>
+            </li>
           	<li <?if(!strutil.contain(session.purviews,"知识组织管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>知识组织管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
