@@ -1896,8 +1896,14 @@ function selectRegion(obj){
 	if(region=='foreign'){
 		arrayArea=$("#PostCode").html();
 		$("#PostCode").html('<option value="none">无</option>');
+		$("#fromList").data("bootstrapValidator").updateStatus("PostCode","NOT_VALIDATED",null);
 	}else{
 		$("#PostCode").html(arrayArea);
+		var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+		$("#fromList").bootstrapValidator("addField","PostCode", {
+			validators: {notEmpty: {message: "地区不能为空，请选择地区"}}
+		});
+		bootstrapValidator.validate();
 	}
 }
 var errorIP="";
