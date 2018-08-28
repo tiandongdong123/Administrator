@@ -68,7 +68,8 @@ function submitForm(){
 	        url: '../auser/updatebatchregister.do',  
 	        type: 'POST',
 	        data: data,
-	        cache: false,  
+	        cache: false,
+	        timeout:1800000,
 	        processData: false,
 	        contentType: false  
 	    }).done(function(data){
