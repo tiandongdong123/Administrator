@@ -1,7 +1,9 @@
 package com.wf.service;
 
 import com.wf.bean.userStatistics.StatisticsParameter;
+import com.wf.bean.userStatistics.TotalStatisticsModel;
 import com.wf.bean.userStatistics.UserStatistics;
+import com.wf.bean.userStatistics.UserStatisticsExample;
 
 import java.util.List;
 
@@ -13,7 +15,13 @@ public interface UserStatisticsService {
 
     int insert(UserStatistics userStatistics);
 
-    int selectPreviousSum(String type, String dateTime);
+    int selectPreviousSumByType(String type, String dateTime);
 
-    List<Integer> selectNewData(StatisticsParameter parameter);
+    List<Integer> selectNewDataByType(StatisticsParameter parameter);
+
+    TotalStatisticsModel selectPreviousSum(UserStatisticsExample example);
+
+    List<UserStatistics> selectByExample(UserStatisticsExample example);
+
+    List<UserStatistics> selectNewData(StatisticsParameter parameter);
 }

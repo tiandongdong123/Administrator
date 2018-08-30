@@ -15,6 +15,26 @@
         <result column="studentaccount" jdbcType="INTEGER" property="studentaccount"/>
         <result column="institution_admin" jdbcType="INTEGER" property="institutionAdmin"/>
     </resultMap>
+
+    <resultMap id="ColumnSumMap" type="com.wf.bean.userStatistics.TotalStatisticsModel">
+        <result column="sum1" jdbcType="INTEGER" property="personUser"/>
+        <result column="sum2" jdbcType="INTEGER" property="authenticatedUser"/>
+        <result column="sum3" jdbcType="INTEGER" property="personBindInstitution"/>
+        <result column="sum4" jdbcType="INTEGER" property="institution"/>
+        <result column="sum5" jdbcType="INTEGER" property="institutionAccount"/>
+        <result column="sum6" jdbcType="INTEGER" property="institutionAdmin"/>
+    </resultMap>
+
+    <resultMap id="NewAddMap" type="com.wf.bean.userStatistics.UserStatistics">
+        <result column="sum1" jdbcType="INTEGER" property="personUser"/>
+        <result column="sum2" jdbcType="INTEGER" property="authenticatedUser"/>
+        <result column="sum3" jdbcType="INTEGER" property="personBindInstitution"/>
+        <result column="sum4" jdbcType="INTEGER" property="institution"/>
+        <result column="sum5" jdbcType="INTEGER" property="institutionAccount"/>
+        <result column="sum6" jdbcType="INTEGER" property="institutionAdmin"/>
+        <result column="valid_institution_account" jdbcType="INTEGER" property="validInstitutionAccount"/>
+    </resultMap>
+
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -334,11 +354,12 @@
     where date = #{date,jdbcType=VARCHAR}
   </update>
 
-    <select id="selectPreviousSum" parameterType="java.lang.String" resultType="java.lang.Integer">
+    <select id="selectPreviousSumByType" parameterType="java.lang.String" resultType="java.lang.Integer">
     select sum(${type}) from user_statistics where date <![CDATA[ < ]]>  #{dateTime}
   </select>
 
-    <select id="selectNewData" parameterType="com.wf.bean.userStatistics.StatisticsParameter" resultType="java.lang.Integer">
+    <select id="selectNewDataByType" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
+            resultType="java.lang.Integer">
         select sum from (
         select sum(${type}) sum,
         <if test="timeUnit == 1">
@@ -350,7 +371,18 @@
         <if test="timeUnit == 3">
             DATE_FORMAT(date,'%Y%m')
         </if>
-        unit  from user_statistics where date <![CDATA[ >= ]]> #{startTime}  and date  <![CDATA[ <= ]]> #{endTime}  group by unit
-       ) alias
+        unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
+        group by unit
+        ) alias
     </select>
+    <select id="selectPreviousSum" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
+            resultMap="ColumnSumMap">
+        select sum(person_user) sum1, sum(authenticated_user) sum2,sum(person_bind_institution) sum3,
+        sum(institution) sum4,sum(institution_account) sum5,sum(institution_admin) sum6
+        from user_statistics
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
 </mapper>

@@ -1,12 +1,15 @@
 package com.wf.service.impl;
 
+import com.alibaba.citrus.service.requestcontext.rundata.User;
 import com.google.protobuf.util.Timestamps;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
 import com.wanfangdata.rpc.bindauthority.SearchBindDetailsRequest;
 import com.wanfangdata.rpc.bindauthority.SearchBindDetailsResponse;
 import com.wf.bean.WfksPayChannelResources;
 import com.wf.bean.userStatistics.StatisticsParameter;
+import com.wf.bean.userStatistics.TotalStatisticsModel;
 import com.wf.bean.userStatistics.UserStatistics;
+import com.wf.bean.userStatistics.UserStatisticsExample;
 import com.wf.dao.PersonMapper;
 import com.wf.dao.UserStatisticsMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
@@ -20,6 +23,7 @@ import wfks.authentication.AccountId;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -127,13 +131,47 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     }
 
     @Override
-    public int selectPreviousSum(String type, String dateTime) {
-        return userStatisticsMapper.selectPreviousSum(type,dateTime);
+    public int selectPreviousSumByType(String type, String dateTime) {
+        return userStatisticsMapper.selectPreviousSumByType(type,dateTime);
     }
 
     @Override
-    public List<Integer> selectNewData(StatisticsParameter parameter) {
+    public List<Integer> selectNewDataByType(StatisticsParameter parameter) {
 
-        return userStatisticsMapper.selectNewData(parameter);
+        return userStatisticsMapper.selectNewDataByType(parameter);
+    }
+    @Override
+    public TotalStatisticsModel selectPreviousSum(UserStatisticsExample example) {
+
+        return userStatisticsMapper.selectPreviousSum(example);
+    }
+
+    @Override
+    public List<UserStatistics> selectByExample(UserStatisticsExample example) {
+
+        return userStatisticsMapper.selectByExample(example);
+    }
+
+
+    @Override
+    public List<UserStatistics> selectNewData(StatisticsParameter parameter) {
+
+        switch (parameter.getTimeUnit()){
+            case 1:{
+                UserStatisticsExample example = new UserStatisticsExample();
+                UserStatisticsExample.Criteria criteria = example.createCriteria();
+                criteria.andDateGreaterThanOrEqualTo(parameter.getStartTime());
+                criteria.andDateLessThanOrEqualTo(parameter.getEndTime());
+                return userStatisticsMapper.selectByExample(example);
+            }
+            case 2:{
+                return userStatisticsMapper.selectByWeek(parameter.getStartTime(),parameter.getEndTime());
+            }
+            case 3:{
+                return userStatisticsMapper.selectByMonth(parameter.getStartTime(),parameter.getEndTime());
+            }
+
+        }
+        return new ArrayList<>();
     }
 }
