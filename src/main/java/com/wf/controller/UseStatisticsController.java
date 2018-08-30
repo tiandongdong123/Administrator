@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
@@ -37,12 +38,8 @@ public class UseStatisticsController {
     }
 
     @RequestMapping("totalCharts")
+    @ResponseBody
     public Map<String, List<Object>> totalCharts(StatisticsParameter parameter) {
-
-        parameter.setStartTime("2018-06-01");
-        parameter.setEndTime("2018-08-22");
-        parameter.setType("person_user");
-        parameter.setTimeUnit(3);
 
         Map<String, List<Object>> result = new HashMap<>();
         try {
@@ -59,6 +56,7 @@ public class UseStatisticsController {
 
 
     @RequestMapping("newCharts")
+    @ResponseBody
     public Map<String, List<Object>> newCharts(StatisticsParameter parameter, String compareStartTime, String compareEndTime) {
         Map<String, List<Object>> result = new HashMap<>();
         List<Object> selectData = new ArrayList<>();
@@ -83,6 +81,7 @@ public class UseStatisticsController {
     }
 
     @RequestMapping("totalDatasheets")
+    @ResponseBody
     public List<TotalStatisticsModel> totalDatasheets(StatisticsParameter parameter) {
        List<TotalStatisticsModel> modelList = new ArrayList<>();
         try {
