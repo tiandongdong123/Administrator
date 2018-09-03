@@ -32,6 +32,7 @@ public class UseStatisticsController {
 
     /**
      * 跳转
+     *
      * @return
      */
     @RequestMapping("statisticsInfo")
@@ -44,6 +45,7 @@ public class UseStatisticsController {
 
     /**
      * 总数折线图
+     *
      * @param parameter 参数
      * @return
      */
@@ -66,16 +68,13 @@ public class UseStatisticsController {
 
     /**
      * 新增折线图
+     *
      * @param parameter 参数
      * @return
      */
     @RequestMapping("newCharts")
     @ResponseBody
     public Map<String, List> newCharts(@Valid StatisticsParameter parameter) {
-        parameter.setStartTime("2018-06-01");
-        parameter.setEndTime("2018-08-22");
-        parameter.setType("person_user");
-        parameter.setTimeUnit(3);
         Map<String, List> result = new HashMap<>();
         try {
             List<Integer> newDataList = userStatisticsService.selectSingleTypeNewData(parameter);
@@ -91,16 +90,17 @@ public class UseStatisticsController {
 
     /**
      * 总数对比折线图
-     * @param parameter 参数
+     *
+     * @param parameter        参数
      * @param compareStartTime 对比开始时间
-     * @param compareEndTime 对比结束时间
+     * @param compareEndTime   对比结束时间
      * @return
      */
     @RequestMapping("compareTotalCharts")
     @ResponseBody
     public Map<String, List> compareTotalCharts(@Valid StatisticsParameter parameter,
-                                                @RequestParam(value = "databaseCode[]", required = true)String compareStartTime ,
-                                                @RequestParam(value = "databaseCode[]", required = true)String compareEndTime) {
+                                                @RequestParam(value = "compareStartTime", required = true) String compareStartTime,
+                                                @RequestParam(value = "compareEndTime", required = true) String compareEndTime) {
         Map<String, List> result = new HashMap<>();
         List<Integer> selectData = new ArrayList<>();
         List<Integer> compareData = new ArrayList<>();
@@ -123,16 +123,52 @@ public class UseStatisticsController {
 
     }
 
+    /**
+     * 新增对比折线图
+     *
+     * @param parameter        参数
+     * @param compareStartTime 对比开始时间
+     * @param compareEndTime   对比结束时间
+     * @return
+     */
+    @RequestMapping("compareNewCharts")
+    @ResponseBody
+    public Map<String, List> compareNewCharts(@Valid StatisticsParameter parameter,
+                                              @RequestParam(value = "compareStartTime", required = true) String compareStartTime,
+                                              @RequestParam(value = "compareEndTime", required = true) String compareEndTime) {
+        Map<String, List> result = new HashMap<>();
+        List<Integer> selectData = new ArrayList<>();
+        List<Integer> compareData = new ArrayList<>();
+        try {
+            selectData = userStatisticsService.selectSingleTypeNewData(parameter);
+            StatisticsParameter compareParameter = new StatisticsParameter();
+            compareParameter.setStartTime(compareStartTime);
+            compareParameter.setEndTime(compareEndTime);
+            compareParameter.setType(parameter.getType());
+            compareParameter.setTimeUnit(parameter.getTimeUnit());
+            compareData = userStatisticsService.selectSingleTypeNewData(compareParameter);
+            List<String> dateTime = getDateList(parameter);
+            result.put("selectData", selectData);
+            result.put("compareData", compareData);
+            result.put("dateTime", dateTime);
+        } catch (Exception e) {
+            log.error("获取总数折线图失败，parameter：" + parameter, e);
+        }
+        return result;
+
+    }
+
 
     /**
      * 总数列表
-     * @param parameter  参数
+     *
+     * @param parameter 参数
      * @return
      */
     @RequestMapping("totalDatasheets")
     @ResponseBody
     public List<StatisticsModel> totalDatasheets(@Valid StatisticsParameter parameter) {
-       List<StatisticsModel> modelList = new ArrayList<>();
+        List<StatisticsModel> modelList = new ArrayList<>();
         try {
             //modelList = selectTotalData(parameter);
 
@@ -145,16 +181,17 @@ public class UseStatisticsController {
 
     /**
      * 新增列表
+     *
      * @param parameter 参数
      * @param model
      * @return
      */
     @RequestMapping("newDatasheets")
     @ResponseBody
-    public String newDatasheets(@Valid StatisticsParameter parameter,Model model) {
+    public String newDatasheets(@Valid StatisticsParameter parameter, Model model) {
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
-            if (parameter.getPageSize()==0){
+            if (parameter.getPageSize() == 0) {
                 //若为0，设一个默认值
                 parameter.setPage(20);
             }
@@ -175,6 +212,7 @@ public class UseStatisticsController {
 
     /**
      * 按指标类型查询总数
+     *
      * @param parameter 参数
      * @return
      */
@@ -191,6 +229,7 @@ public class UseStatisticsController {
 
     /**
      * 查询所有指标总数
+     *
      * @param parameter 参数
      * @return
      */
@@ -199,7 +238,7 @@ public class UseStatisticsController {
 
         UserStatisticsExample example = new UserStatisticsExample();
         UserStatisticsExample.Criteria criteria = example.createCriteria();
-        if (parameter.getStartTime()!=null&&!"".equals(parameter.getStartTime())){
+        if (parameter.getStartTime() != null && !"".equals(parameter.getStartTime())) {
             criteria.andDateLessThan(parameter.getStartTime());
         }
         StatisticsModel previousData = userStatisticsService.selectSumByExample(example);
@@ -210,6 +249,7 @@ public class UseStatisticsController {
 
     /**
      * 获取日期列表（按日/按周/按月）
+     *
      * @param parameter 参数
      * @return
      */
@@ -246,7 +286,7 @@ public class UseStatisticsController {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(startTime);
                         String startDayOfWeek = dayFormat.format(startTime);
-                        int whichDay = calendar.get(Calendar.DAY_OF_WEEK)-1;
+                        int whichDay = calendar.get(Calendar.DAY_OF_WEEK) - 1;
                         if (whichDay == 0) {
                             whichDay = 7;
                         }
