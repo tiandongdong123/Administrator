@@ -186,7 +186,7 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        console.log(data.dateTime[3])
+                        console.log(data.dateTime.length)
                         myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, data.dateTime[0], data.dateTime[3])
                     },
                     error: function () {
@@ -202,15 +202,15 @@ $(function () {
                     data: {
                         "startTime": startDate,
                         "endTime": endDate,
-                        "compareStartDate": compareStartDate,
-                        "compareEndDate": compareEndDate,
+                        "compareStartTime": compareStartDate,
+                        "compareEndTime": compareEndDate,
                         "timeUnit": timeUnit,
                         "type": indexType
                     },
                     success: function (data) {
                         console.log(data)
                         /* myEcharsCommon.commonLine('lineContainer',data.totalData,data.dateTime,startDate,endDate)*/
-                        /* myEcharsCommon.lineComparison('lineContainerComparison',)*/
+                         myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime)
                     },
                     error: function () {
                     }
@@ -341,7 +341,7 @@ $(function () {
 
             },
 
-            lineComparison: function (idName) {
+            lineComparison: function (idName,selectData,compareData,dateTime) {
                 var dom = document.getElementById(idName);
                 if (dom.hasAttribute("_echarts_instance_")) {
                     dom.removeAttribute("_echarts_instance_");
@@ -385,7 +385,7 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
-                        data: ['2018/1/6', '2018/1/7', '2018/1/8', '2018/1/9', '2018/1/10', '2018/1/11', '2018/1/12'],
+                        data:dateTime,
                     },
                     yAxis: {
                         show: false,//隐藏坐标轴
@@ -399,17 +399,36 @@ $(function () {
                             name: '个人用户（单位：元）',
                             type: 'line',
                             stack: '总量',
-                            data: [820, 932, 901, 934, 1290, 1330, 3320],
+                            data: selectData,
                             itemStyle: {normal: {label: {show: true}}}
                         },
                         {
                             name: '个人用户（对比）（单位：元）',
                             type: 'line',
                             stack: '总量',
-                            data: [220, 182, 191, 234, 290, 330, 310],
+                            data: compareData,
                             itemStyle: {normal: {label: {show: true}}}
                         }
-                    ]
+                    ],
+                    dataZoom: {
+                        type: 'slider',
+                        show: true,
+                        backgroundColor: '#e0e3e8',
+                        handleColor: '#7cb6e1',
+                        fillerColor: '#7cb6e1',
+                        start:0,
+                        xAxisIndex: 0,
+                        end:31 ,
+                        left: 10,
+                        right: 10,
+                        bottom: 4,
+                        height: 6,
+                        textStyle: {
+                            color: 'transparent'
+                        },
+                        handleSize: 16,
+                        showDataShadow:false
+                    }
                 };
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);
