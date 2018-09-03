@@ -1,12 +1,9 @@
 package com.wf.dao;
 
-import com.wf.bean.userStatistics.StatisticsParameter;
+import com.wf.bean.userStatistics.*;
 
 import java.util.List;
 
-import com.wf.bean.userStatistics.TotalStatisticsModel;
-import com.wf.bean.userStatistics.UserStatistics;
-import com.wf.bean.userStatistics.UserStatisticsExample;
 import org.apache.ibatis.annotations.Param;
 
 public interface UserStatisticsMapper {
@@ -32,13 +29,12 @@ public interface UserStatisticsMapper {
 
     int updateByPrimaryKey(UserStatistics record);
 
-    int selectPreviousSumByType(@Param("type") String type,@Param("dateTime")String dateTime);
+    int selectSingleTypePreviousSum(@Param("type") String type,@Param("dateTime")String dateTime);
 
-    List<Integer> selectNewDataByType(StatisticsParameter parameter);
+    List<Integer> selectSingleTypeNewData(StatisticsParameter parameter);
 
-    TotalStatisticsModel selectPreviousSum(UserStatisticsExample example);
+    StatisticsModel selectSumByExample(UserStatisticsExample example);
 
-    List<UserStatistics> selectByWeek(String startTime,String endTime);
+    List<StatisticsModel> selectNewDate(StatisticsParameter parameter);
 
-    List<UserStatistics> selectByMonth(String startTime,String endTime);
 }

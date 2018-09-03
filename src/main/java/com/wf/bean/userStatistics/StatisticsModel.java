@@ -1,6 +1,6 @@
 package com.wf.bean.userStatistics;
 
-public class NewStatisticsModel {
+public class StatisticsModel {
 
     private String date;
 
@@ -28,6 +28,11 @@ public class NewStatisticsModel {
      * 机构账号数量
      */
     private Integer institutionAccount;
+
+    /**
+     * 有效机构账号数量
+     */
+    private Integer validInstitutionAccount;
 
     /**
      * 机构管理员数量
@@ -80,6 +85,14 @@ public class NewStatisticsModel {
 
     public void setInstitutionAccount(Integer institutionAccount) {
         this.institutionAccount = institutionAccount;
+    }
+
+    public Integer getValidInstitutionAccount() {
+        return validInstitutionAccount;
+    }
+
+    public void setValidInstitutionAccount(Integer validInstitutionAccount) {
+        this.validInstitutionAccount = validInstitutionAccount;
     }
 
     public Integer getInstitutionAdmin() {

@@ -78,6 +78,7 @@
 			<map>
 				<entry key="institutionName" value-ref="institutionName"/>
 				<entry key="personPhoneNumber" value-ref="personPhoneNumber"/>
+				<entry key="userStatisticsNewSum" value-ref="userStatisticsNewSum"/>
 			</map>
 		</property>
 	</bean>
