@@ -11,11 +11,15 @@ $(function () {
         var all_num = $(".all_num");
         var new_num = $(".new_num");
         var new_increased_num = $(".new_increased_num");
+        var content_nav_list = $(".content_nav");
         var content_nav = $(".content_nav a");
         var aRecent7Days = $("#aRecent7Days");
         var lineContainerComparison = $("#lineContainerComparison");
         var lineContainer = $("#lineContainer");
         var target_item_hidden = $(".target_selected .target_item_hidden");
+        var target_item = $(".target_item") ;
+        var nameSingle,nameCompare,nameArray;
+
 
         return {
             //日历插件
@@ -37,27 +41,56 @@ $(function () {
                         //最近几天背景的切换
                         time_quantum.each(function () {
                             var _this = $(this);
+                            var selectedVal,indexType,navTitle,data_compare_arry,startCompareDate,endCompareDate
                             _this.click(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                             })
                         });
-                        var selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                        var indexType = target_item_hidden.val();//指标参数
+
+                        $(".gri_pc").click(function () {
+                            if ($(".gri_pc").get(0).checked) {
+
+                            }else {
+                                $("#user_statistics_dataCompare").val("")
+                            }
+                        });
+
+                        selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                        indexType = target_item_hidden.val();//指标参数
+                        navTitle = $("#contentNavHidden").val();//总数/新增参数
+                       data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                        startCompareDate = data_compare_arry[0];
+
+                      /* console.log(data_compare_arry)*/
                         //判断对比时间发送不同的请求
-                        if (obj.startCompareDate && obj.endCompareDate) {
-                            console.log(888)
-                            that.comparisonEChartsAjax(obj.startDate, obj.endDate, obj.startCompareDate, obj.endCompareDate, selectedVal, indexType);
+                        if (startCompareDate && endCompareDate) {
+                            endCompareDate = data_compare_arry[1].trim();
+                            if(navTitle == 'total'){
+                                that.comparisonEChartsAjax(obj.startDate, obj.endDate,startCompareDate, endCompareDate, selectedVal, indexType);
+
+                            }
+                            if(navTitle == 'new'){
+                                that.newComparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate,endCompareDate, selectedVal, indexType);
+                           
+                            }
                         } else {
-                            that.eChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
+                            if(navTitle == 'total') {
+                                that.eChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
+                               /* console.log("22222")*/
+                            }
+                            if(navTitle == 'new'){
+                                that.newEChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
+                               /* console.log("11111")*/
+                            }
                         }
-
-
                     },
                 });
                 //默认显示最近7天
                 aRecent7Days.click();
+
+
             },
             //日周月随最近天数的变化
             dayWeekMonth: function (recent) {
@@ -68,21 +101,45 @@ $(function () {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     selected_data.children(".switch_data_hidden").val(1);
-                    week_month.show()
+                    week_month.show();
+                    if($("#user_statistics_dataCompare").val()!=""){
+                       $("#aYesterday").click();
+                    }
+                    lineContainerComparison.hide();
+                    lineContainer.show();
+                    return;
                 }
                 if (recent == "最近7天") {
+
                     switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                     switch_board_week.hide();
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
                     selected_data.children(".switch_data_hidden").val(1)
+
+                    if($("#user_statistics_dataCompare").val()!=""){
+                        $("#aRecent7Days").click();
+                    }
+                    lineContainerComparison.hide();
+                    lineContainer.show();
+                    return;
+
+
                 }
                 if (recent == "最近30天") {
+
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
                     selected_data.children(".switch_data_hidden").val(1)
+
+                    if($("#user_statistics_dataCompare").val()!=""){
+                        $("#aRecent30Days").click();
+                    }
+                    lineContainerComparison.hide();
+                    lineContainer.show();
+                    return;
                 }
             },
             //单个与对比分析图的切换
@@ -100,7 +157,9 @@ $(function () {
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
                 $(".gri_submit_btn").click(function () {
-                    time_quantum.css("background", "transparent")
+                    time_quantum.css("background", "transparent");
+
+
                 })
             },
             //样式的切换(日/周/月的切换时分析图的改变)
@@ -113,11 +172,11 @@ $(function () {
 
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
-                            that.getparms();
                         }
                         if (obj == content_nav) {
-                            console.log(111111)
+                            content_nav_list.children("#contentNavHidden").val(_this.children("input").val());
                         }
+                        that.getparms();
 
                     })
                 })
@@ -125,13 +184,45 @@ $(function () {
             //获取开始日期，指标，按日/周/月的参数
             getparms: function () {
                 var that = this;
-                var startDate, endDate, indexType, data_arry, switch_hidden;
+                var startDate, endDate,startCompareDate,endCompareDate, indexType,data_arry,data_compare_arry,switch_hidden,navTitle;
                 switch_hidden = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
-                endDate = data_arry[1];
+                endDate = data_arry[1].trim();
+
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+
+
                 indexType = target_item_hidden.val();//指标参数
-                that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
+                navTitle = $("#contentNavHidden").val();
+
+
+                /*that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
+
+                that.comparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, switch_hidden, indexType);*/
+
+                if (startCompareDate && endCompareDate) {
+                    endCompareDate = data_compare_arry[1].trim();
+
+                    if(navTitle == 'total'){
+                        that.comparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
+
+                    }
+                    if(navTitle == 'new'){
+                         that.newComparisonEChartsAjax(startDate,endDate,startCompareDate,endCompareDate, switch_hidden, indexType);
+                    }
+                } else {
+
+                    if(navTitle == 'total') {
+                        that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
+
+                    }
+                    if(navTitle == 'new'){
+                        that.newEChartsAjax(startDate,endDate, switch_hidden, indexType);
+
+                    }
+                }
             },
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
@@ -186,8 +277,9 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        console.log(data.dateTime.length)
-                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, data.dateTime[0], data.dateTime[3])
+                       nameSingle =  target_item.text()+"(单位：元)";
+                      /* console.log(nameSingle)*/
+                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime,nameSingle)
                     },
                     error: function () {
                     }
@@ -208,22 +300,85 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        console.log(data)
-                        /* myEcharsCommon.commonLine('lineContainer',data.totalData,data.dateTime,startDate,endDate)*/
-                         myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime)
+                       /* console.log(data)*/
+                        nameSingle =  target_item.text()+"(单位：元)";
+                        nameCompare = target_item.text()+"(对比单位：元)";
+                        nameArray = new Array() ;
+                        nameArray[0] = nameSingle;
+                        nameArray[1] = nameCompare;
+                        console.log(nameSingle);
+                        console.log(nameArray);
+                        myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime,nameArray,nameSingle,nameCompare)
                     },
                     error: function () {
                     }
                 });
             },
 
+
+            //新增折线图公共ajax
+            newEChartsAjax: function (startDate, endDate, timeUnit, indexType) {
+                $.ajax({
+                    type: 'post',
+                    url: '../userStatistics/newCharts.do',
+                    async: true,
+                    data: {
+                        "startTime": startDate,
+                        "endTime": endDate,
+                        "timeUnit": timeUnit,
+                        "type": indexType
+                    },
+                    success: function (data) {
+                      /*  console.log(data.dateTime.length)*/
+                        nameSingle =  target_item.text()+"(单位：元)";
+                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime,nameSingle)
+                    },
+                    error: function () {
+                    }
+                });
+            },
+
+            //新增对比折线图公共ajax
+            newComparisonEChartsAjax: function (startDate, endDate, compareStartDate, compareEndDate, timeUnit, indexType) {
+                $.ajax({
+                    type: 'post',
+                    url: "../userStatistics/compareNewCharts.do ",
+                    async: true,
+                    data: {
+                        "startTime": startDate,
+                        "endTime": endDate,
+                        "compareStartTime": compareStartDate,
+                        "compareEndTime": compareEndDate,
+                        "timeUnit": timeUnit,
+                        "type": indexType
+                    },
+                    success: function (data) {
+                      /*  console.log(data)*/
+                        nameSingle =  target_item.text()+"(单位：元)";
+                        nameCompare = target_item.text()+"(单位：元)";
+                        nameArray = new Array() ;
+                        nameArray[0] = nameSingle;
+                        nameArray[1] = nameCompare;
+
+                        myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime,nameArray,nameSingle,nameCompare)
+                    },
+                    error: function () {
+                    }
+                });
+            },
+
+
             //总数和新增的切换
             allOrNew: function () {
+                var that = this;
                 new_num.click(function () {
                     new_increased_num.show();
+                    that.getparms();
+
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
+                    that.getparms();
                 })
             },
             init: function () {
@@ -242,7 +397,7 @@ $(function () {
     //echarts图
     var myEcharsCommon = (function () {
         return {
-            commonLine: function (id, seriesData, dateTime, startValue, endValue) {
+            commonLine: function (id, seriesData, dateTime,nameSingle) {
                 var idObj = document.getElementById(id);
                 if (idObj.hasAttribute("_echarts_instance_")) {
                     idObj.removeAttribute("_echarts_instance_");
@@ -258,7 +413,7 @@ $(function () {
                     },
                     legend: {
                         data: [{
-                            name: '个人用户（单位：元）',
+                            name: nameSingle,
                         }],
                     },
                     grid: {
@@ -306,7 +461,7 @@ $(function () {
                     },
                     series: [
                         {
-                            name: '个人用户（单位：元）',
+                            name: nameSingle,
                             type: 'line',
                             stack: '总量',
                             data: seriesData,
@@ -341,7 +496,7 @@ $(function () {
 
             },
 
-            lineComparison: function (idName,selectData,compareData,dateTime) {
+            lineComparison: function (idName,selectData,compareData,dateTime,nameArray,nameSingle,nameCompare) {
                 var dom = document.getElementById(idName);
                 if (dom.hasAttribute("_echarts_instance_")) {
                     dom.removeAttribute("_echarts_instance_");
@@ -356,7 +511,7 @@ $(function () {
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['个人用户（单位：元）', '个人用户（对比）（单位：元）'],
+                        data: nameArray,
                         orient: 'vertical',  //垂直显示
                         selectedMode: 'single',
                         padding: -0.5 //调节legend的位置
@@ -385,6 +540,10 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
+                        axisLabel:{
+                            interval:0,
+                          /*  rotate:-30,*/
+                        },
                         data:dateTime,
                     },
                     yAxis: {
@@ -396,14 +555,14 @@ $(function () {
                     },
                     series: [
                         {
-                            name: '个人用户（单位：元）',
+                            name: nameSingle,
                             type: 'line',
                             stack: '总量',
                             data: selectData,
                             itemStyle: {normal: {label: {show: true}}}
                         },
                         {
-                            name: '个人用户（对比）（单位：元）',
+                            name: nameCompare,
                             type: 'line',
                             stack: '总量',
                             data: compareData,
