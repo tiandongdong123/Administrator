@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import wfks.accounting.account.Account;
 import wfks.accounting.account.AccountDao;
 import wfks.authentication.AccountId;
+
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -60,8 +61,16 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             log.error("查询个人绑定机构新增数量失败，时间：" + dateTime);
         }
 
-        Integer institutionCountNumber = personMapper.getInstitutionCount(dateTime);
-        userStatistics.setInstitution(institutionCountNumber);
+        Integer institutionCount = personMapper.getInstitutionCount(dateTime);
+
+
+        if (institutionCount != 0) {
+            Integer existedCount = personMapper.getExistedInstitutionCountByDate(dateTime);
+            if (existedCount != 0) {
+                institutionCount  = institutionCount - existedCount;
+            }
+        }
+        userStatistics.setInstitution(institutionCount);
 
         List<String> unFreezeInstitutionAccountList = personMapper.selectunFreezeInstitutionAccount();
         int vaildIntitutionAccountNumber = 0;
@@ -127,7 +136,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     @Override
     public int selectSingleTypePreviousSum(String type, String dateTime) {
-        return userStatisticsMapper.selectSingleTypePreviousSum(type,dateTime);
+        return userStatisticsMapper.selectSingleTypePreviousSum(type, dateTime);
     }
 
     @Override
@@ -135,6 +144,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
         return userStatisticsMapper.selectSingleTypeNewData(parameter);
     }
+
     @Override
     public StatisticsModel selectSumByExample(UserStatisticsExample example) {
 
@@ -150,7 +160,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     @Override
     public List<StatisticsModel> selectNewData(StatisticsParameter parameter) {
-            return  userStatisticsMapper.selectNewDate(parameter);
+        return userStatisticsMapper.selectNewDate(parameter);
 
     }
 }

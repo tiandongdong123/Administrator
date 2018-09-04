@@ -87,14 +87,14 @@
     </resultMap>
 
     <resultMap id="UserStatisticMap" type="com.wf.bean.userStatistics.UserStatistics">
-        <result column="sum1" jdbcType="INTEGER" property="newPersonUserNumber" />
-        <result column="sum2" jdbcType="INTEGER" property="newOrdinaryUserNumber" />
-        <result column="sum3" jdbcType="INTEGER" property="newAuthenticatedUserNumber" />
-        <result column="sum4" jdbcType="INTEGER" property="newScholarUserNumber" />
-        <result column="sum5" jdbcType="INTEGER" property="newInstitutionAccountNumber" />
-        <result column="sum6" jdbcType="INTEGER" property="newInstitutionSubaccountNumber" />
-        <result column="sum7" jdbcType="INTEGER" property="newStudentaccountNumber" />
-        <result column="sum8" jdbcType="INTEGER" property="newInstitutionAdminNumber" />
+        <result column="sum1" jdbcType="INTEGER" property="personUser" />
+        <result column="sum2" jdbcType="INTEGER" property="ordinaryUser" />
+        <result column="sum3" jdbcType="INTEGER" property="authenticatedUser" />
+        <result column="sum4" jdbcType="INTEGER" property="scholarUser" />
+        <result column="sum5" jdbcType="INTEGER" property="institutionAccount" />
+        <result column="sum6" jdbcType="INTEGER" property="institutionSubaccount" />
+        <result column="sum7" jdbcType="INTEGER" property="studentaccount" />
+        <result column="sum8" jdbcType="INTEGER" property="institutionAdmin" />
     </resultMap>
 
     <!-- 更新管理员的机构名称与密码 -->
@@ -380,7 +380,15 @@
     </select>
 
     <select id="getInstitutionCount" parameterType="java.lang.String" resultType="java.lang.Integer">
-        select ifnull(COUNT(DISTINCT institution),0) from `user` where institution is not null and  DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime};
+        select ifnull(COUNT(DISTINCT institution),0) from `user`
+        where institution is not null and institution != '' and DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime};
+    </select>
+
+    <select id="getExistedInstitutionCountByDate" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT  ifnull(COUNT(DISTINCT institution),0) from `user`
+        where institution in(select institution from `user`
+        where institution is not null and  institution != '' and  DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime} GROUP BY institution)
+        and  DATE_FORMAT(registration_time,'%Y-%m-%d') <![CDATA[ < ]]> #{dateTime}
     </select>
 
     <select id="selectunFreezeInstitutionAccount" resultType="java.lang.String">

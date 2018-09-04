@@ -10,30 +10,37 @@
             <th>个人绑定机构用户</th>
             <th>机构</th>
             <th>机构账号</th>
+            <? if(type!=null&&type=="total"){?>
             <th>有效机构账号</th>
+            <?}?>
             <th>机构管理员</th>
         </tr>
         </thead>
 
         <tbody>
-
+        <?if(pager != null){?>
+        <?
+        var i = (pager.currentPage-1)*pager.pageSize+1;
+        for(receipt in pager.pageRecords){
+    ?>
         <tr>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-            <td>
-                1
-            </td>
-            <td>1</td>
-            <td>1</td>
-            <td>1</td>
-
-
-
+            <td>${i++}</td>
+            <td>${receipt.date}</td>
+            <td>${receipt.personUser}</td>
+            <td>${receipt.authenticatedUser}</td>
+            <td>${receipt.personBindInstitution}</td>
+            <td>${receipt.institution}</td>
+            <td>${receipt.institutionAccount}</td>
+            <? if(type!=null&&type=="total"){?>
+            <td>${receipt.validInstitutionAccount}</td>
+            <?}?>
+            <td>${receipt.institutionAdmin}</td>
         </tr>
-
+        <?}?>
+        <?
+           includeFileTemplate("../../inc/pagePlugin.html",{maxPageNumber:5, pager:pager}){}
+           ?>
+        <?}?>
         </tbody>
     </table>
 </div>
