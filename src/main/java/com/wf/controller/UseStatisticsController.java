@@ -117,7 +117,7 @@ public class UseStatisticsController {
             List<String> dateTime = getDateList(parameter);
             result.put("dateTime", dateTime);
         } catch (Exception e) {
-            log.error("获取总数折线图失败，parameter：" + parameter, e);
+            log.error("获取总数折线图失败，parameter：" + parameter.toString(), e);
         }
         return result;
 
@@ -152,7 +152,7 @@ public class UseStatisticsController {
             result.put("compareData", compareData);
             result.put("dateTime", dateTime);
         } catch (Exception e) {
-            log.error("获取总数折线图失败，parameter：" + parameter, e);
+            log.error("获取总数折线图失败，parameter：" + parameter.toString(), e);
         }
         return result;
 
@@ -167,15 +167,24 @@ public class UseStatisticsController {
      */
     @RequestMapping("totalDatasheets")
     @ResponseBody
-    public List<StatisticsModel> totalDatasheets(@Valid StatisticsParameter parameter) {
+    public String totalDatasheets(@Valid StatisticsParameter parameter, Model model) {
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
-            //modelList = selectTotalData(parameter);
-
+            if (parameter.getPageSize() == 0) {
+                //若为0，设一个默认值
+                parameter.setPage(20);
+            }
+            modelList = selectTotalData(parameter);
+            String actionUrl = "/userStatistics/totalDatasheets.do";
+            int page = parameter.getPage();
+            int pageSize = parameter.getPageSize();
+            PagerModel<StatisticsModel> formList = new PagerModel<>(page, modelList.size(), pageSize, modelList, actionUrl, parameter);
+            model.addAttribute("pager", formList);
+            model.addAttribute("type", "total");
         } catch (Exception e) {
-            log.error("获取总数表格，parameter：" + parameter, e);
+            log.error("获取总数表格，parameter：" + parameter.toString(), e);
         }
-        return modelList;
+        return "/page/usermanager/user_statistics_result";
 
     }
 
@@ -201,12 +210,39 @@ public class UseStatisticsController {
             int pageSize = parameter.getPageSize();
             PagerModel<StatisticsModel> formList = new PagerModel<>(page, modelList.size(), pageSize, modelList, actionUrl, parameter);
             model.addAttribute("pager", formList);
+            model.addAttribute("type", "new");
 
         } catch (Exception e) {
-            log.error("获取总数表格，parameter：" + parameter, e);
+            log.error("获取新增表格，parameter：" + parameter.toString(), e);
         }
-        return "/page/usermanager/user_statistics_table";
+        return "/page/usermanager/user_statistics_result";
 
+    }
+
+
+    /**
+     * 新增数量总和
+     *
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    @RequestMapping("newDataSum")
+    @ResponseBody
+    public StatisticsModel newDataSum(String startTime,String endTime){
+        StatisticsModel statisticsModel = new StatisticsModel();
+        try {
+            UserStatisticsExample example = new UserStatisticsExample();
+            UserStatisticsExample.Criteria criteria = example.createCriteria();
+            if (startTime!=null&&!"".equals(startTime)&&endTime!=null&&!"".equals(endTime)){
+                criteria.andDateGreaterThanOrEqualTo(startTime);
+                criteria.andDateLessThanOrEqualTo(endTime);
+            }
+            statisticsModel = userStatisticsService.selectSumByExample(example);
+        } catch (Exception e) {
+            log.error("查询统计时间内新增数量之和失败", e);
+        }
+        return  statisticsModel;
     }
 
 
@@ -244,11 +280,40 @@ public class UseStatisticsController {
         StatisticsModel previousData = userStatisticsService.selectSumByExample(example);
         List<StatisticsModel> userStatisticsList = userStatisticsService.selectNewData(parameter);
 
+        //每周/每月的最后一天
+        if (parameter.getTimeUnit() == 2 || parameter.getTimeUnit() == 3) {
+            List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
+
+            for (int i = 0; i < userStatisticsList.size(); i++) {
+                UserStatisticsExample vaildExample = new UserStatisticsExample();
+                UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
+                vaildCriteria.andDateEqualTo(lastDateList.get(i));
+                List<UserStatistics> userStatistics = userStatisticsService.selectByExample(example);
+                previousData.setPersonUser(previousData.getPersonUser() + userStatisticsList.get(i).getPersonUser());
+                previousData.setAuthenticatedUser(previousData.getAuthenticatedUser() + userStatisticsList.get(i).getAuthenticatedUser());
+                previousData.setPersonBindInstitution(previousData.getPersonBindInstitution() + userStatisticsList.get(i).getPersonBindInstitution());
+                previousData.setInstitution(previousData.getInstitution() + userStatisticsList.get(i).getInstitution());
+                previousData.setInstitutionAccount(previousData.getInstitutionAccount() + userStatisticsList.get(i).getInstitutionAccount());
+                previousData.setInstitutionAdmin(previousData.getInstitutionAdmin() + userStatisticsList.get(i).getInstitutionAdmin());
+                previousData.setValidInstitutionAccount(userStatistics.get(i).getValidInstitutionAccount());
+            }
+
+        } else {
+            for (StatisticsModel userStatistics : userStatisticsList) {
+                previousData.setPersonUser(previousData.getPersonUser() + userStatistics.getPersonUser());
+                previousData.setAuthenticatedUser(previousData.getAuthenticatedUser() + userStatistics.getAuthenticatedUser());
+                previousData.setPersonBindInstitution(previousData.getPersonBindInstitution() + userStatistics.getPersonBindInstitution());
+                previousData.setInstitution(previousData.getInstitution() + userStatistics.getInstitution());
+                previousData.setInstitutionAccount(previousData.getInstitutionAccount() + userStatistics.getInstitutionAccount());
+                previousData.setInstitutionAdmin(previousData.getInstitutionAdmin() + userStatistics.getInstitutionAdmin());
+                previousData.setValidInstitutionAccount(userStatistics.getValidInstitutionAccount());
+            }
+        }
         return result;
     }
 
     /**
-     * 获取日期列表（按日/按周/按月）
+     * 获取日期集合（按日/按周/按月）
      *
      * @param parameter 参数
      * @return
@@ -329,5 +394,62 @@ public class UseStatisticsController {
             }
         }
         return dateList;
+    }
+
+
+    public List<String> lastDateOfWeekOrMonth(Integer timeUnit, String startTime, String endTime) {
+        List<String> lastDateList = new ArrayList<>();
+        Date startDate = null;
+        Date endDate = null;
+        switch (timeUnit) {
+            case 2: {
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(startDate);
+                    String startDayOfWeek = dayFormat.format(startTime);
+                    int whichDay = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+                    if (whichDay == 0) {
+                        whichDay = 7;
+                    }
+                    calendar.add(Calendar.DATE, 7 - whichDay);
+                    String endDayOfWeek = dayFormat.format(calendar.getTime());
+                    while (dayFormat.parse(endDayOfWeek).compareTo(endDate) == -1) {
+                        lastDateList.add(endDayOfWeek);
+                    }
+                    lastDateList.add(endDayOfWeek);
+
+                    break;
+                } catch (Exception e) {
+                    log.error("时间转换失败", e);
+                }
+            }
+            case 3:{
+                Calendar min = Calendar.getInstance();
+                Calendar max = Calendar.getInstance();
+
+                try {
+                    min.setTime(monthFormat.parse(startTime));
+                    min.set(min.get(Calendar.YEAR), min.get(Calendar.MONTH), 1);
+                    max.setTime(monthFormat.parse(endTime));
+                    max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
+                    Calendar calendar = min;
+                    while (calendar.before(max)) {
+                        Calendar cal = Calendar.getInstance();
+                        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+                        cal.set(Calendar.DAY_OF_MONTH, lastDay);
+                       if (cal.getTime().compareTo(endDate)==-1){
+                           String lastDayOfMonth = dayFormat.format(cal.getTime());
+                           lastDateList.add(lastDayOfMonth);
+                       }
+                       lastDateList.add(endTime);
+                    }
+                    break;
+                } catch (ParseException e) {
+                    log.error("时间转换失败", e); }
+
+            }
+
+        }
+        return lastDateList;
     }
 }

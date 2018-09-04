@@ -83,4 +83,16 @@ public class StatisticsParameter implements Serializable{
     public void setPage(int page) {
         this.page = page;
     }
+
+    @Override
+    public String toString() {
+        return "StatisticsParameter{" +
+                "startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", timeUnit=" + timeUnit +
+                ", type='" + type + '\'' +
+                ", pageSize=" + pageSize +
+                ", page=" + page +
+                '}';
+    }
 }

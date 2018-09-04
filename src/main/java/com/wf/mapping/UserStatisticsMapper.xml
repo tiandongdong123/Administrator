@@ -366,6 +366,7 @@
         group by unit
         ) alias
     </select>
+
     <select id="selectSumByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
             resultMap="ColumnSumMap">
         select sum(person_user) sum1, sum(authenticated_user) sum2,sum(person_bind_institution) sum3,
@@ -380,6 +381,9 @@
             resultMap="ColumnSumMap">
         select sum(person_user) sum1, sum(authenticated_user) sum2,sum(person_bind_institution) sum3,
         sum(institution) sum4,sum(institution_account) sum5,sum(institution_admin) sum6
+        <if test="timeUnit == 1">
+            ,valid_institution_account
+        </if>
         from user_statistics,
         <if test="timeUnit == 1">
             DATE_FORMAT(date,'%Y%m%d')
