@@ -9,12 +9,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.solr.client.solrj.SolrQuery;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
+import com.xxl.conf.core.XxlConfClient;
 
 public class InstitutionUtils {
 	
@@ -22,6 +24,7 @@ public class InstitutionUtils {
 	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
 	public static Integer maxData=99999999;
+	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
 
 	/**
 	 * 校验机构用户查询条件
@@ -671,6 +674,20 @@ public class InstitutionUtils {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * solr查询公用方法
+	 * @param map
+	 * @return
+	 */
+	public static Map<String,Object> getSolrList(Map<String, Object> map){
+		Map<String,Object> allMap=new HashMap<>();
+		SolrService.getInstance(hosts+"/GroupInfo");
+		SolrQuery sq=new SolrQuery();
+		allMap.put("data",null);
+		allMap.put("num",0);
+		return null;
 	}
 	
 }

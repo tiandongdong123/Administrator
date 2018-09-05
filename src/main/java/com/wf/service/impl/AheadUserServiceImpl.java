@@ -64,6 +64,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.InstitutionUtils;
 import com.utils.SendMail2;
 import com.utils.SettingUtil;
 import com.utils.StringUtil;
@@ -1599,8 +1600,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public PageList findListInfo(Map<String, Object> map) throws Exception{
 		//1、筛选user
 		long time=System.currentTimeMillis();
-		List<Object> userList = personMapper.findListInfoSimp(map);
-		int i = personMapper.findListCountSimp(map);
+		Map<String,Object> allMap=InstitutionUtils.getSolrList(map);
+		List<Object> userList = (List<Object>) allMap.get("data");
 		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
 		long time1=System.currentTimeMillis();
@@ -1612,7 +1613,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("userId").toString();
 			int sortScore=Integer.parseInt(userMap.get("loginMode").toString());
-			boolean flag=false;//用户是否可用 true是不过气，false是过期
+			boolean flag=false;//用户是否可用 true是不过期，false是过期
 			try{
 				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
 			}catch (Exception e){
@@ -1814,7 +1815,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		});
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
-		pageList.setTotalRow(i);
+		pageList.setTotalRow((int) allMap.get("num"));
 		return pageList;
 	}
 	
@@ -1860,7 +1861,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(setting.length>0){
 					wechat.put("email", setting[0].getPropertyValue());
 				}
-				System.out.println(userId);
 				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
 				userMap.put("openWeChat", wechat);
 			}

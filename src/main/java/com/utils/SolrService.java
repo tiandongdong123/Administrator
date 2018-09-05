@@ -25,6 +25,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
  */
 public class SolrService {
 	private static SolrClient server=null;
+	private static String hostUrl;
 	private static final Logger log = Logger.getLogger(SolrService.class);
 	
 	public SolrService(String host){
@@ -35,11 +36,15 @@ public class SolrService {
 		server=new HttpSolrClient(host);
 	}
 	
+	public static String getHost(){
+		return hostUrl;
+	}
+	
 	/**
 	 * 查询数据
 	 * @param solrQuery
 	 */
-	public static synchronized List<SolrInputDocument> getIndexList(SolrQuery solrQuery){
+	public static synchronized List<SolrInputDocument> getList(SolrQuery solrQuery){
 		List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
 		QueryResponse response = null;
 		try {
@@ -51,11 +56,6 @@ public class SolrService {
 				Map<String,Object> solrMap=sd.getFieldValueMap();//获取查询的数据
 				for (String key : solrMap.keySet()) {
 					Object obj=sd.getFieldValue(key);
-					String val=obj.toString();
-					//处理分词
-					if(key.contains("stringITS")&&val.contains("|")){
-						obj=val.substring(val.lastIndexOf("|")+1);
-					}
 					input.addField(key, obj);
 				}
 				sids.add(input);
@@ -148,6 +148,72 @@ public class SolrService {
 		}
 	}
 	
+	/**
+	 * 批量添加
+	 */
+	public static synchronized void createList(List<Map<String, Object>> list) {
+		try {
+			List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
+			SolrInputDocument doc = null;
+			for (Map<String, Object> map : list) {
+				doc = new SolrInputDocument();
+				for (String key : map.keySet()) {
+					Object obj=map.get(key);
+					String value="0";
+					if(obj instanceof String){
+						value=(String) obj;
+					}
+					if(obj!=null&&!StringUtils.isEmpty(value)){
+						doc.addField(key, map.get(key));
+					}else{
+						doc.addField(key,null);
+					}
+				}
+				doc.setField("_version_", 0);
+				sids.add(doc);
+			}
+			UpdateRequest req = new UpdateRequest();
+			req.add(sids);
+			req.setCommitWithin(-1);
+			req.process(server);
+			server.commit(false, false);
+		} catch (Exception e) {
+			log.error("批量创建索引失败", e);
+		}
+	}
+	
+	/**
+	 * 批量更新
+	 */
+	public static synchronized void updateList(List<Map<String, Object>> list) {
+		try {
+			List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
+			SolrInputDocument doc = null;
+			for (Map<String, Object> map : list) {
+				doc = new SolrInputDocument();
+				for (String key : map.keySet()) {
+					Object obj = map.get(key);
+					if (key.equals("Id")) {
+						doc.addField(key, obj);
+					} else {
+						Map<String, Object> oper = new HashMap<>();
+						oper.put("set", obj);
+						doc.addField(key, oper);
+					}
+				}
+				doc.setField("_version_", 0);
+				sids.add(doc);
+			}
+			UpdateRequest req = new UpdateRequest();
+			System.out.println(sids.toString());
+			req.add(sids);
+			req.setCommitWithin(-1);
+			req.process(server);
+			server.commit(false, false);
+		} catch (Exception e) {
+			log.error("批量创建索引失败", e);
+		}
+	}
 
 	/**
 	 * 批量add专题聚焦、科技动态、基金会议、万方资讯
@@ -185,7 +251,23 @@ public class SolrService {
 			server.commit(false, false);
 		} catch (Exception e) {
 			log.error("批量创建索引失败", e);
-			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 插入数据
+	 * @param list 插入的数据集
+	 * @param host 要插入的核地址
+	 */
+	public static synchronized void addIndexList(List<SolrInputDocument> list){
+		try {
+			UpdateRequest req = new UpdateRequest();
+			req.add(list);
+			req.setCommitWithin(-1);
+			req.process(server);
+			server.commit(true, true,false);
+		} catch (Exception e) {
+			log.error("创建索引失败:", e);
 		}
 	}
 	
