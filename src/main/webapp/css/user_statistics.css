@@ -208,14 +208,14 @@
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003179}}
 .content-wrapper .user_statistics_content .line_container {
-  height: 350px;
+  height: 450px;
   text-align: center;
   width: 1050px;
   margin-top: 25px;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003185}}
 .content-wrapper .user_statistics_content .line_comparison_container {
-  height: 350px;
+  height: 450px;
   text-align: center;
   width: 1051px;
   margin-top: 25px;
