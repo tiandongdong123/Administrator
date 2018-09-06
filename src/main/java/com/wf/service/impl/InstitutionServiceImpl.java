@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.utils.DateUtil;
 import com.utils.IPConvertHelper;
 import com.utils.SolrService;
+import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.GroupInfo;
 import com.wf.bean.Person;
 import com.wf.bean.UserAccountRestriction;
@@ -183,7 +184,10 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			Map<String, Object> adminMap=aheadUserService.findInfoByPid(pid);
 			solrMap.put("AdministratorId", adminMap.get("userId"));
 			solrMap.put("AdministratorEmail", adminMap.get("adminEmail"));
-			solrMap.put("AdministratorPassword", adminMap.get("password"));
+			String password=(String) adminMap.get("password");
+			if(!StringUtils.isEmpty(password)){
+				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(password));
+			}
 			List<Map<String,Object>> list_ip=(List<Map<String, Object>>) adminMap.get("adminIP");
 			if(list_ip!=null&&list_ip.size()>0){
 				List<String> adminIp=new ArrayList<>();

@@ -1639,12 +1639,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			userMap.put("AdministratorPassword", PasswordHelper.decryptPassword(userMap.get("AdministratorPassword").toString()));
-			userMap.put("PartyAdminPassword", PasswordHelper.decryptPassword(userMap.get("PartyAdminPassword").toString()));
+			String AdministratorPassword=(String) userMap.get("AdministratorPassword");
+			if(!StringUtils.isEmpty(AdministratorPassword)){
+				userMap.put("AdministratorPassword", PasswordHelper.decryptPassword(AdministratorPassword));
+			}
+			String PartyAdminPassword=(String) userMap.get("PartyAdminPassword");
+			if(!StringUtils.isEmpty(PartyAdminPassword)){
+				userMap.put("PartyAdminPassword", PasswordHelper.decryptPassword(PartyAdminPassword));
+			}
 			//验证是否过期
 			this.isExpired(userMap,"PartyAdminExpired","PartyAdminEndTIme");
-			this.isExpired(userMap,"openWeChatExpired","PartyAdminEndTIme");
-			this.isExpired(userMap,"openAppExpired","PartyAdminEndTIme");
+			this.isExpired(userMap,"openWeChatExpired","WeChatEndTime");
+			this.isExpired(userMap,"openAppExpired","AppEndTime");
 
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
@@ -1811,6 +1817,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	
 	private void isExpired(Map<String, Object> userMap, String key, String value) {
 		String endTime=(String) userMap.get(value);
+		if(StringUtils.isEmpty(endTime)){
+			return;
+		}
 		Date date=DateUtil.stringToDate1(endTime.replace("年","-").replace("月", "-").replace("日", "-"));
 		userMap.put(key,this.getExpired(date,this.getDay()));
 	}
