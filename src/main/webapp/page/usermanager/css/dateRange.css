@@ -98,14 +98,14 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
     width: 15px;
     height: 17px;
     margin-left: 5px;
-    background: url('../images/page.png') no-repeat 0 0;
+    background: url('../../../images/page.png') no-repeat 0 0;
     overflow: hidden;
 }
 .gri_dateRangePreYear{
     float: left;
     width: 16px;
     height: 16px;
-    background: url('../images/page_pre.png') ;
+    background: url('../../../images/page_pre.png') ;
     overflow: hidden;
     margin-top: 1px;
 }
@@ -113,7 +113,7 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
     float: right;
     width: 16px;
     height: 16px;
-    background: url('../images/page_next.png');
+    background: url('../../../images/page_next.png');
     overflow: hidden;
     margin-top: 1px;
 }
@@ -122,7 +122,7 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
     width: 15px;
     height: 17px;
     margin-right: 5px;
-    background: url('../images/page.png') no-repeat -15px 0;
+    background: url('../../../images/page.png') no-repeat -15px 0;
     overflow: hidden;
 }
 
@@ -296,7 +296,7 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
 }
 .i_pre,.i_next,.ta_calendar td.ta_dateRangeSelected,.ta_calendar td.first,.ta_calendar td.last,.ta_calendar td.today{
 	/*background:url(http://imgcache.qq.com/bossweb/mta/images/calendar_all.png) no-repeat;*/
-	background:url(../images/calendar_all.png) no-repeat;
+	background:url(../../../images/calendar_all.png) no-repeat;
 	cursor:pointer;
 }
 .i_pre,.i_next{ width:23px; height:23px;display:inline-block; }
