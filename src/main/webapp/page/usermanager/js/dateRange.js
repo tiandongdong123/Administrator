@@ -308,18 +308,15 @@ function pickerDateRange(inputId, options) {
      * 和对比开始结束时间
      */
     $('#' + this.submitBtn).bind('click', function () {
-
-
         //隐藏对比时间框
-        __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
+      /*  __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
         $('#' + __method.compareCheckboxId).attr('checked', false);
         $('#' + __method.mOpts.compareCheckboxId).attr('checked', false);
         $('#' + this.compareInputDiv).css('display', $('#' + this.compareCheckboxId).attr('checked') ? '' : 'none');
-
-        __method.close(1);
         $("#user_statistics_dataCompare").val("");
-         $("#lineContainerComparison").hide();
-         $("#lineContainer").show();
+        $("#lineContainerComparison").hide();
+        $("#lineContainer").show();*/
+        __method.close(1);
         __method.mOpts.success({
             'startDate': $('#' + __method.mOpts.startDateId).val(),
             'endDate': $('#' + __method.mOpts.endDateId).val(),
@@ -398,10 +395,10 @@ function pickerDateRange(inputId, options) {
             sTime = sDate.getTime();
             eDate = __method.str2date($('#' + __method.endDateId).val());
             eTime = eDate.getTime();
-            //scDate = $('#' + __method.startCompareDateId).val();
-            //ecDate = $('#' + __method.endCompareDateId).val();
-            scDate = '';
-            ecDate = '';
+            scDate = $('#' + __method.startCompareDateId).val();
+            ecDate = $('#' + __method.endCompareDateId).val();
+           /* scDate = '';
+            ecDate = '';*/
             if ('' == scDate || '' == ecDate) {
                 ecDate = __method.str2date(__method.date2ymd(sDate).join('-'));
                 ecDate.setDate(ecDate.getDate() - 1);

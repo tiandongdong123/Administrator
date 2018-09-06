@@ -17,8 +17,8 @@ $(function () {
         var lineContainerComparison = $("#lineContainerComparison");
         var lineContainer = $("#lineContainer");
         var target_item_hidden = $(".target_selected .target_item_hidden");
-        var target_item = $(".target_item") ;
-        var nameSingle,nameCompare,nameArray;
+        var target_item = $(".target_item");
+        var nameSingle, nameCompare, nameArray;
 
 
         return {
@@ -39,9 +39,11 @@ $(function () {
                     calendars: 3,
                     success: function (obj) {
                         //最近几天背景的切换
+
+                        var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
                         time_quantum.each(function () {
                             var _this = $(this);
-                            var selectedVal,indexType,navTitle,data_compare_arry,startCompareDate,endCompareDate
+
                             _this.click(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
@@ -52,7 +54,7 @@ $(function () {
                         $(".gri_pc").click(function () {
                             if ($(".gri_pc").get(0).checked) {
 
-                            }else {
+                            } else {
                                 $("#user_statistics_dataCompare").val("")
                             }
                         });
@@ -60,38 +62,38 @@ $(function () {
                         selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                         indexType = target_item_hidden.val();//指标参数
                         navTitle = $("#contentNavHidden").val();//总数/新增参数
-                       data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                        data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
                         startCompareDate = data_compare_arry[0];
-
-                      /* console.log(data_compare_arry)*/
+                        endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
                         //判断对比时间发送不同的请求
                         if (startCompareDate && endCompareDate) {
-                            endCompareDate = data_compare_arry[1].trim();
-                            if(navTitle == 'total'){
-                                that.comparisonEChartsAjax(obj.startDate, obj.endDate,startCompareDate, endCompareDate, selectedVal, indexType);
+                            if (navTitle == 'total') {
+                                that.comparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
 
                             }
-                            if(navTitle == 'new'){
-                                that.newComparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate,endCompareDate, selectedVal, indexType);
-                           
+                            if (navTitle == 'new') {
+                                that.newComparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+
                             }
                         } else {
-                            if(navTitle == 'total') {
+                            if (navTitle == 'total') {
                                 that.eChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-                               /* console.log("22222")*/
+
                             }
-                            if(navTitle == 'new'){
+                            if (navTitle == 'new') {
                                 that.newEChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-                               /* console.log("11111")*/
+
                             }
                         }
                     },
                 });
                 //默认显示最近7天
                 aRecent7Days.click();
-
+                that.table();
 
             },
+
+
             //日周月随最近天数的变化
             dayWeekMonth: function (recent) {
                 var switch_board_week = $(".switch_board_week");
@@ -102,8 +104,8 @@ $(function () {
                     switch_data.eq(0).addClass("switch_bg");
                     selected_data.children(".switch_data_hidden").val(1);
                     week_month.show();
-                    if($("#user_statistics_dataCompare").val()!=""){
-                       $("#aYesterday").click();
+                    if ($("#user_statistics_dataCompare").val() != "") {
+                        $("#aYesterday").click();
                     }
                     lineContainerComparison.hide();
                     lineContainer.show();
@@ -116,9 +118,9 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
-                    selected_data.children(".switch_data_hidden").val(1)
+                    selected_data.children(".switch_data_hidden").val(1);
 
-                    if($("#user_statistics_dataCompare").val()!=""){
+                    if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent7Days").click();
                     }
                     lineContainerComparison.hide();
@@ -134,7 +136,7 @@ $(function () {
                     week_month.hide();
                     selected_data.children(".switch_data_hidden").val(1)
 
-                    if($("#user_statistics_dataCompare").val()!=""){
+                    if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent30Days").click();
                     }
                     lineContainerComparison.hide();
@@ -148,7 +150,7 @@ $(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
-                    }else {
+                    } else {
                         lineContainerComparison.hide();
                         lineContainer.show();
                     }
@@ -158,10 +160,9 @@ $(function () {
             dataSubmitBtn: function () {
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
-
-
                 })
             },
+
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
@@ -184,7 +185,8 @@ $(function () {
             //获取开始日期，指标，按日/周/月的参数
             getparms: function () {
                 var that = this;
-                var startDate, endDate,startCompareDate,endCompareDate, indexType,data_arry,data_compare_arry,switch_hidden,navTitle;
+                var startDate, endDate, startCompareDate, endCompareDate, indexType, data_arry, data_compare_arry,
+                    switch_hidden, navTittle;
                 switch_hidden = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
@@ -192,38 +194,74 @@ $(function () {
 
                 data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
                 startCompareDate = data_compare_arry[0];
-
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
 
                 indexType = target_item_hidden.val();//指标参数
-                navTitle = $("#contentNavHidden").val();
+                navTittle = $("#contentNavHidden").val();
 
-
-                /*that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
-
-                that.comparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, switch_hidden, indexType);*/
-
+                console.log(startCompareDate)
                 if (startCompareDate && endCompareDate) {
-                    endCompareDate = data_compare_arry[1].trim();
-
-                    if(navTitle == 'total'){
-                        that.comparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
-
+                    if (navTittle == 'total') {
+                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
                     }
-                    if(navTitle == 'new'){
-                         that.newComparisonEChartsAjax(startDate,endDate,startCompareDate,endCompareDate, switch_hidden, indexType);
+                    if (navTittle == 'new') {
+                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
                     }
                 } else {
-
-                    if(navTitle == 'total') {
+                    if (navTittle == 'total') {
                         that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
-
                     }
-                    if(navTitle == 'new'){
-                        that.newEChartsAjax(startDate,endDate, switch_hidden, indexType);
-
+                    if (navTittle == 'new') {
+                        that.newEChartsAjax(startDate, endDate, switch_hidden, indexType);
                     }
                 }
             },
+            //table表格的加载
+            table: function () {
+                var startDate,endDate,data_arry;
+
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0];
+                endDate = data_arry[1].trim();
+               /* indexType = target_item_hidden.val();//指标参数
+                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数*/
+
+
+/*
+                var userId = $("#userId").val();
+                var institutionName = $("#institutionName").val();
+                var startDay = $("#startDay").val();
+                var endDay = $("#endDay").val();*/
+               /* var pageSize = $(".evey-page").val();
+                if (pageSize == null) {
+                    pageSize = 20;
+                }
+                prevNum = 0;*/
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        "startTime": startDate,
+                        "endTime": endDate,
+                    },
+                    url: " ../userStatistics/newDataSum.do",
+                    success: function (data) {
+                       console.log(data)
+                        for (var i in data){
+                           console.log(data[i])
+
+                        }
+                       /* for (var i in data) {
+                            var str = ' <tr> <td>'+j+'</td> <td>'+i+'</td> <td>'+data[i]+'</td> </tr>';
+
+                            var str=  ' <li><input type="radio" name="person"  value=data[i]>'+data[i]+' <input type="hidden" value="person_user"></li>'
+                            $("tbody").append(str);
+
+                        }*/
+
+                    }
+                });
+            },
+
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
                 var that = this;
@@ -277,9 +315,10 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                       nameSingle =  target_item.text()+"(单位：元)";
-                      /* console.log(nameSingle)*/
-                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime,nameSingle)
+
+                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
+                        console.log(nameSingle)
+                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
                     }
@@ -300,15 +339,17 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                       /* console.log(data)*/
-                        nameSingle =  target_item.text()+"(单位：元)";
-                        nameCompare = target_item.text()+"(对比单位：元)";
-                        nameArray = new Array() ;
+                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
+
+                        nameCompare = target_item.text() + " " + "(单位：元)" + "" + $("#user_statistics_dataCompare").val();
+
+                        nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
                         console.log(nameSingle);
                         console.log(nameArray);
-                        myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime,nameArray,nameSingle,nameCompare)
+                        console.log(indexType);
+                        myEcharsCommon.lineComparison('lineContainerComparison', data.selectData, data.compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
                     error: function () {
                     }
@@ -329,9 +370,9 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                      /*  console.log(data.dateTime.length)*/
-                        nameSingle =  target_item.text()+"(单位：元)";
-                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime,nameSingle)
+                        /*  console.log(data.dateTime.length)*/
+                        nameSingle = target_item.text() + "(单位：元)";
+                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
                     }
@@ -353,14 +394,13 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                      /*  console.log(data)*/
-                        nameSingle =  target_item.text()+"(单位：元)";
-                        nameCompare = target_item.text()+"(单位：元)";
-                        nameArray = new Array() ;
+                        nameSingle = target_item.text() + "(单位：元)";
+                        nameCompare = target_item.text() + "(对比单位：元)";
+                        nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
 
-                        myEcharsCommon.lineComparison('lineContainerComparison',data.selectData,data.compareData,data.dateTime,nameArray,nameSingle,nameCompare)
+                        myEcharsCommon.lineComparison('lineContainerComparison', data.selectData, data.compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
                     error: function () {
                     }
@@ -397,7 +437,7 @@ $(function () {
     //echarts图
     var myEcharsCommon = (function () {
         return {
-            commonLine: function (id, seriesData, dateTime,nameSingle) {
+            commonLine: function (id, seriesData, dateTime, nameSingle) {
                 var idObj = document.getElementById(id);
                 if (idObj.hasAttribute("_echarts_instance_")) {
                     idObj.removeAttribute("_echarts_instance_");
@@ -420,6 +460,7 @@ $(function () {
                         left: '3%',
                         right: '4%',
                         bottom: 20,
+                        y: 80,
                         containLabel: true,
                         show: true,
                         borderWidth: '0'
@@ -440,7 +481,7 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
-                        axisLabel: {interval:0},//坐标轴刻度标签的显示间隔，
+                        axisLabel: {interval: 0},//坐标轴刻度标签的显示间隔，
                         splitArea: {
                             show: false
                         },
@@ -463,7 +504,6 @@ $(function () {
                         {
                             name: nameSingle,
                             type: 'line',
-                            stack: '总量',
                             data: seriesData,
                             symbolSize: 4,
                             itemStyle: {normal: {label: {show: true}}}
@@ -475,9 +515,9 @@ $(function () {
                         backgroundColor: '#e0e3e8',
                         handleColor: '#7cb6e1',
                         fillerColor: '#7cb6e1',
-                        start:0,
+                        start: 0,
                         xAxisIndex: 0,
-                        end:31 ,
+                        end: 31,
                         left: 10,
                         right: 10,
                         bottom: 4,
@@ -486,17 +526,15 @@ $(function () {
                             color: 'transparent'
                         },
                         handleSize: 16,
-                        showDataShadow:false
+                        showDataShadow: false
                     }
                 };
-
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);
                 }
-
             },
 
-            lineComparison: function (idName,selectData,compareData,dateTime,nameArray,nameSingle,nameCompare) {
+            lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
                 var dom = document.getElementById(idName);
                 if (dom.hasAttribute("_echarts_instance_")) {
                     dom.removeAttribute("_echarts_instance_");
@@ -512,14 +550,16 @@ $(function () {
                     },
                     legend: {
                         data: nameArray,
+                        y: "bottom",
+
                         orient: 'vertical',  //垂直显示
                         selectedMode: 'single',
-                        padding: -0.5 //调节legend的位置
+                        padding: 10 //调节legend的位置
                     },
                     grid: {
                         left: '3%',
                         right: '4%',
-                        bottom: 100,
+                        y: 60,
                         containLabel: true,
                         show: 'true',
                         borderWidth: '0'
@@ -537,14 +577,15 @@ $(function () {
                     },
                     xAxis: {
                         type: 'category',
+                        offset: 50,
                         splitLine: {
                             show: false,
                         },
-                        axisLabel:{
-                            interval:0,
-                          /*  rotate:-30,*/
+                        axisLabel: {
+                            interval: 0,
+                            /*  rotate:-30,*/
                         },
-                        data:dateTime,
+                        data: dateTime,
                     },
                     yAxis: {
                         show: false,//隐藏坐标轴
@@ -557,14 +598,12 @@ $(function () {
                         {
                             name: nameSingle,
                             type: 'line',
-                            stack: '总量',
                             data: selectData,
                             itemStyle: {normal: {label: {show: true}}}
                         },
                         {
                             name: nameCompare,
                             type: 'line',
-                            stack: '总量',
                             data: compareData,
                             itemStyle: {normal: {label: {show: true}}}
                         }
@@ -575,9 +614,9 @@ $(function () {
                         backgroundColor: '#e0e3e8',
                         handleColor: '#7cb6e1',
                         fillerColor: '#7cb6e1',
-                        start:0,
+                        start: 0,
                         xAxisIndex: 0,
-                        end:31 ,
+                        end: 31,
                         left: 10,
                         right: 10,
                         bottom: 4,
@@ -586,7 +625,7 @@ $(function () {
                             color: 'transparent'
                         },
                         handleSize: 16,
-                        showDataShadow:false
+                        showDataShadow: false
                     }
                 };
                 if (option && typeof option === "object") {
