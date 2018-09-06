@@ -96,7 +96,7 @@ public class InstitutionUtils {
 		
 		map.put("proType", proType);
 		map.put("resource", resource);
-		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+		map.put("pageNum", Integer.parseInt(pageNum==null?"1":pageNum)-1);
 		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
 		
 		map.put("isSimple",StringUtils.isEmpty(isSimple)?"0":isSimple);
