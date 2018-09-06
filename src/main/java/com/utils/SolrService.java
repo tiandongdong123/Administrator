@@ -44,7 +44,7 @@ public class SolrService {
 	 * 查询数据
 	 * @param solrQuery
 	 */
-	public static synchronized List<SolrInputDocument> getList(SolrQuery solrQuery){
+	public static List<SolrInputDocument> getList(SolrQuery solrQuery){
 		List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
 		QueryResponse response = null;
 		try {
@@ -70,7 +70,7 @@ public class SolrService {
 	 * 查询数据
 	 * @param solrQuery
 	 */
-	public static synchronized SolrDocumentList getSolrList(SolrQuery solrQuery){
+	public static SolrDocumentList getSolrList(SolrQuery solrQuery){
 		SolrDocumentList list=new SolrDocumentList();
 		try {
 			QueryResponse response = server.query(solrQuery, METHOD.POST);

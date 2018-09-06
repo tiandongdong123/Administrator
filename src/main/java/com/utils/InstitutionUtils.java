@@ -10,6 +10,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.wf.bean.InstitutionalUser;
@@ -57,10 +60,10 @@ public class InstitutionUtils {
 				map.put("ipstart", IPConvertHelper.IPToNumber(ipSegment));
 				map.put("ipend", IPConvertHelper.IPToNumber(ipSegment));
 			}else{
-				map.put("ipSegment", ipSegment);
 				map.put("ipError", "ipError");
 				flag=false;
 			}
+			map.put("ipSegment", ipSegment);
 		}
 		if (!StringUtils.isEmpty(institution)) {
 			map.put("institution", institution.replace("_", "\\_"));
@@ -681,13 +684,103 @@ public class InstitutionUtils {
 	 * @param map
 	 * @return
 	 */
-	public static Map<String,Object> getSolrList(Map<String, Object> map){
+	public static Map<String,Object> getSolrList(Map<String, Object> map) throws Exception{
 		Map<String,Object> allMap=new HashMap<>();
 		SolrService.getInstance(hosts+"/GroupInfo");
 		SolrQuery sq=new SolrQuery();
-		allMap.put("data",null);
-		allMap.put("num",0);
-		return null;
+		sq.set("collection", "GroupInfo");
+		Integer pageSize=(Integer) map.get("pageSize");
+		Integer pageNum=(Integer) map.get("pageNum");
+		sq.setRows(pageSize);
+		sq.setStart(pageSize*pageNum);
+		StringBuffer query=new StringBuffer("");
+		InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
+		InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
+		InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
+		InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
+		InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
+		InstitutionUtils.addField(query,"PostCode",(String) map.get("PostCode"));//地区
+		InstitutionUtils.addField(query,"OrderType",(String) map.get("OrderType"));//工单类型
+		//内部工单
+		if(StringUtils.equals((String) map.get("OrderType"), "inner")){
+			InstitutionUtils.addField(query,"OrderContent",(String) map.get("OrderContent"));
+		}
+		//是否有机构管理员
+		if(!StringUtils.isEmpty((String) map.get("admin"))){
+			InstitutionUtils.addField(query,"ParentId","*");
+		}
+		//是否有机构子账号
+		if(!StringUtils.isEmpty((String) map.get("Subaccount"))){
+			InstitutionUtils.addField(query,"HasChildGroup","true");
+		}
+		//是否开通统计分析权限
+		if(!StringUtils.isEmpty((String) map.get("tongji"))){
+			InstitutionUtils.addField(query,"StatisticalAnalysis","*");
+		}
+		//购买项目是否试用
+		if(!StringUtils.isEmpty((String) map.get("trical"))){
+			InstitutionUtils.addField(query,"IsTrial","*");
+		}
+		//开通app权限
+		if(!StringUtils.isEmpty((String) map.get("openApp"))){
+			InstitutionUtils.addField(query,"AppStartTime","*");
+		}
+		//开通微信app权限
+		if(!StringUtils.isEmpty((String) map.get("openWeChat"))){
+			InstitutionUtils.addField(query,"WeChatStartTime","*");
+		}
+		//开通党建管理员权限
+		if(!StringUtils.isEmpty((String) map.get("PartyAdminTime"))){
+			InstitutionUtils.addField(query,"PartyAdminId","*");
+		}
+		//验证Ip
+		Long ipstart=(Long) map.get("ipstart");
+		Long ipend=(Long) map.get("ipend");
+		if(ipstart!=null&&ipend!=null){
+			InstitutionUtils.addField(query,"StartIP","["+ipstart+" TO *]");
+			InstitutionUtils.addField(query,"EndIP","[* TO "+ipend+"]");
+		}
+		if(StringUtils.isEmpty((String) map.get("userId"))){
+			query.append(" AND UserType:2");
+		}
+		
+		sq.setQuery(query.toString());
+		System.out.println(query.toString());
+		sq.setSort("LoginMode", ORDER.asc);//登录方式排序
+		sq.setSort("IsFreeze", ORDER.desc);//按照冻结排序
+		SolrDocumentList sdList=SolrService.getSolrList(sq);
+		allMap.put("data",InstitutionUtils.getFieldMap(sdList));
+		Long num=sdList.getNumFound();
+		allMap.put("num",num.intValue());
+		return allMap;
+	}
+	
+	/**
+	 * 获取solr字段名称
+	 * @param sdList
+	 * @return
+	 */
+	private static List<Map<String,Object>> getFieldMap(SolrDocumentList sdList) throws Exception{
+		List<Map<String,Object>> list=new ArrayList<>();
+		for(SolrDocument sd:sdList){
+			Map<String,Object> solrMap=new HashMap<>();
+			for (String key: sd.getFieldNames()) {
+				solrMap.put(key,sd.getFieldValue(key));
+			}
+			list.add(solrMap);
+		}
+		return list;
+	}
+	
+	
+	//添加field参数
+	private static void addField(StringBuffer query,String key, String value) {
+		if(!StringUtils.isEmpty(value)){
+			if(query.length()>0){
+				query.append(" AND ");
+			}
+			query.append(key).append(":").append(value);
+		}
 	}
 	
 }
