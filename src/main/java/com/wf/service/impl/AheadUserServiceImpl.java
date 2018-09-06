@@ -1612,6 +1612,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
 			String userId = userMap.get("Id").toString();
+			userMap.put("Password", PasswordHelper.decryptPassword(userMap.get("Password").toString()));
 			int sortScore=Integer.parseInt(userMap.get("LoginMode").toString());
 			boolean flag=false;//用户是否可用 true是不过期，false是过期
 			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
@@ -1638,9 +1639,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			userMap.put("PartyAdminExpired",false);
-			userMap.put("openWeChatExpired",false);
-			userMap.put("openAppExpired",false);
+			userMap.put("AdministratorPassword", PasswordHelper.decryptPassword(userMap.get("AdministratorPassword").toString()));
+			userMap.put("PartyAdminPassword", PasswordHelper.decryptPassword(userMap.get("PartyAdminPassword").toString()));
+			//验证是否过期
 			this.isExpired(userMap,"PartyAdminExpired","PartyAdminEndTIme");
 			this.isExpired(userMap,"openWeChatExpired","PartyAdminEndTIme");
 			this.isExpired(userMap,"openAppExpired","PartyAdminEndTIme");
@@ -1808,79 +1809,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 		return pageList;
 	}
 	
-	private void isExpired(Map<String, Object> userMap, String string, String string2) {
-		//userMap.put("", "");		
+	private void isExpired(Map<String, Object> userMap, String key, String value) {
+		String endTime=(String) userMap.get(value);
+		Date date=DateUtil.stringToDate1(endTime.replace("年","-").replace("月", "-").replace("日", "-"));
+		userMap.put(key,this.getExpired(date,this.getDay()));
 	}
-
-	//机构子账号
-	private void getAccount(Map<String, Object> userMap) {
-		UserAccountRestriction uar=this.getAccountRestriction(userMap.get("userId").toString());
-		if(uar==null){
-			return;
-		}
-		userMap.put("upperlimit", uar.getUpperlimit());
-		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
-		userMap.put("pConcurrentnumber", uar.getpConcurrentnumber());
-		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());
-		userMap.put("chargebacks", uar.getChargebacks());
-	}
-
-	//获取权限信息
-	private void getUserAccountidMappings(String userId, Map<String, String> itemsMap,
-			Map<String, Object> userMap, String viewCheck) throws Exception{
-		
-		WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountidByIdKey(userId);
-		for (WfksAccountidMapping wm : mapping) {
-			if ("trical".equals(wm.getRelatedidAccounttype())) {
-				itemsMap.put(wm.getRelatedidKey(), "trical");
-			}
-			if ("ViewHistoryCheck".equals(wm.getRelatedidAccounttype())) {
-				viewCheck = "可以";
-			}
-			if("openApp".equals(wm.getRelatedidAccounttype())){
-				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
-						+DateUtil.DateToFromatStr(wm.getEndtime()));
-				userMap.put("openAppexpired", this.getExpired(wm.getEndtime(),this.getDay()));
-			}
-			if("openWeChat".equals(wm.getRelatedidAccounttype())){
-				Map<String,Object> wechat=new HashMap<String,Object>();
-				wechat.put("time",  DateUtil.DateToFromatStr(wm.getBegintime())+"-"
-						+DateUtil.DateToFromatStr(wm.getEndtime()));
-				WfksUserSettingKey key=new WfksUserSettingKey();
-				key.setUserId(userId);
-				key.setUserType("WeChat");
-				key.setPropertyName("email");
-				WfksUserSetting[] setting=wfksUserSettingMapper.selectByUserId(key);
-				if(setting.length>0){
-					wechat.put("email", setting[0].getPropertyValue());
-				}
-				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
-				userMap.put("openWeChat", wechat);
-			}
-			if("PartyAdminTime".equals(wm.getRelatedidAccounttype())){
-				Map<String,Object> party=new HashMap<String,Object>();
-				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
-						+ DateUtil.DateToFromatStr(wm.getEndtime()));
-				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
-				if(per!=null){
-					party.put("userId", per.getUserId());
-					try{
-						party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
-					}catch (Exception e){
-						log.error("密码转化异常：",e);
-					}
-					String json = String.valueOf(per.getExtend());
-					if(!StringUtils.isEmpty(json)){
-						JSONObject obj = JSONObject.fromObject(json);
-						party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
-					}
-					party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
-					userMap.put("party", party);
-				}
-			}
-		}
-	}
-
+	
 	@Override
 	public Map<String, Object> selectBalanceById(String userId){
 		return projectBalanceMapper.selectBalanceById(userId);
