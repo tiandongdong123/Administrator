@@ -223,20 +223,6 @@ $(function () {
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
                 endDate = data_arry[1].trim();
-               /* indexType = target_item_hidden.val();//指标参数
-                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数*/
-
-
-/*
-                var userId = $("#userId").val();
-                var institutionName = $("#institutionName").val();
-                var startDay = $("#startDay").val();
-                var endDay = $("#endDay").val();*/
-               /* var pageSize = $(".evey-page").val();
-                if (pageSize == null) {
-                    pageSize = 20;
-                }
-                prevNum = 0;*/
                 $.ajax({
                     type: "POST",
                     data: {
@@ -245,23 +231,13 @@ $(function () {
                     },
                     url: " ../userStatistics/newDataSum.do",
                     success: function (data) {
-                       console.log(data)
                         for (var i in data){
-                           console.log(data[i])
-
+                            var str = '<li><span class="person_num">'+data[i]+'</span> </li>';
+                            $(".new_data").append(str);
                         }
-                       /* for (var i in data) {
-                            var str = ' <tr> <td>'+j+'</td> <td>'+i+'</td> <td>'+data[i]+'</td> </tr>';
-
-                            var str=  ' <li><input type="radio" name="person"  value=data[i]>'+data[i]+' <input type="hidden" value="person_user"></li>'
-                            $("tbody").append(str);
-
-                        }*/
-
                     }
                 });
             },
-
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
                 var that = this;
@@ -452,6 +428,7 @@ $(function () {
                         trigger: 'axis'
                     },
                     legend: {
+                        y: "bottom",
                         data: [{
                             name: nameSingle,
                         }],
@@ -459,7 +436,7 @@ $(function () {
                     grid: {
                         left: '3%',
                         right: '4%',
-                        bottom: 20,
+                        height:'300',
                         y: 80,
                         containLabel: true,
                         show: true,
@@ -481,13 +458,7 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
-                        axisLabel: {interval: 0},//坐标轴刻度标签的显示间隔，
-                        splitArea: {
-                            show: false
-                        },
-                        axisTick: {
-                            show: false
-                        },
+                        axisLabel: {interval: 'auto'},//坐标轴刻度标签的显示间隔，
                         data: dateTime,
                     },
                     yAxis: {
@@ -509,15 +480,15 @@ $(function () {
                             itemStyle: {normal: {label: {show: true}}}
                         }
                     ],
-                    dataZoom: {
+                   /* dataZoom: {
                         type: 'slider',
                         show: true,
                         backgroundColor: '#e0e3e8',
                         handleColor: '#7cb6e1',
                         fillerColor: '#7cb6e1',
-                        start: 0,
+                       /!* start: 0,
                         xAxisIndex: 0,
-                        end: 31,
+                        end: 31,*!/
                         left: 10,
                         right: 10,
                         bottom: 4,
@@ -527,7 +498,7 @@ $(function () {
                         },
                         handleSize: 16,
                         showDataShadow: false
-                    }
+                    }*/
                 };
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);
@@ -551,7 +522,6 @@ $(function () {
                     legend: {
                         data: nameArray,
                         y: "bottom",
-
                         orient: 'vertical',  //垂直显示
                         selectedMode: 'single',
                         padding: 10 //调节legend的位置
@@ -560,6 +530,7 @@ $(function () {
                         left: '3%',
                         right: '4%',
                         y: 60,
+                        height:'300',
                         containLabel: true,
                         show: 'true',
                         borderWidth: '0'
@@ -577,14 +548,12 @@ $(function () {
                     },
                     xAxis: {
                         type: 'category',
-                        offset: 50,
+                        position:'bottom',
+                        offset:'20',
                         splitLine: {
                             show: false,
                         },
-                        axisLabel: {
-                            interval: 0,
-                            /*  rotate:-30,*/
-                        },
+                        axisLabel: {interval: 'auto'},//坐标轴刻度标签的显示间隔，
                         data: dateTime,
                     },
                     yAxis: {
@@ -608,15 +577,15 @@ $(function () {
                             itemStyle: {normal: {label: {show: true}}}
                         }
                     ],
-                    dataZoom: {
+                  /*  dataZoom: {
                         type: 'slider',
                         show: true,
                         backgroundColor: '#e0e3e8',
                         handleColor: '#7cb6e1',
                         fillerColor: '#7cb6e1',
-                        start: 0,
+                       /!* start: 0,
                         xAxisIndex: 0,
-                        end: 31,
+                        end: 31,*!/
                         left: 10,
                         right: 10,
                         bottom: 4,
@@ -626,7 +595,7 @@ $(function () {
                         },
                         handleSize: 16,
                         showDataShadow: false
-                    }
+                    }*/
                 };
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);

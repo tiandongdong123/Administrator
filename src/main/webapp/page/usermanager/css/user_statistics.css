@@ -125,7 +125,7 @@
   float: left;
   border-right: 1px solid #ccc;
   padding: 10px 0 16px 0;
-  width: 16.64%;
+  width: 14.28%;
   text-align: center;
 }
 @media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003106}}
@@ -220,30 +220,30 @@
   width: 1051px;
   margin-top: 25px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003195}}
+@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003193}}
 .content-wrapper .user_statistics_footer table {
   margin: 44px;
   border-collapse: collapse;
   border-spacing: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003200}}
+@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003198}}
 .content-wrapper .user_statistics_footer table thead tr {
   font-size: 15px;
   height: 40px;
   background: #408ED6;
   color: white;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003205}}
+@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003203}}
 .content-wrapper .user_statistics_footer table thead tr th {
   border-left: 1px solid #D9D9D9;
   padding: 12px 21px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003212}}
+@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003210}}
 .content-wrapper .user_statistics_footer table tbody tr {
   font-size: 15px;
   background: white;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003215}}
+@media -sass-debug-info{filename{font-family:file\:\/\/F\:\/2018-8-21(用户统计)\/AdminManager\/src\/main\/webapp\/less\/user_statistics\.less}line{font-family:\00003213}}
 .content-wrapper .user_statistics_footer table tbody tr td {
   font-size: 14px;
   padding: 14px;
