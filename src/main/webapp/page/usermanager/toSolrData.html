@@ -1,0 +1,50 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript">
+
+function setSolrData(obj){
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../institution/setSolrData.do?t="+new Date(),
+		data:{"userId":""},
+		dataType:"json",
+		timeout:1800000,
+		success:function(data){
+			if(data.flag=="fail"){
+				layer.msg(data.fail,{icon: 2});
+			}else if(data.flag=="success"){
+				layer.msg(data.success,{icon: 2});
+			}
+		}
+	});
+}
+
+</script>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>机构账号solr发布</h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form" id="fromList" method="post">
+              <div class="box-body">
+              <div class="box-footer" style="text-align:center;">
+                <button type="button" class="btn btn-primary" onclick="setSolrData()">一键发布</button>
+              </div>
+            </form>
+          </div>
+      	</div>
+      </div>
+    </section>
+  </div>
+
+<?}?>

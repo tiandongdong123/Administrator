@@ -312,8 +312,14 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
+    <if test="userType != null and userType==23">
+		and (u.userType =2 or u.userType =3) 
+    </if>
     <if test="userType != null and userType==2">
-		and u.userType =2
+		and u.userType =2 
+    </if>
+    <if test="userType != null and userType==3">
+		and u.userType =3 
     </if>
 	order by u.login_mode ASC,u.is_freeze DESC limit #{pageNum},#{pageSize}
   </select>
@@ -372,8 +378,14 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
+    <if test="userType != null and userType==23">
+		and (u.userType =2 or u.userType =3) 
+    </if>
     <if test="userType != null and userType==2">
-		and u.userType =2
+		and u.userType =2 
+    </if>
+    <if test="userType != null and userType==3">
+		and u.userType =3 
     </if>
   </select>
   

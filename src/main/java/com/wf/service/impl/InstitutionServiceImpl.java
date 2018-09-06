@@ -1,6 +1,7 @@
 package com.wf.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -64,15 +65,22 @@ public class InstitutionServiceImpl  implements InstitutionService {
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
 
 	@Override
-	public void setSolrData() {
+	public Map<String,String> setSolrData() {
+		Map<String,String> messageMap=new HashMap<>();
+		messageMap.put("flag", "fail");
+		messageMap.put("fail", "机构用户信息发送solr失败");
 		try{
 			log.info("开始初始化solr数据");
 			Map<String,Object> map=new HashMap<String, Object>();
-			map.put("userType", "2");
+			map.put("userType", "23");
 			map.put("pageNum", 0);
 			map.put("pageSize", 1000000);
 			List<Object> userList = personMapper.findListInfoSimp(map);
+			log.info("查询到的机构和机构子账号数是"+userList.size());
 			List<Map<String, Object>> solrList=new ArrayList<>();
+			Date date=DateUtil.stringToDate(DateUtil.dateToString(new Date()));
+			String time=DateUtil.dateToString(date);
+			time=time.replace(" ", "T")+"Z";
 			for(Object object : userList){
 				Map<String,Object> solrMap=new LinkedHashMap<>();
 				//user
@@ -81,16 +89,22 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				this.addIp(userMap,solrMap);//添加Ip
 				this.addLimit(userMap,solrMap);//查询权限信息
 				this.getUserAccountidMapping(userMap,solrMap);//查询角色信息
+				solrMap.put("CreateTime", date);
+				solrMap.put("UpdateTime", date);
 				solrList.add(solrMap);
 			}
 			//发送solr
 			SolrService.getInstance(hosts+"/GroupInfo");
 			SolrService.createList(solrList);
+			String query="CreateTime:[ * TO "+time+")";
+			SolrService.deleteByQuery("GroupInfo", query);
+			messageMap.put("flag", "success");
+			messageMap.put("success", "机构用户信息发送solr成功");
 			log.info("结束初始化solr数据");
 		}catch(Exception e){
 			log.error("初始化solr数据异常",e);
 		}
-
+		return messageMap;
 	}
 	
 	//添加权限

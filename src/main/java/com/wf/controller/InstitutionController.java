@@ -1,12 +1,12 @@
 package com.wf.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.wf.service.InstitutionService;
 
@@ -23,12 +23,23 @@ public class InstitutionController {
 	@Autowired
 	private InstitutionService institutionService;
 	
+	/**
+	 *	跳转到机构数据solr发布界面
+	 */
+	@RequestMapping("toSolrData")
+	public ModelAndView toSolrData(ModelAndView view){
+		view.setViewName("/page/usermanager/toSolrData");
+		return view;
+	}
+	
+	/**
+	 * 发布数据
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping("setSolrData")
 	@ResponseBody
 	public Map<String,String> setSolrData(String userId){
-		institutionService.setSolrData();
-		Map<String,String> msgMap = new HashMap<String, String>();
-		msgMap.put("msg", "机构用户信息发布完成");
-		return msgMap;
+		return institutionService.setSolrData();
 	}
 }
