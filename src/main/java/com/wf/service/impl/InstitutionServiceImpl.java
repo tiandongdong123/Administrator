@@ -95,12 +95,13 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			}
 			//发送solr
 			SolrService.getInstance(hosts+"/GroupInfo");
-			SolrService.createList(solrList);
-			String query="CreateTime:[ * TO "+time+")";
+			String query="CreateTime:[ * TO "+time+"]";
 			SolrService.deleteByQuery("GroupInfo", query);
+			log.info("删除旧的数据，query:"+query);
+			SolrService.createList(solrList);
 			messageMap.put("flag", "success");
 			messageMap.put("success", "机构用户信息发送solr成功");
-			log.info("结束初始化solr数据");
+			log.info("创建solr数据完成");
 		}catch(Exception e){
 			log.error("初始化solr数据异常",e);
 		}
