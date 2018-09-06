@@ -115,9 +115,20 @@ public class UseStatisticsController {
             result.put("selectData", selectData);
             result.put("compareData", compareData);
             List<String> dateTime = getDateList(parameter);
-            result.put("dateTime", dateTime);
+            List<String> compareDateTime = getDateList(compareParameter);
+            List<String> dateList = new ArrayList<>();
+            if (dateTime.size()!=compareDateTime.size()){
+                log.error("选择时间和对比时间无法一一对应，dateTime："+dateTime+"compareDateTime"+compareDateTime);
+                return  new HashMap<>();
+            }
+            for (int i= 0;i<dateTime.size();i++){
+                dateList.add(dateTime.get(i)+"与"+dateList.get(i));
+            }
+
+            result.put("dateTime", dateList);
         } catch (Exception e) {
-            log.error("获取总数折线图失败，parameter：" + parameter.toString(), e);
+            log.error("获取对比总数折线图失败，parameter：" +
+                    parameter.toString()+"compareStartTime："+compareStartTime+"compareEndTime:"+compareEndTime, e);
         }
         return result;
 
@@ -152,7 +163,8 @@ public class UseStatisticsController {
             result.put("compareData", compareData);
             result.put("dateTime", dateTime);
         } catch (Exception e) {
-            log.error("获取总数折线图失败，parameter：" + parameter.toString(), e);
+            log.error("获取对比总数折线图失败，parameter：" +
+                    parameter.toString()+"compareStartTime："+compareStartTime+"compareEndTime:"+compareEndTime, e);
         }
         return result;
 
@@ -166,7 +178,6 @@ public class UseStatisticsController {
      * @return
      */
     @RequestMapping("totalDatasheets")
-    @ResponseBody
     public String totalDatasheets(@Valid StatisticsParameter parameter, Model model) {
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
@@ -196,7 +207,6 @@ public class UseStatisticsController {
      * @return
      */
     @RequestMapping("newDatasheets")
-    @ResponseBody
     public String newDatasheets(@Valid StatisticsParameter parameter, Model model) {
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
@@ -229,7 +239,8 @@ public class UseStatisticsController {
      */
     @RequestMapping("newDataSum")
     @ResponseBody
-    public StatisticsModel newDataSum(String startTime,String endTime){
+    public List<Integer> newDataSum(String startTime,String endTime){
+        List<Integer> result = new ArrayList<>();
         StatisticsModel statisticsModel = new StatisticsModel();
         try {
             UserStatisticsExample example = new UserStatisticsExample();
@@ -239,10 +250,17 @@ public class UseStatisticsController {
                 criteria.andDateLessThanOrEqualTo(endTime);
             }
             statisticsModel = userStatisticsService.selectSumByExample(example);
+            result.add(statisticsModel.getPersonUser());
+            result.add(statisticsModel.getAuthenticatedUser());
+            result.add(statisticsModel.getPersonBindInstitution());
+            result.add(statisticsModel.getInstitution());
+            result.add(statisticsModel.getInstitutionAccount());
+            result.add(statisticsModel.getInstitutionAdmin());
+
         } catch (Exception e) {
             log.error("查询统计时间内新增数量之和失败", e);
         }
-        return  statisticsModel;
+        return  result;
     }
 
 
