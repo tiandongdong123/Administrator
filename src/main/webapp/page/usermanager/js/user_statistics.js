@@ -89,7 +89,7 @@ $(function () {
                 });
                 //默认显示最近7天
                 aRecent7Days.click();
-                that.table();
+                that.newData();
 
             },
 
@@ -150,16 +150,36 @@ $(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
+                        $(".gri_data_compare").show();
+                    
+
+                        
                     } else {
                         lineContainerComparison.hide();
                         lineContainer.show();
+                        $(".gri_data_compare").css('background-position', '-10px -10px')
+                        $(".gri_data_compare").hide()
                     }
                 });
+                $("#user_statistics_data").click(function(){
+                    $(".gri_data").css('background-position', '-68px -10px');
+                });
+                $("#user_statistics_dataCompare").click(function(){
+                    $(".gri_data_compare").css('background-position', '-68px -10px');
+                })
             },
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
+                    $(".gri_data_compare").css('background-position', '-10px -10px');
+                    $(".gri_data").css('background-position', '-10px -10px');
+                });
+                $(".gri_data").click(function () {
+                    $(".gri_submit_btn").click();
+                });
+                $(".gri_data_compare").click(function () {
+                    $(".gri_submit_btn").click();
                 })
             },
 
@@ -216,8 +236,8 @@ $(function () {
                     }
                 }
             },
-            //table表格的加载
-            table: function () {
+            //新增数据的显示
+            newData: function () {
                 var startDate,endDate,data_arry;
 
                 data_arry = $("#user_statistics_data").val().split("至");
@@ -382,18 +402,81 @@ $(function () {
                     }
                 });
             },
+            totalTable:function(){
+                var data_arry,startDate,endDate,indexType,timeUnit,pageSize;
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0].trim();
+                endDate = data_arry[1].trim();
+                indexType = target_item_hidden.val();//指标参数
+                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
 
+                    pageSize = $(".evey-page").val();
+                    if (pageSize == null) {
+                        pageSize = 20;
+                    }
+                    prevNum = 0;
+                    $.ajax({
+                        type:"POST",
+                        data:{
+                            startTime:startDate,
+                            endTime:endDate,
+                            timeUnit:timeUnit,
+                            type:indexType,
+                            pageSize:pageSize,
+                            page: 0,
+                        },
+                        url:"../userStatistics/totalDatasheets.do",
+                        success:function(data){
+                            $('.sync-html').html(data);
+
+                        }
+                    });
+
+            },
+            newTable:function(){
+                var data_arry,startDate,endDate,indexType,timeUnit,pageSize;
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0].trim();
+                endDate = data_arry[1].trim();
+                indexType = target_item_hidden.val();//指标参数
+                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+
+                pageSize = $(".evey-page").val();
+                if (pageSize == null) {
+                    pageSize = 20;
+                }
+                prevNum = 0;
+                $.ajax({
+                    type:"POST",
+                    data:{
+                        startTime:startDate,
+                        endTime:endDate,
+                        timeUnit:timeUnit,
+                        type:indexType,
+                        pageSize:pageSize,
+                        page: 1,
+                    },
+                    url:"../userStatistics/newDatasheets.do",
+                    success:function(data){
+                        $('.sync-html').html(data);
+
+                    }
+                });
+
+            },
 
             //总数和新增的切换
             allOrNew: function () {
                 var that = this;
                 new_num.click(function () {
                     new_increased_num.show();
+                    that.newTable();
                     that.getparms();
 
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
+                    that.totalTable();
                     that.getparms();
                 })
             },
@@ -406,6 +489,7 @@ $(function () {
                 this.allOrNew();
                 this.dataChecked();
                 this.dataSubmitBtn();
+                this.totalTable();
             }
         }
     })().init();

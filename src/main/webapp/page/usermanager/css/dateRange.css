@@ -15,6 +15,7 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
 * GRI主题
 */
 .gri_contrast {
+    position: relative;
    /* float: left;*/
     margin: 0 16px 0 17px;
     line-height: 20px;
@@ -22,15 +23,35 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
     cursor: pointer;
     font: 12px/1.5 Tahoma, Helvetica, 'SimSun', sans-serif;
 }
-
+ .gri_data{
+    position: absolute;
+    background:url("../images/css_sprites_icon.png") -10px -10px;
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    left: 500px;
+    top: -5px;
+    cursor: pointer;
+}
+ .gri_data_compare{
+    position: absolute;
+    background:url("../images/css_sprites_icon.png") -10px -10px;
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+     right: 329px;
+     top: -5px;
+    cursor: pointer;
+    display: none;
+}
 
 .gri_date {
     padding: 3px 26px 0 6px;
-    width: 195px;
+    width: 210px;
     height: 22px;
     line-height: 23px;
     border: 1px solid #D6D6D6;
-    background: #FFF url(../images/icon_date.png) no-repeat 100% 50%;
+    background: #FFF url(../images/icon_date.png) no-repeat 85% 50%;
     cursor: pointer;
     font-size: 12px;
 }

@@ -185,6 +185,8 @@ function pickerDateRange(inputId, options) {
     //对比日期框体的html串
     var checkBoxWrapper = {
         gri: [
+            '<i class="gri_data"></i>',
+            '<i class="gri_data_compare"></i>',
             '<label class="gri_contrast" for ="' + this.compareCheckboxId + '">',
             '<input type="checkbox" class="gri_pc" name="' + this.compareCheckboxId + '" id="' + this.compareCheckboxId + '" value="1"/>对比',
             '</label>',
@@ -307,6 +309,7 @@ function pickerDateRange(inputId, options) {
      * 设置回调句柄，点击成功后，返回一个时间对象，包含开始结束时间
      * 和对比开始结束时间
      */
+   /* $(".gri_data").click*/
     $('#' + this.submitBtn).bind('click', function () {
         //隐藏对比时间框
       /*  __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
