@@ -39,16 +39,18 @@ $(function () {
                     calendars: 3,
                     success: function (obj) {
                         //最近几天背景的切换
-                        that.totalTable();
-                        that.newTable();
+
                         var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
                         time_quantum.each(function () {
                             var _this = $(this);
 
                             _this.click(function () {
+
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
+                                that.totalTable();
+                                that.newTable();
                             })
                         });
 
