@@ -69,7 +69,7 @@ public class InstitutionUtils {
 			map.put("ipSegment", ipSegment);
 		}
 		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("_", "\\_"));
+			map.put("institution", institution);
 		}
 		//调用用户权限 (个人绑定未加入)
 		if (AuthorityLimit.TRICAL.getName().equals(openLimit)) {
