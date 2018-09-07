@@ -29,11 +29,11 @@ public class StatisticsParameter implements Serializable{
     /**
      * 每页显示数量
      */
-    private int pageSize;
+    private Integer pageSize;
     /**
      * 页数
      */
-    private int page;
+    private Integer page;
 
 
     public String getStartTime() {
@@ -68,19 +68,19 @@ public class StatisticsParameter implements Serializable{
         this.type = type;
     }
 
-    public int getPageSize() {
+    public Integer getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+    public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
 
-    public int getPage() {
+    public Integer getPage() {
         return page;
     }
 
-    public void setPage(int page) {
+    public void setPage(Integer page) {
         this.page = page;
     }
 

@@ -369,8 +369,8 @@
 
     <select id="selectSumByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
             resultMap="ColumnSumMap">
-        select sum(person_user) sum1, sum(authenticated_user) sum2,sum(person_bind_institution) sum3,
-        sum(institution) sum4,sum(institution_account) sum5,sum(institution_admin) sum6
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0) sum2,ifnull(sum(person_bind_institution),0)  sum3,
+        ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6
         from user_statistics
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
@@ -379,12 +379,11 @@
 
     <select id="selectNewDate" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
             resultMap="ColumnSumMap">
-        select sum(person_user) sum1, sum(authenticated_user) sum2,sum(person_bind_institution) sum3,
-        sum(institution) sum4,sum(institution_account) sum5,sum(institution_admin) sum6
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0) sum2,ifnull(sum(person_bind_institution),0)  sum3,
+        ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6,
         <if test="timeUnit == 1">
-            ,valid_institution_account
+            ifnull(valid_institution_account,0) valid_institution_account,
         </if>
-        from user_statistics,
         <if test="timeUnit == 1">
             DATE_FORMAT(date,'%Y%m%d')
         </if>
@@ -400,10 +399,11 @@
             <if test="page != null">
                 limit ${page}, ${pageSize}
             </if>
-            <if test="offset == null">
+            <if test="pageSize == null">
                 limit ${pageSize}
             </if>
         </if>
     </select>
+
 
 </mapper>
