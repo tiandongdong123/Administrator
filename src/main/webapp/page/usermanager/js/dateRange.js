@@ -138,9 +138,9 @@ function pickerDateRange(inputId, options) {
             '<table class="gri_dateRangePicker"><tr id="' + this.dateListId + '"></tr></table>',
             '<div class="gri_dateRangeOptions" ' + (this.mOpts.autoSubmit ? ' style="display:none" ' : '') + '>',
             '<div class="gri_dateRangeInput" id="' + this.dateRangeDiv + '" >',
-            '<input type="text" class="gri_dateRangeInput" name="' + this.startDateId + '" id="' + this.startDateId + '" value="' + this.mOpts.startDate + '"  />',
+            '<input type="text" class="gri_dateRangeInput test_data" name="' + this.startDateId + '" id="' + this.startDateId + '" value="' + this.mOpts.startDate + '"  />',
             '<span id="' + this.mOpts.joinLineId + '"> - </span>',
-            '<input type="text" class="gri_dateRangeInput" name="' + this.endDateId + '" id="' + this.endDateId + '" value="' + this.mOpts.endDate + '"  /><br />',
+            '<input type="text" class="gri_dateRangeInput test_data" name="' + this.endDateId + '" id="' + this.endDateId + '" value="' + this.mOpts.endDate + '"  /><br />',
             '</div>',
             '<div class="gri_dateRangeInput" id="' + this.dateRangeCompareDiv + '">',
             '<input type="text" class="gri_dateRangeInput" name="' + this.startCompareDateId + '" id="' + this.startCompareDateId + '" value="' + this.mOpts.startCompareDate + '"  />',
@@ -149,7 +149,7 @@ function pickerDateRange(inputId, options) {
             '</div>',
             '<div class="gri_dateRangebutton">',
             '<input type="button" name="' + this.submitBtn + '" class="gri_submit_btn"  id="' + this.submitBtn + '" value="确定" />',
-            '&nbsp;<a id="' + this.closeBtn + '" href="javascript:;" class="closeBtn">关闭</a>',
+            '&nbsp;<a id="' + this.closeBtn + '" href="javascript:;" class="closeBtn">取消</a>',
             '</div>',
             '</div>',
             '</div>'
@@ -309,7 +309,7 @@ function pickerDateRange(inputId, options) {
      * 设置回调句柄，点击成功后，返回一个时间对象，包含开始结束时间
      * 和对比开始结束时间
      */
-   /* $(".gri_data").click*/
+
     $('#' + this.submitBtn).bind('click', function () {
         //隐藏对比时间框
       /*  __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
@@ -479,6 +479,8 @@ function pickerDateRange(inputId, options) {
     //让用户点击页面即可关闭弹窗
     $(document).bind('click', function () {
         __method.close();
+        $(".gri_data_compare").css('background-position', '-10px -10px');
+        $(".gri_data").css('background-position', '-10px -10px');
     });
 };
 
@@ -589,6 +591,7 @@ pickerDateRange.prototype.init = function (isCompare) {
         }
         return false;
     });
+
     // 下一年
     $('#' + this.nextYear).bind('click', function () {
         __method.calendar_endDate.setFullYear(__method.calendar_endDate.getFullYear() + 1, __method.calendar_endDate.getMonth(), 1);
@@ -642,7 +645,8 @@ pickerDateRange.prototype.init = function (isCompare) {
                 $('#' + __method.endDateId).val(__method.formatDate(timeObj.today));
                 $('#' + __method.mOpts.startDateId).val($('#' + __method.startDateId).val());
                 $('#' + __method.mOpts.endDateId).val($('#' + __method.endDateId).val());
-
+                console.log($('#' + __method.startDateId).val())
+                console.log( $('#' + __method.mOpts.startDateId).val())
                 __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
                 $('#' + __method.compareCheckboxId).attr('checked', false);
                 $('#' + __method.mOpts.compareCheckboxId).attr('checked', false);
@@ -1419,6 +1423,9 @@ pickerDateRange.prototype.fillDate = function (year, month, index) {
             (function (ymd) {
                 $(td).bind("click", ymd, function () {
                     __method.selectDate(ymd);
+                    if($('.gri_dateRangePicker .gri_dateRangeSelected').length==1){
+                        $('#' + __method.endDateId).val($('#' + __method.startDateId).val())
+                    }
                     return false;
                 });
             })(ymd);

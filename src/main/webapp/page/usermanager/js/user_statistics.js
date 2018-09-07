@@ -53,7 +53,6 @@ $(function () {
 
                         $(".gri_pc").click(function () {
                             if ($(".gri_pc").get(0).checked) {
-
                             } else {
                                 $("#user_statistics_dataCompare").val("")
                             }
@@ -151,27 +150,35 @@ $(function () {
                         lineContainerComparison.show();
                         lineContainer.hide();
                         $(".gri_data_compare").show();
-                    
-
-                        
                     } else {
                         lineContainerComparison.hide();
                         lineContainer.show();
-                        $(".gri_data_compare").css('background-position', '-10px -10px')
-                        $(".gri_data_compare").hide()
+                        $(".gri_data_compare").css('background-position', '-10px -10px');
+                        $(".gri_data_compare").hide();
                     }
                 });
-                $("#user_statistics_data").click(function(){
+                $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
                 });
-                $("#user_statistics_dataCompare").click(function(){
+                $("#user_statistics_dataCompare").click(function () {
                     $(".gri_data_compare").css('background-position', '-68px -10px');
                 })
             },
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
+                var that = this;
+
                 $(".gri_submit_btn").click(function () {
+                    var baginValue =  $(this).val();
                     time_quantum.css("background", "transparent");
+                    $(".gri_data_compare").css('background-position', '-10px -10px');
+                    $(".gri_data").css('background-position', '-10px -10px');
+                    var inputVal = that.testData(baginValue);
+                    console.log(inputVal)
+                    alert(inputVal)
+
+                });
+                $(".closeBtn").click(function () {
                     $(".gri_data_compare").css('background-position', '-10px -10px');
                     $(".gri_data").css('background-position', '-10px -10px');
                 });
@@ -180,7 +187,8 @@ $(function () {
                 });
                 $(".gri_data_compare").click(function () {
                     $(".gri_submit_btn").click();
-                })
+                });
+
             },
 
             //样式的切换(日/周/月的切换时分析图的改变)
@@ -238,7 +246,7 @@ $(function () {
             },
             //新增数据的显示
             newData: function () {
-                var startDate,endDate,data_arry;
+                var startDate, endDate, data_arry;
 
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
@@ -251,13 +259,30 @@ $(function () {
                     },
                     url: " ../userStatistics/newDataSum.do",
                     success: function (data) {
-                        for (var i in data){
-                            var str = '<li><span class="person_num">'+data[i]+'</span> </li>';
+                        for (var i in data) {
+                            var str = '<li><span class="person_num">' + data[i] + '</span> </li>';
                             $(".new_data").append(str);
                         }
                     }
                 });
             },
+            //手动输入时间的校验
+          /*  testData: function (baginValue) {
+                var flag = 1;
+                var bagin =  $(this).val();
+                 $(".test_data").blur(function () {
+                    var bagin1 =  $(this).val();
+                    console.log(bagin)
+                     console.log(bagin1)
+                    var bagin_r = bagin1.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
+                    console.log(bagin_r)
+                    if(bagin_r==null){
+                        alert("请输入正确的开始时间格式,如:2018-01-01");
+                        $(this).val(bagin)
+                    }
+                });
+                return flag;
+            },*/
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
                 var that = this;
@@ -402,39 +427,8 @@ $(function () {
                     }
                 });
             },
-            totalTable:function(){
-                var data_arry,startDate,endDate,indexType,timeUnit,pageSize;
-                data_arry = $("#user_statistics_data").val().split("至");
-                startDate = data_arry[0].trim();
-                endDate = data_arry[1].trim();
-                indexType = target_item_hidden.val();//指标参数
-                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-
-                    pageSize = $(".evey-page").val();
-                    if (pageSize == null) {
-                        pageSize = 20;
-                    }
-                    prevNum = 0;
-                    $.ajax({
-                        type:"POST",
-                        data:{
-                            startTime:startDate,
-                            endTime:endDate,
-                            timeUnit:timeUnit,
-                            type:indexType,
-                            pageSize:pageSize,
-                            page: 0,
-                        },
-                        url:"../userStatistics/totalDatasheets.do",
-                        success:function(data){
-                            $('.sync-html').html(data);
-
-                        }
-                    });
-
-            },
-            newTable:function(){
-                var data_arry,startDate,endDate,indexType,timeUnit,pageSize;
+            totalTable: function () {
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
                 endDate = data_arry[1].trim();
@@ -447,17 +441,48 @@ $(function () {
                 }
                 prevNum = 0;
                 $.ajax({
-                    type:"POST",
-                    data:{
-                        startTime:startDate,
-                        endTime:endDate,
-                        timeUnit:timeUnit,
-                        type:indexType,
-                        pageSize:pageSize,
+                    type: "POST",
+                    data: {
+                        startTime: startDate,
+                        endTime: endDate,
+                        timeUnit: timeUnit,
+                        type: indexType,
+                        pageSize: pageSize,
+                        page: 0,
+                    },
+                    url: "../userStatistics/totalDatasheets.do",
+                    success: function (data) {
+                        $('.sync-html').html(data);
+
+                    }
+                });
+
+            },
+            newTable: function () {
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0].trim();
+                endDate = data_arry[1].trim();
+                indexType = target_item_hidden.val();//指标参数
+                timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+
+                pageSize = $(".evey-page").val();
+                if (pageSize == null) {
+                    pageSize = 20;
+                }
+                prevNum = 0;
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        startTime: startDate,
+                        endTime: endDate,
+                        timeUnit: timeUnit,
+                        type: indexType,
+                        pageSize: pageSize,
                         page: 1,
                     },
-                    url:"../userStatistics/newDatasheets.do",
-                    success:function(data){
+                    url: "../userStatistics/newDatasheets.do",
+                    success: function (data) {
                         $('.sync-html').html(data);
 
                     }
@@ -490,6 +515,7 @@ $(function () {
                 this.dataChecked();
                 this.dataSubmitBtn();
                 this.totalTable();
+               /* this.testData();*/
             }
         }
     })().init();
@@ -520,7 +546,7 @@ $(function () {
                     grid: {
                         left: '3%',
                         right: '4%',
-                        height:'300',
+                        height: '300',
                         y: 80,
                         containLabel: true,
                         show: true,
@@ -564,25 +590,25 @@ $(function () {
                             itemStyle: {normal: {label: {show: true}}}
                         }
                     ],
-                   /* dataZoom: {
-                        type: 'slider',
-                        show: true,
-                        backgroundColor: '#e0e3e8',
-                        handleColor: '#7cb6e1',
-                        fillerColor: '#7cb6e1',
-                       /!* start: 0,
-                        xAxisIndex: 0,
-                        end: 31,*!/
-                        left: 10,
-                        right: 10,
-                        bottom: 4,
-                        height: 6,
-                        textStyle: {
-                            color: 'transparent'
-                        },
-                        handleSize: 16,
-                        showDataShadow: false
-                    }*/
+                    /* dataZoom: {
+                         type: 'slider',
+                         show: true,
+                         backgroundColor: '#e0e3e8',
+                         handleColor: '#7cb6e1',
+                         fillerColor: '#7cb6e1',
+                        /!* start: 0,
+                         xAxisIndex: 0,
+                         end: 31,*!/
+                         left: 10,
+                         right: 10,
+                         bottom: 4,
+                         height: 6,
+                         textStyle: {
+                             color: 'transparent'
+                         },
+                         handleSize: 16,
+                         showDataShadow: false
+                     }*/
                 };
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);
@@ -614,7 +640,7 @@ $(function () {
                         left: '3%',
                         right: '4%',
                         y: 60,
-                        height:'300',
+                        height: '300',
                         containLabel: true,
                         show: 'true',
                         borderWidth: '0'
@@ -632,8 +658,8 @@ $(function () {
                     },
                     xAxis: {
                         type: 'category',
-                        position:'bottom',
-                        offset:'20',
+                        position: 'bottom',
+                        offset: '20',
                         splitLine: {
                             show: false,
                         },
@@ -661,25 +687,25 @@ $(function () {
                             itemStyle: {normal: {label: {show: true}}}
                         }
                     ],
-                  /*  dataZoom: {
-                        type: 'slider',
-                        show: true,
-                        backgroundColor: '#e0e3e8',
-                        handleColor: '#7cb6e1',
-                        fillerColor: '#7cb6e1',
-                       /!* start: 0,
-                        xAxisIndex: 0,
-                        end: 31,*!/
-                        left: 10,
-                        right: 10,
-                        bottom: 4,
-                        height: 6,
-                        textStyle: {
-                            color: 'transparent'
-                        },
-                        handleSize: 16,
-                        showDataShadow: false
-                    }*/
+                    /*  dataZoom: {
+                          type: 'slider',
+                          show: true,
+                          backgroundColor: '#e0e3e8',
+                          handleColor: '#7cb6e1',
+                          fillerColor: '#7cb6e1',
+                         /!* start: 0,
+                          xAxisIndex: 0,
+                          end: 31,*!/
+                          left: 10,
+                          right: 10,
+                          bottom: 4,
+                          height: 6,
+                          textStyle: {
+                              color: 'transparent'
+                          },
+                          handleSize: 16,
+                          showDataShadow: false
+                      }*/
                 };
                 if (option && typeof option === "object") {
                     myChart.setOption(option, true);
