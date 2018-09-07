@@ -2,11 +2,11 @@ package com.wf.bean.importSolr;
 
 public class UserRoleRequest {
 	
-	private String ChildGroupLimit;
-	private String ChildGroupConcurrent;
-	private String GroupConcurrent;
-	private String ChildGroupDownloadLimit;
-	private String ChildGroupPayment;
+	private Integer ChildGroupLimit;
+	private Integer ChildGroupConcurrent;
+	private Integer GroupConcurrent;
+	private Integer ChildGroupDownloadLimit;
+	private Integer ChildGroupPayment;
 	private String AppStartTime;
 	private String AppEndTime;
 
@@ -14,43 +14,43 @@ public class UserRoleRequest {
 	private String WeChatEndTime;
 	private String Email4WeChat;
 
-	public String getChildGroupLimit() {
+	public Integer getChildGroupLimit() {
 		return ChildGroupLimit;
 	}
 
-	public void setChildGroupLimit(String childGroupLimit) {
+	public void setChildGroupLimit(Integer childGroupLimit) {
 		ChildGroupLimit = childGroupLimit;
 	}
 
-	public String getChildGroupConcurrent() {
+	public Integer getChildGroupConcurrent() {
 		return ChildGroupConcurrent;
 	}
 
-	public void setChildGroupConcurrent(String childGroupConcurrent) {
+	public void setChildGroupConcurrent(Integer childGroupConcurrent) {
 		ChildGroupConcurrent = childGroupConcurrent;
 	}
 
-	public String getGroupConcurrent() {
+	public Integer getGroupConcurrent() {
 		return GroupConcurrent;
 	}
 
-	public void setGroupConcurrent(String groupConcurrent) {
+	public void setGroupConcurrent(Integer groupConcurrent) {
 		GroupConcurrent = groupConcurrent;
 	}
 
-	public String getChildGroupDownloadLimit() {
+	public Integer getChildGroupDownloadLimit() {
 		return ChildGroupDownloadLimit;
 	}
 
-	public void setChildGroupDownloadLimit(String childGroupDownloadLimit) {
+	public void setChildGroupDownloadLimit(Integer childGroupDownloadLimit) {
 		ChildGroupDownloadLimit = childGroupDownloadLimit;
 	}
 
-	public String getChildGroupPayment() {
+	public Integer getChildGroupPayment() {
 		return ChildGroupPayment;
 	}
 
-	public void setChildGroupPayment(String childGroupPayment) {
+	public void setChildGroupPayment(Integer childGroupPayment) {
 		ChildGroupPayment = childGroupPayment;
 	}
 

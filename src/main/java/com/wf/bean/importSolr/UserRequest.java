@@ -1,5 +1,8 @@
 package com.wf.bean.importSolr;
 
+import java.util.Collection;
+import java.util.List;
+
 public class UserRequest {
 	
 	private String Id;
@@ -8,13 +11,20 @@ public class UserRequest {
 	private String Institution;
 	private String LoginMode;
 	private String ParentId;
-	private String IsFreeze;
-	private String PayChannelId;
+	private boolean IsFreeze;
+	private Collection<String> PayChannelId;
 	private String OrderType;
 	private String OrderContent;
 	private String CountryRegion;
 	private String PostCode;
 	private String Organization;
+	private boolean HasChildGroup;
+	private Collection<String> StatisticalAnalysis;
+	private String GroupRole;
+	private Collection<String> IsTrial;
+	private List<String> OpenIP;
+	private Long StartIP;
+	private Long EndIP;
 	
 	public String getId() {
 		return Id;
@@ -52,16 +62,16 @@ public class UserRequest {
 	public void setParentId(String parentId) {
 		ParentId = parentId;
 	}
-	public String getIsFreeze() {
+	public boolean getIsFreeze() {
 		return IsFreeze;
 	}
-	public void setIsFreeze(String isFreeze) {
+	public void setIsFreeze(boolean isFreeze) {
 		IsFreeze = isFreeze;
 	}
-	public String getPayChannelId() {
+	public Collection<String> getPayChannelId() {
 		return PayChannelId;
 	}
-	public void setPayChannelId(String payChannelId) {
+	public void setPayChannelId(Collection<String> payChannelId) {
 		PayChannelId = payChannelId;
 	}
 	public String getOrderType() {
@@ -94,16 +104,16 @@ public class UserRequest {
 	public void setOrganization(String organization) {
 		Organization = organization;
 	}
-	public String getHasChildGroup() {
+	public boolean getHasChildGroup() {
 		return HasChildGroup;
 	}
-	public void setHasChildGroup(String hasChildGroup) {
+	public void setHasChildGroup(boolean hasChildGroup) {
 		HasChildGroup = hasChildGroup;
 	}
-	public String getStatisticalAnalysis() {
+	public Collection<String> getStatisticalAnalysis() {
 		return StatisticalAnalysis;
 	}
-	public void setStatisticalAnalysis(String statisticalAnalysis) {
+	public void setStatisticalAnalysis(Collection<String> statisticalAnalysis) {
 		StatisticalAnalysis = statisticalAnalysis;
 	}
 	public String getGroupRole() {
@@ -112,35 +122,29 @@ public class UserRequest {
 	public void setGroupRole(String groupRole) {
 		GroupRole = groupRole;
 	}
-	public String getIsTrial() {
+	public Collection<String> getIsTrial() {
 		return IsTrial;
 	}
-	public void setIsTrial(String isTrial) {
+	public void setIsTrial(Collection<String> isTrial) {
 		IsTrial = isTrial;
 	}
-	public String getOpenIP() {
+	public List<String> getOpenIP() {
 		return OpenIP;
 	}
-	public void setOpenIP(String openIP) {
+	public void setOpenIP(List<String> openIP) {
 		OpenIP = openIP;
 	}
-	public String getStartIP() {
+	public Long getStartIP() {
 		return StartIP;
 	}
-	public void setStartIP(String startIP) {
+	public void setStartIP(Long startIP) {
 		StartIP = startIP;
 	}
-	public String getEndIP() {
+	public Long getEndIP() {
 		return EndIP;
 	}
-	public void setEndIP(String endIP) {
+	public void setEndIP(Long endIP) {
 		EndIP = endIP;
 	}
-	private String HasChildGroup;
-	private String StatisticalAnalysis;
-	private String GroupRole;
-	private String IsTrial;
-	private String OpenIP;
-	private String StartIP;
-	private String EndIP;
+
 }
