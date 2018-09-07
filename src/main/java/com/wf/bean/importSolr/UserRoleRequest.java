@@ -1,6 +1,6 @@
 package com.wf.bean.importSolr;
 
-public class UserRole {
+public class UserRoleRequest {
 	
 	private String ChildGroupLimit;
 	private String ChildGroupConcurrent;
