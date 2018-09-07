@@ -1855,6 +1855,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public Map<String, Object> findListInfoById(String userId){
 		Map<String, Object> map = personMapper.findListInfoById(userId);
+		if(map==null){
+			map= new HashMap<>();
+		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
 		} catch (Exception e) {

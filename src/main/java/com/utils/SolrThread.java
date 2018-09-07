@@ -381,9 +381,11 @@ public class SolrThread implements Runnable {
 					IPList.add(ip);
 				}
 			}
-			solrMap.put("StartIP", StartIP);
-			solrMap.put("EndIP", EndIP);
-			solrMap.put("OpenIP", IPList);
+			if(EndIP>0){
+				solrMap.put("StartIP", StartIP);
+				solrMap.put("EndIP", EndIP);
+				solrMap.put("OpenIP", IPList);
+			}
 		}else{
 			solrMap.put("StartIP", null);
 			solrMap.put("EndIP", null);

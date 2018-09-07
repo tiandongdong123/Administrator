@@ -73,7 +73,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 		try{
 			log.info("开始初始化solr数据");
 			Map<String,Object> map=new HashMap<String, Object>();
-			map.put("userType", "23");
+			map.put("userType", "2");
 			map.put("pageNum", 0);
 			map.put("pageSize", 1000000);
 			List<Object> userList = personMapper.findListInfoSimp(map);
@@ -162,9 +162,11 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				EndIP=EndIP>endIpAddressNumber?EndIP:endIpAddressNumber;
 				IPList.add(IPConvertHelper.NumberToIP(beginIpAddressNumber)+"-"+IPConvertHelper.NumberToIP(endIpAddressNumber));
 			}
-			solrMap.put("StartIP", StartIP);
-			solrMap.put("EndIP", EndIP);
-			solrMap.put("OpenIP", IPList);
+			if(EndIP>0){
+				solrMap.put("StartIP", StartIP);
+				solrMap.put("EndIP", EndIP);
+				solrMap.put("OpenIP", IPList);
+			}
 		}
 	}
 
