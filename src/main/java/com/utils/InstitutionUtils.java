@@ -9,8 +9,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
@@ -28,6 +30,7 @@ public class InstitutionUtils {
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
 	public static Integer maxData=99999999;
 	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
+	private static Logger log = Logger.getLogger(InstitutionUtils.class);
 
 	/**
 	 * 校验机构用户查询条件
@@ -70,13 +73,13 @@ public class InstitutionUtils {
 		}
 		//调用用户权限 (个人绑定未加入)
 		if (AuthorityLimit.TRICAL.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("trical", openLimit);
 		}else if (AuthorityLimit.OPENAPP.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("openApp", openLimit);
 		}else if (AuthorityLimit.OPENWECHAT.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("openWeChat", openLimit);
 		}else if (AuthorityLimit.PARTYADMINTIME.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("PartyAdminTime", openLimit);
 		}else if(AuthorityLimit.PID.getName().equals(openLimit)){
 			map.put("admin", openLimit);
 		}else if(AuthorityLimit.STATISTICS.getName().equals(openLimit)){
@@ -745,9 +748,14 @@ public class InstitutionUtils {
 		}
 		
 		sq.setQuery(query.toString());
+		if(log.isInfoEnabled()){
+			log.info("查询条件"+query.toString());
+		}
 		System.out.println(query.toString());
-		sq.setSort("LoginMode", ORDER.asc);//登录方式排序
-		sq.setSort("IsFreeze", ORDER.desc);//按照冻结排序
+		List<SortClause> scList=new ArrayList<>();
+		scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
+		scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
+		sq.setSorts(scList);
 		SolrDocumentList sdList=SolrService.getSolrList(sq);
 		allMap.put("data",InstitutionUtils.getFieldMap(sdList));
 		Long num=sdList.getNumFound();

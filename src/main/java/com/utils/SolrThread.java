@@ -1,6 +1,7 @@
 package com.utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.apache.solr.common.SolrInputDocument;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.importSolr.ImportSolrRequest;
 import com.xxl.conf.core.XxlConfClient;
 
 public class SolrThread implements Runnable {
@@ -76,6 +78,7 @@ public class SolrThread implements Runnable {
 		Map<String, Object> operation = new HashMap<>();
 		operation.put("set", "1".equals(flag)?true:false);
 		doc.addField("IsFreeze", operation);
+		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
 		SolrThread mt = new SolrThread(list,null,null);
         Thread t1 = new Thread(mt,"冻结解冻");
@@ -108,6 +111,7 @@ public class SolrThread implements Runnable {
 		}
 		operation.put("set", ls);
 		doc.addField("StatisticalAnalysis", operation);
+		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
 		SolrThread mt = new SolrThread(list,null,null);
         Thread t1 = new Thread(mt,"solr线程");
@@ -156,6 +160,7 @@ public class SolrThread implements Runnable {
 			oper.put("set", m.getValue());
 			doc.addField(m.getKey(),oper);
 		}
+		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
 		SolrThread mt = new SolrThread(list,null,null);
         Thread t1 = new Thread(mt,"solr线程");
@@ -181,6 +186,7 @@ public class SolrThread implements Runnable {
 			Map<String, Object> oper = new HashMap<>();
 			oper.put("set", institution);
 			input.addField("Institution",oper);
+			input.addField("UpdateTime", SolrThread.getDate());//修改时间
 			sdList.add(input);
 		}
 		SolrThread mt = new SolrThread(sdList,null,null);
@@ -189,20 +195,136 @@ public class SolrThread implements Runnable {
 	}
 	
 	//整体更新solr数据
-	public static void registerInfo(InstitutionalUser user) throws Exception{
+	public static void registerInfo(InstitutionalUser user,boolean isAdd) throws Exception{
 		Map<String,Object> solrMap=new LinkedHashMap<>();
-		addUser(solrMap,user);
+		ImportSolrRequest request=new ImportSolrRequest();
+		//swapParam(user,request);
+		addUser(solrMap,user,isAdd);
 		addIp(solrMap,user);
 		addLimit(solrMap,user);
 		addRole(solrMap,user);
+		Date date=SolrThread.getDate();
+		solrMap.put("CreateTime", date);
+		solrMap.put("UpdateTime", date);
 		List<Map<String, Object>> solrList=new ArrayList<>();
 		solrList.add(solrMap);
 		SolrThread mt = new SolrThread(null,solrList,null);
         Thread t1 = new Thread(mt,"solr线程");
         t1.start();
 	}
+	
+	//将用户提交数据放入ImportSolrRequest
+	private static void swapParam(InstitutionalUser user, ImportSolrRequest request) throws Exception{
+		swapUser(user,request);
+		swapIp(user,request);
+		swpLimit(user,request);
+	}
+
+	//交换用户信息
+	private static void swapUser(InstitutionalUser user, ImportSolrRequest request) throws Exception{
+		request.getUser().setId(user.getUserId());
+		String password="";
+		if (StringUtils.isNotBlank(user.getPassword())) {
+			password = PasswordHelper.encryptPassword(user.getPassword());
+		} else {
+			password = PasswordHelper.encryptPassword("666666");
+		}
+		request.getUser().setPassword(password);
+		request.getUser().setInstitution(user.getInstitution());
+		request.getUser().setUserType("2");
+		
+		String pid =null;
+		if (StringUtils.isNotBlank(user.getAdminname())) {
+			pid = user.getAdminname();
+		} else if (StringUtils.isNotBlank(user.getAdminOldName())) {
+			pid = user.getAdminOldName();
+		}
+		request.getUser().setParentId(pid);
+		request.getUser().setLoginMode(user.getLoginMode());
+		request.getUser().setIsFreeze(false);
+		if(!"".equals(pid)){
+			request.getAdmin().setAdministratorId(pid);
+			request.getAdmin().setAdministratorEmail(user.getAdminEmail());
+			request.getAdmin().setAdministratorPassword(PasswordHelper.encryptPassword(user.getAdminpassword()));
+			request.getAdmin().setAdministratorOpenIP(user.getAdminIP());
+		}else{
+			request.getAdmin().setAdministratorId(null);
+			request.getAdmin().setAdministratorEmail(null);
+			request.getAdmin().setAdministratorPassword(null);
+			request.getAdmin().setAdministratorOpenIP(null);
+		}
+		//GroupInfo
+		request.getUser().setOrderType(user.getOrderType());
+		request.getUser().setOrderContent(user.getOrderContent());
+		request.getUser().setCountryRegion(user.getCountryRegion());
+		request.getUser().setPostCode(user.getPostCode());
+		request.getUser().setOrganization(user.getOrganization());
+	}
+	
+	//交换Ip信息
+	private static void swapIp(InstitutionalUser user, ImportSolrRequest request) throws Exception{
+		//ip
+		if (user.getLoginMode().equals("0") || user.getLoginMode().equals("2")) {
+			String[] arr_ip = user.getIpSegment().split("\r\n");
+			Long StartIP=Long.MAX_VALUE;
+			Long EndIP=0L;
+			List<String> IPList=new ArrayList<>();
+			for(String ip : arr_ip){
+				if(ip.contains("-")){				
+					long begin=IPConvertHelper.IPToNumber(ip.substring(0, ip.indexOf("-")));
+					StartIP=StartIP>begin?begin:StartIP;
+					long end=IPConvertHelper.IPToNumber(ip.substring(ip.indexOf("-")+1, ip.length()));
+					EndIP=EndIP>end?EndIP:end;
+					IPList.add(ip);
+				}
+			}
+			request.getUser().setStartIP(StartIP);
+			request.getUser().setEndIP(EndIP);
+			request.getUser().setOpenIP(IPList);
+		}else{
+			request.getUser().setStartIP(null);
+			request.getUser().setEndIP(null);
+			request.getUser().setOpenIP(null);
+		}
+	}
+	
+	//交换权限
+	private static void swpLimit(InstitutionalUser user, ImportSolrRequest request) throws Exception{
+
+		//PayChannelId
+		List<ResourceDetailedDTO> rdList=user.getRdlist();
+		Map<String,String> ProjectMap=new HashMap<String,String>();
+		Map<String,String> IsTrialMap=new HashMap<String,String>();
+		for(ResourceDetailedDTO dto:rdList){
+			ProjectMap.put(dto.getProjectid(), dto.getProjectid());
+			if(StringUtils.equals(dto.getMode(), "trical")){
+				IsTrialMap.put(dto.getProjectid(), dto.getProjectid());
+			}
+		}
+		request.getUser().setPayChannelId(ProjectMap.values());
+		request.getUser().setIsTrial(IsTrialMap.values());
+		//子账号权限
+		request.getUser().setHasChildGroup(user.getUpperlimit()==null?false:true);
+		request.getUserRole().setChildGroupLimit(user.getUpperlimit());
+		request.getUserRole().setChildGroupConcurrent(user.getsConcurrentnumber());
+		request.getUserRole().setChildGroupDownloadLimit(user.getDownloadupperlimit());
+		request.getUserRole().setChildGroupPayment( user.getChargebacks());
+		request.getUserRole().setGroupConcurrent(user.getpConcurrentnumber());
+		
+		//统计分析
+		String tongji = user.getTongji()==null?"":user.getTongji();
+		List<String> ls=new ArrayList<>();
+		if(tongji.contains("database_statistics")){
+			ls.add("database_statistics");
+		}
+		if(tongji.contains("resource_type_statistics")){
+			ls.add("resource_type_statistics");
+		}
+		request.getUser().setStatisticalAnalysis(ls);
+	}
+
 	//添加用户信息
-	private static void addUser(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void addUser(Map<String,Object> solrMap,InstitutionalUser user,boolean isAdd) throws Exception{
 		solrMap.put("Id", user.getUserId());
 		String password = "";
 		if (StringUtils.isNotBlank(user.getPassword())) {
@@ -221,7 +343,9 @@ public class SolrThread implements Runnable {
 		}
 		solrMap.put("ParentId", pid);
 		solrMap.put("LoginMode", user.getLoginMode());
-		solrMap.put("IsFreeze", false);
+		if(isAdd){
+			solrMap.put("IsFreeze", false);
+		}
 		if(!"".equals(pid)){
 			solrMap.put("AdministratorId", pid);
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
@@ -343,7 +467,8 @@ public class SolrThread implements Runnable {
 		updateIp(solrMap,user);
 		updateLimit(solrMap,user);
 		updateRole(solrMap,user);
-
+		Date date=SolrThread.getDate();
+		solrMap.put("UpdateTime", date);
 		List<Map<String, Object>> solrList=new ArrayList<>();
 		solrList.add(solrMap);
 		SolrThread mt = new SolrThread(null,null,solrList);
@@ -384,7 +509,6 @@ public class SolrThread implements Runnable {
 		}
 		
 		solrMap.put("LoginMode", user.getLoginMode());
-		solrMap.put("IsFreeze", false);
 		if(!StringUtils.isEmpty(pid)){
 			solrMap.put("AdministratorId", pid);
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
@@ -479,5 +603,9 @@ public class SolrThread implements Runnable {
 			solrMap.put("PartyAdminPassword", PasswordHelper.encryptPassword(user.getPartyPassword()));
 			solrMap.put("PartyAdminTrial", "isTrial".equals(user.getIsTrial())?true:false);
 		}
+	}
+	
+	private static Date getDate(){
+		return DateUtil.stringToDate(DateUtil.dateToString(new Date()));
 	}
 }

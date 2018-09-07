@@ -536,7 +536,7 @@ public class AheadUserController {
 			// 添加机构相关信息
 			aheadUserService.registerInfo(user);
 			//发送solr
-			SolrThread.registerInfo(user);
+			SolrThread.registerInfo(user,true);
 			// 添加购买项目
 			String msg=this.addProject(user, req);
 			if(msg.length()>0&&msg.contains("失败")){
@@ -610,7 +610,7 @@ public class AheadUserController {
 				// 添加机构信息
 				aheadUserService.batchRegisterInfo(user, map);
 				//发送solr
-				SolrThread.registerInfo(user);
+				SolrThread.registerInfo(user,true);
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
 				// 添加购买项目
@@ -1139,8 +1139,8 @@ public class AheadUserController {
 				}
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
-			pageList.setPageNum(Integer.parseInt(query.getPageNum()));//当前页
-			pageList.setPageSize(Integer.parseInt(query.getPageSize()));//每页显示的数量
+			pageList.setPageNum(Integer.parseInt(map.get("pageNum").toString()));//当前页
+			pageList.setPageSize(Integer.parseInt(map.get("pageSize").toString()));//每页显示的数量
 			if(!StringUtil.isEmpty(query.getIpSegment())){
 				map.put("ipSegment", query.getIpSegment());
 			}
@@ -1307,7 +1307,7 @@ public class AheadUserController {
 			// 修改机构信息
 			aheadUserService.updateinfo(user);
 			//发送solr
-			SolrThread.registerInfo(user);
+			SolrThread.registerInfo(user,false);
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
 			if(msg.length()>0&&msg.contains("失败")){
