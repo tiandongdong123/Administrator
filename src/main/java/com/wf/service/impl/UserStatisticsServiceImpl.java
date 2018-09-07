@@ -218,19 +218,19 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             statisticsModel.setInstitution(institution + userStatisticsList.get(i).getInstitution());
             statisticsModel.setInstitutionAccount(institutionAccount + userStatisticsList.get(i).getInstitutionAccount());
             statisticsModel.setInstitutionAdmin(institutionAdmin + userStatisticsList.get(i).getInstitutionAdmin());
-            if (userStatisticsList.get(i).getValidInstitutionAccount()!=null){
+            if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
                 statisticsModel.setValidInstitutionAccount(userStatisticsList.get(i).getValidInstitutionAccount());
             }
-            if (dateList.size()>=i+1){
+            if (dateList.size() >= i + 1) {
                 statisticsModel.setDate(dateList.get(i));
             }
             result.add(statisticsModel);
 
-            personUser +=  userStatisticsList.get(i).getPersonUser();
+            personUser += userStatisticsList.get(i).getPersonUser();
             authenticatedUser += userStatisticsList.get(i).getAuthenticatedUser();
             personBindInstitution += userStatisticsList.get(i).getPersonBindInstitution();
-            institution +=  userStatisticsList.get(i).getInstitution();
-            institutionAccount +=  userStatisticsList.get(i).getInstitutionAccount();
+            institution += userStatisticsList.get(i).getInstitution();
+            institutionAccount += userStatisticsList.get(i).getInstitutionAccount();
             institutionAdmin += userStatisticsList.get(i).getInstitutionAdmin();
         }
 
@@ -254,14 +254,10 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<StatisticsModel> selectNewData(StatisticsParameter parameter) {
         int page = parameter.getPage() - 1;
         parameter.setPage(page);
-        List<StatisticsModel> statisticsModel  =  userStatisticsMapper.selectNewDate(parameter);
+        List<StatisticsModel> statisticsModel = userStatisticsMapper.selectNewDate(parameter);
 
-        List<String> dateList = getDateList(parameter);
-        for (int i = 0;i<=dateList.size();i++) {
-            if (dateList.size()>=i+1){
-                statisticsModel.get(i).setDate(dateList.get(i));
-            }
-        }
+
+
         return statisticsModel;
     }
 
@@ -357,6 +353,14 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         List<String> lastDateList = new ArrayList<>();
         Date startDate = null;
         Date endDate = null;
+        try {
+            startDate = dayFormat.parse(startTime);
+            endDate = dayFormat.parse(endTime);
+
+        } catch (ParseException e) {
+            log.error("时间转换失败", e);
+        }
+
         switch (timeUnit) {
             case 2: {
                 try {
@@ -396,13 +400,12 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                             String lastDayOfMonth = dayFormat.format(cal.getTime());
                             lastDateList.add(lastDayOfMonth);
                         }
-                        lastDateList.add(endTime);
                     }
+                    lastDateList.add(endTime);
                     break;
                 } catch (ParseException e) {
                     log.error("时间转换失败", e);
                 }
-
             }
 
         }

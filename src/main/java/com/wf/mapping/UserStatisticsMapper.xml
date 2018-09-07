@@ -24,6 +24,7 @@
         <result column="sum5" jdbcType="INTEGER" property="institutionAccount"/>
         <result column="sum6" jdbcType="INTEGER" property="institutionAdmin"/>
         <result column="valid_institution_account" jdbcType="INTEGER" property="validInstitutionAccount"/>
+        <result column="unit" jdbcType="INTEGER" property="date"/>
     </resultMap>
 
     <sql id="Example_Where_Clause">
@@ -385,13 +386,13 @@
             ifnull(valid_institution_account,0) valid_institution_account,
         </if>
         <if test="timeUnit == 1">
-            DATE_FORMAT(date,'%Y%m%d')
+            DATE_FORMAT(date,'%Y-%m-%d')
         </if>
         <if test="timeUnit == 2">
             DATE_FORMAT(date,'%Y%u')
         </if>
         <if test="timeUnit == 3">
-            DATE_FORMAT(date,'%Y%m')
+            DATE_FORMAT(date,'%Y-%m')
         </if>
         unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
         group by unit
