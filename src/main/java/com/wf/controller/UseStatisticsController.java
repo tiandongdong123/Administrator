@@ -119,7 +119,7 @@ public class UseStatisticsController {
                 return new HashMap<>();
             }
             for (int i = 0; i < dateTime.size(); i++) {
-                dateList.add(dateTime.get(i) + "与" + dateList.get(i));
+                dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
             }
 
             result.put("dateTime", dateList);

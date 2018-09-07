@@ -221,7 +221,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             if (userStatisticsList.get(i).getValidInstitutionAccount()!=null){
                 statisticsModel.setValidInstitutionAccount(userStatisticsList.get(i).getValidInstitutionAccount());
             }
-            statisticsModel.setDate(dateList.get(i));
+            if (dateList.size()>=i+1){
+                statisticsModel.setDate(dateList.get(i));
+            }
             result.add(statisticsModel);
 
             personUser +=  userStatisticsList.get(i).getPersonUser();
@@ -252,8 +254,15 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<StatisticsModel> selectNewData(StatisticsParameter parameter) {
         int page = parameter.getPage() - 1;
         parameter.setPage(page);
-        return userStatisticsMapper.selectNewDate(parameter);
+        List<StatisticsModel> statisticsModel  =  userStatisticsMapper.selectNewDate(parameter);
 
+        List<String> dateList = getDateList(parameter);
+        for (int i = 0;i<=dateList.size();i++) {
+            if (dateList.size()>=i+1){
+                statisticsModel.get(i).setDate(dateList.get(i));
+            }
+        }
+        return statisticsModel;
     }
 
 
