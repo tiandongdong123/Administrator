@@ -39,7 +39,8 @@ $(function () {
                     calendars: 3,
                     success: function (obj) {
                         //最近几天背景的切换
-
+                        that.totalTable();
+                        that.newTable();
                         var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
                         time_quantum.each(function () {
                             var _this = $(this);
@@ -102,6 +103,7 @@ $(function () {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     selected_data.children(".switch_data_hidden").val(1);
+                    $(".gri_data_compare").hide();
                     week_month.show();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aYesterday").click();
@@ -118,6 +120,7 @@ $(function () {
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
                     selected_data.children(".switch_data_hidden").val(1);
+                    $(".gri_data_compare").hide();
 
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent7Days").click();
@@ -133,7 +136,8 @@ $(function () {
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
-                    selected_data.children(".switch_data_hidden").val(1)
+                    selected_data.children(".switch_data_hidden").val(1);
+                    $(".gri_data_compare").hide();
 
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent30Days").click();
@@ -166,21 +170,14 @@ $(function () {
             },
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
-                var that = this;
+
 
                 $(".gri_submit_btn").click(function () {
-                    var baginValue =  $(this).val();
                     time_quantum.css("background", "transparent");
-                    $(".gri_data_compare").css('background-position', '-10px -10px');
-                    $(".gri_data").css('background-position', '-10px -10px');
-                    var inputVal = that.testData(baginValue);
-                    console.log(inputVal)
-                    alert(inputVal)
-
+                    $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                 });
                 $(".closeBtn").click(function () {
-                    $(".gri_data_compare").css('background-position', '-10px -10px');
-                    $(".gri_data").css('background-position', '-10px -10px');
+                    $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                 });
                 $(".gri_data").click(function () {
                     $(".gri_submit_btn").click();
@@ -190,7 +187,6 @@ $(function () {
                 });
 
             },
-
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
@@ -267,22 +263,18 @@ $(function () {
                 });
             },
             //手动输入时间的校验
-          /*  testData: function (baginValue) {
-                var flag = 1;
-                var bagin =  $(this).val();
+            testData: function () {
+                var dateRangeSelected =  $(".test_data.gri_dateRangeSelected").val();
                  $(".test_data").blur(function () {
-                    var bagin1 =  $(this).val();
-                    console.log(bagin)
-                     console.log(bagin1)
-                    var bagin_r = bagin1.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
-                    console.log(bagin_r)
-                    if(bagin_r==null){
+                    var test_data_now =  $(this).val();
+                    var test_result = test_data_now.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
+                    if(test_result==null){
                         alert("请输入正确的开始时间格式,如:2018-01-01");
-                        $(this).val(bagin)
+                        $(this).val(dateRangeSelected)
                     }
                 });
                 return flag;
-            },*/
+            },
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
                 var that = this;
@@ -337,7 +329,7 @@ $(function () {
                     },
                     success: function (data) {
 
-                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
+                        nameSingle = target_item.text() + " " + "(单位：元)";
                         console.log(nameSingle)
                         myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
                     },
@@ -376,8 +368,6 @@ $(function () {
                     }
                 });
             },
-
-
             //新增折线图公共ajax
             newEChartsAjax: function (startDate, endDate, timeUnit, indexType) {
                 $.ajax({
@@ -415,8 +405,9 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        nameSingle = target_item.text() + "(单位：元)";
-                        nameCompare = target_item.text() + "(对比单位：元)";
+
+                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
+                        nameCompare = target_item.text() + " " + "(单位：元)" + "" + $("#user_statistics_dataCompare").val();
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
@@ -448,7 +439,7 @@ $(function () {
                         timeUnit: timeUnit,
                         type: indexType,
                         pageSize: pageSize,
-                        page: 0,
+                        page: 1,
                     },
                     url: "../userStatistics/totalDatasheets.do",
                     success: function (data) {
@@ -515,7 +506,7 @@ $(function () {
                 this.dataChecked();
                 this.dataSubmitBtn();
                 this.totalTable();
-               /* this.testData();*/
+                this.testData();
             }
         }
     })().init();
