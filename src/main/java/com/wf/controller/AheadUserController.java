@@ -1145,7 +1145,7 @@ public class AheadUserController {
 				map.put("ipSegment", query.getIpSegment());
 			}
 			if (!StringUtils.isEmpty(query.getInstitution())) {
-				map.put("institution", query.getInstitution().replace("\\_", "_"));
+				map.put("institution", query.getInstitution());
 			}
 			map.put("userId", userId);
 			map.put("pageList", pageList);
