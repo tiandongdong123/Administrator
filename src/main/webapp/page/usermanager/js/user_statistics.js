@@ -171,7 +171,7 @@ $(function () {
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
 
-
+                 var flag = 1;
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
@@ -180,7 +180,15 @@ $(function () {
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                 });
                 $(".gri_data").click(function () {
-                    $(".gri_submit_btn").click();
+
+                    if(flag==1){
+                        $("#user_statistics_data").click();
+                        flag++;
+                    }
+                    if(flag==2){
+                        $(".gri_submit_btn").click();
+                    }
+                    return;
                 });
                 $(".gri_data_compare").click(function () {
                     $(".gri_submit_btn").click();
@@ -273,7 +281,6 @@ $(function () {
                         $(this).val(dateRangeSelected)
                     }
                 });
-                return flag;
             },
             //点击指标弹框&空白隐藏
             indexMothed: function (clickDom, ComboBox, icon) {
