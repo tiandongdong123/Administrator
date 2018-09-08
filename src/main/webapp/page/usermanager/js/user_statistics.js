@@ -173,7 +173,7 @@ $(function () {
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
 
-                 var flag = 1;
+
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
@@ -181,21 +181,18 @@ $(function () {
                 $(".closeBtn").click(function () {
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                 });
-                $(".gri_data").click(function () {
-
-                    if(flag==1){
+            },
+            griIcon:function(iconBtn){
+                var coun = 0;
+                $("."+iconBtn).click(function(event){
+                    event.stopPropagation();
+                    coun++;
+                    if(coun%2 == 0){
+                        $(".closeBtn").click();
+                    }else{
                         $("#user_statistics_data").click();
-                        flag++;
                     }
-                    if(flag==2){
-                        $(".gri_submit_btn").click();
-                    }
-                    return;
-                });
-                $(".gri_data_compare").click(function () {
-                    $(".gri_submit_btn").click();
-                });
-
+                })
             },
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
@@ -274,11 +271,11 @@ $(function () {
             },
             //手动输入时间的校验
             testData: function () {
-                var dateRangeSelected =  $(".test_data.gri_dateRangeSelected").val();
-                 $(".test_data").blur(function () {
-                    var test_data_now =  $(this).val();
+                var dateRangeSelected = $(".test_data.gri_dateRangeSelected").val();
+                $(".test_data").blur(function () {
+                    var test_data_now = $(this).val();
                     var test_result = test_data_now.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
-                    if(test_result==null){
+                    if (test_result == null) {
                         alert("请输入正确的开始时间格式,如:2018-01-01");
                         $(this).val(dateRangeSelected)
                     }
@@ -337,10 +334,12 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-
+                      /*  var totalData = data.totalData.map(function (value, index, array) {
+                            value = value > 10000 ? (((value - value % 1000) / 10000 + '万')) : value;
+                            return value;
+                        });*/
                         nameSingle = target_item.text() + " " + "(单位：元)";
-                        console.log(nameSingle)
-                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
+                        myEcharsCommon.commonLine('lineContainer',data.totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
                     }
@@ -516,6 +515,8 @@ $(function () {
                 this.dataSubmitBtn();
                 this.totalTable();
                 this.testData();
+                this.griIcon("gri_data");
+                this.griIcon("gri_data_compare");
             }
         }
     })().init();
@@ -568,8 +569,13 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
-                        axisLabel: {interval: 'auto'},//坐标轴刻度标签的显示间隔，
+                        axisTick: {
+                            alignWithLabel: true
+                        },
                         data: dateTime,
+                        axisLabel: {
+                            interval: 'auto',//坐标轴刻度标签的显示间隔，
+                        }
                     },
                     yAxis: {
                         show: false,//隐藏坐标轴
@@ -663,7 +669,13 @@ $(function () {
                         splitLine: {
                             show: false,
                         },
-                        axisLabel: {interval: 'auto'},//坐标轴刻度标签的显示间隔，
+                        axisLabel: {
+                            interval: 'auto',//坐标轴刻度标签的显示间隔，
+                            formatter: function (value) {//坐标过长时省略
+                                var v = value.substring(0, 10) + '...';
+                                return value.length > 10 ? v : value;
+                            }
+                        },
                         data: dateTime,
                     },
                     yAxis: {
