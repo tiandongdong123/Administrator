@@ -172,11 +172,13 @@ $(function () {
             },
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
-
+            var that = this;
 
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
+                    that.totalTable();
+
                 });
                 $(".closeBtn").click(function () {
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
@@ -334,12 +336,18 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                      /*  var totalData = data.totalData.map(function (value, index, array) {
-                            value = value > 10000 ? (((value - value % 1000) / 10000 + '万')) : value;
+                        var totalData = data.totalData.map(function (value, index, array) {
+                            value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
                             return value;
-                        });*/
-                        nameSingle = target_item.text() + " " + "(单位：元)";
-                        myEcharsCommon.commonLine('lineContainer',data.totalData, data.dateTime, nameSingle)
+                        });
+
+                        if(totalData){
+                            nameSingle = target_item.text() + " " + "(单位：万)";
+                        }else{
+                            nameSingle = target_item.text() + " " + "(单位：个)";
+                        }
+
+                        myEcharsCommon.commonLine('lineContainer',totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
                     }
@@ -360,9 +368,9 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
+                        nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
 
-                        nameCompare = target_item.text() + " " + "(单位：元)" + "" + $("#user_statistics_dataCompare").val();
+                        nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
 
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
@@ -390,7 +398,7 @@ $(function () {
                     },
                     success: function (data) {
                         /*  console.log(data.dateTime.length)*/
-                        nameSingle = target_item.text() + "(单位：元)";
+                        nameSingle = target_item.text() + "(单位：个)";
                         myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
@@ -414,8 +422,8 @@ $(function () {
                     },
                     success: function (data) {
 
-                        nameSingle = target_item.text() + " " + "(单位：元)" + " " + $("#user_statistics_data").val();
-                        nameCompare = target_item.text() + " " + "(单位：元)" + "" + $("#user_statistics_dataCompare").val();
+                        nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
+                        nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
