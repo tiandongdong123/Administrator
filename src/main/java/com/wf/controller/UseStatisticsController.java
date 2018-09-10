@@ -175,7 +175,6 @@ public class UseStatisticsController {
      */
     @RequestMapping("totalDatasheets")
     public String totalDatasheets(@Valid StatisticsParameter parameter, Model model) {
-        parameter.setSort(1);
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
             if (parameter.getPageSize() == 0) {
@@ -208,7 +207,6 @@ public class UseStatisticsController {
      */
     @RequestMapping("newDatasheets")
     public String newDatasheets(@Valid StatisticsParameter parameter, Model model) {
-        parameter.setSort(1);
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
             if (parameter.getPageSize() == 0) {
