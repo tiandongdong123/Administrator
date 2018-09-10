@@ -178,6 +178,7 @@ $(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                     that.totalTable();
+                    that.newTable();
 
                 });
                 $(".closeBtn").click(function () {
