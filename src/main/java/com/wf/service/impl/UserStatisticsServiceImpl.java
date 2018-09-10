@@ -21,18 +21,22 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Service
 public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     private static final Logger log = Logger.getLogger(UserStatisticsServiceImpl.class);
-    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static final SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+    private  SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private  SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+    //按周统计
+    private static final int WEEK_UNIT = 2;
+    //按月统计
+    private static final int MONTH_UNIT = 3;
+    //倒序排列
+    private static final int DESC = 1;
+
 
     @Autowired
     private PersonMapper personMapper;
@@ -193,22 +197,67 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         int page = parameter.getPage() - 1;
         parameter.setPage(page);
         List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(parameter);
-        //所有日期
-        List<String> dateList = getDateList(parameter);
 
-        //按周和按月时，有效机构账号显示当前时间单位的最后一天
-        if (parameter.getTimeUnit() == 2 || parameter.getTimeUnit() == 3) {
-            //每周/每月的最后一天
-            List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
-            //设置有效时间
-            for (int i = 0; i < lastDateList.size(); i++) {
-                UserStatisticsExample vaildExample = new UserStatisticsExample();
-                UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
-                vaildCriteria.andDateEqualTo(lastDateList.get(i));
-                List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(example);
-                userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
+        //按周时，设置时间和有效机构账号数量
+        //按月时，设置有效机构账号数量
+        //有效机构账号数量为：每周/每月的最后一天
+        switch (parameter.getTimeUnit()) {
+            case WEEK_UNIT: {
+                List<String> pagingDateList = new ArrayList<>();
+                //每周的时间
+                List<String> dateList = getDateList(parameter);
+                //每周/每月的最后一天集合
+                List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
+                //倒序
+                if (parameter.getSort() == DESC) {
+                    Collections.reverse(lastDateList);
+                    Collections.reverse(dateList);
+                }
+
+                if (dateList.size() > (parameter.getPage() + 1) * parameter.getPageSize()) {
+                    pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
+                } else {
+                    pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
+                }
+                for (int i = 0; i < pagingDateList.size(); i++) {
+                    userStatisticsList.get(i).setDate(pagingDateList.get(i));
+                }
+
+                if (userStatisticsList.size() != lastDateList.size() || userStatisticsList.size() != pagingDateList.size()) {
+                    break;
+                }
+
+
+                //设置时间和有效机构账号
+                for (int i = 0; i < lastDateList.size(); i++) {
+                    userStatisticsList.get(i).setDate(pagingDateList.get(i));
+                    UserStatisticsExample vaildExample = new UserStatisticsExample();
+                    UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
+                    vaildCriteria.andDateEqualTo(lastDateList.get(i));
+                    List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(vaildExample);
+                    userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
+                }
+            }
+            case MONTH_UNIT: {
+                //每周/每月的最后一天集合
+                List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
+
+                if (userStatisticsList.size() != lastDateList.size()) {
+                    break;
+                }
+
+
+                //设置有效机构账号
+                for (int i = 0; i < lastDateList.size(); i++) {
+                    UserStatisticsExample vaildExample = new UserStatisticsExample();
+                    UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
+                    vaildCriteria.andDateEqualTo(lastDateList.get(i));
+                    List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(vaildExample);
+                    userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
+                }
             }
         }
+
 
         for (int i = 0; i < userStatisticsList.size(); i++) {
             StatisticsModel statisticsModel = new StatisticsModel();
@@ -221,8 +270,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
                 statisticsModel.setValidInstitutionAccount(userStatisticsList.get(i).getValidInstitutionAccount());
             }
-            if (dateList.size() >= i + 1) {
-                statisticsModel.setDate(dateList.get(i));
+            if (userStatisticsList.get(i).getDate() != null) {
+                statisticsModel.setDate(userStatisticsList.get(i).getDate());
             }
             result.add(statisticsModel);
 
@@ -257,6 +306,28 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         List<StatisticsModel> statisticsModel = userStatisticsMapper.selectNewDate(parameter);
 
 
+        if (parameter.getTimeUnit() == WEEK_UNIT) {
+            List<String> pagingDateList = new ArrayList<>();
+            List<String> dateList = getDateList(parameter);
+            if (dateList.size() > (parameter.getPage() + 1) * parameter.getPageSize()) {
+                pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
+            } else {
+                pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
+            }
+
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(pagingDateList);
+            }
+
+            if (pagingDateList.size() != statisticsModel.size()) {
+                log.error("按周添加时间异常，parameter:" + parameter.toString());
+                return statisticsModel;
+            }
+
+            for (int i = 0; i < pagingDateList.size(); i++) {
+                statisticsModel.get(i).setDate(pagingDateList.get(i));
+            }
+        }
 
         return statisticsModel;
     }
@@ -283,6 +354,10 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         if (parameter.getTimeUnit() != null) {
             switch (parameter.getTimeUnit()) {
                 case 1: {
+                    if (startTime.compareTo(endTime) == 0) {
+                        dateList.add(parameter.getStartTime());
+                        break;
+                    }
                     dateList.add(parameter.getStartTime());
                     Calendar start = Calendar.getInstance();
                     Calendar end = Calendar.getInstance();
@@ -374,6 +449,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     String endDayOfWeek = dayFormat.format(calendar.getTime());
                     while (dayFormat.parse(endDayOfWeek).compareTo(endDate) == -1) {
                         lastDateList.add(endDayOfWeek);
+                        calendar.add(Calendar.DATE, 7);
+                        endDayOfWeek = dayFormat.format(calendar.getTime());
+
                     }
                     lastDateList.add(endDayOfWeek);
 
@@ -393,13 +471,12 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
                     Calendar calendar = min;
                     while (calendar.before(max)) {
-                        Calendar cal = Calendar.getInstance();
-                        int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                        cal.set(Calendar.DAY_OF_MONTH, lastDay);
-                        if (cal.getTime().compareTo(endDate) == -1) {
-                            String lastDayOfMonth = dayFormat.format(cal.getTime());
+                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                        if (calendar.getTime().compareTo(endDate) == -1) {
+                            String lastDayOfMonth = dayFormat.format(calendar.getTime());
                             lastDateList.add(lastDayOfMonth);
                         }
+                        calendar.add(Calendar.MONTH, 1);
                     }
                     lastDateList.add(endTime);
                     break;

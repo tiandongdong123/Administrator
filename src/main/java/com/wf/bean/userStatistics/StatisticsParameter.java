@@ -35,6 +35,12 @@ public class StatisticsParameter implements Serializable{
      */
     private Integer page;
 
+    /**
+     * 排序方式（时间）  1.正序 2.倒序
+     * @return
+     */
+    private Integer sort;
+
 
     public String getStartTime() {
         return startTime;
@@ -84,6 +90,14 @@ public class StatisticsParameter implements Serializable{
         this.page = page;
     }
 
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
     @Override
     public String toString() {
         return "StatisticsParameter{" +
@@ -93,6 +107,7 @@ public class StatisticsParameter implements Serializable{
                 ", type='" + type + '\'' +
                 ", pageSize=" + pageSize +
                 ", page=" + page +
+                ", sort=" + sort +
                 '}';
     }
 }

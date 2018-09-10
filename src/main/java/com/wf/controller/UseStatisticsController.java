@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 @Controller
@@ -176,6 +175,7 @@ public class UseStatisticsController {
      */
     @RequestMapping("totalDatasheets")
     public String totalDatasheets(@Valid StatisticsParameter parameter, Model model) {
+        parameter.setSort(1);
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
             if (parameter.getPageSize() == 0) {
@@ -190,6 +190,7 @@ public class UseStatisticsController {
             String actionUrl = "/userStatistics/totalDatasheets.do";
             PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, parameter);
             model.addAttribute("pager", formList);
+            model.addAttribute("sort", parameter.getSort());
             model.addAttribute("type", "total");
         } catch (Exception e) {
             log.error("获取总数表格，parameter：" + parameter.toString(), e);
@@ -207,6 +208,7 @@ public class UseStatisticsController {
      */
     @RequestMapping("newDatasheets")
     public String newDatasheets(@Valid StatisticsParameter parameter, Model model) {
+        parameter.setSort(1);
         List<StatisticsModel> modelList = new ArrayList<>();
         try {
             if (parameter.getPageSize() == 0) {
@@ -219,7 +221,7 @@ public class UseStatisticsController {
             int totalSize = userStatisticsService.getDateList(parameter).size();
             String actionUrl = "/userStatistics/newDatasheets.do";
             PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, parameter);
-            model.addAttribute("pager", formList);
+            model.addAttribute("sort", parameter.getSort());
             model.addAttribute("type", "new");
 
         } catch (Exception e) {

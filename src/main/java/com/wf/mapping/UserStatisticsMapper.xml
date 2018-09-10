@@ -347,13 +347,13 @@
   </update>
 
     <select id="selectSingleTypePreviousSum" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select sum(${type}) from user_statistics where date <![CDATA[ < ]]>  #{dateTime}
+    select  ifnull(sum(${type}),0)  from user_statistics where date <![CDATA[ < ]]>  #{dateTime}
   </select>
 
     <select id="selectSingleTypeNewData" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
             resultType="java.lang.Integer">
         select sum from (
-        select sum(${type}) sum,
+        select ifnull(sum(${type}),0) sum,
         <if test="timeUnit == 1">
             DATE_FORMAT(date,'%Y%m%d')
         </if>
@@ -370,7 +370,8 @@
 
     <select id="selectSumByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
             resultMap="ColumnSumMap">
-        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0) sum2,ifnull(sum(person_bind_institution),0)  sum3,
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
+        sum2,ifnull(sum(person_bind_institution),0) sum3,
         ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6
         from user_statistics
         <if test="_parameter != null">
@@ -380,13 +381,11 @@
 
     <select id="selectNewDate" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
             resultMap="ColumnSumMap">
-        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0) sum2,ifnull(sum(person_bind_institution),0)  sum3,
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
+        sum2,ifnull(sum(person_bind_institution),0) sum3,
         ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6,
         <if test="timeUnit == 1">
-            ifnull(valid_institution_account,0) valid_institution_account,
-        </if>
-        <if test="timeUnit == 1">
-            DATE_FORMAT(date,'%Y-%m-%d')
+            ifnull(valid_institution_account,0) valid_institution_account, DATE_FORMAT(date,'%Y-%m-%d')
         </if>
         <if test="timeUnit == 2">
             DATE_FORMAT(date,'%Y%u')
@@ -396,6 +395,9 @@
         </if>
         unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
         group by unit
+        <if test="sort != null and sort == 1">
+            order by unit desc
+        </if>
         <if test="pageSize != null">
             <if test="page != null">
                 limit ${page}, ${pageSize}
@@ -405,6 +407,5 @@
             </if>
         </if>
     </select>
-
 
 </mapper>
