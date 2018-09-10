@@ -49,8 +49,12 @@ $(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                                that.totalTable();
-                                that.newTable();
+                                if($("#contentNavHidden").val()=="total"){
+                                    that.totalTable();
+                                }
+                                if($("#contentNavHidden").val()=="new"){
+                                    that.newTable();
+                                }
                             })
                         });
 
@@ -177,14 +181,21 @@ $(function () {
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
-                    that.totalTable();
-                    that.newTable();
+
+
+                    if($("#contentNavHidden").val()=="total"){
+                        that.totalTable();
+                    }
+                    if($("#contentNavHidden").val()=="new"){
+                        that.newTable();
+                    }
 
                 });
                 $(".closeBtn").click(function () {
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
                 });
             },
+            //日历箭头的变化
             griIcon:function(iconBtn){
                 var coun = 0;
                 $("."+iconBtn).click(function(event){
@@ -207,6 +218,14 @@ $(function () {
 
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
+
+                            if($("#contentNavHidden").val()=="total"){
+                                that.totalTable();
+                            }
+                            if($("#contentNavHidden").val()=="new"){
+                                that.newTable();
+                            }
+
                         }
                         if (obj == content_nav) {
                             content_nav_list.children("#contentNavHidden").val(_this.children("input").val());
@@ -253,7 +272,6 @@ $(function () {
             //新增数据的显示
             newData: function () {
                 var startDate, endDate, data_arry;
-
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
                 endDate = data_arry[1].trim();
@@ -324,8 +342,25 @@ $(function () {
                     })
                 })
             },
+            //分析图的单位
+            commonLineName:function(data){
+                if(data){
+                    var totalData = data.map(function (value) {
+                        value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                        return value;
+                    });
+                    console.log(data.join(""))
+                    console.log(totalData.join(""))
+                    if(data.join("")==totalData.join("")){
+                        nameSingle = target_item.text() + " " + "(单位：个)";
+                    }else{
+                        nameSingle = target_item.text() + " " + "(单位：万)";
+                    }
+                }
+            },
             //单个分析图公共ajax
             eChartsAjax: function (startDate, endDate, timeUnit, indexType) {
+                var that = this;
                 $.ajax({
                     type: 'post',
                     url: '../userStatistics/totalCharts.do',
@@ -337,15 +372,18 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        var totalData = data.totalData.map(function (value, index, array) {
-                            value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
-                            return value;
-                        });
-
-                        if(totalData){
-                            nameSingle = target_item.text() + " " + "(单位：万)";
-                        }else{
-                            nameSingle = target_item.text() + " " + "(单位：个)";
+                       if(data.totalData){
+                            var totalData = data.totalData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                                return value;
+                            });
+                            console.log(data.totalData.join(""))
+                            console.log(totalData.join(""))
+                            if(data.totalData.join("")==totalData.join("")){
+                                nameSingle = target_item.text() + " " + "(单位：个)";
+                            }else{
+                                nameSingle = target_item.text() + " " + "(单位：万)";
+                            }
                         }
 
                         myEcharsCommon.commonLine('lineContainer',totalData, data.dateTime, nameSingle)
@@ -399,7 +437,23 @@ $(function () {
                     },
                     success: function (data) {
                         /*  console.log(data.dateTime.length)*/
-                        nameSingle = target_item.text() + "(单位：个)";
+
+                        if(data.totalData){
+                            var totalData = data.totalData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                                return value;
+                            });
+                            console.log(data.totalData.join(""))
+                            console.log(totalData.join(""))
+                            if(data.totalData.join("")==totalData.join("")){
+                                nameSingle = target_item.text() + " " + "(单位：个)";
+                            }else{
+                                nameSingle = target_item.text() + " " + "(单位：万)";
+                            }
+                        }
+
+
+
                         myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
