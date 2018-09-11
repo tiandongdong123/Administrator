@@ -28,8 +28,8 @@ import java.util.*;
 public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     private static final Logger log = Logger.getLogger(UserStatisticsServiceImpl.class);
-    private  SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private  SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
     //按周统计
     private static final int WEEK_UNIT = 2;
     //按月统计
@@ -194,8 +194,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         int institutionAdmin = previousData.getInstitutionAdmin();
 
 
-        int page = parameter.getPage() - 1;
-        parameter.setPage(page);
+        int page = parameter.getPage();
+        int offset = (parameter.getPage() - 1) * parameter.getPageSize();
+        parameter.setPage(offset);
         List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(parameter);
 
         //按周时，设置时间和有效机构账号数量
@@ -214,7 +215,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     Collections.reverse(dateList);
                 }
 
-                if (dateList.size() > (parameter.getPage() + 1) * parameter.getPageSize()) {
+                if (dateList.size() > page * parameter.getPageSize()) {
                     pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
                 } else {
                     pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
@@ -235,7 +236,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
                     vaildCriteria.andDateEqualTo(lastDateList.get(i));
                     List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(vaildExample);
-                    userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
+                    if (userStatistics.size() != 0) {
+                        userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
+                    }
                 }
             }
             case MONTH_UNIT: {
@@ -301,15 +304,16 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     @Override
     public List<StatisticsModel> selectNewData(StatisticsParameter parameter) {
-        int page = parameter.getPage() - 1;
-        parameter.setPage(page);
+        int page = parameter.getPage();
+        int offset = (parameter.getPage() - 1) * parameter.getPageSize();
+        parameter.setPage(offset);
         List<StatisticsModel> statisticsModel = userStatisticsMapper.selectNewDate(parameter);
 
 
         if (parameter.getTimeUnit() == WEEK_UNIT) {
             List<String> pagingDateList = new ArrayList<>();
             List<String> dateList = getDateList(parameter);
-            if (dateList.size() > (parameter.getPage() + 1) * parameter.getPageSize()) {
+            if (dateList.size() > page * parameter.getPageSize()) {
                 pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
             } else {
                 pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
@@ -453,7 +457,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         endDayOfWeek = dayFormat.format(calendar.getTime());
 
                     }
-                    lastDateList.add(endDayOfWeek);
+                    lastDateList.add(endTime);
 
                     break;
                 } catch (Exception e) {

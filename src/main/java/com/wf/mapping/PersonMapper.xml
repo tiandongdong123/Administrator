@@ -374,7 +374,7 @@
 	</select>
 
     <select id="selectStatisticsByDate" parameterType="java.lang.String" resultMap="UserStatisticMap">
-    select ifnull(sum(userType = 1),0) sum1,ifnull(sum(user_roles = 0),0) sum2,ifnull(sum(user_roles = 1),0) sum3,ifnull(sum(user_roles = 2),0) sum4,
+    select ifnull(sum(userType = 0),0) sum1,ifnull(sum(user_roles = 0),0) sum2,ifnull(sum(user_roles = 1),0) sum3,ifnull(sum(user_roles = 2),0) sum4,
     ifnull(sum(userType in(2,3)),0) sum5,ifnull(sum(userType = 3),0) sum6,ifnull(sum(userType = 3 and extend = 'Check_Regist_BDStudentSub'),0) sum7,
     ifnull(sum(userType = 1),0) sum8 from `user` where DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime};
     </select>
