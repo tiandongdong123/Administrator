@@ -91,27 +91,27 @@ public class SolrThread implements Runnable {
 	 * @param com
 	 */
 	public static void removeAdmin(String userId, InstitutionalUser com) {
+		
+		Map<String,Object> solrMap=new HashMap<String,Object>();
+		solrMap.put("ParentId", null);
+		solrMap.put("ChildGroupLimit", null);
+		solrMap.put("ChildGroupConcurrent", null);
+		solrMap.put("ChildGroupDownloadLimit", null);
+		solrMap.put("ChildGroupPayment", null);
+		solrMap.put("StatisticalAnalysis", null);
+		solrMap.put("UpdateTime", SolrThread.getDate());//修改时间
+		solrMap.put("AdministratorId", null);
+		solrMap.put("AdministratorEmail", null);
+		solrMap.put("AdministratorPassword", null);
+		solrMap.put("AdministratorOpenIP", null);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
 		doc.setField("Id", userId);
-		doc.addField("ParentId", "");
-		doc.addField("ChildGroupLimit", "");
-		doc.addField("ChildGroupConcurrent", "");
-		doc.addField("GroupConcurrent", "");
-		doc.addField("ChildGroupDownloadLimit", "");
-		doc.addField("ChildGroupPayment", "");
-		String tongji = com.getTongji()==null?"":com.getTongji();
-		Map<String, Object> operation = new HashMap<>();
-		List<String> ls=new ArrayList<>();
-		if(tongji.contains("database_statistics")){
-			ls.add("database_statistics");
+		for (Map.Entry<String, Object> m : solrMap.entrySet()) {
+			Map<String, Object> oper = new HashMap<>();
+			oper.put("set", m.getValue());
+			doc.addField(m.getKey(),oper);
 		}
-		if(tongji.contains("resource_type_statistics")){
-			ls.add("resource_type_statistics");
-		}
-		operation.put("set", ls);
-		doc.addField("StatisticalAnalysis", operation);
-		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
 		SolrThread mt = new SolrThread(list,null,null);
         Thread t1 = new Thread(mt,"solr线程");
@@ -156,9 +156,13 @@ public class SolrThread implements Runnable {
 		SolrInputDocument doc=new SolrInputDocument();
 		doc.setField("Id", userId);
 		for (Map.Entry<String, Object> m : solrMap.entrySet()) {
-			Map<String, Object> oper = new HashMap<>();
-			oper.put("set", m.getValue());
-			doc.addField(m.getKey(),oper);
+			if(!m.getKey().equals("StatisticalAnalysis")){
+				Map<String, Object> oper = new HashMap<>();
+				oper.put("set", m.getValue());
+				doc.addField(m.getKey(),oper);
+			}else{
+				doc.addField(m.getKey(),m.getValue());
+			}
 		}
 		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
@@ -407,11 +411,12 @@ public class SolrThread implements Runnable {
 		solrMap.put("PayChannelId", ProjectMap.values());
 		solrMap.put("IsTrial", IsTrialMap.values());
 		//子账号权限
-		solrMap.put("HasChildGroup", user.getUpperlimit()==null?false:true);
+		boolean HasChildGroup=user.getUpperlimit()==null?false:true;
+		solrMap.put("HasChildGroup", HasChildGroup);
 		solrMap.put("ChildGroupLimit",user.getUpperlimit());
 		solrMap.put("ChildGroupConcurrent", user.getsConcurrentnumber());
 		solrMap.put("ChildGroupDownloadLimit", user.getDownloadupperlimit());
-		solrMap.put("ChildGroupPayment", user.getChargebacks());
+		solrMap.put("ChildGroupPayment", HasChildGroup?user.getChargebacks():null);
 		solrMap.put("GroupConcurrent", user.getpConcurrentnumber());
 		
 		//统计分析

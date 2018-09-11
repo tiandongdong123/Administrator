@@ -257,10 +257,10 @@ public class AheadUserController {
 		com.setUserId(userId);
 		aheadUserService.setPartAccountRestriction(com);
 		aheadUserService.addUserIns(com);
+		SolrThread.removeAdmin(userId,com);
 		if(resinfo>0){
 			return "true";
 		}
-		SolrThread.removeAdmin(userId,com);
 		return null;
 	}
 	
