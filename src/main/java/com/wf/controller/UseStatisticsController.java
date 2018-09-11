@@ -219,6 +219,7 @@ public class UseStatisticsController {
             int totalSize = userStatisticsService.getDateList(parameter).size();
             String actionUrl = "/userStatistics/newDatasheets.do";
             PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, parameter);
+            model.addAttribute("pager", formList);
             model.addAttribute("sort", parameter.getSort());
             model.addAttribute("type", "new");
 
