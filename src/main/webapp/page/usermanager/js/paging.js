@@ -5,7 +5,6 @@
         $.get(url, function (html) {
             $container.html(html);
             $(".evey-page").val(evey);
-            redq();
         });
     };
     //page-a异步跳转
@@ -17,12 +16,11 @@
         $.get(href, function (html) {
             $('.sync-html').html(html);
             $(".evey-page").val(evey);
-            redq();
         });
 
     });
     //page-form异步跳转
-    $(document).on('submit', '.sync-html .page_bind form', function () {
+    $(document).on('submit', '.sync-html .laypage_btn .page_bind form', function () {
         var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
@@ -31,14 +29,13 @@
             var href = action + inputPage;
             getPager(href, $(this).closest('.sync-html'));
             $(".evey-page").val(evey);
-            redq();
         } else {
             alert('请输入正确页码');
         }
         return false;
     });
     //page-form同步跳转
-    $(document).on('submit', '.no-sync .page_bind form', function () {
+    $(document).on('submit', '.no-sync .laypage_btn .page_bind form', function () {
         var evey = $(".evey-page").val();
         var action = $(this).attr('action');
         var inputPage = parseInt($(this).find('.laypage_skip').val());
@@ -46,10 +43,12 @@
         if (inputPage > 0 && inputPage <= allPage) {
             window.location.href = action + encodeURIComponent(inputPage);
             $(".evey-page").val(evey);
-            redq();
         } else {
             alert('请输入正确页码');
         }
         return false;
     });
 })();
+
+
+

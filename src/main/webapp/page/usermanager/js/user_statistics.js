@@ -23,32 +23,6 @@ $(function () {
 
 
         return {
-            getTime:function(startDate,endDate){
-                var that = this;
-                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
-                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                indexType = target_item_hidden.val();//指标参数
-                navTitle = $("#contentNavHidden").val();//总数/新增参数
-                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-                startCompareDate = data_compare_arry[0];
-                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
-                //判断对比时间发送不同的请求
-                if (startCompareDate && endCompareDate) {
-                    if (navTitle == 'total') {
-                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }
-                    if (navTitle == 'new') {
-                        that.newComparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }
-                } else {
-                    if (navTitle == 'total') {
-                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }
-                    if (navTitle == 'new') {
-                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }
-                }
-            },
             //日历插件
             dataPicker: function () {
                 var that = this;
@@ -74,12 +48,13 @@ $(function () {
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                                 that.totalOrNew();//table表的变化
+                                that.newData();
                             })
                         });
                         if (!$(".gri_pc").get(0).checked) {
                             $("#user_statistics_dataCompare").val("")
                         }
-                        that.getTime(obj.startDate,obj.endDate);
+                        that.getTime();
                       /*  selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                         indexType = target_item_hidden.val();//指标参数
                         navTitle = $("#contentNavHidden").val();//总数/新增参数
@@ -108,23 +83,71 @@ $(function () {
                 aRecent7Days.click();
                 that.newData();
             },
+            getTime:function(){
+                var that = this;
+                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate,data_arry,startDate,endDate;
+                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                indexType = target_item_hidden.val();//指标参数
+                navTitle = $("#contentNavHidden").val();//总数/新增参数
+
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0];
+                endDate = data_arry[1].trim();
+
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+                //判断对比时间发送不同的请求
+                if (startCompareDate && endCompareDate) {
+                    if (navTitle == 'total') {
+                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                    }
+                    if (navTitle == 'new') {
+                        that.newComparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                    }
+                } else {
+                    if (navTitle == 'total') {
+                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
+                    }
+                    if (navTitle == 'new') {
+                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
+                    }
+                }
+            },
+            //最近天数的重置
+            recentReset:function(id){
+                selected_data.children(".switch_data_hidden").val(1);
+                gri_data_compare.hide();
+                if ($("#user_statistics_dataCompare").val() != "") {
+                    $("#"+id).click();
+                }
+                lineContainerComparison.hide();
+                lineContainer.show();
+            },
             //日周月随最近天数的变化
             dayWeekMonth: function (recent) {
+                var that = this;
                 var switch_board_week = $(".switch_board_week");
                 var switch_board_month = $(".switch_board_month");
                 var week_month = $(".switch_board_week,.switch_board_month");
 
+                gri_data_compare.hide();
+                selected_data.children(".switch_data_hidden").val(1);
+
+
                 if (recent == "昨天") {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
-                    selected_data.children(".switch_data_hidden").val(1);
-                    gri_data_compare.hide();
                     week_month.show();
+
+                    that.recentReset("aYesterday");
+                   /* selected_data.children(".switch_data_hidden").val(1);
+                    gri_data_compare.hide();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aYesterday").click();
                     }
                     lineContainerComparison.hide();
-                    lineContainer.show();
+                    lineContainer.show();*/
                     return;
                 }
                 if (recent == "最近7天") {
@@ -133,13 +156,15 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
-                    selected_data.children(".switch_data_hidden").val(1);
+
+                    that.recentReset("aRecent7Days");
+                   /* selected_data.children(".switch_data_hidden").val(1);
                     gri_data_compare.hide();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent7Days").click();
                     }
                     lineContainerComparison.hide();
-                    lineContainer.show();
+                    lineContainer.show();*/
                     return;
                 }
                 if (recent == "最近30天") {
@@ -147,18 +172,19 @@ $(function () {
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
-                    selected_data.children(".switch_data_hidden").val(1);
-                    gri_data_compare.hide();
 
+                    that.recentReset("aRecent30Days");
+                   /* selected_data.children(".switch_data_hidden").val(1);
+                    gri_data_compare.hide();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent30Days").click();
                     }
                     lineContainerComparison.hide();
-                    lineContainer.show();
+                    lineContainer.show();*/
                     return;
                 }
             },
-            //单个与对比分析图的切换
+            //单个与对比分析图的切换(点击对比)
             dataChecked: function () {
                 $(".gri_pc").click(function () {
                     if ($(".gri_pc").get(0).checked) {
@@ -172,6 +198,7 @@ $(function () {
                         gri_data_compare.hide();
                     }
                 });
+                //日历图标的变化
                 $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
                 });
@@ -179,22 +206,23 @@ $(function () {
                     gri_data_compare.css('background-position', '-68px -10px');
                 })
             },
-            //日历确定按钮是否点击
+            //日历确定/取消按钮是否点击
             dataSubmitBtn: function () {
                 var that = this;
+                var data_icon = $(".gri_data_compare,.gri_data");
 
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
-                    $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
-
+                    data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
-
+                    that.newData();
                 });
+
                 $(".closeBtn").click(function () {
-                    $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
+                    data_icon.css('background-position', '-10px -10px');
                 });
             },
-            //日历箭头的变化
+            //点击icon日历的显示与隐藏
             griIcon: function (iconBtn) {
                 var coun = 0;
                 $("." + iconBtn).click(function (event) {
@@ -212,21 +240,20 @@ $(function () {
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
+                var data_arry,startDate,endDate
                 obj.each(function () {
                     var _this = $(this);
                     _this.click(function () {
-                        _this.addClass(className).siblings().removeClass(className);
-
+                        _this.addClass(className).siblings().removeClass(className);//样式的变化
+                        //判断是总数/新增OR按日/周/月
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
-
                             that.totalOrNew();
-
                         }
                         if (obj == content_nav) {
                             content_nav_list.children("#contentNavHidden").val(_this.children("input").val());
                         }
-                        that.getparms();
+                        that.getTime();
 
                     })
                 })
@@ -234,34 +261,36 @@ $(function () {
             //获取开始日期，指标，按日/周/月的参数
             getparms: function () {
                 var that = this;
-                var startDate, endDate, startCompareDate, endCompareDate, indexType, data_arry, data_compare_arry,
-                    switch_hidden, navTittle;
-                switch_hidden = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                data_arry = $("#user_statistics_data").val().split("至");
+                var selectedVal, indexType,navTittle,startCompareDate, endCompareDate,data_compare_arry;
+
+                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                indexType = target_item_hidden.val();//指标参数
+                navTittle = $("#contentNavHidden").val();
+
+               /* data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
-                endDate = data_arry[1].trim();
+                endDate = data_arry[1].trim();*/
 
                 data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
                 startCompareDate = data_compare_arry[0];
                 endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
 
-                indexType = target_item_hidden.val();//指标参数
-                navTittle = $("#contentNavHidden").val();
 
-                console.log(startCompareDate)
+
+
                 if (startCompareDate && endCompareDate) {
                     if (navTittle == 'total') {
-                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
+                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                     }
                     if (navTittle == 'new') {
-                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, switch_hidden, indexType);
+                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                     }
                 } else {
                     if (navTittle == 'total') {
-                        that.eChartsAjax(startDate, endDate, switch_hidden, indexType);
+                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
                     }
                     if (navTittle == 'new') {
-                        that.newEChartsAjax(startDate, endDate, switch_hidden, indexType);
+                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
                     }
                 }
             },
@@ -279,6 +308,7 @@ $(function () {
                     },
                     url: " ../userStatistics/newDataSum.do",
                     success: function (data) {
+                        $(".new_data").html("");
                         for (var i in data) {
                             var str = '<li><span class="person_num">' + data[i] + '</span> </li>';
                             $(".new_data").append(str);
@@ -325,35 +355,6 @@ $(function () {
                     icon.css('background-position', '-68px -10px');
                 }
             },
-            //各指标的选取分析图的变化
-            indexSelect: function () {
-                var that = this;
-                indexList.each(function () {
-                    var _this = $(this), indexListVal;
-                    _this.click(function () {
-                        indexListVal = $(this).val();
-                        target_item.text(indexListVal);
-                        target_item_hidden.val(_this.siblings("input").val());
-                        that.getparms();
-                    })
-                })
-            },
-            //分析图的单位
-            commonLineName: function (data) {
-                if (data) {
-                    var totalData = data.map(function (value) {
-                        value = value > 10000 ? (((value - value % 100) / 10000)) : value;
-                        return value;
-                    });
-                    console.log(data.join(""))
-                    console.log(totalData.join(""))
-                    if (data.join("") == totalData.join("")) {
-                        nameSingle = target_item.text() + " " + "(单位：个)";
-                    } else {
-                        nameSingle = target_item.text() + " " + "(单位：万)";
-                    }
-                }
-            },
             //总数/新增table表的变化
             totalOrNew: function () {
                 var that = this;
@@ -364,6 +365,35 @@ $(function () {
                     that.newTable();
                 }
             },
+            //各指标的选取分析图的变化
+            indexSelect: function () {
+                var that = this;
+                indexList.each(function () {
+                    var _this = $(this), indexListVal;
+                    _this.click(function () {
+                        indexListVal = $(this).val();
+                        target_item.text(indexListVal);
+                        target_item_hidden.val(_this.siblings("input").val());
+                      /*  that.getparms();*/
+                        that.getTime();
+                    })
+                })
+            },
+            //分析图的单位
+            commonLineName: function (data) {
+                if (data) {
+                    var totalData = data.map(function (value) {
+                        value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                        return value;
+                    });
+                    if (data.join("") == totalData.join("")) {
+                        nameSingle = target_item.text() + " " + "(单位：个)";
+                    } else {
+                        nameSingle = target_item.text() + " " + "(单位：万)";
+                    }
+                }
+            },
+
             //单个分析图公共ajax
             eChartsAjax: function (startDate, endDate, timeUnit, indexType) {
                 var that = this;
@@ -383,8 +413,6 @@ $(function () {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            console.log(data.totalData.join(""))
-                            console.log(totalData.join(""))
                             if (data.totalData.join("") == totalData.join("")) {
                                 nameSingle = target_item.text() + " " + "(单位：个)";
                             } else {
@@ -393,8 +421,6 @@ $(function () {
                         }
                         myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
                     },
-                    error: function () {
-                    }
                 });
             },
             //对比分析图公共ajax
@@ -412,20 +438,33 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
-
-                        nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
-
+                        if (data.selectData) {
+                            var selectData = data.selectData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                return value;
+                            });
+                            if (data.selectData.join("") == selectData.join("")) {
+                                nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
+                            } else {
+                                nameSingle = target_item.text() + " " + "(单位：万)" + " " + $("#user_statistics_data").val();
+                            }
+                        }
+                        if (data.compareData) {
+                            var compareData = data.compareData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                return value;
+                            });
+                            if (data.compareData.join("") == compareData.join("")) {
+                                nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
+                            } else {
+                                nameCompare = target_item.text() + " " + "(单位：万)" + "" + $("#user_statistics_dataCompare").val();
+                            }
+                        }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
-                        console.log(nameSingle);
-                        console.log(nameArray);
-                        console.log(indexType);
-                        myEcharsCommon.lineComparison('lineContainerComparison', data.selectData, data.compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        myEcharsCommon.lineComparison('lineContainerComparison',selectData,compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
-                    error: function () {
-                    }
                 });
             },
             //新增折线图公共ajax
@@ -441,27 +480,19 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                        /*  console.log(data.dateTime.length)*/
-
                         if (data.totalData) {
                             var totalData = data.totalData.map(function (value) {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            console.log(data.totalData.join(""))
-                            console.log(totalData.join(""))
                             if (data.totalData.join("") == totalData.join("")) {
                                 nameSingle = target_item.text() + " " + "(单位：个)";
                             } else {
                                 nameSingle = target_item.text() + " " + "(单位：万)";
                             }
                         }
-
-
-                        myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
+                        myEcharsCommon.commonLine('lineContainer',totalData, data.dateTime, nameSingle)
                     },
-                    error: function () {
-                    }
                 });
             },
 
@@ -481,13 +512,33 @@ $(function () {
                     },
                     success: function (data) {
 
-                        nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
-                        nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
+                        if (data.selectData) {
+                            var selectData = data.selectData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                return value;
+                            });
+                            if (data.selectData.join("") == selectData.join("")) {
+                                nameSingle = target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val();
+                            } else {
+                                nameSingle = target_item.text() + " " + "(单位：万)" + " " + $("#user_statistics_data").val();
+                            }
+                        }
+                        if (data.compareData) {
+                            var compareData = data.compareData.map(function (value) {
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                return value;
+                            });
+                            if (data.compareData.join("") == compareData.join("")) {
+                                nameCompare = target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val();
+                            } else {
+                                nameCompare = target_item.text() + " " + "(单位：万)" + "" + $("#user_statistics_dataCompare").val();
+                            }
+                        }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
 
-                        myEcharsCommon.lineComparison('lineContainerComparison', data.selectData, data.compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        myEcharsCommon.lineComparison('lineContainerComparison',selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
                     error: function () {
                     }
@@ -515,6 +566,7 @@ $(function () {
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
+                        sort:0
                     },
                     url: "../userStatistics/totalDatasheets.do",
                     success: function (data) {
@@ -545,6 +597,7 @@ $(function () {
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
+                        sort:0
                     },
                     url: "../userStatistics/newDatasheets.do",
                     success: function (data) {
@@ -560,13 +613,17 @@ $(function () {
                 var that = this;
                 new_num.click(function () {
                     new_increased_num.show();
+                    $(".valid_institution_account").hide();
                     that.newTable();
-                    that.getparms();
+                   /* that.getparms();*/
+                    that.getTime();
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
+                    $(".valid_institution_account").show();
                     that.totalTable();
-                    that.getparms();
+                    /*that.getparms();*/
+                    that.getTime();
                 })
             },
             init: function () {
@@ -794,4 +851,5 @@ $(function () {
     })();
     /* myEcharsCommon.commonLine('lineContainer');*/
     /* myEcharsCommon.lineComparison('lineContainerComparison')*/
+
 });
