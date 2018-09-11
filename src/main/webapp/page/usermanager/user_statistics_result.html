@@ -5,9 +5,9 @@
         <tr>
             <th>序号</th>
             <?if(sort == 1){?>
-            <th class="table_time">时间 &nbsp; <i class="table_icon_off"></i></th>
+            <th class="table_time">时间 &nbsp; <i class="table_icon_up"></i></th>
             <?}else{?>
-            <th>时间 &nbsp; <i class="table_icon_up"></i></th>
+            <th class="table_time">时间 &nbsp; <i class="table_icon_off"></i></th>
             <?}?>
             <th>个人用户</th>
             <th>认证用户</th>
@@ -62,8 +62,7 @@
             pageSize = 20;
         }
         prevNum = 0;
-        sort = ($(".table_time").children().attr("class")== "table_icon_off")?1:0;
-
+        sort = ($(".table_time").children("i").attr("class")== "table_icon_off")?1:0;
         $("."+tableName).click(function(){
             if($("#contentNavHidden").val()=="total"){
                 $.ajax({

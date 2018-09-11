@@ -205,14 +205,14 @@
   border-left: 1px solid #D9D9D9;
   padding: 12px 21px;
 }
-.content-wrapper .user_statistics_footer table thead tr th i.table_icon_off {
+.content-wrapper .user_statistics_footer table thead tr th .table_icon_off {
   display: inline-block;
   width: 9px;
   height: 12px;
   background: url('../images/table_icon.png') -10px -10px;
   cursor: pointer;
 }
-.content-wrapper .user_statistics_footer table thead tr th i.table_icon_off {
+.content-wrapper .user_statistics_footer table thead tr th .table_icon_up {
   display: inline-block;
   width: 9px;
   height: 12px;
