@@ -194,8 +194,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         int institutionAdmin = previousData.getInstitutionAdmin();
 
 
-        int page = parameter.getPage() - 1;
-        parameter.setPage(page);
+        int page = parameter.getPage() ;
+        int offset =  (parameter.getPage() - 1)*parameter.getPageSize();
+        parameter.setPage(offset);
         List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(parameter);
 
         //按周时，设置时间和有效机构账号数量
@@ -214,7 +215,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     Collections.reverse(dateList);
                 }
 
-                if (dateList.size() > (parameter.getPage() + 1) * parameter.getPageSize()) {
+                if (dateList.size() > page * parameter.getPageSize()) {
                     pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
                 } else {
                     pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
