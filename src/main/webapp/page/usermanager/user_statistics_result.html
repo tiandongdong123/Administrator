@@ -5,9 +5,9 @@
         <tr>
             <th>序号</th>
             <?if(sort == 1){?>
-            <th>时间 &nbsp; <i class="table_icon"></i></th>
+            <th class="table_time">时间 &nbsp; <i class="table_icon_off"></i></th>
             <?}else{?>
-            <th>时间 &nbsp; <i class="table_icon"></i></th>
+            <th>时间 &nbsp; <i class="table_icon_up"></i></th>
             <?}?>
             <th>个人用户</th>
             <th>认证用户</th>
@@ -49,109 +49,61 @@
     </table>
 </div>
 <script>
-    /*$(function(){
-        var  data_arry, startDate, endDate, indexType, timeUnit, pageSize;
-        var count =0;
-
-        if($("#contentNavHidden").val()=="total"){
-          $(".table_icon").click(function(){
-              data_arry = $("#user_statistics_data").val().split("至");
-              startDate = data_arry[0].trim();
-              endDate = data_arry[1].trim();
-              indexType = $(".target_selected .target_item_hidden").val();//指标参数
-              timeUnit =  $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
-              pageSize = $(".evey-page").val();
-              if (pageSize == null) {
-                  pageSize = 20;
-              }
-              prevNum = 0;
-
-
-              $(".table_icon").css('background-position', '-39px -10px');
-
-              $.ajax({
-                  type: "POST",
-                  data: {
-                      startTime: startDate,
-                      endTime: endDate,
-                      timeUnit: timeUnit,
-                      type: indexType,
-                      sort:"1",
-                      pageSize: pageSize,
-                      page: 1,
-                  },
-                  url: "../userStatistics/totalDatasheets.do",
-                  success: function (data) {
-                      $('.sync-html').html(data);
-
-                  }
-              });
-          })
+    $(function () {
+        var data_arry, startDate, endDate, indexType, timeUnit, pageSize, sort;
+        var tableName =  $(".table_time").children().attr("class");
+        data_arry = $("#user_statistics_data").val().split("至");
+        startDate = data_arry[0].trim();
+        endDate = data_arry[1].trim();
+        indexType = $(".target_selected .target_item_hidden").val();//指标参数
+        timeUnit =  $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
+        pageSize = $(".evey-page").val();
+        if (pageSize == null) {
+            pageSize = 20;
         }
-        if($("#contentNavHidden").val()=="new"){
-           /!* totalTableIcon();*!/
-        }
-       /!* function totalTableIcon(){
-            $(".table_icon").click(function(){
+        prevNum = 0;
+        sort = ($(".table_time").children().attr("class")== "table_icon_off")?1:0;
 
-                console.log($("#user_statistics_data").val())
-                data_arry = $("#user_statistics_data").val().split("至");
-                startDate = data_arry[0].trim();
-                endDate = data_arry[1].trim();
-                indexType = $(".target_selected .target_item_hidden").val();//指标参数
-                timeUnit =  $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
-                pageSize = $(".evey-page").val();
-                if (pageSize == null) {
-                    pageSize = 20;
-                }
-                prevNum = 0;
+        $("."+tableName).click(function(){
+            if($("#contentNavHidden").val()=="total"){
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        startTime: startDate,
+                        endTime: endDate,
+                        timeUnit: timeUnit,
+                        type: indexType,
+                        sort:sort,
+                        pageSize: pageSize,
+                        page: 1,
+                    },
+                    url: "../userStatistics/totalDatasheets.do",
+                    success: function (data) {
+                        $('.sync-html').html(data);
 
-                count++;
-                console.log(count%2)
-                if(count%2 == 0){
-                   /!* $(".table_icon").css('background-position', '-10px -10px');*!/
+                    }
+                });
+            }else{
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        startTime: startDate,
+                        endTime: endDate,
+                        timeUnit: timeUnit,
+                        type: indexType,
+                        sort:sort,
+                        pageSize: pageSize,
+                        page: 1,
+                    },
+                    url: "../userStatistics/newDatasheets.do",
+                    success: function (data) {
+                        $('.sync-html').html(data);
+                    }
+                });
+            }
+        })
+    })
 
-                    $.ajax({
-                        type: "POST",
-                        data: {
-                            startTime: startDate,
-                            endTime: endDate,
-                            timeUnit: timeUnit,
-                            type: indexType,
-                            sort:"0",
-                            pageSize: pageSize,
-                            page: 1,
-                        },
-                        url: "../userStatistics/newDatasheets.do",
-                        success: function (data) {
-                            $('.sync-html').html(data);
-
-                        }
-                    });
-                }else{
-                    $(".table_icon").css('background-position', '-39px -10px');
-                    $.ajax({
-                        type: "POST",
-                        data: {
-                            startTime: startDate,
-                            endTime: endDate,
-                            timeUnit: timeUnit,
-                            type: indexType,
-                            sort:"1",
-                            pageSize: pageSize,
-                            page: 1,
-                        },
-                        url: "../userStatistics/newDatasheets.do",
-                        success: function (data) {
-                            $('.sync-html').html(data);
-
-                        }
-                    });
-                }
-            })
-        }*!/
-
-    })*/
 
 </script>
 

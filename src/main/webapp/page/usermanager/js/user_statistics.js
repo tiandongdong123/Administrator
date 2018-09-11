@@ -18,10 +18,37 @@ $(function () {
         var lineContainer = $("#lineContainer");
         var target_item_hidden = $(".target_selected .target_item_hidden");
         var target_item = $(".target_item");
+        var gri_data_compare = $(".gri_data_compare");
         var nameSingle, nameCompare, nameArray;
 
 
         return {
+            getTime:function(startDate,endDate){
+                var that = this;
+                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
+                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                indexType = target_item_hidden.val();//指标参数
+                navTitle = $("#contentNavHidden").val();//总数/新增参数
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+                //判断对比时间发送不同的请求
+                if (startCompareDate && endCompareDate) {
+                    if (navTitle == 'total') {
+                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                    }
+                    if (navTitle == 'new') {
+                        that.newComparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                    }
+                } else {
+                    if (navTitle == 'total') {
+                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
+                    }
+                    if (navTitle == 'new') {
+                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
+                    }
+                }
+            },
             //日历插件
             dataPicker: function () {
                 var that = this;
@@ -38,78 +65,60 @@ $(function () {
                     needCompare: true,
                     calendars: 3,
                     success: function (obj) {
+                      /*  var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;*/
                         //最近几天背景的切换
-
-                        var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;
                         time_quantum.each(function () {
                             var _this = $(this);
-
                             _this.click(function () {
-
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                                if($("#contentNavHidden").val()=="total"){
-                                    that.totalTable();
-                                }
-                                if($("#contentNavHidden").val()=="new"){
-                                    that.newTable();
-                                }
+                                that.totalOrNew();//table表的变化
                             })
                         });
-
-                        $(".gri_pc").click(function () {
-                            if ($(".gri_pc").get(0).checked) {
-                            } else {
-                                $("#user_statistics_dataCompare").val("")
-                            }
-                        });
-
-                        selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                        if (!$(".gri_pc").get(0).checked) {
+                            $("#user_statistics_dataCompare").val("")
+                        }
+                        that.getTime(obj.startDate,obj.endDate);
+                      /*  selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                         indexType = target_item_hidden.val();//指标参数
                         navTitle = $("#contentNavHidden").val();//总数/新增参数
                         data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
                         startCompareDate = data_compare_arry[0];
-                        endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+                        endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";*/
                         //判断对比时间发送不同的请求
-                        if (startCompareDate && endCompareDate) {
+                        /*if (startCompareDate && endCompareDate) {
                             if (navTitle == 'total') {
                                 that.comparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-
                             }
                             if (navTitle == 'new') {
                                 that.newComparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-
                             }
                         } else {
                             if (navTitle == 'total') {
                                 that.eChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-
                             }
                             if (navTitle == 'new') {
                                 that.newEChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-
                             }
-                        }
+                        }*/
                     },
                 });
                 //默认显示最近7天
                 aRecent7Days.click();
                 that.newData();
-
             },
-
-
             //日周月随最近天数的变化
             dayWeekMonth: function (recent) {
                 var switch_board_week = $(".switch_board_week");
                 var switch_board_month = $(".switch_board_month");
                 var week_month = $(".switch_board_week,.switch_board_month");
+
                 if (recent == "昨天") {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     selected_data.children(".switch_data_hidden").val(1);
-                    $(".gri_data_compare").hide();
+                    gri_data_compare.hide();
                     week_month.show();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aYesterday").click();
@@ -119,23 +128,19 @@ $(function () {
                     return;
                 }
                 if (recent == "最近7天") {
-
                     switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                     switch_board_week.hide();
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
                     selected_data.children(".switch_data_hidden").val(1);
-                    $(".gri_data_compare").hide();
-
+                    gri_data_compare.hide();
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent7Days").click();
                     }
                     lineContainerComparison.hide();
                     lineContainer.show();
                     return;
-
-
                 }
                 if (recent == "最近30天") {
 
@@ -143,7 +148,7 @@ $(function () {
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
                     selected_data.children(".switch_data_hidden").val(1);
-                    $(".gri_data_compare").hide();
+                    gri_data_compare.hide();
 
                     if ($("#user_statistics_dataCompare").val() != "") {
                         $("#aRecent30Days").click();
@@ -159,36 +164,30 @@ $(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
-                        $(".gri_data_compare").show();
+                        gri_data_compare.show();
                     } else {
                         lineContainerComparison.hide();
                         lineContainer.show();
-                        $(".gri_data_compare").css('background-position', '-10px -10px');
-                        $(".gri_data_compare").hide();
+                        gri_data_compare.css('background-position', '-10px -10px');
+                        gri_data_compare.hide();
                     }
                 });
                 $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
                 });
                 $("#user_statistics_dataCompare").click(function () {
-                    $(".gri_data_compare").css('background-position', '-68px -10px');
+                    gri_data_compare.css('background-position', '-68px -10px');
                 })
             },
             //日历确定按钮是否点击
             dataSubmitBtn: function () {
-            var that = this;
+                var that = this;
 
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     $(".gri_data_compare,.gri_data").css('background-position', '-10px -10px');
 
-
-                    if($("#contentNavHidden").val()=="total"){
-                        that.totalTable();
-                    }
-                    if($("#contentNavHidden").val()=="new"){
-                        that.newTable();
-                    }
+                    that.totalOrNew();
 
                 });
                 $(".closeBtn").click(function () {
@@ -196,18 +195,20 @@ $(function () {
                 });
             },
             //日历箭头的变化
-            griIcon:function(iconBtn){
+            griIcon: function (iconBtn) {
                 var coun = 0;
-                $("."+iconBtn).click(function(event){
+                $("." + iconBtn).click(function (event) {
                     event.stopPropagation();
                     coun++;
-                    if(coun%2 == 0){
+                    if (coun % 2 == 0) {
                         $(".closeBtn").click();
-                    }else{
+                    } else {
                         $("#user_statistics_data").click();
                     }
                 })
             },
+
+
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
@@ -219,12 +220,7 @@ $(function () {
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
 
-                            if($("#contentNavHidden").val()=="total"){
-                                that.totalTable();
-                            }
-                            if($("#contentNavHidden").val()=="new"){
-                                that.newTable();
-                            }
+                            that.totalOrNew();
 
                         }
                         if (obj == content_nav) {
@@ -343,19 +339,29 @@ $(function () {
                 })
             },
             //分析图的单位
-            commonLineName:function(data){
-                if(data){
+            commonLineName: function (data) {
+                if (data) {
                     var totalData = data.map(function (value) {
-                        value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                        value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                         return value;
                     });
                     console.log(data.join(""))
                     console.log(totalData.join(""))
-                    if(data.join("")==totalData.join("")){
+                    if (data.join("") == totalData.join("")) {
                         nameSingle = target_item.text() + " " + "(单位：个)";
-                    }else{
+                    } else {
                         nameSingle = target_item.text() + " " + "(单位：万)";
                     }
+                }
+            },
+            //总数/新增table表的变化
+            totalOrNew: function () {
+                var that = this;
+                if ($("#contentNavHidden").val() == "total") {
+                    that.totalTable();
+                }
+                if ($("#contentNavHidden").val() == "new") {
+                    that.newTable();
                 }
             },
             //单个分析图公共ajax
@@ -372,21 +378,20 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-                       if(data.totalData){
+                        if (data.totalData) {
                             var totalData = data.totalData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
                             console.log(data.totalData.join(""))
                             console.log(totalData.join(""))
-                            if(data.totalData.join("")==totalData.join("")){
+                            if (data.totalData.join("") == totalData.join("")) {
                                 nameSingle = target_item.text() + " " + "(单位：个)";
-                            }else{
+                            } else {
                                 nameSingle = target_item.text() + " " + "(单位：万)";
                             }
                         }
-
-                        myEcharsCommon.commonLine('lineContainer',totalData, data.dateTime, nameSingle)
+                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
                     },
                     error: function () {
                     }
@@ -438,20 +443,19 @@ $(function () {
                     success: function (data) {
                         /*  console.log(data.dateTime.length)*/
 
-                        if(data.totalData){
+                        if (data.totalData) {
                             var totalData = data.totalData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000 )) : value;
+                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
                             console.log(data.totalData.join(""))
                             console.log(totalData.join(""))
-                            if(data.totalData.join("")==totalData.join("")){
+                            if (data.totalData.join("") == totalData.join("")) {
                                 nameSingle = target_item.text() + " " + "(单位：个)";
-                            }else{
+                            } else {
                                 nameSingle = target_item.text() + " " + "(单位：万)";
                             }
                         }
-
 
 
                         myEcharsCommon.commonLine('lineContainer', data.totalData, data.dateTime, nameSingle)
@@ -515,7 +519,6 @@ $(function () {
                     url: "../userStatistics/totalDatasheets.do",
                     success: function (data) {
                         $('.sync-html').html(data);
-
                     }
                 });
 
@@ -559,7 +562,6 @@ $(function () {
                     new_increased_num.show();
                     that.newTable();
                     that.getparms();
-
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
@@ -580,6 +582,7 @@ $(function () {
                 this.testData();
                 this.griIcon("gri_data");
                 this.griIcon("gri_data_compare");
+
             }
         }
     })().init();
@@ -622,8 +625,8 @@ $(function () {
                         feature: {
                             saveAsImage: {
                                 show: true,
-                                excludeComponents: ['toolbox'],
-                                pixelRatio: 2
+                                /*  excludeComponents: ['toolbox'],
+                                  pixelRatio: 2,*/
                             }
                         }
                     },
@@ -720,8 +723,8 @@ $(function () {
                         feature: {
                             saveAsImage: {
                                 show: true,
-                                excludeComponents: ['toolbox'],
-                                pixelRatio: 2
+                               /* excludeComponents: ['toolbox'],
+                                pixelRatio: 2*/
                             }
                         }
                     },
