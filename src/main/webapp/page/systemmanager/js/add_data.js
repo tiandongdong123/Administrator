@@ -217,12 +217,13 @@ function delcontent(){
 
 
 function doadddata(){
+    var isBlank = ($.trim($('#dataname').val())!=='') && ($.trim($('#product_source_code').val()!=='') && ($.trim($('#link').val())!==''));
 	var tablename=$("#dataname").val();
-	if(tablename==null||tablename==''){
-		$("#dataname").focus();
-		$("#checkdname").text("名称不能为空");
-		return;
-	}
+    // if (tablename == null || tablename == '') {
+    //     $("#dataname").focus();
+    //     $("#checkdname").text("名称不能为空");
+    //     return;
+    // }
 	var abbreviation = $("#abbreviation").val();
 	var datadescribe = $("#datadescribe").val();
 	var contentnum = $(".contenttext");
@@ -258,32 +259,36 @@ function doadddata(){
 	}
     var imgLogoSrc=$("#imgLogoSrc").val();
     var link=$("#link").val();
-	$.ajax({  
-		type : "POST",  
-		url : "../data/doadddata.do",
-			data : {
-				'tableName' : tablename,
-				'tableDescribe' : datadescribe,
-				'abbreviation' : abbreviation,
-				'resType' : resourcetypes.substring(0,resourcetypes.length-1),
-				'sourceDb' : sources.substring(0,sources.length-1),
-				'language' : languages.substring(0,languages.length-1),
-				'customs' : customs,
-				'productSourceCode' : product_source_code,
-				'dbtype':dbtype,
-                'imgLogoSrc':imgLogoSrc,
-                'link':link
-			},
-			dataType : "json",
-			success : function(data) {
-				if(data){
-					layer.msg("添加成功",{icon: 1});
-					window.location.href="../system/dataManager.do";
-				}else{
-					layer.msg("添加失败",{icon: 2});
-				}
-			}
-	});
+    if(isBlank) {
+        $.ajax({
+            type: "POST",
+            url: "../data/doadddata.do",
+            data: {
+                'tableName': tablename,
+                'tableDescribe': datadescribe,
+                'abbreviation': abbreviation,
+                'resType': resourcetypes.substring(0, resourcetypes.length - 1),
+                'sourceDb': sources.substring(0, sources.length - 1),
+                'language': languages.substring(0, languages.length - 1),
+                'customs': customs,
+                'productSourceCode': product_source_code,
+                'dbtype': dbtype,
+                'imgLogoSrc': imgLogoSrc,
+                'link': link
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    layer.msg("添加成功", {icon: 1});
+                    window.location.href = "../system/dataManager.do";
+                } else {
+                    layer.msg("添加失败", {icon: 2});
+                }
+            }
+        });
+    }else{
+        alert('数据库名称、产品类型code、链接地址不能为空！')
+    }
 }
 
 function checktype(){
