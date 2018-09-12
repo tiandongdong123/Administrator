@@ -93,7 +93,7 @@ public class UseStatisticsController {
     @ResponseBody
     public Map<String, List> compareTotalCharts(@Valid StatisticsRequest request) {
 
-        if (request.getCompareStartTime() != null && request.getCompareEndTime() != null) {
+        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
             log.error("对比开始时间或对比结束时间为空");
             return new HashMap<>();
         }
@@ -147,6 +147,12 @@ public class UseStatisticsController {
     @RequestMapping("compareNewCharts")
     @ResponseBody
     public Map<String, List> compareNewCharts(@Valid StatisticsRequest request) {
+
+        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
+            log.error("对比开始时间或对比结束时间为空");
+            return new HashMap<>();
+        }
+
         Map<String, List> result = new HashMap<>();
         List<Integer> selectData = new ArrayList<>();
         List<Integer> compareData = new ArrayList<>();
