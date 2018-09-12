@@ -143,9 +143,9 @@ function pickerDateRange(inputId, options) {
             '<input type="text" class="gri_dateRangeInput test_data" name="' + this.endDateId + '" id="' + this.endDateId + '" value="' + this.mOpts.endDate + '"  /><br />',
             '</div>',
             '<div class="gri_dateRangeInput" id="' + this.dateRangeCompareDiv + '">',
-            '<input type="text" class="gri_dateRangeInput" name="' + this.startCompareDateId + '" id="' + this.startCompareDateId + '" value="' + this.mOpts.startCompareDate + '"  />',
+            '<input type="text" class="gri_dateRangeInput test_data" name="' + this.startCompareDateId + '" id="' + this.startCompareDateId + '" value="' + this.mOpts.startCompareDate + '"  />',
             '<span class="' + this.mOpts.joinLineId + '"> - </span>',
-            '<input type="text" class="gri_dateRangeInput" name="' + this.endCompareDateId + '" id="' + this.endCompareDateId + '" value="' + this.mOpts.endCompareDate + '"  />',
+            '<input type="text" class="gri_dateRangeInput test_data" name="' + this.endCompareDateId + '" id="' + this.endCompareDateId + '" value="' + this.mOpts.endCompareDate + '"  />',
             '</div>',
             '<div class="gri_dateRangebutton">',
             '<input type="button" name="' + this.submitBtn + '" class="gri_submit_btn"  id="' + this.submitBtn + '" value="确定" />',
@@ -188,9 +188,9 @@ function pickerDateRange(inputId, options) {
             '<i class="gri_data"></i>',
             '<i class="gri_data_compare"></i>',
             '<label class="gri_contrast" for ="' + this.compareCheckboxId + '">',
-            '<input type="checkbox" class="gri_pc" name="' + this.compareCheckboxId + '" id="' + this.compareCheckboxId + '" value="1"/>对比',
+            '<input type="checkbox" class="gri_pc"  name="' + this.compareCheckboxId + '" id="' + this.compareCheckboxId + '" value="1"/>对比',
             '</label>',
-            '<input type="text" name="' + this.inputCompareId + '" id="' + this.inputCompareId + '" value="" class="gri_date"/>',
+            '<input type="text" name="' + this.inputCompareId + '" id="' + this.inputCompareId + '" value="" class="gri_date user_statistics_griCompare" readonly/>',
             '<input type="hidden" id="hiddenInputCompareId" value=""/>'
 
         ],
@@ -1420,6 +1420,7 @@ pickerDateRange.prototype.fillDate = function (year, month, index) {
             $(td).attr('id', __method.calendarId + '_' + ymd);
             $(td).css('cursor', 'pointer');
             (function (ymd) {
+                //日历单击一次
                 $(td).bind("click", ymd, function () {
                     __method.selectDate(ymd);
                     if($('.gri_dateRangePicker .gri_dateRangeSelected').length==1){

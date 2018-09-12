@@ -66,8 +66,8 @@ $(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                                that.totalOrNew();//table表的变化
-                                that.newData();
+                               /* that.totalOrNew();//table表的变化
+                                that.newData();*/
                                 //$(".model").show(200).delay(1000).hide(200);
                                 return;
 
@@ -217,15 +217,17 @@ $(function () {
                 });
             },
             //点击icon日历的显示与隐藏
-            griIcon: function (iconBtn) {
+            griIcon: function (iconBtn,dataInput) {
                 var coun = 0;
                 $("." + iconBtn).click(function (event) {
                     event.stopPropagation();
+                    console.log(iconBtn)
                     coun++;
                     if (coun % 2 == 0) {
                         $(".closeBtn").click();
+                        $(this).css('background-position', '-10px -10px');
                     } else {
-                        $("#user_statistics_data").click();
+                        $("#"+dataInput).click();
                     }
                 })
             },
@@ -276,7 +278,10 @@ $(function () {
             },
             //手动输入时间的校验
             testData: function () {
-                var dateRangeSelected = $(".test_data.gri_dateRangeSelected").val();
+                var dateRangeSelected;
+                $(".test_data").focus(function(){
+                    dateRangeSelected = $(this).val();
+                });
                 $(".test_data").blur(function () {
                     var test_data_now = $(this).val();
                     var test_result = test_data_now.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
@@ -330,7 +335,6 @@ $(function () {
                     var _this = $(this), indexListVal;
                     _this.on("click",function () {
                         indexListVal = $(this).val();
-                        console.log(indexListVal)
                         target_item.text(indexListVal);
                         target_item_hidden.val(_this.siblings("input").val());
                       /*  that.getparms();*/
@@ -590,8 +594,8 @@ $(function () {
                 this.dataSubmitBtn();
                 this.totalTable();
                 this.testData();
-                this.griIcon("gri_data");
-                this.griIcon("gri_data_compare");
+                this.griIcon("gri_data","user_statistics_data");
+                this.griIcon("gri_data_compare","user_statistics_dataCompare");
                 this.onclick_();
             }
         }
