@@ -210,7 +210,7 @@ function delcontent(){
 	rmobj.remove();
 }
 function doupdatedata(){
-    var isBlank = ($.trim($('#dataname').val())!=='') && ($.trim($('#product_source_code').val()!=='') && ($.trim($('#link').val())!==''));
+    var urlMatch = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/;
 	var tablename=$("#dataname").val();
 	// if(tablename==null||tablename==''){
 	// 	$("#dataname").focus();
@@ -254,7 +254,48 @@ function doupdatedata(){
 	var dataid=$("#dataid").val();
 	var imgLogoSrc=$("#imgLogoSrc").val();
 	var link=$("#link").val();
-	if(isBlank){
+	if(($.trim($('#dataname').val())==='')){
+        $('#dataname').next().text('数据库名称不能为空！')
+	}else if(($.trim($('#product_source_code').val())==='')){
+        $('#product_source_code').next().text('产品类型code不能为空！')
+    }else if(!urlMatch.test($('#link').val())){
+        $('#link').next().text('链接格式不正确！')
+    }else if($.trim($('#imgLogoSrc').val())!=''){
+		if(!urlMatch.test($('#imgLogoSrc').val())){
+            $('#imgLogoSrc').next().text('链接格式不正确！')
+		}else{
+            $('#imgLogoSrc').next().text('');
+            $.ajax( {
+                type : "POST",
+                url : "../data/doupdatedata.do",
+                data : {
+                    "id" : dataid,
+                    'tableName' : tablename,
+                    'abbreviation' : abbreviation,
+                    'tableDescribe' : datadescribe,
+                    'resType' : resourcetypes.substring(0,resourcetypes.length-1),
+                    'sourceDb' : sources.substring(0,sources.length-1),
+                    'language' : languages.substring(0,languages.length-1),
+                    'customs' : customs,
+                    'productSourceCode' : product_source_code,
+                    'dbtype':dbtype,
+                    'imgLogoSrc':imgLogoSrc,
+                    'link':link
+                },
+                dataType : "json",
+                success : function(data) {
+                    if(data){
+                        layer.msg("修改成功");
+                        window.location.href="../system/dataManager.do";
+                    }else{
+                        layer.msg("修改失败");
+                    }
+                }
+            });
+		}
+	}
+    else{
+        $('#dataname,#product_source_code,#link,#imgLogoSrc').next().text('');
         $.ajax( {
             type : "POST",
             url : "../data/doupdatedata.do",
@@ -282,8 +323,6 @@ function doupdatedata(){
                 }
             }
         });
-	}else{
-		alert('数据库名称、产品类型code、链接地址不能为空！')
 	}
 }
 
