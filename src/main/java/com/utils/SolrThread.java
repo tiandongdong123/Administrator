@@ -149,7 +149,11 @@ public class SolrThread implements Runnable {
 		//管理员
 		solrMap.put("AdministratorId", pid);
 		solrMap.put("AdministratorEmail", com.getAdminEmail());
-		solrMap.put("AdministratorPassword", com.getAdminpassword());
+		try {
+			solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(com.getAdminpassword()));
+		} catch (Exception e) {
+			
+		}
 		solrMap.put("AdministratorOpenIP", com.getAdminIP());
 		
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
@@ -166,6 +170,7 @@ public class SolrThread implements Runnable {
 		}
 		doc.addField("UpdateTime", SolrThread.getDate());//修改时间
 		list.add(doc);
+		System.out.println(list.toString());
 		SolrThread mt = new SolrThread(list,null,null);
         Thread t1 = new Thread(mt,"solr线程");
         t1.start();
