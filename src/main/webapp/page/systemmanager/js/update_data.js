@@ -259,7 +259,7 @@ function doupdatedata(){
 	}else if(($.trim($('#product_source_code').val())==='')){
         $('#product_source_code').next().text('产品类型code不能为空！')
     }else if(!urlMatch.test($('#link').val())){
-        $('#link').next().text('链接格式不正确！')
+        $('#link').next().text('地址不能为空或链接格式不正确！')
     }else if($.trim($('#imgLogoSrc').val())!=''){
 		if(!urlMatch.test($('#imgLogoSrc').val())){
             $('#imgLogoSrc').next().text('链接格式不正确！')
