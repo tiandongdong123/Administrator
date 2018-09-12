@@ -1,4 +1,5 @@
 $(function () {
+
     var userStatistics = (function () {
         var time_quantum = $(".data_wrapper a");//最近时间段
         var switch_data = $(".switch_data a"); //日/周/月
@@ -18,11 +19,29 @@ $(function () {
         var lineContainer = $("#lineContainer");
         var target_item_hidden = $(".target_selected .target_item_hidden");
         var target_item = $(".target_item");
-        var gri_data_compare = $(".gri_data_compare");
         var nameSingle, nameCompare, nameArray;
 
-
         return {
+            onclick_:function(){
+                var that = this;
+                time_quantum.each(function () {
+                    var _this = $(this);
+                    _this.click(function () {
+                        //_this.css("background", "#4AA6FC");
+                        //_this.siblings().css("background", "transparent");
+                        //that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
+                        that.totalOrNew();//table表的变化
+                        that.newData();
+
+                     /* $(".model").show();*/
+
+
+
+                        return;
+
+                    })
+                });
+            },
             //日历插件
             dataPicker: function () {
                 var that = this;
@@ -39,7 +58,7 @@ $(function () {
                     needCompare: true,
                     calendars: 3,
                     success: function (obj) {
-                      /*  var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate;*/
+
                         //最近几天背景的切换
                         time_quantum.each(function () {
                             var _this = $(this);
@@ -47,36 +66,17 @@ $(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                                that.totalOrNew();//table表的变化
-                                that.newData();
+                               /* that.totalOrNew();//table表的变化
+                                that.newData();*/
+                                //$(".model").show(200).delay(1000).hide(200);
+                                return;
+
                             })
                         });
                         if (!$(".gri_pc").get(0).checked) {
                             $("#user_statistics_dataCompare").val("")
                         }
                         that.getTime();
-                      /*  selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                        indexType = target_item_hidden.val();//指标参数
-                        navTitle = $("#contentNavHidden").val();//总数/新增参数
-                        data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-                        startCompareDate = data_compare_arry[0];
-                        endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";*/
-                        //判断对比时间发送不同的请求
-                        /*if (startCompareDate && endCompareDate) {
-                            if (navTitle == 'total') {
-                                that.comparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                            }
-                            if (navTitle == 'new') {
-                                that.newComparisonEChartsAjax(obj.startDate, obj.endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                            }
-                        } else {
-                            if (navTitle == 'total') {
-                                that.eChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-                            }
-                            if (navTitle == 'new') {
-                                that.newEChartsAjax(obj.startDate, obj.endDate, selectedVal, indexType);
-                            }
-                        }*/
                     },
                 });
                 //默认显示最近7天
@@ -117,12 +117,26 @@ $(function () {
             //最近天数的重置
             recentReset:function(id){
                 selected_data.children(".switch_data_hidden").val(1);
-                gri_data_compare.hide();
+                $(".gri_data_compare").hide();
                 if ($("#user_statistics_dataCompare").val() != "") {
                     $("#"+id).click();
                 }
                 lineContainerComparison.hide();
                 lineContainer.show();
+            },
+            //禁止多次发送
+            ajaxPrefilterEvent:function(url){
+                var pendingRequests = {};
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    var key = options.url;
+                    if (key == url) {
+                        if (!pendingRequests[key]) {
+                            pendingRequests[key] = jqXHR;
+                        } else {
+                            pendingRequests[key].abort(); // 放弃先触发的提交
+                        }
+                    }
+                });
             },
             //日周月随最近天数的变化
             dayWeekMonth: function (recent) {
@@ -131,7 +145,7 @@ $(function () {
                 var switch_board_month = $(".switch_board_month");
                 var week_month = $(".switch_board_week,.switch_board_month");
 
-                gri_data_compare.hide();
+                $(".gri_data_compare").hide();
                 selected_data.children(".switch_data_hidden").val(1);
 
 
@@ -139,15 +153,7 @@ $(function () {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
-
                     that.recentReset("aYesterday");
-                   /* selected_data.children(".switch_data_hidden").val(1);
-                    gri_data_compare.hide();
-                    if ($("#user_statistics_dataCompare").val() != "") {
-                        $("#aYesterday").click();
-                    }
-                    lineContainerComparison.hide();
-                    lineContainer.show();*/
                     return;
                 }
                 if (recent == "最近7天") {
@@ -156,15 +162,7 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
-
                     that.recentReset("aRecent7Days");
-                   /* selected_data.children(".switch_data_hidden").val(1);
-                    gri_data_compare.hide();
-                    if ($("#user_statistics_dataCompare").val() != "") {
-                        $("#aRecent7Days").click();
-                    }
-                    lineContainerComparison.hide();
-                    lineContainer.show();*/
                     return;
                 }
                 if (recent == "最近30天") {
@@ -172,15 +170,7 @@ $(function () {
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
-
                     that.recentReset("aRecent30Days");
-                   /* selected_data.children(".switch_data_hidden").val(1);
-                    gri_data_compare.hide();
-                    if ($("#user_statistics_dataCompare").val() != "") {
-                        $("#aRecent30Days").click();
-                    }
-                    lineContainerComparison.hide();
-                    lineContainer.show();*/
                     return;
                 }
             },
@@ -190,12 +180,13 @@ $(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
-                        gri_data_compare.show();
+                        $(".gri_data_compare").show();
+
                     } else {
                         lineContainerComparison.hide();
                         lineContainer.show();
-                        gri_data_compare.css('background-position', '-10px -10px');
-                        gri_data_compare.hide();
+                        $(".gri_data_compare").css('background-position', '-10px -10px');
+                        $(".gri_data_compare").hide();
                     }
                 });
                 //日历图标的变化
@@ -203,7 +194,7 @@ $(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
                 });
                 $("#user_statistics_dataCompare").click(function () {
-                    gri_data_compare.css('background-position', '-68px -10px');
+                    $(".gri_data_compare").css('background-position', '-68px -10px');
                 })
             },
             //日历确定/取消按钮是否点击
@@ -216,6 +207,9 @@ $(function () {
                     data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
                     that.newData();
+                    $(".switch_data a").not(":eq(0)").removeClass("disable_btn");
+                    $(".switch_board_week").hide();
+                    $(".switch_board_month").hide();
                 });
 
                 $(".closeBtn").click(function () {
@@ -223,20 +217,20 @@ $(function () {
                 });
             },
             //点击icon日历的显示与隐藏
-            griIcon: function (iconBtn) {
+            griIcon: function (iconBtn,dataInput) {
                 var coun = 0;
                 $("." + iconBtn).click(function (event) {
                     event.stopPropagation();
+                    console.log(iconBtn)
                     coun++;
                     if (coun % 2 == 0) {
                         $(".closeBtn").click();
+                        $(this).css('background-position', '-10px -10px');
                     } else {
-                        $("#user_statistics_data").click();
+                        $("#"+dataInput).click();
                     }
                 })
             },
-
-
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
@@ -258,55 +252,21 @@ $(function () {
                     })
                 })
             },
-            //获取开始日期，指标，按日/周/月的参数
-            getparms: function () {
-                var that = this;
-                var selectedVal, indexType,navTittle,startCompareDate, endCompareDate,data_compare_arry;
-
-                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                indexType = target_item_hidden.val();//指标参数
-                navTittle = $("#contentNavHidden").val();
-
-               /* data_arry = $("#user_statistics_data").val().split("至");
-                startDate = data_arry[0];
-                endDate = data_arry[1].trim();*/
-
-                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-                startCompareDate = data_compare_arry[0];
-                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
-
-
-
-
-                if (startCompareDate && endCompareDate) {
-                    if (navTittle == 'total') {
-                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }
-                    if (navTittle == 'new') {
-                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }
-                } else {
-                    if (navTittle == 'total') {
-                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }
-                    if (navTittle == 'new') {
-                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }
-                }
-            },
             //新增数据的显示
             newData: function () {
                 var startDate, endDate, data_arry;
+                var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
                 endDate = data_arry[1].trim();
+                that.ajaxPrefilterEvent("../userStatistics/newDataSum.do");
                 $.ajax({
                     type: "POST",
                     data: {
                         "startTime": startDate,
                         "endTime": endDate,
                     },
-                    url: " ../userStatistics/newDataSum.do",
+                    url: "../userStatistics/newDataSum.do",
                     success: function (data) {
                         $(".new_data").html("");
                         for (var i in data) {
@@ -318,7 +278,10 @@ $(function () {
             },
             //手动输入时间的校验
             testData: function () {
-                var dateRangeSelected = $(".test_data.gri_dateRangeSelected").val();
+                var dateRangeSelected;
+                $(".test_data").focus(function(){
+                    dateRangeSelected = $(this).val();
+                });
                 $(".test_data").blur(function () {
                     var test_data_now = $(this).val();
                     var test_result = test_data_now.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
@@ -370,7 +333,7 @@ $(function () {
                 var that = this;
                 indexList.each(function () {
                     var _this = $(this), indexListVal;
-                    _this.click(function () {
+                    _this.on("click",function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
                         target_item_hidden.val(_this.siblings("input").val());
@@ -379,24 +342,10 @@ $(function () {
                     })
                 })
             },
-            //分析图的单位
-            commonLineName: function (data) {
-                if (data) {
-                    var totalData = data.map(function (value) {
-                        value = value > 10000 ? (((value - value % 100) / 10000)) : value;
-                        return value;
-                    });
-                    if (data.join("") == totalData.join("")) {
-                        nameSingle = target_item.text() + " " + "(单位：个)";
-                    } else {
-                        nameSingle = target_item.text() + " " + "(单位：万)";
-                    }
-                }
-            },
-
             //单个分析图公共ajax
             eChartsAjax: function (startDate, endDate, timeUnit, indexType) {
                 var that = this;
+                that.ajaxPrefilterEvent("../userStatistics/totalCharts.do");
                 $.ajax({
                     type: 'post',
                     url: '../userStatistics/totalCharts.do',
@@ -419,12 +368,14 @@ $(function () {
                                 nameSingle = target_item.text() + " " + "(单位：万)";
                             }
                         }
-                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
+                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle)
                     },
                 });
             },
             //对比分析图公共ajax
             comparisonEChartsAjax: function (startDate, endDate, compareStartDate, compareEndDate, timeUnit, indexType) {
+                var that = this;
+                that.ajaxPrefilterEvent("../userStatistics/compareTotalCharts.do");
                 $.ajax({
                     type: 'post',
                     url: "../userStatistics/compareTotalCharts.do",
@@ -469,6 +420,8 @@ $(function () {
             },
             //新增折线图公共ajax
             newEChartsAjax: function (startDate, endDate, timeUnit, indexType) {
+                var that = this;
+                that.ajaxPrefilterEvent("../userStatistics/newCharts.do");
                 $.ajax({
                     type: 'post',
                     url: '../userStatistics/newCharts.do',
@@ -495,9 +448,10 @@ $(function () {
                     },
                 });
             },
-
             //新增对比折线图公共ajax
             newComparisonEChartsAjax: function (startDate, endDate, compareStartDate, compareEndDate, timeUnit, indexType) {
+                var that = this;
+                that.ajaxPrefilterEvent("../userStatistics/compareNewCharts.do");
                 $.ajax({
                     type: 'post',
                     url: "../userStatistics/compareNewCharts.do ",
@@ -544,8 +498,10 @@ $(function () {
                     }
                 });
             },
+            //总数table表
             totalTable: function () {
                 var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
+                var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
                 endDate = data_arry[1].trim();
@@ -557,6 +513,8 @@ $(function () {
                     pageSize = 20;
                 }
                 prevNum = 0;
+
+                that.ajaxPrefilterEvent("../userStatistics/totalDatasheets.do");
                 $.ajax({
                     type: "POST",
                     data: {
@@ -575,8 +533,10 @@ $(function () {
                 });
 
             },
+            //新增table表
             newTable: function () {
                 var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
+                var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
                 endDate = data_arry[1].trim();
@@ -588,6 +548,7 @@ $(function () {
                     pageSize = 20;
                 }
                 prevNum = 0;
+                that.ajaxPrefilterEvent("../userStatistics/newDatasheets.do");
                 $.ajax({
                     type: "POST",
                     data: {
@@ -602,12 +563,10 @@ $(function () {
                     url: "../userStatistics/newDatasheets.do",
                     success: function (data) {
                         $('.sync-html').html(data);
-
                     }
                 });
 
             },
-
             //总数和新增的切换
             allOrNew: function () {
                 var that = this;
@@ -615,14 +574,12 @@ $(function () {
                     new_increased_num.show();
                     $(".valid_institution_account").hide();
                     that.newTable();
-                   /* that.getparms();*/
                     that.getTime();
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
                     $(".valid_institution_account").show();
                     that.totalTable();
-                    /*that.getparms();*/
                     that.getTime();
                 })
             },
@@ -637,219 +594,176 @@ $(function () {
                 this.dataSubmitBtn();
                 this.totalTable();
                 this.testData();
-                this.griIcon("gri_data");
-                this.griIcon("gri_data_compare");
-
+                this.griIcon("gri_data","user_statistics_data");
+                this.griIcon("gri_data_compare","user_statistics_dataCompare");
+                this.onclick_();
             }
         }
     })().init();
-
-    //echarts图
-    var myEcharsCommon = (function () {
-        return {
-            commonLine: function (id, seriesData, dateTime, nameSingle) {
-                var idObj = document.getElementById(id);
-                if (idObj.hasAttribute("_echarts_instance_")) {
-                    idObj.removeAttribute("_echarts_instance_");
-                }
-                $(idObj).empty();
-                if (myChart) {
-                    myChart.clear();
-                }
-                var myChart = echarts.init(idObj);
-                var option = {
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        y: "bottom",
-                        data: [{
-                            name: nameSingle,
-                        }],
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        height: '300',
-                        y: 80,
-                        containLabel: true,
-                        show: true,
-                        borderWidth: '0'
-                    },
-                    toolbox: {
-                        show: true,
-                        right: '20',
-                        feature: {
-                            saveAsImage: {
-                                show: true,
-                                /*  excludeComponents: ['toolbox'],
-                                  pixelRatio: 2,*/
-                            }
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        splitLine: {
-                            show: false,
-                        },
-                        axisTick: {
-                            alignWithLabel: true
-                        },
-                        data: dateTime,
-                        axisLabel: {
-                            interval: 'auto',//坐标轴刻度标签的显示间隔，
-                        }
-                    },
-                    yAxis: {
-                        show: false,//隐藏坐标轴
-                        type: 'value',
-                        splitLine: {
-                            show: false,
-                        },
-                        axisTick: {
-                            show: false
-                        },
-                    },
-                    series: [
-                        {
-                            name: nameSingle,
-                            type: 'line',
-                            data: seriesData,
-                            symbolSize: 4,
-                            itemStyle: {normal: {label: {show: true}}}
-                        }
-                    ],
-                    /* dataZoom: {
-                         type: 'slider',
-                         show: true,
-                         backgroundColor: '#e0e3e8',
-                         handleColor: '#7cb6e1',
-                         fillerColor: '#7cb6e1',
-                        /!* start: 0,
-                         xAxisIndex: 0,
-                         end: 31,*!/
-                         left: 10,
-                         right: 10,
-                         bottom: 4,
-                         height: 6,
-                         textStyle: {
-                             color: 'transparent'
-                         },
-                         handleSize: 16,
-                         showDataShadow: false
-                     }*/
-                };
-                if (option && typeof option === "object") {
-                    myChart.setOption(option, true);
-                }
-            },
-
-            lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
-                var dom = document.getElementById(idName);
-                if (dom.hasAttribute("_echarts_instance_")) {
-                    dom.removeAttribute("_echarts_instance_");
-                }
-                $(dom).empty();
-                if (myChart) {
-                    myChart.clear();
-                }
-                var myChart = echarts.init(dom);
-                var option = {
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data: nameArray,
-                        y: "bottom",
-                        orient: 'vertical',  //垂直显示
-                        selectedMode: 'single',
-                        padding: 10 //调节legend的位置
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        y: 60,
-                        height: '300',
-                        containLabel: true,
-                        show: 'true',
-                        borderWidth: '0'
-                    },
-                    toolbox: {
-                        show: true,
-                        right: '20',
-                        feature: {
-                            saveAsImage: {
-                                show: true,
-                               /* excludeComponents: ['toolbox'],
-                                pixelRatio: 2*/
-                            }
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        position: 'bottom',
-                        offset: '20',
-                        splitLine: {
-                            show: false,
-                        },
-                        axisLabel: {
-                            interval: 'auto',//坐标轴刻度标签的显示间隔，
-                            formatter: function (value) {//坐标过长时省略
-                                var v = value.substring(0, 10) + '...';
-                                return value.length > 10 ? v : value;
-                            }
-                        },
-                        data: dateTime,
-                    },
-                    yAxis: {
-                        show: false,//隐藏坐标轴
-                        type: 'value',
-                        splitLine: {
-                            show: false,
-                        }
-                    },
-                    series: [
-                        {
-                            name: nameSingle,
-                            type: 'line',
-                            data: selectData,
-                            itemStyle: {normal: {label: {show: true}}}
-                        },
-                        {
-                            name: nameCompare,
-                            type: 'line',
-                            data: compareData,
-                            itemStyle: {normal: {label: {show: true}}}
-                        }
-                    ],
-                    /*  dataZoom: {
-                          type: 'slider',
-                          show: true,
-                          backgroundColor: '#e0e3e8',
-                          handleColor: '#7cb6e1',
-                          fillerColor: '#7cb6e1',
-                         /!* start: 0,
-                          xAxisIndex: 0,
-                          end: 31,*!/
-                          left: 10,
-                          right: 10,
-                          bottom: 4,
-                          height: 6,
-                          textStyle: {
-                              color: 'transparent'
-                          },
-                          handleSize: 16,
-                          showDataShadow: false
-                      }*/
-                };
-                if (option && typeof option === "object") {
-                    myChart.setOption(option, true);
-                }
-            },
-
-        }
-    })();
-    /* myEcharsCommon.commonLine('lineContainer');*/
-    /* myEcharsCommon.lineComparison('lineContainerComparison')*/
-
 });
+//echarts图
+var myEcharsCommon = (function () {
+    return {
+        commonLine: function (id, seriesData, dateTime, nameSingle) {
+            var idObj = document.getElementById(id);
+            if (idObj.hasAttribute("_echarts_instance_")) {
+                idObj.removeAttribute("_echarts_instance_");
+            }
+            $(idObj).empty();
+            var myChart = echarts.init(idObj);
+            myChart.clear();
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    showDelay: 0,//显示延时，添加显示延时可以避免频繁切换
+                    backgroundColor: 'rgba(74,166,252,0.7)',//背景颜色（此时为默认色）
+                    axisPointer : { // 坐标轴指示器，坐标轴触发有效
+                        type : 'line' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    y: "bottom",
+                    data: [{
+                        name: nameSingle,
+                    }],
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    height: '300',
+                    y: 80,
+                    containLabel: true,
+                    show: true,
+                    borderWidth: '0'
+                },
+                toolbox: {
+                    show: true,
+                    right: '20',
+                    feature: {
+                        saveAsImage: {
+                            show: true,
+                        }
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    splitLine: {
+                        show: false,
+                    },
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: dateTime,
+                    axisLabel: {
+                        interval: 'auto',//坐标轴刻度标签的显示间隔，
+                    }
+                },
+                yAxis: {
+                    show: false,//隐藏坐标轴
+                    type: 'value',
+                    splitLine: {
+                        show: false,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                },
+                series: [
+                    {
+                        name: nameSingle,
+                        type: 'line',
+                        data: seriesData,
+                        symbolSize: 4,
+                        itemStyle: {normal: {label: {show: true}}}
+                    }
+                ]
+            };
+            if (option && typeof option === "object") {
+                myChart.setOption(option,true);
+            }
+
+
+        },
+
+        lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare,data) {
+            var dom = document.getElementById(idName);
+            if (dom.hasAttribute("_echarts_instance_")) {
+                dom.removeAttribute("_echarts_instance_");
+            }
+            $(dom).empty();
+            var myChart = echarts.init(dom);
+            myChart.clear();
+            var option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: nameArray,
+                    y: "bottom",
+                    orient: 'vertical',  //垂直显示
+                    selectedMode: 'single',
+                    padding: 10 //调节legend的位置
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    y: 60,
+                    height: '300',
+                    containLabel: true,
+                    show: 'true',
+                    borderWidth: '0'
+                },
+                toolbox: {
+                    show: true,
+                    right: '20',
+                    feature: {
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    position: 'bottom',
+                    offset: '20',
+                    splitLine: {
+                        show: false,
+                    },
+                    axisLabel: {
+                        interval: 'auto',//坐标轴刻度标签的显示间隔，
+                        formatter: function (value) {//坐标过长时省略
+                            var v = value.substring(0, 10) + '...';
+                            return value.length > 10 ? v : value;
+                        }
+                    },
+                    data: dateTime,
+                },
+                yAxis: {
+                    show: false,//隐藏坐标轴
+                    type: 'value',
+                    splitLine: {
+                        show: false,
+                    }
+                },
+                series: [
+                    {
+                        name: nameSingle,
+                        type: 'line',
+                        data: selectData,
+                        itemStyle: {normal: {label: {show: true}}}
+                    },
+                    {
+                        name: nameCompare,
+                        type: 'line',
+                        data: compareData,
+                        itemStyle: {normal: {label: {show: true}}}
+                    }
+                ]
+            };
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        },
+
+    }
+})();

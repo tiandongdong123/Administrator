@@ -1,9 +1,9 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
-<script type="text/javascript" src="../page/usermanager/js/jquery-1.7.2.min.js"></script>
+
 <script type="text/javascript" src="../page/usermanager/js/dateRange.js"></script>
-<script type="text/javascript" src="../page/usermanager/js/paging.js"></script>
+<!--<script type="text/javascript" src="../page/usermanager/js/paging.js"></script>-->
 <link rel="stylesheet" href="../page/usermanager/css/user_statistics.css">
 <link rel="stylesheet" href="../page/usermanager/css/dateRange.css">
 <link rel="stylesheet" href="../page/usermanager/css/reset.css">
@@ -20,8 +20,21 @@
         bottom: -65px;
         left: 50px;
     }
+    .model{
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        outline: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 9999;
+        display: none;
+    }
 </style>
 <div class="content-wrapper">
+    <div class="model"></div>
     <section class="content-header"><h1>用户统计</h1></section>
     <div class="user_statistics">
         <div class="user_statistics_header">
@@ -31,7 +44,7 @@
                 <a href="javascript:;" id="aRecent7Days" class="active">最近7天</a>
                 <a href="javascript:;" id="aRecent30Days" >最近30天</a>
                 <div id="user_statistics_datePicker" class="user_statistics_datePicker">
-                    <input type="text" name="date" id="user_statistics_data" value="" class="gri_date"  />
+                    <input type="text" name="date" id="user_statistics_data" value="" class="gri_date" readonly />
                 </div>
             </div>
             <div class="switch_data ">
@@ -97,7 +110,7 @@
                             <li><input type="radio" name="person" value="个人绑定机构用户">个人绑定机构用户 <input type="hidden" value="person_bind_institution"></li>
                             <li><input type="radio" name="person"  value="机构" >机构 <input type="hidden" value="institution"></li>
                             <li><input type="radio" name="person"  value="机构账号" >机构账号 <input type="hidden" value="institution_account"></li>
-                            <li class="valid_institution_account"><input type="radio" name="person"  value="机构账号" >有效机构账号 <input type="hidden" value="valid_institution_account"></li>
+                            <li class="valid_institution_account"><input type="radio" name="person"  value="有效机构账号" >有效机构账号 <input type="hidden" value="valid_institution_account"></li>
                             <li><input type="radio" name="person" value="机构管理员" >机构管理员 <input type="hidden" value="institution_admin"></li>
                         </ul>
 
@@ -105,11 +118,9 @@
                 </div>
 
             </div>
-            <div class="line_container" id="lineContainer" ></div>
+            <div class="line_container" id="lineContainer"></div>
             <div class="line_comparison_container" id="lineContainerComparison" style="display: none"></div>
         </div>
-
-
 
         <div id="database-table" class="sync-html"></div>
     </div>
