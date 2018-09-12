@@ -32,13 +32,10 @@ $(function () {
                         //that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                         that.totalOrNew();//table表的变化
                         that.newData();
-                      /*  console.log($(".echarts-tooltip").length)*/
-                       /* if($(".echarts-tooltip").length>1){
-                            console.log($(".echarts-tooltip").length)
-                            $(".echarts-tooltip:not(:last)").remove();
-                            $(".model").show(800).delay(100).hide(800);
-                        }*/
-                     /*   setTimeout($(".model").hide(),1000);*/
+
+                     /* $(".model").show();*/
+
+
 
                         return;
 
@@ -210,6 +207,9 @@ $(function () {
                     data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
                     that.newData();
+                    $(".switch_data a").not(":eq(0)").removeClass("disable_btn");
+                    $(".switch_board_week").hide();
+                    $(".switch_board_month").hide();
                 });
 
                 $(".closeBtn").click(function () {
@@ -677,6 +677,8 @@ var myEcharsCommon = (function () {
             if (option && typeof option === "object") {
                 myChart.setOption(option,true);
             }
+
+
         },
 
         lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare,data) {

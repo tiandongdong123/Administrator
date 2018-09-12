@@ -1,6 +1,5 @@
-
 <div class="user_statistics_footer">
-    <table  id="trLength">
+    <table id="trLength">
         <thead>
         <tr>
             <th>序号</th>
@@ -48,25 +47,27 @@
         </tbody>
     </table>
 </div>
-
+<script type="text/javascript" src="../page/usermanager/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../page/usermanager/js/paging.js"></script>
 <script>
 
     $(function () {
+
         var data_arry, startDate, endDate, indexType, timeUnit, pageSize, sort;
-        var tableName =  $(".table_time").children().attr("class");
+        var tableName = $(".table_time").children().attr("class");
         data_arry = $("#user_statistics_data").val().split("至");
         startDate = data_arry[0].trim();
         endDate = data_arry[1].trim();
         indexType = $(".target_selected .target_item_hidden").val();//指标参数
-        timeUnit =  $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
+        timeUnit = $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
         pageSize = $(".evey-page").val();
         if (pageSize == null) {
             pageSize = 20;
         }
         prevNum = 0;
-        sort = ($(".table_time").children("i").attr("class")== "table_icon_off")?1:0;
-        $("."+tableName).click(function(){
-            if($("#contentNavHidden").val()=="total"){
+        sort = ($(".table_time").children("i").attr("class") == "table_icon_off") ? 1 : 0;
+        $("." + tableName).click(function () {
+            if ($("#contentNavHidden").val() == "total") {
                 $.ajax({
                     type: "POST",
                     data: {
@@ -74,7 +75,7 @@
                         endTime: endDate,
                         timeUnit: timeUnit,
                         type: indexType,
-                        sort:sort,
+                        sort: sort,
                         pageSize: pageSize,
                         page: 1,
                     },
@@ -84,7 +85,7 @@
 
                     }
                 });
-            }else{
+            } else {
                 $.ajax({
                     type: "POST",
                     data: {
@@ -92,7 +93,7 @@
                         endTime: endDate,
                         timeUnit: timeUnit,
                         type: indexType,
-                        sort:sort,
+                        sort: sort,
                         pageSize: pageSize,
                         page: 1,
                     },
@@ -104,6 +105,8 @@
             }
         })
     })
+
+
 
 
 </script>
