@@ -251,7 +251,8 @@ function doupdatedata(){
 		customs.push(val);
 	}
 	var dataid=$("#dataid").val();
-	
+	var imgLogoSrc=$("#imgLogoSrc").val();
+	var link=$("#link").val();
 	$.ajax( {  
 		type : "POST",  
 		url : "../data/doupdatedata.do",
@@ -265,7 +266,9 @@ function doupdatedata(){
 				'language' : languages.substring(0,languages.length-1),
 				'customs' : customs,
 				'productSourceCode' : product_source_code,
-				'dbtype':dbtype
+				'dbtype':dbtype,
+				'imgLogoSrc':imgLogoSrc,
+				'link':link
 			},
 			dataType : "json",
 			success : function(data) {

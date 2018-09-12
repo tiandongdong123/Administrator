@@ -33,6 +33,10 @@ public class Datamanager {
     
     private String addTime;
 
+    private String imgLogoSrc;
+
+    private String link;
+
     public Integer getState() {
         return state;
     }
@@ -153,16 +157,42 @@ public class Datamanager {
 		this.addTime = addTime;
 	}
 
+	public String getImgLogoSrc() {
+		return imgLogoSrc;
+	}
+
+	public void setImgLogoSrc(String imgLogoSrc) {
+		this.imgLogoSrc = imgLogoSrc;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
 	@Override
 	public String toString() {
-		return "Datamanager [id=" + id + ", productSourceCode="
-				+ productSourceCode + ", tableName=" + tableName
-				+ ", abbreviation=" + abbreviation + ", tableDescribe="
-				+ tableDescribe + ", resType=" + resType + ", sourceDb="
-				+ sourceDb + ", language=" + language + ", customPolicy="
-				+ customPolicy + ", dbtype=" + dbtype + ", status=" + status
-				+ ", sourceUrl=" + sourceUrl + ", sourceType=" + sourceType
-				+ ", addTime=" + addTime + "]";
+		return "Datamanager{" +
+				"id='" + id + '\'' +
+				", productSourceCode='" + productSourceCode + '\'' +
+				", tableName='" + tableName + '\'' +
+				", abbreviation='" + abbreviation + '\'' +
+				", tableDescribe='" + tableDescribe + '\'' +
+				", resType='" + resType + '\'' +
+				", sourceDb='" + sourceDb + '\'' +
+				", language='" + language + '\'' +
+				", customPolicy='" + customPolicy + '\'' +
+				", dbtype='" + dbtype + '\'' +
+				", status=" + status +
+				", state=" + state +
+				", sourceUrl='" + sourceUrl + '\'' +
+				", sourceType='" + sourceType + '\'' +
+				", addTime='" + addTime + '\'' +
+				", imgLogoSrc='" + imgLogoSrc + '\'' +
+				", link='" + link + '\'' +
+				'}';
 	}
-	
 }

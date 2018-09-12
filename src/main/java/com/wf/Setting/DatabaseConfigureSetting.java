@@ -207,6 +207,8 @@ public class DatabaseConfigureSetting {
         datamanager.setStatus(database.getStatus());
         datamanager.setTableName(database.getName());
         datamanager.setTableDescribe(database.getDescribe());
+        datamanager.setImgLogoSrc(database.getImgLogoSrc());
+        datamanager.setLink(database.getLink());
         return datamanager;
     }
 
@@ -224,6 +226,8 @@ public class DatabaseConfigureSetting {
         database.setStatus(datamanager.getStatus());
         database.setName(datamanager.getTableName());
         database.setDescribe(datamanager.getTableDescribe());
+        database.setImgLogoSrc(datamanager.getImgLogoSrc());
+        database.setLink(datamanager.getLink());
         return database;
     }
 }

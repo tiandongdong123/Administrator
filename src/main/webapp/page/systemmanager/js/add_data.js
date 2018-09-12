@@ -256,6 +256,8 @@ function doadddata(){
 		var val = i1+"%"+i2+"%"+s1+"%"+s2;
 		customs.push(val);
 	}
+    var imgLogoSrc=$("#imgLogoSrc").val();
+    var link=$("#link").val();
 	$.ajax({  
 		type : "POST",  
 		url : "../data/doadddata.do",
@@ -268,7 +270,9 @@ function doadddata(){
 				'language' : languages.substring(0,languages.length-1),
 				'customs' : customs,
 				'productSourceCode' : product_source_code,
-				'dbtype':dbtype
+				'dbtype':dbtype,
+                'imgLogoSrc':imgLogoSrc,
+                'link':link
 			},
 			dataType : "json",
 			success : function(data) {

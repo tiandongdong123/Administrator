@@ -562,7 +562,12 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-
+			if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+				data.setImgLogoSrc(data.getImgLogoSrc().replace("http://www.wanfangdata.com.cn/", "${search}"));
+			}
+			if (data.getLink() != null && data.getLink() != "") {
+				data.setLink(data.getLink().replace("http://www.wanfangdata.com.cn/", "${search}"));
+			}
 			//在zookeeper中添加数据库配置
 			dbConfig.addDatabase(data);
 			//在数据库中添加
@@ -578,23 +583,31 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public Map<String, Object> getCheck(String id) {
-		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Custom> cs = new ArrayList<Custom>();
 		Datamanager dm = new Datamanager();
-		String [] language = new String[]{};
-		String [] resourtype = new String[]{};
-		String [] source = new String[]{};
+		List<Object>  data = new ArrayList<Object>();
+		String[] language = new String[]{};
+		String[] resourtype = new String[]{};
+		String[] source = new String[]{};
 		try {
 			cs = this.custom.getCustomById(id);
 			dm = this.data.getDataManagerById(id);
-			if(dm!=null){
+			if (dm != null) {
 				String lang = dm.getLanguage();
 				String sour = dm.getSourceDb();
 				String resour = dm.getResType();
-				language = lang.split(",");
-				source = sour.split(",");
-				resourtype = resour.split(",");
+				if (lang != null && lang != "") {
+					language = lang.split(",");
+				}
+				if (sour != null && sour != "") {
+					source = sour.split(",");
+				}
+				if (resour != null && resour != "") {
+					resourtype = resour.split(",");
+				}
 			}
+			data = dbConfig.findDatabaseByName(dm.getTableName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -603,6 +616,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		map.put("checkresourcetype", resourtype);
 		map.put("dm", dm);
 		map.put("cs", cs);
+		map.put("dn",data);
 		return map;
 	}
 	@Override
@@ -636,7 +650,12 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-
+			if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+				data.setImgLogoSrc(data.getImgLogoSrc().replace("http://www.wanfangdata.com.cn/", "${search}"));
+			}
+			if (data.getLink() != null && data.getLink() != "") {
+				data.setLink(data.getLink().replace("http://www.wanfangdata.com.cn/", "${search}"));
+			}
 			//在zookeeper中修改数据库配置
 			dbConfig.updateDatabase(data);
 			//在数据库中修改
