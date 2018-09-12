@@ -350,7 +350,7 @@
     select  ifnull(sum(${type}),0)  from user_statistics where date <![CDATA[ < ]]>  #{dateTime}
   </select>
 
-    <select id="selectSingleTypeNewData" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
+    <select id="selectSingleTypeNewData" parameterType="com.wf.bean.userStatistics.ChartsParameter"
             resultType="java.lang.Integer">
         select sum from (
         select ifnull(sum(${type}),0) sum,
@@ -379,7 +379,7 @@
         </if>
     </select>
 
-    <select id="selectNewDate" parameterType="com.wf.bean.userStatistics.StatisticsParameter"
+    <select id="selectNewDate" parameterType="com.wf.bean.userStatistics.TableParameter"
             resultMap="ColumnSumMap">
         select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
         sum2,ifnull(sum(person_bind_institution),0) sum3,

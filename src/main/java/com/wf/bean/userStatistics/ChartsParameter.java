@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class StatisticsParameter implements Serializable{
+public class ChartsParameter implements Serializable{
     /**
      * 开始时间
      */
@@ -26,20 +26,6 @@ public class StatisticsParameter implements Serializable{
      */
     @NotBlank
     private String type;
-    /**
-     * 每页显示数量
-     */
-    private Integer pageSize;
-    /**
-     * 页数
-     */
-    private Integer page;
-
-    /**
-     * 排序方式（时间）  1.正序 2.倒序
-     * @return
-     */
-    private Integer sort;
 
 
     public String getStartTime() {
@@ -74,40 +60,13 @@ public class StatisticsParameter implements Serializable{
         this.type = type;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
     @Override
     public String toString() {
-        return "StatisticsParameter{" +
+        return "ChartsParameter{" +
                 "startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
                 ", timeUnit=" + timeUnit +
                 ", type='" + type + '\'' +
-                ", pageSize=" + pageSize +
-                ", page=" + page +
-                ", sort=" + sort +
                 '}';
     }
 }

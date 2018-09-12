@@ -1,43 +1,45 @@
 package com.wf.bean.userStatistics;
 
-public class StatisticsModel {
+public class TableResponse {
+
 
     private String date;
 
     /**
      * 个人用户数量
      */
-    private Integer personUser;
+    private String personUser;
 
     /**
      * 认证用户数量
      */
-    private Integer authenticatedUser;
+    private String authenticatedUser;
 
     /**
      * 个人绑定机构用户数量
      */
-    private Integer personBindInstitution;
+    private String personBindInstitution;
 
     /**
      * 机构数量
      */
-    private Integer institution;
+    private String institution;
 
     /**
      * 机构账号数量
      */
-    private Integer institutionAccount;
+    private String institutionAccount;
 
     /**
      * 有效机构账号数量
      */
-    private Integer validInstitutionAccount;
+    private String validInstitutionAccount;
 
     /**
      * 机构管理员数量
      */
-    private Integer institutionAdmin;
+    private String institutionAdmin;
+
 
     public String getDate() {
         return date;
@@ -47,71 +49,71 @@ public class StatisticsModel {
         this.date = date;
     }
 
-    public Integer getPersonUser() {
+    public String getPersonUser() {
         return personUser;
     }
 
-    public void setPersonUser(Integer personUser) {
+    public void setPersonUser(String personUser) {
         this.personUser = personUser;
     }
 
-    public Integer getAuthenticatedUser() {
+    public String getAuthenticatedUser() {
         return authenticatedUser;
     }
 
-    public void setAuthenticatedUser(Integer authenticatedUser) {
+    public void setAuthenticatedUser(String authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
     }
 
-    public Integer getPersonBindInstitution() {
+    public String getPersonBindInstitution() {
         return personBindInstitution;
     }
 
-    public void setPersonBindInstitution(Integer personBindInstitution) {
+    public void setPersonBindInstitution(String personBindInstitution) {
         this.personBindInstitution = personBindInstitution;
     }
 
-    public Integer getInstitution() {
+    public String getInstitution() {
         return institution;
     }
 
-    public void setInstitution(Integer institution) {
+    public void setInstitution(String institution) {
         this.institution = institution;
     }
 
-    public Integer getInstitutionAccount() {
+    public String getInstitutionAccount() {
         return institutionAccount;
     }
 
-    public void setInstitutionAccount(Integer institutionAccount) {
+    public void setInstitutionAccount(String institutionAccount) {
         this.institutionAccount = institutionAccount;
     }
 
-    public Integer getValidInstitutionAccount() {
+    public String getValidInstitutionAccount() {
         return validInstitutionAccount;
     }
 
-    public void setValidInstitutionAccount(Integer validInstitutionAccount) {
+    public void setValidInstitutionAccount(String validInstitutionAccount) {
         this.validInstitutionAccount = validInstitutionAccount;
     }
 
-    public Integer getInstitutionAdmin() {
+    public String getInstitutionAdmin() {
         return institutionAdmin;
     }
 
-    public void setInstitutionAdmin(Integer institutionAdmin) {
+    public void setInstitutionAdmin(String institutionAdmin) {
         this.institutionAdmin = institutionAdmin;
     }
 
     @Override
     public String toString() {
-        return "StatisticsModel{" +
+        return "TableResponse{" +
                 "date='" + date + '\'' +
-                ", personUser=" + personUser +
-                ", authenticatedUser=" + authenticatedUser +
-                ", personBindInstitution=" + personBindInstitution +
-                ", institution=" + institution +
-                ", institutionAccount=" + institutionAccount +
+                ", personUser='" + personUser + '\'' +
+                ", authenticatedUser='" + authenticatedUser + '\'' +
+                ", personBindInstitution='" + personBindInstitution + '\'' +
+                ", institution='" + institution + '\'' +
+                ", institutionAccount='" + institutionAccount + '\'' +
                 ", validInstitutionAccount=" + validInstitutionAccount +
                 ", institutionAdmin=" + institutionAdmin +
                 '}';

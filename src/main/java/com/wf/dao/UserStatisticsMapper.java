@@ -31,10 +31,10 @@ public interface UserStatisticsMapper {
 
     int selectSingleTypePreviousSum(@Param("type") String type,@Param("dateTime")String dateTime);
 
-    List<Integer> selectSingleTypeNewData(StatisticsParameter parameter);
+    List<Integer> selectSingleTypeNewData(ChartsParameter parameter);
 
     StatisticsModel selectSumByExample(UserStatisticsExample example);
 
-    List<StatisticsModel> selectNewDate(StatisticsParameter parameter);
+    List<StatisticsModel> selectNewDate(TableParameter parameter);
 
 }
