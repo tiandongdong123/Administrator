@@ -22,7 +22,7 @@ $(function () {
         var nameSingle, nameCompare, nameArray;
 
         return {
-            onclick_:function(){
+            onclick_: function () {
                 var that = this;
                 time_quantum.each(function () {
                     var _this = $(this);
@@ -33,8 +33,7 @@ $(function () {
                         that.totalOrNew();//table表的变化
                         that.newData();
 
-                     /* $(".model").show();*/
-
+                        /* $(".model").show();*/
 
 
                         return;
@@ -66,8 +65,8 @@ $(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                               /* that.totalOrNew();//table表的变化
-                                that.newData();*/
+                                /* that.totalOrNew();//table表的变化
+                                 that.newData();*/
                                 //$(".model").show(200).delay(1000).hide(200);
                                 return;
 
@@ -83,9 +82,10 @@ $(function () {
                 aRecent7Days.click();
                 that.newData();
             },
-            getTime:function(){
+            getTime: function () {
                 var that = this;
-                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate,data_arry,startDate,endDate;
+                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate, data_arry,
+                    startDate, endDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
@@ -103,7 +103,7 @@ $(function () {
                         that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                     }
                     if (navTitle == 'new') {
-                        that.newComparisonEChartsAjax(startDate,endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                     }
                 } else {
                     if (navTitle == 'total') {
@@ -115,17 +115,17 @@ $(function () {
                 }
             },
             //最近天数的重置
-            recentReset:function(id){
+            recentReset: function (id) {
                 selected_data.children(".switch_data_hidden").val(1);
                 $(".gri_data_compare").hide();
                 if ($("#user_statistics_dataCompare").val() != "") {
-                    $("#"+id).click();
+                    $("#" + id).click();
                 }
                 lineContainerComparison.hide();
                 lineContainer.show();
             },
             //禁止多次发送
-            ajaxPrefilterEvent:function(url){
+            ajaxPrefilterEvent: function (url) {
                 var pendingRequests = {};
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
                     var key = options.url;
@@ -217,7 +217,7 @@ $(function () {
                 });
             },
             //点击icon日历的显示与隐藏
-            griIcon: function (iconBtn,dataInput) {
+            griIcon: function (iconBtn, dataInput) {
                 var coun = 0;
                 $("." + iconBtn).click(function (event) {
                     event.stopPropagation();
@@ -227,14 +227,14 @@ $(function () {
                         $(".closeBtn").click();
                         $(this).css('background-position', '-10px -10px');
                     } else {
-                        $("#"+dataInput).click();
+                        $("#" + dataInput).click();
                     }
                 })
             },
             //样式的切换(日/周/月的切换时分析图的改变)
             switchBg: function (obj, className) {
                 var that = this;
-                var data_arry,startDate,endDate
+                var data_arry, startDate, endDate
                 obj.each(function () {
                     var _this = $(this);
                     _this.click(function () {
@@ -279,7 +279,7 @@ $(function () {
             //手动输入时间的校验
             testData: function () {
                 var dateRangeSelected;
-                $(".test_data").focus(function(){
+                $(".test_data").focus(function () {
                     dateRangeSelected = $(this).val();
                 });
                 $(".test_data").blur(function () {
@@ -333,11 +333,11 @@ $(function () {
                 var that = this;
                 indexList.each(function () {
                     var _this = $(this), indexListVal;
-                    _this.on("click",function () {
+                    _this.on("click", function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
                         target_item_hidden.val(_this.siblings("input").val());
-                      /*  that.getparms();*/
+                        /*  that.getparms();*/
                         that.getTime();
                     })
                 })
@@ -414,7 +414,7 @@ $(function () {
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
-                        myEcharsCommon.lineComparison('lineContainerComparison',selectData,compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
                 });
             },
@@ -444,7 +444,7 @@ $(function () {
                                 nameSingle = target_item.text() + " " + "(单位：万)";
                             }
                         }
-                        myEcharsCommon.commonLine('lineContainer',totalData, data.dateTime, nameSingle)
+                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
                     },
                 });
             },
@@ -492,7 +492,7 @@ $(function () {
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
 
-                        myEcharsCommon.lineComparison('lineContainerComparison',selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
                     },
                     error: function () {
                     }
@@ -500,13 +500,19 @@ $(function () {
             },
             //总数table表
             totalTable: function () {
-                var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize,data_compare_arry,startCompareDate,endCompareDate;
                 var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
                 endDate = data_arry[1].trim();
                 indexType = target_item_hidden.val();//指标参数
                 timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+
+
 
                 pageSize = $(".evey-page").val();
                 if (pageSize == null) {
@@ -520,11 +526,13 @@ $(function () {
                     data: {
                         startTime: startDate,
                         endTime: endDate,
+                        compareStartTime:startCompareDate,
+                        compareEndTime:endCompareDate,
                         timeUnit: timeUnit,
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
-                        sort:0
+                        sort: 0
                     },
                     url: "../userStatistics/totalDatasheets.do",
                     success: function (data) {
@@ -535,13 +543,17 @@ $(function () {
             },
             //新增table表
             newTable: function () {
-                var data_arry, startDate, endDate, indexType, timeUnit, pageSize;
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize,data_compare_arry,startCompareDate,endCompareDate;
                 var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
                 endDate = data_arry[1].trim();
                 indexType = target_item_hidden.val();//指标参数
                 timeUnit = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
 
                 pageSize = $(".evey-page").val();
                 if (pageSize == null) {
@@ -554,11 +566,13 @@ $(function () {
                     data: {
                         startTime: startDate,
                         endTime: endDate,
+                        compareStartTime:startCompareDate,
+                        compareEndTime:endCompareDate,
                         timeUnit: timeUnit,
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
-                        sort:0
+                        sort: 0
                     },
                     url: "../userStatistics/newDatasheets.do",
                     success: function (data) {
@@ -594,8 +608,8 @@ $(function () {
                 this.dataSubmitBtn();
                 this.totalTable();
                 this.testData();
-                this.griIcon("gri_data","user_statistics_data");
-                this.griIcon("gri_data_compare","user_statistics_dataCompare");
+                this.griIcon("gri_data", "user_statistics_data");
+                this.griIcon("gri_data_compare", "user_statistics_dataCompare");
                 this.onclick_();
             }
         }
@@ -605,6 +619,7 @@ $(function () {
 var myEcharsCommon = (function () {
     return {
         commonLine: function (id, seriesData, dateTime, nameSingle) {
+            console.log(nameSingle)
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
                 idObj.removeAttribute("_echarts_instance_");
@@ -614,12 +629,7 @@ var myEcharsCommon = (function () {
             myChart.clear();
             var option = {
                 tooltip: {
-                    trigger: 'axis',
-                    showDelay: 0,//显示延时，添加显示延时可以避免频繁切换
-                    backgroundColor: 'rgba(74,166,252,0.7)',//背景颜色（此时为默认色）
-                    axisPointer : { // 坐标轴指示器，坐标轴触发有效
-                        type : 'line' // 默认为直线，可选为：'line' | 'shadow'
-                    }
+                    trigger: 'axis'
                 },
                 legend: {
                     y: "bottom",
@@ -650,13 +660,12 @@ var myEcharsCommon = (function () {
                     splitLine: {
                         show: false,
                     },
+                    boundaryGap: false,
                     axisTick: {
                         alignWithLabel: true
                     },
                     data: dateTime,
-                    axisLabel: {
-                        interval: 'auto',//坐标轴刻度标签的显示间隔，
-                    }
+
                 },
                 yAxis: {
                     show: false,//隐藏坐标轴
@@ -679,13 +688,20 @@ var myEcharsCommon = (function () {
                 ]
             };
             if (option && typeof option === "object") {
-                myChart.setOption(option,true);
+                myChart.setOption(option, true);
+            }
+            window.onresize = function () {
+                myChart.resize();//若有多个图表变动，可多写
+
             }
 
 
         },
 
-        lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare,data) {
+        lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
+            console.log(nameArray);
+            console.log(nameSingle);
+            console.log(nameCompare);
             var dom = document.getElementById(idName);
             if (dom.hasAttribute("_echarts_instance_")) {
                 dom.removeAttribute("_echarts_instance_");

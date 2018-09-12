@@ -8,7 +8,7 @@
 .content-wrapper .user_statistics_header {
   margin-top: 10px;
   margin-left: 10px;
-  width: 1150px;
+  width: 1400px;
   position: relative;
 }
 .content-wrapper .user_statistics_header .time_tittle {
@@ -74,7 +74,7 @@
   opacity: 0.2;
 }
 .content-wrapper .user_statistics_content {
-  width: 1050px;
+  width: 1500px;
   margin-left: 5px;
 }
 .content-wrapper .user_statistics_content .content_nav {
@@ -181,17 +181,18 @@
 .content-wrapper .user_statistics_content .line_container {
   height: 450px;
   text-align: center;
-  width: 1050px;
+  width: 1500px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_content .line_comparison_container {
   height: 450px;
   text-align: center;
-  width: 1051px;
+  width: 1500px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_footer table {
   margin: 44px;
+  width: 88%;
   border-collapse: collapse;
   border-spacing: 0;
 }
