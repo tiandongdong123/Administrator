@@ -645,8 +645,7 @@ pickerDateRange.prototype.init = function (isCompare) {
                 $('#' + __method.endDateId).val(__method.formatDate(timeObj.today));
                 $('#' + __method.mOpts.startDateId).val($('#' + __method.startDateId).val());
                 $('#' + __method.mOpts.endDateId).val($('#' + __method.endDateId).val());
-                console.log($('#' + __method.startDateId).val())
-                console.log( $('#' + __method.mOpts.startDateId).val())
+
                 __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
                 $('#' + __method.compareCheckboxId).attr('checked', false);
                 $('#' + __method.mOpts.compareCheckboxId).attr('checked', false);
