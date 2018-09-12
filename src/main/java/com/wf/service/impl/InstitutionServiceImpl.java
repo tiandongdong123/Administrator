@@ -94,11 +94,16 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				solrMap.put("UpdateTime", date);
 				solrList.add(solrMap);
 			}
+
 			//发送solr
 			SolrService.getInstance(hosts+"/GroupInfo");
 			String query="CreateTime:[ * TO "+time+"]";
 			SolrService.deleteByQuery("GroupInfo", query);
 			log.info("删除旧的数据，query:"+query);
+			if(solrList.size()==0){
+				messageMap.put("fail", "没有查询到数据");
+				return messageMap;
+			}
 			SolrService.createList(solrList);
 			messageMap.put("flag", "success");
 			messageMap.put("success", "机构用户信息发送solr成功");
