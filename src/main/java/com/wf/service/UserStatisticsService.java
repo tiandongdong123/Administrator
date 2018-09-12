@@ -26,7 +26,7 @@ public interface UserStatisticsService {
      * @param parameter
      * @return
      */
-    List<Integer> selectSingleTypeNewData(StatisticsParameter parameter);
+    List<Integer> selectSingleTypeNewData(ChartsParameter parameter);
 
     /**
      * 查询sum
@@ -41,31 +41,33 @@ public interface UserStatisticsService {
      * @param parameter 参数
      * @return
      */
-    List<Integer> selectTotalDataByType(StatisticsParameter parameter);
+    List<Integer> selectTotalDataByType(ChartsParameter parameter);
 
     /**
      * 查询总数
-     * @param parameter
+     * @param request
      * @return
      */
-    List<StatisticsModel> selectTotalData(StatisticsParameter parameter);
+    List<TableResponse> selectTotalDataForTable(StatisticsRequest request);
 
 
     List<UserStatistics> selectByExample(UserStatisticsExample example);
 
     /**
      * 查询新增数量
-     * @param parameter
+     * @param request
      * @return
      */
-    List<StatisticsModel> selectNewData(StatisticsParameter parameter);
+    List<TableResponse> selectNewDataForTable(StatisticsRequest request);
 
     /**
-     * 获取时间
-     * @param parameter
+     * 获取日期集合（按日/按周/按月）
+     * @param timeUnit 时间单位
+     * @param startTime 开始时间
+     * @param endTime 结束时间
      * @return
      */
-    List<String>  getDateList(StatisticsParameter parameter);
+    List<String>  getDateList(Integer timeUnit, String startTime, String endTime);
 
     List<String> lastDateOfWeekOrMonth(Integer timeUnit, String startTime, String endTime);
 }

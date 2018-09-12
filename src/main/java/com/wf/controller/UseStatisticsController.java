@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,12 +46,12 @@ public class UseStatisticsController {
      */
     @RequestMapping("totalCharts")
     @ResponseBody
-    public Map<String, List> totalCharts(@Valid StatisticsParameter parameter) {
+    public Map<String, List> totalCharts(@Valid ChartsParameter parameter) {
 
         Map<String, List> result = new HashMap<>();
         try {
             List<Integer> totalData = userStatisticsService.selectTotalDataByType(parameter);
-            List<String> dateTime = userStatisticsService.getDateList(parameter);
+            List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
             result.put("totalData", totalData);
             result.put("dateTime", dateTime);
 
@@ -70,11 +69,11 @@ public class UseStatisticsController {
      */
     @RequestMapping("newCharts")
     @ResponseBody
-    public Map<String, List> newCharts(@Valid StatisticsParameter parameter) {
+    public Map<String, List> newCharts(@Valid ChartsParameter parameter) {
         Map<String, List> result = new HashMap<>();
         try {
             List<Integer> newDataList = userStatisticsService.selectSingleTypeNewData(parameter);
-            List<String> dateTime = userStatisticsService.getDateList(parameter);
+            List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
             result.put("totalData", newDataList);
             result.put("dateTime", dateTime);
 
@@ -87,31 +86,41 @@ public class UseStatisticsController {
     /**
      * 总数对比折线图
      *
-     * @param parameter        参数
-     * @param compareStartTime 对比开始时间
-     * @param compareEndTime   对比结束时间
+     * @param request 参数
      * @return
      */
     @RequestMapping("compareTotalCharts")
     @ResponseBody
-    public Map<String, List> compareTotalCharts(@Valid StatisticsParameter parameter,
-                                                @RequestParam(value = "compareStartTime", required = true) String compareStartTime,
-                                                @RequestParam(value = "compareEndTime", required = true) String compareEndTime) {
+    public Map<String, List> compareTotalCharts(@Valid StatisticsRequest request) {
+
+        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
+            log.error("对比开始时间或对比结束时间为空");
+            return new HashMap<>();
+        }
+
         Map<String, List> result = new HashMap<>();
         List<Integer> selectData = new ArrayList<>();
         List<Integer> compareData = new ArrayList<>();
         try {
+            //选择时间段数据
+            ChartsParameter parameter = new ChartsParameter();
+            parameter.setStartTime(request.getStartTime());
+            parameter.setEndTime(request.getEndTime());
+            parameter.setType(request.getType());
+            parameter.setTimeUnit(request.getTimeUnit());
             selectData = userStatisticsService.selectTotalDataByType(parameter);
-            StatisticsParameter compareParameter = new StatisticsParameter();
-            compareParameter.setStartTime(compareStartTime);
-            compareParameter.setEndTime(compareEndTime);
-            compareParameter.setType(parameter.getType());
-            compareParameter.setTimeUnit(parameter.getTimeUnit());
+            //对比时间段数据
+            ChartsParameter compareParameter = new ChartsParameter();
+            compareParameter.setStartTime(request.getCompareStartTime());
+            compareParameter.setEndTime(request.getCompareEndTime());
+            compareParameter.setType(request.getType());
+            compareParameter.setTimeUnit(request.getTimeUnit());
             compareData = userStatisticsService.selectTotalDataByType(compareParameter);
+
             result.put("selectData", selectData);
             result.put("compareData", compareData);
-            List<String> dateTime = userStatisticsService.getDateList(parameter);
-            List<String> compareDateTime = userStatisticsService.getDateList(compareParameter);
+            List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
+            List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
             List<String> dateList = new ArrayList<>();
             if (dateTime.size() != compareDateTime.size()) {
                 log.error("选择时间和对比时间无法一一对应，dateTime：" + dateTime + "compareDateTime" + compareDateTime);
@@ -123,8 +132,7 @@ public class UseStatisticsController {
 
             result.put("dateTime", dateList);
         } catch (Exception e) {
-            log.error("获取对比总数折线图失败，parameter：" +
-                    parameter.toString() + "compareStartTime：" + compareStartTime + "compareEndTime:" + compareEndTime, e);
+            log.error("获取对比总数折线图失败，request：" + request.toString(), e);
         }
         return result;
 
@@ -133,34 +141,54 @@ public class UseStatisticsController {
     /**
      * 新增对比折线图
      *
-     * @param parameter        参数
-     * @param compareStartTime 对比开始时间
-     * @param compareEndTime   对比结束时间
+     * @param request 参数
      * @return
      */
     @RequestMapping("compareNewCharts")
     @ResponseBody
-    public Map<String, List> compareNewCharts(@Valid StatisticsParameter parameter,
-                                              @RequestParam(value = "compareStartTime", required = true) String compareStartTime,
-                                              @RequestParam(value = "compareEndTime", required = true) String compareEndTime) {
+    public Map<String, List> compareNewCharts(@Valid StatisticsRequest request) {
+
+        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
+            log.error("对比开始时间或对比结束时间为空");
+            return new HashMap<>();
+        }
+
         Map<String, List> result = new HashMap<>();
         List<Integer> selectData = new ArrayList<>();
         List<Integer> compareData = new ArrayList<>();
         try {
+
+            //选择时间段数据
+            ChartsParameter parameter = new ChartsParameter();
+            parameter.setStartTime(request.getStartTime());
+            parameter.setEndTime(request.getEndTime());
+            parameter.setType(request.getType());
+            parameter.setTimeUnit(request.getTimeUnit());
             selectData = userStatisticsService.selectSingleTypeNewData(parameter);
-            StatisticsParameter compareParameter = new StatisticsParameter();
-            compareParameter.setStartTime(compareStartTime);
-            compareParameter.setEndTime(compareEndTime);
-            compareParameter.setType(parameter.getType());
-            compareParameter.setTimeUnit(parameter.getTimeUnit());
+            //对比时间段数据
+            ChartsParameter compareParameter = new ChartsParameter();
+            compareParameter.setStartTime(request.getCompareStartTime());
+            compareParameter.setEndTime(request.getCompareEndTime());
+            compareParameter.setType(request.getType());
+            compareParameter.setTimeUnit(request.getTimeUnit());
             compareData = userStatisticsService.selectSingleTypeNewData(compareParameter);
-            List<String> dateTime = userStatisticsService.getDateList(parameter);
             result.put("selectData", selectData);
             result.put("compareData", compareData);
-            result.put("dateTime", dateTime);
+
+            List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
+            List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
+            List<String> dateList = new ArrayList<>();
+            if (dateTime.size() != compareDateTime.size()) {
+                log.error("选择时间和对比时间无法一一对应，dateTime：" + dateTime + "compareDateTime" + compareDateTime);
+                return new HashMap<>();
+            }
+            for (int i = 0; i < dateTime.size(); i++) {
+                dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
+            }
+
+            result.put("dateTime", dateList);
         } catch (Exception e) {
-            log.error("获取对比总数折线图失败，parameter：" +
-                    parameter.toString() + "compareStartTime：" + compareStartTime + "compareEndTime:" + compareEndTime, e);
+            log.error("获取对比总数折线图失败，request：" + request.toString(), e);
         }
         return result;
 
@@ -170,61 +198,59 @@ public class UseStatisticsController {
     /**
      * 总数列表
      *
-     * @param parameter 参数
+     * @param request 参数
      * @return
      */
     @RequestMapping("totalDatasheets")
-    public String totalDatasheets(@Valid StatisticsParameter parameter, Model model) {
-        List<StatisticsModel> modelList = new ArrayList<>();
+    public String totalDatasheets(@Valid StatisticsRequest request, Model model) {
+        List<TableResponse> modelList = new ArrayList<>();
         try {
-            if (parameter.getPageSize() == 0) {
+            if (request.getPageSize() == 0) {
                 //若为0，设一个默认值
-                parameter.setPage(20);
+                request.setPage(20);
             }
-            int page = parameter.getPage();
-            int pageSize = parameter.getPageSize();
-
-            modelList = userStatisticsService.selectTotalData(parameter);
-            int totalSize = userStatisticsService.getDateList(parameter).size();
+            int page = request.getPage();
+            int pageSize = request.getPageSize();
+            modelList = userStatisticsService.selectTotalDataForTable(request);
+            int totalSize = userStatisticsService.getDateList(request.getTimeUnit(),request.getStartTime(),request.getEndTime()).size();
             String actionUrl = "/userStatistics/totalDatasheets.do";
-            PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, parameter);
+            PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, request);
             model.addAttribute("pager", formList);
-            model.addAttribute("sort", parameter.getSort());
+            model.addAttribute("sort", request.getSort());
             model.addAttribute("type", "total");
         } catch (Exception e) {
-            log.error("获取总数表格，parameter：" + parameter.toString(), e);
+            log.error("获取总数表格，request：" + request.toString(), e);
         }
         return "/page/usermanager/user_statistics_result";
 
     }
-
     /**
      * 新增列表
      *
-     * @param parameter 参数
+     * @param request 参数
      * @param model
      * @return
      */
     @RequestMapping("newDatasheets")
-    public String newDatasheets(@Valid StatisticsParameter parameter, Model model) {
-        List<StatisticsModel> modelList = new ArrayList<>();
+    public String newDatasheets(@Valid StatisticsRequest request, Model model) {
+        List<TableResponse> modelList = new ArrayList<>();
         try {
-            if (parameter.getPageSize() == 0) {
+            if (request.getPageSize() == 0) {
                 //若为0，设一个默认值
-                parameter.setPage(20);
+                request.setPage(20);
             }
-            int page = parameter.getPage();
-            int pageSize = parameter.getPageSize();
-            modelList = userStatisticsService.selectNewData(parameter);
-            int totalSize = userStatisticsService.getDateList(parameter).size();
+            int page = request.getPage();
+            int pageSize = request.getPageSize();
+            modelList = userStatisticsService.selectNewDataForTable(request);
+            int totalSize = userStatisticsService.getDateList(request.getTimeUnit(),request.getStartTime(),request.getEndTime()).size();
             String actionUrl = "/userStatistics/newDatasheets.do";
-            PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, parameter);
+            PagerModel<StatisticsModel> formList = new PagerModel<>(page, totalSize, pageSize, modelList, actionUrl, request);
             model.addAttribute("pager", formList);
-            model.addAttribute("sort", parameter.getSort());
+            model.addAttribute("sort", request.getSort());
             model.addAttribute("type", "new");
 
         } catch (Exception e) {
-            log.error("获取新增表格，parameter：" + parameter.toString(), e);
+            log.error("获取新增表格，parameter：" + request.toString(), e);
         }
         return "/page/usermanager/user_statistics_result";
 
