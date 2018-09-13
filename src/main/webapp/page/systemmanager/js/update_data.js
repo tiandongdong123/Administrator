@@ -258,8 +258,39 @@ function doupdatedata(){
         $('#dataname').next().text('数据库名称不能为空！')
 	}else if(($.trim($('#product_source_code').val())==='')){
         $('#product_source_code').next().text('产品类型code不能为空！')
-    }else if(!urlMatch.test($('#link').val())){
-        $('#link').next().text('地址不能为空或链接格式不正确！')
+    }else if($.trim($('#link').val())!=''){
+    	if(!urlMatch.test($('#link').val())) {
+            $('#link').next().text('地址链接格式不正确！')
+        }else{
+            $('#link').next().text('');
+            $.ajax( {
+                type : "POST",
+                url : "../data/doupdatedata.do",
+                data : {
+                    "id" : dataid,
+                    'tableName' : tablename,
+                    'abbreviation' : abbreviation,
+                    'tableDescribe' : datadescribe,
+                    'resType' : resourcetypes.substring(0,resourcetypes.length-1),
+                    'sourceDb' : sources.substring(0,sources.length-1),
+                    'language' : languages.substring(0,languages.length-1),
+                    'customs' : customs,
+                    'productSourceCode' : product_source_code,
+                    'dbtype':dbtype,
+                    'imgLogoSrc':imgLogoSrc,
+                    'link':link
+                },
+                dataType : "json",
+                success : function(data) {
+                    if(data){
+                        layer.msg("修改成功");
+                        window.location.href="../system/dataManager.do";
+                    }else{
+                        layer.msg("修改失败");
+                    }
+                }
+            });
+        }
     }else if($.trim($('#imgLogoSrc').val())!=''){
 		if(!urlMatch.test($('#imgLogoSrc').val())){
             $('#imgLogoSrc').next().text('链接格式不正确！')

@@ -593,7 +593,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Custom> cs = new ArrayList<Custom>();
 		Datamanager dm = new Datamanager();
-		List<Object>  data = new ArrayList<Object>();
+		Datamanager data=null;
 		String[] language = new String[]{};
 		String[] resourtype = new String[]{};
 		String[] source = new String[]{};
@@ -614,7 +614,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 					resourtype = resour.split(",");
 				}
 			}
-			data = dbConfig.findDatabaseByName(dm.getTableName());
+			data= dbConfig.findDatabaseById(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

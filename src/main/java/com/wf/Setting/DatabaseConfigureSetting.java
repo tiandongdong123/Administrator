@@ -230,4 +230,19 @@ public class DatabaseConfigureSetting {
         database.setLink(datamanager.getLink());
         return database;
     }
+
+    /**
+     * 通过id查找数据库配置
+     */
+    public Datamanager findDatabaseById(String id) {
+        try {
+            Database db = com.wanfangdata.resourceupdatetools.setting.DatabaseConfigureSetting.findDatabaseById(id);
+            Datamanager database = null;
+            database=convertToDatamanager(db);
+            return database;
+        } catch (Exception e) {
+            log.error("findDatabaseById，id:" + id, e);
+            throw new IllegalArgumentException("findDatabaseById，id:" + id);
+        }
+    }
 }
