@@ -612,7 +612,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             tableResponse.setAuthenticatedUser("" + "</br></br>" + ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
             tableResponse.setPersonBindInstitution("" + "</br></br>" + ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
             tableResponse.setInstitution("" + "</br></br>" + ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
             tableResponse.setValidInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
             tableResponse.setInstitutionAdmin("" + "</br></br>" + ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
             result.add(tableResponse);
@@ -714,7 +714,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             tableResponse.setAuthenticatedUser("" + "</br></br>" + ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
             tableResponse.setPersonBindInstitution("" + "</br></br>" + ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
             tableResponse.setInstitution("" + "</br></br>" + ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
             tableResponse.setValidInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
             tableResponse.setInstitutionAdmin("" + "</br></br>" + ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
             result.add(tableResponse);
