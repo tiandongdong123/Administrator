@@ -104,6 +104,7 @@ public class SolrThread implements Runnable {
 		solrMap.put("AdministratorEmail", null);
 		solrMap.put("AdministratorPassword", null);
 		solrMap.put("AdministratorOpenIP", null);
+		solrMap.put("HasChildGroup", false);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
 		doc.setField("Id", userId);
@@ -127,25 +128,34 @@ public class SolrThread implements Runnable {
 		Map<String,Object> solrMap=new HashMap<String,Object>();
 		//机构子账号表
 		solrMap.put("ParentId", pid);
-		solrMap.put("ChildGroupLimit", com.getUpperlimit()==null?"":com.getUpperlimit());
-		solrMap.put("ChildGroupConcurrent", com.getsConcurrentnumber()==null?"":com.getsConcurrentnumber());
-		if(com.getpConcurrentnumber()!=null){
-			solrMap.put("GroupConcurrent", com.getpConcurrentnumber());
+		if(com.getUpperlimit()!=null){
+			solrMap.put("ChildGroupLimit", com.getUpperlimit()==null?"":com.getUpperlimit());
+			solrMap.put("ChildGroupConcurrent", com.getsConcurrentnumber()==null?"":com.getsConcurrentnumber());
+			if(com.getpConcurrentnumber()!=null){
+				solrMap.put("GroupConcurrent", com.getpConcurrentnumber());
+			}
+			solrMap.put("ChildGroupDownloadLimit", com.getDownloadupperlimit()==null?"":com.getDownloadupperlimit());
+			solrMap.put("ChildGroupPayment", com.getChargebacks()==null?"":com.getChargebacks());
+			solrMap.put("HasChildGroup", true);
+		}else{
+			solrMap.put("HasChildGroup", false);
 		}
-		solrMap.put("ChildGroupDownloadLimit", com.getDownloadupperlimit()==null?"":com.getDownloadupperlimit());
-		solrMap.put("ChildGroupPayment", com.getChargebacks()==null?"":com.getChargebacks());
+		
 		//统计分析
 		String tongji = com.getTongji()==null?"":com.getTongji();
-		Map<String, Object> operation = new HashMap<>();
-		List<String> ls=new ArrayList<>();
-		if(tongji.contains("database_statistics")){
-			ls.add("database_statistics");
+		if(!StringUtils.isEmpty(tongji)){
+			Map<String, Object> operation = new HashMap<>();
+			List<String> ls=new ArrayList<>();
+			if(tongji.contains("database_statistics")){
+				ls.add("database_statistics");
+			}
+			if(tongji.contains("resource_type_statistics")){
+				ls.add("resource_type_statistics");
+			}
+			operation.put("set", ls);
+			solrMap.put("StatisticalAnalysis", operation);
 		}
-		if(tongji.contains("resource_type_statistics")){
-			ls.add("resource_type_statistics");
-		}
-		operation.put("set", ls);
-		solrMap.put("StatisticalAnalysis", operation);
+
 		//管理员
 		solrMap.put("AdministratorId", pid);
 		solrMap.put("AdministratorEmail", com.getAdminEmail());
@@ -154,7 +164,7 @@ public class SolrThread implements Runnable {
 		} catch (Exception e) {
 			
 		}
-		solrMap.put("AdministratorOpenIP", com.getAdminIP());
+		solrMap.put("AdministratorOpenIP", "".equals(com.getAdminIP())?null:com.getAdminIP());
 		
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();

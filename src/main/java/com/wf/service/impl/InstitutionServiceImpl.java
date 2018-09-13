@@ -126,8 +126,9 @@ public class InstitutionServiceImpl  implements InstitutionService {
 		solrMap.put("PayChannelId", payChannelIdList);
 		//user_account_restriction
 		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(userId);
-		solrMap.put("HasChildGroup", account==null?false:true);
-		if(account!=null){
+		boolean HasChildGroup = (account != null && account.getUpperlimit() != null) ? true : false;
+		solrMap.put("HasChildGroup", HasChildGroup);
+		if (HasChildGroup) {
 			solrMap.put("ChildGroupLimit",account.getUpperlimit());
 			solrMap.put("ChildGroupConcurrent", account.getsConcurrentnumber());
 			solrMap.put("GroupConcurrent", account.getpConcurrentnumber());

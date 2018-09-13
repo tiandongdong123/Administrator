@@ -746,7 +746,7 @@ public class InstitutionUtils {
 			if(query.length()>0){
 				query.append(" AND ");
 			}
-			query.append(" StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"] ");
+			query.append(" (StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"]) ");
 		}
 		if(StringUtils.isEmpty((String) map.get("userId"))){
 			query.append(" AND UserType:2 ");
