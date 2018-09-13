@@ -1,17 +1,15 @@
 package com.wf.service.impl;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import com.wanfangdata.setting.DictionaryCollection;
+import com.wanfangdata.setting.Setting;
 import com.wf.Setting.DatabaseConfigureSetting;
 import com.wf.Setting.ResourceTypeSetting;
 import org.apache.commons.lang3.StringUtils;
+import org.neo4j.helpers.ValueGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -562,13 +560,22 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-			if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
-				data.setImgLogoSrc(data.getImgLogoSrc().replace("http://www.wanfangdata.com.cn/", "${search}"));
-			}
-			if (data.getLink() != null && data.getLink() != "") {
-				data.setLink(data.getLink().replace("http://www.wanfangdata.com.cn/", "${search}"));
-			}
-			//在zookeeper中添加数据库配置
+            Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+            if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getImgLogoSrc().contains(s)) {
+                        data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+            }
+            if (data.getLink() != null && data.getLink() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getLink().contains(s)) {
+                        data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+            }
+            //在zookeeper中添加数据库配置
 			dbConfig.addDatabase(data);
 			//在数据库中添加
 			dus = this.data.doAddData(data);
@@ -650,12 +657,21 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-			if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
-				data.setImgLogoSrc(data.getImgLogoSrc().replace("http://www.wanfangdata.com.cn/", "${search}"));
-			}
-			if (data.getLink() != null && data.getLink() != "") {
-				data.setLink(data.getLink().replace("http://www.wanfangdata.com.cn/", "${search}"));
-			}
+            Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+            if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getImgLogoSrc().contains(s)) {
+                        data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+            }
+            if (data.getLink() != null && data.getLink() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getLink().contains(s)) {
+                        data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+            }
 			//在zookeeper中修改数据库配置
 			dbConfig.updateDatabase(data);
 			//在数据库中修改
@@ -775,6 +791,18 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public List<Datamanager> getDatabaseByCode(String code) {
 		return data.getDatabaseByCode(code);
 	}
-	
 
+    private static String FromValueGetKey(Map<String, String> map,
+                                                     String value) {
+	    String s=null;
+        Set set = map.entrySet();
+        Iterator it = set.iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            if (entry.getValue().equals(value)) {
+               s = (String) entry.getKey();
+            }
+        }
+        return s;
+    }
 }
