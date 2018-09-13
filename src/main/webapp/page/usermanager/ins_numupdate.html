@@ -36,7 +36,7 @@
               <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
             </div>
-			<div class="form-group input_block">
+			<!--  <div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>国家</label>
 				<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion(this);">
 					<option value="China" <?if(!isEmpty(groupInfo)&&groupInfo.CountryRegion=='China'){ ?>selected="selected"<?}?>>中国</option>
@@ -72,7 +72,7 @@
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>
 				<span id="orderTypeSpan"><?if(isEmpty(groupInfo)||groupInfo.OrderType=='crm'){?>CRM工单号<?}?><?if(!isEmpty(groupInfo)&&groupInfo.OrderType=='inner'){?>申请部门<?}?></span></label>
 				<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" value="${groupInfo.OrderContent!}" maxlength="50">
-			</div>
+			</div>-->
             <div class="form-group input_block">
               <label class="input_name">登录方式</label>
               <select class="form-control input_time" name="loginMode" id="loginMode" onchange="switchcs(this);">
