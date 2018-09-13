@@ -739,12 +739,17 @@ public class InstitutionUtils {
 		//验证Ip
 		Long ipstart=(Long) map.get("ipstart");
 		Long ipend=(Long) map.get("ipend");
-		if(ipstart!=null&&ipend!=null){
+		if(ipstart!=null&&ipend!=null&&ipstart.longValue()!=ipend.longValue()){
 			InstitutionUtils.addField(query,"StartIP","["+ipstart+" TO *]");
 			InstitutionUtils.addField(query,"EndIP","[* TO "+ipend+"]");
+		}else if(ipstart!=null||ipend!=null){
+			if(query.length()>0){
+				query.append(" AND ");
+			}
+			query.append(" StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"] ");
 		}
 		if(StringUtils.isEmpty((String) map.get("userId"))){
-			query.append(" AND UserType:2");
+			query.append(" AND UserType:2 ");
 		}
 		
 		sq.setQuery(query.toString());
