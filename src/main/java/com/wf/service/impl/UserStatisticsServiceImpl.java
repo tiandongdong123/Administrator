@@ -230,7 +230,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<TableResponse> selectTotalDataForTable(StatisticsRequest request) {
 
         List<TableResponse> result = new ArrayList<>();
-        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
+        if (request.getCompareStartTime() == null||request.getCompareStartTime() == "" || request.getCompareEndTime() == null||
+        request.getCompareEndTime() == "") {
             TableParameter parameter = new TableParameter();
             parameter.setStartTime(request.getStartTime());
             parameter.setEndTime(request.getEndTime());
@@ -262,7 +263,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<TableResponse> selectNewDataForTable(StatisticsRequest request) {
 
         List<TableResponse> result = new ArrayList<>();
-        if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
+        if (request.getCompareStartTime() == null||request.getCompareStartTime() == "" || request.getCompareEndTime() == null||
+                request.getCompareEndTime() == "") {
             TableParameter parameter = new TableParameter();
             parameter.setStartTime(request.getStartTime());
             parameter.setEndTime(request.getEndTime());
