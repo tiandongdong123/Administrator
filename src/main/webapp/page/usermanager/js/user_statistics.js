@@ -143,7 +143,7 @@ $(function () {
             //判断是否跨周/跨月
             stepMonthOrWeek:function(){
                 var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate, data_arry,
-                    startDate, endDate,startArray_data,endArray_data,myDate,differDay;
+                    startDate, endDate,startArray_data,endArray_data,myDate,differDay,endMyDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
@@ -157,13 +157,22 @@ $(function () {
                 endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
 
 
-                startArray_data = startDate.split("-")
-                endArray_data = endDate.split("-")
-                myDate = new Date(startArray_data[0],startArray_data[1]-1,startArray_data[2])
-                myDate.getDay()
+                startArray_data = startDate.split("-");
+                endArray_data = endDate.split("-");
+                myDate = new Date(startArray_data[0],startArray_data[1]-1,startArray_data[2]);
+                endMyDate = new Date(endArray_data[0],endArray_data[1]-1,endArray_data[2])
+                myDate.getDay();
 
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 60 * 60 * 24))
 
+                if(myDate.getTime() == endMyDate.getTime()){
+                    console.log("显示按日")
+
+
+                    switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                    switch_data.eq(0).addClass("switch_bg");
+                    week_month.show()
+                }
                 if((myDate.getDay()+ differDay)>7){
                     console.log("显示按周");
 
@@ -172,8 +181,6 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
-
-
                 }
                 if(startArray_data[1]!=endArray_data[1]){
                     console.log("显示按月");
@@ -197,9 +204,11 @@ $(function () {
 
 
                 if (recent == "昨天") {
-                    switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                  /*  switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
-                    week_month.show();
+                    week_month.show();*/
+
+                    that.stepMonthOrWeek();//显示按日
                     that.recentReset("aYesterday");
                     return;
                 }
@@ -265,9 +274,9 @@ $(function () {
                     data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
                     that.newData();
-                    $(".switch_data a").not(":eq(0)").removeClass("disable_btn");
-                    $(".switch_board_week").hide();
-                    $(".switch_board_month").hide();
+                   /* $(".switch_data a").not(":eq(0)").removeClass("disable_btn");*/
+                    /*$(".switch_board_week").hide();
+                    $(".switch_board_month").hide();*/
 
 
                     that.stepMonthOrWeek();
@@ -775,7 +784,7 @@ var myEcharsCommon = (function () {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                  /*  selectedMode: 'single',*/
+                    selectedMode: false,
                     padding: 10 //调节legend的位置
                 },
                 grid: {
