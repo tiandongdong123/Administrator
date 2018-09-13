@@ -53,7 +53,7 @@
 
     $(function () {
 
-        var data_arry, startDate, endDate, indexType, timeUnit, pageSize, sort;
+        var data_arry, startDate, endDate, indexType, timeUnit, pageSize, sort,data_compare_arry,startCompareDate,endCompareDate;
         var tableName = $(".table_time").children().attr("class");
         data_arry = $("#user_statistics_data").val().split("至");
         startDate = data_arry[0].trim();
@@ -61,6 +61,11 @@
         indexType = $(".target_selected .target_item_hidden").val();//指标参数
         timeUnit = $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
         pageSize = $(".evey-page").val();
+
+        data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+        startCompareDate = data_compare_arry[0];
+        endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+
         if (pageSize == null) {
             pageSize = 20;
         }
@@ -73,6 +78,8 @@
                     data: {
                         startTime: startDate,
                         endTime: endDate,
+                        compareStartTime:startCompareDate,
+                        compareEndTime:endCompareDate,
                         timeUnit: timeUnit,
                         type: indexType,
                         sort: sort,

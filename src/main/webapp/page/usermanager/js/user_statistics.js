@@ -165,7 +165,7 @@ $(function () {
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 60 * 60 * 24))
 
                 if((myDate.getDay()+ differDay)>7){
-                    alert("显示按周");
+                    console.log("显示按周");
 
                     switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                     switch_board_week.hide();
@@ -176,7 +176,7 @@ $(function () {
 
                 }
                 if(startArray_data[1]!=endArray_data[1]){
-                    alert("显示按月");
+                    console.log("显示按月");
 
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
