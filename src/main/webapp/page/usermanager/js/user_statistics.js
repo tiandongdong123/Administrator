@@ -19,6 +19,10 @@ $(function () {
         var lineContainer = $("#lineContainer");
         var target_item_hidden = $(".target_selected .target_item_hidden");
         var target_item = $(".target_item");
+
+        var switch_board_week = $(".switch_board_week");//周的遮罩层
+        var switch_board_month = $(".switch_board_month");//月的遮罩层
+        var week_month = $(".switch_board_week,.switch_board_month");
         var nameSingle, nameCompare, nameArray;
 
         return {
@@ -32,6 +36,7 @@ $(function () {
                         //that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                         that.totalOrNew();//table表的变化
                         that.newData();
+
 
                         return;
 
@@ -135,6 +140,52 @@ $(function () {
                 });
             },
             //日周月随最近天数的变化
+            //判断是否跨周/跨月
+            stepMonthOrWeek:function(){
+                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate, data_arry,
+                    startDate, endDate,startArray_data,endArray_data,myDate,differDay;
+                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                indexType = target_item_hidden.val();//指标参数
+                navTitle = $("#contentNavHidden").val();//总数/新增参数
+
+                data_arry = $("#user_statistics_data").val().split("至");
+                startDate = data_arry[0];
+                endDate = data_arry[1].trim();
+
+                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_arry[0];
+                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+
+
+                startArray_data = startDate.split("-")
+                endArray_data = endDate.split("-")
+                myDate = new Date(startArray_data[0],startArray_data[1]-1,startArray_data[2])
+                myDate.getDay()
+
+                differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 60 * 60 * 24))
+
+                if((myDate.getDay()+ differDay)>7){
+                    alert("显示按周");
+
+                    switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                    switch_board_week.hide();
+                    switch_board_month.show();
+                    switch_data.eq(0).addClass("switch_bg");
+                    switch_data.eq(2).addClass("disable_btn");
+
+
+                }
+                if(startArray_data[1]!=endArray_data[1]){
+                    alert("显示按月");
+
+                    switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                    switch_data.not(":eq(0)").removeClass("disable_btn");
+                    week_month.hide();
+                }
+
+
+
+            },
             dayWeekMonth: function (recent) {
                 var that = this;
                 var switch_board_week = $(".switch_board_week");
@@ -153,19 +204,26 @@ $(function () {
                     return;
                 }
                 if (recent == "最近7天") {
-                    switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+
+
+                   /* switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                     switch_board_week.hide();
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
-                    switch_data.eq(2).addClass("disable_btn");
+                    switch_data.eq(2).addClass("disable_btn");*/
+
+                    that.stepMonthOrWeek();//看是否跨周
                     that.recentReset("aRecent7Days");
                     return;
                 }
                 if (recent == "最近30天") {
 
-                    switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                   /* switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
-                    week_month.hide();
+                    week_month.hide();*/
+
+
+                    that.stepMonthOrWeek();//看是否跨月
                     that.recentReset("aRecent30Days");
                     return;
                 }
@@ -210,6 +268,9 @@ $(function () {
                     $(".switch_data a").not(":eq(0)").removeClass("disable_btn");
                     $(".switch_board_week").hide();
                     $(".switch_board_month").hide();
+
+
+                    that.stepMonthOrWeek();
                 });
 
                 $(".closeBtn").click(function () {
@@ -528,7 +589,7 @@ $(function () {
                         endTime: endDate,
                         compareStartTime:startCompareDate,
                         compareEndTime:endCompareDate,
-                        timeUnit: timeUnit,
+                        timeUnit: 1,
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
@@ -568,7 +629,7 @@ $(function () {
                         endTime: endDate,
                         compareStartTime:startCompareDate,
                         compareEndTime:endCompareDate,
-                        timeUnit: timeUnit,
+                        timeUnit: 1,
                         type: indexType,
                         pageSize: pageSize,
                         page: 1,
@@ -611,6 +672,7 @@ $(function () {
                 this.griIcon("gri_data", "user_statistics_data");
                 this.griIcon("gri_data_compare", "user_statistics_dataCompare");
                 this.onclick_();
+                this.stepMonthOrWeek();//是否跨周/月
             }
         }
     })().init();

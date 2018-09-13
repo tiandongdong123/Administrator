@@ -236,6 +236,7 @@ function pickerDateRange(inputId, options) {
         $('' != this.mOpts.target ? '#' + this.mOpts.target : 'body').append('<input type="checkbox" id="' + this.mOpts.compareCheckboxId + '" name="' + this.mOpts.compareCheckboxId + '" value="0" style="display:none;" />');
     }
     // 如果不需要比较日期，则需要隐藏比较部分的内容
+
     if (false == this.mOpts.needCompare) {
         $('#' + this.compareInputDiv).css('display', 'none');
         $('#' + this.compareCheckBoxDiv).css('display', 'none');
@@ -311,14 +312,16 @@ function pickerDateRange(inputId, options) {
      */
 
     $('#' + this.submitBtn).bind('click', function () {
-        //隐藏对比时间框
+        //隐藏对比时间框开始
       /*  __method.mOpts.theme == 'ta' ? $('#' + __method.compareInputDiv).hide() : $('#' + __method.inputCompareId).css('display', 'none');
         $('#' + __method.compareCheckboxId).attr('checked', false);
         $('#' + __method.mOpts.compareCheckboxId).attr('checked', false);
         $('#' + this.compareInputDiv).css('display', $('#' + this.compareCheckboxId).attr('checked') ? '' : 'none');
         $("#user_statistics_dataCompare").val("");
         $("#lineContainerComparison").hide();
-        $("#lineContainer").show();*/
+        $("#lineContainer").show();
+        $(".gri_data_compare").hide();*/
+        //隐藏对比时间框结束
         __method.close(1);
         __method.mOpts.success({
             'startDate': $('#' + __method.mOpts.startDateId).val(),
@@ -398,21 +401,28 @@ function pickerDateRange(inputId, options) {
             sTime = sDate.getTime();
             eDate = __method.str2date($('#' + __method.endDateId).val());
             eTime = eDate.getTime();
-            scDate = $('#' + __method.startCompareDateId).val();
-            ecDate = $('#' + __method.endCompareDateId).val();
-           /* scDate = '';
-            ecDate = '';*/
+            //对比
+          /*  scDate = $('#' + __method.startCompareDateId).val();
+            ecDate = $('#' + __method.endCompareDateId).val();*/
+            scDate = '';
+            ecDate = '';
             if ('' == scDate || '' == ecDate) {
                 ecDate = __method.str2date(__method.date2ymd(sDate).join('-'));
+
                 ecDate.setDate(ecDate.getDate() - 1);
+
                 scDate = __method.str2date(__method.date2ymd(sDate).join('-'));
+
                 scDate.setDate(scDate.getDate() - ((eTime - sTime) / 86400000) - 1);
+
                 //这里要和STATS_START_TIME的时间进行对比，如果默认填充的对比时间在这个时间之前 added by johnnyzheng
+
                 if (ecDate.getTime() < __method.mOpts.minValidDate * 1000) {
                     scDate = sDate;
                     ecDate = eDate;
                 }
                 if (ecDate.getTime() >= __method.mOpts.minValidDate * 1000 && scDate.getTime() < __method.mOpts.minValidDate * 1000) {
+
                     scDate.setTime(__method.mOpts.minValidDate * 1000)
                     scDate = __method.str2date(__method.date2ymd(scDate).join('-'));
                     ecDate.setDate(scDate.getDate() + ((eTime - sTime) / 86400000) - 1);
@@ -499,7 +509,6 @@ pickerDateRange.prototype.init = function (isCompare) {
     var endDate = '' == this.mOpts.endDate ? (new Date()) : this.str2date(this.mOpts.endDate);
     // 日历结束时间
     this.calendar_endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
-
     //如果是magicSelect 自定义年和月份，则自定义填充日期
     if (this.mOpts.magicSelect && this.mOpts.theme == 'ta') {
         var i = 0;
@@ -521,6 +530,9 @@ pickerDateRange.prototype.init = function (isCompare) {
 
     } else {
         // 计算并显示以 endDate 为结尾的最近几个月的日期列表
+
+
+
         for (var i = 0; i < this.mOpts.calendars; i++) {
             var td = null;
             if (this.mOpts.theme == 'ta') {
@@ -1138,7 +1150,9 @@ pickerDateRange.prototype.close = function (btnSubmit) {
             $('#' + this.inputId).val($('#' + this.startDateId).val() + ('' == $('#' + this.endDateId).val() ? '' : this.mOpts.defaultText + $('#' + this.endDateId).val()));
         }
         //判断当前天是否可选，来决定从后往前推修改日期是从哪一点开始
+
         var nDateTime = ((true == this.mOpts.isTodayValid && '' != this.mOpts.isTodayValid)) ? new Date().getTime() : new Date().getTime() - (1 * 24 * 60 * 60 * 1000);
+
         var bDateTime = this.str2date($('#' + this.startDateId).val()).getTime();
         var eDateTime = this.str2date($('#' + this.endDateId).val()).getTime();
         //如果endDateTime小于bDateTime 相互交换
@@ -1163,13 +1177,12 @@ pickerDateRange.prototype.close = function (btnSubmit) {
                 var bcDateTime = this.str2date($('#' + this.startCompareDateId).val()).getTime();
                 var ecDateTime = this.str2date($('#' + this.endCompareDateId).val()).getTime();
                 var _ecDateTime = bcDateTime + eDateTime - bDateTime;
-                if (_ecDateTime > nDateTime) {
-                    //如果计算得到的时间超过了当前可用时间，那么就和服务器端保持一致，将当前可用的天数向前推日期选择器的跨度 added by johnnyzheng 11-29
-                    _ecDateTime = nDateTime;
-                    $('#' + this.startCompareDateId).val(this.formatDate(this.date2ymd(new Date(_ecDateTime + bDateTime - eDateTime)).join('-')));
-                }
+                // if (_ecDateTime > nDateTime) {
+                //     //如果计算得到的时间超过了当前可用时间，那么就和服务器端保持一致，将当前可用的天数向前推日期选择器的跨度 added by johnnyzheng 11-29
+                //     _ecDateTime = nDateTime;
+                //     $('#' + this.startCompareDateId).val(this.formatDate(this.date2ymd(new Date(_ecDateTime + bDateTime - eDateTime)).join('-')));
+                // }
                 $('#' + this.endCompareDateId).val(this.formatDate(this.date2ymd(new Date(_ecDateTime)).join('-')));
-
                 //把开始结束对比时间大小重新矫正一下
                 var bcDateTime = this.str2date($('#' + this.startCompareDateId).val()).getTime();
                 var ecDateTime = this.str2date($('#' + this.endCompareDateId).val()).getTime();

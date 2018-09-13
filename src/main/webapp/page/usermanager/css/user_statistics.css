@@ -57,7 +57,7 @@
   left: 85px;
   background: transparent;
   border: none;
-  display: none;
+  /*display: none;*/
 }
 .content-wrapper .user_statistics_header .switch_data .switch_board_month {
   position: absolute;
