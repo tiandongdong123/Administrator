@@ -33,9 +33,6 @@ $(function () {
                         that.totalOrNew();//table表的变化
                         that.newData();
 
-                        /* $(".model").show();*/
-
-
                         return;
 
                     })
@@ -67,7 +64,6 @@ $(function () {
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                                 /* that.totalOrNew();//table表的变化
                                  that.newData();*/
-                                //$(".model").show(200).delay(1000).hide(200);
                                 return;
 
                             })
@@ -176,13 +172,17 @@ $(function () {
             },
             //单个与对比分析图的切换(点击对比)
             dataChecked: function () {
+                var that = this;
                 $(".gri_pc").click(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
+                        that.totalOrNew();
                         $(".gri_data_compare").show();
 
                     } else {
+                        $("#user_statistics_dataCompare").val(" ");
+                        that.totalOrNew();
                         lineContainerComparison.hide();
                         lineContainer.show();
                         $(".gri_data_compare").css('background-position', '-10px -10px');
@@ -619,7 +619,6 @@ $(function () {
 var myEcharsCommon = (function () {
     return {
         commonLine: function (id, seriesData, dateTime, nameSingle) {
-            console.log(nameSingle)
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
                 idObj.removeAttribute("_echarts_instance_");
@@ -699,9 +698,6 @@ var myEcharsCommon = (function () {
         },
 
         lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
-            console.log(nameArray);
-            console.log(nameSingle);
-            console.log(nameCompare);
             var dom = document.getElementById(idName);
             if (dom.hasAttribute("_echarts_instance_")) {
                 dom.removeAttribute("_echarts_instance_");
@@ -717,7 +713,7 @@ var myEcharsCommon = (function () {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                    selectedMode: 'single',
+                  /*  selectedMode: 'single',*/
                     padding: 10 //调节legend的位置
                 },
                 grid: {
@@ -740,10 +736,14 @@ var myEcharsCommon = (function () {
                 },
                 xAxis: {
                     type: 'category',
-                    position: 'bottom',
-                    offset: '20',
+                   /* position: 'bottom',*/
+                   /* offset: '20',*/
+                    boundaryGap: false,
                     splitLine: {
                         show: false,
+                    },
+                    axisTick: {
+                        alignWithLabel: true
                     },
                     axisLabel: {
                         interval: 'auto',//坐标轴刻度标签的显示间隔，
