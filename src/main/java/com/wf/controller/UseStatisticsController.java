@@ -122,10 +122,6 @@ public class UseStatisticsController {
             List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
             List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
             List<String> dateList = new ArrayList<>();
-            if (dateTime.size() != compareDateTime.size()) {
-                log.error("选择时间和对比时间无法一一对应，dateTime：" + dateTime + "compareDateTime" + compareDateTime);
-                return new HashMap<>();
-            }
             for (int i = 0; i < dateTime.size(); i++) {
                 dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
             }
@@ -178,10 +174,6 @@ public class UseStatisticsController {
             List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
             List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
             List<String> dateList = new ArrayList<>();
-            if (dateTime.size() != compareDateTime.size()) {
-                log.error("选择时间和对比时间无法一一对应，dateTime：" + dateTime + "compareDateTime" + compareDateTime);
-                return new HashMap<>();
-            }
             for (int i = 0; i < dateTime.size(); i++) {
                 dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
             }
