@@ -361,6 +361,17 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                             dateList.add(getMonthFormat().format(calendar.getTime()));
                             calendar.add(Calendar.MONTH, 1);
                         }
+                       /* String startDayOfMonth = getDayFormat().format(calendar.getTime());
+                        while (calendar.before(max)) {
+                            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                            if (calendar.getTime().compareTo(endDate) == -1) {
+                                String lastDayOfMonth = getDayFormat().format(calendar.getTime());
+                                dateList.add(getDayFormat().format(calendar)+"-"+lastDayOfMonth);
+                                calendar.add(Calendar.DATE, 1);
+                                startDayOfMonth = getDayFormat().format(calendar.getTime());
+                            }
+                            calendar.add(Calendar.MONTH, 1);
+                        }*/
                         break;
                     } catch (ParseException e) {
                         log.error("时间转换失败", e);
@@ -590,7 +601,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter parameter = new TableParameter();
         parameter.setStartTime(request.getStartTime());
         parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(request.getTimeUnit());
+        parameter.setTimeUnit(1);
         parameter.setPage(request.getPage());
         parameter.setPageSize(request.getPageSize());
         parameter.setSort(request.getSort());
@@ -598,7 +609,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter compareParameter = new TableParameter();
         compareParameter.setStartTime(request.getCompareStartTime());
         compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(request.getTimeUnit());
+        compareParameter.setTimeUnit(1);
         compareParameter.setPage(request.getPage());
         compareParameter.setPageSize(request.getPageSize());
         compareParameter.setSort(request.getSort());
@@ -606,15 +617,14 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
         for (int i = 0; i < ordinaryData.size(); i++) {
             TableResponse tableResponse = new TableResponse();
-            tableResponse.setDate(ordinaryData.get(i).getDate() + "与" + compareData.get(i).getDate() + "</br></br>"
-                    + ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
-            tableResponse.setPersonUser("" + "</br></br>" + ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
-            tableResponse.setAuthenticatedUser("" + "</br></br>" + ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
-            tableResponse.setPersonBindInstitution("" + "</br></br>" + ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
-            tableResponse.setInstitution("" + "</br></br>" + ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
-            tableResponse.setValidInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
-            tableResponse.setInstitutionAdmin("" + "</br></br>" + ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
+            tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
+            tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
+            tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
+            tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
+            tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
+            tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
+            tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+            tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
             result.add(tableResponse);
         }
         return result;
@@ -691,7 +701,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter parameter = new TableParameter();
         parameter.setStartTime(request.getStartTime());
         parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(request.getTimeUnit());
+        parameter.setTimeUnit(1);
         parameter.setPage(request.getPage());
         parameter.setPageSize(request.getPageSize());
         parameter.setSort(request.getSort());
@@ -699,7 +709,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter compareParameter = new TableParameter();
         compareParameter.setStartTime(request.getCompareStartTime());
         compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(request.getTimeUnit());
+        compareParameter.setTimeUnit(1);
         compareParameter.setPage(request.getPage());
         compareParameter.setPageSize(request.getPageSize());
         compareParameter.setSort(request.getSort());
@@ -708,15 +718,14 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
         for (int i = 0; i < ordinaryData.size(); i++) {
             TableResponse tableResponse = new TableResponse();
-            tableResponse.setDate(ordinaryData.get(i).getDate() + "与" + compareData.get(i).getDate() + "</br></br>"
-                    + ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
-            tableResponse.setPersonUser("" + "</br></br>" + ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
-            tableResponse.setAuthenticatedUser("" + "</br></br>" + ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
-            tableResponse.setPersonBindInstitution("" + "</br></br>" + ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
-            tableResponse.setInstitution("" + "</br></br>" + ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
-            tableResponse.setValidInstitutionAccount("" + "</br></br>" + ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
-            tableResponse.setInstitutionAdmin("" + "</br></br>" + ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
+            tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
+            tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
+            tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
+            tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
+            tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
+            tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
+            tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+            tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
             result.add(tableResponse);
         }
         return result;
