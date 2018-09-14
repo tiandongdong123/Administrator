@@ -497,9 +497,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             Collections.reverse(dateList);
         }
         if (dateList.size() > page * parameter.getPageSize()) {
-            pagingDateList = dateList.subList(parameter.getPage(), parameter.getPageSize());
+            pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
         } else {
-            pagingDateList = dateList.subList(parameter.getPage(), dateList.size());
+            pagingDateList = dateList.subList(offset, dateList.size());
         }
         //按周时，设置时间和有效机构账号数量
         //按月时，设置有效机构账号数量
@@ -655,14 +655,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             Collections.reverse(dateList);
         }
         if (dateList.size() > page * parameter.getPageSize()) {
-            pagingDateList = dateList.subList(offset, parameter.getPageSize());
+            pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
         } else {
             pagingDateList = dateList.subList(offset, dateList.size());
-        }
-
-        if (pagingDateList.size() != userStatisticsList.size()) {
-            log.error("按周添加时间异常，request:" + parameter.toString());
-            return new ArrayList<>();
         }
 
         for (int i = 0; i < userStatisticsList.size(); i++) {
