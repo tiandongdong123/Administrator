@@ -161,6 +161,10 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     if (endDateTime.compareTo(getDayFormat().parse(today)) == 1) {
                         if (payChannelResource.getPayChannelid().contains("Time")) {
                             vaildIntitutionAccountNumber++;
+                            List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
+                            if (subAccount.size()>0){
+                                vaildIntitutionAccountNumber+=subAccount.size();
+                            }
                             continue;
                         }
                         method = account.getClass().getMethod("getBalance");
@@ -173,6 +177,10 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
                         if (balance != null && balance.compareTo(BigDecimal.ZERO) == 1) {
                             vaildIntitutionAccountNumber++;
+                            List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
+                            if (subAccount.size()>0){
+                                vaildIntitutionAccountNumber+=subAccount.size();
+                            }
                             continue;
                         }
 

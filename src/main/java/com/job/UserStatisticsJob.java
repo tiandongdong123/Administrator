@@ -23,8 +23,8 @@ public class UserStatisticsJob {
 
     @Scheduled(cron = "0 0 2 * * ?")
     public void userStatistics() {
-
-        Date date = new Date();//获取当前时间
+        //获取当前时间
+        Date date = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -37,8 +37,6 @@ public class UserStatisticsJob {
         } catch (Exception e) {
             log.error("定时统计用户数据失败，统计日期：" + dateTime, e);
         }
-
-
     }
 
 }
