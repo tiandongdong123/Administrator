@@ -2,6 +2,9 @@
 <?
 	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
+<style>
+	.warnText{margin-left: 15px;color: #dd4b39;}
+</style>
 <script  type="text/javascript"  src="../page/systemmanager/js/update_data.js"> </script>
 <input type="hidden" id="checkname">
 <input type="hidden" id="dataid" value="${rlmap.dm.id}">
@@ -33,7 +36,7 @@
           <form>
 				<div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据库名称：</label>
-                  <input type="text" id="dataname" class="form-control input_width" onblur="checkDname(this.value,'${rlmap.dm.tableName}')" value="${rlmap.dm.tableName}"><span id="checkdname"></span>
+                  <input type="text" id="dataname" class="form-control input_width" onblur="checkDname(this.value,'${rlmap.dm.tableName}')" value="${rlmap.dm.tableName}"><span id="checkdname" class="warnText"></span>
                 </div>
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">数据库简称：</label>
@@ -41,7 +44,7 @@
                 </div>
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>产品类型code：</label>
-                  <input type="text" readonly="readonly" id="product_source_code" class="form-control input_width"  value="${rlmap.dm.productSourceCode}"><span id="checkdname"></span>
+                  <input type="text" readonly="readonly" id="product_source_code" class="form-control input_width"  value="${rlmap.dm.productSourceCode}"><span id="checkdname" class="warnText"></span>
                 </div>
       			 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name"  >数据库描述：</label>
@@ -179,40 +182,60 @@
                  	<?}?>
                  	</select>
                 </div>
-                <span id="content">
+			  <span id="content">
 				<?if(rlmap.cs.~size>1){?>
-				<?for(var k=1 ;k<rlmap.cs.~size;k++){?>
-				<div class='form-group input_block' id='d${k}'>
+				  <?for(var k=1 ;k<rlmap.cs.~size;k++){?>
+				  <div class='form-group input_block' id='d${k}'>
 				<input type='text' id='i1_${k}' class='contenttext' value="${rlmap.cs[k].paramOne}">
 				<select  selected='selected' id='s1_${k}'>
 				<?if(rlmap.cs[k].accuracy=='精确'){?>
-                 	<option selected="selected">精确</option>
+					<option selected="selected">精确</option>
                  	<option>模糊</option>
-                 	<?}else{?>
-                 	<option >精确</option>
+					<?}else{?>
+					<option >精确</option>
                  	<option selected="selected">模糊</option>
-                 	<?}?>
+					<?}?>
 				</select>
 				<input type='text' id='i2_${k}' value="${rlmap.cs[k].paramTwo}">
 				<select selected='selected' id='s2_${k}'>
 					<?if(rlmap.cs[k].relation=='与'){?>
-                 	<option selected="selected">与</option>
+					<option selected="selected">与</option>
                  	<option>或</option>
                  	<option>非</option>
-                 	<?}else if(rlmap.cs[k].relation=='或'){?>
-                 	<option >与</option>
+					<?}else if(rlmap.cs[k].relation=='或'){?>
+					<option >与</option>
                  	<option selected="selected">或</option>
                  	<option>非</option>
-                 	<?}else{?>
-                 	<option >与</option>
+					<?}else{?>
+					<option >与</option>
                  	<option >或</option>
                  	<option selected="selected">非</option>
-                 	<?}?>
+					<?}?>
 				</select>
 				</div>
-				<?}?>
-				<?}?>
+				  <?}?>
+				  <?}?>
                 </span>
+			  <div class="form-group input_block">
+			  <label for="exampleInputEmail1" class="input_name">自定义图片：</label>
+			  <input type="text" id="imgLogoSrc" class="form-control input_width" value="${rlmap.dn.imgLogoSrc!}">
+				  <span class="warnText"></span>
+				  <span id="isPngIdAdded">
+                  <input name="checkboxPngId" type="radio" value="增加id">增加id
+                  <input name="checkboxPngId" type="radio" value="不增加id" checked="checked"/>不增加id
+                  </span>
+				  <div class="exampleWarn" style="padding-left: 20%;line-height: 30px;display: none;">样例：http://www.wanfangdata.com.cn/page/images/data/</div>
+			  </div>
+			  <div class="form-group input_block">
+			  <label for="exampleInputEmail1" class="input_name">链接地址：</label>
+			  <input type="text" id="link" class="form-control input_width" value="${rlmap.dn.link!}">
+				  <span class="warnText"></span>
+				  <span id="isIdAdded">
+                  <input name="checkboxId" type="radio" value="增加id">增加id
+                  <input name="checkboxId" type="radio" value="不增加id" checked="checked"/>不增加id
+                  </span>
+				  <div class="exampleWarn" style="padding-left: 20%;line-height: 30px;display: none;">样例：http://www.wanfangdata.com.cn/resource_nav/dataDetails.do?id=</div>
+			  </div>
               <div class="box-footer" style="text-align:center;">
                 <button type="reset"   onclick="resettree()"    class="btn btn-primary">重置</button>
                 <button type="button" onclick="doupdatedata()"      class="btn btn-primary">提交</button>
