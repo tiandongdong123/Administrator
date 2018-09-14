@@ -1,48 +1,28 @@
 $(function () {
-
     var userStatistics = (function () {
         var time_quantum = $(".data_wrapper a");//最近时间段
         var switch_data = $(".switch_data a"); //日/周/月
-        var selected_data = $(".switch_data");
+        var selected_data = $(".switch_data"); //日/周/月wrapper
         var target_selected = $(".target_selected");//指标
         var target_list = $(".target_list");//供选择的指标
-        var target_item = $(".target_item");
-        var index_icon = $(".index_icon");
-        var indexList = $(".target_list ul li input");
-        var all_num = $(".all_num");
-        var new_num = $(".new_num");
-        var new_increased_num = $(".new_increased_num");
-        var content_nav_list = $(".content_nav");
+        var index_icon = $(".index_icon");//指标图标
+        var indexList = $(".target_list ul li input");//各个指标checked框
+        var all_num = $(".all_num");//总数
+        var new_num = $(".new_num");//新增
+        var new_increased_num = $(".new_increased_num");//新增数目展示框
+        var content_nav_list = $(".content_nav");//总数/新增wrap
         var content_nav = $(".content_nav a");
-        var aRecent7Days = $("#aRecent7Days");
-        var lineContainerComparison = $("#lineContainerComparison");
-        var lineContainer = $("#lineContainer");
-        var target_item_hidden = $(".target_selected .target_item_hidden");
-        var target_item = $(".target_item");
-
+        var aRecent7Days = $("#aRecent7Days");//最近7天
+        var lineContainerComparison = $("#lineContainerComparison");//对比分析图wrap
+        var lineContainer = $("#lineContainer");//单个分析图wrap
+        var target_item_hidden = $(".target_selected .target_item_hidden");//选取指标隐藏域
+        var target_item = $(".target_item");//显示指标
         var switch_board_week = $(".switch_board_week");//周的遮罩层
         var switch_board_month = $(".switch_board_month");//月的遮罩层
         var week_month = $(".switch_board_week,.switch_board_month");
-        var nameSingle, nameCompare, nameArray;
+        var nameSingle, nameCompare, nameArray;//单个/对比/分析图title
 
         return {
-            onclick_: function () {
-                var that = this;
-                time_quantum.each(function () {
-                    var _this = $(this);
-                    _this.click(function () {
-                        //_this.css("background", "#4AA6FC");
-                        //_this.siblings().css("background", "transparent");
-                        //that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                        that.totalOrNew();//table表的变化
-                        that.newData();
-
-
-                        return;
-
-                    })
-                });
-            },
             //日历插件
             dataPicker: function () {
                 var that = this;
@@ -59,7 +39,6 @@ $(function () {
                     needCompare: true,
                     calendars: 3,
                     success: function (obj) {
-
                         //最近几天背景的切换
                         time_quantum.each(function () {
                             var _this = $(this);
@@ -67,10 +46,7 @@ $(function () {
                                 _this.css("background", "#4AA6FC");
                                 _this.siblings().css("background", "transparent");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
-                                /* that.totalOrNew();//table表的变化
-                                 that.newData();*/
                                 return;
-
                             })
                         });
                         if (!$(".gri_pc").get(0).checked) {
@@ -82,6 +58,23 @@ $(function () {
                 //默认显示最近7天
                 aRecent7Days.click();
                 that.newData();
+            },
+            //点击最近天数table/新增指标的变化
+            recentDays: function () {
+                var that = this;
+                time_quantum.each(function () {
+                    var _this = $(this);
+                    _this.click(function () {
+                        that.totalOrNew();//table表的变化
+                        that.newData();
+                        if (!$(".gri_pc").get(0).checked) {
+                            $("#user_statistics_dataCompare").val("")
+                        }
+                        that.getTime();
+                        return;
+
+                    })
+                });
             },
             getTime: function () {
                 var that = this;
@@ -678,7 +671,7 @@ $(function () {
                 this.testData();
                 this.griIcon("gri_data", "user_statistics_data");
                 this.griIcon("gri_data_compare", "user_statistics_dataCompare");
-                this.onclick_();
+                this.recentDays();
                 this.stepMonthOrWeek();//是否跨周/月
             }
         }
@@ -750,14 +743,12 @@ var myEcharsCommon = (function () {
                         name: nameSingle,
                         type: 'line',
                         data: seriesData,
-                        showAllSymbol: false ,//不标注所有数据点,
+                        showAllSymbol: false,//不标注所有数据点,
                         symbolSize: 3,
-
-                        /*itemStyle: {normal: {label: {show: true}}}*/
                         label: {
                             show: true,
-                            position:'top',
-                            distance:10
+                            position: 'top',
+                            distance: 10
 
                         },
                     }
@@ -766,12 +757,6 @@ var myEcharsCommon = (function () {
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
-            window.onresize = function () {
-                myChart.resize();//若有多个图表变动，可多写
-
-            }
-
-
         },
 
         lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
@@ -790,7 +775,6 @@ var myEcharsCommon = (function () {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                    /* selectedMode: false,*/
                     padding: 10 //调节legend的位置
                 },
                 grid: {
@@ -813,8 +797,6 @@ var myEcharsCommon = (function () {
                 },
                 xAxis: {
                     type: 'category',
-                    /* position: 'bottom',*/
-                    /* offset: '20',*/
                     boundaryGap: false,
                     splitLine: {
                         show: false,
@@ -843,43 +825,31 @@ var myEcharsCommon = (function () {
                         name: nameSingle,
                         type: 'line',
                         data: selectData,
-
-                        /*itemStyle: {normal: {label: {show: true}}}*/
-
-                        showAllSymbol: false ,//不标注所有数据点,
+                        showAllSymbol: false,//不标注所有数据点,
                         symbolSize: 3,
-
-                        /*itemStyle: {normal: {label: {show: true}}}*/
                         label: {
                             show: true,
-                            position:'top',
-                            distance:10
-
+                            position: 'top',
+                            distance: 10
                         },
                     },
                     {
                         name: nameCompare,
                         type: 'line',
                         data: compareData,
-                        showAllSymbol: false ,//不标注所有数据点,
+                        showAllSymbol: false,//不标注所有数据点,
                         symbolSize: 3,
-
-
                         label: {
                             show: true,
-                            position:'top',
-                            distance:10,
-                            position:'bottom'
-
+                            distance: 10,
+                            position: 'bottom'
                         },
-
                     }
                 ]
             };
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
-        },
-
+        }
     }
 })();
