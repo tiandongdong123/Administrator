@@ -230,8 +230,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<TableResponse> selectTotalDataForTable(StatisticsRequest request) {
 
         List<TableResponse> result = new ArrayList<>();
-        if (request.getCompareStartTime() == null||request.getCompareStartTime() == "" || request.getCompareEndTime() == null||
-        request.getCompareEndTime() == "") {
+        if (request.getCompareStartTime() == null || request.getCompareStartTime() == "" || request.getCompareEndTime() == null ||
+                request.getCompareEndTime() == "") {
             TableParameter parameter = new TableParameter();
             parameter.setStartTime(request.getStartTime());
             parameter.setEndTime(request.getEndTime());
@@ -263,7 +263,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<TableResponse> selectNewDataForTable(StatisticsRequest request) {
 
         List<TableResponse> result = new ArrayList<>();
-        if (request.getCompareStartTime() == null||request.getCompareStartTime() == "" || request.getCompareEndTime() == null||
+        if (request.getCompareStartTime() == null || request.getCompareStartTime() == "" || request.getCompareEndTime() == null ||
                 request.getCompareEndTime() == "") {
             TableParameter parameter = new TableParameter();
             parameter.setStartTime(request.getStartTime());
@@ -357,21 +357,17 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         max.setTime(getMonthFormat().parse(endTime));
                         max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
                         Calendar calendar = min;
-                        while (calendar.before(max)) {
-                            dateList.add(getMonthFormat().format(calendar.getTime()));
-                            calendar.add(Calendar.MONTH, 1);
-                        }
-                       /* String startDayOfMonth = getDayFormat().format(calendar.getTime());
-                        while (calendar.before(max)) {
+                        String startDayOfMonth = startTime;
+                        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                        String endDayOfMonth = getDayFormat().format(calendar.getTime());
+                        while (getDayFormat().parse(endDayOfMonth).compareTo(endDate) == -1) {
+                            dateList.add(startDayOfMonth+"-"+endDayOfMonth);
+                            calendar.add(Calendar.DATE, 1);
+                            startDayOfMonth = getDayFormat().format(calendar.getTime());
                             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-                            if (calendar.getTime().compareTo(endDate) == -1) {
-                                String lastDayOfMonth = getDayFormat().format(calendar.getTime());
-                                dateList.add(getDayFormat().format(calendar)+"-"+lastDayOfMonth);
-                                calendar.add(Calendar.DATE, 1);
-                                startDayOfMonth = getDayFormat().format(calendar.getTime());
-                            }
-                            calendar.add(Calendar.MONTH, 1);
-                        }*/
+                            endDayOfMonth = getDayFormat().format(calendar.getTime());
+                        }
+                        dateList.add(startDayOfMonth+"-"+endTime);
                         break;
                     } catch (ParseException e) {
                         log.error("时间转换失败", e);
