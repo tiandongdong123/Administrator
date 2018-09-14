@@ -186,11 +186,21 @@
 			  <label for="exampleInputEmail1" class="input_name">自定义图片：</label>
 			  <input type="text" id="imgLogoSrc" class="form-control input_width" value="${rlmap.dn.imgLogoSrc!}">
 				  <span class="warnText"></span>
+				  <span id="isPngIdAdded">
+                  <input name="checkboxPngId" type="radio" value="增加id">增加id
+                  <input name="checkboxPngId" type="radio" value="不增加id" checked="checked"/>不增加id
+                  </span>
+				  <div class="exampleWarn" style="padding-left: 88px;line-height: 30px;display: none;">样例：http://www.wanfangdata.com.cn/page/images/data/</div>
 			  </div>
 			  <div class="form-group input_block">
 			  <label for="exampleInputEmail1" class="input_name">链接地址：</label>
 			  <input type="text" id="link" class="form-control input_width" value="${rlmap.dn.link!}">
 				  <span class="warnText"></span>
+				  <span id="isIdAdded">
+                  <input name="checkboxId" type="radio" value="增加id">增加id
+                  <input name="checkboxId" type="radio" value="不增加id" checked="checked"/>不增加id
+                  </span>
+				  <div class="exampleWarn" style="padding-left: 88px;line-height: 30px;display: none;">样例：http://www.wanfangdata.com.cn/resource_nav/dataDetails.do?id=</div>
 			  </div>
                 <span id="content">
 				<?if(rlmap.cs.~size>1){?>

@@ -45,6 +45,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
 
+	private static final String isAddId = "增加id";
 	/*	@Override
         public PageList getData(String dataname,Integer pagenum,Integer pagesize) {
             List<Object>  r = new ArrayList<Object>();
@@ -561,20 +562,30 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		try {
             Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+			//图片地址与domain比较一下，写成${search}形式
             if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
                 for (String s : baseDicionary.values()) {
                     if (data.getImgLogoSrc().contains(s)) {
                         data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
                     }
-                }
-            }
-            if (data.getLink() != null && data.getLink() != "") {
-                for (String s : baseDicionary.values()) {
-                    if (data.getLink().contains(s)) {
-                        data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
-                    }
-                }
-            }
+				}
+				//图片地址选择添加id
+				if (isAddId.equals(data.getIsPngIdAdded())) {
+					data.setImgLogoSrc(data.getImgLogoSrc() + data.getId() + ".png");
+				}
+			}
+			//链接地址与domain比较一下，写成${search}形式
+			if (data.getLink() != null && data.getLink() != "") {
+				for (String s : baseDicionary.values()) {
+					if (data.getLink().contains(s)) {
+						data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+					}
+				}
+				//链接地址选择添加id
+				if (isAddId.equals(data.getIsIdAdded())) {
+					data.setLink(data.getLink() + data.getId());
+				}
+			}
             //在zookeeper中添加数据库配置
 			dbConfig.addDatabase(data);
 			//在数据库中添加
@@ -658,19 +669,29 @@ public class DataManagerServiceImpl implements DataManagerService {
 		}
 		try {
             Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+			//图片地址与domain比较一下，写成${search}形式
             if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
                 for (String s : baseDicionary.values()) {
                     if (data.getImgLogoSrc().contains(s)) {
                         data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
                     }
                 }
+				//图片地址选择添加id
+				if (isAddId.equals(data.getIsPngIdAdded())) {
+					data.setImgLogoSrc(data.getImgLogoSrc() + data.getId() + ".png");
+				}
             }
+			//链接地址与domain比较一下，写成${search}形式
             if (data.getLink() != null && data.getLink() != "") {
                 for (String s : baseDicionary.values()) {
                     if (data.getLink().contains(s)) {
                         data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
                     }
                 }
+				//链接地址选择添加id
+				if (isAddId.equals(data.getIsIdAdded())) {
+					data.setLink(data.getLink() + data.getId());
+				}
             }
 			//在zookeeper中修改数据库配置
 			dbConfig.updateDatabase(data);

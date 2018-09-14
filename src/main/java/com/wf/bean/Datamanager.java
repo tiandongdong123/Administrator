@@ -37,6 +37,16 @@ public class Datamanager {
 
     private String link;
 
+    /**
+     * 链接地址是否增加id
+     */
+    private String isIdAdded;
+
+    /**
+     * 图片地址是否增加id
+     */
+    private String isPngIdAdded;
+
     public Integer getState() {
         return state;
     }
@@ -173,26 +183,45 @@ public class Datamanager {
 		this.link = link;
 	}
 
-	@Override
-	public String toString() {
-		return "Datamanager{" +
-				"id='" + id + '\'' +
-				", productSourceCode='" + productSourceCode + '\'' +
-				", tableName='" + tableName + '\'' +
-				", abbreviation='" + abbreviation + '\'' +
-				", tableDescribe='" + tableDescribe + '\'' +
-				", resType='" + resType + '\'' +
-				", sourceDb='" + sourceDb + '\'' +
-				", language='" + language + '\'' +
-				", customPolicy='" + customPolicy + '\'' +
-				", dbtype='" + dbtype + '\'' +
-				", status=" + status +
-				", state=" + state +
-				", sourceUrl='" + sourceUrl + '\'' +
-				", sourceType='" + sourceType + '\'' +
-				", addTime='" + addTime + '\'' +
-				", imgLogoSrc='" + imgLogoSrc + '\'' +
-				", link='" + link + '\'' +
-				'}';
-	}
+
+    public String getIsIdAdded() {
+        return isIdAdded;
+    }
+
+    public void setIsIdAdded(String isIdAdded) {
+        this.isIdAdded = isIdAdded;
+    }
+
+    public String getIsPngIdAdded() {
+        return isPngIdAdded;
+    }
+
+    public void setIsPngIdAdded(String isPngIdAdded) {
+        this.isPngIdAdded = isPngIdAdded;
+    }
+
+    @Override
+    public String toString() {
+        return "Datamanager{" +
+                "id='" + id + '\'' +
+                ", productSourceCode='" + productSourceCode + '\'' +
+                ", tableName='" + tableName + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
+                ", tableDescribe='" + tableDescribe + '\'' +
+                ", resType='" + resType + '\'' +
+                ", sourceDb='" + sourceDb + '\'' +
+                ", language='" + language + '\'' +
+                ", customPolicy='" + customPolicy + '\'' +
+                ", dbtype='" + dbtype + '\'' +
+                ", status=" + status +
+                ", state=" + state +
+                ", sourceUrl='" + sourceUrl + '\'' +
+                ", sourceType='" + sourceType + '\'' +
+                ", addTime='" + addTime + '\'' +
+                ", imgLogoSrc='" + imgLogoSrc + '\'' +
+                ", link='" + link + '\'' +
+                ", isIdAdded='" + isIdAdded + '\'' +
+                ", isPngIdAdded='" + isPngIdAdded + '\'' +
+                '}';
+    }
 }

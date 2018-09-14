@@ -1,8 +1,15 @@
 var zTree_Menu ="";
-/*$(function(){
-	var id = $("#dataid").val();
-	getSubject(id);
-});*/
+$(function(){
+	//var id = $("#dataid").val();
+	//getSubject(id);
+    $('input[name=checkboxPngId],input[name=checkboxId]').click(function () {
+    	if($(this).val()=='增加id'){
+            $(this).parent().next().show();
+		}else{
+            $(this).parent().next().hide();
+		}
+    })
+});
 
 /*function getSubject(id){ 
 	$.ajax({  
@@ -225,6 +232,11 @@ function doupdatedata(){
 	var resourcetypes="";
 	var product_source_code=$("#product_source_code").val();
 	var customs=new Array();
+    var dataid=$("#dataid").val();
+    var imgLogoSrc=$("#imgLogoSrc").val();
+    var link=$("#link").val();
+    var isIdAdded="";
+    var isPngIdAdded="";
 	$("input[name=languagenames]").each(function() {  
 	        if ($(this).is(':checked')) {  
 	        	languages+=$(this).val()+",";  
@@ -251,17 +263,18 @@ function doupdatedata(){
 		var val = i1+"%"+i2+"%"+s1+"%"+s2;
 		customs.push(val);
 	}
-	var dataid=$("#dataid").val();
-	var imgLogoSrc=$("#imgLogoSrc").val();
-	var link=$("#link").val();
+
+    $("input[name=checkboxId]:checked").each(function(){
+        isIdAdded+=$(this).val();
+    });
+    $("input[name=checkboxPngId]:checked").each(function(){
+        isPngIdAdded+=$(this).val();
+    });
 	if(($.trim($('#dataname').val())==='')){
         $('#dataname').next().text('数据库名称不能为空！')
 	}else if(($.trim($('#product_source_code').val())==='')){
         $('#product_source_code').next().text('产品类型code不能为空！')
-    }else if($.trim($('#link').val())!=''){
-    	if(!urlMatch.test($('#link').val())) {
-            $('#link').next().text('地址链接格式不正确！')
-        }else{
+    }else{
             $('#link').next().text('');
             $.ajax( {
                 type : "POST",
@@ -278,7 +291,9 @@ function doupdatedata(){
                     'productSourceCode' : product_source_code,
                     'dbtype':dbtype,
                     'imgLogoSrc':imgLogoSrc,
-                    'link':link
+                    'link':link,
+                    'isIdAdded':isIdAdded,
+                    'isPngIdAdded':isPngIdAdded
                 },
                 dataType : "json",
                 success : function(data) {
@@ -291,70 +306,6 @@ function doupdatedata(){
                 }
             });
         }
-    }else if($.trim($('#imgLogoSrc').val())!=''){
-		if(!urlMatch.test($('#imgLogoSrc').val())){
-            $('#imgLogoSrc').next().text('链接格式不正确！')
-		}else{
-            $('#imgLogoSrc').next().text('');
-            $.ajax( {
-                type : "POST",
-                url : "../data/doupdatedata.do",
-                data : {
-                    "id" : dataid,
-                    'tableName' : tablename,
-                    'abbreviation' : abbreviation,
-                    'tableDescribe' : datadescribe,
-                    'resType' : resourcetypes.substring(0,resourcetypes.length-1),
-                    'sourceDb' : sources.substring(0,sources.length-1),
-                    'language' : languages.substring(0,languages.length-1),
-                    'customs' : customs,
-                    'productSourceCode' : product_source_code,
-                    'dbtype':dbtype,
-                    'imgLogoSrc':imgLogoSrc,
-                    'link':link
-                },
-                dataType : "json",
-                success : function(data) {
-                    if(data){
-                        layer.msg("修改成功");
-                        window.location.href="../system/dataManager.do";
-                    }else{
-                        layer.msg("修改失败");
-                    }
-                }
-            });
-		}
-	}
-    else{
-        $('#dataname,#product_source_code,#link,#imgLogoSrc').next().text('');
-        $.ajax( {
-            type : "POST",
-            url : "../data/doupdatedata.do",
-            data : {
-                "id" : dataid,
-                'tableName' : tablename,
-                'abbreviation' : abbreviation,
-                'tableDescribe' : datadescribe,
-                'resType' : resourcetypes.substring(0,resourcetypes.length-1),
-                'sourceDb' : sources.substring(0,sources.length-1),
-                'language' : languages.substring(0,languages.length-1),
-                'customs' : customs,
-                'productSourceCode' : product_source_code,
-                'dbtype':dbtype,
-                'imgLogoSrc':imgLogoSrc,
-                'link':link
-            },
-            dataType : "json",
-            success : function(data) {
-                if(data){
-                    layer.msg("修改成功");
-                    window.location.href="../system/dataManager.do";
-                }else{
-                    layer.msg("修改失败");
-                }
-            }
-        });
-	}
 }
 
 function checktype(){
