@@ -751,7 +751,13 @@ var myEcharsCommon = (function () {
                         type: 'line',
                         data: seriesData,
                         symbolSize: 4,
-                        itemStyle: {normal: {label: {show: true}}}
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                       /* itemStyle: {normal: {label: {show: true}}}*/
                     }
                 ]
             };
@@ -835,13 +841,25 @@ var myEcharsCommon = (function () {
                         name: nameSingle,
                         type: 'line',
                         data: selectData,
-                        itemStyle: {normal: {label: {show: true}}}
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                        /*itemStyle: {normal: {label: {show: true}}}*/
                     },
                     {
                         name: nameCompare,
                         type: 'line',
                         data: compareData,
-                        itemStyle: {normal: {label: {show: true}}}
+                        /*itemStyle: {normal: {label: {show: true}}}*/
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
                     }
                 ]
             };
