@@ -357,7 +357,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         max.setTime(getMonthFormat().parse(endTime));
                         max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
                         Calendar calendar = min;
-                        String startDayOfMonth = getDayFormat().format(calendar.getTime());
+                        String startDayOfMonth = startTime;
                         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                         String endDayOfMonth = getDayFormat().format(calendar.getTime());
                         while (getDayFormat().parse(endDayOfMonth).compareTo(endDate) == -1) {
