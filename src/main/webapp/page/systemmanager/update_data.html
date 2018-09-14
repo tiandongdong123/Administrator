@@ -182,6 +182,40 @@
                  	<?}?>
                  	</select>
                 </div>
+			  <span id="content">
+				<?if(rlmap.cs.~size>1){?>
+				  <?for(var k=1 ;k<rlmap.cs.~size;k++){?>
+				  <div class='form-group input_block' id='d${k}'>
+				<input type='text' id='i1_${k}' class='contenttext' value="${rlmap.cs[k].paramOne}">
+				<select  selected='selected' id='s1_${k}'>
+				<?if(rlmap.cs[k].accuracy=='精确'){?>
+					<option selected="selected">精确</option>
+                 	<option>模糊</option>
+					<?}else{?>
+					<option >精确</option>
+                 	<option selected="selected">模糊</option>
+					<?}?>
+				</select>
+				<input type='text' id='i2_${k}' value="${rlmap.cs[k].paramTwo}">
+				<select selected='selected' id='s2_${k}'>
+					<?if(rlmap.cs[k].relation=='与'){?>
+					<option selected="selected">与</option>
+                 	<option>或</option>
+                 	<option>非</option>
+					<?}else if(rlmap.cs[k].relation=='或'){?>
+					<option >与</option>
+                 	<option selected="selected">或</option>
+                 	<option>非</option>
+					<?}else{?>
+					<option >与</option>
+                 	<option >或</option>
+                 	<option selected="selected">非</option>
+					<?}?>
+				</select>
+				</div>
+				  <?}?>
+				  <?}?>
+                </span>
 			  <div class="form-group input_block">
 			  <label for="exampleInputEmail1" class="input_name">自定义图片：</label>
 			  <input type="text" id="imgLogoSrc" class="form-control input_width" value="${rlmap.dn.imgLogoSrc!}">
@@ -202,40 +236,6 @@
                   </span>
 				  <div class="exampleWarn" style="padding-left: 88px;line-height: 30px;display: none;">样例：http://www.wanfangdata.com.cn/resource_nav/dataDetails.do?id=</div>
 			  </div>
-                <span id="content">
-				<?if(rlmap.cs.~size>1){?>
-				<?for(var k=1 ;k<rlmap.cs.~size;k++){?>
-				<div class='form-group input_block' id='d${k}'>
-				<input type='text' id='i1_${k}' class='contenttext' value="${rlmap.cs[k].paramOne}">
-				<select  selected='selected' id='s1_${k}'>
-				<?if(rlmap.cs[k].accuracy=='精确'){?>
-                 	<option selected="selected">精确</option>
-                 	<option>模糊</option>
-                 	<?}else{?>
-                 	<option >精确</option>
-                 	<option selected="selected">模糊</option>
-                 	<?}?>
-				</select>
-				<input type='text' id='i2_${k}' value="${rlmap.cs[k].paramTwo}">
-				<select selected='selected' id='s2_${k}'>
-					<?if(rlmap.cs[k].relation=='与'){?>
-                 	<option selected="selected">与</option>
-                 	<option>或</option>
-                 	<option>非</option>
-                 	<?}else if(rlmap.cs[k].relation=='或'){?>
-                 	<option >与</option>
-                 	<option selected="selected">或</option>
-                 	<option>非</option>
-                 	<?}else{?>
-                 	<option >与</option>
-                 	<option >或</option>
-                 	<option selected="selected">非</option>
-                 	<?}?>
-				</select>
-				</div>
-				<?}?>
-				<?}?>
-                </span>
               <div class="box-footer" style="text-align:center;">
                 <button type="reset"   onclick="resettree()"    class="btn btn-primary">重置</button>
                 <button type="button" onclick="doupdatedata()"      class="btn btn-primary">提交</button>
