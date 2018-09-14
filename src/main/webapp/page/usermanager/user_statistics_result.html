@@ -63,7 +63,7 @@
         pageSize = $(".evey-page").val();
 
         data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-        startCompareDate = data_compare_arry[0];
+        startCompareDate = data_compare_arry[0].trim();
         endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
 
         if (pageSize == null) {
