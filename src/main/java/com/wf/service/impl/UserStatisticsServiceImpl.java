@@ -162,8 +162,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         if (payChannelResource.getPayChannelid().contains("Time")) {
                             vaildIntitutionAccountNumber++;
                             List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
-                            if (subAccount.size()>0){
-                                vaildIntitutionAccountNumber+=subAccount.size();
+                            if (subAccount.size() > 0) {
+                                vaildIntitutionAccountNumber += subAccount.size();
                             }
                             continue;
                         }
@@ -178,8 +178,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         if (balance != null && balance.compareTo(BigDecimal.ZERO) == 1) {
                             vaildIntitutionAccountNumber++;
                             List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
-                            if (subAccount.size()>0){
-                                vaildIntitutionAccountNumber+=subAccount.size();
+                            if (subAccount.size() > 0) {
+                                vaildIntitutionAccountNumber += subAccount.size();
                             }
                             continue;
                         }
@@ -369,13 +369,13 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                         String endDayOfMonth = getDayFormat().format(calendar.getTime());
                         while (getDayFormat().parse(endDayOfMonth).compareTo(endDate) == -1) {
-                            dateList.add(startDayOfMonth+"-"+endDayOfMonth);
+                            dateList.add(startDayOfMonth + "-" + endDayOfMonth);
                             calendar.add(Calendar.DATE, 1);
                             startDayOfMonth = getDayFormat().format(calendar.getTime());
                             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                             endDayOfMonth = getDayFormat().format(calendar.getTime());
                         }
-                        dateList.add(startDayOfMonth+"-"+endTime);
+                        dateList.add(startDayOfMonth + "-" + endTime);
                         break;
                     } catch (ParseException e) {
                         log.error("时间转换失败", e);
@@ -470,27 +470,12 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
         List<TableResponse> result = new ArrayList<>();
 
-        UserStatisticsExample example = new UserStatisticsExample();
-        UserStatisticsExample.Criteria criteria = example.createCriteria();
-        if (parameter.getStartTime() != null && !"".equals(parameter.getStartTime())) {
-            criteria.andDateLessThan(parameter.getStartTime());
-        }
-        //开始时间前的数据总和
-        StatisticsModel previousData = userStatisticsMapper.selectSumByExample(example);
-        int personUser = previousData.getPersonUser();
-        int authenticatedUser = previousData.getAuthenticatedUser();
-        int personBindInstitution = previousData.getPersonBindInstitution();
-        int institution = previousData.getInstitution();
-        int institutionAccount = previousData.getInstitutionAccount();
-        int institutionAdmin = previousData.getInstitutionAdmin();
-
-
+        //分页数量
         int page = parameter.getPage();
         int offset = (parameter.getPage() - 1) * parameter.getPageSize();
         parameter.setPage(offset);
-        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(parameter);
 
-
+        //分页日期
         List<String> pagingDateList = new ArrayList<>();
         List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
         if (parameter.getSort() == DESC) {
@@ -501,52 +486,29 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         } else {
             pagingDateList = dateList.subList(offset, dateList.size());
         }
-        //按周时，设置时间和有效机构账号数量
-        //按月时，设置有效机构账号数量
-        //有效机构账号数量为：每周/每月的最后一天
-        switch (parameter.getTimeUnit()) {
-            case WEEK_UNIT: {
-                //每周/每月的最后一天集合
-                List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
-                //倒序
-                if (parameter.getSort() == DESC) {
-                    Collections.reverse(lastDateList);
-                }
-                for (int i = 0; i < pagingDateList.size(); i++) {
-                    userStatisticsList.get(i).setDate(pagingDateList.get(i));
-                }
 
-                if (pagingDateList.size() != lastDateList.size()) {
-                    break;
-                }
-
-
-                //设置时间和有效机构账号
-                for (int i = 0; i < lastDateList.size(); i++) {
-                    userStatisticsList.get(i).setDate(pagingDateList.get(i));
-                    UserStatisticsExample vaildExample = new UserStatisticsExample();
-                    UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
-                    vaildCriteria.andDateEqualTo(lastDateList.get(i));
-                    List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(vaildExample);
-                    if (userStatistics.size() != 0) {
-                        userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
-                    }
-                }
-            }
-            case MONTH_UNIT: {
-                //每周/每月的最后一天集合
-                List<String> lastDateList = lastDateOfWeekOrMonth(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
-
-                //设置有效机构账号
-                for (int i = 0; i < lastDateList.size(); i++) {
-                    UserStatisticsExample vaildExample = new UserStatisticsExample();
-                    UserStatisticsExample.Criteria vaildCriteria = vaildExample.createCriteria();
-                    vaildCriteria.andDateEqualTo(lastDateList.get(i));
-                    List<UserStatistics> userStatistics = userStatisticsMapper.selectByExample(vaildExample);
-                    userStatisticsList.get(i).setValidInstitutionAccount(userStatistics.get(0).getValidInstitutionAccount());
-                }
-            }
+        if (parameter.getSort() == DESC){
+            Collections.reverse(pagingDateList);
         }
+
+        //开始时间前的数据总和
+        UserStatisticsExample example = new UserStatisticsExample();
+        UserStatisticsExample.Criteria criteria = example.createCriteria();
+        criteria.andDateLessThan(pagingDateList.get(0));
+        StatisticsModel previousData = userStatisticsMapper.selectSumByExample(example);
+        int personUser = previousData.getPersonUser();
+        int authenticatedUser = previousData.getAuthenticatedUser();
+        int personBindInstitution = previousData.getPersonBindInstitution();
+        int institution = previousData.getInstitution();
+        int institutionAccount = previousData.getInstitutionAccount();
+        int institutionAdmin = previousData.getInstitutionAdmin();
+
+
+        parameter.setStartTime(pagingDateList.get(0));
+        parameter.setStartTime(pagingDateList.get(pagingDateList.size()-1));
+        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0),pagingDateList.get(pagingDateList.size()-1),parameter.getTimeUnit());
+
+        List<TableResponse> responseList = new ArrayList<>();
         for (int i = 0; i < userStatisticsList.size(); i++) {
             TableResponse tableResponse = new TableResponse();
             tableResponse.setPersonUser(String.valueOf(personUser + userStatisticsList.get(i).getPersonUser()));
@@ -558,11 +520,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
                 tableResponse.setValidInstitutionAccount(String.valueOf(userStatisticsList.get(i).getValidInstitutionAccount()));
             }
-            if (userStatisticsList.get(i).getDate() != null) {
-                tableResponse.setDate(userStatisticsList.get(i).getDate());
-            }
-            result.add(tableResponse);
-
+            tableResponse.setDate(userStatisticsList.get(i).getDate());
+            responseList.add(tableResponse);
             personUser += userStatisticsList.get(i).getPersonUser();
             authenticatedUser += userStatisticsList.get(i).getAuthenticatedUser();
             personBindInstitution += userStatisticsList.get(i).getPersonBindInstitution();
@@ -571,21 +530,31 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             institutionAdmin += userStatisticsList.get(i).getInstitutionAdmin();
         }
 
-        if (pagingDateList.size() > userStatisticsList.size()) {
-            for (int i = userStatisticsList.size(); i < pagingDateList.size(); i++) {
-                TableResponse tableResponse = new TableResponse();
-                tableResponse.setPersonUser("-");
-                tableResponse.setAuthenticatedUser("-");
-                tableResponse.setPersonBindInstitution("-");
-                tableResponse.setInstitution("-");
-                tableResponse.setInstitutionAccount("-");
-                tableResponse.setInstitutionAdmin("-");
-                tableResponse.setValidInstitutionAccount("-");
-                tableResponse.setDate(pagingDateList.get(i));
-                result.add(tableResponse);
-            }
+
+        if (parameter.getSort() == DESC) {
+            Collections.reverse(pagingDateList);
         }
 
+        date:
+        for (String date : pagingDateList) {
+            response:
+            for (TableResponse response : responseList) {
+                if (response.getDate().equals(date)) {
+                    result.add(response);
+                    continue date;
+                }
+            }
+            TableResponse tableResponse = new TableResponse();
+            tableResponse.setPersonUser("-");
+            tableResponse.setAuthenticatedUser("-");
+            tableResponse.setPersonBindInstitution("-");
+            tableResponse.setInstitution("-");
+            tableResponse.setInstitutionAccount("-");
+            tableResponse.setInstitutionAdmin("-");
+            tableResponse.setValidInstitutionAccount("-");
+            tableResponse.setDate(date);
+            result.add(tableResponse);
+        }
 
         return result;
     }
@@ -605,7 +574,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter parameter = new TableParameter();
         parameter.setStartTime(request.getStartTime());
         parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(1);
+        parameter.setTimeUnit(request.getTimeUnit());
         parameter.setPage(request.getPage());
         parameter.setPageSize(request.getPageSize());
         parameter.setSort(request.getSort());
@@ -613,7 +582,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter compareParameter = new TableParameter();
         compareParameter.setStartTime(request.getCompareStartTime());
         compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(1);
+        compareParameter.setTimeUnit(request.getTimeUnit());
         compareParameter.setPage(request.getPage());
         compareParameter.setPageSize(request.getPageSize());
         compareParameter.setSort(request.getSort());
@@ -642,13 +611,12 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
      * @return
      */
     public List<TableResponse> ordinaryNewData(TableParameter parameter) {
-        List<TableResponse> tableResponseList = new ArrayList<>();
+
+        List<TableResponse> result = new ArrayList<>();
         int page = parameter.getPage();
         int offset = (parameter.getPage() - 1) * parameter.getPageSize();
-        parameter.setPage(offset);
-        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(parameter);
 
-
+        //分页日期
         List<String> pagingDateList = new ArrayList<>();
         List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
         if (parameter.getSort() == DESC) {
@@ -660,6 +628,16 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             pagingDateList = dateList.subList(offset, dateList.size());
         }
 
+        if (parameter.getSort() == DESC){
+            Collections.reverse(pagingDateList);
+        }
+
+        parameter.setStartTime(pagingDateList.get(0));
+        parameter.setStartTime(pagingDateList.get(pagingDateList.size()-1));
+        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0),pagingDateList.get(pagingDateList.size()-1),parameter.getTimeUnit());
+
+
+        List<TableResponse> responseList = new ArrayList<>();
         for (int i = 0; i < userStatisticsList.size(); i++) {
             TableResponse tableResponse = new TableResponse();
             tableResponse.setPersonUser(String.valueOf(userStatisticsList.get(i).getPersonUser()));
@@ -668,25 +646,36 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             tableResponse.setInstitution(String.valueOf(userStatisticsList.get(i).getInstitution()));
             tableResponse.setInstitutionAccount(String.valueOf(userStatisticsList.get(i).getInstitutionAccount()));
             tableResponse.setInstitutionAdmin(String.valueOf(userStatisticsList.get(i).getInstitutionAdmin()));
-            tableResponse.setDate(pagingDateList.get(i));
-            tableResponseList.add(tableResponse);
+            tableResponse.setDate(userStatisticsList.get(i).getDate());
+            responseList.add(tableResponse);
         }
 
-        if (pagingDateList.size() > tableResponseList.size()) {
-            for (int i = tableResponseList.size(); i < pagingDateList.size(); i++) {
-                TableResponse tableResponse = new TableResponse();
-                tableResponse.setPersonUser("-");
-                tableResponse.setAuthenticatedUser("-");
-                tableResponse.setPersonBindInstitution("-");
-                tableResponse.setInstitution("-");
-                tableResponse.setInstitutionAccount("-");
-                tableResponse.setInstitutionAdmin("-");
-                tableResponse.setDate(pagingDateList.get(i));
-                tableResponseList.add(tableResponse);
+
+        if (parameter.getSort() == DESC) {
+            Collections.reverse(pagingDateList);
+        }
+        date:
+        for (String date : pagingDateList) {
+            response:
+            for (TableResponse response : responseList) {
+                if (response.getDate().equals(date)) {
+                    result.add(response);
+                    continue date;
+                }
             }
+            TableResponse tableResponse = new TableResponse();
+            tableResponse.setPersonUser("-");
+            tableResponse.setAuthenticatedUser("-");
+            tableResponse.setPersonBindInstitution("-");
+            tableResponse.setInstitution("-");
+            tableResponse.setInstitutionAccount("-");
+            tableResponse.setInstitutionAdmin("-");
+            tableResponse.setValidInstitutionAccount("-");
+            tableResponse.setDate(date);
+            result.add(tableResponse);
         }
 
-        return tableResponseList;
+        return result;
     }
 
 
@@ -700,7 +689,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter parameter = new TableParameter();
         parameter.setStartTime(request.getStartTime());
         parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(1);
+        parameter.setTimeUnit(request.getTimeUnit());
         parameter.setPage(request.getPage());
         parameter.setPageSize(request.getPageSize());
         parameter.setSort(request.getSort());
@@ -708,7 +697,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         TableParameter compareParameter = new TableParameter();
         compareParameter.setStartTime(request.getCompareStartTime());
         compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(1);
+        compareParameter.setTimeUnit(request.getTimeUnit());
         compareParameter.setPage(request.getPage());
         compareParameter.setPageSize(request.getPageSize());
         compareParameter.setSort(request.getSort());
