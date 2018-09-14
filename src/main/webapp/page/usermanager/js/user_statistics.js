@@ -844,13 +844,34 @@ var myEcharsCommon = (function () {
                         type: 'line',
                         data: selectData,
 
-                        itemStyle: {normal: {label: {show: true}}}
+                        /*itemStyle: {normal: {label: {show: true}}}*/
+
+                        showAllSymbol: false ,//不标注所有数据点,
+                        symbolSize: 3,
+
+                        /*itemStyle: {normal: {label: {show: true}}}*/
+                        label: {
+                            show: true,
+                            position:'top',
+                            distance:10
+
+                        },
                     },
                     {
                         name: nameCompare,
                         type: 'line',
                         data: compareData,
-                        itemStyle: {normal: {label: {show: true}}}
+                        showAllSymbol: false ,//不标注所有数据点,
+                        symbolSize: 3,
+
+
+                        label: {
+                            show: true,
+                            position:'top',
+                            distance:10,
+                            position:'bottom'
+
+                        },
 
                     }
                 ]
