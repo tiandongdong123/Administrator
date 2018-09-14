@@ -8,7 +8,7 @@
 .content-wrapper .user_statistics_header {
   margin-top: 10px;
   margin-left: 10px;
-  width: 1400px;
+  width: 1420px;
   position: relative;
 }
 .content-wrapper .user_statistics_header .time_tittle {
@@ -74,7 +74,7 @@
   opacity: 0.2;
 }
 .content-wrapper .user_statistics_content {
-  width: 1500px;
+  width: 1420px;
   margin-left: 5px;
 }
 .content-wrapper .user_statistics_content .content_nav {
@@ -181,13 +181,13 @@
 .content-wrapper .user_statistics_content .line_container {
   height: 450px;
   text-align: center;
-  width: 1500px;
+  width: 1420px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_content .line_comparison_container {
   height: 450px;
   text-align: center;
-  width: 1500px;
+  width: 1420px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_footer {
@@ -195,7 +195,7 @@
 }
 .content-wrapper .user_statistics_footer table {
   margin: 44px;
-  width: 88%;
+  width: 83%;
   border-collapse: collapse;
   border-spacing: 0;
 }

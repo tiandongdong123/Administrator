@@ -141,8 +141,8 @@ $(function () {
             },
             //日周月随最近天数的变化
             //判断是否跨周/跨月
-            stepMonthOrWeek:function(){
-                var  data_arry,startDate, endDate,startArray_data,endArray_data,myDate,differDay,endMyDate;
+            stepMonthOrWeek: function () {
+                var data_arry, startDate, endDate, startArray_data, endArray_data, myDate, differDay, endMyDate;
 
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
@@ -150,13 +150,13 @@ $(function () {
 
                 startArray_data = startDate.split("-");
                 endArray_data = endDate.split("-");
-                myDate = new Date(startArray_data[0],startArray_data[1]-1,startArray_data[2]);
-                endMyDate = new Date(endArray_data[0],endArray_data[1]-1,endArray_data[2]);
+                myDate = new Date(startArray_data[0], startArray_data[1] - 1, startArray_data[2]);
+                endMyDate = new Date(endArray_data[0], endArray_data[1] - 1, endArray_data[2]);
                 myDate.getDay();
 
-                differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 60 * 60 * 24))
+                differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
 
-                if(myDate.getTime() == endMyDate.getTime()){
+                if (myDate.getTime() == endMyDate.getTime()) {
                     console.log("显示按日")
 
 
@@ -164,8 +164,8 @@ $(function () {
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show()
                 }
-                console.log(myDate.getDay()+ differDay);
-                if((myDate.getDay()+ differDay)>7){
+                console.log(myDate.getDay() + differDay);
+                if ((myDate.getDay() + differDay) > 7) {
                     console.log("显示按周");
 
                     switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
@@ -173,21 +173,20 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
-                }else{
+                } else {
                     console.log("显示按日")
 
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show()
                 }
-                if(startArray_data[1]!=endArray_data[1]){
+                if (startArray_data[1] != endArray_data[1]) {
                     console.log("显示按月");
 
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
                 }
-
 
 
             },
@@ -202,9 +201,9 @@ $(function () {
 
 
                 if (recent == "昨天") {
-                  /*  switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
-                    switch_data.eq(0).addClass("switch_bg");
-                    week_month.show();*/
+                    /*  switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                      switch_data.eq(0).addClass("switch_bg");
+                      week_month.show();*/
 
                     that.stepMonthOrWeek();//显示按日
                     that.recentReset("aYesterday");
@@ -213,11 +212,11 @@ $(function () {
                 if (recent == "最近7天") {
 
 
-                   /* switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
-                    switch_board_week.hide();
-                    switch_board_month.show();
-                    switch_data.eq(0).addClass("switch_bg");
-                    switch_data.eq(2).addClass("disable_btn");*/
+                    /* switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                     switch_board_week.hide();
+                     switch_board_month.show();
+                     switch_data.eq(0).addClass("switch_bg");
+                     switch_data.eq(2).addClass("disable_btn");*/
 
                     that.stepMonthOrWeek();//看是否跨周
                     that.recentReset("aRecent7Days");
@@ -225,9 +224,9 @@ $(function () {
                 }
                 if (recent == "最近30天") {
 
-                   /* switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
-                    switch_data.not(":eq(0)").removeClass("disable_btn");
-                    week_month.hide();*/
+                    /* switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                     switch_data.not(":eq(0)").removeClass("disable_btn");
+                     week_month.hide();*/
 
 
                     that.stepMonthOrWeek();//看是否跨月
@@ -272,7 +271,7 @@ $(function () {
                     data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
                     that.newData();
-                   /* $(".switch_data a").not(":eq(0)").removeClass("disable_btn");*/
+                    /* $(".switch_data a").not(":eq(0)").removeClass("disable_btn");*/
                     /*$(".switch_board_week").hide();
                     $(".switch_board_month").hide();*/
 
@@ -568,7 +567,8 @@ $(function () {
             },
             //总数table表
             totalTable: function () {
-                var data_arry, startDate, endDate, indexType, timeUnit, pageSize,data_compare_arry,startCompareDate,endCompareDate;
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize, data_compare_arry, startCompareDate,
+                    endCompareDate;
                 var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
@@ -579,7 +579,6 @@ $(function () {
                 data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
                 startCompareDate = data_compare_arry[0];
                 endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
-
 
 
                 pageSize = $(".evey-page").val();
@@ -594,8 +593,8 @@ $(function () {
                     data: {
                         startTime: startDate,
                         endTime: endDate,
-                        compareStartTime:startCompareDate,
-                        compareEndTime:endCompareDate,
+                        compareStartTime: startCompareDate,
+                        compareEndTime: endCompareDate,
                         timeUnit: 1,
                         type: indexType,
                         pageSize: pageSize,
@@ -611,7 +610,8 @@ $(function () {
             },
             //新增table表
             newTable: function () {
-                var data_arry, startDate, endDate, indexType, timeUnit, pageSize,data_compare_arry,startCompareDate,endCompareDate;
+                var data_arry, startDate, endDate, indexType, timeUnit, pageSize, data_compare_arry, startCompareDate,
+                    endCompareDate;
                 var that = this;
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0].trim();
@@ -634,8 +634,8 @@ $(function () {
                     data: {
                         startTime: startDate,
                         endTime: endDate,
-                        compareStartTime:startCompareDate,
-                        compareEndTime:endCompareDate,
+                        compareStartTime: startCompareDate,
+                        compareEndTime: endCompareDate,
                         timeUnit: 1,
                         type: indexType,
                         pageSize: pageSize,
@@ -750,14 +750,16 @@ var myEcharsCommon = (function () {
                         name: nameSingle,
                         type: 'line',
                         data: seriesData,
-                        symbolSize: 4,
-                        markPoint: {
-                            data: [
-                                {type: 'max', name: '最大值'},
-                                {type: 'min', name: '最小值'}
-                            ]
+                        showAllSymbol: false ,//不标注所有数据点,
+                        symbolSize: 3,
+
+                        /*itemStyle: {normal: {label: {show: true}}}*/
+                        label: {
+                            show: true,
+                            position:'top',
+                            distance:10
+
                         },
-                       /* itemStyle: {normal: {label: {show: true}}}*/
                     }
                 ]
             };
@@ -788,7 +790,7 @@ var myEcharsCommon = (function () {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                   /* selectedMode: false,*/
+                    /* selectedMode: false,*/
                     padding: 10 //调节legend的位置
                 },
                 grid: {
@@ -811,8 +813,8 @@ var myEcharsCommon = (function () {
                 },
                 xAxis: {
                     type: 'category',
-                   /* position: 'bottom',*/
-                   /* offset: '20',*/
+                    /* position: 'bottom',*/
+                    /* offset: '20',*/
                     boundaryGap: false,
                     splitLine: {
                         show: false,
@@ -841,25 +843,15 @@ var myEcharsCommon = (function () {
                         name: nameSingle,
                         type: 'line',
                         data: selectData,
-                        markPoint: {
-                            data: [
-                                {type: 'max', name: '最大值'},
-                                {type: 'min', name: '最小值'}
-                            ]
-                        },
-                        /*itemStyle: {normal: {label: {show: true}}}*/
+
+                        itemStyle: {normal: {label: {show: true}}}
                     },
                     {
                         name: nameCompare,
                         type: 'line',
                         data: compareData,
-                        /*itemStyle: {normal: {label: {show: true}}}*/
-                        markPoint: {
-                            data: [
-                                {type: 'max', name: '最大值'},
-                                {type: 'min', name: '最小值'}
-                            ]
-                        },
+                        itemStyle: {normal: {label: {show: true}}}
+
                     }
                 ]
             };
