@@ -89,7 +89,6 @@
                     url: "../userStatistics/totalDatasheets.do",
                     success: function (data) {
                         $('.sync-html').html(data);
-
                     }
                 });
             } else {
@@ -98,7 +97,9 @@
                     data: {
                         startTime: startDate,
                         endTime: endDate,
-                        timeUnit: timeUnit,
+                        compareStartTime:startCompareDate,
+                        compareEndTime:endCompareDate,
+                        timeUnit: 1,
                         type: indexType,
                         sort: sort,
                         pageSize: pageSize,

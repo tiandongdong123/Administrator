@@ -72,25 +72,23 @@ $(function () {
                         }
                         that.getTime();
                         return;
-
                     })
                 });
             },
             getTime: function () {
                 var that = this;
-                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate, data_arry,
-                    startDate, endDate;
+                var selectedVal, indexType, navTitle, data_compare_array, startCompareDate, endCompareDate,data_array,startDate, endDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
 
-                data_arry = $("#user_statistics_data").val().split("至");
-                startDate = data_arry[0];
-                endDate = data_arry[1].trim();
+                data_array = $("#user_statistics_data").val().split("至");
+                startDate = data_array[0];
+                endDate = data_array[1].trim();
 
-                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-                startCompareDate = data_compare_arry[0];
-                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
+                data_compare_array = $("#user_statistics_dataCompare").val().split("至");
+                startCompareDate = data_compare_array[0];
+                endCompareDate = data_compare_array[1] ? data_compare_array[1].trim() : "";
                 //判断对比时间发送不同的请求
                 if (startCompareDate && endCompareDate) {
                     if (navTitle == 'total') {
