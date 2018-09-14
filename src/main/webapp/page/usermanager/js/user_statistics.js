@@ -142,25 +142,16 @@ $(function () {
             //日周月随最近天数的变化
             //判断是否跨周/跨月
             stepMonthOrWeek:function(){
-                var selectedVal, indexType, navTitle, data_compare_arry, startCompareDate, endCompareDate, data_arry,
-                    startDate, endDate,startArray_data,endArray_data,myDate,differDay,endMyDate;
-                selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                indexType = target_item_hidden.val();//指标参数
-                navTitle = $("#contentNavHidden").val();//总数/新增参数
+                var  data_arry,startDate, endDate,startArray_data,endArray_data,myDate,differDay,endMyDate;
 
                 data_arry = $("#user_statistics_data").val().split("至");
                 startDate = data_arry[0];
                 endDate = data_arry[1].trim();
 
-                data_compare_arry = $("#user_statistics_dataCompare").val().split("至");
-                startCompareDate = data_compare_arry[0];
-                endCompareDate = data_compare_arry[1] ? data_compare_arry[1].trim() : "";
-
-
                 startArray_data = startDate.split("-");
                 endArray_data = endDate.split("-");
                 myDate = new Date(startArray_data[0],startArray_data[1]-1,startArray_data[2]);
-                endMyDate = new Date(endArray_data[0],endArray_data[1]-1,endArray_data[2])
+                endMyDate = new Date(endArray_data[0],endArray_data[1]-1,endArray_data[2]);
                 myDate.getDay();
 
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime())/ (1000 * 60 * 60 * 24))
@@ -173,6 +164,7 @@ $(function () {
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show()
                 }
+                console.log(myDate.getDay()+ differDay);
                 if((myDate.getDay()+ differDay)>7){
                     console.log("显示按周");
 
@@ -181,6 +173,12 @@ $(function () {
                     switch_board_month.show();
                     switch_data.eq(0).addClass("switch_bg");
                     switch_data.eq(2).addClass("disable_btn");
+                }else{
+                    console.log("显示按日")
+
+                    switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                    switch_data.eq(0).addClass("switch_bg");
+                    week_month.show()
                 }
                 if(startArray_data[1]!=endArray_data[1]){
                     console.log("显示按月");
@@ -784,7 +782,7 @@ var myEcharsCommon = (function () {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                    selectedMode: false,
+                   /* selectedMode: false,*/
                     padding: 10 //调节legend的位置
                 },
                 grid: {

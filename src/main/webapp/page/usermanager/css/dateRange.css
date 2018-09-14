@@ -95,11 +95,13 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
 }
 
 .gri_dateRangeOptions div.gri_dateRangeInput {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    margin-top: 10px;
     display: inline-block;
 }
 .gri_dateRangeOptions div.gri_dateRangebutton {
    float: right;
+   margin-top: 10px;
 }
 .gri_dateRangeOptions div.gri_dateRangebutton input{
     width: 45px;

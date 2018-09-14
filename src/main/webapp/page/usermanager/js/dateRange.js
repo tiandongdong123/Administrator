@@ -1439,6 +1439,9 @@ pickerDateRange.prototype.fillDate = function (year, month, index) {
                     if($('.gri_dateRangePicker .gri_dateRangeSelected').length==1){
                         $('#' + __method.endDateId).val($('#' + __method.startDateId).val())
                     }
+                    if($('.gri_dateRangePicker .gri_dateRangeCompare').length==1){
+                        $('#' + __method.endCompareDateId).val( $('#' + __method.startCompareDateId).val())
+                    }
                     return false;
                 });
             })(ymd);
