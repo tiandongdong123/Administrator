@@ -122,9 +122,18 @@ public class UseStatisticsController {
             List<String> dateTime = userStatisticsService.getDateList(parameter.getTimeUnit(),parameter.getStartTime(),parameter.getEndTime());
             List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
             List<String> dateList = new ArrayList<>();
-            for (int i = 0; i < dateTime.size(); i++) {
-                dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
+
+            if (dateTime.size()<=compareDateTime.size()){
+                for (int i = 0; i < dateTime.size(); i++) {
+                    dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
+                }
+            }else {
+                for (int i = 0; i < compareDateTime.size(); i++) {
+                    dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
+                }
             }
+
+
 
             result.put("dateTime", dateList);
         } catch (Exception e) {
