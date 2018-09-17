@@ -635,7 +635,7 @@ var myEcharsCommon = (function () {
                 },
                 grid: {
                     left: '3%',
-                    right: '4%',
+                    right: '10%',
                     height: '300',
                     y: 80,
                     containLabel: true,
