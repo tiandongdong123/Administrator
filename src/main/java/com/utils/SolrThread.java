@@ -534,7 +534,9 @@ public class SolrThread implements Runnable {
 		if(!StringUtils.isEmpty(pid)){
 			solrMap.put("AdministratorId", pid);
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
-			solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
+			if(!StringUtils.isEmpty(user.getAdminpassword())){
+				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
+			}
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
 		}
 	}
