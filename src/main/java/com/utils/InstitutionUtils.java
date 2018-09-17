@@ -761,7 +761,7 @@ public class InstitutionUtils {
 			scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
 			scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
 			sq.setSorts(scList);
-			SolrDocumentList sdList=SolrService.getSolrList(sq);
+			SolrDocumentList sdList=SolrService.getDataList(sq);
 			allMap.put("data",InstitutionUtils.getFieldMap(sdList));
 			Long num=sdList.getNumFound();
 			allMap.put("num",num.intValue());

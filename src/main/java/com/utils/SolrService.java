@@ -83,6 +83,18 @@ public class SolrService {
 	}
 	
 	/**
+	 * 查询数据
+	 * @param solrQuery
+	 */
+	public static SolrDocumentList getDataList(SolrQuery solrQuery) throws Exception{
+		SolrDocumentList list=new SolrDocumentList();
+		QueryResponse response = server.query(solrQuery, METHOD.POST);
+		list=response.getResults();
+		log.info("查询条数："+list.size());
+		return list;
+	}
+	
+	/**
 	 * 查询总数
 	 * @param solrQuery
 	 */
