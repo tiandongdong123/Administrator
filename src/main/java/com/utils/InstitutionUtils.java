@@ -687,84 +687,89 @@ public class InstitutionUtils {
 	 * @param map
 	 * @return
 	 */
-	public static Map<String,Object> getSolrList(Map<String, Object> map) throws Exception{
+	public static Map<String,Object> getSolrList(Map<String, Object> map){
 		Map<String,Object> allMap=new HashMap<>();
-		SolrService.getInstance(hosts+"/GroupInfo");
-		SolrQuery sq=new SolrQuery();
-		sq.set("collection", "GroupInfo");
-		Integer pageSize=(Integer) map.get("pageSize");
-		Integer pageNum=(Integer) map.get("pageNum");
-		sq.setRows(pageSize);
-		sq.setStart(pageSize*pageNum);
-		StringBuffer query=new StringBuffer("");
-		InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
-		InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
-		InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
-		InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
-		InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
-		InstitutionUtils.addField(query,"PostCode",(String) map.get("PostCode"));//地区
-		InstitutionUtils.addField(query,"OrderType",(String) map.get("OrderType"));//工单类型
-		//内部工单
-		if(StringUtils.equals((String) map.get("OrderType"), "inner")){
-			InstitutionUtils.addField(query,"OrderContent",(String) map.get("OrderContent"));
-		}
-		//是否有机构管理员
-		if(!StringUtils.isEmpty((String) map.get("admin"))){
-			InstitutionUtils.addField(query,"ParentId","*");
-		}
-		//是否有机构子账号
-		if(!StringUtils.isEmpty((String) map.get("Subaccount"))){
-			InstitutionUtils.addField(query,"HasChildGroup","true");
-		}
-		//是否开通统计分析权限
-		if(!StringUtils.isEmpty((String) map.get("tongji"))){
-			InstitutionUtils.addField(query,"StatisticalAnalysis","*");
-		}
-		//购买项目是否试用
-		if(!StringUtils.isEmpty((String) map.get("trical"))){
-			InstitutionUtils.addField(query,"IsTrial","*");
-		}
-		//开通app权限
-		if(!StringUtils.isEmpty((String) map.get("openApp"))){
-			InstitutionUtils.addField(query,"AppStartTime","*");
-		}
-		//开通微信app权限
-		if(!StringUtils.isEmpty((String) map.get("openWeChat"))){
-			InstitutionUtils.addField(query,"WeChatStartTime","*");
-		}
-		//开通党建管理员权限
-		if(!StringUtils.isEmpty((String) map.get("PartyAdminTime"))){
-			InstitutionUtils.addField(query,"PartyAdminId","*");
-		}
-		//验证Ip
-		Long ipstart=(Long) map.get("ipstart");
-		Long ipend=(Long) map.get("ipend");
-		if(ipstart!=null&&ipend!=null&&ipstart.longValue()!=ipend.longValue()){
-			InstitutionUtils.addField(query,"StartIP","["+ipstart+" TO *]");
-			InstitutionUtils.addField(query,"EndIP","[* TO "+ipend+"]");
-		}else if(ipstart!=null||ipend!=null){
-			if(query.length()>0){
-				query.append(" AND ");
+		try{
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			Integer pageSize=(Integer) map.get("pageSize");
+			Integer pageNum=(Integer) map.get("pageNum");
+			sq.setRows(pageSize);
+			sq.setStart(pageSize*pageNum);
+			StringBuffer query=new StringBuffer("");
+			InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
+			InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
+			InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
+			InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
+			InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
+			InstitutionUtils.addField(query,"PostCode",(String) map.get("PostCode"));//地区
+			InstitutionUtils.addField(query,"OrderType",(String) map.get("OrderType"));//工单类型
+			//内部工单
+			if(StringUtils.equals((String) map.get("OrderType"), "inner")){
+				InstitutionUtils.addField(query,"OrderContent",(String) map.get("OrderContent"));
 			}
-			query.append(" (StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"]) ");
+			//是否有机构管理员
+			if(!StringUtils.isEmpty((String) map.get("admin"))){
+				InstitutionUtils.addField(query,"ParentId","*");
+			}
+			//是否有机构子账号
+			if(!StringUtils.isEmpty((String) map.get("Subaccount"))){
+				InstitutionUtils.addField(query,"HasChildGroup","true");
+			}
+			//是否开通统计分析权限
+			if(!StringUtils.isEmpty((String) map.get("tongji"))){
+				InstitutionUtils.addField(query,"StatisticalAnalysis","*");
+			}
+			//购买项目是否试用
+			if(!StringUtils.isEmpty((String) map.get("trical"))){
+				InstitutionUtils.addField(query,"IsTrial","*");
+			}
+			//开通app权限
+			if(!StringUtils.isEmpty((String) map.get("openApp"))){
+				InstitutionUtils.addField(query,"AppStartTime","*");
+			}
+			//开通微信app权限
+			if(!StringUtils.isEmpty((String) map.get("openWeChat"))){
+				InstitutionUtils.addField(query,"WeChatStartTime","*");
+			}
+			//开通党建管理员权限
+			if(!StringUtils.isEmpty((String) map.get("PartyAdminTime"))){
+				InstitutionUtils.addField(query,"PartyAdminId","*");
+			}
+			//验证Ip
+			Long ipstart=(Long) map.get("ipstart");
+			Long ipend=(Long) map.get("ipend");
+			if(ipstart!=null&&ipend!=null&&ipstart.longValue()!=ipend.longValue()){
+				InstitutionUtils.addField(query,"StartIP","["+ipstart+" TO *]");
+				InstitutionUtils.addField(query,"EndIP","[* TO "+ipend+"]");
+			}else if(ipstart!=null||ipend!=null){
+				if(query.length()>0){
+					query.append(" AND ");
+				}
+				query.append(" (StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"]) ");
+			}
+			if(StringUtils.isEmpty((String) map.get("userId"))){
+				query.append(" AND UserType:2 ");
+			}
+			
+			sq.setQuery(query.toString());
+			if(log.isInfoEnabled()){
+				log.info("查询条件"+query.toString());
+			}
+			List<SortClause> scList=new ArrayList<>();
+			scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
+			scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
+			sq.setSorts(scList);
+			SolrDocumentList sdList=SolrService.getSolrList(sq);
+			allMap.put("data",InstitutionUtils.getFieldMap(sdList));
+			Long num=sdList.getNumFound();
+			allMap.put("num",num.intValue());
+		}catch(Exception e){
+			SendMail2 util=new SendMail2();
+			util.sendSolrEmail();
+			log.error("solr查询异常", e);
 		}
-		if(StringUtils.isEmpty((String) map.get("userId"))){
-			query.append(" AND UserType:2 ");
-		}
-		
-		sq.setQuery(query.toString());
-		if(log.isInfoEnabled()){
-			log.info("查询条件"+query.toString());
-		}
-		System.out.println(query.toString());
-		List<SortClause> scList=new ArrayList<>();
-		scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
-		scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
-		sq.setSorts(scList);
-		SolrDocumentList sdList=SolrService.getSolrList(sq);
-		allMap.put("data",InstitutionUtils.getFieldMap(sdList));
-		Long num=sdList.getNumFound();
-		allMap.put("num",num.intValue());
 		return allMap;
 	}
 	

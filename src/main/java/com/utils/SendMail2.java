@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.log4j.Logger;
 
 import com.wf.bean.Mail;
+import com.xxl.conf.core.XxlConfClient;
 
 public class SendMail2 {
 	//配置文件名称
@@ -94,5 +95,19 @@ public class SendMail2 {
             }
         }
         return flag;
+    }
+    
+    public void sendSolrEmail(){
+    	try{
+    		Mail mail=new Mail();
+    		mail.setReceiver(XxlConfClient.get("wf-admin.solremail",null));
+    		mail.setName("后台管理");
+    		mail.setSubject("注册或修改机构账号异常");
+    		mail.setMessage("注册或修改机构账号所使用solr库异常，请检查原因。异常排除后请先到后台界面以管理员身份登录，进入\"机构账号solr发布\"页面进行\"一键发布\"");
+    		SendMail2 util=new SendMail2();
+    		util.sendEmail(mail);
+    	}catch(Exception e){
+    		log.error("solr异常发送邮件",e);
+    	}
     }
 }
