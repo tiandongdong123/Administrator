@@ -216,8 +216,6 @@ public class SolrThread implements Runnable {
 	//整体更新solr数据
 	public static void registerInfo(InstitutionalUser user,boolean isAdd) throws Exception{
 		Map<String,Object> solrMap=new LinkedHashMap<>();
-		ImportSolrRequest request=new ImportSolrRequest();
-		//swapParam(user,request);
 		addUser(solrMap,user,isAdd);
 		addIp(solrMap,user);
 		addLimit(solrMap,user);
@@ -592,7 +590,6 @@ public class SolrThread implements Runnable {
 		}
 		//统计分析
 		String tongji = user.getTongji()==null?"":user.getTongji();
-		Map<String, Object> operation = new HashMap<>();
 		List<String> ls=new ArrayList<>();
 		if(tongji.contains("database_statistics")){
 			ls.add("database_statistics");
@@ -600,9 +597,8 @@ public class SolrThread implements Runnable {
 		if(tongji.contains("resource_type_statistics")){
 			ls.add("resource_type_statistics");
 		}
-		operation.put("set", ls);
 		if(ls.size()>0){
-			solrMap.put("StatisticalAnalysis",operation);
+			solrMap.put("StatisticalAnalysis",ls);
 		}
 	}
 	
