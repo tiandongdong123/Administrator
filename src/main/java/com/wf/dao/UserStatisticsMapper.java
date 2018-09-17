@@ -35,6 +35,8 @@ public interface UserStatisticsMapper {
 
     StatisticsModel selectSumByExample(UserStatisticsExample example);
 
-    List<StatisticsModel> selectNewDate(TableParameter parameter);
+    List<StatisticsModel> selectNewDate(@Param("startTime")String startTime,@Param("endTime")String endTime,@Param("timeUnit")Integer timeUnit);
+
+
 
 }

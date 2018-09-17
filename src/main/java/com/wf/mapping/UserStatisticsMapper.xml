@@ -379,7 +379,7 @@
         </if>
     </select>
 
-    <select id="selectNewDate" parameterType="com.wf.bean.userStatistics.TableParameter"
+    <select id="selectNewDate" parameterType="java.lang.Object"
             resultMap="ColumnSumMap">
         select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
         sum2,ifnull(sum(person_bind_institution),0) sum3,
@@ -395,17 +395,6 @@
         </if>
         unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
         group by unit
-        <if test="sort != null and sort == 1">
-            order by unit desc
-        </if>
-        <if test="pageSize != null">
-            <if test="page != null">
-                limit ${page}, ${pageSize}
-            </if>
-            <if test="pageSize == null">
-                limit ${pageSize}
-            </if>
-        </if>
     </select>
 
 </mapper>
