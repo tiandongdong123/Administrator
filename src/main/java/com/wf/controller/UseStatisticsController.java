@@ -123,7 +123,7 @@ public class UseStatisticsController {
             List<String> compareDateTime = userStatisticsService.getDateList(compareParameter.getTimeUnit(),compareParameter.getStartTime(),compareParameter.getEndTime());
             List<String> dateList = new ArrayList<>();
 
-            if (dateTime.size()>=compareDateTime.size()){
+            if (dateTime.size()<=compareDateTime.size()){
                 for (int i = 0; i < dateTime.size(); i++) {
                     dateList.add(dateTime.get(i) + "与" + compareDateTime.get(i));
                 }
