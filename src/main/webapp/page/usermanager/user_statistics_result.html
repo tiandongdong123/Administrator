@@ -53,13 +53,12 @@
 
     $(function () {
 
-        var data_arry, startDate, endDate, indexType, timeUnit, pageSize, sort,data_compare_arry,startCompareDate,endCompareDate;
+        var data_arry, startDate, endDate, indexType,pageSize, sort,data_compare_arry,startCompareDate,endCompareDate;
         var tableName = $(".table_time").children().attr("class");
         data_arry = $("#user_statistics_data").val().split("至");
         startDate = data_arry[0].trim();
         endDate = data_arry[1].trim();
         indexType = $(".target_selected .target_item_hidden").val();//指标参数
-        timeUnit = $(".switch_data").children(".switch_data_hidden").val();//按日/周/月参数
         pageSize = $(".evey-page").val();
 
         data_compare_arry = $("#user_statistics_dataCompare").val().split("至");

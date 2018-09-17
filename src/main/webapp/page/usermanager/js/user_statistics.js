@@ -145,10 +145,27 @@ $(function () {
                 if (myDate.getTime() == endMyDate.getTime()) {
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
-                    week_month.show()
+                    week_month.show();
+                    return;
                 }
-                console.log(myDate.getDay() + differDay);
-                if ((myDate.getDay() + differDay) > 7) {
+                if((myDate.getDay() + differDay) == 6){
+                    if(myDate.getDay() == 0){
+                        switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                        switch_board_week.hide();
+                        switch_board_month.show();
+                        switch_data.eq(0).addClass("switch_bg");
+                        switch_data.eq(2).addClass("disable_btn");
+                        return;
+                    }
+                }
+
+                if ((myDate.getDay() + differDay) >= 7) {
+                    if(myDate.getDay()==1){
+                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                        switch_data.eq(0).addClass("switch_bg");
+                        week_month.show();
+                        return;
+                    }
                     switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                     switch_board_week.hide();
                     switch_board_month.show();
@@ -207,6 +224,8 @@ $(function () {
                 //日历图标的变化
                 $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
+
+                    //这里
                 });
                 $("#user_statistics_dataCompare").click(function () {
                     $(".gri_data_compare").css('background-position', '-68px -10px');
@@ -556,7 +575,6 @@ $(function () {
                         $('.sync-html').html(data);
                     }
                 });
-
             },
             //总数和新增的切换
             allOrNew: function () {
@@ -684,15 +702,16 @@ var myEcharsCommon = (function () {
             $(dom).empty();
             var myChart = echarts.init(dom);
             myChart.clear();
+
             var option = {
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
                 },
                 legend: {
                     data: nameArray,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                    padding: 10 //调节legend的位置
+                    padding: 10 ,//调节legend的位置
                 },
                 grid: {
                     left: '3%',

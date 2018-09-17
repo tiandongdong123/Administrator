@@ -89,7 +89,7 @@ function pickerDateRange(inputId, options) {
     //默认日历参数最大是3
     this.mOpts.calendars = Math.min(this.mOpts.calendars, 3);
     //根据不同主题需要初始化的变量
-    this.mOpts.compareCss = this.mOpts.theme == 'ta' ? this.mOpts.selectCss : this.mOpts.compareCss
+    this.mOpts.compareCss = this.mOpts.theme == 'ta' ? this.mOpts.selectCss : this.mOpts.compareCss;
     //昨天,今天,最近7天,最近14天,最近30天	
     this.periodObj = {};
     this.periodObj[__method.mOpts.aToday] = 0;
@@ -509,8 +509,10 @@ pickerDateRange.prototype.init = function (isCompare) {
     var endDate = '' == this.mOpts.endDate ? (new Date()) : this.str2date(this.mOpts.endDate);
     // 日历结束时间
     this.calendar_endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+
     //如果是magicSelect 自定义年和月份，则自定义填充日期
     if (this.mOpts.magicSelect && this.mOpts.theme == 'ta') {
+
         var i = 0;
         do {
             var td = null;
@@ -530,9 +532,6 @@ pickerDateRange.prototype.init = function (isCompare) {
 
     } else {
         // 计算并显示以 endDate 为结尾的最近几个月的日期列表
-
-
-
         for (var i = 0; i < this.mOpts.calendars; i++) {
             var td = null;
             if (this.mOpts.theme == 'ta') {
@@ -557,6 +556,14 @@ pickerDateRange.prototype.init = function (isCompare) {
 
     // 上一个月
     $('#' + this.preMonth).bind('click', function () {
+        var PreOrNext = '';
+        PreOrNext = $(".PreOrNext").text();
+        var preYear = PreOrNext.substr(6,4);
+        var preMonth = PreOrNext.substr(11,2);
+        if( parseInt(preYear) <= 2000 &&  parseInt(preMonth) <= 8 ){
+            $(".gri_dateRangePreMonth").off();
+            return;
+        }
         __method.calendar_endDate.setMonth(__method.calendar_endDate.getMonth() - 1, 1);
         __method.mOpts.endDate = __method.date2ymd(__method.calendar_endDate).join('-');
         __method.init(isCompare);
@@ -573,6 +580,21 @@ pickerDateRange.prototype.init = function (isCompare) {
     });
     // 下一个月
     $('#' + this.nextMonth).bind('click', function () {
+        var PreOrNext = '';
+        PreOrNext = $(".PreOrNext").text();
+        var conut = PreOrNext.lastIndexOf("t");
+        var nextYear = PreOrNext.substr(conut+1,4);
+        var nextMonth = PreOrNext.substr(conut+6,2);
+        var now = new Date();
+        var nowYear = now.getFullYear();
+        var nowMonth = (now.getMonth()+1);
+        if( parseInt(nextYear) >= nowYear &&  parseInt(nextMonth) >= nowMonth ){
+            $(".gri_dateRangeNextMonth").off();
+            $(".gri_dateRangeNextYear").off();
+            return;
+
+        }
+
         __method.calendar_endDate.setMonth(__method.calendar_endDate.getMonth() + 1, 1);
         __method.mOpts.endDate = __method.date2ymd(__method.calendar_endDate).join('-');
         __method.init(isCompare);
@@ -589,6 +611,13 @@ pickerDateRange.prototype.init = function (isCompare) {
     });
     // 上一年
     $('#' + this.preYear).bind('click', function () {
+        var PreOrNext = '';
+        PreOrNext = $(".PreOrNext").text();
+        var preYear = PreOrNext.substr(6,4);
+        if( parseInt(preYear) <= 2000){
+           $(".gri_dateRangePreYear").off();
+           return;
+        }
         __method.calendar_endDate.setFullYear(__method.calendar_endDate.getFullYear() - 1, __method.calendar_endDate.getMonth(), 1);
         __method.mOpts.endDate = __method.date2ymd(__method.calendar_endDate).join('-');
         __method.init(isCompare);
@@ -606,6 +635,17 @@ pickerDateRange.prototype.init = function (isCompare) {
 
     // 下一年
     $('#' + this.nextYear).bind('click', function () {
+        var PreOrNext = '';
+        PreOrNext = $(".PreOrNext").text();
+        console.log(PreOrNext)
+        var conut = PreOrNext.lastIndexOf("t");
+        var nextYear = PreOrNext.substr(conut+1,4);
+        var now = new Date();
+        var time = now.getFullYear();
+        if( parseInt(nextYear) >= time){
+            $(".gri_dateRangeNextYear").off();
+            return;
+        }
         __method.calendar_endDate.setFullYear(__method.calendar_endDate.getFullYear() + 1, __method.calendar_endDate.getMonth(), 1);
         __method.mOpts.endDate = __method.date2ymd(__method.calendar_endDate).join('-');
         __method.init(isCompare);
@@ -1333,6 +1373,7 @@ pickerDateRange.prototype.fillDate = function (year, month, index) {
 
         }
         $(td).append(year + '年' + (month + 1) + '月');
+        $(td).attr('class','PreOrNext');
         $(td).attr('colSpan', 7);
         $(td).css('text-align', 'center');
         $(td).css('background-color', '#4AA6FC');
