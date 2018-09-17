@@ -634,8 +634,8 @@ var myEcharsCommon = (function () {
                     }],
                 },
                 grid: {
-                    left: '3%',
-                    right: '10%',
+                    left: '8%',
+                    right: '8%',
                     height: '300',
                     y: 80,
                     containLabel: true,
@@ -714,8 +714,8 @@ var myEcharsCommon = (function () {
                     padding: 10 ,//调节legend的位置
                 },
                 grid: {
-                    left: '3%',
-                    right: '4%',
+                    left: '8%',
+                    right: '8%',
                     y: 60,
                     height: '300',
                     containLabel: true,
