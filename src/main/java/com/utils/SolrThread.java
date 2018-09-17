@@ -16,6 +16,7 @@ import org.apache.solr.common.SolrInputDocument;
 
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.InstitutionalUser;
+import com.wf.bean.Mail;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.importSolr.ImportSolrRequest;
 import com.xxl.conf.core.XxlConfClient;
@@ -53,6 +54,13 @@ public class SolrThread implements Runnable {
 			}
 			log.info("solr更新成功");
 		} catch (Exception e) {
+			Mail mail=new Mail();
+			mail.setReceiver(XxlConfClient.get("wf-admin.solremail",null));
+			mail.setName("后台管理");
+			mail.setSubject("注册或修改机构账号异常");
+			mail.setMessage("注册或修改机构账号所使用solr库异常，请检查原因。异常排除后请先到后台界面以管理员身份登录，进入\"机构账号solr发布\"页面进行\"一键发布\"");
+			SendMail2 util=new SendMail2();
+			util.sendEmail(mail);
 			log.error("发送solr异常",e);
 		}
 	}
