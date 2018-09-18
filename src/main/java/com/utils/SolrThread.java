@@ -16,7 +16,6 @@ import org.apache.solr.common.SolrInputDocument;
 
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.InstitutionalUser;
-import com.wf.bean.Mail;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.importSolr.ImportSolrRequest;
 import com.xxl.conf.core.XxlConfClient;

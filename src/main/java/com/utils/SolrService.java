@@ -163,68 +163,60 @@ public class SolrService {
 	/**
 	 * 批量添加
 	 */
-	public static synchronized void createList(List<Map<String, Object>> list) {
-		try {
-			List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
-			SolrInputDocument doc = null;
-			for (Map<String, Object> map : list) {
-				doc = new SolrInputDocument();
-				for (String key : map.keySet()) {
-					Object obj=map.get(key);
-					String value="0";
-					if(obj instanceof String){
-						value=(String) obj;
-					}
-					if(obj!=null&&!StringUtils.isEmpty(value)){
-						doc.addField(key, map.get(key));
-					}else{
-						doc.addField(key,null);
-					}
+	public static synchronized void createList(List<Map<String, Object>> list) throws Exception{
+		List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
+		SolrInputDocument doc = null;
+		for (Map<String, Object> map : list) {
+			doc = new SolrInputDocument();
+			for (String key : map.keySet()) {
+				Object obj=map.get(key);
+				String value="0";
+				if(obj instanceof String){
+					value=(String) obj;
 				}
-				doc.setField("_version_", 0);
-				sids.add(doc);
+				if(obj!=null&&!StringUtils.isEmpty(value)){
+					doc.addField(key, map.get(key));
+				}else{
+					doc.addField(key,null);
+				}
 			}
-			UpdateRequest req = new UpdateRequest();
-			req.add(sids);
-			req.setCommitWithin(-1);
-			req.process(server);
-			server.commit(false, false);
-		} catch (Exception e) {
-			log.error("批量创建索引失败", e);
+			doc.setField("_version_", 0);
+			sids.add(doc);
 		}
+		UpdateRequest req = new UpdateRequest();
+		req.add(sids);
+		req.setCommitWithin(-1);
+		req.process(server);
+		server.commit(false, false);
 	}
 	
 	/**
 	 * 批量更新
 	 */
-	public static synchronized void updateList(List<Map<String, Object>> list) {
-		try {
-			List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
-			SolrInputDocument doc = null;
-			for (Map<String, Object> map : list) {
-				doc = new SolrInputDocument();
-				for (String key : map.keySet()) {
-					Object obj = map.get(key);
-					if (key.equals("Id")) {
-						doc.addField(key, obj);
-					} else {
-						Map<String, Object> oper = new HashMap<>();
-						oper.put("set", obj);
-						doc.addField(key, oper);
-					}
+	public static synchronized void updateList(List<Map<String, Object>> list) throws Exception{
+		List<SolrInputDocument> sids = new ArrayList<SolrInputDocument>();
+		SolrInputDocument doc = null;
+		for (Map<String, Object> map : list) {
+			doc = new SolrInputDocument();
+			for (String key : map.keySet()) {
+				Object obj = map.get(key);
+				if (key.equals("Id")) {
+					doc.addField(key, obj);
+				} else {
+					Map<String, Object> oper = new HashMap<>();
+					oper.put("set", obj);
+					doc.addField(key, oper);
 				}
-				doc.setField("_version_", 0);
-				sids.add(doc);
 			}
-			UpdateRequest req = new UpdateRequest();
-			System.out.println(sids.toString());
-			req.add(sids);
-			req.setCommitWithin(-1);
-			req.process(server);
-			server.commit(false, false);
-		} catch (Exception e) {
-			log.error("批量创建索引失败", e);
+			doc.setField("_version_", 0);
+			sids.add(doc);
 		}
+		UpdateRequest req = new UpdateRequest();
+		System.out.println(sids.toString());
+		req.add(sids);
+		req.setCommitWithin(-1);
+		req.process(server);
+		server.commit(false, false);
 	}
 
 	/**
@@ -271,16 +263,12 @@ public class SolrService {
 	 * @param list 插入的数据集
 	 * @param host 要插入的核地址
 	 */
-	public static synchronized void addIndexList(List<SolrInputDocument> list){
-		try {
-			UpdateRequest req = new UpdateRequest();
-			req.add(list);
-			req.setCommitWithin(-1);
-			req.process(server);
-			server.commit(true, true,false);
-		} catch (Exception e) {
-			log.error("创建索引失败:", e);
-		}
+	public static synchronized void addIndexList(List<SolrInputDocument> list) throws Exception{
+		UpdateRequest req = new UpdateRequest();
+		req.add(list);
+		req.setCommitWithin(-1);
+		req.process(server);
+		server.commit(true, true,false);
 	}
 	
 }
