@@ -173,6 +173,10 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             if (payChannelResourcesList == null || payChannelResourcesList.size() < 1) {
                 continue;
             }
+            //是否添加机构账号数量
+            boolean pidState = false;
+            //是否添加机构自账号数量
+            boolean subAccountState = false;
 
             for (WfksPayChannelResources payChannelResource : payChannelResourcesList) {
                 AccountId accountId = new AccountId();
@@ -189,42 +193,56 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     if (method == null) {
                         continue;
                     }
+
                     Date endDateTime = (Date) method.invoke(account);
-                    if (endDateTime.compareTo(getDayFormat().parse(today)) == 1) {
-                        if (payChannelResource.getPayChannelid().contains("Time")) {
-                            vaildIntitutionAccountNumber++;
-                            List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
-                            if (subAccount.size() > 0) {
-                                vaildIntitutionAccountNumber += subAccount.size();
-                            }
+                    if (endDateTime.compareTo(getDayFormat().parse(today)) != 1) {
+                        continue;
+                    }
+
+
+                    if (payChannelResource.getPayChannelid().contains("Time")) {
+                        pidState = true;
+                        //不是资源限时，不添加子账号的数量
+                        if (!payChannelResource.getPayChannelid().equals("GTimeLimit")) {
                             continue;
                         }
-                        method = account.getClass().getMethod("getBalance");
-                        BigDecimal balance = null;
-                        if (method.invoke(account) instanceof BigDecimal) {
-                            balance = (BigDecimal) method.invoke(account);
-                        } else {
-                            balance = new BigDecimal((Long) method.invoke(account));
-                        }
+                        subAccountState = true;
+                        continue;
+                    }
 
-                        if (balance != null && balance.compareTo(BigDecimal.ZERO) == 1) {
-                            vaildIntitutionAccountNumber++;
-                            List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
-                            if (subAccount.size() > 0) {
-                                vaildIntitutionAccountNumber += subAccount.size();
-                            }
-                            continue;
-                        }
+                    method = account.getClass().getMethod("getBalance");
+                    BigDecimal balance = null;
+                    if (method.invoke(account) instanceof BigDecimal) {
+                        balance = (BigDecimal) method.invoke(account);
+                    } else {
+                        balance = new BigDecimal((Long) method.invoke(account));
+                    }
 
+                    if (balance == null || balance.compareTo(BigDecimal.ZERO) != 1) {
+                        continue;
+                    }
+                    pidState = true;
+                    if (payChannelResource.getPayChannelid().equals("GBalanceLimit")
+                            || payChannelResource.getPayChannelid().equals("GNstlBalanceLimit")
+                            || payChannelResource.getPayChannelid().equals("IsticBalanceLimit")) {
+                        subAccountState = true;
                     }
 
                 } catch (Exception e) {
                     log.error("获取指定资源账号失败，AccountId:" + accountId, e);
                 }
+            }
 
+            if (pidState) {
+                vaildIntitutionAccountNumber++;
+            }
+            if (subAccountState) {
+                List<String> subAccount = personMapper.getSubaccount(unFreezeInstitutionAccount);
+                if (subAccount.size() > 0) {
+                    vaildIntitutionAccountNumber += subAccount.size();
+                }
             }
         }
-
         userStatistics.setValidInstitutionAccount(vaildIntitutionAccountNumber);
         userStatistics.setDate(dateTime);
         return userStatistics;
@@ -728,6 +746,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     /**
      * 对比新增表格数据
+     *
      * @param request
      * @return
      */
@@ -776,6 +795,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     /**
      * 关闭数据库连接
+     *
      * @param rs
      * @param stmt
      * @param conn

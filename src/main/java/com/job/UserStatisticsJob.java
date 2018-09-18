@@ -21,7 +21,7 @@ public class UserStatisticsJob {
     @Autowired
     private UserStatisticsService userStatisticsService;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void userStatistics() {
         //获取当前时间
         Date date = new Date();
