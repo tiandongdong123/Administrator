@@ -85,7 +85,7 @@
 }
 .content-wrapper .user_statistics_content .content_nav a {
   font-size: 16px;
-  color: #417dc9;
+  color: #000;
   display: inline-block;
   height: 38px;
   line-height: 38px;
@@ -94,7 +94,7 @@
   float: left;
 }
 .content-wrapper .user_statistics_content .content_nav .active {
-  border-bottom: 2px solid #417dc9;
+  border-bottom: 36px solid #4AA6FC;
 }
 .content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num {
   background: #f5f5f5;
@@ -194,8 +194,9 @@
   margin-bottom: 200px;
 }
 .content-wrapper .user_statistics_footer table {
-  margin: 44px;
-  width: 83%;
+  margin: 35px;
+  margin-left: 153px;
+  width: 70%;
   border-collapse: collapse;
   border-spacing: 0;
 }

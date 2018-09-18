@@ -142,14 +142,68 @@ $(function () {
                 endMyDate = new Date(endArray_data[0], endArray_data[1] - 1, endArray_data[2]);
                 myDate.getDay();
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+                console.log(startArray_data[1])
+                console.log(endArray_data[1])
                 if (myDate.getTime() == endMyDate.getTime()) {
+                    console.log("按日")
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
                     return;
                 }
-                if((myDate.getDay() + differDay) == 6){
+                if((myDate.getDay() + differDay) <= 6){
                     if(myDate.getDay() == 0){
+                        console.log("跨周")
+                        //跨周
+                        switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                        switch_board_week.hide();
+                        switch_board_month.show();
+                        switch_data.eq(0).addClass("switch_bg");
+                        switch_data.eq(2).addClass("disable_btn");
+                        return;
+                    }else{
+                        if (startArray_data[1] != endArray_data[1]) {
+                            console.log("跨月1")
+
+                            //跨月
+                          /*  switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");*/
+
+                           /* switch_data.not(":eq(0)").removeClass("disable_btn");*/
+                          /*  switch_data.eq(0).addClass("switch_bg");*/
+                            switch_data.eq(1).addClass("disable_btn");
+                            switch_data.eq(2).removeClass("disable_btn");
+                            switch_board_week.show();
+                            switch_board_month.hide();
+                            return;
+                        }
+                        console.log("跨什么")
+                        console.log("按日")
+                        //按日
+                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                        switch_data.eq(0).addClass("switch_bg");
+                        week_month.show();
+                        return;
+                    }
+                }
+                if ((myDate.getDay() + differDay) >= 7) {
+                    if (startArray_data[1] != endArray_data[1]) {
+                        console.log("跨月2")
+                        //跨月
+                        switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                        switch_data.not(":eq(0)").removeClass("disable_btn");
+                        week_month.hide();
+                        return;
+                    }
+                    if(myDate.getDay()==1){
+                        console.log("按日")
+                        //按日
+                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                        switch_data.eq(0).addClass("switch_bg");
+                        week_month.show();
+                        return;
+                    }else{
+                        console.log("跨周2")
+                        //跨周(起点不是周一)
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
                         switch_board_month.show();
@@ -157,30 +211,28 @@ $(function () {
                         switch_data.eq(2).addClass("disable_btn");
                         return;
                     }
-                }
-
-                if ((myDate.getDay() + differDay) >= 7) {
-                    if(myDate.getDay()==1){
-                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
-                        switch_data.eq(0).addClass("switch_bg");
-                        week_month.show();
+                } else {//小于七
+                    if (startArray_data[1] != endArray_data[1]) {
+                        console.log("跨月3")
+                        //跨月
+                        switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                        switch_data.not(":eq(0)").removeClass("disable_btn");
+                        week_month.hide();
                         return;
                     }
-                    switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
-                    switch_board_week.hide();
-                    switch_board_month.show();
-                    switch_data.eq(0).addClass("switch_bg");
-                    switch_data.eq(2).addClass("disable_btn");
-                } else {
+                    console.log("按日")
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show()
+                    return;
                 }
-                if (startArray_data[1] != endArray_data[1]) {
+              /*  if (startArray_data[1] != endArray_data[1]) {
+                    console.log("跨月")
+                    //跨月
                     switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                     switch_data.not(":eq(0)").removeClass("disable_btn");
                     week_month.hide();
-                }
+                }*/
             },
             dayWeekMonth: function (recent) {
                 var that = this;
@@ -420,14 +472,14 @@ $(function () {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?(target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val()):(target_item.text() + " " + "(单位：万)" + " " + $("#user_statistics_data").val())
+                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " +target_item.text() + " " + "(单位：个)"  ):($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：万)" )
                         }
                         if (data.compareData) {
                             var compareData = data.compareData.map(function (value) {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameCompare = (data.compareData.join("") == compareData.join(""))?(target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val()):(target_item.text() + " " + "(单位：万)" + "" + $("#user_statistics_dataCompare").val())
+                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+ " " + target_item.text() + " " + "(单位：个)" ):($("#user_statistics_dataCompare").val()+ " " +target_item.text() + " " + "(单位：万)"  )
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
@@ -485,14 +537,14 @@ $(function () {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?(target_item.text() + " " + "(单位：个)" + " " + $("#user_statistics_data").val()):(target_item.text() + " " + "(单位：万)" + " " + $("#user_statistics_data").val())
+                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：个)" ):($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：万)")
                         }
                         if (data.compareData) {
                             var compareData = data.compareData.map(function (value) {
                                 value = value > 10000 ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameCompare = (data.compareData.join("") == compareData.join(""))?(target_item.text() + " " + "(单位：个)" + "" + $("#user_statistics_dataCompare").val()):(target_item.text() + " " + "(单位：万)" + "" + $("#user_statistics_dataCompare").val())
+                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：个)"):($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：万)")
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
@@ -706,6 +758,15 @@ var myEcharsCommon = (function () {
             var option = {
                 tooltip: {
                     trigger: 'axis',
+                    formatter:function(data){
+                        var dataTime = data[0].axisValueLabel.split("与");
+
+                        console.log(dataTime[0])
+                        var res = dataTime[0]+'<br/>'+dataTime[1];
+                        return res
+
+
+                    }
                 },
                 legend: {
                     data: nameArray,
