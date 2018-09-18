@@ -11,6 +11,7 @@ import com.wf.dao.PersonMapper;
 import com.wf.dao.UserStatisticsMapper;
 import com.wf.dao.WfksPayChannelResourcesMapper;
 import com.wf.service.UserStatisticsService;
+import com.xxl.conf.core.XxlConfClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ import wfks.authentication.AccountId;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 
 @Service
@@ -56,10 +59,6 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         return monthFormat;
     }
 
-    //按周统计
-    private static final int WEEK_UNIT = 2;
-    //按月统计
-    private static final int MONTH_UNIT = 3;
     //倒序排列
     private static final int DESC = 1;
 
@@ -78,8 +77,41 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
     @Override
     public UserStatistics selectStatisticsByDate(String dateTime) {
+        Connection conn = null;
+        PreparedStatement sumPs = null;
+        ResultSet sumResultSet = null;
+        UserStatistics userStatistics = new UserStatistics();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String URL = XxlConfClient.get("wf-public.jdbc.adminManager.url", null);
+            String USERNAME = XxlConfClient.get("wf-public.jdbc.username", null);
+            String PASSWORD = XxlConfClient.get("wf-public.jdbc.password", null);
+            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
-        UserStatistics userStatistics = personMapper.selectStatisticsByDate(dateTime);
+            String sumSql = "select ifnull(sum(userType = 0),0),ifnull(sum(user_roles = 0),0),ifnull(sum(user_roles = 1),0),ifnull(sum(user_roles = 2),0), " +
+                    "ifnull(sum(userType in(2,3)),0),ifnull(sum(userType = 3),0),ifnull(sum(userType = 3 and extend = 'Check_Regist_BDStudentSub'),0)," +
+                    "ifnull(sum(userType = 1),0) from `user` where DATE_FORMAT(registration_time,'%Y-%m-%d') = ?";
+            sumPs = conn.prepareStatement(sumSql);
+            sumPs.setString(1, dateTime);
+            sumResultSet = sumPs.executeQuery();
+            sumResultSet.next();
+            userStatistics.setPersonUser(sumResultSet.getInt(1));
+            userStatistics.setOrdinaryUser(sumResultSet.getInt(2));
+            userStatistics.setAuthenticatedUser(sumResultSet.getInt(3));
+            userStatistics.setScholarUser(sumResultSet.getInt(4));
+            userStatistics.setInstitutionAccount(sumResultSet.getInt(5));
+            userStatistics.setInstitutionSubaccount(sumResultSet.getInt(6));
+            userStatistics.setStudentaccount(sumResultSet.getInt(6));
+            userStatistics.setInstitutionSubaccount(sumResultSet.getInt(7));
+            userStatistics.setInstitutionAdmin(sumResultSet.getInt(8));
+
+
+        } catch (Exception e) {
+            log.error("查询统计数量总和失败 查询日期：" + dateTime);
+        } finally {
+            close(sumResultSet, sumPs, conn);
+        }
+
         String today = getDayFormat().format(new Date());
         try {
             //个人绑定机构新增个人账号
@@ -461,7 +493,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     }
 
     /**
-     * 普通选择时总数表格数据
+     * 查询总数表格数据
      *
      * @param parameter
      * @return
@@ -470,90 +502,94 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
 
         List<TableResponse> result = new ArrayList<>();
 
-        //分页数量
-        int page = parameter.getPage();
-        int offset = (parameter.getPage() - 1) * parameter.getPageSize();
-        parameter.setPage(offset);
+        try {
+            //分页数量
+            int page = parameter.getPage();
+            int offset = (parameter.getPage() - 1) * parameter.getPageSize();
+            parameter.setPage(offset);
 
-        //分页日期
-        List<String> pagingDateList = new ArrayList<>();
-        List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
-        if (parameter.getSort() == DESC) {
-            Collections.reverse(dateList);
-        }
-        if (dateList.size() > page * parameter.getPageSize()) {
-            pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
-        } else {
-            pagingDateList = dateList.subList(offset, dateList.size());
-        }
-
-        if (parameter.getSort() == DESC){
-            Collections.reverse(pagingDateList);
-        }
-
-        //开始时间前的数据总和
-        UserStatisticsExample example = new UserStatisticsExample();
-        UserStatisticsExample.Criteria criteria = example.createCriteria();
-        criteria.andDateLessThan(pagingDateList.get(0));
-        StatisticsModel previousData = userStatisticsMapper.selectSumByExample(example);
-        int personUser = previousData.getPersonUser();
-        int authenticatedUser = previousData.getAuthenticatedUser();
-        int personBindInstitution = previousData.getPersonBindInstitution();
-        int institution = previousData.getInstitution();
-        int institutionAccount = previousData.getInstitutionAccount();
-        int institutionAdmin = previousData.getInstitutionAdmin();
-
-
-        parameter.setStartTime(pagingDateList.get(0));
-        parameter.setStartTime(pagingDateList.get(pagingDateList.size()-1));
-        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0),pagingDateList.get(pagingDateList.size()-1),parameter.getTimeUnit());
-
-        List<TableResponse> responseList = new ArrayList<>();
-        for (int i = 0; i < userStatisticsList.size(); i++) {
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setPersonUser(String.valueOf(personUser + userStatisticsList.get(i).getPersonUser()));
-            tableResponse.setAuthenticatedUser(String.valueOf(authenticatedUser + userStatisticsList.get(i).getAuthenticatedUser()));
-            tableResponse.setPersonBindInstitution(String.valueOf(personBindInstitution + userStatisticsList.get(i).getPersonBindInstitution()));
-            tableResponse.setInstitution(String.valueOf(institution + userStatisticsList.get(i).getInstitution()));
-            tableResponse.setInstitutionAccount(String.valueOf(institutionAccount + userStatisticsList.get(i).getInstitutionAccount()));
-            tableResponse.setInstitutionAdmin(String.valueOf(institutionAdmin + userStatisticsList.get(i).getInstitutionAdmin()));
-            if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
-                tableResponse.setValidInstitutionAccount(String.valueOf(userStatisticsList.get(i).getValidInstitutionAccount()));
+            //分页日期
+            List<String> pagingDateList = new ArrayList<>();
+            List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(dateList);
             }
-            tableResponse.setDate(userStatisticsList.get(i).getDate());
-            responseList.add(tableResponse);
-            personUser += userStatisticsList.get(i).getPersonUser();
-            authenticatedUser += userStatisticsList.get(i).getAuthenticatedUser();
-            personBindInstitution += userStatisticsList.get(i).getPersonBindInstitution();
-            institution += userStatisticsList.get(i).getInstitution();
-            institutionAccount += userStatisticsList.get(i).getInstitutionAccount();
-            institutionAdmin += userStatisticsList.get(i).getInstitutionAdmin();
-        }
+            if (dateList.size() > page * parameter.getPageSize()) {
+                pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
+            } else {
+                pagingDateList = dateList.subList(offset, dateList.size());
+            }
+
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(pagingDateList);
+            }
+
+            //开始时间前的数据总和
+            UserStatisticsExample example = new UserStatisticsExample();
+            UserStatisticsExample.Criteria criteria = example.createCriteria();
+            criteria.andDateLessThan(pagingDateList.get(0));
+            StatisticsModel previousData = userStatisticsMapper.selectSumByExample(example);
+            int personUser = previousData.getPersonUser();
+            int authenticatedUser = previousData.getAuthenticatedUser();
+            int personBindInstitution = previousData.getPersonBindInstitution();
+            int institution = previousData.getInstitution();
+            int institutionAccount = previousData.getInstitutionAccount();
+            int institutionAdmin = previousData.getInstitutionAdmin();
 
 
-        if (parameter.getSort() == DESC) {
-            Collections.reverse(pagingDateList);
-        }
+            parameter.setStartTime(pagingDateList.get(0));
+            parameter.setStartTime(pagingDateList.get(pagingDateList.size() - 1));
+            List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0), pagingDateList.get(pagingDateList.size() - 1), parameter.getTimeUnit());
 
-        date:
-        for (String date : pagingDateList) {
-            response:
-            for (TableResponse response : responseList) {
-                if (response.getDate().equals(date)) {
-                    result.add(response);
-                    continue date;
+            List<TableResponse> responseList = new ArrayList<>();
+            for (int i = 0; i < userStatisticsList.size(); i++) {
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setPersonUser(String.valueOf(personUser + userStatisticsList.get(i).getPersonUser()));
+                tableResponse.setAuthenticatedUser(String.valueOf(authenticatedUser + userStatisticsList.get(i).getAuthenticatedUser()));
+                tableResponse.setPersonBindInstitution(String.valueOf(personBindInstitution + userStatisticsList.get(i).getPersonBindInstitution()));
+                tableResponse.setInstitution(String.valueOf(institution + userStatisticsList.get(i).getInstitution()));
+                tableResponse.setInstitutionAccount(String.valueOf(institutionAccount + userStatisticsList.get(i).getInstitutionAccount()));
+                tableResponse.setInstitutionAdmin(String.valueOf(institutionAdmin + userStatisticsList.get(i).getInstitutionAdmin()));
+                if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
+                    tableResponse.setValidInstitutionAccount(String.valueOf(userStatisticsList.get(i).getValidInstitutionAccount()));
                 }
+                tableResponse.setDate(userStatisticsList.get(i).getDate());
+                responseList.add(tableResponse);
+                personUser += userStatisticsList.get(i).getPersonUser();
+                authenticatedUser += userStatisticsList.get(i).getAuthenticatedUser();
+                personBindInstitution += userStatisticsList.get(i).getPersonBindInstitution();
+                institution += userStatisticsList.get(i).getInstitution();
+                institutionAccount += userStatisticsList.get(i).getInstitutionAccount();
+                institutionAdmin += userStatisticsList.get(i).getInstitutionAdmin();
             }
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setPersonUser("-");
-            tableResponse.setAuthenticatedUser("-");
-            tableResponse.setPersonBindInstitution("-");
-            tableResponse.setInstitution("-");
-            tableResponse.setInstitutionAccount("-");
-            tableResponse.setInstitutionAdmin("-");
-            tableResponse.setValidInstitutionAccount("-");
-            tableResponse.setDate(date);
-            result.add(tableResponse);
+
+
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(pagingDateList);
+            }
+
+            date:
+            for (String date : pagingDateList) {
+                response:
+                for (TableResponse response : responseList) {
+                    if (response.getDate().equals(date)) {
+                        result.add(response);
+                        continue date;
+                    }
+                }
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setPersonUser("-");
+                tableResponse.setAuthenticatedUser("-");
+                tableResponse.setPersonBindInstitution("-");
+                tableResponse.setInstitution("-");
+                tableResponse.setInstitutionAccount("-");
+                tableResponse.setInstitutionAdmin("-");
+                tableResponse.setValidInstitutionAccount("-");
+                tableResponse.setDate(date);
+                result.add(tableResponse);
+            }
+        } catch (Exception e) {
+            log.error("查询总数表格失败，parameter:" + parameter);
         }
 
         return result;
@@ -571,35 +607,41 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             log.error("对比开始时间或结束时间为空，request：" + request);
             return new ArrayList<>();
         }
-        TableParameter parameter = new TableParameter();
-        parameter.setStartTime(request.getStartTime());
-        parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(request.getTimeUnit());
-        parameter.setPage(request.getPage());
-        parameter.setPageSize(request.getPageSize());
-        parameter.setSort(request.getSort());
-        List<TableResponse> ordinaryData = ordinaryTotalData(parameter);
-        TableParameter compareParameter = new TableParameter();
-        compareParameter.setStartTime(request.getCompareStartTime());
-        compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(request.getTimeUnit());
-        compareParameter.setPage(request.getPage());
-        compareParameter.setPageSize(request.getPageSize());
-        compareParameter.setSort(request.getSort());
-        List<TableResponse> compareData = ordinaryTotalData(compareParameter);
 
-        for (int i = 0; i < ordinaryData.size(); i++) {
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
-            tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
-            tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
-            tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
-            tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
-            tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
-            tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
-            result.add(tableResponse);
+        try {
+            TableParameter parameter = new TableParameter();
+            parameter.setStartTime(request.getStartTime());
+            parameter.setEndTime(request.getEndTime());
+            parameter.setTimeUnit(request.getTimeUnit());
+            parameter.setPage(request.getPage());
+            parameter.setPageSize(request.getPageSize());
+            parameter.setSort(request.getSort());
+            List<TableResponse> ordinaryData = ordinaryTotalData(parameter);
+            TableParameter compareParameter = new TableParameter();
+            compareParameter.setStartTime(request.getCompareStartTime());
+            compareParameter.setEndTime(request.getCompareEndTime());
+            compareParameter.setTimeUnit(request.getTimeUnit());
+            compareParameter.setPage(request.getPage());
+            compareParameter.setPageSize(request.getPageSize());
+            compareParameter.setSort(request.getSort());
+            List<TableResponse> compareData = ordinaryTotalData(compareParameter);
+
+            for (int i = 0; i < ordinaryData.size(); i++) {
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
+                tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
+                tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
+                tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
+                tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
+                tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
+                tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+                tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
+                result.add(tableResponse);
+            }
+        } catch (Exception e) {
+            log.error("选择对比时间后查询总数表格失败，request：" + request);
         }
+
         return result;
 
     }
@@ -613,112 +655,149 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     public List<TableResponse> ordinaryNewData(TableParameter parameter) {
 
         List<TableResponse> result = new ArrayList<>();
-        int page = parameter.getPage();
-        int offset = (parameter.getPage() - 1) * parameter.getPageSize();
 
-        //分页日期
-        List<String> pagingDateList = new ArrayList<>();
-        List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
-        if (parameter.getSort() == DESC) {
-            Collections.reverse(dateList);
-        }
-        if (dateList.size() > page * parameter.getPageSize()) {
-            pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
-        } else {
-            pagingDateList = dateList.subList(offset, dateList.size());
-        }
+        try {
+            int page = parameter.getPage();
+            int offset = (parameter.getPage() - 1) * parameter.getPageSize();
 
-        if (parameter.getSort() == DESC){
-            Collections.reverse(pagingDateList);
-        }
-
-        parameter.setStartTime(pagingDateList.get(0));
-        parameter.setStartTime(pagingDateList.get(pagingDateList.size()-1));
-        List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0),pagingDateList.get(pagingDateList.size()-1),parameter.getTimeUnit());
-
-
-        List<TableResponse> responseList = new ArrayList<>();
-        for (int i = 0; i < userStatisticsList.size(); i++) {
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setPersonUser(String.valueOf(userStatisticsList.get(i).getPersonUser()));
-            tableResponse.setAuthenticatedUser(String.valueOf(userStatisticsList.get(i).getAuthenticatedUser()));
-            tableResponse.setPersonBindInstitution(String.valueOf(userStatisticsList.get(i).getPersonBindInstitution()));
-            tableResponse.setInstitution(String.valueOf(userStatisticsList.get(i).getInstitution()));
-            tableResponse.setInstitutionAccount(String.valueOf(userStatisticsList.get(i).getInstitutionAccount()));
-            tableResponse.setInstitutionAdmin(String.valueOf(userStatisticsList.get(i).getInstitutionAdmin()));
-            tableResponse.setDate(userStatisticsList.get(i).getDate());
-            responseList.add(tableResponse);
-        }
-
-
-        if (parameter.getSort() == DESC) {
-            Collections.reverse(pagingDateList);
-        }
-        date:
-        for (String date : pagingDateList) {
-            response:
-            for (TableResponse response : responseList) {
-                if (response.getDate().equals(date)) {
-                    result.add(response);
-                    continue date;
-                }
+            //分页日期
+            List<String> pagingDateList = new ArrayList<>();
+            List<String> dateList = getDateList(parameter.getTimeUnit(), parameter.getStartTime(), parameter.getEndTime());
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(dateList);
             }
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setPersonUser("-");
-            tableResponse.setAuthenticatedUser("-");
-            tableResponse.setPersonBindInstitution("-");
-            tableResponse.setInstitution("-");
-            tableResponse.setInstitutionAccount("-");
-            tableResponse.setInstitutionAdmin("-");
-            tableResponse.setValidInstitutionAccount("-");
-            tableResponse.setDate(date);
-            result.add(tableResponse);
+            if (dateList.size() > page * parameter.getPageSize()) {
+                pagingDateList = dateList.subList(offset, page * parameter.getPageSize());
+            } else {
+                pagingDateList = dateList.subList(offset, dateList.size());
+            }
+
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(pagingDateList);
+            }
+
+            parameter.setStartTime(pagingDateList.get(0));
+            parameter.setStartTime(pagingDateList.get(pagingDateList.size() - 1));
+            List<StatisticsModel> userStatisticsList = userStatisticsMapper.selectNewDate(pagingDateList.get(0), pagingDateList.get(pagingDateList.size() - 1), parameter.getTimeUnit());
+
+
+            List<TableResponse> responseList = new ArrayList<>();
+            for (int i = 0; i < userStatisticsList.size(); i++) {
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setPersonUser(String.valueOf(userStatisticsList.get(i).getPersonUser()));
+                tableResponse.setAuthenticatedUser(String.valueOf(userStatisticsList.get(i).getAuthenticatedUser()));
+                tableResponse.setPersonBindInstitution(String.valueOf(userStatisticsList.get(i).getPersonBindInstitution()));
+                tableResponse.setInstitution(String.valueOf(userStatisticsList.get(i).getInstitution()));
+                tableResponse.setInstitutionAccount(String.valueOf(userStatisticsList.get(i).getInstitutionAccount()));
+                tableResponse.setInstitutionAdmin(String.valueOf(userStatisticsList.get(i).getInstitutionAdmin()));
+                tableResponse.setDate(userStatisticsList.get(i).getDate());
+                responseList.add(tableResponse);
+            }
+
+
+            if (parameter.getSort() == DESC) {
+                Collections.reverse(pagingDateList);
+            }
+            date:
+            for (String date : pagingDateList) {
+                response:
+                for (TableResponse response : responseList) {
+                    if (response.getDate().equals(date)) {
+                        result.add(response);
+                        continue date;
+                    }
+                }
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setPersonUser("-");
+                tableResponse.setAuthenticatedUser("-");
+                tableResponse.setPersonBindInstitution("-");
+                tableResponse.setInstitution("-");
+                tableResponse.setInstitutionAccount("-");
+                tableResponse.setInstitutionAdmin("-");
+                tableResponse.setValidInstitutionAccount("-");
+                tableResponse.setDate(date);
+                result.add(tableResponse);
+            }
+
+        } catch (Exception e) {
+            log.error("查询新增表格失败，parameter：" + parameter);
         }
 
         return result;
     }
 
-
+    /**
+     * 对比新增表格数据
+     * @param request
+     * @return
+     */
     public List<TableResponse> comparaNewData(StatisticsRequest request) {
         List<TableResponse> result = new ArrayList<>();
         if (request.getCompareStartTime() == null || request.getCompareEndTime() == null) {
             log.error("对比开始时间或结束时间为空，request：" + request);
             return new ArrayList<>();
         }
+        try {
+            TableParameter parameter = new TableParameter();
+            parameter.setStartTime(request.getStartTime());
+            parameter.setEndTime(request.getEndTime());
+            parameter.setTimeUnit(request.getTimeUnit());
+            parameter.setPage(request.getPage());
+            parameter.setPageSize(request.getPageSize());
+            parameter.setSort(request.getSort());
+            List<TableResponse> ordinaryData = ordinaryNewData(parameter);
+            TableParameter compareParameter = new TableParameter();
+            compareParameter.setStartTime(request.getCompareStartTime());
+            compareParameter.setEndTime(request.getCompareEndTime());
+            compareParameter.setTimeUnit(request.getTimeUnit());
+            compareParameter.setPage(request.getPage());
+            compareParameter.setPageSize(request.getPageSize());
+            compareParameter.setSort(request.getSort());
+            List<TableResponse> compareData = ordinaryNewData(compareParameter);
 
-        TableParameter parameter = new TableParameter();
-        parameter.setStartTime(request.getStartTime());
-        parameter.setEndTime(request.getEndTime());
-        parameter.setTimeUnit(request.getTimeUnit());
-        parameter.setPage(request.getPage());
-        parameter.setPageSize(request.getPageSize());
-        parameter.setSort(request.getSort());
-        List<TableResponse> ordinaryData = ordinaryNewData(parameter);
-        TableParameter compareParameter = new TableParameter();
-        compareParameter.setStartTime(request.getCompareStartTime());
-        compareParameter.setEndTime(request.getCompareEndTime());
-        compareParameter.setTimeUnit(request.getTimeUnit());
-        compareParameter.setPage(request.getPage());
-        compareParameter.setPageSize(request.getPageSize());
-        compareParameter.setSort(request.getSort());
-        List<TableResponse> compareData = ordinaryNewData(compareParameter);
 
-
-        for (int i = 0; i < ordinaryData.size(); i++) {
-            TableResponse tableResponse = new TableResponse();
-            tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
-            tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
-            tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
-            tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
-            tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
-            tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
-            tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
-            tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
-            result.add(tableResponse);
+            for (int i = 0; i < ordinaryData.size(); i++) {
+                TableResponse tableResponse = new TableResponse();
+                tableResponse.setDate(ordinaryData.get(i).getDate() + "</br></br>" + compareData.get(i).getDate());
+                tableResponse.setPersonUser(ordinaryData.get(i).getPersonUser() + "</br></br>" + compareData.get(i).getPersonUser());
+                tableResponse.setAuthenticatedUser(ordinaryData.get(i).getAuthenticatedUser() + "</br></br>" + compareData.get(i).getAuthenticatedUser());
+                tableResponse.setPersonBindInstitution(ordinaryData.get(i).getPersonBindInstitution() + "</br></br>" + compareData.get(i).getPersonBindInstitution());
+                tableResponse.setInstitution(ordinaryData.get(i).getInstitution() + "</br></br>" + compareData.get(i).getInstitution());
+                tableResponse.setInstitutionAccount(ordinaryData.get(i).getInstitutionAccount() + "</br></br>" + compareData.get(i).getInstitutionAccount());
+                tableResponse.setValidInstitutionAccount(ordinaryData.get(i).getValidInstitutionAccount() + "</br></br>" + compareData.get(i).getValidInstitutionAccount());
+                tableResponse.setInstitutionAdmin(ordinaryData.get(i).getInstitutionAdmin() + "</br></br>" + compareData.get(i).getInstitutionAdmin());
+                result.add(tableResponse);
+            }
+        } catch (Exception e) {
+            log.error("选择对比时间后查询新增表格失败，request：" + request);
         }
         return result;
-
     }
 
-
+    /**
+     * 关闭数据库连接
+     * @param rs
+     * @param stmt
+     * @param conn
+     */
+    public static void close(ResultSet rs, Statement stmt, Connection conn) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+            }
+        }
+    }
 }
