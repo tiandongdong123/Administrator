@@ -134,6 +134,7 @@
                           <li ><a href="../bindAuhtority/setPersonAuthority.do"><i class="fa fa-circle-o"></i>个人绑定机构权限设置</a></li>
                       </ul>-->
                       <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../auser/warning.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
+                      <li <?if(!strutil.contain(session.purviews,"机构账号solr发布")){?>style="display:none"<?}?> <? if(session.menu_first=="toSolrData.do"){ ?>class="active"<?}?>><a href="../institution/toSolrData.do"><i class="fa fa-circle-o"></i>机构账号solr发布</a></li>
 		          </ul>
 	          </li>
 	          <li <?if(!strutil.contain(session.purviews,"个人用户管理")){?>style="display:none"<?}?>>

@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Timestamps;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -64,6 +64,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
+import com.utils.InstitutionUtils;
 import com.utils.SendMail2;
 import com.utils.SettingUtil;
 import com.utils.StringUtil;
@@ -1599,8 +1600,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public PageList findListInfo(Map<String, Object> map) throws Exception{
 		//1、筛选user
 		long time=System.currentTimeMillis();
-		List<Object> userList = personMapper.findListInfoSimp(map);
-		int i = personMapper.findListCountSimp(map);
+		Map<String,Object> allMap=InstitutionUtils.getSolrList(map);
+		List<Object> userList = (List<Object>) allMap.get("data");
 		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
 		long time1=System.currentTimeMillis();
@@ -1610,24 +1611,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 		for(Object object : userList){
 			//将Object转换成 Map
 			Map<String, Object> userMap = (Map<String,Object>) object;
-			String userId = userMap.get("userId").toString();
-			int sortScore=Integer.parseInt(userMap.get("loginMode").toString());
-			boolean flag=false;//用户是否可用 true是不过气，false是过期
-			try{
-				userMap.put("password",PasswordHelper.decryptPassword(String.valueOf(userMap.get("password"))));
-			}catch (Exception e){
-				log.error("密码转化异常：",e);
+			String userId = userMap.get("Id").toString();
+			userMap.put("Password", PasswordHelper.decryptPassword(userMap.get("Password").toString()));
+			int sortScore=Integer.parseInt(userMap.get("LoginMode").toString());
+			if((boolean) userMap.get("IsFreeze")){
+				sortScore+=1000;
 			}
-			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(userId);
-			if(userMap.get("loginMode")!=null&&!userMap.get("loginMode").toString().equals("1")){
-				for(Map<String, Object> userIp : list_ip){
-					String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
-					userIp.put("beginIpAddressNumber", beginIpAddressNumber);
-					String endIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("endIpAddressNumber"));
-					userIp.put("endIpAddressNumber", endIpAddressNumber);
-				}
-				userMap.put("list_ip", list_ip);
-			}
+			boolean flag=false;//用户是否可用 true是不过期，false是过期
 			List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
 			List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 			for(PayChannelModel pay:list_){
@@ -1637,24 +1627,34 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			// 购买项目是否试用
+			Map<String, String> itemsMap = new HashMap<String, String>();
+			Object obj=userMap.get("IsTrial");
+			if(obj!=null){
+				if(obj instanceof String){
+					itemsMap.put(userMap.get("IsTrial").toString(), "trical");
+				}else{
+					List<String> trialList = (List<String>) userMap.get("IsTrial");
+					if (trialList != null) {
+						for (String payChannelId : trialList) {
+							itemsMap.put(payChannelId, "trical");
+						}
+					}
+				}
+			}
+			String AdministratorPassword=(String) userMap.get("AdministratorPassword");
+			if(!StringUtils.isEmpty(AdministratorPassword)){
+				userMap.put("AdministratorPassword", PasswordHelper.decryptPassword(AdministratorPassword));
+			}
+			String PartyAdminPassword=(String) userMap.get("PartyAdminPassword");
+			if(!StringUtils.isEmpty(PartyAdminPassword)){
+				userMap.put("PartyAdminPassword", PasswordHelper.decryptPassword(PartyAdminPassword));
+			}
+			//验证是否过期
+			this.isExpired(userMap,"PartyAdminExpired","PartyAdminEndTIme");
+			this.isExpired(userMap,"openWeChatExpired","WeChatEndTime");
+			this.isExpired(userMap,"openAppExpired","AppEndTime");
 
-			//查询权限信息
-			Map<String,String> itemsMap=new HashMap<String,String>();
-			String viewChack="ViewHistoryCheck";
-			this.getUserAccountidMapping(userId,itemsMap,userMap,viewChack);
-			//查询机构管理员
-			String pid=userMap.get("pid")==null?"":userMap.get("pid").toString();
-			if(!"".equals(pid)){
-				userMap.put("admin", this.findInfoByPid(pid));
-			}
-			//查询机构子账号
-			this.getAccount(userMap);
-			//查询统计分析
-			UserInstitution ins=this.getUserInstitution(userId);
-			if(ins!=null){
-				userMap.put("tongji", ins.getStatisticalAnalysis());
-			}
-			userMap.put("groupInfo", this.getGroupInfo(userId));
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
 			List<Map<String, Object>> oldList = new ArrayList<Map<String, Object>>();
@@ -1662,7 +1662,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				Map<String, Object> libdata = new HashMap<String, Object>();// 组装条件Map
 				Map<String, Object> extraData = new HashMap<String, Object>();// 购买的项目
 				if(wfks.getPayChannelid().equals("HistoryCheck")){
-					extraData.put("ViewHistoryCheck", viewChack);
+					extraData.put("ViewHistoryCheck", "ViewHistoryCheck");
 				}
 				PayChannelModel pay = SettingPayChannels.getPayChannel(wfks.getPayChannelid());
 				if(pay.getType().equals("balance")){
@@ -1814,80 +1814,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 		});
 		PageList pageList = new PageList();
 		pageList.setPageRow(userList);
-		pageList.setTotalRow(i);
+		pageList.setTotalRow((int) allMap.get("num"));
 		return pageList;
 	}
 	
-	//机构子账号
-	private void getAccount(Map<String, Object> userMap) {
-		UserAccountRestriction uar=this.getAccountRestriction(userMap.get("userId").toString());
-		if(uar==null){
+	private void isExpired(Map<String, Object> userMap, String key, String value) {
+		String endTime=(String) userMap.get(value);
+		if(StringUtils.isEmpty(endTime)){
 			return;
 		}
-		userMap.put("upperlimit", uar.getUpperlimit());
-		userMap.put("sConcurrentnumber", uar.getsConcurrentnumber());
-		userMap.put("pConcurrentnumber", uar.getpConcurrentnumber());
-		userMap.put("downloadupperlimit", uar.getDownloadupperlimit());
-		userMap.put("chargebacks", uar.getChargebacks());
+		Date date=DateUtil.stringToDate1(endTime.replace("年","-").replace("月", "-").replace("日", "-"));
+		userMap.put(key,this.getExpired(date,this.getDay()));
 	}
-
-	//获取权限信息
-	private void getUserAccountidMapping(String userId, Map<String, String> itemsMap,
-			Map<String, Object> userMap, String viewCheck) throws Exception{
-		
-		WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountidByIdKey(userId);
-		for (WfksAccountidMapping wm : mapping) {
-			if ("trical".equals(wm.getRelatedidAccounttype())) {
-				itemsMap.put(wm.getRelatedidKey(), "trical");
-			}
-			if ("ViewHistoryCheck".equals(wm.getRelatedidAccounttype())) {
-				viewCheck = "可以";
-			}
-			if("openApp".equals(wm.getRelatedidAccounttype())){
-				userMap.put("openApp", DateUtil.DateToFromatStr(wm.getBegintime())+"-"
-						+DateUtil.DateToFromatStr(wm.getEndtime()));
-				userMap.put("openAppexpired", this.getExpired(wm.getEndtime(),this.getDay()));
-			}
-			if("openWeChat".equals(wm.getRelatedidAccounttype())){
-				Map<String,Object> wechat=new HashMap<String,Object>();
-				wechat.put("time",  DateUtil.DateToFromatStr(wm.getBegintime())+"-"
-						+DateUtil.DateToFromatStr(wm.getEndtime()));
-				WfksUserSettingKey key=new WfksUserSettingKey();
-				key.setUserId(userId);
-				key.setUserType("WeChat");
-				key.setPropertyName("email");
-				WfksUserSetting[] setting=wfksUserSettingMapper.selectByUserId(key);
-				if(setting.length>0){
-					wechat.put("email", setting[0].getPropertyValue());
-				}
-				System.out.println(userId);
-				wechat.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
-				userMap.put("openWeChat", wechat);
-			}
-			if("PartyAdminTime".equals(wm.getRelatedidAccounttype())){
-				Map<String,Object> party=new HashMap<String,Object>();
-				party.put("time",DateUtil.DateToFromatStr(wm.getBegintime()) + "-"
-						+ DateUtil.DateToFromatStr(wm.getEndtime()));
-				Person per = personMapper.queryPersonInfo(wm.getRelatedidKey());
-				if(per!=null){
-					party.put("userId", per.getUserId());
-					try{
-						party.put("password",PasswordHelper.decryptPassword(per.getPassword()));
-					}catch (Exception e){
-						log.error("密码转化异常：",e);
-					}
-					String json = String.valueOf(per.getExtend());
-					if(!StringUtils.isEmpty(json)){
-						JSONObject obj = JSONObject.fromObject(json);
-						party.put("trical", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
-					}
-					party.put("expired", this.getExpired(wm.getEndtime(),this.getDay()));
-					userMap.put("party", party);
-				}
-			}
-		}
-	}
-
+	
 	@Override
 	public Map<String, Object> selectBalanceById(String userId){
 		return projectBalanceMapper.selectBalanceById(userId);
@@ -1916,6 +1855,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public Map<String, Object> findListInfoById(String userId){
 		Map<String, Object> map = personMapper.findListInfoById(userId);
+		if(map==null){
+			map= new HashMap<>();
+		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
 		} catch (Exception e) {

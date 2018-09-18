@@ -40,6 +40,7 @@ import com.utils.IPConvertHelper;
 import com.utils.InstitutionUtils;
 import com.utils.Organization;
 import com.utils.SettingUtil;
+import com.utils.SolrThread;
 import com.utils.WFMailUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
@@ -99,7 +100,6 @@ public class AheadUserController {
 	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
 	//二维码邮箱是否勾选
 	private static String DEFAULT = "default";
-	private static String SELECT = "select";
 	private static String UNSELECT = "unselect";
 	/**
 	 *	判断ip段是否重复
@@ -237,6 +237,7 @@ public class AheadUserController {
 				redis.del(12, aid);
 				HttpClientUtil.updateUserData(aid, "0");
 			}
+			SolrThread.setFreeze(aid,flag);
 			return "true";
 		}
 		return "false";
@@ -256,6 +257,7 @@ public class AheadUserController {
 		com.setUserId(userId);
 		aheadUserService.setPartAccountRestriction(com);
 		aheadUserService.addUserIns(com);
+		SolrThread.removeAdmin(userId,com);
 		if(resinfo>0){
 			return "true";
 		}
@@ -304,6 +306,7 @@ public class AheadUserController {
 		aheadUserService.addUserIns(com);
 		map.put("userId", com.getUserId());
 		int resinfo = aheadUserService.updatePid(map);
+		SolrThread.addAdmin(com.getUserId(),String.valueOf(map.get("pid")),com);
 		if(resinfo>0){
 			return "true";
 		}
@@ -532,6 +535,8 @@ public class AheadUserController {
 			}
 			// 添加机构相关信息
 			aheadUserService.registerInfo(user);
+			//发送solr
+			SolrThread.registerInfo(user,true);
 			// 添加购买项目
 			String msg=this.addProject(user, req);
 			if(msg.length()>0&&msg.contains("失败")){
@@ -604,6 +609,8 @@ public class AheadUserController {
 				user.setPassword(String.valueOf(map.get("password")));
 				// 添加机构信息
 				aheadUserService.batchRegisterInfo(user, map);
+				//发送solr
+				SolrThread.registerInfo(user,true);
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
 				// 添加购买项目
@@ -739,6 +746,8 @@ public class AheadUserController {
 			for (Map<String, Object> map : userList) {
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
+				//发送solr
+				SolrThread.updateInfo(user);
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
 				// 修改购买项目
@@ -804,7 +813,7 @@ public class AheadUserController {
 			if (count>0){
 				aheadUserService.closeBindAuthority(bindAuthorityModel);
 			}
-		}		
+		}
 	}
 	
 	//批量添加校验
@@ -981,6 +990,7 @@ public class AheadUserController {
 						redis.del(12, str);
 						HttpClientUtil.updateUserData(str, "0");
 					}
+					SolrThread.setFreeze(str, radio);
 					in+=1;
 				}
 			}else{
@@ -1039,6 +1049,8 @@ public class AheadUserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
 			aheadUserService.updateInstitution(institution,oldins);
+			//更新solr
+			SolrThread.updateInstitution(institution, oldins);
 			map.put("flag", "true");
 		}catch(Exception e){
 			log.error("更新机构名称异常:",e);
@@ -1127,13 +1139,13 @@ public class AheadUserController {
 				}
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
-			pageList.setPageNum(Integer.parseInt(query.getPageNum()==null?"1":query.getPageNum()));//当前页
-			pageList.setPageSize(Integer.parseInt(query.getPageSize()==null?"20":query.getPageSize()));//每页显示的数量
+			pageList.setPageNum(Integer.parseInt(map.get("pageNum").toString())+1);//当前页
+			pageList.setPageSize(Integer.parseInt(map.get("pageSize").toString()));//每页显示的数量
 			if(!StringUtil.isEmpty(query.getIpSegment())){
 				map.put("ipSegment", query.getIpSegment());
 			}
 			if (!StringUtils.isEmpty(query.getInstitution())) {
-				map.put("institution", query.getInstitution().replace("\\_", "_"));
+				map.put("institution", query.getInstitution());
 			}
 			map.put("userId", userId);
 			map.put("pageList", pageList);
@@ -1294,6 +1306,8 @@ public class AheadUserController {
 			}
 			// 修改机构信息
 			aheadUserService.updateinfo(user);
+			//发送solr
+			SolrThread.registerInfo(user,false);
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
 			if(msg.length()>0&&msg.contains("失败")){
