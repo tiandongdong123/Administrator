@@ -269,11 +269,25 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     @Override
     public List<Integer> selectTotalDataByType(ChartsParameter parameter) {
         List<Integer> result = new ArrayList<>();
-        int previousSum = userStatisticsMapper.selectSingleTypePreviousSum(parameter.getType(), parameter.getStartTime());
-        List<Integer> newDataList = userStatisticsMapper.selectSingleTypeNewData(parameter);
-        for (Integer newData : newDataList) {
-            previousSum += newData;
-            result.add(previousSum);
+        if (!parameter.getType().equals("valid_institution_account")){
+            int previousSum = userStatisticsMapper.selectSingleTypePreviousSum(parameter.getType(), parameter.getStartTime());
+            List<Integer> newDataList = userStatisticsMapper.selectSingleTypeNewData(parameter);
+            for (Integer newData : newDataList) {
+                previousSum += newData;
+                result.add(previousSum);
+            }
+        }else {
+            List<Integer> newDataList = userStatisticsMapper.selectSingleTypeNewData(parameter);
+            Boolean allZero = true;
+            for (Integer newData : newDataList) {
+                if (newData > 0){
+                    allZero = false;
+                }
+                result.add(newData);
+            }
+            if (allZero){
+                result = new ArrayList<>();
+            }
         }
         return result;
     }
