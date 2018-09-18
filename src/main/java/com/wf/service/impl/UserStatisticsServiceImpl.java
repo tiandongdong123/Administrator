@@ -568,7 +568,9 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                 tableResponse.setInstitution(String.valueOf(institution + userStatisticsList.get(i).getInstitution()));
                 tableResponse.setInstitutionAccount(String.valueOf(institutionAccount + userStatisticsList.get(i).getInstitutionAccount()));
                 tableResponse.setInstitutionAdmin(String.valueOf(institutionAdmin + userStatisticsList.get(i).getInstitutionAdmin()));
-                if (userStatisticsList.get(i).getValidInstitutionAccount() != null) {
+                if (userStatisticsList.get(i).getValidInstitutionAccount()==null||userStatisticsList.get(i).getValidInstitutionAccount()==0){
+                    tableResponse.setValidInstitutionAccount("-");
+                }else {
                     tableResponse.setValidInstitutionAccount(String.valueOf(userStatisticsList.get(i).getValidInstitutionAccount()));
                 }
                 tableResponse.setDate(userStatisticsList.get(i).getDate());
