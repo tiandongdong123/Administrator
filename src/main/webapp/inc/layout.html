@@ -144,14 +144,14 @@
 		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_bind.do"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
           		</ul>
               </li>
-              <li>
-                  <a href="../userStatistics/statisticsInfo.do"><i class="fa fa-circle-o"></i>用户统计</a>
-              </li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"统计分析")){?>style="display:none"<?}?>>
           <a href="#"><i class="fa fa-files-o"></i><span>统计分析</span><i class="fa fa-angle-left pull-right"></i></a>
           	<ul class="treeview-menu menu-open" style="display: block;">
+                <li>
+                    <a href="../userStatistics/statisticsInfo.do"><i class="fa fa-circle-o"></i>用户统计</a>
+                </li>
           	  <li <?if(!strutil.contain(session.purviews,"分析管理")){?>style="display:none"<?}?>>
 		        <a href=""><i class="fa fa-circle-o"></i>分析管理<i class="fa fa-angle-left pull-right"></i></a>
 		          <ul class="treeview-menu menu-open" style="display: block;">
