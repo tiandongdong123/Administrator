@@ -89,20 +89,8 @@ $(function () {
                 endCompareDate = data_compare_array[1] ? data_compare_array[1].trim() : "";
                 //判断对比时间发送不同的请求
                 if (startCompareDate && endCompareDate) {
-                   /* if (navTitle == 'total') {
-                        that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }
-                    if (navTitle == 'new') {
-                        that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
-                    }*/
                     (navTitle == 'total')?that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType):that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                 } else {
-                   /* if (navTitle == 'total') {
-                        that.eChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }
-                    if (navTitle == 'new') {
-                        that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
-                    }*/
                     (navTitle == 'total')? that.eChartsAjax(startDate, endDate, selectedVal, indexType): that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
                 }
             },
@@ -419,6 +407,12 @@ $(function () {
                     _this.on("click", function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
+                      /*  if(target_item.text() == "有效机构账号"){
+                            $(".target_selected p").show();
+                        }else{
+
+                        }*/
+                        (target_item.text() == "有效机构账号")?$(".target_selected p").show():$(".target_selected p").hide()
                         target_item_hidden.val(_this.siblings("input").val());
                         that.getTime();
                     })
@@ -440,8 +434,12 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
+                            var flag = false;
                             var totalData = data.totalData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value>10000){
+                                    flag = true;
+                                }
+                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
                             nameSingle = (data.totalData.join("") == totalData.join(""))? (target_item.text() + " " + "(单位：个)"):(target_item.text() + " " + "(单位：万)")
@@ -468,18 +466,26 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.selectData) {
+                            var flag = false;
                             var selectData = data.selectData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value>10000){
+                                    flag = true;
+                                }
+                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " +target_item.text() + " " + "(单位：个)"  ):($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：万)" )
+                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " +target_item.text()+"(单位：个)"  ):($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：万)" )
                         }
                         if (data.compareData) {
+                            var compareFlag = false;
                             var compareData = data.compareData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value>10000){
+                                    compareFlag = true;
+                                }
+                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+ " " + target_item.text() + " " + "(单位：个)" ):($("#user_statistics_dataCompare").val()+ " " +target_item.text() + " " + "(单位：万)"  )
+                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+ " " + target_item.text()+"(单位：个)" ):($("#user_statistics_dataCompare").val()+ " " +target_item.text()+"(单位：万)"  )
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
@@ -504,8 +510,10 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
+                            var flag = false;
                             var totalData = data.totalData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value >10000){flag = true;}
+                                value = flag == true ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
                             nameSingle = (data.totalData.join("") == totalData.join(""))?(target_item.text() + " " + "(单位：个)"):(target_item.text() + " " + "(单位：万)")
@@ -533,15 +541,23 @@ $(function () {
                     success: function (data) {
 
                         if (data.selectData) {
+                            var falg = false;
                             var selectData = data.selectData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value>10000){
+                                    falg = true;
+                                }
+                                value = (falg == true) ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：个)" ):($("#user_statistics_data").val()+ " " + target_item.text() + " " + "(单位：万)")
+                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：个)" ):($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：万)")
                         }
                         if (data.compareData) {
+                            var compareFlag = false;
                             var compareData = data.compareData.map(function (value) {
-                                value = value > 10000 ? (((value - value % 100) / 10000)) : value;
+                                if(value>10000){
+                                    compareFlag = true;
+                                }
+                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
                                 return value;
                             });
                             nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：个)"):($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：万)")
@@ -668,6 +684,7 @@ $(function () {
 var myEcharsCommon = (function () {
     return {
         commonLine: function (id, seriesData, dateTime, nameSingle) {
+            (seriesData.length == 0)?$(".no_data").show():$(".no_data").hide()
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
                 idObj.removeAttribute("_echarts_instance_");
@@ -759,17 +776,29 @@ var myEcharsCommon = (function () {
                 tooltip: {
                     trigger: 'axis',
                     formatter:function(data){
+                       /* console.log(nameArray[0])
+                        var a
+                        myChart.on('legendselectchanged', function (params) {
+
+                            if( params.name == nameArray[0]){
+                                console.log(params.name);
+                                a = params.name;
+                            }
+
+                        });
+                        console.log(a)*/
+
+
                         var dataTime = data[0].axisValueLabel.split("与");
-
-                        console.log(dataTime[0])
-                        var res = dataTime[0]+'<br/>'+dataTime[1];
+                        var dataTitle = data[0].seriesName.split(" ");
+                        var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value+ '<br/>' + dataTime[1]+" "+dataTitle[3]+" "+data[1].value;
                         return res
-
 
                     }
                 },
                 legend: {
                     data: nameArray,
+                    selectedMode:false,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
                     padding: 10 ,//调节legend的位置
@@ -847,6 +876,7 @@ var myEcharsCommon = (function () {
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
+
         }
     }
 })();

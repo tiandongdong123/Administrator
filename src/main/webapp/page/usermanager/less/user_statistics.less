@@ -74,10 +74,19 @@
       width:1420px;
       margin-left: 5px;
       .content_nav{
+        position: relative;
         height: 40px;
         border-bottom: 1px solid #417dc9;
         background: #f3f7fc;
         margin: 30px 0 5px 0;
+        .no_data{
+          position: absolute;
+          left: 46%;
+          bottom: -230px;
+          font-size: 23px;
+          color: black;
+          display: none;
+        }
         a{
           font-size: 16px;
           color: #000;
@@ -154,6 +163,15 @@
             top: -2px;
             cursor: pointer;
           }
+          p{
+            position: absolute;
+            left: 257px;
+            width: 260px;
+            font-size: 12px;
+            color: red;
+            top: 0px;
+            display: none;
+          }
           .target_list{
             display: none;
             z-index: 10;
@@ -177,6 +195,7 @@
           }
         }
       }
+
       .line_container{
         height: 450px;
         text-align: center;

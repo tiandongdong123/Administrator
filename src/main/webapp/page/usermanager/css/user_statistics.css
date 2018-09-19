@@ -78,10 +78,19 @@
   margin-left: 5px;
 }
 .content-wrapper .user_statistics_content .content_nav {
+  position: relative;
   height: 40px;
   border-bottom: 1px solid #417dc9;
   background: #f3f7fc;
   margin: 30px 0 5px 0;
+}
+.content-wrapper .user_statistics_content .content_nav .no_data {
+  position: absolute;
+  left: 46%;
+  bottom: -230px;
+  font-size: 23px;
+  color: black;
+  display: none;
 }
 .content-wrapper .user_statistics_content .content_nav a {
   font-size: 16px;
@@ -156,6 +165,15 @@
   right: 0;
   top: -2px;
   cursor: pointer;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected p {
+  position: absolute;
+  left: 257px;
+  width: 260px;
+  font-size: 12px;
+  color: red;
+  top: 0px;
+  display: none;
 }
 .content-wrapper .user_statistics_content .target_select_wrapper .target_selected .target_list {
   display: none;

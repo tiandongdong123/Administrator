@@ -54,6 +54,7 @@ input{padding:2px 0 1px;*padding:4px 0 0;_padding:4px 0 0;_height:21px;}
    /* background: #FFF url(../images/icon_date.png) no-repeat 85% 50%;*/
     cursor: pointer;
     font-size: 12px;
+    text-indent: 15px;
 }
 
 .gri_date_month {
