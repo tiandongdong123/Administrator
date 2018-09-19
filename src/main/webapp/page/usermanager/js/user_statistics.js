@@ -147,7 +147,7 @@ $(function () {
                         return;
                     }else{
                         if (startArray_data[1] != endArray_data[1]) {
-                            //跨月
+                            //跨月（不跨周）
                             switch_data.eq(1).addClass("disable_btn");
                             switch_data.eq(2).removeClass("disable_btn");
                             switch_board_week.show();
@@ -301,14 +301,32 @@ $(function () {
             },
             //单个与对比分析图的切换(点击对比)
             dataChecked: function () {
-                var that = this;
+                var that = this,week = false,month = false,week_compare = false,month_compare = false;
                 $(".gri_pc").click(function () {
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
                         that.totalOrNew();
                         $(".gri_data_compare").show();
+                        week = (switch_board_week.css("display") == "none")?true:false;
+                        month = (switch_board_month.css("display") == "none")?true:false;
                         that.stepMonthOrWeekCompare();
+                        week_compare = (switch_board_week.css("display") == "none")?true:false;
+                        month_compare = (switch_board_month.css("display") == "none")?true:false;
+                        if(week && week_compare){
+                            switch_data.eq(1).removeClass("disable_btn");
+                            switch_board_week.hide();
+                        }else{
+                            switch_data.eq(1).addClass("disable_btn");
+                            switch_board_week.show();
+                        }
+                        if(month && month_compare){
+                            switch_data.eq(2).removeClass("disable_btn");
+                            switch_board_month.hide();
+                        }else{
+                            switch_data.eq(2).addClass("disable_btn");
+                            switch_board_month.show();
+                        }
                     } else {
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
@@ -322,8 +340,6 @@ $(function () {
                 //日历图标的变化
                 $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
-
-                    //这里
                 });
                 $("#user_statistics_dataCompare").click(function () {
                     $(".gri_data_compare").css('background-position', '-68px -10px');
@@ -331,8 +347,10 @@ $(function () {
             },
             //日历确定/取消按钮是否点击
             dataSubmitBtn: function () {
-                var that = this;
+                var that = this,week = false,month = false,week_compare = false,month_compare = false;
                 var data_icon = $(".gri_data_compare,.gri_data");
+
+
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     data_icon.css('background-position', '-10px -10px');
@@ -340,17 +358,53 @@ $(function () {
                     that.newData();
                     if($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block"){
                         that.stepMonthOrWeek();//跨月/周的判断
-                        return;
-                    }else{
-                        that.stepMonthOrWeek();//跨月/周的判断
-                        that.stepMonthOrWeekCompare();
+                        week = (switch_board_week.css("display") == "none")?true:false;
+                        month = (switch_board_month.css("display") == "none")?true:false;
+                        if($("#user_statistics_dataCompare").val()){
+                            that.stepMonthOrWeekCompare();
+                            week_compare = (switch_board_week.css("display") == "none")?true:false;
+                            month_compare = (switch_board_month.css("display") == "none")?true:false;
+                            if(week && week_compare){
+                                switch_data.eq(1).removeClass("disable_btn");
+                                switch_board_week.hide();
+                            }else{
+                                switch_data.eq(1).addClass("disable_btn");
+                                switch_board_week.show();
+                            }
+                            if(month && month_compare){
+                                switch_data.eq(2).removeClass("disable_btn");
+                                switch_board_month.hide();
+                            }else{
+                                switch_data.eq(2).addClass("disable_btn");
+                                switch_board_month.show();
+                            }
+                        }
                         return;
                     }
                     if($(".gri_submit_btn").parent().siblings().eq(1).css("display") == "inline-block"){
                         that.stepMonthOrWeekCompare();
+                        week_compare = (switch_board_week.css("display") == "none")?true:false;
+                        month_compare = (switch_board_month.css("display") == "none")?true:false;
                         that.stepMonthOrWeek();
+                        week = (switch_board_week.css("display") == "none")?true:false;
+                        month = (switch_board_month.css("display") == "none")?true:false;
+                        if(week && week_compare){
+                            switch_data.eq(1).removeClass("disable_btn");
+                            switch_board_week.hide();
+                        }else{
+                            switch_data.eq(1).addClass("disable_btn");
+                            switch_board_week.show();
+                        }
+                        if(month && month_compare){
+                            switch_data.eq(2).removeClass("disable_btn");
+                            switch_board_month.hide();
+                        }else{
+                            switch_data.eq(2).addClass("disable_btn");
+                            switch_board_month.show();
+                        }
                     }
                 });
+
                 $(".closeBtn").click(function () {
                     data_icon.css('background-position', '-10px -10px');
                 });
