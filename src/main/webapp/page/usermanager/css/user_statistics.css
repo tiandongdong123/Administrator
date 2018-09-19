@@ -86,10 +86,16 @@
 }
 .content-wrapper .user_statistics_content .content_nav .no_data {
   position: absolute;
-  left: 46%;
-  bottom: -230px;
+  left: 7%;
+  bottom: -452px;
   font-size: 23px;
   color: black;
+  width: 1305px;
+  height: 381px;
+  background: transparent;
+  line-height: 300px;
+  text-align: center;
+  z-index: 1;
   display: none;
 }
 .content-wrapper .user_statistics_content .content_nav a {

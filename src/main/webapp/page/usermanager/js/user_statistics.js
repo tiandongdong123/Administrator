@@ -151,21 +151,13 @@ $(function () {
                         return;
                     }else{
                         if (startArray_data[1] != endArray_data[1]) {
-                            console.log("跨月1")
-
                             //跨月
-                          /*  switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");*/
-
-                           /* switch_data.not(":eq(0)").removeClass("disable_btn");*/
-                          /*  switch_data.eq(0).addClass("switch_bg");*/
                             switch_data.eq(1).addClass("disable_btn");
                             switch_data.eq(2).removeClass("disable_btn");
                             switch_board_week.show();
                             switch_board_month.hide();
                             return;
                         }
-                        console.log("跨什么")
-                        console.log("按日")
                         //按日
                         switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                         switch_data.eq(0).addClass("switch_bg");
@@ -175,7 +167,6 @@ $(function () {
                 }
                 if ((myDate.getDay() + differDay) >= 7) {
                     if (startArray_data[1] != endArray_data[1]) {
-                        console.log("跨月2")
                         //跨月
                         switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                         switch_data.not(":eq(0)").removeClass("disable_btn");
@@ -183,14 +174,12 @@ $(function () {
                         return;
                     }
                     if(myDate.getDay()==1){
-                        console.log("按日")
                         //按日
                         switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                         switch_data.eq(0).addClass("switch_bg");
                         week_month.show();
                         return;
                     }else{
-                        console.log("跨周2")
                         //跨周(起点不是周一)
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -201,26 +190,18 @@ $(function () {
                     }
                 } else {//小于七
                     if (startArray_data[1] != endArray_data[1]) {
-                        console.log("跨月3")
                         //跨月
                         switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
                         switch_data.not(":eq(0)").removeClass("disable_btn");
                         week_month.hide();
                         return;
                     }
-                    console.log("按日")
+                   //按日
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
-                    week_month.show()
+                    week_month.show();
                     return;
                 }
-              /*  if (startArray_data[1] != endArray_data[1]) {
-                    console.log("跨月")
-                    //跨月
-                    switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
-                    switch_data.not(":eq(0)").removeClass("disable_btn");
-                    week_month.hide();
-                }*/
             },
             dayWeekMonth: function (recent) {
                 var that = this;
@@ -275,7 +256,6 @@ $(function () {
             dataSubmitBtn: function () {
                 var that = this;
                 var data_icon = $(".gri_data_compare,.gri_data");
-
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     data_icon.css('background-position', '-10px -10px');
@@ -401,11 +381,6 @@ $(function () {
                     _this.on("click", function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
-                      /*  if(target_item.text() == "有效机构账号"){
-                            $(".target_selected p").show();
-                        }else{
-
-                        }*/
                         (target_item.text() == "有效机构账号")?$(".target_selected p").show():$(".target_selected p").hide()
                         target_item_hidden.val(_this.siblings("input").val());
                         that.getTime();
@@ -580,7 +555,6 @@ $(function () {
                     pageSize = 20;
                 }
                 prevNum = 0;
-
                 that.ajaxPrefilterEvent("../userStatistics/totalDatasheets.do");
                 $.ajax({
                     type: "POST",
@@ -600,7 +574,6 @@ $(function () {
                         $('.sync-html').html(data);
                     }
                 });
-
             },
             //新增table表
             newTable: function () {
@@ -684,8 +657,7 @@ $(function () {
 var myEcharsCommon = (function () {
     return {
         commonLine: function (id, seriesData, dateTime, nameSingle) {
-            alert();
-            (seriesData.length == 0)?$(".no_data").show():$(".no_data").hide()
+            (seriesData.length == 0)?$(".no_data").show():$(".no_data").hide();
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
                 idObj.removeAttribute("_echarts_instance_");
@@ -777,24 +749,10 @@ var myEcharsCommon = (function () {
                 tooltip: {
                     trigger: 'axis',
                     formatter:function(data){
-                       /* console.log(nameArray[0])
-                        var a
-                        myChart.on('legendselectchanged', function (params) {
-
-                            if( params.name == nameArray[0]){
-                                console.log(params.name);
-                                a = params.name;
-                            }
-
-                        });
-                        console.log(a)*/
-
-
                         var dataTime = data[0].axisValueLabel.split("与");
                         var dataTitle = data[0].seriesName.split(" ");
                         var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value+ '<br/>' + dataTime[1]+" "+dataTitle[3]+" "+data[1].value;
                         return res
-
                     }
                 },
                 legend: {
@@ -877,7 +835,6 @@ var myEcharsCommon = (function () {
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
             }
-
         }
     }
 })();
