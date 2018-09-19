@@ -391,12 +391,6 @@ $(function () {
             //总数/新增table表的变化
             totalOrNew: function () {
                 var that = this;
-               /* if ($("#contentNavHidden").val() == "total") {
-                    that.totalTable();
-                }
-                if ($("#contentNavHidden").val() == "new") {
-                    that.newTable();
-                }*/
                 ($("#contentNavHidden").val() == "total")? that.totalTable():that.newTable();
             },
             //各指标的选取分析图的变化
@@ -648,10 +642,16 @@ $(function () {
             allOrNew: function () {
                 var that = this;
                 new_num.click(function () {
+                    if($(".target_item").text() == "有效机构账号"){
+                        $(".target_item").text("个人用户");
+                        $(".target_item_hidden").val("person_user");
+                        $(".target_selected p").hide();
+                    }
                     new_increased_num.show();
                     $(".valid_institution_account").hide();
                     that.newTable();
                     that.getTime();
+
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
@@ -684,6 +684,7 @@ $(function () {
 var myEcharsCommon = (function () {
     return {
         commonLine: function (id, seriesData, dateTime, nameSingle) {
+            alert();
             (seriesData.length == 0)?$(".no_data").show():$(".no_data").hide()
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
