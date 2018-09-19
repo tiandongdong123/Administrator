@@ -79,7 +79,6 @@ $(function () {
                 var that = this;
                 var selectedVal, indexType, navTitle, data_compare_array, startCompareDate, endCompareDate,data_array,startDate, endDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
-                console.log(selectedVal);
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
                 data_array = $("#user_statistics_data").val().split("至");
@@ -304,6 +303,8 @@ $(function () {
             dataChecked: function () {
                 var that = this,week = false,month = false,week_compare = false,month_compare = false;
                 $(".gri_pc").click(function () {
+                    selected_data.children(".switch_data_hidden").val(1);
+                    that.getTime();
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
