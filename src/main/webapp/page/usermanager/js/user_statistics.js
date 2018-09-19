@@ -839,8 +839,12 @@ var myEcharsCommon = (function () {
                     formatter:function(data){
                         var dataTime = data[0].axisValueLabel.split("与");
                         var dataTitle = data[0].seriesName.split(" ");
-                        var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value+ '<br/>' + dataTime[1]+" "+dataTitle[3]+" "+data[1].value;
-                        return res
+                        if(data[1]){
+                            var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value+ '<br/>' + dataTime[1]+" "+dataTitle[3]+" "+data[1].value;
+                        }else{
+                            var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value
+                        }
+                         return res
                     }
                 },
                 legend: {
