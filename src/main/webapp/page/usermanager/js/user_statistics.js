@@ -342,9 +342,11 @@ $(function () {
                     that.newData();
                     if($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block"){
                         that.stepMonthOrWeek();//跨月/周的判断
+                        return;
                     }else{
                         that.stepMonthOrWeek();//跨月/周的判断
                         that.stepMonthOrWeekCompare();
+                        return;
                     }
                     if($(".gri_submit_btn").parent().siblings().eq(1).css("display") == "inline-block"){
                         that.stepMonthOrWeekCompare();
