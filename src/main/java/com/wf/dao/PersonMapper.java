@@ -145,14 +145,6 @@ public interface PersonMapper {
 	 * @return
 	 */
 	List<String> getSubaccount(@Param("pid") String pid);
-
-	/**
-	 * 用户统计数据/天
-	 * @param dateTime
-	 * @return
-	 */
-	UserStatistics selectStatisticsByDate(String dateTime);
-
 	/**
 	 * 当天机构数量
 	 */
