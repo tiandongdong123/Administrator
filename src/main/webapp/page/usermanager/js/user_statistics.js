@@ -52,6 +52,8 @@ $(function () {
                         if (!$(".gri_pc").get(0).checked) {
                             $("#user_statistics_dataCompare").val("")
                         }
+
+                        $(".switch_data_hidden").val(1)
                         that.getTime();
                     },
                 });
