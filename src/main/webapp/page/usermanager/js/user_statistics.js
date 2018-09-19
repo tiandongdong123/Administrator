@@ -173,7 +173,7 @@ $(function () {
                         week_month.hide();
                         return;
                     }
-                    if(myDate.getDay()==1){
+                    if(myDate.getDay()==1 && differDay == 6){
                         //按日
                         switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                         switch_data.eq(0).addClass("switch_bg");
@@ -197,6 +197,90 @@ $(function () {
                         return;
                     }
                    //按日
+                    switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                    switch_data.eq(0).addClass("switch_bg");
+                    week_month.show();
+                    return;
+                }
+            },
+            stepMonthOrWeekCompare: function () {
+                var data_arry, startDate, endDate, startArray_data, endArray_data, myDate, differDay, endMyDate;
+                data_arry = $("#user_statistics_dataCompare").val().split("至");
+                startDate = data_arry[0].trim();
+                endDate = data_arry[1].trim();
+                startArray_data = startDate.split("-");
+                endArray_data = endDate.split("-");
+                myDate = new Date(startArray_data[0], startArray_data[1] - 1, startArray_data[2]);
+                endMyDate = new Date(endArray_data[0], endArray_data[1] - 1, endArray_data[2]);
+                myDate.getDay();
+                differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+                console.log(startArray_data[1])
+                console.log(endArray_data[1])
+                if (myDate.getTime() == endMyDate.getTime()) {
+                    console.log("按日")
+                    switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                    switch_data.eq(0).addClass("switch_bg");
+                    week_month.show();
+                    return;
+                }
+                if((myDate.getDay() + differDay) <= 6){
+                    if(myDate.getDay() == 0){
+                        console.log("跨周")
+                        //跨周
+                        switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                        switch_board_week.hide();
+                        switch_board_month.show();
+                        switch_data.eq(0).addClass("switch_bg");
+                        switch_data.eq(2).addClass("disable_btn");
+                        return;
+                    }else{
+                        if (startArray_data[1] != endArray_data[1]) {
+                            //跨月
+                            switch_data.eq(1).addClass("disable_btn");
+                            switch_data.eq(2).removeClass("disable_btn");
+                            switch_board_week.show();
+                            switch_board_month.hide();
+                            return;
+                        }
+                        //按日
+                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                        switch_data.eq(0).addClass("switch_bg");
+                        week_month.show();
+                        return;
+                    }
+                }
+                if ((myDate.getDay() + differDay) >= 7) {
+                    if (startArray_data[1] != endArray_data[1]) {
+                        //跨月
+                        switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                        switch_data.not(":eq(0)").removeClass("disable_btn");
+                        week_month.hide();
+                        return;
+                    }
+                    if(myDate.getDay()==1 && differDay == 6){
+                        //按日
+                        switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
+                        switch_data.eq(0).addClass("switch_bg");
+                        week_month.show();
+                        return;
+                    }else{
+                        //跨周(起点不是周一)
+                        switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
+                        switch_board_week.hide();
+                        switch_board_month.show();
+                        switch_data.eq(0).addClass("switch_bg");
+                        switch_data.eq(2).addClass("disable_btn");
+                        return;
+                    }
+                } else {//小于七
+                    if (startArray_data[1] != endArray_data[1]) {
+                        //跨月
+                        switch_data.removeClass("switch_bg").eq(0).addClass("switch_bg");
+                        switch_data.not(":eq(0)").removeClass("disable_btn");
+                        week_month.hide();
+                        return;
+                    }
+                    //按日
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
@@ -232,6 +316,8 @@ $(function () {
                         lineContainer.hide();
                         that.totalOrNew();
                         $(".gri_data_compare").show();
+                        that.stepMonthOrWeekCompare();
+                        that.stepMonthOrWeek();
 
                     } else {
                         $("#user_statistics_dataCompare").val(" ");
@@ -240,6 +326,7 @@ $(function () {
                         lineContainer.show();
                         $(".gri_data_compare").css('background-position', '-10px -10px');
                         $(".gri_data_compare").hide();
+                        that.stepMonthOrWeek();
                     }
                 });
                 //日历图标的变化
@@ -262,6 +349,10 @@ $(function () {
                     that.totalOrNew();
                     that.newData();
                     that.stepMonthOrWeek();//跨月/周的判断
+                    if($("#user_statistics_dataCompare").val()){
+                        that.stepMonthOrWeekCompare();
+                     /*   alert();*/
+                    }
                 });
                 $(".closeBtn").click(function () {
                     data_icon.css('background-position', '-10px -10px');
