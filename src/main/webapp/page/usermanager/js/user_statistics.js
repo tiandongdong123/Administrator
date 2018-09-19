@@ -339,6 +339,7 @@ $(function () {
                         that.stepMonthOrWeek();
                     }
                 });
+
                 //日历图标的变化
                 $("#user_statistics_data").click(function () {
                     $(".gri_data").css('background-position', '-68px -10px');
