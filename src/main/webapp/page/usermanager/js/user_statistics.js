@@ -737,7 +737,7 @@ var myEcharsCommon = (function () {
         },
 
         lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
-            (seriesData.length == 0 && compareData.length==0)?$(".no_data").show():$(".no_data").hide();
+            (selectData.length == 0 && compareData.length==0)?$(".no_data").show():$(".no_data").hide();
             var dom = document.getElementById(idName);
             if (dom.hasAttribute("_echarts_instance_")) {
                 dom.removeAttribute("_echarts_instance_");
