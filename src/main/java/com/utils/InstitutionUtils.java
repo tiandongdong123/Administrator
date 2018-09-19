@@ -750,7 +750,11 @@ public class InstitutionUtils {
 				query.append(" (StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"]) ");
 			}
 			if(StringUtils.isEmpty((String) map.get("userId"))){
-				query.append(" AND UserType:2 ");
+				if(query.length()>0){
+					query.append(" AND UserType:2 ");
+				}else{
+					query.append(" UserType:2 ");
+				}
 			}
 			
 			sq.setQuery(query.toString());
