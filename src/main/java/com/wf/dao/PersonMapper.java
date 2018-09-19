@@ -31,15 +31,9 @@ public interface PersonMapper {
 
 	/** 更新用户解冻/冻结状态 */
 	int updateUserFreeze(Map<String, String> map);
-
-	/** 查询用户列表信息 */
-	List<Object> findListInfo(Map<String, Object> map);
 	
 	/** 查询用户列表信息(优化) */
 	List<Object> findListInfoSimp(Map<String, Object> map);
-
-	/** 查询用户列表总数 */
-	int findListCount(Map<String, Object> map);
 	
 	/** 查询用户列表总数(优化) */
 	int findListCountSimp(Map<String, Object> map);
@@ -73,7 +67,9 @@ public interface PersonMapper {
 	List<Map<String, Object>> findInstitutionAdmin(@Param("institution")String institution, @Param("userId")String userId);
 
 	/** 通过机构账号查询机构子账号列表 */
-	List<Map<String, Object>> sonAccountNumber(Map<String, Object> map);
+	List<Object> sonAccountNumber(Map<String, Object> map);
+	/**统计条数**/
+	int sonAccountNumberCount(Map<String, Object> map);
 	
 	/** 更新机构名称 */
 	void updateAllInstitution(Map<String, Object> map);
@@ -90,6 +86,12 @@ public interface PersonMapper {
 	 * @return
 	 */
 	List<Map<String, Object>> getAllInstitutional(@Param("institution")String institution);
+	/**
+	 * 根据机构名称查询所有用户
+	 * @param institution
+	 * @return
+	 */
+	List<Person> findInstitutionAllUser(@Param("institution")String institution);
 	
 	/**
 	 * 根据用户ID查询用户类型

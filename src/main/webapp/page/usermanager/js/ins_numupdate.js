@@ -70,7 +70,7 @@ function submitForm(){
 	var userId = $("#userId").val();
 	var adminname = $("#adminname").val();
 	var userDinding = $("#user_dinding").prop('checked');
-	$("#submit").attr({disabled: "disabled"});
+	addAtrr();
 	if(userDinding){
 		var reg = /^[1-9]\d*$/;
 		var bool = false;
@@ -111,64 +111,135 @@ function submitForm(){
         }
         $("#fromList").data('bootstrapValidator').resetForm();
 		if(bool){
+			removeAtrr();
 			return ;
 		}
 	}
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else if(ip!="" && !IpFormat(ip)){
-		layer.msg("机构账号IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		layer.msg("机构账号IP段不合法，请填写规范的IP段",{icon: 2});
+		removeAtrr();
 		return false;
 	}else if(adminIP!="" && !IpFormat(adminIP)){
-		layer.msg("管理员IP段格式有误",{icon: 2});
-		$("#submit").removeAttr("disabled");
+		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
+		removeAtrr();
 		return false;
 	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
-		var data = new FormData($('#fromList')[0]);
-        var openBindStart = data.get('openBindStart');
-        var openBindEnd = data.get('openBindEnd');
-        if(openBindStart){
-            data.set('openBindStart',openBindStart+' 00:00:00');
-        }
-        if(openBindEnd){
-            data.set('openBindEnd',openBindEnd+' 23:59:59');
-        }
-        var isCheckedMe = $('#isPublishEmail').is(':checked');
-        data.append('send',isCheckedMe);
-		$.ajax({
-			url: '../auser/updateinfo.do',
-			type: 'POST',
-			data: data,
-			cache: false,
-			processData: false,
-			contentType: false
-		}).done(function(data){
-			if(data.flag=="success"){
-	    		layer.alert("更新成功", {
-	    			icon: 1,
-	    		    skin: 'layui-layer-molv',
-	    		    btn: ['确定'], //按钮
-	    		    yes: function(){
-	    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
-	    		    }
-	    		});
-			}else{
-				if(data.fail!=null){
-					layer.msg(data.fail, {icon: 2});
-				}else{
-					layer.msg("更新失败，请联系管理员", {icon: 2});
-				}
-			}
-			$("#submit").removeAttr("disabled");
-		});
+		var olds=$("#oldInstitution").val();
+		var institution=$("#institution").val();
+		if(olds!=institution){
+			 validateUserInstitution(olds,institution);
+		}else{
+			updateUser();
+		}
 	}
 }
 
+function validateUserInstitution(olds,institution){
+	$.ajax({
+		type : "post",
+		url : "../auser/findInstitutionAllUser.do",
+		data:{"institution":olds},
+		success: function(data){
+			var html="";
+			var admin=data.admin;
+			var user=data.user;
+			var num=0;
+			if(user!=null){
+				html+="该机构下的机构账号有：</br>";
+				var array=user.split(",");
+				for(ar in array){
+					html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+				}
+				num+=array.length;
+			}
+			if(admin!=null){
+				html+="该机构下的机构管理员有：</br>";
+				var array=admin.split(",");
+				for(ar in array){
+					html+=(parseInt(ar)+1)+"、"+array[ar]+"</br>";
+				}
+				num+=array.length;
+			}
+			if(num>1){
+				if(user!=null&&admin!=null){
+					html+="确定要同时修改所有机构账号及机构管理员的机构名称吗？";
+				}else if(admin==null){
+					html+="确定要同时修改所有机构账号的机构名称吗？";
+				}
+				layer.alert(html,{
+					icon: 1,
+					title : ["确认", true],
+				    skin: 'layui-layer-molv',
+				    btn: ['确定','取消'],
+				    yes: function(){
+				    	updateUser();
+				    }
+				});
+				removeAtrr();
+			}else{
+		    	updateUser();
+			}
+		}
+	});
+}
+
+function updateUser(){
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    var userId = $("#userId").val();
+    data.append('send',isCheckedMe);
+	$.ajax({
+		url: '../auser/updateinfo.do',
+		type: 'POST',
+		data: data,
+		cache: false,
+		processData: false,
+		contentType: false
+	}).done(function(data){
+		if(data.flag=="success"){
+    		layer.alert("更新成功", {
+    			icon: 1,
+    		    skin: 'layui-layer-molv',
+    		    btn: ['确定'], //按钮
+    		    yes: function(){
+    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+    		    }
+    		});
+		}else{
+			if(data.flag=='fail'){
+				layer.msg(data.fail, {icon: 2});
+			}else if(data.flag=='error'){
+	    		layer.alert(data.fail, {
+	    			icon: 2,
+	    			title: '提示',
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['继续修改'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+	    		    }
+	    		});
+			}else{
+				layer.msg("更新失败，请联系管理员", {icon: 2});
+			}
+		}
+		removeAtrr();
+	});
+
+}
 
 function openItems(count,i,type){
 	$("#tabs_custom_"+count+"_"+i).find("li").removeClass("active");
@@ -502,4 +573,59 @@ function findPatentEcho(num){
 			}
 		}
 	});
+}
+
+//余额转化为限时，限时转化为余额
+function changeLimit(obj,i){
+	var channelid=$("#pro_GBalanceLimit").val();
+	if(channelid==undefined || channelid==null){
+		channelid=$("#pro_GTimeLimit").val();
+	}
+	var changeFront=$("#changeFront").val();
+	if(changeFront==null||changeFront==''){
+		$("#changeFront").val(channelid);
+	}
+	var msg="";
+	if(channelid=='GBalanceLimit'){
+		msg="确定要将余额账号转换为限时账号吗？";
+	}else if(channelid=='GTimeLimit'){
+		msg="确定要将限时账号转换为余额账号吗？";
+	}
+	layer.alert(msg,{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+			if(channelid=='GTimeLimit'){
+				$("#pro_"+channelid).attr("id","pro_GBalanceLimit");
+				$("#buttonspan_"+i).html("余额转限时");
+				$("#proname"+i).html('资源余额');
+				$("input[name='rdlist["+i+"].projectname']").val('资源余额');
+				$("#pro_GBalanceLimit").val('GBalanceLimit');
+				$("input[name='rdlist["+i+"].projectType']").val('balance');
+				$("#time_money_"+i).html('<span><b>*</b>金额</span><input name="rdlist['+i+'].totalMoney" type="text" value="0" onkeyup="checkMoney(this);" onafterpaste="checkMoney(this);" maxlength="9"><span style="margin-left:15px;color:#00B2FF;">项目余额：0元</span>');
+			}else if(channelid=='GBalanceLimit'){
+				$("#pro_"+channelid).attr("id","pro_GTimeLimit");
+				$("#buttonspan_"+i).html("限时转余额");
+				$("#proname"+i).html('资源限时');
+				$("input[name='rdlist["+i+"].projectname']").val('资源限时');
+				$("#pro_GTimeLimit").val('GTimeLimit');
+				$("input[name='rdlist["+i+"].projectType']").val('time');
+				$("#time_money_"+i).html('');
+				$("input[name='rdlist["+i+"].validityEndtime2']").val('');
+				$("input[name='rdlist["+i+"].validityStarttime2']").val('');
+			}
+	    	layer.closeAll();
+	    }
+	});
+}
+
+function removeAtrr(){
+	$("#submit").removeAttr("disabled");
+	$("#submit1").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit").attr({disabled: "disabled"});
+	$("#submit1").attr({disabled: "disabled"});
 }

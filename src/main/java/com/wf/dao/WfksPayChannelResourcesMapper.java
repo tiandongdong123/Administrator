@@ -25,6 +25,9 @@ public interface WfksPayChannelResourcesMapper {
     
     /** 查询一个用户购买项目下的资源库 */
     List<Map<String, Object>> selectProjectLibrary(Map<String, Object> map);
+    /** 查询一个用户购买项目下的的中文名字 */
+    List<Map<String, String>> selectProjectLibraryName(String userId);
+    
     
     /** 查询用户购买项目下资源库的产品 */
     List<Map<String, Object>> selectProduct(Map<String, Object> map);

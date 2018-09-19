@@ -15,24 +15,38 @@
     mappingid, id_accounttype, id_key, relatedid_accounttype, relatedid_key, begintime, 
     endtime, last_updatetime
   </sql>
-  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="getWfksAccountidByRelatedidKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping where relatedid_key = #{relatedidKey,jdbcType=VARCHAR}
+  </select>
+  <select id="getWfksAccountidByIdKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from wfks_accountid_mapping where id_key = #{idKey,jdbcType=VARCHAR}
+  </select>
+  <select id="getWfksAccountid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from wfks_accountid_mapping
-    where id_key = #{idKey,jdbcType=VARCHAR}
-    and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+    where relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
   </select>
-
-  <select id="selectAllByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
+  
+  <select id="getWfksAccountidLimit" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
     <include refid="Base_Column_List" />
-    from wfks_accountid_mapping
-    where id_key = #{idKey,jdbcType=VARCHAR}
+    from wfks_accountid_mapping where id_accounttype = #{idAccounttype,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteByUserId" parameterType="java.lang.String" >
-    delete from wfks_accountid_mapping where id_key = #{idKey,jdbcType=VARCHAR} 
-    and relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR}
+    delete from wfks_accountid_mapping where relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteByUserIdAndType" parameterType="java.lang.String" >
+    delete from wfks_accountid_mapping where id_accounttype = #{idAccounttype,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByIdKeyRelatedId" parameterType="java.lang.String" >
+    delete from wfks_accountid_mapping where relatedid_key = #{relatedidKey,jdbcType=VARCHAR} and id_key = #{idKey,jdbcType=VARCHAR}
   </delete>
   
   <insert id="insert" parameterType="com.wf.bean.WfksAccountidMapping" >
@@ -43,107 +57,4 @@
       #{relatedidAccounttype,jdbcType=VARCHAR}, #{relatedidKey,jdbcType=VARCHAR}, #{begintime,jdbcType=TIMESTAMP}, 
       #{endtime,jdbcType=TIMESTAMP}, #{lastUpdatetime,jdbcType=TIMESTAMP})
   </insert>
-  
-  <insert id="insertSelective" parameterType="com.wf.bean.WfksAccountidMapping" >
-    insert into wfks_accountid_mapping
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="mappingid != null" >
-        mappingid,
-      </if>
-      <if test="idAccounttype != null" >
-        id_accounttype,
-      </if>
-      <if test="idKey != null" >
-        id_key,
-      </if>
-      <if test="relatedidAccounttype != null" >
-        relatedid_accounttype,
-      </if>
-      <if test="relatedidKey != null" >
-        relatedid_key,
-      </if>
-      <if test="begintime != null" >
-        begintime,
-      </if>
-      <if test="endtime != null" >
-        endtime,
-      </if>
-      <if test="lastUpdatetime != null" >
-        last_updatetime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="mappingid != null" >
-        #{mappingid,jdbcType=VARCHAR},
-      </if>
-      <if test="idAccounttype != null" >
-        #{idAccounttype,jdbcType=VARCHAR},
-      </if>
-      <if test="idKey != null" >
-        #{idKey,jdbcType=VARCHAR},
-      </if>
-      <if test="relatedidAccounttype != null" >
-        #{relatedidAccounttype,jdbcType=VARCHAR},
-      </if>
-      <if test="relatedidKey != null" >
-        #{relatedidKey,jdbcType=VARCHAR},
-      </if>
-      <if test="begintime != null" >
-        #{begintime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endtime != null" >
-        #{endtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatetime != null" >
-        #{lastUpdatetime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  
-  <update id="updateByPrimaryKeySelective" parameterType="com.wf.bean.WfksAccountidMapping" >
-    update wfks_accountid_mapping
-    <set >
-      <if test="idAccounttype != null" >
-        id_accounttype = #{idAccounttype,jdbcType=VARCHAR},
-      </if>
-      <if test="idKey != null" >
-        id_key = #{idKey,jdbcType=VARCHAR},
-      </if>
-      <if test="relatedidAccounttype != null" >
-        relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR},
-      </if>
-      <if test="relatedidKey != null" >
-        relatedid_key = #{relatedidKey,jdbcType=VARCHAR},
-      </if>
-      <if test="begintime != null" >
-        begintime = #{begintime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endtime != null" >
-        endtime = #{endtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatetime != null" >
-        last_updatetime = #{lastUpdatetime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where mappingid = #{mappingid,jdbcType=VARCHAR}
-  </update>
-  
-  <update id="updateByPrimaryKey" parameterType="com.wf.bean.WfksAccountidMapping" >
-    update wfks_accountid_mapping
-    set id_accounttype = #{idAccounttype,jdbcType=VARCHAR},
-      id_key = #{idKey,jdbcType=VARCHAR},
-      relatedid_accounttype = #{relatedidAccounttype,jdbcType=VARCHAR},
-      relatedid_key = #{relatedidKey,jdbcType=VARCHAR},
-      begintime = #{begintime,jdbcType=TIMESTAMP},
-      endtime = #{endtime,jdbcType=TIMESTAMP},
-      last_updatetime = #{lastUpdatetime,jdbcType=TIMESTAMP}
-    where mappingid = #{mappingid,jdbcType=VARCHAR}
-  </update>
-  
-    <select id="selectByRelateIdKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from wfks_accountid_mapping
-    where relatedid_key = #{relatedidKey,jdbcType=VARCHAR}
-  </select>
 </mapper>

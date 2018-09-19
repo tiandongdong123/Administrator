@@ -96,7 +96,7 @@
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<qq-connect.version>1.00</qq-connect.version>
 		<javax.mail.version>1.4.7</javax.mail.version>
-		<wanfang.version>1.2017.346</wanfang.version>
+		<wanfang.version>1.2018.606</wanfang.version>
 		<!-- 二维码 -->
 		<zxing.version>3.3.0</zxing.version>
 
@@ -138,7 +138,7 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>resource-update-tools</artifactId>
-			<version>1.2018.16</version>
+			<version>1.2018.29</version>
 		</dependency>
 		<!-- db mysql -->
 		<dependency>
@@ -583,28 +583,28 @@
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>wf-cas-api</artifactId>
-			<version>${wanfang.version}</version>
+			<version>1.2018.211</version>
 		</dependency>
 		<!-- 购买项目（充值） -->
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>authentication-api</artifactId>
-			<version>${wanfang.version}</version>
+			<version>1.2018.211</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-api</artifactId>
-			<version>1.2018.380</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-setting</artifactId>
-			<version>1.2018.380</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wanfangdata</groupId>
 			<artifactId>accounting-dao-api</artifactId>
-			<version>1.2018.380</version>
+			<version>${wanfang.version}</version>
 		</dependency>
 
 		<!-- POI包 -->

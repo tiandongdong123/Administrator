@@ -5,20 +5,20 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import wfks.accounting.setting.PayChannelModel;
 
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
-import com.wf.bean.Authority;
-import com.wf.bean.AuthoritySetting;
 import com.wf.bean.BindAuthorityModel;
-import com.wf.bean.CommonEntity;
+import com.wf.bean.GroupInfo;
+import com.wf.bean.InstitutionalUser;
 import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.StandardUnit;
-import com.wf.bean.UserBoughtItems;
+import com.wf.bean.UserAccountRestriction;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
 import com.wf.bean.WarningInfo;
@@ -26,6 +26,14 @@ import com.wf.bean.WfksAccountidMapping;
 import com.wf.bean.WfksUserSetting;
 
 public interface AheadUserService {
+	/** 机构账号注册 */
+	boolean registerInfo(InstitutionalUser user);
+	/** 机构账号修改 **/
+	boolean updateinfo(InstitutionalUser user);
+	/**批量机构帐号注册**/
+	boolean batchRegisterInfo(InstitutionalUser user,Map<String,Object> map);
+	/**批量机构帐号注册**/
+	boolean batchUpdateInfo(InstitutionalUser user,Map<String,Object> map);
 	
 	/** 查询预警信息 */
 	WarningInfo findWarning();
@@ -37,19 +45,16 @@ public interface AheadUserService {
 	int addWarning(Integer amountthreshold,Integer datethreshold,Integer remindtime,String remindemail,Integer countthreshold);
 
 	/** 获取Excel机构用户 */
-	List<Map<String, Object>> getExcelData(MultipartFile file);
+	List<Map<String, Object>> getExcelData(MultipartFile file,Map<String,Object> errorMap,List<Map<String,String>> errorList);
 	
 	/** 机构账号注册 */
-	int addRegisterInfo(CommonEntity com);
+	int addRegisterInfo(InstitutionalUser user);
 	
 	/** 添加机构管理员 */
-	int addRegisterAdmin(CommonEntity com);
-	
-	/** 批量更新机构账号<批量修改>(当前账号无管理员添加新的，已有管理员不做任何操作) */
-	int updateRegisterInfo(CommonEntity com,String pid,String adminId);
+	int addRegisterAdmin(InstitutionalUser user);
 	
 	/** 更新机构管理员 */
-	int updateRegisterAdmin(CommonEntity com);
+	int updateRegisterAdmin(InstitutionalUser user);
 	
 	/** 通过用户名查询用户信息 */
 	Person queryPersonInfo(String userId);
@@ -61,7 +66,7 @@ public interface AheadUserService {
 	int updateUserFreeze(String str, String redio);
 
     /** 查询机构账号列表信息 */
-	PageList findListInfo(Map<String, Object> map);
+	PageList findListInfo(Map<String, Object> map) throws Exception;
 
 	/** 添加/移除机构管理员 */
 	int updatePid(Map<String, Object> map);
@@ -73,40 +78,33 @@ public interface AheadUserService {
 	Map<String, Object> findInfoByPid(String pid);
 
 	/** 添加账号ip */
-	void addUserIp(CommonEntity com);
+	void addUserIp(InstitutionalUser user);
 
 	/** 添加管理员ip */
-	void addUserAdminIp(CommonEntity com);
+	void addUserAdminIp(InstitutionalUser user);
 	
-	/** 添加账号限制信息 */
-	int addAccountRestriction(CommonEntity com);
-
-	/** 添加余额信息 */
-	int addProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
-
+	/** 机构子账号处理 */
+	int setAccountRestriction(InstitutionalUser user,boolean isReset);
+	int setPartAccountRestriction(InstitutionalUser user);
+	UserAccountRestriction getAccountRestriction(String userId);
+	
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
-
-	/** 添加系统次数信息 */
-	int addProjectNumber(CommonEntity com, ResourceDetailedDTO dto,String adminId) throws Exception;
+	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId);
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
 	
 	/** 更新系统次数信息 */
-	int chargeCountLimitUser(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
 	
 	/** 添加项目资源信息 */
-	void addProjectResources(CommonEntity com, ResourceDetailedDTO dto);
+	void addProjectResources(InstitutionalUser user, ResourceDetailedDTO dto);
 	
 	/** 更新项目资源信息 */
-	void updateProjectResources(CommonEntity com, ResourceDetailedDTO dto);
+	void updateProjectResources(InstitutionalUser user, ResourceDetailedDTO dto);
 
 	/** 通过userId更新用户ip */
-	void updateUserIp(CommonEntity com);
-
-	/** 通过userId更新用户限制 */
-	int updateAccountRestriction(CommonEntity com);
+	void updateUserIp(InstitutionalUser user);
 	
 	/** 通过userId获取购买项目信息 */
 	List<Map<String, Object>> getProjectInfo(String userId);
@@ -128,13 +126,10 @@ public interface AheadUserService {
 	/** 根据user_id查询ip信息  */
 	List<Map<String, Object>> listIpByUserId(String userId);
 
-	/** 通过机构名称获取所属管理员 
-	 * @param pid */
+	/** 通过机构名称获取所属管理员  */
 	List<Map<String, Object>> findInstitutionAdmin(String institution, String userId);
-
-	/** 通过机构账号查询机构子账号列表 
-	 * @param sonId */
-	List<Map<String, Object>> sonAccountNumber(String userId, String sonId, String start_time, String end_time);
+	/** 通过机构名称获取所属管理员 */
+	PageList getSonaccount(Map<String,Object> map);
 
 	/** 获取购买项目 */
 	List<PayChannelModel> purchaseProject();
@@ -153,38 +148,31 @@ public interface AheadUserService {
 
 	/** 删除购买详情（权限） 
 	 * @param b */
-	void deleteResources(CommonEntity com, ResourceDetailedDTO dto, boolean b);
+	void deleteResources(InstitutionalUser user, ResourceDetailedDTO dto, boolean b);
+	/** 删除购买详情（权限） 
+	 * @param b */
+	void deleteResources(String userId,String projectId);
 
 	/** 修改机构名称 */
 	void updateInstitution(String institution, String oldins);
 
 	/** 账号修改 */
-	int updateUserInfo(CommonEntity com, String adminId);
+	int updateUserInfo(InstitutionalUser user);
 
 	/** 删除购买项目（逻辑删除） */
-	int deleteAccount(CommonEntity com, ResourceDetailedDTO dto, String adminId) throws Exception;
+	int deleteAccount(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
+	/** 删除购买项目（逻辑删除） */
+	int deleteChangeAccount(InstitutionalUser user, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
 
-	/** 设置服务权限 */
-	int setAddauthority(Authority authority,Person person);
-
+	/** 创建党建管理员 **/
+	int setPartyAdmin(InstitutionalUser user);
 	/** 查询服务权限信息 */
-	WfksAccountidMapping getAddauthority(String userId, String msg);
-
-	WfksUserSetting getUserSetting(String userId, String msg);
-	
-	WfksUserSetting[] getUserSetting2(String userId,String type);
-
-	WfksAccountidMapping[] getAddauthorityByUserId(String userId);
-
-	WfksUserSetting[] getUserSettingByUserId(String userId);
-	
+	WfksUserSetting[] getUserSetting(String userId,String type);
 	/**根据用户id数组查询用户信息*/
 	List<Person> queryPersonInId(List<String> userIds);
-	/**获取权限列表*/
-	List<AuthoritySetting> getAuthoritySettingList();
 	
 	/**
 	 * 根据条件查询标准机构
@@ -198,7 +186,7 @@ public interface AheadUserService {
 	 * 添加用户机构权限
 	 * @param com
 	 */
-	void addUserIns(CommonEntity com);
+	void addUserIns(InstitutionalUser user);
 
 
 	/**
@@ -238,21 +226,43 @@ public interface AheadUserService {
 	 * @return
 	 */
 	List<String> checkBindLimit(List<Map<String, Object>> listMap,Integer bindLimit);
-
+	/** 获取  **/
+	UserInstitution getUserInstitution(String userId);
+	/**判断余额和限次是否为大于等于0,是否大于最大值*/
+	Double checkValue(InstitutionalUser user, ResourceDetailedDTO dto) throws Exception;
+	/**获取子账号列表*/
+	void updateSubaccount(InstitutionalUser user,String adminId) throws Exception;
+	/** 保存机构用户权限 **/
+	void addWfksAccountidMapping(InstitutionalUser user);
+	/** 修改机构用户权限 **/
+	void updateWfksAccountidMapping(InstitutionalUser user);
+	/** 获取机构用户权限 **/
+	WfksAccountidMapping[] getWfksAccountidLimit(String userId, String type);
+	WfksAccountidMapping[] getWfksAccountid(String userId,String type);
+	WfksAccountidMapping[]  getWfksAccountidByRelatedidKey(String relatedidKey);
 	/**
-	 * 获取
+	 * 查询该机构名下的所有机构管理员
+	 */
+	List<Person> findInstitutionAllUser(String institution);
+	
+	/**
+	 * 新增机构用户权限
+	 * @param com
+	 * @return
+	 */
+	int addGroupInfo(InstitutionalUser user);
+	
+	/**
+	 * 修改机构用户权限
+	 * @param com
+	 * @return
+	 */
+	int updateGroupInfo(GroupInfo info);
+	
+	/**
+	 * 根据userId查询机构用户权限
 	 * @param userId
 	 * @return
 	 */
-	UserInstitution getUserInstitution(String userId);
-	/**判断余额和限次是否为大于等于0*/
-	boolean checkLimit(CommonEntity com, ResourceDetailedDTO dto) throws Exception;
-	/**添加机构用户购买项目表*/
-	void addUserBoughtItems(CommonEntity com);
-	/**修改机构用户购买项目表*/
-	void updateUserBoughtItems(CommonEntity com);
-	/**根据机构用户ID获取购买项目信息*/
-	List<UserBoughtItems> getUserBoughtItems(String userId);
-	/**获取子账号列表*/
-	void updateSubaccount(CommonEntity com,String adminId) throws Exception;
+	GroupInfo getGroupInfo(String userId);
 }

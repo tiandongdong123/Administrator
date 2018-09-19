@@ -123,16 +123,18 @@
 	          <li <?if(!strutil.contain(session.purviews,"机构用户")){?>style="display:none"<?}?>>
 		          <a href=""><i class="fa fa-circle-o"></i> 机构用户<i class="fa fa-angle-left pull-right"></i></a>
 		          <ul class="treeview-menu menu-open" style="display: block;">
-		            <li <?if(!strutil.contain(session.purviews,"机构用户信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../auser/toInformation.do"><i class="fa fa-circle-o"></i>机构用户信息管理</a></li>
+		            <li <?if(!strutil.contain(session.purviews,"机构账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../auser/toInformation.do"><i class="fa fa-circle-o"></i>机构账号信息管理</a></li>
 		        	<li <?if(!strutil.contain(session.purviews,"机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="register.do"){ ?>class="active"<?}?>><a href="../auser/register.do"><i class="fa fa-circle-o"></i>机构账号注册</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构用户注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../auser/batchregister.do"><i class="fa fa-circle-o"></i>批量机构用户注册</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"批量账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../auser/batchupdate.do"><i class="fa fa-circle-o"></i>批量账号修改</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../auser/batchregister.do"><i class="fa fa-circle-o"></i>批量机构账号注册</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../auser/batchupdate.do"><i class="fa fa-circle-o"></i>批量机构账号修改</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"机构子账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="tosonaccount.do"){ ?>class="active"<?}?>><a href="../auser/tosonaccount.do"><i class="fa fa-circle-o"></i>机构子账号信息管理</a></li>
 		       	 	<li <?if(!strutil.contain(session.purviews,"批量冻结/解冻账号")){?>style="display:none"<?}?> <? if(session.menu_first=="batchblock.do"){ ?>class="active"<?}?>><a href="../auser/batchblock.do"><i class="fa fa-circle-o"></i>批量账号冻结/解冻</a></li>
                       <li ><a href="../bindAuhtority/bindInfo.do"><i class="fa fa-circle-o"></i>个人绑定机构信息管理</a></li>
                      <!-- <ul class="treeview-menu menu-open" style="display: block;">
                           <li ><a href="../bindAuhtority/setPersonAuthority.do"><i class="fa fa-circle-o"></i>个人绑定机构权限设置</a></li>
                       </ul>-->
                       <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../auser/warning.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
+                      <li <?if(!strutil.contain(session.purviews,"机构账号solr发布")){?>style="display:none"<?}?> <? if(session.menu_first=="toSolrData.do"){ ?>class="active"<?}?>><a href="../institution/toSolrData.do"><i class="fa fa-circle-o"></i>机构账号solr发布</a></li>
 		          </ul>
 	          </li>
 	          <li <?if(!strutil.contain(session.purviews,"个人用户管理")){?>style="display:none"<?}?>>

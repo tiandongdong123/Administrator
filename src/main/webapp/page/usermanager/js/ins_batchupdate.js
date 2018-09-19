@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
+	$('#fromList').bootstrapValidator('removeField', 'OrderContent');
 	$("input[name='openState']").prop("checked",false);
 	$("input[name='resourceType']").prop("checked",false);
 	$("input[id='resourceInherited']").prop("checked",true);
@@ -9,6 +11,7 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
+	$("#errorList").html("");
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
 	if($("#bindLimit").val()==""){
@@ -44,9 +47,10 @@ function submitForm(){
 	if(bool){
 		return ;
 	}
-	$("#submit").attr({disabled: "disabled"});
+	var type=$("#OrderType").val();
+	addAtrr();
 	if(!validateFrom()){
-		$("#submit").removeAttr("disabled");
+		removeAtrr();
 		return false;
 	}else{
 	    var data = new FormData($('#fromList')[0]);
@@ -64,7 +68,8 @@ function submitForm(){
 	        url: '../auser/updatebatchregister.do',  
 	        type: 'POST',
 	        data: data,
-	        cache: false,  
+	        cache: false,
+	        timeout:1800000,
 	        processData: false,
 	        contentType: false  
 	    }).done(function(data){
@@ -77,16 +82,96 @@ function submitForm(){
 	    		    	window.location.href='../auser/batchupdate.do';
 	    		    }
 	    		});
-	    	}else if(data.flag=="fail"){
-	    		layer.msg(data.fail,{icon: 2});
-	    	}else{
+			}else if(data.flag=='fail'){
+				layer.msg(data.fail, {icon: 2});
+			}else if(data.flag=='error'){
+	    		layer.alert(data.fail, {
+	    			icon: 2,
+	    			title: '提示',
+	    		    skin: 'layui-layer-molv',
+	    		    btn: ['继续添加'], //按钮
+	    		    yes: function(){
+	    		    	window.location.href='../auser/batchupdate.do';
+	    		    }
+	    		});
+			}else if(data.flag=='list'){
+				showError(data.fail);
+			}else{
 	    		layer.msg("未知的系统错误，请联系管理员",{icon: 2});
 	    	}
-	    	$("#submit").removeAttr("disabled");
+	    	removeAtrr();
 	    });
 	}
 }
 
 function download1(title){
 	window.location.href='../auser/worddownload.do?title='+encodeURI(encodeURI(title));
+}
+
+function removeAtrr(){
+	$("#submit").removeAttr("disabled");
+	$("#submit1").removeAttr("disabled");
+}
+
+function addAtrr(){
+	$("#submit").attr({disabled: "disabled"});
+	$("#submit1").attr({disabled: "disabled"});
+}
+
+//工单类型
+function selectOrder2(obj){
+	var type=$("#OrderType").val();
+	var msg="";
+	if(type=='crm'){
+		$("#orderTypeSpan").html("CRM工单号");
+		msg='CRM工单号不能为空，请填写CRM工单号';
+	}else if(type=='inner'){
+		$("#orderTypeSpan").html("申请部门");
+		msg='申请部门不能为空，请填写申请部门';
+	}else{
+		$("#orderTypeSpan").html("CRM工单号");
+	}
+	$("#OrderContent").val("");
+	if(type=='crm'||type=='inner'){
+		$("#fromList").bootstrapValidator("addField","OrderContent", {
+			validators: {notEmpty: {message: msg}}
+		});
+	}else{
+		$("#fromList").data("bootstrapValidator").updateStatus("OrderContent","NOT_VALIDATED",null);
+		$('#fromList').bootstrapValidator('removeField', 'OrderContent');
+	}
+}
+//选择国家
+function selectRegion2(obj){
+	var region=$(obj).val();
+	if(region=='foreign'){
+		$("#PostCode").html('<option value="none">无</option>');
+		$("#PostCode").val('none');
+	}else if(region=='China'){
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/getRegion.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				var area='<option value="">--请选择--</option>';
+				var arrayArea=data;
+				for(var i=0;i<arrayArea.length;i++){
+					area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
+				}
+				$("#PostCode").html(area);
+			}
+		});
+	}else{
+		$("#PostCode").html('<option value="">--请选择--</option>');
+	}
+	if(region=='China'){
+		$("#fromList").bootstrapValidator("addField","PostCode", {
+			validators: {notEmpty: {message: "地区不能为空，请选择地区"}}
+		});
+	}else{
+		$("#fromList").data("bootstrapValidator").updateStatus("PostCode","NOT_VALIDATED",null);
+		$('#fromList').bootstrapValidator('removeField', 'PostCode');
+	}
 }

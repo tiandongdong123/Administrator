@@ -18,6 +18,9 @@ public class WfksAccountidMapping {
     private Date endtime;
 
     private Date lastUpdatetime;
+    
+    private String begin;
+    private String end;
 
     public String getMappingid() {
         return mappingid;
@@ -82,6 +85,22 @@ public class WfksAccountidMapping {
     public void setLastUpdatetime(Date lastUpdatetime) {
         this.lastUpdatetime = lastUpdatetime;
     }
+
+	public String getBegin() {
+		return begin;
+	}
+
+	public void setBegin(String begin) {
+		this.begin = begin;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
+	}
 
 	@Override
 	public String toString() {

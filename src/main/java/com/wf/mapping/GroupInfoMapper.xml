@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wf.dao.GroupInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.wf.bean.GroupInfo" >
+    <id column="UserId" property="UserId" jdbcType="VARCHAR" />
+	<result column="Institution" property="Institution" jdbcType="VARCHAR" />
+	<result column="Organization" property="Organization" jdbcType="VARCHAR" />
+	<result column="Pid" property="Pid" jdbcType="VARCHAR" />
+    <result column="CountryRegion" property="CountryRegion" jdbcType="VARCHAR" />
+    <result column="PostCode" property="PostCode" jdbcType="VARCHAR" />
+    <result column="OrderType" property="OrderType" jdbcType="VARCHAR" />
+    <result column="OrderContent" property="OrderContent" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 新增机构信息表 -->
+   <insert id="insertGroupInfo" parameterType="com.wf.bean.GroupInfo">
+     insert into GroupInfo(UserId,Institution,Organization,Pid,CountryRegion,PostCode,OrderType,OrderContent)
+     values(#{UserId},#{Institution},#{Organization},#{Pid},#{CountryRegion},#{PostCode},#{OrderType},#{OrderContent})
+   </insert>
+   
+  <!-- 修改机构信息表-->
+  <update id="updateGroupInfo" parameterType="com.wf.bean.GroupInfo">
+  	update GroupInfo set UserId=#{UserId},Institution=#{Institution},Organization=#{Organization},Pid=#{Pid},CountryRegion=#{CountryRegion},
+  	PostCode=#{PostCode},OrderType=#{OrderType},OrderContent=#{OrderContent},Organization=#{Organization}
+	where UserId = #{UserId}
+  </update>
+  <!-- 查询机构信息表表 -->
+  <select id="getGroupInfo" resultMap="BaseResultMap">
+  	select UserId,Institution,Organization,Pid,CountryRegion,PostCode,OrderType,OrderContent from GroupInfo where UserId=#{UserId}
+  </select>
+  <!-- 删除机构信息表 -->
+  <delete id="deleteGroupInfo" parameterType="java.lang.String">
+  	delete from GroupInfo where UserId=#{UserId}
+  </delete>
+</mapper>

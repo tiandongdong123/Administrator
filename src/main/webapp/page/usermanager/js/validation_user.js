@@ -9,118 +9,123 @@ $(function() {/* 文档加载，执行一个函数 */
 		},
 		fields : {/* 验证：规则 */
 			institution:{
-				message : '请输入机构名称',
 				validators : {
 					notEmpty : {/*非空提示*/
-						message : '请输入机构名称'
+						message : '机构名称不能为空，请填写规范的机构名称'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp:  /^[\u4e00-\u9fa5 A-Za-z0-9-_（）()]*$/,
-                        message: '请填写规范的机构名称'
+                        message: '格式不对，请填写规范的机构名称'
                     },
 				}
 			},
 			userId: {
-				message : '请输入机构ID',
 				validators : {
 					notEmpty : {
-						message : '请输入机构ID'
+						message : '机构ID不能为空，请填写规范的机构ID'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-                        regexp: /^[\u4e00-\u9fa5 A-Za-z0-9-_]*$/,
-                        message: '不能包含特殊字符'
-                    }/*,
-                    stringLength: {长度提示
-                        min: 1,
-                        max: 16,
-                        message: '机构ID长度必须在1到16之间'
-                    }*/
+                        regexp: /^[A-Za-z0-9_]*$/,
+                        message: '格式不对，请填写规范的机构ID'
+                    }
 				}
 			},
-			password: {
-				message : '请输入用户密码',
+			PostCode: {
 				validators : {
 					notEmpty : {
-						message : '请输入用户密码'
+						message : '地区不能为空，请选择地区'
 					}
 				}
 			},
-			ipSegment: {
-				message : '请输入用户IP',
+			Organization: {
 				validators : {
 					notEmpty : {
-						message : '请输入用户IP'
+						message : '机构类型不能为空，请选择机构类型'
+					}
+				}
+			},
+			OrderContent:{
+				validators : {
+					notEmpty : {
+						message : 'CRM工单号不能为空，请填写CRM工单号'
+					}
+				}
+			},
+			password: {
+				validators : {
+					notEmpty : {
+						message : '密码不能为空，请填写正确的密码'
+					},
+                    stringLength: {/*长度提示*/
+                        min: 6,
+                        max: 16,
+                        message: '密码长度必须在6-16位之间，请填写正确的密码'
+                    }
+				}
+			},
+			ipSegment: {
+				validators : {
+					notEmpty : {
+						message : '账号IP段不能为空，请填写规范的IP段'
 					}
 				}
 			},
 			resourcePurchaseType: {
                 validators: {
                     notEmpty: {
-                        message: '请选择购买项目'
+                        message: '购买项目不能为空，请选择购买项目'
                     }
                 }
 			},
 			file: {
                 validators: {
                     notEmpty: {
-                        message: '请上传文件'
+                        message: '上传文档不能为空，请选择上传文档'
                     },
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^.*\.(?:xlsx)$/,
-                        message: '附件必须是以xlsx结尾的excel'
+                        message: '上传文档格式不对，请选择规定格式的文档上传'
                     }
                 }
 			},
 			adminOldName: {
                 validators: {
                     notEmpty: {
-                        message: '请选择管理员ID'
+                        message: '管理员ID不能为空，请填写规范的管理员ID'
                     }
                 }
 			},
 			adminname: {
-				message : '请输入管理员ID',
 				validators : {
 					notEmpty : {
-						message : '请输入管理员ID'
+						message : '机构管理员ID不能为空，请填写规范的机构管理员ID'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^[a-zA-Z0-9_\.]+$/,
-                        message: '只能是数字、字母、下划线'
-                    },
-                    stringLength: {/*长度提示*/
-                        min: 1,
-                        max: 16,
-                        message: '管理员ID长度必须在1到16之间'
+                        message: '格式不对，请填写规范的机构管理员ID'
                     }
 				}
 			},
 			adminpassword: {
-				message : '请输入管理员密码',
 				validators : {
 					notEmpty : {
-						message : '请输入管理员密码'
+						message : '机构管理员密码不能为空，请填写正确的密码'
 					},
-					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
-                        regexp: /^[a-zA-Z0-9_\.]+$/,
-                        message: '只能是数字、字母、下划线'
-                    },
                     stringLength: {/*长度提示*/
                         min: 6,
                         max: 16,
-                        message: '管理员密码长度必须在6到16之间'
+                        message: '机构管理员密码长度必须在6-16位之间，请填写正确的密码'
                     }
 				}
 			},
 			adminEmail: {
-				message : '请输入管理员邮箱',
 				validators : {
 					notEmpty : {
-						message : '请输入管理员邮箱'
+						message : '机构管理员邮箱不能为空，请填写规范的邮箱'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
-                        message: '请输入正确的邮箱地址'
+                        message: '机构管理员邮箱格式错误，请填写规范的邮箱'
                     },
 				}
 			},
@@ -147,7 +152,6 @@ $(function() {/* 文档加载，执行一个函数 */
 
             },
 			pullDepartment:{
-				message : '请输入领取部门',
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '请输入领取部门'
@@ -159,7 +163,6 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			pullPerson:{
-				message : '请输入领取人',
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '请输入领取人'
@@ -170,9 +173,7 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-
 			bindValidity:{
-				message : '绑定个人账号有效期不能为空，请填写正确的有效期',
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '绑定个人账号有效期不能为空，请填写正确的有效期'
@@ -184,7 +185,6 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			downloadLimit:{
-				message : '绑定个人下载量上限/天不能为空，请填写正确的数字',
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '绑定个人下载量上限/天不能为空，请填写正确的数字'
@@ -196,35 +196,114 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			resourceType:{
-				message : '个人继承权限不能为空，请选择权限',
 				validators : {
 					notEmpty : {/*非空提示*/
 						message : '个人继承权限不能为空，请选择权限'
 					},
 				}
 			},
-			// bindType:{
-			// 	message : '请输入绑定模式',
-			// 	validators : {
-			// 		notEmpty : {/*非空提示*/
-			// 			message : '请输入绑定模式'
-			// 		},
-			// 	}
-			// },
-			weChatEamil: {
-				message : '请输入链接发送邮箱',
+			appEndtime: {
 				validators : {
 					notEmpty : {
-						message : '请输入链接发送邮箱'
+						message : '开通APP嵌入服务有效期不能为空，请正确填写有效期'
+					}
+				}
+			},
+			weChatEndtime: {
+				validators : {
+					notEmpty : {
+						message : '开通微信公众号嵌入服务有效期不能为空，请正确填写有效期'
+					}
+				}
+			},
+			weChatEamil: {
+				validators : {
+					notEmpty : {
+						message : '邮箱不能为空，请填写规范的邮箱'
 					},
 					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
                         regexp: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
-                        message: '请输入正确的邮箱地址'
+                        message: '邮箱格式错误，请填写规范的邮箱'
                     },
+				}
+			},
+			pConcurrentnumber: {
+				validators : {
+					notEmpty : {
+						message : '并发数输入不正确，请正确填写并发数'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^[0-9]*[1-9][0-9]*$/,
+                        message: '并发数输入不正确，请正确填写并发数'
+                    },
+				}
+			},
+			upperlimit: {
+				validators : {
+					notEmpty : {
+						message : '子账号上限输入不正确，请正确填写上限'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^[0-9]*[1-9][0-9]*$/,
+                        message: '子账号上限输入不正确，请正确填写上限'
+                    },
+				}
+			},
+			sConcurrentnumber: {
+				validators : {
+					notEmpty : {
+						message : '子账号并发数上限输入不正确，请正确填写并发数上限'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^[0-9]*[1-9][0-9]*$/,
+                        message: '子账号并发数上限输入不正确，请正确填写并发数上限'
+                    },
+				}
+			},
+			downloadupperlimit: {
+				validators : {
+					notEmpty : {
+						message : '子账号下载量（点击次数）上限/天输入不正确，请正确填写'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                        regexp: /^[0-9]*[1-9][0-9]*$/,
+                        message : '子账号下载量（点击次数）上限/天输入不正确，请正确填写'
+                    },
+				}
+			},
+			partyAdmin: {
+				validators : {
+					notEmpty : {
+						message : '党建管理员ID不能为空，请填写规范的党建管理员ID'
+					},
+					regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+						regexp: /^[A-Za-z0-9_]*$/,
+                        message : '格式不对，请填写规范的党建管理员ID'
+                    },
+				}
+			},
+			partyPassword: {
+				validators : {
+					notEmpty : {
+						message : '党建管理员密码不能为空，请填写正确的密码'
+					},
+                    stringLength: {/*长度提示*/
+                        min: 6,
+                        max: 16,
+                        message: '党建管理员密码长度必须在6-16位之间，请填写正确的密码'
+                    }
+				}
+			},
+			partyEndtime: {
+				validators : {
+					notEmpty : {
+						message : '有效期不能为空，请正确填写有效期'
+					},
 				}
 			},
 		}
 	})
+	
     $('#fromList').bootstrapValidator('removeField','email');
     $('#openBindStart').mousedown(function(){
         $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');

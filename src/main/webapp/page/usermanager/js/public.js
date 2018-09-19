@@ -15,12 +15,29 @@ $(function(e){
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
 			$("#administrator").show();
+			resetAdminValidate();
 		}else{
 			$("#adminname").val("");
+			$("#adminOldName").val("");
 			$("#adminpassword").val("");
 			$("#adminIP").val("");
 			$("#adminEmail").val("");
 			$("#administrator").hide();
+			$("#checks").prop('checked',false);
+			//机构子账号
+			$("#upperlimit").val("");
+			$("#sConcurrentcountber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
+			$("#sconcurrent_div").hide();
+			//统计分析
+			$("input:checkbox[id=statistics]:checked").each(function(){
+				$(this).prop('checked',false);
+			});
+			$("input:radio[name=managerType]").prop('checked',false);
+			$("#tongji").val("");
+			$("#tongjiDiv").hide();
+			$("#checktongji").prop('checked',false);
 		}
 	});
 
@@ -51,7 +68,7 @@ $(function(e){
 		if($(this).is(':checked')){
 			$("#pconcurrent_div").show();
 		}else{
-			$("#pConcurrentcountber").val("");
+			$("#pConcurrentnumber").val("");
 			$("#pconcurrent_div").hide();
 		}
 	});
@@ -70,8 +87,8 @@ $(function(e){
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
 		}else{
-			$("#upperlimit").val("100");
-			$("#sConcurrentcountber").val("");
+			$("#upperlimit").val("");
+			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
@@ -79,13 +96,22 @@ $(function(e){
 	});
 	//开通统计分析
 	$("#checktongji").click(function(){
-		$("input:checkbox[id=statistics]:checked").each(function(){
-			$(this).prop('checked',false);
-		});
-		$("#tongji").val("");
 		if($(this).is(':checked')){
+			var checkedList = new Array();
+			$("input:checkbox[id=statistics]").each(function(){
+				$(this).prop('checked',true);
+				var val=$(this).val();
+				if(val!='all'){
+					checkedList.push(val);
+				}
+			});
+			$("#tongji").val(checkedList.join());
 			$("#tongjiDiv").show();
 		}else{
+			$("input:checkbox[id=statistics]:checked").each(function(){
+				$(this).prop('checked',false);
+			});
+			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 		}
 	});
@@ -97,6 +123,13 @@ $(function(e){
         }
     });
 });
+//充值机构管理员的验证
+function resetAdminValidate(){
+	$("#fromList").data("bootstrapValidator").updateStatus("adminname","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminOldName","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminpassword","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminEmail","NOT_VALIDATED",null);
+}
 //校验绑定个人上限
 function check(){
 	var reg = /^[1-9]\d*$/;
@@ -168,6 +201,14 @@ function checkTj(obj){
 			obj.prop('checked',false);
 		}
 		$("#tongji").val(checkedList.join());
+	}
+	var tongji=$("#tongji").val();
+	if(tongji==""){
+		$("input:checkbox[id=statistics]:checked").each(function(){
+			$(this).prop('checked',false);
+		});
+		$("#tongjiDiv").hide();
+		$("#checktongji").prop('checked',false);
 	}
 }
 //绑定个人继承权限
@@ -381,9 +422,36 @@ function validStandard(count,i){
 	}
 	return true;
 }
+//字符串转化为日期
+function StringToDate(dateStr){
+     var separator="-";
+     var dateArr = dateStr.split(separator);
+     var year = parseInt(dateArr[0]);
+     var month;
+     //处理月份为04这样的情况                         
+     if(dateArr[1].indexOf("0") == 0){
+         month = parseInt(dateArr[1].substring(1));
+     }else{
+          month = parseInt(dateArr[1]);
+     }
+     var day = parseInt(dateArr[2]);
+     var date = new Date(year,month -1,day);
+     return date;
+ }
 
 //是否试用
 function checkMode(num){
+	if($("#pro_mode_"+num).is(':checked')){
+		var nextDay=$("#nextDay_"+num).val();
+		if(nextDay!=undefined &&nextDay!=null){
+			var time=$("input[name='rdlist["+num+"].validityEndtime']").val();
+			if(time!=undefined &&time!=null&&StringToDate(nextDay)<=StringToDate(time)){
+				$("#pro_mode_"+num).prop('checked',false);
+				layer.msg("购买项目没有过有效期，不能转为试用",{icon: 2,time: 2000});
+				return false;
+			}
+		}
+	}
 	if($("#pro_mode_"+num).is(':checked')){
 		$("input[name='rdlist["+num+"].mode']").val('trical');
 	}else{
@@ -403,6 +471,28 @@ function switchcs(obj){
 		$("#upass").show();
 		$("#ipvalue").show();
 	}
+	if($(obj).val()=="0"){
+		$("#checkIp").show();
+		$("#deleteIp").show();
+	}else{
+		$("#checkIp").hide();
+		$("#deleteIp").hide();
+	}
+	if ($(obj).val() != "1") {
+		$("#wechatDiv").hide();
+		$("#openAppDiv").hide();
+		$("#sendMail").prop("checked", false);
+		$("#openApp").prop("checked", false);
+		$("#openWeChat").prop("checked", false);
+		$("#appBegintime").val("");
+		$("#appEndtime").val("");
+		$("#weChatBegintime").val("");
+		$("#weChatEndtime").val("");
+		$("#weChatEamil").val("");
+	}
+	$("#openWeChatspan").html("");
+	$("#openAppspan").html("");
+	$("#fromList").data('bootstrapValidator').resetForm();
 }
 
 //全选和取消
@@ -560,20 +650,29 @@ function selectProject(obj,flag,checked){
 	var proid = $(obj).find("option:selected").attr("proid");
 	checked = checked==""?"":"checked='checked'"
 	if(projectid.indexOf($("#pro_"+projectid).val())<0){
+		//去除余额转限时和限时转化余额度功能
+		if(projectid=="GTimeLimit"||projectid=="GBalanceLimit"){
+			var proLimit1=$("#pro_GBalanceLimit").val();
+			var proLimit2=$("#pro_GTimeLimit").val();
+			if(proLimit1!=undefined &&proLimit1!=null ||proLimit2!=undefined &&proLimit2!=null){
+				$("#buttonshow").hide();
+				$("#buttonshow").next().css("margin-left","1000px");
+			}
+		}
 		var text = '';
 		if($(obj).val()!=""){
 			text += '<div class="balance_block" name="full_div">';
 			text += '<div class="resources_title"><input type="hidden" name="rdlist['+count+'].projectid" id="pro_'+projectid+'" value="'+projectid+'"><span>'+proname+'</span>';
 			text += '<input type="hidden" name="rdlist['+count+'].projectname" value="'+proname+'"><input type="hidden" name="rdlist['+count+'].projectType" value="'+$(obj).val()+'">';
-			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><button type="button" class="btn btn-primary" style="margin-left:1000px;" onclick="delDiv(this,\''+count+'\',1);">删除</button></div>';
+			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><span style="float:right;margin-right:150px;"><button type="button" class="btn btn-primary btn-sm" onclick="delDiv(this,\''+count+'\',1);">删除</button></span></div>';
 			text += '<div class="time_block"><div class="time_input">';
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
 			if($(obj).val()!="time"&&$(obj).val()!="count"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>金额</span><input type="text" name="rdlist['+count+'].totalMoney" onkeyup="checkMoney(this,0);" onafterpaste="checkMoney(this,0);"></div>';
 			}
 			if($(obj).val()!="time"&&$(obj).val()!="balance"&&flag!='2'){
-				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber"></div>';
+				text += '<div class="time_input time_money"><span><b>*</b>次数</span><input type="text" name="rdlist['+count+'].purchaseNumber" onkeyup="checkNum(this,0);" onafterpaste="checkNum(this,0);"></div>';
 			}
 			if(projectid=='HistoryCheck'){
 				text += '<p><div class="time_input"><span><b>*</b>查看交易信息</span> ';
@@ -606,13 +705,15 @@ function selectProject(obj,flag,checked){
 								text += '<i onclick="showProduct(this,1)" class="icon_minus"></i>';
 							}
 							text += name;
-							text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
+							if('IsticBalanceLimit'!=projectid){
+								text += '<a href="javascript:void(0);" onclick="openPurchaseItems(\''+count+'\',\''+i+'\',\''+type+'\');">详情</a>';
+							}
 							text += '<ul style="display: none;" class="checkbox_list subset_list">';
 							for(var n in rp){									
 								text += '<li><input type="checkbox" '+checked+' name="rdlist['+count+'].rldto['+i+'].productid" value="'+rp[n].rid+'" class="rdlist['+count+'].tableName">'+rp[n].name+'</li>';
 							}
 							text += '</ul></li>';
-							if($(obj).val()=="time"||$(obj).val()=="balance"){
+							if('IsticBalanceLimit'!=projectid&&($(obj).val()=="time"||$(obj).val()=="balance")){
 								createDetail(count,i,code,type);
 							}
 						}else{
@@ -706,6 +807,7 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 		    		$(obj).parents(".balance_block").remove();
 		    		$("div[name='tabs_"+count+"']").remove();
 		    		$("#multplediv").append('<input type="hidden" name="rdlist['+count+'].projectid" value="'+json+'">');
+		    		
 	    			layer.closeAll();
 	    		}
 	    	}else{
@@ -1370,75 +1472,6 @@ function setPerioSubject(data,num){
 	$.fn.zTree.init($("#perioInfoZtree_"+num), setting, data.ztreeJson);
 }
 
-
-//校验用户名是否已存在
-function validateUserId(){
-	var userId = $("#userId").val();
-	var msg = "";
-	$.ajax({
-	 	type : "post",
-	 	async:false,
-		url : "../auser/getPersion.do?t="+escape(new Date()),
-		data:{userId:userId},
-		dataType : "json",
-		success: function(data){
-			msg=data.flag;
-		}
-	});
-	return msg;
-}
-
-//校验IP是否存在交集
-function validateIp(ip,userId,object){
-	var loginMode = $("#loginMode").val();
-	if(loginMode==0){
-		var bool = false;
-		$.ajax({
-			type : "post",
-			async:false,
-			url : "../auser/validateip.do",
-			data:{ip:ip,userId:userId},
-			dataType : "json",
-			success: function(data){
-				if(data.flag=="true"){
-					bool = true;
-					var msg="";
-					if(data.tableIP!=null){
-						msg="IP冲突提示:</br>"+data.userId+"</br>"+data.errorIP+"</br>"+data.tableIP;
-					}else{
-						msg="IP格式错误:"+data.errorIP;
-					}
-					layer.tips(msg, object, {
-						tips: [2, '#3595CC'],
-						area: ['260px', ''], //宽高
-						time: 0
-					});
-				}else{
-					layer.closeAll();
-					bool = false;
-				}
-			}
-		});
-		return bool;
-	}
-}
-
-//校验多行ip对
-function IpFormat(str){
-	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
-	var ip = str.split("\n");
-	for(i in ip){
-		if(ip[i]!=""){
-			if(ipLimigLineRegex.test(ip[i])){
-				continue;
-			}else{
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
 function validateFrom(){
 	var bool = false;
 	if(fieldsCheck()){
@@ -1447,6 +1480,12 @@ function validateFrom(){
 		bool = false;
 	}
 	return bool;
+}
+
+function fieldsCheck() {
+	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+	bootstrapValidator.validate();
+	return (bootstrapValidator.isValid());
 }
 
 function checkemail(str){
@@ -1458,10 +1497,16 @@ function checkemail(str){
 	}
 }
 
-function radioClick(addOrUpdate,isBatch){
+function radioClick(isBatch){
 	var $selectedvalue = $("input[name='managerType']:checked").val();
+	$("#adminOldName").val("");
+	$("#adminname").val("");
+	$("#adminpassword").val("");
+	$("#adminIP").val("");
+	$("#adminEmail").val("");
+	//去除验证提示
+	resetAdminValidate();
 	if ($selectedvalue =="new") {
-		$("#adminOldName").val("");
 		$("#oldManager").hide();
 		$("#newManager").show();
 	}else {
@@ -1471,11 +1516,14 @@ function radioClick(addOrUpdate,isBatch){
 			layer.msg("请输入机构名称",{icon: 2});
 			return;
 		}
+		if(isBatch=="batch"){
+			institution="";
+		}
 		$.ajax({
 			type:"post",
 			async: false,
 			url:"../auser/getOldAdminNameByInstitution.do",
-			data:{"institution":institution},
+			data:{"institution":institution,"batch":isBatch},
 			dataType:"json",
 			success:function(data){
 				if(null==data || ""==data){
@@ -1484,19 +1532,17 @@ function radioClick(addOrUpdate,isBatch){
 					$("#oldManager").hide();
 					$("#newManager").show();
 				}else{
-					$("#adminOldName option:not(:first)").remove();
-					for(var i in data){
-						if(isBatch!="batch"){
-							$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
-						}else{
-							$("#adminOldName").append("<option value='"+data[i].userId+"/"+data[i].institution+"'>"+data[i].userId+"/"+data[i].institution+"</option>");
-						}
+					$("#adminOldName option").remove();
+					if(isBatch=="batch"){
+						$("#adminOldName").append("<option value=''>--请选择--</option>");
 					}
-					if(addOrUpdate!="update"){
-						$("#adminname").val("");
-						$("#adminpassword").val("");
-						$("#adminIP").val("");
-						$("#adminEmail").val("");
+					for(var i in data){
+						$("#adminOldName").append("<option value='"+data[i].userId+"'>"+data[i].userId+"</option>");
+					}
+					if(isBatch=="batch"){
+						$("#institution").val(data[i].institution);
+					}else{
+						getAdmin($("#adminOldName").get(0));
 					}
 					$("#newManager").hide();
 					$("#oldManager").show();
@@ -1681,19 +1727,30 @@ function icont(){
 		$(".arrow").css({"background-position-x":"-10px"});
 	}
 }
+
+
+/******************/
+
 //开通微信公众号嵌入服务
 function checkWeChat(obj,type) {
 	$("#weChatEamil").val("");
 	if ($(obj).is(':checked')) {
+		if($("#loginMode").val()!=1){
+			$("#openWeChatspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
+			$(obj).prop("checked",false);
+			return;
+		}
 		$("#wechatDiv").show();
 		if(type==0){
 			$("#sendMail").prop("checked",true);
 		}else{
 			$("#sendMail").prop("checked",false);
 		}
+		$("#weChatBegintime").val(getData());
 	} else {
 		$("#wechatDiv").hide();
 	}
+	$("#openWeChatspan").html("");
 }
 $(function(){
     var meDatePicker = (function () {
@@ -1727,3 +1784,352 @@ $(function(){
     meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
 })
 
+//开通APP嵌入服务
+function checkApp(obj){
+	if ($(obj).is(':checked')) {
+		if($("#loginMode").val()!=1){
+			$(obj).prop("checked",false);
+			$("#openAppspan").html("该机构账号登录方式不是用户名密码，不能开通此权限");
+			return;
+		}else{
+			$("#appBegintime").val(getData());
+			$("#openAppDiv").show();
+		}
+	}else{
+		$("#openAppDiv").hide();
+	}
+	$("#openAppspan").html("");
+}
+
+//选择购买项目
+function selectType(obj){
+	var val=$(obj).val();
+	if(val==""){
+		$("#resourcePurchaseType").hide();
+		return;
+	}
+	$("#resourcePurchaseType").html('<option value="">-请选择-</option>');
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getProject.do",
+		data:{"val":val},
+		dataType:"json",
+		success:function(data){
+			for(var i in data){
+				var pro=data[i];
+				$("#resourcePurchaseType").append('<option proid="'+pro.productDetail+'" type="'+pro.resourceType+'" value="'+pro.type+'" id="'+pro.id+'">'+pro.name+'</option>');
+			}
+			$("#resourcePurchaseType").show();
+		}
+	});
+}
+
+//获取机构管理员信息
+function getAdmin(obj){
+	var userId=$(obj).val();
+	if(userId==""){
+		$("#adminpassword").val("");
+		$("#adminIP").val("");
+		$("#adminEmail").val("");
+		return;
+	}
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../auser/getAdmin.do",
+		data:{"userId":userId},
+		dataType:"json",
+		success:function(data){
+			$("#adminpassword").val(data.password);
+			var ip="";
+			if(data.adminIP!=null){
+				for(var i in data.adminIP){
+					if(ip!=""){
+						ip+="\r\n";
+					}
+					ip+=data.adminIP[i].beginIpAddressNumber+"-"+data.adminIP[i].endIpAddressNumber;
+				}
+			}
+			$("#adminIP").val(ip);
+			$("#adminEmail").val(data.adminEmail);
+			$("#institution").val(data.institution);
+		}
+	});
+}
+//党建管理员
+function checkParty(obj){
+	$("#partyAdmin").val("");
+	$("#partyPassword").val("");
+	$("#partyBegintime").val("");
+	$("#partyEndtime").val("");
+	$("input:radio[name=isTrial]").prop('checked',false);
+	if($(obj).is(':checked')) {
+		$("#partyBegintime").val(getData());
+		$("#partyDiv").show();
+		$("input:radio[value=notTrial]").prop("checked",true);
+	}else{
+		$("#partyDiv").hide();
+	}
+}
+//工单类型
+function selectOrder(obj){
+	var type=$("#OrderType").val();
+	var msg="";
+	if(type=='crm'){
+		$("#orderTypeSpan").html("CRM工单号");
+		msg='CRM工单号不能为空，请填写CRM工单号';
+	}else{
+		$("#orderTypeSpan").html("申请部门");
+		msg='申请部门不能为空，请填写申请部门';
+	}
+	$("#OrderContent").val("");
+	var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+	$("#fromList").bootstrapValidator("addField","OrderContent", {
+		validators: {notEmpty: {message: msg}}
+	});
+}
+//选择国家
+var arrayArea="";
+function selectRegion(obj){
+	var region=$(obj).val();
+	if(region=='foreign'){
+		arrayArea=$("#PostCode").html();
+		$("#PostCode").html('<option value="none">无</option>');
+		$("#fromList").data("bootstrapValidator").updateStatus("PostCode","NOT_VALIDATED",null);
+	}else{
+		if(arrayArea==""||arrayArea==null){
+			arrayArea=$("#allRegion").html();
+		}
+		$("#PostCode").html(arrayArea);
+		var bootstrapValidator = $("#fromList").data('bootstrapValidator');
+		$("#fromList").bootstrapValidator("addField","PostCode", {
+			validators: {notEmpty: {message: "地区不能为空，请选择地区"}}
+		});
+		bootstrapValidator.validate();
+	}
+}
+var errorIP="";
+//校验IP是否存在交集
+function validateIp(ip,userId,object){
+	var loginMode = $("#loginMode").val();
+	errorIP="";
+	if(loginMode==0){
+		var bool = false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/validateip.do",
+			data:{ip:ip,userId:userId},
+			dataType : "json",
+			success: function(data){
+				if(data.flag=="true"){
+					bool = true;
+					var msg="";
+					if(data.tableIP!=null){
+						errorIP=data.errorIP;
+						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>";
+					}else{
+						msg="<font style='color:red'>IP格式错误:</font></br><font style='color:#000000'>"+data.errorIP+"</font>";
+					}
+					layer.tips(msg, object, {
+						tips: [3, '#FFFFFF'],
+						area: ['350px', ''], //宽高
+						closeBtn :1,
+						time: 0
+					});
+				}else{
+					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
+						tips: [3, '#FFFFFF'],
+						area: ['350px', ''], //宽高
+						closeBtn :1,
+						time: 0
+					});
+					bool = false;
+				}
+			}
+		});
+		return bool;
+	}
+}
+
+//校验多行ip对
+var IpArray=new Array();
+function IpFormat(str){
+	IpArray=new Array();
+	var ipLimigLineRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}\s*-\s*\d{1,3}\.\d{1,3}.\d{1,3}.\d{1,3}\s*$/i;
+	var ip = str.split("\n");
+	var isTrue=true;
+	for(i in ip){
+		if(ip[i]!=""){
+			var ips=ip[i].split("-");
+			if(ips.length!=2){
+				IpArray.push(ip[i]);
+				isTrue=false;
+				continue;
+			}else{
+				if(ips[0].split(".").length!=4||ips[1].split(".").length!=4){
+					IpArray.push(ip[i]);
+					isTrue=false;
+					continue;
+				}
+			}
+			if(ipLimigLineRegex.test(ip[i])){
+				continue;
+			}else{
+				IpArray.push(ip[i]);
+				isTrue=false;
+			}
+		}
+	}
+	return isTrue;
+}
+
+//检查IP
+function checkIP(){
+	var ip = $("#ipSegment").val();
+	if(ip==""){
+		var msg="<font style='color:red'>IP不存在</font>";
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+	if(!IpFormat(ip)){
+		var  msg="<font style='color:red''>IP段格式错误：</font>";
+		for(var ar in IpArray){
+			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
+		}
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+	var userId = $("#userId").val();
+	validateIp(ip,userId,"#checkIp");
+}
+$(function(){
+    var meDatePicker = (function () {
+        return {
+            datePicker: function (target, obeject, isStartTime) {
+                var compareTime = function (startdate, enddate) {
+                    return (Date.parse(startdate) < Date.parse(enddate)) ? true : false;
+                }
+                target.focus(function () {
+                    WdatePicker({
+                        autoUpdateOnChanged: false,
+                        readOnly: false,
+                        onpicked: function () {
+                            if (isStartTime) {
+                                if (!compareTime(target.val(), obeject.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            } else {
+                                if (!compareTime(obeject.val(), target.val()) && obeject.val()) {
+                                    obeject.val(target.val());
+                                }
+                            }
+                            $(this).blur()
+                        }
+                    })
+                })
+            }
+        }
+    })();
+    meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
+    meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+})
+
+//剔除IP
+function deleteIP(){
+	layer.closeAll();
+	var ipSegment = $("#ipSegment").val();
+	if (ipSegment == "") {
+		return;
+	}
+	var ips = ipSegment.split("\n");
+	var array = errorIP.split('</br>');
+	var ipHtml = "";
+	for (var ip in ips) {
+		if(ips[ip]==""){
+			continue;
+		}
+		var flag = false;
+		for(var ar in IpArray){
+			if(IpArray[ar]==""){
+				continue;
+			}
+			if (ips[ip]==IpArray[ar]) {
+				flag = true;
+			}
+		}
+		for (var ar in array) {
+			if(array[ar]==""){
+				continue;
+			}
+			if (ips[ip]==array[ar]) {
+				flag = true;
+			}
+		}
+		if (!flag) {
+			ipHtml += ips[ip] + "\n";
+		}
+	}
+	$("#ipSegment").val(ipHtml);
+}
+//验证次数
+var maxData=99999999;
+function checkNum(obj,num){
+	var val=obj.value;
+	var flag=false;
+	if(val.substr(0,1)=="-"){
+		flag=true;
+	}
+	val= val.replace(/[^\d]/g,""); //清除"数字"和"."以外的字符
+	val = val.replace(/^\./g,""); //验证第一个字符是数字
+	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	if(parseFloat(val)>maxData){
+		val=val.substring(0,8);
+	}
+	obj.value=(flag&&(num==1)?"-":"")+val;
+}
+//验证金额
+function checkMoney(obj,num){
+	var val=obj.value;
+	var flag=false;
+	if(val.substr(0,1)=="-"){
+		flag=true;
+	}
+	val= val.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+	val = val.replace(/^\./g,""); //验证第一个字符是数字
+	val = val.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+	val = val.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+	val = val.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+	if(parseFloat(val)>maxData){
+		val=val.substring(0,8);
+	}
+	obj.value=(flag&&(num==1)?"-":"")+val;
+}
+//校验ip
+function validateIPS(obj){
+	obj.value=obj.value.replace(/[^.0-9\r\n-]/g,'')
+}
+//批量展示错误信息
+function showError(data){
+	var html='<table border="1" style="margin:0 auto;"><tr style="text-align:center;font-weight:900;"><td width="10%" style="padding-top:6px;padding-bottom:6px;">机构账号ID</td><td width="10%">机构名称</td><td width="30%">错误信息</td></tr>';
+	for(var i in data){
+		var userId=data[i].userId==undefined?"":data[i].userId;
+		var institution=data[i].institution==undefined?"":data[i].institution;
+		var fail=data[i].fail==undefined?"":data[i].fail;
+		html += '<tr style="text-align:left;"><td style="padding-top:6px;padding-bottom:6px;">'+userId+'</td><td>'+institution+'</td><td style="color:red;">'+fail+'</td></tr>';
+	}
+	html+="</table>";
+	$("#errorList").html(html);
+}

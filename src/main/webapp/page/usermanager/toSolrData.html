@@ -1,0 +1,54 @@
+<?
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
+?>
+<script type="text/javascript">
+
+function setSolrData(obj){
+	$("#submit1").attr({disabled: "disabled"});
+    $.ajax({  
+        url: "../institution/setSolrData.do?t="+new Date(), 
+        type: 'POST',
+        data: "",
+        cache: false,  
+        processData: false,
+        contentType: false  
+    }).done(function(data){
+		if(data.flag=="fail"){
+			layer.msg(data.fail,{icon: 2});
+		}else if(data.flag=="success"){
+			layer.msg(data.success,{icon: 1});
+		}
+		$("#submit1").removeAttr("disabled");
+    });
+}
+
+</script>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>机构账号solr发布</h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <!-- form start -->
+            <form role="form" id="fromList" method="post">
+              <div class="box-body">
+              <div class="box-footer" style="text-align:center;">
+				1、初始化机构用户信息的时候使用一键发布<br>
+             	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2、当solr数据和mysql数据不一致的时候使用一键发布<br>
+             	<br>
+                <button type="button" class="btn btn-primary" onclick="setSolrData()" id="submit1">一键发布</button>
+              </div>
+            </form>
+          </div>
+      	</div>
+      </div>
+    </section>
+  </div>
+
+<?}?>
