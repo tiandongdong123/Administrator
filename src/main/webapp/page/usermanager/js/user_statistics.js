@@ -309,8 +309,6 @@ $(function () {
                         that.totalOrNew();
                         $(".gri_data_compare").show();
                         that.stepMonthOrWeekCompare();
-                        that.stepMonthOrWeek();
-
                     } else {
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
