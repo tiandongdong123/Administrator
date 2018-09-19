@@ -491,6 +491,7 @@ function inquiry(){
         }
     });
 }
+
 function redq(){
     if($(".bindtype").length>0){
         $(".bindtype").each(function (index,value) {

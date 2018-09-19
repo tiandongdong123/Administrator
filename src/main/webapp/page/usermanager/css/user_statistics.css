@@ -1,0 +1,261 @@
+.content-wrapper .user_statistics {
+  min-height: 1885px;
+  margin: 10px 15px 0 15px;
+  border-top: 3px solid #3c8dbc;
+  background: #ffffff;
+  border-radius: 3px;
+}
+.content-wrapper .user_statistics_header {
+  margin-top: 10px;
+  margin-left: 10px;
+  width: 1420px;
+  position: relative;
+}
+.content-wrapper .user_statistics_header .time_tittle {
+  font-size: 14px;
+}
+.content-wrapper .user_statistics_header .data_wrapper {
+  display: inline-block;
+  margin-left: 10px;
+}
+.content-wrapper .user_statistics_header .data_wrapper a {
+  width: 80px;
+  height: 27px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #ccc;
+  line-height: 27px;
+  font-size: 14px;
+  color: #0c0c0c;
+  text-decoration: none;
+}
+.content-wrapper .user_statistics_header .data_wrapper .active {
+  background: #4AA6FC;
+}
+.content-wrapper .user_statistics_header .data_wrapper .user_statistics_datePicker {
+  display: inline-block;
+}
+.content-wrapper .user_statistics_header .switch_data {
+  display: inline-block;
+  position: relative;
+}
+.content-wrapper .user_statistics_header .switch_data a,
+.content-wrapper .user_statistics_header .switch_data span {
+  width: 80px;
+  height: 27px;
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #ccc;
+  line-height: 27px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #000;
+}
+.content-wrapper .user_statistics_header .switch_data .switch_board_week {
+  position: absolute;
+  top: 0;
+  left: 85px;
+  background: transparent;
+  border: none;
+  /* display: none;*/
+}
+.content-wrapper .user_statistics_header .switch_data .switch_board_month {
+  position: absolute;
+  top: 0;
+  left: 170px;
+  border: none;
+  background: transparent;
+}
+.content-wrapper .user_statistics_header .switch_data .switch_bg {
+  background: #4AA6FC;
+}
+.content-wrapper .user_statistics_header .switch_data .disable_btn {
+  cursor: default;
+  opacity: 0.2;
+}
+.content-wrapper .user_statistics_content {
+  width: 1420px;
+  margin-left: 5px;
+}
+.content-wrapper .user_statistics_content .content_nav {
+  position: relative;
+  height: 40px;
+  border-bottom: 1px solid #417dc9;
+  background: #f3f7fc;
+  margin: 30px 0 5px 0;
+}
+.content-wrapper .user_statistics_content .content_nav .no_data {
+  position: absolute;
+  left: 7%;
+  bottom: -452px;
+  font-size: 23px;
+  color: black;
+  width: 1305px;
+  height: 381px;
+  background: transparent;
+  line-height: 300px;
+  text-align: center;
+  z-index: 1;
+  display: none;
+}
+.content-wrapper .user_statistics_content .content_nav a {
+  font-size: 16px;
+  color: #000;
+  display: inline-block;
+  height: 38px;
+  line-height: 38px;
+  margin: 0 20px 0 10px;
+  padding: 0 5px;
+  float: left;
+}
+.content-wrapper .user_statistics_content .content_nav .active {
+  border-bottom: 36px solid #4AA6FC;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num {
+  background: #f5f5f5;
+  padding: 1px 0;
+  margin: 14px 0;
+  width: 800px;
+  display: none;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num ul li {
+  float: left;
+  border-right: 1px solid #ccc;
+  padding: 10px 0 16px 0;
+  width: 16.65%;
+  text-align: center;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num ul li .new_increased_num_text {
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  top: 4px;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num ul li .new_increased_num_text .title {
+  font-size: 12px;
+  line-height: 18px;
+  color: #666666;
+  margin-bottom: 5px;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .new_increased_num ul li .new_increased_num_text .person_num {
+  color: #0c0c0c;
+  font-size: 19px;
+  font-weight: bold;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected {
+  position: relative;
+  width: 250px;
+  height: 35px;
+  line-height: 35px;
+  border: 1px solid #ccc;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected span {
+  position: absolute;
+  top: 1px;
+  left: 6px;
+  font-size: 14px;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected .target_item {
+  width: 165px;
+  height: 35px;
+  display: inline-block;
+  margin-left: 50px;
+  font-size: 14px;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected i {
+  position: absolute;
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+  background: url('../images/css_sprites_icon.png') -10px -10px;
+  right: 0;
+  top: -2px;
+  cursor: pointer;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected p {
+  position: absolute;
+  left: 257px;
+  width: 260px;
+  font-size: 12px;
+  color: red;
+  top: 0px;
+  display: none;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected .target_list {
+  display: none;
+  z-index: 10;
+  top: 34px;
+  position: absolute;
+  box-sizing: content-box;
+  background: #fff;
+  padding: 15px;
+  width: 600px;
+  border: 1px solid #ccc;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected .target_list ul {
+  width: 100%;
+  overflow: hidden;
+}
+.content-wrapper .user_statistics_content .target_select_wrapper .target_selected .target_list ul li {
+  width: 30%;
+  float: left;
+  font-size: 13px;
+  margin: 5px 0;
+}
+.content-wrapper .user_statistics_content .line_container {
+  height: 450px;
+  text-align: center;
+  width: 1420px;
+  margin-top: 25px;
+}
+.content-wrapper .user_statistics_content .line_comparison_container {
+  height: 450px;
+  text-align: center;
+  width: 1420px;
+  margin-top: 25px;
+}
+.content-wrapper .user_statistics_footer {
+  margin-bottom: 200px;
+}
+.content-wrapper .user_statistics_footer table {
+  margin: 35px;
+  margin-left: 153px;
+  width: 70%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.content-wrapper .user_statistics_footer table thead tr {
+  font-size: 15px;
+  height: 40px;
+  background: #408ED6;
+  color: white;
+}
+.content-wrapper .user_statistics_footer table thead tr th {
+  border-left: 1px solid #D9D9D9;
+  padding: 12px 21px;
+  text-align: center;
+}
+.content-wrapper .user_statistics_footer table thead tr th .table_icon_off {
+  display: inline-block;
+  width: 9px;
+  height: 12px;
+  background: url('../images/table_icon.png') -10px -10px;
+  cursor: pointer;
+}
+.content-wrapper .user_statistics_footer table thead tr th .table_icon_up {
+  display: inline-block;
+  width: 9px;
+  height: 12px;
+  background: url('../images/table_icon.png') -39px -10px;
+  cursor: pointer;
+}
+.content-wrapper .user_statistics_footer table tbody tr {
+  font-size: 15px;
+  background: white;
+}
+.content-wrapper .user_statistics_footer table tbody tr td {
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #D9D9D9;
+  text-align: center;
+}

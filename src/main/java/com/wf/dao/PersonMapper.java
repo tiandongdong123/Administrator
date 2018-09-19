@@ -4,6 +4,7 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.userStatistics.UserStatistics;
 import org.apache.ibatis.annotations.Param;
 
 import com.wf.bean.Person;
@@ -144,5 +145,20 @@ public interface PersonMapper {
 	 * @return
 	 */
 	List<String> getSubaccount(@Param("pid") String pid);
+	/**
+	 * 当天机构数量
+	 */
+	Integer getInstitutionCount(String dateTime);
 
+	/**
+	 * 当天新增机构账号机构名称已存在数量
+	 * @param dateTime
+	 * @return
+	 */
+	Integer getExistedInstitutionCountByDate(String dateTime);
+
+	/**
+	 * 所有未冻结的机构账号
+	 */
+	List<String> selectunFreezeInstitutionAccount();
 }
