@@ -130,10 +130,7 @@ $(function () {
                 endMyDate = new Date(endArray_data[0], endArray_data[1] - 1, endArray_data[2]);
                 myDate.getDay();
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
-                console.log(startArray_data[1])
-                console.log(endArray_data[1])
                 if (myDate.getTime() == endMyDate.getTime()) {
-                    console.log("按日")
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
@@ -141,7 +138,6 @@ $(function () {
                 }
                 if((myDate.getDay() + differDay) <= 6){
                     if(myDate.getDay() == 0){
-                        console.log("跨周")
                         //跨周
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -214,10 +210,7 @@ $(function () {
                 endMyDate = new Date(endArray_data[0], endArray_data[1] - 1, endArray_data[2]);
                 myDate.getDay();
                 differDay = parseInt((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
-                console.log(startArray_data[1])
-                console.log(endArray_data[1])
                 if (myDate.getTime() == endMyDate.getTime()) {
-                    console.log("按日")
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
@@ -225,7 +218,6 @@ $(function () {
                 }
                 if((myDate.getDay() + differDay) <= 6){
                     if(myDate.getDay() == 0){
-                        console.log("跨周")
                         //跨周
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -348,10 +340,15 @@ $(function () {
                     data_icon.css('background-position', '-10px -10px');
                     that.totalOrNew();
                     that.newData();
-                    that.stepMonthOrWeek();//跨月/周的判断
-                    if($("#user_statistics_dataCompare").val()){
+                    if($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block"){
+                        that.stepMonthOrWeek();//跨月/周的判断
+                    }else{
+                        that.stepMonthOrWeek();//跨月/周的判断
                         that.stepMonthOrWeekCompare();
-                     /*   alert();*/
+                    }
+                    if($(".gri_submit_btn").parent().siblings().eq(1).css("display") == "inline-block"){
+                        that.stepMonthOrWeekCompare();
+                        that.stepMonthOrWeek();
                     }
                 });
                 $(".closeBtn").click(function () {
@@ -363,7 +360,6 @@ $(function () {
                 var coun = 0;
                 $("." + iconBtn).click(function (event) {
                     event.stopPropagation();
-                    console.log(iconBtn)
                     coun++;
                     if (coun % 2 == 0) {
                         $(".closeBtn").click();
