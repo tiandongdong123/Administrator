@@ -82,6 +82,13 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			Date date=DateUtil.stringToDate(DateUtil.dateToString(new Date()));
 			String time=DateUtil.dateToString(date);
 			time=time.replace(" ", "T")+"Z";
+			//发送solr
+			SolrService.getInstance(hosts+"/GroupInfo");
+			String query="CreateTime:[ * TO "+time+"]";
+			SolrService.deleteByQuery("GroupInfo", query);
+			log.info("删除旧的数据，query:"+query);
+			//查询sql
+			int index=0;
 			for(Object object : userList){
 				Map<String,Object> solrMap=new LinkedHashMap<>();
 				//user
@@ -93,18 +100,23 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				solrMap.put("CreateTime", date);
 				solrMap.put("UpdateTime", date);
 				solrList.add(solrMap);
+				index++;
+				if(index%1000==0&&index>0){
+					SolrService.getInstance(hosts+"/GroupInfo");
+					SolrService.createList(solrList);
+					log.info("查询到"+solrList.size()+"条数据");
+					solrList.clear();
+				}
 			}
-
-			//发送solr
-			SolrService.getInstance(hosts+"/GroupInfo");
-			String query="CreateTime:[ * TO "+time+"]";
-			SolrService.deleteByQuery("GroupInfo", query);
-			log.info("删除旧的数据，query:"+query);
-			if(solrList.size()==0){
+			if(index==0){
 				messageMap.put("fail", "没有查询到数据");
 				return messageMap;
 			}
-			SolrService.createList(solrList);
+			if(solrList.size()>0){
+				SolrService.getInstance(hosts+"/GroupInfo");
+				SolrService.createList(solrList);
+				log.info("发送"+solrList.size()+"条");
+			}
 			messageMap.put("flag", "success");
 			messageMap.put("success", "机构用户信息发送solr成功");
 			log.info("创建solr数据完成");

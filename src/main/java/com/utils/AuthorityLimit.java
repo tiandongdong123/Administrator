@@ -10,7 +10,7 @@ public enum AuthorityLimit {
 	TRICAL("trical","试用项目"),
 	PID("pid","机构管理员"),
 	SUBACCOUNT("Subaccount","机构子账号"),
-	BINDING("BINDING","个人绑定机构"),
+	//BINDING("BINDING","个人绑定机构"),
 	STATISTICS("tongji","统计分析"),
 	OPENAPP("openApp","APP嵌入服务"),
 	OPENWECHAT("openWeChat","微信公众号嵌入服务"),
