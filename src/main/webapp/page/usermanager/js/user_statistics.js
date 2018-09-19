@@ -79,6 +79,7 @@ $(function () {
                 var that = this;
                 var selectedVal, indexType, navTitle, data_compare_array, startCompareDate, endCompareDate,data_array,startDate, endDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
+                console.log(selectedVal);
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
                 data_array = $("#user_statistics_data").val().split("至");
@@ -349,13 +350,13 @@ $(function () {
             dataSubmitBtn: function () {
                 var that = this,week = false,month = false,week_compare = false,month_compare = false;
                 var data_icon = $(".gri_data_compare,.gri_data");
-
-
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
                     data_icon.css('background-position', '-10px -10px');
+                    selected_data.children(".switch_data_hidden").val(1);
                     that.totalOrNew();
                     that.newData();
+                    that.getTime();
                     if($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block"){
                         that.stepMonthOrWeek();//跨月/周的判断
                         week = (switch_board_week.css("display") == "none")?true:false;
