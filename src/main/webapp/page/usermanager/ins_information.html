@@ -15,14 +15,14 @@
       <div class="box box-primary">
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
-	  		<table id="message1" style="margin:0 auto;<?if(map.isSimple=='1'){?>display:none;<?}?>">
+	  		<table id="message1" style="margin:0 auto;margin-left:300px;<?if(map.isSimple=='1'){?>display:none;<?}?>">
 	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="userId"<?}?> id="userId1" value="<?if(map.isSimple=='0'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="institution"<?}?> id="institution1" value="<?if(map.isSimple=='0'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			</tr>
 	  			<tr><td class="alal">IP</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="ipSegment"<?}?> id="ipSegment1" value="<?if(map.isSimple=='0'){?>${map.ipSegment!}<?}?>" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
 					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span></td></tr>
 			</table>
-			<table id="message2"  style="margin:0 auto;<?if(map.isSimple=='0'){?>display:none;<?}?>">
+			<table id="message2" style="margin:0 auto;margin:0 auto;margin-left:300px;<?if(map.isSimple=='0'){?>display:none;<?}?>">
 	  			<tr>
 		  			<td class="alal">用户ID</td>
 		  			<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="userId"<?}?> id="userId2" value="<?if(map.isSimple=='1'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
@@ -63,7 +63,7 @@
 	       <?}?>
 	       <input type="hidden" id="isSimple" name="isSimple" value="${map.isSimple!}">
         </form>
-        <div class="box-footer" style="text-align:center;">
+        <div class="box-footer" style="margin-left:450px;">
 			<button type="button" class="btn btn-primary" onclick="findList();" id="queryButton">查询</button>
 			<a href="javascript:;" onclick="showMore(this);return false;" class="add_admin"><?if(map.isSimple=='0'){?>更多查询条件<?}?><?if(map.isSimple=='1'){?>精简查询条件<?}?></a>
         </div>

@@ -104,7 +104,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				if(index%1000==0&&index>0){
 					SolrService.getInstance(hosts+"/GroupInfo");
 					SolrService.createList(solrList);
-					log.info("查询到"+solrList.size()+"条数据");
+					log.info("发送"+solrList.size()+"条数据");
 					solrList.clear();
 				}
 			}
@@ -115,7 +115,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			if(solrList.size()>0){
 				SolrService.getInstance(hosts+"/GroupInfo");
 				SolrService.createList(solrList);
-				log.info("发送"+solrList.size()+"条");
+				log.info("发送"+solrList.size()+"条数据");
 			}
 			messageMap.put("flag", "success");
 			messageMap.put("success", "机构用户信息发送solr成功");
