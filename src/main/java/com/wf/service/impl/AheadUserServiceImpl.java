@@ -2713,7 +2713,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//验证Ip
 			Long ipstart=(Long) map.get("ipstart");
 			Long ipend=(Long) map.get("ipend");
-			if(ipstart!=null&&ipend!=null&&ipstart.longValue()>=ipend.longValue()){
+			if(ipstart!=null&&ipend!=null&&ipstart.longValue()<=ipend.longValue()){
 				List<String> userIdList=this.findUserIdByIp(ipstart, ipend,(String) map.get("userId"));
 				if(userIdList!=null&&userIdList.size()>0){
 					if(query.length()>0){
