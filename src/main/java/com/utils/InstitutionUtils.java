@@ -9,12 +9,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
+import com.wf.service.AheadUserService;
 
 public class InstitutionUtils {
 	
@@ -22,6 +26,9 @@ public class InstitutionUtils {
 	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
 	public static Integer maxData=99999999;
+	
+	@Autowired
+	private AheadUserService aheadUserService;
 
 	/**
 	 * 校验机构用户查询条件
@@ -54,23 +61,23 @@ public class InstitutionUtils {
 				map.put("ipstart", IPConvertHelper.IPToNumber(ipSegment));
 				map.put("ipend", IPConvertHelper.IPToNumber(ipSegment));
 			}else{
-				map.put("ipSegment", ipSegment);
 				map.put("ipError", "ipError");
 				flag=false;
 			}
+			map.put("ipSegment", ipSegment);
 		}
 		if (!StringUtils.isEmpty(institution)) {
-			map.put("institution", institution.replace("_", "\\_"));
+			map.put("institution", institution);
 		}
 		//调用用户权限 (个人绑定未加入)
 		if (AuthorityLimit.TRICAL.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("trical", openLimit);
 		}else if (AuthorityLimit.OPENAPP.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("openApp", openLimit);
 		}else if (AuthorityLimit.OPENWECHAT.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("openWeChat", openLimit);
 		}else if (AuthorityLimit.PARTYADMINTIME.getName().equals(openLimit)) {
-			map.put("mapping", openLimit);
+			map.put("PartyAdminTime", openLimit);
 		}else if(AuthorityLimit.PID.getName().equals(openLimit)){
 			map.put("admin", openLimit);
 		}else if(AuthorityLimit.STATISTICS.getName().equals(openLimit)){
@@ -90,7 +97,7 @@ public class InstitutionUtils {
 		
 		map.put("proType", proType);
 		map.put("resource", resource);
-		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+		map.put("pageNum", Integer.parseInt(pageNum==null?"1":pageNum)-1);
 		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
 		
 		map.put("isSimple",StringUtils.isEmpty(isSimple)?"0":isSimple);
@@ -670,6 +677,34 @@ public class InstitutionUtils {
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * 获取solr字段名称
+	 * @param sdList
+	 * @return
+	 */
+	public static List<Map<String,Object>> getFieldMap(SolrDocumentList sdList) throws Exception{
+		List<Map<String,Object>> list=new ArrayList<>();
+		for(SolrDocument sd:sdList){
+			Map<String,Object> solrMap=new HashMap<>();
+			for (String key: sd.getFieldNames()) {
+				solrMap.put(key,sd.getFieldValue(key));
+			}
+			list.add(solrMap);
+		}
+		return list;
+	}
+	
+	
+	//添加field参数
+	public static void addField(StringBuffer query,String key, String value) {
+		if(!StringUtils.isEmpty(value)){
+			if(query.length()>0){
+				query.append(" AND ");
+			}
+			query.append(key).append(":").append(value);
 		}
 	}
 	

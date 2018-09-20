@@ -36,7 +36,7 @@
               <input type="text" class="form-control input_time" name="institution" id="institution" maxlength="64" value="${map.institution}" onfocus="input_onfocus(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
 			  <div class="searchsug searchgroup" style="width: 730px;height: auto;display: none;"><ul></ul></div>
             </div>
-			<div class="form-group input_block">
+			<!--  <div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>国家</label>
 				<select class="form-control input_time" name="CountryRegion" id="CountryRegion" onchange="selectRegion(this);">
 					<option value="China" <?if(!isEmpty(groupInfo)&&groupInfo.CountryRegion=='China'){ ?>selected="selected"<?}?>>中国</option>
@@ -46,9 +46,13 @@
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>地区</label>
 				<select class="form-control input_time" name="PostCode" id="PostCode">
+				<?if(isEmpty(groupInfo)||groupInfo.PostCode!='none'){ ?>
 				<option value="">--请选择--</option>
-				<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(groupInfo)&&groupInfo.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
+				<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(groupInfo)&&groupInfo.PostCode==arr.id){?>selected="selected"<?}?>>${arr.name}</option><?}?>
+				<?}?>
+				<?if(!isEmpty(groupInfo)&&groupInfo.PostCode=='none'){ ?><option value="none" selected="selected">无</option><?}?>
 				</select>
+				<div id='allRegion' style="display:none;"><option value="">--请选择--</option><?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(groupInfo)&&groupInfo.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?></div>
 			</div>
 			<div class="form-group input_block">
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>机构类型</label>
@@ -68,7 +72,7 @@
 				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>
 				<span id="orderTypeSpan"><?if(isEmpty(groupInfo)||groupInfo.OrderType=='crm'){?>CRM工单号<?}?><?if(!isEmpty(groupInfo)&&groupInfo.OrderType=='inner'){?>申请部门<?}?></span></label>
 				<input type="text" class="form-control input_time" name="OrderContent" id="OrderContent" value="${groupInfo.OrderContent!}" maxlength="50">
-			</div>
+			</div>-->
             <div class="form-group input_block">
               <label class="input_name">登录方式</label>
               <select class="form-control input_time" name="loginMode" id="loginMode" onchange="switchcs(this);">
@@ -86,8 +90,8 @@
                <label  class="input_name">账号IP段</label>
                <textarea class="form-control input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
 				<span>
-				<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
-				<button type="button" onclick="deleteIP();" id="deleteIp">剔除冲突IP</button>
+				<button type="button" onclick="checkIP();" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
+				<button type="button" onclick="deleteIP();" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP</button>
 				</span>
              </div>
             </div>

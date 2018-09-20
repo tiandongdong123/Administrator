@@ -265,4 +265,11 @@ public interface AheadUserService {
 	 * @return
 	 */
 	GroupInfo getGroupInfo(String userId);
+	/**
+	 * c
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<String> findUserIdByIp(long start,long end,String userId);
 }

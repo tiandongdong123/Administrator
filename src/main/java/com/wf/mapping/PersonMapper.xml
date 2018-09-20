@@ -312,6 +312,15 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
+    <if test="userType != null and userType==23">
+		and (u.userType =2 or u.userType =3) 
+    </if>
+    <if test="userType != null and userType==2">
+		and u.userType =2 
+    </if>
+    <if test="userType != null and userType==3">
+		and u.userType =3 
+    </if>
 	order by u.login_mode ASC,u.is_freeze DESC limit #{pageNum},#{pageSize}
   </select>
   
@@ -369,6 +378,15 @@
     <if test="OrderContent != null and OrderContent !=''">
 		and info.OrderContent like CONCAT('%',#{OrderContent},'%')
     </if>
+    <if test="userType != null and userType==23">
+		and (u.userType =2 or u.userType =3) 
+    </if>
+    <if test="userType != null and userType==2">
+		and u.userType =2 
+    </if>
+    <if test="userType != null and userType==3">
+		and u.userType =3 
+    </if>
   </select>
   
   <select id="findUserById" resultMap="BaseResultMap2" parameterType="java.lang.String">
@@ -423,4 +441,20 @@
 	<select id="getSubaccount" resultType="java.lang.String">
 		select user_id from user where userType=3 AND pid = #{pid}
 	</select>
+
+    <select id="getInstitutionCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select ifnull(COUNT(DISTINCT institution),0) from `user`
+        where institution is not null and institution != '' and DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime};
+    </select>
+
+    <select id="getExistedInstitutionCountByDate" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT  ifnull(COUNT(DISTINCT institution),0) from `user`
+        where institution in(select institution from `user`
+        where institution is not null and  institution != '' and  DATE_FORMAT(registration_time,'%Y-%m-%d') = #{dateTime} GROUP BY institution)
+        and  DATE_FORMAT(registration_time,'%Y-%m-%d') <![CDATA[ < ]]> #{dateTime}
+    </select>
+
+    <select id="selectunFreezeInstitutionAccount" resultType="java.lang.String">
+        select user_id from user where userType in (2,3) and is_freeze != 1
+    </select>
 </mapper>

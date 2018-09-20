@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wf.dao.UserStatisticsMapper">
+    <resultMap id="BaseResultMap" type="com.wf.bean.userStatistics.UserStatistics">
+        <id column="date" jdbcType="VARCHAR" property="date"/>
+        <result column="person_user" jdbcType="INTEGER" property="personUser"/>
+        <result column="ordinary_user" jdbcType="INTEGER" property="ordinaryUser"/>
+        <result column="authenticated_user" jdbcType="INTEGER" property="authenticatedUser"/>
+        <result column="scholar_user" jdbcType="INTEGER" property="scholarUser"/>
+        <result column="person_bind_institution" jdbcType="INTEGER" property="personBindInstitution"/>
+        <result column="institution" jdbcType="INTEGER" property="institution"/>
+        <result column="institution_account" jdbcType="INTEGER" property="institutionAccount"/>
+        <result column="valid_institution_account" jdbcType="INTEGER" property="validInstitutionAccount"/>
+        <result column="institution_subaccount" jdbcType="INTEGER" property="institutionSubaccount"/>
+        <result column="studentaccount" jdbcType="INTEGER" property="studentaccount"/>
+        <result column="institution_admin" jdbcType="INTEGER" property="institutionAdmin"/>
+    </resultMap>
+
+    <resultMap id="ColumnSumMap" type="com.wf.bean.userStatistics.StatisticsModel">
+        <result column="sum1" jdbcType="INTEGER" property="personUser"/>
+        <result column="sum2" jdbcType="INTEGER" property="authenticatedUser"/>
+        <result column="sum3" jdbcType="INTEGER" property="personBindInstitution"/>
+        <result column="sum4" jdbcType="INTEGER" property="institution"/>
+        <result column="sum5" jdbcType="INTEGER" property="institutionAccount"/>
+        <result column="sum6" jdbcType="INTEGER" property="institutionAdmin"/>
+        <result column="valid_institution_account" jdbcType="INTEGER" property="validInstitutionAccount"/>
+        <result column="unit" jdbcType="INTEGER" property="date"/>
+    </resultMap>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    date, person_user, ordinary_user, authenticated_user, scholar_user, person_bind_institution, 
+    institution, institution_account, valid_institution_account, institution_subaccount, 
+    studentaccount, institution_admin
+  </sql>
+    <select id="selectByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from user_statistics
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="limit != null">
+            <if test="offset != null">
+                limit ${offset}, ${limit}
+            </if>
+            <if test="offset == null">
+                limit ${limit}
+            </if>
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_statistics
+        where date = #{date,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user_statistics
+    where date = #{date,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample">
+        delete from user_statistics
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.wf.bean.userStatistics.UserStatistics">
+    insert into user_statistics (date, person_user, ordinary_user, 
+      authenticated_user, scholar_user, person_bind_institution, 
+      institution, institution_account, valid_institution_account, 
+      institution_subaccount, studentaccount, 
+      institution_admin)
+    values (#{date,jdbcType=VARCHAR}, #{personUser,jdbcType=INTEGER}, #{ordinaryUser,jdbcType=INTEGER}, 
+      #{authenticatedUser,jdbcType=INTEGER}, #{scholarUser,jdbcType=INTEGER}, #{personBindInstitution,jdbcType=INTEGER}, 
+      #{institution,jdbcType=INTEGER}, #{institutionAccount,jdbcType=INTEGER}, #{validInstitutionAccount,jdbcType=INTEGER}, 
+      #{institutionSubaccount,jdbcType=INTEGER}, #{studentaccount,jdbcType=INTEGER}, 
+      #{institutionAdmin,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.wf.bean.userStatistics.UserStatistics">
+        insert into user_statistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="date != null">
+                date,
+            </if>
+            <if test="personUser != null">
+                person_user,
+            </if>
+            <if test="ordinaryUser != null">
+                ordinary_user,
+            </if>
+            <if test="authenticatedUser != null">
+                authenticated_user,
+            </if>
+            <if test="scholarUser != null">
+                scholar_user,
+            </if>
+            <if test="personBindInstitution != null">
+                person_bind_institution,
+            </if>
+            <if test="institution != null">
+                institution,
+            </if>
+            <if test="institutionAccount != null">
+                institution_account,
+            </if>
+            <if test="validInstitutionAccount != null">
+                valid_institution_account,
+            </if>
+            <if test="institutionSubaccount != null">
+                institution_subaccount,
+            </if>
+            <if test="studentaccount != null">
+                studentaccount,
+            </if>
+            <if test="institutionAdmin != null">
+                institution_admin,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="date != null">
+                #{date,jdbcType=VARCHAR},
+            </if>
+            <if test="personUser != null">
+                #{personUser,jdbcType=INTEGER},
+            </if>
+            <if test="ordinaryUser != null">
+                #{ordinaryUser,jdbcType=INTEGER},
+            </if>
+            <if test="authenticatedUser != null">
+                #{authenticatedUser,jdbcType=INTEGER},
+            </if>
+            <if test="scholarUser != null">
+                #{scholarUser,jdbcType=INTEGER},
+            </if>
+            <if test="personBindInstitution != null">
+                #{personBindInstitution,jdbcType=INTEGER},
+            </if>
+            <if test="institution != null">
+                #{institution,jdbcType=INTEGER},
+            </if>
+            <if test="institutionAccount != null">
+                #{institutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="validInstitutionAccount != null">
+                #{validInstitutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="institutionSubaccount != null">
+                #{institutionSubaccount,jdbcType=INTEGER},
+            </if>
+            <if test="studentaccount != null">
+                #{studentaccount,jdbcType=INTEGER},
+            </if>
+            <if test="institutionAdmin != null">
+                #{institutionAdmin,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
+            resultType="java.lang.Long">
+        select count(*) from user_statistics
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update user_statistics
+        <set>
+            <if test="record.date != null">
+                date = #{record.date,jdbcType=VARCHAR},
+            </if>
+            <if test="record.personUser != null">
+                person_user = #{record.personUser,jdbcType=INTEGER},
+            </if>
+            <if test="record.ordinaryUser != null">
+                ordinary_user = #{record.ordinaryUser,jdbcType=INTEGER},
+            </if>
+            <if test="record.authenticatedUser != null">
+                authenticated_user = #{record.authenticatedUser,jdbcType=INTEGER},
+            </if>
+            <if test="record.scholarUser != null">
+                scholar_user = #{record.scholarUser,jdbcType=INTEGER},
+            </if>
+            <if test="record.personBindInstitution != null">
+                person_bind_institution = #{record.personBindInstitution,jdbcType=INTEGER},
+            </if>
+            <if test="record.institution != null">
+                institution = #{record.institution,jdbcType=INTEGER},
+            </if>
+            <if test="record.institutionAccount != null">
+                institution_account = #{record.institutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="record.validInstitutionAccount != null">
+                valid_institution_account = #{record.validInstitutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="record.institutionSubaccount != null">
+                institution_subaccount = #{record.institutionSubaccount,jdbcType=INTEGER},
+            </if>
+            <if test="record.studentaccount != null">
+                studentaccount = #{record.studentaccount,jdbcType=INTEGER},
+            </if>
+            <if test="record.institutionAdmin != null">
+                institution_admin = #{record.institutionAdmin,jdbcType=INTEGER},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update user_statistics
+        set date = #{record.date,jdbcType=VARCHAR},
+        person_user = #{record.personUser,jdbcType=INTEGER},
+        ordinary_user = #{record.ordinaryUser,jdbcType=INTEGER},
+        authenticated_user = #{record.authenticatedUser,jdbcType=INTEGER},
+        scholar_user = #{record.scholarUser,jdbcType=INTEGER},
+        person_bind_institution = #{record.personBindInstitution,jdbcType=INTEGER},
+        institution = #{record.institution,jdbcType=INTEGER},
+        institution_account = #{record.institutionAccount,jdbcType=INTEGER},
+        valid_institution_account = #{record.validInstitutionAccount,jdbcType=INTEGER},
+        institution_subaccount = #{record.institutionSubaccount,jdbcType=INTEGER},
+        studentaccount = #{record.studentaccount,jdbcType=INTEGER},
+        institution_admin = #{record.institutionAdmin,jdbcType=INTEGER}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.wf.bean.userStatistics.UserStatistics">
+        update user_statistics
+        <set>
+            <if test="personUser != null">
+                person_user = #{personUser,jdbcType=INTEGER},
+            </if>
+            <if test="ordinaryUser != null">
+                ordinary_user = #{ordinaryUser,jdbcType=INTEGER},
+            </if>
+            <if test="authenticatedUser != null">
+                authenticated_user = #{authenticatedUser,jdbcType=INTEGER},
+            </if>
+            <if test="scholarUser != null">
+                scholar_user = #{scholarUser,jdbcType=INTEGER},
+            </if>
+            <if test="personBindInstitution != null">
+                person_bind_institution = #{personBindInstitution,jdbcType=INTEGER},
+            </if>
+            <if test="institution != null">
+                institution = #{institution,jdbcType=INTEGER},
+            </if>
+            <if test="institutionAccount != null">
+                institution_account = #{institutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="validInstitutionAccount != null">
+                valid_institution_account = #{validInstitutionAccount,jdbcType=INTEGER},
+            </if>
+            <if test="institutionSubaccount != null">
+                institution_subaccount = #{institutionSubaccount,jdbcType=INTEGER},
+            </if>
+            <if test="studentaccount != null">
+                studentaccount = #{studentaccount,jdbcType=INTEGER},
+            </if>
+            <if test="institutionAdmin != null">
+                institution_admin = #{institutionAdmin,jdbcType=INTEGER},
+            </if>
+        </set>
+        where date = #{date,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.wf.bean.userStatistics.UserStatistics">
+    update user_statistics
+    set person_user = #{personUser,jdbcType=INTEGER},
+      ordinary_user = #{ordinaryUser,jdbcType=INTEGER},
+      authenticated_user = #{authenticatedUser,jdbcType=INTEGER},
+      scholar_user = #{scholarUser,jdbcType=INTEGER},
+      person_bind_institution = #{personBindInstitution,jdbcType=INTEGER},
+      institution = #{institution,jdbcType=INTEGER},
+      institution_account = #{institutionAccount,jdbcType=INTEGER},
+      valid_institution_account = #{validInstitutionAccount,jdbcType=INTEGER},
+      institution_subaccount = #{institutionSubaccount,jdbcType=INTEGER},
+      studentaccount = #{studentaccount,jdbcType=INTEGER},
+      institution_admin = #{institutionAdmin,jdbcType=INTEGER}
+    where date = #{date,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectSingleTypePreviousSum" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select  ifnull(sum(${type}),0)  from user_statistics where date <![CDATA[ < ]]>  #{dateTime}
+  </select>
+
+    <select id="selectSingleTypeNewData" parameterType="com.wf.bean.userStatistics.ChartsParameter"
+            resultType="java.lang.Integer">
+        select sum from (
+        select ifnull(sum(${type}),0) sum,
+        <if test="timeUnit == 1">
+            DATE_FORMAT(date,'%Y%m%d')
+        </if>
+        <if test="timeUnit == 2">
+            DATE_FORMAT(date,'%Y%u')
+        </if>
+        <if test="timeUnit == 3">
+            DATE_FORMAT(date,'%Y%m')
+        </if>
+        unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
+        group by unit
+        ) alias
+    </select>
+
+    <select id="selectSumByExample" parameterType="com.wf.bean.userStatistics.UserStatisticsExample"
+            resultMap="ColumnSumMap">
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
+        sum2,ifnull(sum(person_bind_institution),0) sum3,
+        ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6
+        from user_statistics
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+
+    <select id="selectNewDate" parameterType="java.lang.Object"
+            resultMap="ColumnSumMap">
+        select ifnull(sum(person_user),0) sum1,ifnull(sum(authenticated_user),0)
+        sum2,ifnull(sum(person_bind_institution),0) sum3,
+        ifnull(sum(institution),0) sum4,ifnull(sum(institution_account),0) sum5,ifnull(sum(institution_admin),0) sum6,
+        <if test="timeUnit == 1">
+            ifnull(valid_institution_account,0) valid_institution_account, DATE_FORMAT(date,'%Y-%m-%d')
+        </if>
+        <if test="timeUnit == 2">
+            DATE_FORMAT(date,'%Y%u')
+        </if>
+        <if test="timeUnit == 3">
+            DATE_FORMAT(date,'%Y-%m')
+        </if>
+        unit from user_statistics where date <![CDATA[ >= ]]> #{startTime} and date  <![CDATA[ <= ]]> #{endTime}
+        group by unit
+    </select>
+
+</mapper>

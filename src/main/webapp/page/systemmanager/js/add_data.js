@@ -1,6 +1,13 @@
 var zTree_Menu ="";
 $(function(){
 	/*getSubject();*/
+    $('input[name=checkboxPngId],input[name=checkboxId]').click(function () {
+        if($(this).val()=='增加id'){
+            $(this).parent().next().show();
+        }else{
+            $(this).parent().next().hide();
+        }
+    })
 });
 
 function getSubject(){ 
@@ -217,12 +224,13 @@ function delcontent(){
 
 
 function doadddata(){
+    var urlMatch = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/;
 	var tablename=$("#dataname").val();
-	if(tablename==null||tablename==''){
-		$("#dataname").focus();
-		$("#checkdname").text("名称不能为空");
-		return;
-	}
+    // if (tablename == null || tablename == '') {
+    //     $("#dataname").focus();
+    //     $("#checkdname").text("名称不能为空");
+    //     return;
+    // }
 	var abbreviation = $("#abbreviation").val();
 	var datadescribe = $("#datadescribe").val();
 	var contentnum = $(".contenttext");
@@ -231,6 +239,10 @@ function doadddata(){
 	var resourcetypes="";
 	var product_source_code=$("#prouct_source_code").val();
 	var customs=new Array();
+    var imgLogoSrc=$("#imgLogoSrc").val();
+    var link=$("#link").val();
+    var isIdAdded="";
+    var isPngIdAdded="";
 	$("input[name=languagenames]").each(function(){  
         if($(this).is(':checked')) {  
         	languages+=$(this).val()+",";  
@@ -256,30 +268,49 @@ function doadddata(){
 		var val = i1+"%"+i2+"%"+s1+"%"+s2;
 		customs.push(val);
 	}
-	$.ajax({  
-		type : "POST",  
-		url : "../data/doadddata.do",
-			data : {
-				'tableName' : tablename,
-				'tableDescribe' : datadescribe,
-				'abbreviation' : abbreviation,
-				'resType' : resourcetypes.substring(0,resourcetypes.length-1),
-				'sourceDb' : sources.substring(0,sources.length-1),
-				'language' : languages.substring(0,languages.length-1),
-				'customs' : customs,
-				'productSourceCode' : product_source_code,
-				'dbtype':dbtype
-			},
-			dataType : "json",
-			success : function(data) {
-				if(data){
-					layer.msg("添加成功",{icon: 1});
-					window.location.href="../system/dataManager.do";
-				}else{
-					layer.msg("添加失败",{icon: 2});
-				}
-			}
-	});
+
+    $("input[name=checkboxId]:checked").each(function(){
+        isIdAdded+=$(this).val();
+    });
+    $("input[name=checkboxPngId]:checked").each(function(){
+        isPngIdAdded+=$(this).val();
+    });
+    if(($.trim($('#dataname').val())==='')){
+        $('#dataname').next().text('数据库名称不能为空！')
+    }else if(($.trim($('#prouct_source_code').val())==='')) {
+        $('#prouct_source_code').next().text('数据库code不能为空！')
+    }
+    else {
+        $('#dataname,#product_source_code,#isIdAdded,#isPngIdAdded').next().text('');
+        $.ajax({
+            type: "POST",
+            url: "../data/doadddata.do",
+            data: {
+                'tableName': tablename,
+                'tableDescribe': datadescribe,
+                'abbreviation': abbreviation,
+                'resType': resourcetypes.substring(0, resourcetypes.length - 1),
+                'sourceDb': sources.substring(0, sources.length - 1),
+                'language': languages.substring(0, languages.length - 1),
+                'customs': customs,
+                'productSourceCode': product_source_code,
+                'dbtype': dbtype,
+                'imgLogoSrc': imgLogoSrc,
+                'link': link,
+				'isIdAdded':isIdAdded,
+				'isPngIdAdded':isPngIdAdded
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    layer.msg("添加成功", {icon: 1});
+                    window.location.href = "../system/dataManager.do";
+                } else {
+                    layer.msg("添加失败", {icon: 2});
+                }
+            }
+        });
+    }
 }
 
 function checktype(){

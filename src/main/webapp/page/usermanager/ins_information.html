@@ -15,20 +15,19 @@
       <div class="box box-primary">
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
-	  		<table id="message1" style="margin:0 auto;<?if(map.isSimple=='1'){?>display:none;<?}?>">
+	  		<table id="message1" style="margin:0 auto;margin-left:300px;<?if(map.isSimple=='1'){?>display:none;<?}?>">
 	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="userId"<?}?> id="userId1" value="<?if(map.isSimple=='0'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="institution"<?}?> id="institution1" value="<?if(map.isSimple=='0'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 	  			</tr>
 	  			<tr><td class="alal">IP</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="ipSegment"<?}?> id="ipSegment1" value="<?if(map.isSimple=='0'){?>${map.ipSegment!}<?}?>" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
 					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span></td></tr>
 			</table>
-			<table id="message2"  style="margin:0 auto;<?if(map.isSimple=='0'){?>display:none;<?}?>">
+			<table id="message2" style="margin:0 auto;margin:0 auto;margin-left:300px;<?if(map.isSimple=='0'){?>display:none;<?}?>">
 	  			<tr>
 		  			<td class="alal">用户ID</td>
 		  			<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="userId"<?}?> id="userId2" value="<?if(map.isSimple=='1'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
 					<td class="alal">机构名称</td>
 					<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="institution"<?}?> id="institution2" value="<?if(map.isSimple=='1'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
-					<td class="arar"></td>
 				</tr>
 	  			<tr>
 		  			<td class="alal">IP</td>
@@ -41,33 +40,8 @@
 			                <option value="">--请选择--</option>
 			                <?for(auth in Authority){ ?><option value="${auth.name}" <?if(!isEmpty(map.openLimit)&&map.openLimit==auth.name){ ?>selected="selected"<?}?>>${auth.desc}</option><?}?>
 		                </select></td>
-		            <td class="arar"></td>
 				</tr>
 	  			<tr>
-		  			<td class="alal">机构类型</td>
-		  			<td class="arar">
-						<select name="Organization" id="Organization">
-							<option value="">--请选择--</option>
-							<?for(organ in org){ ?><option value="${organ.name}" <?if(!isEmpty(map.Organization)&&map.Organization==organ.name){ ?>selected="selected"<?}?>>${organ.desc}</option><?}?>
-						</select>
-		  			</td>
-					<td class="alal">地区</td>
-					<td class="arar">					
-					<select name="PostCode" id="PostCode">
-						<option value="">--请选择--</option>
-						<?for(arr in arrayArea){?><option value="${arr.id}" <?if(!isEmpty(map.PostCode)&&map.PostCode==arr.id){ ?>selected="selected"<?}?>>${arr.name}</option><?}?>
-						<option value="none" <?if(!isEmpty(map.PostCode)&&map.PostCode=='none'){ ?>selected="selected"<?}?>>无</option>
-					</select></td>
-					<td class="arar"></td>
-				</tr>
-	  			<tr>
-		  			<td class="alal">工单类型</td>
-		  			<td class="arar">
-					<select name="OrderType" id="OrderType" onchange="queryOrder(this);">
-						<option value="">--请选择--</option>
-						<option value="crm" <?if(!isEmpty(map.OrderType)&&map.OrderType=='crm'){?>selected="selected"<?}?>>CRM工单</option>
-						<option value="inner" <?if(!isEmpty(map.OrderType)&&map.OrderType=='inner'){?>selected="selected"<?}?>>内部工单</option>
-					</select></td>
 					<td class="alal">购买项目</td>
 					<td class="arar">
 					<select name="proType" id="proType" onchange="queryType();">
@@ -76,16 +50,10 @@
 						<option value="Check" <?if(!isEmpty(map.proType)&&map.proType=='Check'){?>selected="selected"<?}?>>万方检测</option>
 						<option value="WFStats" <?if(!isEmpty(map.proType)&&map.proType=='WFStats'){?>selected="selected"<?}?>>万方分析</option>
 					</select></td>
+					<td class="alal"></td>
 					<td class="arar"><span id="resource_span" style="display:none">	
 					<select name="resource" id="resource"><option value="">--请选择--</option></select>
 					<input type="hidden" name="oldresource" id="oldresource" value="${map.resource!}"></span></td>
-				</tr>
-	  			<tr>
-		  			<td class="alal"><span id="sqbm_span" style="display:none">申请部门</span></td>
-		  			<td class="arar"><span id="order_span" style="display:none"><input type="text" name="OrderContent" id="OrderContent" value="${map.OrderContent!}"></span></td>
-					<td class="alal"></td>
-					<td class="arar"></td>
-					<td class="arar"></td>
 				</tr>
 			</table>
             <?if(!isEmpty(map.pageList)){?>
@@ -95,7 +63,7 @@
 	       <?}?>
 	       <input type="hidden" id="isSimple" name="isSimple" value="${map.isSimple!}">
         </form>
-        <div class="box-footer" style="text-align:center;">
+        <div class="box-footer" style="margin-left:450px;">
 			<button type="button" class="btn btn-primary" onclick="findList();" id="queryButton">查询</button>
 			<a href="javascript:;" onclick="showMore(this);return false;" class="add_admin"><?if(map.isSimple=='0'){?>更多查询条件<?}?><?if(map.isSimple=='1'){?>精简查询条件<?}?></a>
         </div>
@@ -110,59 +78,57 @@
  	<div class="info_jg_title" <?if(i<6){?>onclick="unfolded(2,this,'show_${i}');"<?}else{?>onclick="unfolded(1,this,'show_${i}');"<?}?>>
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
-          <span class="university"><a href="javascript:;" onclick="showAdm('${list.userId}','${list.pid}','${list.institution}');return false;" class="add_admin">${list.institution}</a><span>
-          <?if(!isEmpty(list.groupInfo)){?>
-          <span class="time"><?if(list.groupInfo.CountryRegion=='China'){ ?>中国<?}else if(list.groupInfo.CountryRegion=='foreign'){?>外国<?}?></span>
-          <span class="time"><?for(arr in arrayArea){ if(list.groupInfo.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
-          <span class="time"><?for(organ in org){ if(list.groupInfo.Organization==organ.name){ ?>${organ.desc}<?}}?></span>
-          <span class="time"><?if(!isEmpty(list.pConcurrentnumber)){ ?>机构账号并发数：${list.pConcurrentnumber}<?}?></span>
-          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单<?}?><?if(list.groupInfo.OrderType=='inner'){?>内部工单<?}?></span>
-          <span class="time"><?if(list.groupInfo.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.groupInfo.OrderType=='inner'){?>申请部门：<?}?>${list.groupInfo.OrderContent!}</span>
-          <?}?>
+          <span class="university"><a href="javascript:;" onclick="showAdm('${list.Id}','${list.ParentId}','${list.Institution}');return false;" class="add_admin">${list.Institution}</a><span>
+          <span class="time"><?if(list.CountryRegion=='China'){ ?>中国<?}else if(list.CountryRegion=='foreign'){?>外国<?}?></span>
+          <span class="time"><?for(arr in arrayArea){ if(list.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
+          <span class="time"><?for(organ in org){ if(list.Organization==organ.name){ ?>${organ.desc}<?}}?></span>
+          <span class="time"><?if(!isEmpty(list.GroupConcurrent)){ ?>机构账号并发数：${list.GroupConcurrent}<?}?></span>
+          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单<?}?><?if(list.OrderType=='inner'){?>内部工单<?}?></span>
+          <span class="time"><?if(list.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.OrderType=='inner'){?>申请部门：<?}?>${list.OrderContent!}</span>
       </div>
      <div class="info_box_right">
-      	<a href="../auser/numupdate.do?userId=${list.userId}" class="add_admin">账号修改</a>
+      	<a href="../auser/numupdate.do?userId=${list.Id}" class="add_admin">账号修改</a>
         <div class="btn-group">
 			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">账户管理<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-			<li><a href="../auser/opration.do?userId=${list.userId}" class="add_admin">操作记录</a></li>
-			<li><a href="../auser/tosonaccount.do?userId=${list.userId}&isBack=true" class="add_admin">子账号列表</a></li>
-			<li><a href="../auser/groupOrder.do?userId=${list.userId}" class="add_admin">订单记录</a></li>
-			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.userId}" class="add_admin">个人绑定机构列表</a></li>
-			<li><?if(list.pid!=null&&list.pid!=""){?><a href="javascript:void(0);" onclick="delAdmin('${list.userId}');" class="add_admin">移除机构管理员</a>
-				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.userId}','${list.pid}','${list.institution}');" class="add_admin">添加机构管理员</a><?}?></li>
+			<li><a href="../auser/opration.do?userId=${list.Id}" class="add_admin">操作记录</a></li>
+			<li><a href="../auser/tosonaccount.do?userId=${list.Id}&isBack=true" class="add_admin">子账号列表</a></li>
+			<li><a href="../auser/groupOrder.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
+			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.Id}" class="add_admin">个人绑定机构列表</a></li>
+			<li><?if(!isEmpty(list.ParentId)){?><a href="javascript:void(0);" onclick="delAdmin('${list.Id}');" class="add_admin">移除机构管理员</a>
+				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.Id}','${list.ParentId}','${list.Institution}');" class="add_admin">添加机构管理员</a><?}?></li>
 			</ul>
 		</div>
 		<a href="javascript:void(0);">
-        <?if(list.isFreeze==2){?>
-          <i onclick="setfreeze(1,this,'${list.userId}');" class="icon_lock icon_open"></i>
+        <?if(list.IsFreeze==false){?>
+          <i onclick="setfreeze(1,this,'${list.Id}');" class="icon_lock icon_open"></i>
 		<?}else{?>
-          <i onclick="setfreeze(2,this,'${list.userId}');" class="icon_lock icon_close"></i>
+          <i onclick="setfreeze(2,this,'${list.Id}');" class="icon_lock icon_close"></i>
 		<?}?>
         </a>
      </div>
  	</div>
-	<div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.userId}">
+	<div class="box-body table-responsive no-padding" style="display: none;" id="ins_${list.Id}">
 		<table class="table table-hover">
 		<div class="form-group input_block">
              <label class="input_name">机构名称</label>
-             <input type="hidden" class="form-control input_width" id="ins_hidden_${list.userId}" value="${list.institution}">
-             <input type="text" class="form-control input_width" id="institu_${list.userId}" value="${list.institution}">
+             <input type="hidden" class="form-control input_width" id="ins_hidden_${list.Id}" value="${list.Institution}">
+             <input type="text" class="form-control input_width" id="institu_${list.Id}" value="${list.Institution}">
         </div>
-        <tbody id="tbody_${list.userId}"></tbody>
+        <tbody id="tbody_${list.Id}"></tbody>
        	</table>
 	</div>
 	<div id="show_${i}" <?if(i<6){?>style="display:black;"<?}else{?>style="display:none;"<?}?>>
 	<div class="user_info">
-		<span class="user_qrCode">${list.userId}</span>
-		<?if(list.loginMode!=0){?>
-			<span>${list.password}</span>
+		<span class="user_qrCode">${list.Id}</span>
+		<?if(list.LoginMode!="0"){?>
+			<span>${list.Password}</span>
 		<?}?>
-		<span>${list.loginMode==0?'IP自动登录':(list.loginMode==2?'用户名密码+IP':'用户名密码')}</span>
+		<span>${list.LoginMode=="0"?'IP自动登录':(list.LoginMode=="2"?'用户名密码+IP':'用户名密码')}</span>
 	</div>
-	<?if(!isEmpty(list.loginMode)&&list.loginMode!=1){?>
-		<? if(!isEmpty(list.list_ip)){ for(listIp in list.list_ip){ ?>
-			<div class="ip_num">${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber}</div>
+	<?if(!isEmpty(list.LoginMode)&&list.LoginMode!="1"){?>
+		<? if(!isEmpty(list.OpenIP)){ for(listIp in list.OpenIP){ ?>
+			<div class="ip_num">${listIp}</div>
 		<?}}?>
 	<?}?>
 	<!-- 项目和资源库列表 -->
@@ -204,7 +170,7 @@
 		${pldata.tableName}
 	<?}?>
    <?if(!isEmpty(pldata.contract)){ var payid = pro.payChannelid; var pscode = pldata.productSourceCode;?>
-    <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.userId}','${payid}','${pscode}','${pldata.resType}');">详情</a>
+    <a href="javascript:void(0);" onclick="openPurchaseInfo('${list.Id}','${payid}','${pscode}','${pldata.resType}');">详情</a>
 		<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 		books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 		copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_album,item_id;
@@ -282,20 +248,20 @@
 			<? var confNo;if(!isEmpty(conference_No.Value)){ for(var co=0;co<conference_No.Value.~size;co++){confNo=confNo+conference_No.Value[co]+"\r\n";}}?>
 			<? var patentIPC;if(!isEmpty(patent_IPC.Value)){ for(var co=0;co<patent_IPC.Value.~size;co++){patentIPC=patentIPC+(isEmpty(patentIPC)?"":",")+patent_IPC.Value[co];}}?>
 		<!-- 详情开始 -->
-	    <div class="nav-tabs-custom" id="open_${list.userId}_${payid}_${pscode}" style="display: none;">
+	    <div class="nav-tabs-custom" id="open_${list.Id}_${payid}_${pscode}" style="display: none;">
 	        <ul class="nav nav-tabs">
-	          <?if(pldata.resType=="perio"){?><li><a href="#perio_${list.userId}_${payid}_${pscode}" data-toggle="tab">期刊限定</a></li><?}?>
-	          <?if(pldata.resType=="degree"){?><li><a href="#degree_${list.userId}_${payid}_${pscode}" data-toggle="tab">学位限定</a></li><?}?>
-	          <?if(pldata.resType=="conf"){?><li><a href="#conf_${list.userId}_${payid}_${pscode}" data-toggle="tab">会议限定</a></li><?}?>
-	          <?if(pldata.resType=="patent"){?><li><a href="#patent_${list.userId}_${payid}_${pscode}" data-toggle="tab">专利限定</a></li><?}?>
-	          <?if(pldata.resType=="books"){?><li><a href="#book_${list.userId}_${payid}_${pscode}" data-toggle="tab">图书限定</a></li><?}?>
-	          <?if(pldata.resType=="standard"){?><li><a href="#standard_${list.userId}_${payid}_${pscode}" data-toggle="tab">标准限定</a></li><?}?>
-	          <?if(pldata.resType=="local chronicles"){?><li><a href="#localchronicles_${list.userId}_${payid}_${pscode}" data-toggle="tab">地方志限定</a></li><?}?>
+	          <?if(pldata.resType=="perio"){?><li><a href="#perio_${list.Id}_${payid}_${pscode}" data-toggle="tab">期刊限定</a></li><?}?>
+	          <?if(pldata.resType=="degree"){?><li><a href="#degree_${list.Id}_${payid}_${pscode}" data-toggle="tab">学位限定</a></li><?}?>
+	          <?if(pldata.resType=="conf"){?><li><a href="#conf_${list.Id}_${payid}_${pscode}" data-toggle="tab">会议限定</a></li><?}?>
+	          <?if(pldata.resType=="patent"){?><li><a href="#patent_${list.Id}_${payid}_${pscode}" data-toggle="tab">专利限定</a></li><?}?>
+	          <?if(pldata.resType=="books"){?><li><a href="#book_${list.Id}_${payid}_${pscode}" data-toggle="tab">图书限定</a></li><?}?>
+	          <?if(pldata.resType=="standard"){?><li><a href="#standard_${list.Id}_${payid}_${pscode}" data-toggle="tab">标准限定</a></li><?}?>
+	          <?if(pldata.resType=="local chronicles"){?><li><a href="#localchronicles_${list.Id}_${payid}_${pscode}" data-toggle="tab">地方志限定</a></li><?}?>
 	        </ul>
 	        <div class="tab-content">
 	        <?if(strutil.contain(pldata.resType,"perio")){?>
 	        <!-- 期刊 -->
-	          <div class="tab-pane" id="perio_${list.userId}_${payid}_${pscode}">
+	          <div class="tab-pane" id="perio_${list.Id}_${payid}_${pscode}">
 	           <div class="form-group" style="width:60%;">
 	          		<label>期刊分类</label>
 	          		<textarea class="form-control" name="perioInfo_CLC" id="perioInfo_CLC">${perioCLC!}</textarea>
@@ -325,7 +291,7 @@
 	        <?}?>
 	        <?if(strutil.contain(pldata.resType,"degree")){?>
 	    	<!-- 学位 -->
-	       <div class="tab-pane" id="degree_${list.userId}_${payid}_${pscode}">
+	       <div class="tab-pane" id="degree_${list.Id}_${payid}_${pscode}">
 			<label>中图分类</label>
 			<textarea class="form-control" name="degreeClc" id="degreeClc">${degCLC!}</textarea>
 	           <div class="form-group" style="width:60%;">
@@ -357,7 +323,7 @@
 	        <?}?>
 	      <?if(strutil.contain(pldata.resType,"conf")){?>
 	      <!-- 会议 -->
-	       <div class="tab-pane" id="conf_${list.userId}_${payid}_${pscode}">
+	       <div class="tab-pane" id="conf_${list.Id}_${payid}_${pscode}">
 			<div class="form-group" style="width:60%;">
 	         <label>中图分类</label>
 	         <textarea class="form-control" name="conferenceClc" id="conference_CLC">${conCLC!}</textarea>
@@ -370,7 +336,7 @@
 	        <?}?>
 	         <?if(strutil.contain(pldata.resType,"patent")){?>
 	         <!-- 专利 -->
-	         <div class="tab-pane" id="patent_${list.userId}_${payid}_${pscode}">
+	         <div class="tab-pane" id="patent_${list.Id}_${payid}_${pscode}">
 	           <div style="padding: 10px;">
 				<div class="wrap">
 					<label>中图分类</label>
@@ -381,7 +347,7 @@
 	         <?}?>
 	         <?if(strutil.contain(pldata.resType,"books")){?>
 	        <!-- 图书  -->
-	         <div class="tab-pane" id="book_${list.userId}_${payid}_${pscode}">
+	         <div class="tab-pane" id="book_${list.Id}_${payid}_${pscode}">
 	          	<label>中图分类</label>
 	          	<textarea class="form-control" name="booksClc" id="booksClc">${books_CLC.Value!}</textarea>
 	          <div class="form-group" style="width:60%;">
@@ -392,7 +358,7 @@
 	         <?}?>
 	         <?if(strutil.contain(pldata.resType,"local chronicles")){?>
 			<!-- 地方志  -->
-			<div class="tab-pane" id="localchronicles_${list.userId}_${payid}_${pscode}">
+			<div class="tab-pane" id="localchronicles_${list.Id}_${payid}_${pscode}">
 				<div style="height:400px;border:1px solid #C6C6C6;">
 				<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%">
 				<input type="radio" value="1" name="fzlx" <?if(isEmpty(gazetteers_id)&&isEmpty(item_id)){?>checked="checked"<?}?>/>分类筛选</td><td style="border:1px solid #C6C6C6;width:85%">
@@ -400,29 +366,29 @@
 				<input type="radio" value="FZ_New" name="gazetteersType" <?if(isEmpty(gazetteers_type)){?>checked="checked"<?}?>/>全部&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="radio" value="FZ_New" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_New"){?>checked="checked"<?}?>/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="radio" value="FZ_Old" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_Old"){?>checked="checked"<?}?>/>旧方志</td></tr>
-				<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 ：<span id="sheng_${list.userId}_${payid}_${pscode}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				市 ：<span id="shi_${list.userId}_${payid}_${pscode}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;县 ：<span id="xian_${list.userId}_${payid}_${pscode}"></span></td></tr>
+				<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 ：<span id="sheng_${list.Id}_${payid}_${pscode}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				市 ：<span id="shi_${list.Id}_${payid}_${pscode}"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;县 ：<span id="xian_${list.Id}_${payid}_${pscode}"></span></td></tr>
 				<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;">
 				<input type="radio" value="WFLocalChronicle" name="drtm" <?if(!isEmpty(gazetteers_level)&&gazetteers_level.Value=="WFLocalChronicle"){?>checked="checked"<?}?>/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="radio" value="WFLocalChronicleItem" name="drtm" <?if(!isEmpty(gazetteers_level)&&gazetteers_level.Value=="WFLocalChronicleItem"){?>checked="checked"<?}?>/> 条目</td></tr>
-				<tr><td align=right width="10%"><span id="zjfl_${list.userId}_${payid}_${pscode}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
+				<tr><td align=right width="10%"><span id="zjfl_${list.Id}_${payid}_${pscode}">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;">
 				<a href="javascript:;">全选</span></td></tr>
 				<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">
-				<div id="new_class_code_${list.userId}_${payid}_${pscode}"></div></td></tr></table></td></tr><tr height="40%">
+				<div id="new_class_code_${list.Id}_${payid}_${pscode}"></div></td></tr></table></td></tr><tr height="40%">
 				<td align=center><input type="radio" name="fzlx" value="0" <?if(!isEmpty(gazetteers_id)||!isEmpty(item_id)){?>checked="checked"<?}?>/>自定义导入</td><td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">
 				<table><tr><td align=right width="20%">整本 （以;分隔）</td><td style="align:left;width:80%;padding-left:20px;"><textarea class="form-control" rows="3" style="width:100%;">${gazetteers_id.Value!}</textarea></td></tr>
 				<tr><td align=right width="20%">条目 （以;分隔）</td><td style="align:left;width:80%;padding-left:20px;"><textarea class="form-control" rows="3" style="width:100%;">${item_id.Value!}</textarea></td></tr>
 				</table>
-				<input type="hidden" id="gazetteers_area_${list.userId}_${payid}_${pscode}" value="${gazetteers_area.Value!}">
-				<input type="hidden" id="gazetteers_album_${list.userId}_${payid}_${pscode}" value="${gazetteers_album.Value!}">
-				<input type="hidden" id="gazetteers_type_${list.userId}_${payid}_${pscode}" value="${gazetteers_type.Value!}">
+				<input type="hidden" id="gazetteers_area_${list.Id}_${payid}_${pscode}" value="${gazetteers_area.Value!}">
+				<input type="hidden" id="gazetteers_album_${list.Id}_${payid}_${pscode}" value="${gazetteers_album.Value!}">
+				<input type="hidden" id="gazetteers_type_${list.Id}_${payid}_${pscode}" value="${gazetteers_type.Value!}">
 				</td></tr></table>
 				</div>
 			</div>
 			<?}?>
 	        <?if(strutil.contain(pldata.resType,"standard")){?>
 	         <!-- 标准 -->
-			<div class="tab-pane active" id="standard_${list.userId}_${payid}_${pscode}">
+			<div class="tab-pane active" id="standard_${list.Id}_${payid}_${pscode}">
 				<div class="form-group input_block">
 					<label><input type="checkbox" name="standardTypes" value="WFLocal" <?if(array.contain(standard_types.Value,"WFLocal")){?>checked="checked"<?}?>>行业标准</label>
 					<!-- <label><input type="checkbox" name="standardTypes" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label> -->
@@ -489,45 +455,44 @@
 <?}}?>
 
 			<!-- 党建管理员 -->
-			<?if(list.party!=null){?>
+			<?if(!isEmpty(list.PartyAdminId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">党建管理员</span>
-				<div class="bind"><?if(list.party.trical=='true'){?>试用<?}?></span></div>
-				<div class="bind"><span>党建管理员ID：</span><span>${list.party.userId}</span></div>
-				<div class="bind"><span>党建管理员密码：</span><span>${list.party.password}</span></div>
-				<div class="bind"><span>有效期：</span><span <?if(list.party.expired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.party.time}</span></div>
+				<div class="bind"><?if(list.PartyAdminTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><span>党建管理员ID：</span><span>${list.PartyAdminId}</span></div>
+				<div class="bind"><span>党建管理员密码：</span><span>${list.PartyAdminPassword}</span></div>
+				<div class="bind"><span>有效期：</span><span <?if(list.PartyAdminExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.PartyAdminStartTIme}-${list.PartyAdminEndTIme}</span></div>
 			</div>
 			<?}?>
 			<!-- 党建管理员结束 -->
 			<!-- 机构管理员 -->
-			<?if(list.admin!=null){?>
+			<?if(!isEmpty(list.AdministratorId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构管理员</span>
-				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.admin.userId}</span></div>
-				<div class="bind"><span>机构管理员密码：</span><span>${list.admin.password}</span></div>
-				<div class="bind"><span>机构管理员邮箱：</span><span>${list.admin.adminEmail}</span></div>
-				<?if(!isEmpty(list.admin.adminIP)){?><div class="bind"><span>机构管理员IP：</span><span>
-				<?for(listIp in list.admin.adminIP){?>${listIp.beginIpAddressNumber}-${listIp.endIpAddressNumber} <?}?></span></div><?}?>
+				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.AdministratorId}</span></div>
+				<div class="bind"><span>机构管理员密码：</span><span>${list.AdministratorPassword}</span></div>
+				<div class="bind"><span>机构管理员邮箱：</span><span>${list.AdministratorEmail}</span></div>
+				<?if(!isEmpty(list.AdministratorOpenIP)){?><div class="bind"><span>机构管理员IP：</span><span>
+				<?for(listIp in list.AdministratorOpenIP){?>${listIp} <?}?></span></div><?}?>
 			</div>
 			<?}?>
 			<!-- 机构管理员结束 -->
 			<!-- 机构子账号 -->
-			<?if(list.upperlimit!=null){?>
+			<?if(!isEmpty(list.ChildGroupLimit)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构子账号</span>
-				<div class="bind"><span>子账号上限：</span><span>${list.upperlimit}</span></div>
-				<div class="bind"><span>子账号并发数上限：</span><span>${list.sConcurrentnumber}</span></div>
-				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.downloadupperlimit}</span></div>
-				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.chargebacks==0){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
+				<div class="bind"><span>子账号上限：</span><span>${list.ChildGroupLimit}</span></div>
+				<div class="bind"><span>子账号并发数上限：</span><span>${list.ChildGroupConcurrent}</span></div>
+				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.ChildGroupDownloadLimit}</span></div>
+				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.ChildGroupPayment=='0'){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
 			</div>
 			<?}?>
 			<!-- 机构子账号结束 -->
 			<!-- 统计分析 -->
-			<?if(!isEmpty(list.tongji)&&strutil.contain(list.tongji,"1")){?>
+			<?if(!isEmpty(list.StatisticalAnalysis)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">统计分析</span>
-				<div class="bind"><span><?if(strutil.contain(list.tongji,"database_statistics\":1")){?>数据库使用统计<?}?></span></div>
-				<div class="bind"><span><?if(strutil.contain(list.tongji,"resource_type_statistics\":1")){?>资源类型使用统计<?}?></span></div>
+				<?for(listan in list.StatisticalAnalysis){?><?if(listan=="database_statistics"){?><div class="bind"><span>数据库使用统计</span></div><?}?><?if(listan=="resource_type_statistics"){?><div class="bind"><span>资源类型使用统计</span></div><?}?><?}?>
 			</div>
 			<?}?>
 			<!-- 统计分析结束 -->
@@ -549,7 +514,7 @@
 			</div>
 			<?if(list.bindAuthority.bindType=="线下扫描"){?>
 			<div class="qr_picture">
-				<img src="../bindAuhtority/getQRCode.do?userId=${list.userId}" class="pictures">
+				<img src="../bindAuhtority/getQRCode.do?userId=${list.Id}" class="pictures">
 				<span class="resets">重置</span>
 				<span class="pic-sendEmail">发送</span>
 			</div>
@@ -557,19 +522,19 @@
 			<?}?>
 			<!-- 个人绑定机构结束 -->
 			<!-- APP嵌入服务 -->
-			<?if(list.openApp!=null){?>
+			<?if(!isEmpty(list.AppStartTime)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">APP嵌入服务</span>
-				<div class="bind"><span>开通时限：</span><span <?if(list.openAppexpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.openApp}</span></div>
+				<div class="bind"><span>开通时限：</span><span <?if(list.openAppExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AppStartTime}-${list.AppStartTime}</span></div>
 			</div>
 			<?}?>
 			<!-- APP嵌入服务结束 -->
 			<!-- 微信公众号嵌入服务 -->
-			<?if(list.openWeChat!=null){?>
+			<?if(!isEmpty(list.WeChatStartTime)){?>
 			<div class="user_bind" style="width:800px">
 				<span style="color: #0099ff">微信公众号嵌入服务</span>
-				<div class="bind"><span>开通时限：</span><span <?if(list.openWeChat.expired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.openWeChat.time}</span></div>
-				<div class="bind"><span>链接发送邮箱：</span><span>${list.openWeChat.email}</span></div>
+				<div class="bind"><span>开通时限：</span><span <?if(list.openWeChatExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.WeChatStartTime}-${list.WeChatEndTime}</span></div>
+				<div class="bind"><span>链接发送邮箱：</span><span>${list.Email4WeChat}</span></div>
 			</div>
 			<?}?>
 			<!-- 微信公众号嵌入服务结束 -->

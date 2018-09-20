@@ -1,17 +1,15 @@
 package com.wf.service.impl;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import com.wanfangdata.setting.DictionaryCollection;
+import com.wanfangdata.setting.Setting;
 import com.wf.Setting.DatabaseConfigureSetting;
 import com.wf.Setting.ResourceTypeSetting;
 import org.apache.commons.lang3.StringUtils;
+import org.neo4j.helpers.ValueGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +45,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 	DatabaseConfigureSetting dbConfig = new DatabaseConfigureSetting();
 
+	private static final String isAddId = "增加id";
 	/*	@Override
         public PageList getData(String dataname,Integer pagenum,Integer pagesize) {
             List<Object>  r = new ArrayList<Object>();
@@ -562,8 +561,32 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-
-			//在zookeeper中添加数据库配置
+            Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+			//图片地址与domain比较一下，写成${search}形式
+            if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getImgLogoSrc().contains(s)) {
+                        data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+				}
+				//图片地址选择添加id
+				if (isAddId.equals(data.getIsPngIdAdded())) {
+					data.setImgLogoSrc(data.getImgLogoSrc() + data.getId() + ".png");
+				}
+			}
+			//链接地址与domain比较一下，写成${search}形式
+			if (data.getLink() != null && data.getLink() != "") {
+				for (String s : baseDicionary.values()) {
+					if (data.getLink().contains(s)) {
+						data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+					}
+				}
+				//链接地址选择添加id
+				if (isAddId.equals(data.getIsIdAdded())) {
+					data.setLink(data.getLink() + data.getId());
+				}
+			}
+            //在zookeeper中添加数据库配置
 			dbConfig.addDatabase(data);
 			//在数据库中添加
 			dus = this.data.doAddData(data);
@@ -578,23 +601,31 @@ public class DataManagerServiceImpl implements DataManagerService {
 	}
 	@Override
 	public Map<String, Object> getCheck(String id) {
-		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		List<Custom> cs = new ArrayList<Custom>();
 		Datamanager dm = new Datamanager();
-		String [] language = new String[]{};
-		String [] resourtype = new String[]{};
-		String [] source = new String[]{};
+		Datamanager data=null;
+		String[] language = new String[]{};
+		String[] resourtype = new String[]{};
+		String[] source = new String[]{};
 		try {
 			cs = this.custom.getCustomById(id);
 			dm = this.data.getDataManagerById(id);
-			if(dm!=null){
+			if (dm != null) {
 				String lang = dm.getLanguage();
 				String sour = dm.getSourceDb();
 				String resour = dm.getResType();
-				language = lang.split(",");
-				source = sour.split(",");
-				resourtype = resour.split(",");
+				if (lang != null && lang != "") {
+					language = lang.split(",");
+				}
+				if (sour != null && sour != "") {
+					source = sour.split(",");
+				}
+				if (resour != null && resour != "") {
+					resourtype = resour.split(",");
+				}
 			}
+			data= dbConfig.findDatabaseById(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -603,6 +634,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		map.put("checkresourcetype", resourtype);
 		map.put("dm", dm);
 		map.put("cs", cs);
+		map.put("dn",data);
 		return map;
 	}
 	@Override
@@ -636,7 +668,31 @@ public class DataManagerServiceImpl implements DataManagerService {
 			cs.add(ccs);
 		}
 		try {
-
+            Map<String, String> baseDicionary =  Setting.getDomainConfig().getBaseDicionary();
+			//图片地址与domain比较一下，写成${search}形式
+            if (data.getImgLogoSrc() != null && data.getImgLogoSrc() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getImgLogoSrc().contains(s)) {
+                        data.setImgLogoSrc(data.getImgLogoSrc().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+				//图片地址选择添加id
+				if (isAddId.equals(data.getIsPngIdAdded())) {
+					data.setImgLogoSrc(data.getImgLogoSrc() + data.getId() + ".png");
+				}
+            }
+			//链接地址与domain比较一下，写成${search}形式
+            if (data.getLink() != null && data.getLink() != "") {
+                for (String s : baseDicionary.values()) {
+                    if (data.getLink().contains(s)) {
+                        data.setLink(data.getLink().replace(s, "${" + FromValueGetKey(baseDicionary, s) + "}"));
+                    }
+                }
+				//链接地址选择添加id
+				if (isAddId.equals(data.getIsIdAdded())) {
+					data.setLink(data.getLink() + data.getId());
+				}
+            }
 			//在zookeeper中修改数据库配置
 			dbConfig.updateDatabase(data);
 			//在数据库中修改
@@ -756,6 +812,18 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public List<Datamanager> getDatabaseByCode(String code) {
 		return data.getDatabaseByCode(code);
 	}
-	
 
+    private static String FromValueGetKey(Map<String, String> map,
+                                                     String value) {
+	    String s=null;
+        Set set = map.entrySet();
+        Iterator it = set.iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            if (entry.getValue().equals(value)) {
+               s = (String) entry.getKey();
+            }
+        }
+        return s;
+    }
 }
