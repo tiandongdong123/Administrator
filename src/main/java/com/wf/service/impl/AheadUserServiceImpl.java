@@ -40,6 +40,10 @@ import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
+import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,6 +71,7 @@ import com.utils.IPConvertHelper;
 import com.utils.InstitutionUtils;
 import com.utils.SendMail2;
 import com.utils.SettingUtil;
+import com.utils.SolrService;
 import com.utils.StringUtil;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
@@ -135,6 +140,7 @@ public class AheadUserServiceImpl implements AheadUserService{
     private static String STANDARD_CODE="GB168Standard";
     private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
     private static String ORGCODE=XxlConfClient.get("wf-admin.orgcode",null);
+    private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
     
     private SimpleDateFormat sdfSimp = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -1600,7 +1606,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public PageList findListInfo(Map<String, Object> map) throws Exception{
 		//1、筛选user
 		long time=System.currentTimeMillis();
-		Map<String,Object> allMap=InstitutionUtils.getSolrList(map);
+		Map<String,Object> allMap=this.getSolrList(map);
 		List<Object> userList = (List<Object>) allMap.get("data");
 		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
@@ -2637,5 +2643,102 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public GroupInfo getGroupInfo(String userId) {
 		return groupInfoMapper.getGroupInfo(userId);
+	}
+
+	@Override
+	public List<String> findUserIdByIp(long start, long end,String userId) {
+		UserIp userIp=new UserIp();
+		userIp.setBeginIpAddressNumber(start);
+		userIp.setEndIpAddressNumber(end);
+		userIp.setUserId(userId);
+		return userIpMapper.findUserIdByIp(userIp);
+	}
+	
+	/**
+	 * solr查询公用方法
+	 * @param map
+	 * @return
+	 */
+	public Map<String,Object> getSolrList(Map<String, Object> map){
+		Map<String,Object> allMap=new HashMap<>();
+		try{
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			Integer pageSize=(Integer) map.get("pageSize");
+			Integer pageNum=(Integer) map.get("pageNum");
+			sq.setRows(pageSize);
+			sq.setStart(pageSize*pageNum);
+			StringBuffer query=new StringBuffer("");
+			InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
+			InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
+			InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
+			InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
+			InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
+			InstitutionUtils.addField(query,"PostCode",(String) map.get("PostCode"));//地区
+			InstitutionUtils.addField(query,"OrderType",(String) map.get("OrderType"));//工单类型
+			//内部工单
+			if(StringUtils.equals((String) map.get("OrderType"), "inner")){
+				InstitutionUtils.addField(query,"OrderContent",(String) map.get("OrderContent"));
+			}
+			//是否有机构管理员
+			if(!StringUtils.isEmpty((String) map.get("admin"))){
+				InstitutionUtils.addField(query,"ParentId","*");
+			}
+			//是否有机构子账号
+			if(!StringUtils.isEmpty((String) map.get("Subaccount"))){
+				InstitutionUtils.addField(query,"HasChildGroup","true");
+			}
+			//是否开通统计分析权限
+			if(!StringUtils.isEmpty((String) map.get("tongji"))){
+				InstitutionUtils.addField(query,"StatisticalAnalysis","*");
+			}
+			//购买项目是否试用
+			if(!StringUtils.isEmpty((String) map.get("trical"))){
+				InstitutionUtils.addField(query,"IsTrial","*");
+			}
+			//开通app权限
+			if(!StringUtils.isEmpty((String) map.get("openApp"))){
+				InstitutionUtils.addField(query,"AppStartTime","*");
+			}
+			//开通微信app权限
+			if(!StringUtils.isEmpty((String) map.get("openWeChat"))){
+				InstitutionUtils.addField(query,"WeChatStartTime","*");
+			}
+			//开通党建管理员权限
+			if(!StringUtils.isEmpty((String) map.get("PartyAdminTime"))){
+				InstitutionUtils.addField(query,"PartyAdminId","*");
+			}
+			
+			//验证Ip
+			Long ipstart=(Long) map.get("ipstart");
+			Long ipend=(Long) map.get("ipend");
+			if(ipstart!=null&&ipend!=null&&ipstart.longValue()>=ipend.longValue()){
+				List<String> userIdList=this.findUserIdByIp(ipstart, ipend,(String) map.get("userId"));
+				if(userIdList!=null&&userIdList.size()>0){
+					if(query.length()>0){
+						query.append(" AND ");
+					}
+					query.append(" Id:("+String.join(" ", userIdList)+")");
+				}
+			}
+			sq.setQuery(query.toString());
+			if(log.isInfoEnabled()){
+				log.info("查询条件"+query.toString());
+			}
+			List<SortClause> scList=new ArrayList<>();
+			scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
+			scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
+			sq.setSorts(scList);
+			SolrDocumentList sdList=SolrService.getDataList(sq);
+			allMap.put("data",InstitutionUtils.getFieldMap(sdList));
+			Long num=sdList.getNumFound();
+			allMap.put("num",num.intValue());
+		}catch(Exception e){
+			//SendMail2 util=new SendMail2();
+			//util.sendSolrEmail();
+			log.error("solr查询异常", e);
+		}
+		return allMap;
 	}
 }

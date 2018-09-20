@@ -9,19 +9,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.log4j.Logger;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
-import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
 import com.wf.bean.ResourceLimitsDTO;
-import com.xxl.conf.core.XxlConfClient;
+import com.wf.service.AheadUserService;
 
 public class InstitutionUtils {
 	
@@ -29,8 +26,9 @@ public class InstitutionUtils {
 	private static Pattern paName = Pattern.compile("[^0-9a-zA-Z-_\\u4e00-\\u9fa5-_（）()]");
 	private static Pattern passsName = Pattern.compile("[\\u4e00-\\u9fa5]");
 	public static Integer maxData=99999999;
-	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
-	private static Logger log = Logger.getLogger(InstitutionUtils.class);
+	
+	@Autowired
+	private AheadUserService aheadUserService;
 
 	/**
 	 * 校验机构用户查询条件
@@ -683,106 +681,11 @@ public class InstitutionUtils {
 	}
 	
 	/**
-	 * solr查询公用方法
-	 * @param map
-	 * @return
-	 */
-	public static Map<String,Object> getSolrList(Map<String, Object> map){
-		Map<String,Object> allMap=new HashMap<>();
-		try{
-			SolrService.getInstance(hosts+"/GroupInfo");
-			SolrQuery sq=new SolrQuery();
-			sq.set("collection", "GroupInfo");
-			Integer pageSize=(Integer) map.get("pageSize");
-			Integer pageNum=(Integer) map.get("pageNum");
-			sq.setRows(pageSize);
-			sq.setStart(pageSize*pageNum);
-			StringBuffer query=new StringBuffer("");
-			InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
-			InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
-			InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
-			InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
-			InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
-			InstitutionUtils.addField(query,"PostCode",(String) map.get("PostCode"));//地区
-			InstitutionUtils.addField(query,"OrderType",(String) map.get("OrderType"));//工单类型
-			//内部工单
-			if(StringUtils.equals((String) map.get("OrderType"), "inner")){
-				InstitutionUtils.addField(query,"OrderContent",(String) map.get("OrderContent"));
-			}
-			//是否有机构管理员
-			if(!StringUtils.isEmpty((String) map.get("admin"))){
-				InstitutionUtils.addField(query,"ParentId","*");
-			}
-			//是否有机构子账号
-			if(!StringUtils.isEmpty((String) map.get("Subaccount"))){
-				InstitutionUtils.addField(query,"HasChildGroup","true");
-			}
-			//是否开通统计分析权限
-			if(!StringUtils.isEmpty((String) map.get("tongji"))){
-				InstitutionUtils.addField(query,"StatisticalAnalysis","*");
-			}
-			//购买项目是否试用
-			if(!StringUtils.isEmpty((String) map.get("trical"))){
-				InstitutionUtils.addField(query,"IsTrial","*");
-			}
-			//开通app权限
-			if(!StringUtils.isEmpty((String) map.get("openApp"))){
-				InstitutionUtils.addField(query,"AppStartTime","*");
-			}
-			//开通微信app权限
-			if(!StringUtils.isEmpty((String) map.get("openWeChat"))){
-				InstitutionUtils.addField(query,"WeChatStartTime","*");
-			}
-			//开通党建管理员权限
-			if(!StringUtils.isEmpty((String) map.get("PartyAdminTime"))){
-				InstitutionUtils.addField(query,"PartyAdminId","*");
-			}
-			//验证Ip
-			Long ipstart=(Long) map.get("ipstart");
-			Long ipend=(Long) map.get("ipend");
-			if(ipstart!=null&&ipend!=null&&ipstart.longValue()!=ipend.longValue()){
-				InstitutionUtils.addField(query,"StartIP","["+ipstart+" TO *]");
-				InstitutionUtils.addField(query,"EndIP","[* TO "+ipend+"]");
-			}else if(ipstart!=null||ipend!=null){
-				if(query.length()>0){
-					query.append(" AND ");
-				}
-				query.append(" (StartIP:["+ipstart+" TO *] OR EndIP:[* TO "+ipstart+"]) ");
-			}
-			if(StringUtils.isEmpty((String) map.get("userId"))){
-				if(query.length()>0){
-					query.append(" AND UserType:2 ");
-				}else{
-					query.append(" UserType:2 ");
-				}
-			}
-			
-			sq.setQuery(query.toString());
-			if(log.isInfoEnabled()){
-				log.info("查询条件"+query.toString());
-			}
-			List<SortClause> scList=new ArrayList<>();
-			scList.add(new SortClause("LoginMode", ORDER.asc));//登录方式排序
-			scList.add(new SortClause("IsFreeze", ORDER.asc));//按照冻结排序
-			sq.setSorts(scList);
-			SolrDocumentList sdList=SolrService.getDataList(sq);
-			allMap.put("data",InstitutionUtils.getFieldMap(sdList));
-			Long num=sdList.getNumFound();
-			allMap.put("num",num.intValue());
-		}catch(Exception e){
-			SendMail2 util=new SendMail2();
-			util.sendSolrEmail();
-			log.error("solr查询异常", e);
-		}
-		return allMap;
-	}
-	
-	/**
 	 * 获取solr字段名称
 	 * @param sdList
 	 * @return
 	 */
-	private static List<Map<String,Object>> getFieldMap(SolrDocumentList sdList) throws Exception{
+	public static List<Map<String,Object>> getFieldMap(SolrDocumentList sdList) throws Exception{
 		List<Map<String,Object>> list=new ArrayList<>();
 		for(SolrDocument sd:sdList){
 			Map<String,Object> solrMap=new HashMap<>();
@@ -796,7 +699,7 @@ public class InstitutionUtils {
 	
 	
 	//添加field参数
-	private static void addField(StringBuffer query,String key, String value) {
+	public static void addField(StringBuffer query,String key, String value) {
 		if(!StringUtils.isEmpty(value)){
 			if(query.length()>0){
 				query.append(" AND ");

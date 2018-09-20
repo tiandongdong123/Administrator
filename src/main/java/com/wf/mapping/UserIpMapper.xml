@@ -38,7 +38,12 @@
 		and end_ip_address_number <![CDATA[>=]]> #{beginIp}
 	</if>
   </select>
-  
+  <!-- 查询IP段 -->
+  <select id="findUserIdByIp" resultType="java.lang.String" parameterType="com.wf.bean.UserIp">
+	select DISTINCT ip.user_id from user_ip ip inner join user u on ip.user_id=u.user_id and u.userType=2 where ip.begin_ip_address_number <![CDATA[>=]]> #{beginIpAddressNumber} and ip.end_ip_address_number <![CDATA[<=]]> #{endIpAddressNumber} 
+	<if test="userId != null and userId !=''" > and ip.user_id = #{userId} </if> limit 1000;
+  </select>
+  <!-- 验证Ip -->
   <select id="validateIp" resultMap="userMap" parameterType="java.util.List">
 	select up.user_id,up.begin_ip_address_number,up.end_ip_address_number,u.userType,u.login_mode from user_ip up left join user u on u.user_id=up.user_id where 
 	<foreach collection="list" item="item" index="index" separator=" or " >
