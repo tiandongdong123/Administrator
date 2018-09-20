@@ -40,7 +40,7 @@
   </select>
   <!-- 查询IP段 -->
   <select id="findUserIdByIp" resultType="java.lang.String" parameterType="com.wf.bean.UserIp">
-	select DISTINCT ip.user_id from user_ip ip inner join user u on ip.user_id=u.user_id and u.userType=2 where ip.begin_ip_address_number <![CDATA[>=]]> #{beginIpAddressNumber} and ip.end_ip_address_number <![CDATA[<=]]> #{endIpAddressNumber} 
+	select DISTINCT ip.user_id from user_ip ip inner join user u on ip.user_id=u.user_id and u.userType=2 where #{beginIpAddressNumber}<![CDATA[>=]]>ip.begin_ip_address_number and #{endIpAddressNumber}<![CDATA[<=]]>ip.end_ip_address_number 
 	<if test="userId != null and userId !=''" > and ip.user_id = #{userId} </if> limit 1000;
   </select>
   <!-- 验证Ip -->
