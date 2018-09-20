@@ -2735,8 +2735,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Long num=sdList.getNumFound();
 			allMap.put("num",num.intValue());
 		}catch(Exception e){
-			//SendMail2 util=new SendMail2();
-			//util.sendSolrEmail();
+			SendMail2 util=new SendMail2();
+			util.sendSolrEmail();
 			log.error("solr查询异常", e);
 		}
 		return allMap;
