@@ -589,9 +589,9 @@ $(function () {
                         }
                         var selectMin = that.arrayMin(totalData);
                         var selectMax = that.arrayMax(totalData);
-                        var count = selectMax-selectMin>0.1?5:0.01;
-                        selectMin = selectMin -count;
-                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle,selectMin,selectMax)
+                        var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
+                        selectMin = selectMin - count;
+                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle, selectMin, selectMax)
                     },
                 });
             },
@@ -642,10 +642,10 @@ $(function () {
                         var selectMax = that.arrayMax(selectData);
                         var compareMax = that.arrayMax(compareData);
                         if (compareData != 0) {
-                            var max = selectMax >= compareMax ? selectMax: compareMax;
-                            var min = selectMin >= compareMin ? compareMin: selectMin;
+                            var max = selectMax >= compareMax ? selectMax : compareMax;
+                            var min = selectMin >= compareMin ? compareMin : selectMin;
                             var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.01;
-                            var  min = min - count;
+                            var min = min - count;
                         } else {
                             min = selectMin;
                             max = selectMax;
@@ -850,7 +850,7 @@ $(function () {
 //echarts图
 var myEcharsCommon = (function () {
     return {
-        commonLine: function (id, seriesData, dateTime, nameSingle,selectMin,selectMax) {
+        commonLine: function (id, seriesData, dateTime, nameSingle, selectMin, selectMax) {
             (seriesData.length == 0) ? $(".no_data").show() : $(".no_data").hide();
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
@@ -863,7 +863,13 @@ var myEcharsCommon = (function () {
                 tooltip: {
                     trigger: 'axis',
                     formatter: function (data) {
-                        var res = data[0].axisValueLabel + " :" + data[0].value + data[0].seriesName.split("：")[1].split("")[0];
+                        var res;
+                        if (data[0].seriesName.split("：")[1].split("")[0] == "万") {
+                            res = data[0].axisValueLabel + " :" + data[0].value + data[0].seriesName.split("：")[1].split("")[0];
+                        } else {
+                            res = data[0].axisValueLabel + " :" + data[0].value
+                        }
+
                         return res;
                     }
                 },
@@ -906,10 +912,10 @@ var myEcharsCommon = (function () {
                 yAxis: {
                     show: false,//隐藏坐标轴
                     type: 'value',
-                   /* min: 'dataMix',
-                    max: 'dataMax',*/
-                    min:selectMin,
-                    max:selectMax,
+                    /* min: 'dataMix',
+                     max: 'dataMax',*/
+                    min: selectMin,
+                    max: selectMax,
                     splitLine: {
                         show: false,
                     },
@@ -952,12 +958,21 @@ var myEcharsCommon = (function () {
                 tooltip: {
                     trigger: 'axis',
                     formatter: function (data) {
+                        var res
                         var dataTime = data[0].axisValueLabel.split("与");
                         var dataTitle = data[0].seriesName.split(" ");
                         if (data[1]) {
-                            var res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0] + '<br/>' + dataTime[1] + " :" + data[1].value + dataTitle[3].split("：")[1].split("")[0];
+                            if (dataTitle[3].split("：")[1].split("")[0] == "万") {
+                                res= data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0] + '<br/>' + dataTime[1] + " :" + data[1].value + dataTitle[3].split("：")[1].split("")[0];
+                            } else {
+                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + '<br/>' + dataTime[1] + " :" + data[1].value;
+                            }
                         } else {
-                            var res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0]
+                            if (dataTitle[3].split("：")[1].split("")[0] == "万") {
+                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0];
+                            }else{
+                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value;
+                            }
                         }
                         return res
                     }
