@@ -587,7 +587,11 @@ $(function () {
                             });
                             nameSingle = (data.totalData.join("") == totalData.join("")) ? (target_item.text() + " " + "(单位：个)") : (target_item.text() + " " + "(单位：万)")
                         }
-                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle)
+                        var selectMin = that.arrayMin(totalData);
+                        var selectMax = that.arrayMax(totalData);
+                        var count = selectMax-selectMin>0.1?5:0.01;
+                        selectMin = selectMin -count;
+                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle,selectMin,selectMax)
                     },
                 });
             },
@@ -640,7 +644,7 @@ $(function () {
                         if (compareData != 0) {
                             var max = selectMax >= compareMax ? selectMax: compareMax;
                             var min = selectMin >= compareMin ? compareMin: selectMin;
-                            var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.1;
+                            var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.01;
                             var  min = min - count;
                         } else {
                             min = selectMin;
@@ -846,7 +850,7 @@ $(function () {
 //echarts图
 var myEcharsCommon = (function () {
     return {
-        commonLine: function (id, seriesData, dateTime, nameSingle) {
+        commonLine: function (id, seriesData, dateTime, nameSingle,selectMin,selectMax) {
             (seriesData.length == 0) ? $(".no_data").show() : $(".no_data").hide();
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
@@ -902,8 +906,10 @@ var myEcharsCommon = (function () {
                 yAxis: {
                     show: false,//隐藏坐标轴
                     type: 'value',
-                    min: 'dataMix',
-                    max: 'dataMax',
+                   /* min: 'dataMix',
+                    max: 'dataMax',*/
+                    min:selectMin,
+                    max:selectMax,
                     splitLine: {
                         show: false,
                     },
