@@ -2191,4 +2191,16 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/search_chargeCode");
 		return view;
 	}
+	
+	/**
+	 * 广告管理
+	 * 
+	 * @return
+	 */
+	@RequestMapping("search_adMessage_result")
+	public ModelAndView search_adMessage_result() {
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_adMessage_result");
+		return view;
+	}
 }
