@@ -108,6 +108,9 @@
   padding: 0 5px;
   float: left;
 }
+.content-wrapper .user_statistics_content .content_nav .all_num {
+  color: #fff;
+}
 .content-wrapper .user_statistics_content .content_nav .active {
   border-bottom: 36px solid #4AA6FC;
 }
