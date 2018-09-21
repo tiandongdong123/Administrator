@@ -360,6 +360,7 @@ $(function () {
                 var data_icon = $(".gri_data_compare,.gri_data");
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
+                    time_quantum.css("color","#000")
                     data_icon.css('background-position', '-10px -10px');
                     selected_data.children(".switch_data_hidden").val(1);
                     that.totalOrNew();
