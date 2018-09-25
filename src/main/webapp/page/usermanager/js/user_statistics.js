@@ -22,6 +22,7 @@ $(function () {
         var week_month = $(".switch_board_week,.switch_board_month");
         var nameSingle, nameCompare, nameArray;//单个/对比/分析图title
 
+
         return {
             //日历插件
             dataPicker: function () {
@@ -44,7 +45,11 @@ $(function () {
                             var _this = $(this);
                             _this.click(function () {
                                 _this.css("background", "#4AA6FC");
+                                _this.css("color", "#fff");
+                                _this.siblings().css("color", "#000");
                                 _this.siblings().css("background", "transparent");
+                                $(".switch_data a").eq(0).css("color","#fff");
+                                $(".switch_data a").eq(0).siblings().css("color","#000");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                                 return;
                             })
@@ -53,14 +58,14 @@ $(function () {
                             $("#user_statistics_dataCompare").val("")
                         }
 
-                        $(".switch_data_hidden").val(1)
+                        $(".switch_data_hidden").val(1);
                         that.getTime();
                     },
                 });
-                //默认显示最近7天
                 aRecent7Days.click();
                 that.newData();
             },
+
             //点击最近天数table/新增指标的变化
             recentDays: function () {
                 var that = this;
@@ -79,7 +84,8 @@ $(function () {
             },
             getTime: function () {
                 var that = this;
-                var selectedVal, indexType, navTitle, data_compare_array, startCompareDate, endCompareDate,data_array,startDate, endDate;
+                var selectedVal, indexType, navTitle, data_compare_array, startCompareDate, endCompareDate, data_array,
+                    startDate, endDate;
                 selectedVal = selected_data.children(".switch_data_hidden").val();//按日/周/月参数
                 indexType = target_item_hidden.val();//指标参数
                 navTitle = $("#contentNavHidden").val();//总数/新增参数
@@ -91,9 +97,9 @@ $(function () {
                 endCompareDate = data_compare_array[1] ? data_compare_array[1].trim() : "";
                 //判断对比时间发送不同的请求
                 if (startCompareDate && endCompareDate) {
-                    (navTitle == 'total')?that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType):that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
+                    (navTitle == 'total') ? that.comparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType) : that.newComparisonEChartsAjax(startDate, endDate, startCompareDate, endCompareDate, selectedVal, indexType);
                 } else {
-                    (navTitle == 'total')? that.eChartsAjax(startDate, endDate, selectedVal, indexType): that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
+                    (navTitle == 'total') ? that.eChartsAjax(startDate, endDate, selectedVal, indexType) : that.newEChartsAjax(startDate, endDate, selectedVal, indexType);
                 }
             },
             //最近天数的重置
@@ -138,8 +144,8 @@ $(function () {
                     week_month.show();
                     return;
                 }
-                if((myDate.getDay() + differDay) <= 6){
-                    if(myDate.getDay() == 0){
+                if ((myDate.getDay() + differDay) <= 6) {
+                    if (myDate.getDay() == 0) {
                         //跨周
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -147,7 +153,7 @@ $(function () {
                         switch_data.eq(0).addClass("switch_bg");
                         switch_data.eq(2).addClass("disable_btn");
                         return;
-                    }else{
+                    } else {
                         if (startArray_data[1] != endArray_data[1]) {
                             //跨月（不跨周）
                             switch_data.eq(1).addClass("disable_btn");
@@ -171,13 +177,13 @@ $(function () {
                         week_month.hide();
                         return;
                     }
-                    if(myDate.getDay()==1 && differDay == 6){
+                    if (myDate.getDay() == 1 && differDay == 6) {
                         //按日
                         switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                         switch_data.eq(0).addClass("switch_bg");
                         week_month.show();
                         return;
-                    }else{
+                    } else {
                         //跨周(起点不是周一)
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -194,7 +200,7 @@ $(function () {
                         week_month.hide();
                         return;
                     }
-                   //按日
+                    //按日
                     switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                     switch_data.eq(0).addClass("switch_bg");
                     week_month.show();
@@ -218,8 +224,8 @@ $(function () {
                     week_month.show();
                     return;
                 }
-                if((myDate.getDay() + differDay) <= 6){
-                    if(myDate.getDay() == 0){
+                if ((myDate.getDay() + differDay) <= 6) {
+                    if (myDate.getDay() == 0) {
                         //跨周
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -227,7 +233,7 @@ $(function () {
                         switch_data.eq(0).addClass("switch_bg");
                         switch_data.eq(2).addClass("disable_btn");
                         return;
-                    }else{
+                    } else {
                         if (startArray_data[1] != endArray_data[1]) {
                             //跨月
                             switch_data.eq(1).addClass("disable_btn");
@@ -251,13 +257,13 @@ $(function () {
                         week_month.hide();
                         return;
                     }
-                    if(myDate.getDay()==1 && differDay == 6){
+                    if (myDate.getDay() == 1 && differDay == 6) {
                         //按日
                         switch_data.removeClass("switch_bg").not(":eq(0)").addClass("disable_btn");
                         switch_data.eq(0).addClass("switch_bg");
                         week_month.show();
                         return;
-                    }else{
+                    } else {
                         //跨周(起点不是周一)
                         switch_data.removeClass("switch_bg").not(":eq(0)").removeClass("disable_btn");
                         switch_board_week.hide();
@@ -303,35 +309,38 @@ $(function () {
             },
             //单个与对比分析图的切换(点击对比)
             dataChecked: function () {
-                var that = this,week = false,month = false,week_compare = false,month_compare = false;
+                var that = this, week = false, month = false, week_compare = false, month_compare = false;
                 $(".gri_pc").click(function () {
                     selected_data.children(".switch_data_hidden").val(1);
+                    $(".switch_data a").eq(0).css("color","#fff");
+                    $(".switch_data a").eq(0).siblings().css("color","#000");
                     that.getTime();
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
                         lineContainer.hide();
                         that.totalOrNew();
                         $(".gri_data_compare").show();
-                        week = (switch_board_week.css("display") == "none")?true:false;
-                        month = (switch_board_month.css("display") == "none")?true:false;
+                        week = (switch_board_week.css("display") == "none") ? true : false;
+                        month = (switch_board_month.css("display") == "none") ? true : false;
                         that.stepMonthOrWeekCompare();
-                        week_compare = (switch_board_week.css("display") == "none")?true:false;
-                        month_compare = (switch_board_month.css("display") == "none")?true:false;
-                        if(week && week_compare){
+                        week_compare = (switch_board_week.css("display") == "none") ? true : false;
+                        month_compare = (switch_board_month.css("display") == "none") ? true : false;
+                        if (week && week_compare) {
                             switch_data.eq(1).removeClass("disable_btn");
                             switch_board_week.hide();
-                        }else{
+                        } else {
                             switch_data.eq(1).addClass("disable_btn");
                             switch_board_week.show();
                         }
-                        if(month && month_compare){
+                        if (month && month_compare) {
                             switch_data.eq(2).removeClass("disable_btn");
                             switch_board_month.hide();
-                        }else{
+                        } else {
                             switch_data.eq(2).addClass("disable_btn");
                             switch_board_month.show();
                         }
                     } else {
+
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
                         lineContainerComparison.hide();
@@ -352,58 +361,61 @@ $(function () {
             },
             //日历确定/取消按钮是否点击
             dataSubmitBtn: function () {
-                var that = this,week = false,month = false,week_compare = false,month_compare = false;
+                var that = this, week = false, month = false, week_compare = false, month_compare = false;
                 var data_icon = $(".gri_data_compare,.gri_data");
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
+                    time_quantum.css("color","#000");
                     data_icon.css('background-position', '-10px -10px');
+                    $(".switch_data a").eq(0).css("color","#fff");
+                    $(".switch_data a").eq(0).siblings().css("color","#000");
                     selected_data.children(".switch_data_hidden").val(1);
                     that.totalOrNew();
                     that.newData();
                     that.getTime();
-                    if($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block"){
+                    if ($(".gri_submit_btn").parent().siblings().eq(0).css("display") == "inline-block") {
                         that.stepMonthOrWeek();//跨月/周的判断
-                        week = (switch_board_week.css("display") == "none")?true:false;
-                        month = (switch_board_month.css("display") == "none")?true:false;
-                        if($("#user_statistics_dataCompare").val()){
+                        week = (switch_board_week.css("display") == "none") ? true : false;
+                        month = (switch_board_month.css("display") == "none") ? true : false;
+                        if ($("#user_statistics_dataCompare").val()) {
                             that.stepMonthOrWeekCompare();
-                            week_compare = (switch_board_week.css("display") == "none")?true:false;
-                            month_compare = (switch_board_month.css("display") == "none")?true:false;
-                            if(week && week_compare){
+                            week_compare = (switch_board_week.css("display") == "none") ? true : false;
+                            month_compare = (switch_board_month.css("display") == "none") ? true : false;
+                            if (week && week_compare) {
                                 switch_data.eq(1).removeClass("disable_btn");
                                 switch_board_week.hide();
-                            }else{
+                            } else {
                                 switch_data.eq(1).addClass("disable_btn");
                                 switch_board_week.show();
                             }
-                            if(month && month_compare){
+                            if (month && month_compare) {
                                 switch_data.eq(2).removeClass("disable_btn");
                                 switch_board_month.hide();
-                            }else{
+                            } else {
                                 switch_data.eq(2).addClass("disable_btn");
                                 switch_board_month.show();
                             }
                         }
                         return;
                     }
-                    if($(".gri_submit_btn").parent().siblings().eq(1).css("display") == "inline-block"){
+                    if ($(".gri_submit_btn").parent().siblings().eq(1).css("display") == "inline-block") {
                         that.stepMonthOrWeekCompare();
-                        week_compare = (switch_board_week.css("display") == "none")?true:false;
-                        month_compare = (switch_board_month.css("display") == "none")?true:false;
+                        week_compare = (switch_board_week.css("display") == "none") ? true : false;
+                        month_compare = (switch_board_month.css("display") == "none") ? true : false;
                         that.stepMonthOrWeek();
-                        week = (switch_board_week.css("display") == "none")?true:false;
-                        month = (switch_board_month.css("display") == "none")?true:false;
-                        if(week && week_compare){
+                        week = (switch_board_week.css("display") == "none") ? true : false;
+                        month = (switch_board_month.css("display") == "none") ? true : false;
+                        if (week && week_compare) {
                             switch_data.eq(1).removeClass("disable_btn");
                             switch_board_week.hide();
-                        }else{
+                        } else {
                             switch_data.eq(1).addClass("disable_btn");
                             switch_board_week.show();
                         }
-                        if(month && month_compare){
+                        if (month && month_compare) {
                             switch_data.eq(2).removeClass("disable_btn");
                             switch_board_month.hide();
-                        }else{
+                        } else {
                             switch_data.eq(2).addClass("disable_btn");
                             switch_board_month.show();
                         }
@@ -438,10 +450,14 @@ $(function () {
                         //判断是总数/新增OR按日/周/月
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
+                            _this.css("color", "#fff");
+                            _this.siblings().css("color", "#000")
                             that.totalOrNew();
                         }
                         if (obj == content_nav) {
                             content_nav_list.children("#contentNavHidden").val(_this.children("input").val());
+                            _this.css("color", "#fff");
+                            _this.siblings().css("color", "#000")
                         }
                         that.getTime();
 
@@ -475,14 +491,14 @@ $(function () {
             //手动输入时间的校验
             testData: function (test_data) {
                 var dateRangeSelected;
-                $("."+test_data).focus(function () {
+                $("." + test_data).focus(function () {
                     dateRangeSelected = $(this).val();
                 });
-                $("."+test_data).blur(function () {
+                $("." + test_data).blur(function () {
                     var test_data_now = $(this).val();
                     var test_result = test_data_now.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
                     if (test_result == null) {
-                        (test_data == "dateRangeInputSingle")?alert("开始日期输入有误，日期格式YYYY-MM-DD"):alert("结束日期输入有误，日期格式YYYY-MM-DD");
+                        (test_data == "dateRangeInputSingle") ? alert("开始日期输入有误，日期格式YYYY-MM-DD") : alert("结束日期输入有误，日期格式YYYY-MM-DD");
                         $(this).val(dateRangeSelected)
                     }
                 });
@@ -517,7 +533,7 @@ $(function () {
             //总数/新增table表的变化
             totalOrNew: function () {
                 var that = this;
-                ($("#contentNavHidden").val() == "total")? that.totalTable():that.newTable();
+                ($("#contentNavHidden").val() == "total") ? that.totalTable() : that.newTable();
             },
             //各指标的选取分析图的变化
             indexSelect: function () {
@@ -527,11 +543,31 @@ $(function () {
                     _this.on("click", function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
-                        (target_item.text() == "有效机构账号")?$(".target_selected p").show():$(".target_selected p").hide()
+                        (target_item.text() == "有效机构账号") ? $(".target_selected p").show() : $(".target_selected p").hide()
                         target_item_hidden.val(_this.siblings("input").val());
                         that.getTime();
                     })
                 })
+            },
+            // 查找数组中最小值
+            arrayMin: function (arrs) {
+                var min = arrs[0];
+                for (var i = 1, ilen = arrs.length; i < ilen; i += 1) {
+                    if (arrs[i] < min) {
+                        min = arrs[i];
+                    }
+                }
+                return min;
+            },
+            // 在数组中查找最大值
+            arrayMax: function (arrs) {
+                var max = arrs[0];
+                for (var i = 1, ilen = arrs.length; i < ilen; i++) {
+                    if (arrs[i] > max) {
+                        max = arrs[i];
+                    }
+                }
+                return max;
             },
             //单个分析图公共ajax
             eChartsAjax: function (startDate, endDate, timeUnit, indexType) {
@@ -549,17 +585,27 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
-                            var flag = false;
-                            var totalData = data.totalData.map(function (value) {
-                                if(value>10000){
-                                    flag = true;
+                            var flag = 0;
+                            data.totalData.map(function (value) {
+                                if (value > 10000) {
+                                    flag = flag+1;
                                 }
-                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
-                            nameSingle = (data.totalData.join("") == totalData.join(""))? (target_item.text() + " " + "(单位：个)"):(target_item.text() + " " + "(单位：万)")
+                            if(flag>0){
+                                var totalData = data.totalData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                totalData = data.totalData;
+                            }
+                            nameSingle = (data.totalData.join("") == totalData.join("")) ? (target_item.text() + " " + "(单位：个)") : (target_item.text() + " " + "(单位：万)")
                         }
-                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle)
+                        var selectMin = that.arrayMin(totalData);
+                        var selectMax = that.arrayMax(totalData);
+                        var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
+                        selectMin = selectMin - count;
+                        myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle, selectMin, selectMax)
                     },
                 });
             },
@@ -581,31 +627,56 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.selectData) {
-                            var flag = false;
-                            var selectData = data.selectData.map(function (value) {
-                                if(value>10000){
-                                    flag = true;
+                            var flag = 0;
+                           data.selectData.map(function (value) {
+                                if (value > 10000) {
+                                    flag = flag+1;
                                 }
-                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " +target_item.text()+"(单位：个)"  ):($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：万)" )
+                            if(flag>0){
+                                var selectData = data.selectData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                selectData = data.selectData;
+                            }
+                            nameSingle = (data.selectData.join("") == selectData.join("")) ? ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：万)")
                         }
                         if (data.compareData) {
-                            var compareFlag = false;
-                            var compareData = data.compareData.map(function (value) {
-                                if(value>10000){
-                                    compareFlag = true;
+                            var compareFlag = 0;
+                            data.compareData.map(function (value) {
+                                if (value > 10000) {
+                                    compareFlag = compareFlag+1;
                                 }
-                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
-                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+ " " + target_item.text()+"(单位：个)" ):($("#user_statistics_dataCompare").val()+ " " +target_item.text()+"(单位：万)"  )
+                            if(compareFlag>0){
+                                var compareData = data.compareData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                compareData = data.compareData
+                            }
+                            nameCompare = (data.compareData.join("") == compareData.join("")) ? ($("#user_statistics_dataCompare").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_dataCompare").val() + " " + target_item.text() + "(单位：万)")
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        var selectMin = that.arrayMin(selectData);
+                        var compareMin = that.arrayMin(compareData);
+                        var selectMax = that.arrayMax(selectData);
+                        var compareMax = that.arrayMax(compareData);
+                        if (compareData != 0) {
+                            var max = selectMax >= compareMax ? selectMax : compareMax;
+                            var min = selectMin >= compareMin ? compareMin : selectMin;
+                            var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.01;
+                            var min = min - count;
+                        } else {
+                            min = selectMin;
+                            max = selectMax;
+                        }
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, max, min)
                     },
                 });
             },
@@ -625,15 +696,31 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
-                            var flag = false;
-                            var totalData = data.totalData.map(function (value) {
-                                if(value >10000){flag = true;}
-                                value = flag == true ? (((value - value % 100) / 10000)) : value;
-                                return value;
+                            var flag = 0;
+                           data.totalData.map(function (value) {
+                                if (value > 10000) {
+                                    flag = flag+1;
+                                }
                             });
-                            nameSingle = (data.totalData.join("") == totalData.join(""))?(target_item.text() + " " + "(单位：个)"):(target_item.text() + " " + "(单位：万)")
+                            if(flag>0){
+                                var totalData = data.totalData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                totalData = data.totalData
+                            }
+                            nameSingle = (data.totalData.join("") == totalData.join("")) ? (target_item.text() + " " + "(单位：个)") : (target_item.text() + " " + "(单位：万)")
                         }
-                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
+                        var selectMin = that.arrayMin(totalData);
+                        var selectMax = that.arrayMax(totalData);
+                        var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
+                        count = selectMin - count> 0.01 ? 5 : 0.001;
+                       if(selectMin==0){
+                           count = 0;
+                       }
+                        selectMin = selectMin - count;
+                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle,selectMin,selectMax)
                     },
                 });
             },
@@ -654,40 +741,70 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-
                         if (data.selectData) {
-                            var falg = false;
-                            var selectData = data.selectData.map(function (value) {
-                                if(value>10000){
-                                    falg = true;
+                            var flag = 0;
+                             data.selectData.map(function (value) {
+                                if (value > 10000) {
+                                    flag =flag+1 ;
                                 }
-                                value = (falg == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
-                            nameSingle = (data.selectData.join("") == selectData.join(""))?($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：个)" ):($("#user_statistics_data").val()+ " " + target_item.text()+"(单位：万)")
+                             if(flag>0){
+                                 var selectData = data.selectData.map(function (value) {
+                                     value = (value - value % 100) / 10000
+                                     return value;
+                                 });
+                             }else{
+                                 selectData = data.selectData
+                             }
+                            nameSingle = (data.selectData.join("") == selectData.join("")) ? ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：万)")
                         }
                         if (data.compareData) {
-                            var compareFlag = false;
-                            var compareData = data.compareData.map(function (value) {
-                                if(value>10000){
-                                    compareFlag = true;
+                            var compareFlag = 0;
+                           data.compareData.map(function (value) {
+                                if (value > 10000) {
+                                    compareFlag = compareFlag+1;
                                 }
-                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
-                            nameCompare = (data.compareData.join("") == compareData.join(""))?($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：个)"):($("#user_statistics_dataCompare").val()+" "+target_item.text() + " " + "(单位：万)")
+                           if(compareFlag>0){
+                               var compareData = data.compareData.map(function (value) {
+                                   value = (value - value % 100) / 10000;
+                                   return value;
+                               });
+                           }else{
+                               compareData = data.compareData;
+                           }
+                            nameCompare = (data.compareData.join("") == compareData.join("")) ? ($("#user_statistics_dataCompare").val() + " " + target_item.text() + " " + "(单位：个)") : ($("#user_statistics_dataCompare").val() + " " + target_item.text() + " " + "(单位：万)")
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
-
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        var selectMin = that.arrayMin(selectData);
+                        var compareMin = that.arrayMin(compareData);
+                        var selectMax = that.arrayMax(selectData);
+                        var compareMax = that.arrayMax(compareData);
+                        if (compareData != 0) {
+                            var max = selectMax >= compareMax ? selectMax : compareMax;
+                            var min = selectMin >= compareMin ? compareMin : selectMin;
+                            var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.01;
+                            if(min<count){
+                                count = 1
+                            }
+                            var min = min - count;
+                        } else {
+                            min = selectMin;
+                            max = selectMax;
+                        }
+                        if(min<=0){
+                            min = 0;
+                        }
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare,max,min)
                     },
                 });
             },
             //总数table表
             totalTable: function () {
-                var data_array, startDate, endDate, indexType, timeUnit, pageSize, data_compare_array, startCompareDate, endCompareDate;
+                var data_array, startDate, endDate, indexType, pageSize, data_compare_array, startCompareDate,
+                    endCompareDate;
                 var that = this;
                 data_array = $("#user_statistics_data").val().split("至");
                 startDate = data_array[0].trim();
@@ -723,7 +840,8 @@ $(function () {
             },
             //新增table表
             newTable: function () {
-                var data_array, startDate, endDate, indexType,pageSize, data_compare_array, startCompareDate,endCompareDate;
+                var data_array, startDate, endDate, indexType, pageSize, data_compare_array, startCompareDate,
+                    endCompareDate;
                 var that = this;
                 data_array = $("#user_statistics_data").val().split("至");
                 startDate = data_array[0].trim();
@@ -761,7 +879,7 @@ $(function () {
             allOrNew: function () {
                 var that = this;
                 new_num.click(function () {
-                    if($(".target_item").text() == "有效机构账号"){
+                    if ($(".target_item").text() == "有效机构账号") {
                         $(".target_item").text("个人用户");
                         $(".target_item_hidden").val("person_user");
                         $(".target_selected p").hide();
@@ -770,7 +888,6 @@ $(function () {
                     $(".valid_institution_account").hide();
                     that.newTable();
                     that.getTime();
-
                 });
                 all_num.click(function () {
                     new_increased_num.hide();
@@ -780,6 +897,7 @@ $(function () {
                 })
             },
             init: function () {
+
                 this.dataPicker();
                 this.switchBg(switch_data, 'switch_bg');
                 this.switchBg(content_nav, 'active');
@@ -802,8 +920,8 @@ $(function () {
 //echarts图
 var myEcharsCommon = (function () {
     return {
-        commonLine: function (id, seriesData, dateTime, nameSingle) {
-            (seriesData.length == 0)?$(".no_data").show():$(".no_data").hide();
+        commonLine: function (id, seriesData, dateTime, nameSingle, selectMin, selectMax) {
+            (seriesData.length == 0) ? $(".no_data").show() : $(".no_data").hide();
             var idObj = document.getElementById(id);
             if (idObj.hasAttribute("_echarts_instance_")) {
                 idObj.removeAttribute("_echarts_instance_");
@@ -813,7 +931,30 @@ var myEcharsCommon = (function () {
             myChart.clear();
             var option = {
                 tooltip: {
-                    trigger: 'axis'
+                    trigger: 'axis',
+                    formatter: function (data) {
+                        var res;
+                        if (data[0].seriesName.split("：")[1].split("")[0] == "万") {
+                            res = '<div style="width: 320px;height:45px;">'
+                                +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
+                                +'<div style="width:200px;height:20px;float: left;">'
+                                +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                + data[0].axisValueLabel +'</div>'
+                                +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value + data[0].seriesName.split("：")[1].split("")[0]+'</div>'
+                            '</div>'
+                        } else {
+                            res = '<div style="width: 320px;height:45px;">'
+                                +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
+                                +'<div style="width:200px;height:20px;float: left;">'
+                                +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                + data[0].axisValueLabel +'</div>'
+                                +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                            '</div>'
+                        }
+                        return res;
+                    }
                 },
                 legend: {
                     y: "bottom",
@@ -854,6 +995,8 @@ var myEcharsCommon = (function () {
                 yAxis: {
                     show: false,//隐藏坐标轴
                     type: 'value',
+                    min: selectMin,
+                    max: selectMax,
                     splitLine: {
                         show: false,
                     },
@@ -882,8 +1025,8 @@ var myEcharsCommon = (function () {
             }
         },
 
-        lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare) {
-            (selectData.length == 0 && compareData.length==0)?$(".no_data").show():$(".no_data").hide();
+        lineComparison: function (idName, selectData, compareData, dateTime, nameArray, nameSingle, nameCompare, max, min) {
+            (selectData.length == 0 && compareData.length == 0) ? $(".no_data").show() : $(".no_data").hide();
             var dom = document.getElementById(idName);
             if (dom.hasAttribute("_echarts_instance_")) {
                 dom.removeAttribute("_echarts_instance_");
@@ -895,32 +1038,73 @@ var myEcharsCommon = (function () {
             var option = {
                 tooltip: {
                     trigger: 'axis',
-                    formatter:function(data){
+                    formatter: function (data) {
+                        var res;
                         var dataTime = data[0].axisValueLabel.split("与");
                         var dataTitle = data[0].seriesName.split(" ");
-                        if(data[1]){
-                            var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value+ '<br/>' + dataTime[1]+" "+dataTitle[3]+" "+data[1].value;
-                        }else{
-                            var res =data[0].name+'<br/>'+ dataTime[0]+" "+dataTitle[3]+" "+data[0].value
+                        if (data[1]) {
+                            if (dataTitle[3].split("：")[1].split("")[0] == "万") {
+                                res = '<div style="width:320px;height:70px;">'
+                                    +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width:200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
+                                    +dataTime[1]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
+                                    '</div>'
+                            } else {
+                                res = '<div style="width: 320px;height:70px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
+                                    +dataTime[1]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+'</div>'
+                                '</div>'
+                            }
+                        } else {
+                            if (dataTitle[3].split("：")[1].split("")[0] == "万") {
+                                res = '<div style="width: 320px;height:50px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+ dataTitle[3].split("：")[1].split("")[0]+'</div>'
+                                    '</div>'
+                                }else{
+                                res = '<div style="width: 320px;height:50px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                                    '</div>'
+                                 }
                         }
-                         return res
+                        return res
                     }
                 },
                 legend: {
                     data: nameArray,
-                    selectedMode:false,
+                    selectedMode: false,
                     y: "bottom",
                     orient: 'vertical',  //垂直显示
-                    padding: 10 ,//调节legend的位置
+                    padding: 10,//调节legend的位置
                 },
                 grid: {
                     left: '8%',
                     right: '8%',
-                    y: 60,
-                    height: '300',
-                    containLabel: true,
-                    show: 'true',
-                    borderWidth: '0'
+                    height: '300'
                 },
                 toolbox: {
                     show: true,
@@ -952,6 +1136,8 @@ var myEcharsCommon = (function () {
                 yAxis: {
                     show: false,//隐藏坐标轴
                     type: 'value',
+                    min: min,
+                    max: max,
                     splitLine: {
                         show: false,
                     }
@@ -975,6 +1161,10 @@ var myEcharsCommon = (function () {
                         data: compareData,
                         showAllSymbol: false,//不标注所有数据点,
                         symbolSize: 3,
+                        itemStyle: {
+                            borderColor: "#0D8AE6",//圆点颜色
+                            color: "#0D8AE6" //折线图颜色设置
+                        },
                         label: {
                             show: true,
                             distance: 10,
