@@ -48,6 +48,8 @@ $(function () {
                                 _this.css("color", "#fff");
                                 _this.siblings().css("color", "#000");
                                 _this.siblings().css("background", "transparent");
+                                $(".switch_data .switch_bg").css("color","#fff");
+                                $(".switch_data .switch_bg").siblings().css("color","#000");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                                 return;
                             })
@@ -360,8 +362,10 @@ $(function () {
                 var data_icon = $(".gri_data_compare,.gri_data");
                 $(".gri_submit_btn").click(function () {
                     time_quantum.css("background", "transparent");
-                    time_quantum.css("color","#000")
+                    time_quantum.css("color","#000");
                     data_icon.css('background-position', '-10px -10px');
+                    $(".switch_data .switch_bg").css("color","#fff");
+                    $(".switch_data .switch_bg").siblings().css("color","#000");
                     selected_data.children(".switch_data_hidden").val(1);
                     that.totalOrNew();
                     that.newData();
@@ -866,11 +870,24 @@ var myEcharsCommon = (function () {
                     formatter: function (data) {
                         var res;
                         if (data[0].seriesName.split("：")[1].split("")[0] == "万") {
-                            res = data[0].axisValueLabel + " :" + data[0].value + data[0].seriesName.split("：")[1].split("")[0];
+                            res = '<div style="width: 220px;height:45px;">'
+                                +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
+                                +'<div style="width:100px;height:20px;float: left;">'
+                                +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                + data[0].axisValueLabel +'</div>'
+                                +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value + data[0].seriesName.split("：")[1].split("")[0]+'</div>'
+                            '</div>'
                         } else {
-                            res = data[0].axisValueLabel + " :" + data[0].value
+                            res = '<div style="width: 220px;height:45px;">'
+                                +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
+                                +'<div style="width:100px;height:20px;float: left;">'
+                                +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                + data[0].axisValueLabel +'</div>'
+                                +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                            '</div>'
                         }
-
                         return res;
                     }
                 },
@@ -913,8 +930,6 @@ var myEcharsCommon = (function () {
                 yAxis: {
                     show: false,//隐藏坐标轴
                     type: 'value',
-                    /* min: 'dataMix',
-                     max: 'dataMax',*/
                     min: selectMin,
                     max: selectMax,
                     splitLine: {
@@ -959,21 +974,57 @@ var myEcharsCommon = (function () {
                 tooltip: {
                     trigger: 'axis',
                     formatter: function (data) {
-                        var res
+                        var res;
                         var dataTime = data[0].axisValueLabel.split("与");
                         var dataTitle = data[0].seriesName.split(" ");
                         if (data[1]) {
                             if (dataTitle[3].split("：")[1].split("")[0] == "万") {
-                                res= data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0] + '<br/>' + dataTime[1] + " :" + data[1].value + dataTitle[3].split("：")[1].split("")[0];
+                                res = '<div style="width:220px;height:70px;">'
+                                    +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width:100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
+                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
+                                    +dataTime[1]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
+                                    '</div>'
                             } else {
-                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + '<br/>' + dataTime[1] + " :" + data[1].value;
+                                res = '<div style="width: 220px;height:70px;">'
+                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
+                                    +dataTime[1]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+'</div>'
+                                '</div>'
                             }
                         } else {
                             if (dataTitle[3].split("：")[1].split("")[0] == "万") {
-                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value + dataTitle[3].split("：")[1].split("")[0];
-                            }else{
-                                 res = data[0].name + '<br/>' + dataTime[0] + " :" + data[0].value;
-                            }
+                                res = '<div style="width: 220px;height:50px;">'
+                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+ dataTitle[3].split("：")[1].split("")[0]+'</div>'
+                                    '</div>'
+                                }else{
+                                res = '<div style="width: 220px;height:50px;">'
+                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                    +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
+                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
+                                    +dataTime[0]+'</div>'
+                                    +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
+                                    '</div>'
+                                 }
                         }
                         return res
                     }
