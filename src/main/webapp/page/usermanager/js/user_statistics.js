@@ -48,8 +48,8 @@ $(function () {
                                 _this.css("color", "#fff");
                                 _this.siblings().css("color", "#000");
                                 _this.siblings().css("background", "transparent");
-                                $(".switch_data .switch_bg").css("color","#fff");
-                                $(".switch_data .switch_bg").siblings().css("color","#000");
+                                $(".switch_data a").eq(0).css("color","#fff");
+                                $(".switch_data a").eq(0).siblings().css("color","#000");
                                 that.dayWeekMonth(_this.text()); //日周月随最近天数的变化
                                 return;
                             })
@@ -312,6 +312,8 @@ $(function () {
                 var that = this, week = false, month = false, week_compare = false, month_compare = false;
                 $(".gri_pc").click(function () {
                     selected_data.children(".switch_data_hidden").val(1);
+                    $(".switch_data a").eq(0).css("color","#fff");
+                    $(".switch_data a").eq(0).siblings().css("color","#000");
                     that.getTime();
                     if ($(".gri_pc").get(0).checked) {
                         lineContainerComparison.show();
@@ -338,6 +340,7 @@ $(function () {
                             switch_board_month.show();
                         }
                     } else {
+
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
                         lineContainerComparison.hide();
@@ -364,8 +367,8 @@ $(function () {
                     time_quantum.css("background", "transparent");
                     time_quantum.css("color","#000");
                     data_icon.css('background-position', '-10px -10px');
-                    $(".switch_data .switch_bg").css("color","#fff");
-                    $(".switch_data .switch_bg").siblings().css("color","#000");
+                    $(".switch_data a").eq(0).css("color","#fff");
+                    $(".switch_data a").eq(0).siblings().css("color","#000");
                     selected_data.children(".switch_data_hidden").val(1);
                     that.totalOrNew();
                     that.newData();
@@ -582,14 +585,20 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
-                            var flag = false;
-                            var totalData = data.totalData.map(function (value) {
+                            var flag = 0;
+                            data.totalData.map(function (value) {
                                 if (value > 10000) {
-                                    flag = true;
+                                    flag = flag+1;
                                 }
-                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                            if(flag>0){
+                                var totalData = data.totalData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                totalData = data.totalData;
+                            }
                             nameSingle = (data.totalData.join("") == totalData.join("")) ? (target_item.text() + " " + "(单位：个)") : (target_item.text() + " " + "(单位：万)")
                         }
                         var selectMin = that.arrayMin(totalData);
@@ -618,25 +627,37 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.selectData) {
-                            var flag = false;
-                            var selectData = data.selectData.map(function (value) {
+                            var flag = 0;
+                           data.selectData.map(function (value) {
                                 if (value > 10000) {
-                                    flag = true;
+                                    flag = flag+1;
                                 }
-                                value = (flag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                            if(flag>0){
+                                var selectData = data.selectData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                selectData = data.selectData;
+                            }
                             nameSingle = (data.selectData.join("") == selectData.join("")) ? ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：万)")
                         }
                         if (data.compareData) {
-                            var compareFlag = false;
-                            var compareData = data.compareData.map(function (value) {
+                            var compareFlag = 0;
+                            data.compareData.map(function (value) {
                                 if (value > 10000) {
-                                    compareFlag = true;
+                                    compareFlag = compareFlag+1;
                                 }
-                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                            if(compareFlag>0){
+                                var compareData = data.compareData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                compareData = data.compareData
+                            }
                             nameCompare = (data.compareData.join("") == compareData.join("")) ? ($("#user_statistics_dataCompare").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_dataCompare").val() + " " + target_item.text() + "(单位：万)")
                         }
                         nameArray = new Array();
@@ -655,7 +676,7 @@ $(function () {
                             min = selectMin;
                             max = selectMax;
                         }
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, min, max)
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, max, min)
                     },
                 });
             },
@@ -675,17 +696,31 @@ $(function () {
                     },
                     success: function (data) {
                         if (data.totalData) {
-                            var flag = false;
-                            var totalData = data.totalData.map(function (value) {
+                            var flag = 0;
+                           data.totalData.map(function (value) {
                                 if (value > 10000) {
-                                    flag = true;
+                                    flag = flag+1;
                                 }
-                                value = flag == true ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                            if(flag>0){
+                                var totalData = data.totalData.map(function (value) {
+                                    value = (value - value % 100) / 10000;
+                                    return value;
+                                });
+                            }else{
+                                totalData = data.totalData
+                            }
                             nameSingle = (data.totalData.join("") == totalData.join("")) ? (target_item.text() + " " + "(单位：个)") : (target_item.text() + " " + "(单位：万)")
                         }
-                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle)
+                        var selectMin = that.arrayMin(totalData);
+                        var selectMax = that.arrayMax(totalData);
+                        var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
+                        count = selectMin - count> 0.01 ? 5 : 0.001;
+                       if(selectMin==0){
+                           count = 0;
+                       }
+                        selectMin = selectMin - count;
+                        myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle,selectMin,selectMax)
                     },
                 });
             },
@@ -706,33 +741,63 @@ $(function () {
                         "type": indexType
                     },
                     success: function (data) {
-
                         if (data.selectData) {
-                            var falg = false;
-                            var selectData = data.selectData.map(function (value) {
+                            var flag = 0;
+                             data.selectData.map(function (value) {
                                 if (value > 10000) {
-                                    falg = true;
+                                    flag =flag+1 ;
                                 }
-                                value = (falg == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                             if(flag>0){
+                                 var selectData = data.selectData.map(function (value) {
+                                     value = (value - value % 100) / 10000
+                                     return value;
+                                 });
+                             }else{
+                                 selectData = data.selectData
+                             }
                             nameSingle = (data.selectData.join("") == selectData.join("")) ? ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：个)") : ($("#user_statistics_data").val() + " " + target_item.text() + "(单位：万)")
                         }
                         if (data.compareData) {
-                            var compareFlag = false;
-                            var compareData = data.compareData.map(function (value) {
+                            var compareFlag = 0;
+                           data.compareData.map(function (value) {
                                 if (value > 10000) {
-                                    compareFlag = true;
+                                    compareFlag = compareFlag+1;
                                 }
-                                value = (compareFlag == true) ? (((value - value % 100) / 10000)) : value;
-                                return value;
                             });
+                           if(compareFlag>0){
+                               var compareData = data.compareData.map(function (value) {
+                                   value = (value - value % 100) / 10000;
+                                   return value;
+                               });
+                           }else{
+                               compareData = data.compareData;
+                           }
                             nameCompare = (data.compareData.join("") == compareData.join("")) ? ($("#user_statistics_dataCompare").val() + " " + target_item.text() + " " + "(单位：个)") : ($("#user_statistics_dataCompare").val() + " " + target_item.text() + " " + "(单位：万)")
                         }
                         nameArray = new Array();
                         nameArray[0] = nameSingle;
                         nameArray[1] = nameCompare;
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare)
+                        var selectMin = that.arrayMin(selectData);
+                        var compareMin = that.arrayMin(compareData);
+                        var selectMax = that.arrayMax(selectData);
+                        var compareMax = that.arrayMax(compareData);
+                        if (compareData != 0) {
+                            var max = selectMax >= compareMax ? selectMax : compareMax;
+                            var min = selectMin >= compareMin ? compareMin : selectMin;
+                            var count = Math.abs(selectMin - compareMin) > 0.1 ? 5 : 0.01;
+                            if(min<count){
+                                count = 1
+                            }
+                            var min = min - count;
+                        } else {
+                            min = selectMin;
+                            max = selectMax;
+                        }
+                        if(min<=0){
+                            min = 0;
+                        }
+                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare,max,min)
                     },
                 });
             },
@@ -870,19 +935,19 @@ var myEcharsCommon = (function () {
                     formatter: function (data) {
                         var res;
                         if (data[0].seriesName.split("：")[1].split("")[0] == "万") {
-                            res = '<div style="width: 220px;height:45px;">'
-                                +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                            res = '<div style="width: 320px;height:45px;">'
+                                +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                 +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
-                                +'<div style="width:100px;height:20px;float: left;">'
+                                +'<div style="width:200px;height:20px;float: left;">'
                                 +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                 + data[0].axisValueLabel +'</div>'
                                 +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value + data[0].seriesName.split("：")[1].split("")[0]+'</div>'
                             '</div>'
                         } else {
-                            res = '<div style="width: 220px;height:45px;">'
-                                +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                            res = '<div style="width: 320px;height:45px;">'
+                                +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                 +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split("(")[0]+'</div>'+'<br/>'
-                                +'<div style="width:100px;height:20px;float: left;">'
+                                +'<div style="width:200px;height:20px;float: left;">'
                                 +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                 + data[0].axisValueLabel +'</div>'
                                 +'<div style="width:115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
@@ -979,27 +1044,27 @@ var myEcharsCommon = (function () {
                         var dataTitle = data[0].seriesName.split(" ");
                         if (data[1]) {
                             if (dataTitle[3].split("：")[1].split("")[0] == "万") {
-                                res = '<div style="width:220px;height:70px;">'
-                                    +'<div style="width:85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                res = '<div style="width:320px;height:70px;">'
+                                    +'<div style="width:185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                     +'<div style="width:114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
-                                    +'<div style="width:100px;height:20px;float: left;">'
+                                    +'<div style="width:200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                     +dataTime[0]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
-                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
                                     +dataTime[1]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+dataTitle[3].split("：")[1].split("")[0] +'</div>'
                                     '</div>'
                             } else {
-                                res = '<div style="width: 220px;height:70px;">'
-                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                res = '<div style="width: 320px;height:70px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                     +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
-                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                     +dataTime[0]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
-                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#0D8AE6;"></span>'
                                     +dataTime[1]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[1].value+'</div>'
@@ -1007,19 +1072,19 @@ var myEcharsCommon = (function () {
                             }
                         } else {
                             if (dataTitle[3].split("：")[1].split("")[0] == "万") {
-                                res = '<div style="width: 220px;height:50px;">'
-                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                res = '<div style="width: 320px;height:50px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                     +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
-                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                     +dataTime[0]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+ dataTitle[3].split("：")[1].split("")[0]+'</div>'
                                     '</div>'
                                 }else{
-                                res = '<div style="width: 220px;height:50px;">'
-                                    +'<div style="width: 85px;height:15px;margin-left:15px;float:left;">时间</div>'
+                                res = '<div style="width: 320px;height:50px;">'
+                                    +'<div style="width: 185px;height:15px;margin-left:15px;float:left;">时间</div>'
                                     +'<div style="width: 114px;height:15px;margin-right:6px;float:right;">'+data[0].seriesName.split(" ")[3].split("(")[0]+'</div>'+'<br/>'
-                                    +'<div style="width: 100px;height:20px;float: left;">'
+                                    +'<div style="width: 200px;height:20px;float: left;">'
                                     +'<span style="display:inline-block;margin-top:6px;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:#c23531;"></span>'
                                     +dataTime[0]+'</div>'
                                     +'<div style="width: 115px;height:20px;margin-right:5px;float: right;">' + data[0].value+'</div>'
