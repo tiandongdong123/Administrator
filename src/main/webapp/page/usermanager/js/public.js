@@ -249,7 +249,7 @@ function standardShow(count,i,id){
 	$("#isBK").hide();
 	if(id=="isBK"){
 		if($("#isBK_"+count+"_"+i).is(':checked')){
-			$("#readingPrint_"+count+"_"+i).val("0");
+			$("#readingPrint_"+count+"_"+i).val("3");
 			$("#onlineVisitor_"+count+"_"+i).val("-1");
 			$("#copyNo_"+count+"_"+i).val("-1");
 			$("#totalPrintNo_"+count+"_"+i).val("-1");
