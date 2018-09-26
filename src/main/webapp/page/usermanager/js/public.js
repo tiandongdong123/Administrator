@@ -249,7 +249,7 @@ function standardShow(count,i,id){
 	$("#isBK").hide();
 	if(id=="isBK"){
 		if($("#isBK_"+count+"_"+i).is(':checked')){
-			$("#readingPrint_"+count+"_"+i).val("0");
+			$("#readingPrint_"+count+"_"+i).val("3");
 			$("#onlineVisitor_"+count+"_"+i).val("-1");
 			$("#copyNo_"+count+"_"+i).val("-1");
 			$("#totalPrintNo_"+count+"_"+i).val("-1");
@@ -917,7 +917,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
 		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" id="limitedParcelEndtime_'+count+'_'+i+'" onclick="WdatePicker()" type="text"></div>';
 		text += '<div id="isBK"><div class="form-group input_block"><label><b>*</b>版权阅读打印：</label><select class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].readingPrint" id="readingPrint_'+count+'_'+i+'">';
-		text += '<option value="0" checked>授权阅读打印</option><option value="1">授权阅读</option><option value="2">授权打印</option><option value="3">未阅读</option></select></div>';
+		text += '<option value="3" checked>授权阅读打印</option><option value="1">授权阅读</option><option value="2">授权打印</option><option value="0">未阅读</option></select></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;在线用户数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].onlineVisitor" id="onlineVisitor_'+count+'_'+i+'" value="-1"><span>-1表示不限制</span><br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;副本数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" id="copyNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
 		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;打印总份数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" id="totalPrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
