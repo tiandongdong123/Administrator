@@ -340,7 +340,6 @@ $(function () {
                             switch_board_month.show();
                         }
                     } else {
-
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
                         lineContainerComparison.hide();
@@ -543,7 +542,7 @@ $(function () {
                     _this.on("click", function () {
                         indexListVal = $(this).val();
                         target_item.text(indexListVal);
-                        (target_item.text() == "有效机构账号") ? $(".target_selected p").show() : $(".target_selected p").hide()
+                        (target_item.text() == "有效机构账号") ? $(".target_selected p").show() : $(".target_selected p").hide();
                         target_item_hidden.val(_this.siblings("input").val());
                         that.getTime();
                     })
@@ -715,7 +714,7 @@ $(function () {
                         var selectMin = that.arrayMin(totalData);
                         var selectMax = that.arrayMax(totalData);
                         var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
-                        count = selectMin - count> 0.01 ? 5 : 0.001;
+                        count = selectMin - count> 0.01 ? 5 : 0.01;
                        if(selectMin==0){
                            count = 0;
                        }
@@ -1015,13 +1014,13 @@ var myEcharsCommon = (function () {
                             show: true,
                             position: 'top',
                             distance: 10
-
                         },
                     }
                 ]
             };
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
+                window.onresize = function () { myChart.resize({width:$(".line_wrap").width()}); }
             }
         },
 
@@ -1175,6 +1174,7 @@ var myEcharsCommon = (function () {
             };
             if (option && typeof option === "object") {
                 myChart.setOption(option, true);
+                window.onresize = function () { myChart.resize({width:$(".line_wrap").width()}); }
             }
         }
     }
