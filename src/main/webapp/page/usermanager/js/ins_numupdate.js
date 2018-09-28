@@ -132,11 +132,13 @@ function submitForm(){
 	}else{
 		var olds=$("#oldInstitution").val();
 		var institution=$("#institution").val();
-		if(olds!=institution){
+		/*if(olds!=institution){
 			 validateUserInstitution(olds,institution);
 		}else{
 			updateUser();
-		}
+		}*/
+		
+		updateUser();
 	}
 }
 

@@ -238,9 +238,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 开通用户权限
 		this.addGroupInfo(user);
 		//修改机构名称
-		if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
+		/*if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
 			this.updateInstitution(user.getInstitution(),user.getOldInstitution());
-		}
+		}*/
 		return true;
 	}
 	

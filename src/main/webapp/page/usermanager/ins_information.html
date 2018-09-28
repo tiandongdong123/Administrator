@@ -81,7 +81,8 @@
  	<div class="info_jg_title" <?if(i<6){?>onclick="unfolded(2,this,'show_${i}');"<?}else{?>onclick="unfolded(1,this,'show_${i}');"<?}?>>
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
-          <span class="university"><a href="javascript:;" onclick="showAdm('${list.Id}','${list.ParentId}','${list.Institution}');return false;" class="add_admin">${list.Institution}</a><span>
+      <!-- 弹窗 修改机构名称 onclick="showAdm('${list.Id}','${list.ParentId}','${list.Institution}');return false;"  -->
+          <span class="university"><a href="javascript:;"  class="add_admin">${list.Institution}</a><span>
           <span class="time"><?if(list.CountryRegion=='China'){ ?>中国<?}else if(list.CountryRegion=='foreign'){?>外国<?}?></span>
           <span class="time"><?for(arr in arrayArea){ if(list.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
           <span class="time"><?for(organ in org){ if(list.Organization==organ.name){ ?>${organ.desc}<?}}?></span>
