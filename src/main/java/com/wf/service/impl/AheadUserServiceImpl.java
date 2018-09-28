@@ -2667,11 +2667,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 			sq.set("collection", "GroupInfo");
 			Integer pageSize=(Integer) map.get("pageSize");
 			Integer pageNum=(Integer) map.get("pageNum");
+			
+			String institution="";
+			if(map.get("institution")==null){
+				institution=null;
+			}else{
+				String[] institutionArray=map.get("institution").toString().trim().split(" ");
+				institution+="(";
+				for (String string : institutionArray) {
+					institution+="*"+string+"* OR ";
+				}
+				institution=institution.substring(0, institution.length()-4);
+				institution+=")";
+			}
+			
 			sq.setRows(pageSize);
 			sq.setStart(pageSize*pageNum);
 			StringBuffer query=new StringBuffer("");
 			InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
-			InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
+			InstitutionUtils.addField(query,"Institution",institution);//机构ID
 			InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
 			InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
 			InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
