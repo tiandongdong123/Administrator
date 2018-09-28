@@ -16,23 +16,26 @@
         <div class="box-body">
          <form action="../auser/information.do" method="post" id="fromList">
 	  		<table id="message1" style="margin:0 auto;margin-left:300px;<?if(map.isSimple=='1'){?>display:none;<?}?>">
-	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="userId"<?}?> id="userId1" value="<?if(map.isSimple=='0'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
-	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="institution"<?}?> id="institution1" value="<?if(map.isSimple=='0'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
+	  			<!--去除空格限制   onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"-->
+	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="userId"<?}?> id="userId1" value="<?if(map.isSimple=='0'){?>${map.userId!}<?}?>">
+	  			<span id="userIdResult" style="color:red"></span>
+	  			</td>
+	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="institution"<?}?> id="institution1" value="<?if(map.isSimple=='0'){?>${map.institution!}<?}?>"></td>
 	  			</tr>
-	  			<tr><td class="alal">IP</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="ipSegment"<?}?> id="ipSegment1" value="<?if(map.isSimple=='0'){?>${map.ipSegment!}<?}?>" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
+	  			<tr><td class="alal">IP</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="ipSegment"<?}?> id="ipSegment1" value="<?if(map.isSimple=='0'){?>${map.ipSegment!}<?}?>">
 					<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span></td></tr>
 			</table>
 			<table id="message2" style="margin:0 auto;margin:0 auto;margin-left:300px;<?if(map.isSimple=='0'){?>display:none;<?}?>">
 	  			<tr>
 		  			<td class="alal">用户ID</td>
-		  			<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="userId"<?}?> id="userId2" value="<?if(map.isSimple=='1'){?>${map.userId!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
+		  			<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="userId"<?}?> id="userId2" value="<?if(map.isSimple=='1'){?>${map.userId!}<?}?>"></td>
 					<td class="alal">机构名称</td>
-					<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="institution"<?}?> id="institution2" value="<?if(map.isSimple=='1'){?>${map.institution!}<?}?>" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
+					<td class="arar"><input type="text" <?if(map.isSimple=='1'){?>name="institution"<?}?> id="institution2" value="<?if(map.isSimple=='1'){?>${map.institution!}<?}?>"></td>
 				</tr>
 	  			<tr>
 		  			<td class="alal">IP</td>
 		  			<td class="arar">
-		  				<input type="text" <?if(map.isSimple=='1'){?>name="ipSegment"<?}?> id="ipSegment2" value="<?if(map.isSimple=='1'){?>${map.ipSegment!}<?}?>" onkeyup="this.value=this.value.replace(/[^0-9.-]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9.-]/g,'')">
+		  				<input type="text" <?if(map.isSimple=='1'){?>name="ipSegment"<?}?> id="ipSegment2" value="<?if(map.isSimple=='1'){?>${map.ipSegment!}<?}?>">
 						<span id="ipResult" style="color:red"><?if(!isEmpty(map.ipError)){?>IP格式不合法<?}?></span></td>
 					<td class="alal">开通权限</td>
 					<td class="arar">
@@ -67,6 +70,7 @@
 			<button type="button" class="btn btn-primary" onclick="findList();" id="queryButton">查询</button>
 			<a href="javascript:;" onclick="showMore(this);return false;" class="add_admin"><?if(map.isSimple=='0'){?>更多查询条件<?}?><?if(map.isSimple=='1'){?>精简查询条件<?}?></a>
         </div>
+        <div style="margin-left: 460px;color:red;" id="userIdResult1"></div>
 	<?if(!isEmpty(map.pageList)){?>
 	<div class="container01">
 	<div class="info_block info_block1">
@@ -78,7 +82,8 @@
  	<div class="info_jg_title" <?if(i<6){?>onclick="unfolded(2,this,'show_${i}');"<?}else{?>onclick="unfolded(1,this,'show_${i}');"<?}?>>
  	  <div class="info_num"><span>${(map.pageList.pageSize*(map.pageList.pageNum-1)+i)}</span></div>
       <div class="info_box_left">
-          <span class="university"><a href="javascript:;" onclick="showAdm('${list.Id}','${list.ParentId}','${list.Institution}');return false;" class="add_admin">${list.Institution}</a><span>
+      <!-- 弹窗 修改机构名称 <a href="javascript:;" onclick="showAdm('${list.Id}','${list.ParentId}','${list.Institution}');return false;"  class="add_admin">${list.Institution}</a>  -->
+          <span class="university"><span class="add_admin">${list.Institution}</span><span>
           <span class="time"><?if(list.CountryRegion=='China'){ ?>中国<?}else if(list.CountryRegion=='foreign'){?>外国<?}?></span>
           <span class="time"><?for(arr in arrayArea){ if(list.PostCode==arr.id){ ?>${arr.name}<?}}?></span>
           <span class="time"><?for(organ in org){ if(list.Organization==organ.name){ ?>${organ.desc}<?}}?></span>

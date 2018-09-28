@@ -495,10 +495,10 @@ public class InstitutionUtils {
 					String msg="账号"+userId+"的密码不能有中文，请填写正确的密码";
 					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
 				}
-				if(password.length()<6||password.length()>16){
+				/*if(password.length()<6||password.length()>16){
 					String msg="账号"+userId+"的密码长度必须在6-16位之间，请填写正确的密码";
 					InstitutionUtils.addErrorMap(userId,institution,msg,errorList);
-				}
+				}*/
 			}
 			
 			if ("2".equals(user.getLoginMode())) {

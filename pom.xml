@@ -799,7 +799,12 @@
 			<artifactId>javase</artifactId>
 			<version>${zxing.version}</version>
 		</dependency>
-
+		<!-- kafka -->
+		<dependency>
+			<groupId>com.wanfangdata</groupId>
+			<artifactId>message-queue-grpc-api</artifactId>
+			<version>1.2018.50</version>
+		</dependency>
 	</dependencies>
  <build>
     <sourceDirectory>src/main/java</sourceDirectory>

@@ -1,5 +1,9 @@
 package com.wf.controller;
 
+import io.grpc.ManagedChannel;
+import io.grpc.netty.NegotiationType;
+import io.grpc.netty.NettyChannelBuilder;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -42,9 +46,14 @@ import com.utils.Organization;
 import com.utils.SettingUtil;
 import com.utils.SolrThread;
 import com.utils.WFMailUtil;
+import com.wanfangdata.cas.utils.JsonHelper;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wanfangdata.grpcchannel.BindAccountChannel;
+import com.wanfangdata.grpcchannel.GrpcServer;
 import com.wanfangdata.rpc.bindauthority.ServiceResponse;
+import com.wanfangdata.rpc.messagequeue.ProducerServiceGrpc;
+import com.wanfangdata.rpc.messagequeue.SendRequest;
+import com.wanfangdata.rpc.messagequeue.SendResponse;
 import com.wf.bean.Authority;
 import com.wf.bean.BindAuthorityModel;
 import com.wf.bean.InstitutionalUser;
@@ -744,10 +753,21 @@ public class AheadUserController {
 			}
 			allNum = userList.size();
 			for (Map<String, Object> map : userList) {
+				
+				String oldLoginModel=aheadUserService.queryPersonInfo(map.get("userId").toString()).getLoginMode().toString();
+				
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
 				//发送solr
 				SolrThread.updateInfo(user);
+				
+				JSONObject json=new JSONObject();
+				json.put("userId", user.getUserId());
+				json.put("loginModel", oldLoginModel);
+				json.put("updateLaterLoginModel",user.getLoginMode());
+				String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
+				//sendMessage("GroupLoginModeModify",key,json);
+				
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
 				// 修改购买项目
@@ -1298,6 +1318,9 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{
+			
+			String oldLoginModel=aheadUserService.queryPersonInfo(user.getUserId()).getLoginMode().toString();
+			
 			List<String> delList = new ArrayList<String>();
 			// 机构修改校验
 			errorMap = this.updateValidate(user, delList);
@@ -1308,6 +1331,14 @@ public class AheadUserController {
 			aheadUserService.updateinfo(user);
 			//发送solr
 			SolrThread.registerInfo(user,false);
+			
+			JSONObject json=new JSONObject();
+			json.put("userId", user.getUserId());
+			json.put("loginModel", oldLoginModel);
+			json.put("updateLaterLoginModel",user.getLoginMode());
+			String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
+			//sendMessage("GroupLoginModeModify",key,json);
+			
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
 			if(msg.length()>0&&msg.contains("失败")){
@@ -2203,4 +2234,47 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/search_adMessage_result");
 		return view;
 	}
+	
+	/**
+	 *	获取userType
+	 */
+	@RequestMapping("getUserType")
+	@ResponseBody
+	public Integer getUserType(String userId){
+		
+		Person per=aheadUserService.queryPersonInfo(userId);
+		if(per==null){
+			return null;
+		}
+		return per.getUsertype();
+	}
+	
+	private boolean sendMessage(String topic,String topicKey,Object obj){
+		
+		boolean result=false;
+		try {
+
+			String grpcServer=GrpcServer.getHost();
+			int grpcPort=GrpcServer.getPort();
+			
+			//1、创建channel
+			ManagedChannel channel = NettyChannelBuilder.forAddress(grpcServer, grpcPort)
+			                .negotiationType(NegotiationType.PLAINTEXT).build();
+			                
+			//2、创建连接实例
+			ProducerServiceGrpc.ProducerServiceBlockingStub blockingStub =ProducerServiceGrpc
+			                    .newBlockingStub(channel);
+			//3、创建topic
+			SendRequest request=SendRequest.newBuilder().setTopic(topic).setKey(topicKey).setMessage(JsonHelper.serialize(obj)).build();
+	        SendResponse response = blockingStub.send(request);
+	        result = response.getResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+        
+        return result;
+	}
+	
+	
 }

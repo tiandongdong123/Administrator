@@ -238,9 +238,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		// 开通用户权限
 		this.addGroupInfo(user);
 		//修改机构名称
-		if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
+		/*if(!StringUtils.equals(user.getInstitution(), user.getOldInstitution())){
 			this.updateInstitution(user.getInstitution(),user.getOldInstitution());
-		}
+		}*/
 		return true;
 	}
 	
@@ -1620,7 +1620,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String userId = userMap.get("Id").toString();
 			userMap.put("Password", PasswordHelper.decryptPassword(userMap.get("Password").toString()));
 			int sortScore=Integer.parseInt(userMap.get("LoginMode").toString());
-			if((boolean) userMap.get("IsFreeze")){
+			if(null!=userMap.get("IsFreeze") && (boolean) userMap.get("IsFreeze")){
 				sortScore+=1000;
 			}
 			boolean flag=false;//用户是否可用 true是不过期，false是过期
@@ -2667,11 +2667,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 			sq.set("collection", "GroupInfo");
 			Integer pageSize=(Integer) map.get("pageSize");
 			Integer pageNum=(Integer) map.get("pageNum");
+			
+			String institution="";
+			if(map.get("institution")==null){
+				institution=null;
+			}else{
+				String[] institutionArray=map.get("institution").toString().trim().split(" ");
+				institution+="(";
+				for (String string : institutionArray) {
+					institution+="*"+string+"* AND ";
+				}
+				institution=institution.substring(0, institution.length()-4);
+				institution+=")";
+			}
+			
 			sq.setRows(pageSize);
 			sq.setStart(pageSize*pageNum);
 			StringBuffer query=new StringBuffer("");
 			InstitutionUtils.addField(query,"Id",(String) map.get("userId"));//机构ID
-			InstitutionUtils.addField(query,"Institution",map.get("institution")==null?null:"*"+(String) map.get("institution")+"*");//机构ID
+			InstitutionUtils.addField(query,"Institution",institution);//机构ID
 			InstitutionUtils.addField(query,"ParentId",(String) map.get("pid"));//机构管理员Id
 			InstitutionUtils.addField(query,"PayChannelId",(String) map.get("resource"));//购买项目
 			InstitutionUtils.addField(query,"Organization",(String) map.get("Organization"));//机构类型
@@ -2735,8 +2749,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			Long num=sdList.getNumFound();
 			allMap.put("num",num.intValue());
 		}catch(Exception e){
-			SendMail2 util=new SendMail2();
-			util.sendSolrEmail();
 			log.error("solr查询异常", e);
 		}
 		return allMap;
