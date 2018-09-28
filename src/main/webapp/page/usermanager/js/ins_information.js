@@ -50,6 +50,9 @@ $(function(){
             }
         });
     });
+    
+    userTypePrompt();
+    
 });
 
 //全局点击事件(隐藏服务权限div)
@@ -537,3 +540,54 @@ function showMore(obj){
 		$(obj).html("精简查询条件");
 	}
 }
+
+
+
+
+/**
+ * 提示用户类型
+ */
+function userTypePrompt(){
+    $("#userId1").blur(function(){
+    	var userId=$("#userId1").val();
+    	var loginModel="";
+    	if(userId==null || userId=="" || userId==undefined){
+    		$("#userIdResult").text("");
+    		return;
+    	}
+    	
+    	$.ajax({
+            url:'../auser/getUserType.do',
+            data:{ userId:userId},
+            async: false,
+            success:function(data){
+            	loginModel=data;
+            	loginModel+="";
+            }
+        });	
+    	
+    	if(isEmpty(loginModel)){
+    		$("#userIdResult").text("");
+    		return;
+    	}
+    	
+    	if(loginModel==0){
+    		$("#userIdResult").text("该用户ID为个人账号");
+    	}else if(loginModel==3){
+    		$("#userIdResult").text("该用户ID为机构子账号/学生账号");
+    	}
+    	
+    });
+}
+
+
+function isEmpty(value){
+	if(value==null || value=="" || value==undefined){
+		return true;
+	}
+	return false;
+}
+
+
+
+

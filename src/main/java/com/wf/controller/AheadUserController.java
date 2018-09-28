@@ -2235,6 +2235,18 @@ public class AheadUserController {
 		return view;
 	}
 	
+	/**
+	 *	获取userType
+	 */
+	@RequestMapping("getUserType")
+	@ResponseBody
+	public Integer getUserType(String userId){
+		
+		Person per=aheadUserService.queryPersonInfo(userId);
+		
+		return per.getUsertype();
+	}
+	
 	private boolean sendMessage(String topic,String topicKey,Object obj){
 		
 		boolean result=false;
