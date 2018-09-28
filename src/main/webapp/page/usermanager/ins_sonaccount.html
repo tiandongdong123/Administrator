@@ -16,8 +16,9 @@
         <div class="box-body">
          <form action="../auser/tosonaccount.do" method="post" id="fromList">
 	  		<table id="message1" style="margin:0 auto;margin-left:300px;">
-	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td></tr>
-	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"></td>
+	  			<!--去除空格限制  onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"-->
+	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" class="form-control input_width" name="userId" id="userId" value="${map.userId!}"></td></tr>
+	  			<tr><td class="alal">机构名称</td><td class="arar"><input type="text" class="form-control input_width" name="institution" id="institution" value="${map.institution!}"></td>
 	  			</tr>
 	  			<tr><td class="alal">注册日期</td><td><span class="time_block"><input type="text" class="Wdate" style="width:139px;" name="start_time" id="start_time" value="${map.start_time!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'end_time\')}'})"></span><span class="to"> 至 </span>
 				<span class="time_block"><input type="text" class="Wdate" style="width:139px;" name="end_time" id="end_time" value="${map.end_time!}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'start_time\')}'})"></span>
