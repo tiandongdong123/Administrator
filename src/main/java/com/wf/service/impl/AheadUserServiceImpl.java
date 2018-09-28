@@ -1620,7 +1620,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String userId = userMap.get("Id").toString();
 			userMap.put("Password", PasswordHelper.decryptPassword(userMap.get("Password").toString()));
 			int sortScore=Integer.parseInt(userMap.get("LoginMode").toString());
-			if((boolean) userMap.get("IsFreeze")){
+			if(null!=userMap.get("IsFreeze") && (boolean) userMap.get("IsFreeze")){
 				sortScore+=1000;
 			}
 			boolean flag=false;//用户是否可用 true是不过期，false是过期
