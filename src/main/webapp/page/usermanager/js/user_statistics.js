@@ -604,6 +604,9 @@ $(function () {
                         var selectMax = that.arrayMax(totalData);
                         var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
                         selectMin = selectMin - count;
+                        if(selectMin<0){
+                            selectMin = 0;
+                        }
                         myEcharsCommon.commonLine("lineContainer", totalData, data.dateTime, nameSingle, selectMin, selectMax)
                     },
                 });
@@ -675,6 +678,9 @@ $(function () {
                             min = selectMin;
                             max = selectMax;
                         }
+                        if(min<0){
+                            min = 0;
+                        }
                         myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, max, min)
                     },
                 });
@@ -719,6 +725,9 @@ $(function () {
                            count = 0;
                        }
                         selectMin = selectMin - count;
+                        if(selectMin<0){
+                            selectMin = 0;
+                        }
                         myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle,selectMin,selectMax)
                     },
                 });
@@ -793,7 +802,7 @@ $(function () {
                             min = selectMin;
                             max = selectMax;
                         }
-                        if(min<=0){
+                        if(min<0){
                             min = 0;
                         }
                         myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare,max,min)
