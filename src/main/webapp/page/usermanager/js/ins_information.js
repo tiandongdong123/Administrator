@@ -575,9 +575,46 @@ function userTypePrompt(){
     		$("#userIdResult").text("该用户ID为个人账号");
     	}else if(loginModel==3){
     		$("#userIdResult").text("该用户ID为机构子账号/学生账号");
+    	}else{
+    		$("#userIdResult").text("");
     	}
     	
     });
+    
+    
+    $("#userId2").blur(function(){
+    	var userId=$("#userId2").val();
+    	var loginModel="";
+    	if(userId==null || userId=="" || userId==undefined){
+    		$("#userIdResult1").text("");
+    		return;
+    	}
+    	
+    	$.ajax({
+            url:'../auser/getUserType.do',
+            data:{ userId:userId},
+            async: false,
+            success:function(data){
+            	loginModel=data;
+            	loginModel+="";
+            }
+        });	
+    	
+    	if(isEmpty(loginModel)){
+    		$("#userIdResult1").text("");
+    		return;
+    	}
+    	
+    	if(loginModel==0){
+    		$("#userIdResult1").text("该用户ID为个人账号");
+    	}else if(loginModel==3){
+    		$("#userIdResult1").text("该用户ID为机构子账号/学生账号");
+    	}else{
+    		$("#userIdResult1").text("");
+    	}
+    	
+    });
+    
 }
 
 
