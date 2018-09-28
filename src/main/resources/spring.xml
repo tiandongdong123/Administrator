@@ -179,6 +179,7 @@
 		</property>
 	</bean>
     <bean id="channel" class="com.wanfangdata.grpcchannel.GrpcChannel"/>
+    <bean id="grpcServer" class="com.wanfangdata.grpcchannel.GrpcServer"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>
 	<bean id="bindAccountChannel" class="com.wanfangdata.grpcchannel.BindAccountChannel"/>
 
