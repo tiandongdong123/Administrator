@@ -41,6 +41,7 @@ public class SolrThread implements Runnable {
 	public void run() {
 		try {
 			//发送solr
+			log.info("solr开始更新或新增");
 			SolrService.getInstance(hosts+"/GroupInfo");
 			if(solrList!=null){
 				SolrService.addIndexList(solrList);
@@ -51,7 +52,7 @@ public class SolrThread implements Runnable {
 			if(updateList!=null){
 				SolrService.updateList(updateList);
 			}
-			log.info("solr更新成功");
+			log.info("solr完成更新或新增");
 		} catch (Exception e) {
 			SendMail2 util=new SendMail2();
 			util.sendSolrEmail();
