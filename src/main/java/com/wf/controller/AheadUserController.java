@@ -2243,7 +2243,9 @@ public class AheadUserController {
 	public Integer getUserType(String userId){
 		
 		Person per=aheadUserService.queryPersonInfo(userId);
-		
+		if(per==null){
+			return null;
+		}
 		return per.getUsertype();
 	}
 	
