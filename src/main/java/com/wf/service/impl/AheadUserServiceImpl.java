@@ -2675,7 +2675,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				String[] institutionArray=map.get("institution").toString().trim().split(" ");
 				institution+="(";
 				for (String string : institutionArray) {
-					institution+="*"+string+"* OR ";
+					institution+="*"+string+"* AND ";
 				}
 				institution=institution.substring(0, institution.length()-4);
 				institution+=")";
