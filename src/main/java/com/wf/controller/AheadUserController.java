@@ -766,7 +766,7 @@ public class AheadUserController {
 				json.put("loginModel", oldLoginModel);
 				json.put("updateLaterLoginModel",user.getLoginMode());
 				String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
-				sendMessage("GroupLoginModeModify",key,json);
+				//sendMessage("GroupLoginModeModify",key,json);
 				
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
@@ -1337,7 +1337,7 @@ public class AheadUserController {
 			json.put("loginModel", oldLoginModel);
 			json.put("updateLaterLoginModel",user.getLoginMode());
 			String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
-			sendMessage("GroupLoginModeModify",key,json);
+			//sendMessage("GroupLoginModeModify",key,json);
 			
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
