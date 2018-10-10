@@ -197,7 +197,8 @@ public class InstitutionServiceImpl  implements InstitutionService {
 		solrMap.put("UserType", userMap.get("usertype"));
 		solrMap.put("ParentId", userMap.get("pid"));
 		solrMap.put("LoginMode", userMap.get("loginMode"));
-		solrMap.put("IsFreeze", "1".equals(userMap.get("isFreeze"))?true:false);
+		String str = userMap.get("isFreeze") + "";
+	    solrMap.put("IsFreeze", "1".equals(str) ? true : false);
 		//查询机构管理员
 		String pid=userMap.get("pid")==null?"":userMap.get("pid").toString();
 		if(!"".equals(pid)){
