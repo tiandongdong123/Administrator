@@ -13,7 +13,6 @@ $(function () {
         var content_nav_list = $(".content_nav");//总数/新增wrap
         var content_nav = $(".content_nav a");
         var aRecent7Days = $("#aRecent7Days");//最近7天
-        var lineContainerComparison = $("#lineContainerComparison");//对比分析图wrap
         var lineContainer = $("#lineContainer");//单个分析图wrap
         var target_item_hidden = $(".target_selected .target_item_hidden");//选取指标隐藏域
         var target_item = $(".target_item");//显示指标
@@ -57,7 +56,6 @@ $(function () {
                         if (!$(".gri_pc").get(0).checked) {
                             $("#user_statistics_dataCompare").val("")
                         }
-
                         $(".switch_data_hidden").val(1);
                         that.getTime();
                     },
@@ -65,7 +63,6 @@ $(function () {
                 aRecent7Days.click();
                 that.newData();
             },
-
             //点击最近天数table/新增指标的变化
             recentDays: function () {
                 var that = this;
@@ -109,8 +106,6 @@ $(function () {
                 if ($("#user_statistics_dataCompare").val() != "") {
                     $("#" + id).click();
                 }
-                lineContainerComparison.hide();
-                lineContainer.show();
             },
             //禁止多次发送
             ajaxPrefilterEvent: function (url) {
@@ -316,8 +311,6 @@ $(function () {
                     $(".switch_data a").eq(0).siblings().css("color","#000");
                     that.getTime();
                     if ($(".gri_pc").get(0).checked) {
-                        lineContainerComparison.show();
-                        lineContainer.hide();
                         that.totalOrNew();
                         $(".gri_data_compare").show();
                         week = (switch_board_week.css("display") == "none") ? true : false;
@@ -342,8 +335,6 @@ $(function () {
                     } else {
                         $("#user_statistics_dataCompare").val(" ");
                         that.totalOrNew();
-                        lineContainerComparison.hide();
-                        lineContainer.show();
                         $(".gri_data_compare").css('background-position', '-10px -10px');
                         $(".gri_data_compare").hide();
                         that.stepMonthOrWeek();
@@ -450,7 +441,7 @@ $(function () {
                         if (obj == switch_data) {
                             selected_data.children(".switch_data_hidden").val(_this.children("input").val());
                             _this.css("color", "#fff");
-                            _this.siblings().css("color", "#000")
+                            _this.siblings().css("color", "#000");
                             that.totalOrNew();
                         }
                         if (obj == content_nav) {
@@ -481,7 +472,7 @@ $(function () {
                     success: function (data) {
                         $(".new_data").html("");
                         for (var i in data) {
-                            var str = '<li><span class="person_num">' + data[i] + '</span> </li>';
+                            var str = '<li><span class="person_num">' + data[i] + '</span></li>';
                             $(".new_data").append(str);
                         }
                     }
@@ -681,7 +672,7 @@ $(function () {
                         if(min<0){
                             min = 0;
                         }
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, max, min)
+                        myEcharsCommon.lineComparison('lineContainer', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare, max, min)
                     },
                 });
             },
@@ -721,12 +712,12 @@ $(function () {
                         var selectMax = that.arrayMax(totalData);
                         var count = selectMax - selectMin > 0.1 ? 5 : 0.01;
                         count = selectMin - count> 0.01 ? 5 : 0.01;
-                       if(selectMin==0){
-                           count = 0;
-                       }
                         selectMin = selectMin - count;
-                        if(selectMin<0){
+                        if(selectMin<=0){
                             selectMin = 0;
+                        }
+                        if(selectMin>100){
+                            selectMin = 100;
                         }
                         myEcharsCommon.commonLine('lineContainer', totalData, data.dateTime, nameSingle,selectMin,selectMax)
                     },
@@ -758,7 +749,7 @@ $(function () {
                             });
                              if(flag>0){
                                  var selectData = data.selectData.map(function (value) {
-                                     value = (value - value % 100) / 10000
+                                     value = (value - value % 100) / 10000;
                                      return value;
                                  });
                              }else{
@@ -805,7 +796,10 @@ $(function () {
                         if(min<0){
                             min = 0;
                         }
-                        myEcharsCommon.lineComparison('lineContainerComparison', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare,max,min)
+                        if(min>100){
+                            min = 100;
+                        }
+                        myEcharsCommon.lineComparison('lineContainer', selectData, compareData, data.dateTime, nameArray, nameSingle, nameCompare,max,min)
                     },
                 });
             },
@@ -905,7 +899,6 @@ $(function () {
                 })
             },
             init: function () {
-
                 this.dataPicker();
                 this.switchBg(switch_data, 'switch_bg');
                 this.switchBg(content_nav, 'active');
