@@ -74,7 +74,7 @@
   opacity: 0.2;
 }
 .content-wrapper .user_statistics_content {
-  width: 1420px;
+  width: 92%;
   margin-left: 5px;
 }
 .content-wrapper .user_statistics_content .content_nav {
@@ -178,8 +178,8 @@
 .content-wrapper .user_statistics_content .target_select_wrapper .target_selected p {
   position: absolute;
   left: 257px;
-  width: 260px;
-  font-size: 12px;
+  width: 350px;
+  font-size: 14px;
   color: red;
   top: 0px;
   display: none;
@@ -208,13 +208,11 @@
 .content-wrapper .user_statistics_content .line_container {
   height: 450px;
   text-align: center;
-  width: 1420px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_content .line_comparison_container {
   height: 450px;
   text-align: center;
-  width: 1420px;
   margin-top: 25px;
 }
 .content-wrapper .user_statistics_footer {
@@ -222,8 +220,7 @@
 }
 .content-wrapper .user_statistics_footer table {
   margin: 35px;
-  margin-left: 153px;
-  width: 70%;
+  width: 88%;
   border-collapse: collapse;
   border-spacing: 0;
 }
