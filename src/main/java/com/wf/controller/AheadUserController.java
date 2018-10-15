@@ -2230,14 +2230,27 @@ public class AheadUserController {
 	}
 	
 	/**
+	 * 广告管理
+	 * 
+	 * @return
+	 */
+	@RequestMapping("search_adMessage_result")
+	public ModelAndView search_adMessage_result() {
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/search_adMessage_result");
+		return view;
+	}
+	
+	/**
 	 *	获取userType
 	 */
 	@RequestMapping("getUserType")
 	@ResponseBody
 	public Integer getUserType(String userId){
-		
 		Person per=aheadUserService.queryPersonInfo(userId);
-		
+		if(per==null){
+			return null;
+		}
 		return per.getUsertype();
 	}
 
