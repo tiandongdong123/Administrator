@@ -42,7 +42,7 @@ public class SolrThread implements Runnable {
 		try {
 			//发送solr
 			log.info("solr开始更新或新增");
-			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrService.getInstance(hosts+"/"+SettingUtil.getCollection("GroupInfo"));
 			if(solrList!=null){
 				SolrService.addIndexList(solrList);
 			}
@@ -196,7 +196,7 @@ public class SolrThread implements Runnable {
 	 */
 	public static void updateInstitution(String institution,String oldins) {
 		SolrQuery sq=new SolrQuery();
-		sq.set("collection", "GroupInfo");
+		sq.set("collection", SettingUtil.getCollection("GroupInfo"));
 		sq.setQuery("Institution:"+oldins);
 		sq.set("fl", "Id");
 		sq.setRows(10000);

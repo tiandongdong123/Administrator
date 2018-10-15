@@ -2662,9 +2662,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public Map<String,Object> getSolrList(Map<String, Object> map){
 		Map<String,Object> allMap=new HashMap<>();
 		try{
-			SolrService.getInstance(hosts+"/GroupInfo");
+			String collection ="GroupInfo";
+			SolrService.getInstance(hosts+"/"+collection);
 			SolrQuery sq=new SolrQuery();
-			sq.set("collection", "GroupInfo");
+			sq.set("collection", collection);
 			Integer pageSize=(Integer) map.get("pageSize");
 			Integer pageNum=(Integer) map.get("pageNum");
 			

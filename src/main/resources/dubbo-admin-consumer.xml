@@ -6,8 +6,9 @@
 	<dubbo:application name="adminmanager" />
 	<!-- XXL-CONF配置解析器 -->
 	<bean id="xxlConfPropertyPlaceholderConfigurer" class="com.xxl.conf.core.spring.XxlConfPropertyPlaceholderConfigurer" /> 
-    <dubbo:registry address="${wf-public.dubbox.zk.url}" check="false"/>
-	<dubbo:registry address="${wf-public.account.zk.url}" group="wfks_develop" check="false"/>
+    <dubbo:registry address="zookeeper://10.10.184.26:2181?backup=10.10.184.26:2181,10.10.184.26:2181" check="false"/>
+	<dubbo:registry address="zookeeper://10.10.184.26:2181?backup=10.10.184.26:2181,10.10.184.26:2181" group="wfks_develop" check="false"/>
+	<!-- 	高级检索/专业检索 -->
 	<!-- 	高级检索/专业检索 -->
     <dubbo:reference id="searchAllResult" interface="org.bigdata.framework.search.iservice.ISearchCoreResultService" check="false"/>
     <!-- 文辑推优 -->
