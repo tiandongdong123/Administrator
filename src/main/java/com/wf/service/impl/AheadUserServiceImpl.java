@@ -2662,7 +2662,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public Map<String,Object> getSolrList(Map<String, Object> map){
 		Map<String,Object> allMap=new HashMap<>();
 		try{
-			String collection ="GroupInfo";
+			String collection =SettingUtil.getCollection("GroupInfo");
 			SolrService.getInstance(hosts+"/"+collection);
 			SolrQuery sq=new SolrQuery();
 			sq.set("collection", collection);

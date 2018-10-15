@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.utils.DateUtil;
 import com.utils.IPConvertHelper;
+import com.utils.SettingUtil;
 import com.utils.SolrService;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.GroupInfo;
@@ -83,9 +84,10 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			String time=DateUtil.dateToString(date);
 			time=time.replace(" ", "T")+"Z";
 			//发送solr
-			SolrService.getInstance(hosts+"/GroupInfo");
+			String collection =SettingUtil.getCollection("GroupInfo");
+			SolrService.getInstance(hosts+"/"+collection);
 			String query="CreateTime:[ * TO "+time+"]";
-			SolrService.deleteByQuery("GroupInfo", query);
+			SolrService.deleteByQuery(collection, query);
 			log.info("删除旧的数据，query:"+query);
 			//查询sql
 			int index=0;
@@ -102,7 +104,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				solrList.add(solrMap);
 				index++;
 				if(index%1000==0&&index>0){
-					SolrService.getInstance(hosts+"/GroupInfo");
+					SolrService.getInstance(hosts+"/"+collection);
 					SolrService.createList(solrList);
 					log.info("发送"+solrList.size()+"条数据");
 					solrList.clear();
@@ -113,7 +115,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				return messageMap;
 			}
 			if(solrList.size()>0){
-				SolrService.getInstance(hosts+"/GroupInfo");
+				SolrService.getInstance(hosts+"/"+collection);
 				SolrService.createList(solrList);
 				log.info("发送"+solrList.size()+"条数据");
 			}
