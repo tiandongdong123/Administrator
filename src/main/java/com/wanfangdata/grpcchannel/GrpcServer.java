@@ -25,8 +25,8 @@ public class GrpcServer {
     //访问端口号
     private static Integer port;
 
-
-    private GrpcServer() {
+    public  GrpcServer() {}
+    static{
         Properties pro = new Properties();
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(GRPCSERVER_CONFIG);
         try {

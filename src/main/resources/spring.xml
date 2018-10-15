@@ -25,7 +25,7 @@
     <!-- XXL-CONF配置解析器 --> 
     <bean id="xxlConfPropertyPlaceholderConfigurer" class="com.xxl.conf.core.spring.XxlConfPropertyPlaceholderConfigurer" />
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-		<property name="slowSqlMillis" value="1000" />
+		<property name="slowSqlMillis" value="1" />
 		<property name="logSlowSql" value="true" />
 		<property name="mergeSql" value="true" />
 		<property name="dbType" value="mysql" />
@@ -36,7 +36,7 @@
 		init-method="init" destroy-method="close">
 		<!-- 基本属性 url、user、password -->
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="${wf-public.jdbc.adminManager.url}" />
+		<property name="url" value="jdbc:mysql://10.10.184.26:3306/admin_manager" />
 		<property name="username" value="${wf-public.jdbc.username}" />
 		<property name="password" value="${wf-public.jdbc.password}" />
 		<!-- 配置初始化大小、最小、最大 -->
@@ -179,7 +179,6 @@
 		</property>
 	</bean>
     <bean id="channel" class="com.wanfangdata.grpcchannel.GrpcChannel"/>
-    <bean id="grpcServer" class="com.wanfangdata.grpcchannel.GrpcServer"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>
 	<bean id="bindAccountChannel" class="com.wanfangdata.grpcchannel.BindAccountChannel"/>
 
