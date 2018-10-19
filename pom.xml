@@ -152,7 +152,7 @@
 			<artifactId>wf-framework-search-api</artifactId>
 			<version>1.2017.569</version>
 		</dependency>
-		<!-- 文辑推优 -->	
+		<!-- 文辑推优  -->	
 		<dependency>
 			<groupId>org.bigdata.framework</groupId>
 			<artifactId>wf-framework-common-api</artifactId>
