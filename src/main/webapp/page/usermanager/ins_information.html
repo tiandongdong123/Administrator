@@ -489,7 +489,9 @@
 				<div class="bind"><span>子账号上限：</span><span>${list.ChildGroupLimit}</span></div>
 				<div class="bind"><span>子账号并发数上限：</span><span>${list.ChildGroupConcurrent}</span></div>
 				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.ChildGroupDownloadLimit}</span></div>
-				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.ChildGroupPayment=='0'){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
+				<div class="bind"><span>设置子账号扣款模式：</span><span>
+				<?if(list.ChildGroupPayment==0){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?>
+				</span></div>
 			</div>
 			<?}?>
 			<!-- 机构子账号结束 -->
