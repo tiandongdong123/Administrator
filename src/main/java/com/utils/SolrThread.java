@@ -534,11 +534,15 @@ public class SolrThread implements Runnable {
 		solrMap.put("LoginMode", user.getLoginMode());
 		if(!StringUtils.isEmpty(pid)){
 			solrMap.put("AdministratorId", pid);
+			if(!StringUtils.isEmpty(user.getAdminEmail())){
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
+			}
 			if(!StringUtils.isEmpty(user.getAdminpassword())){
 				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
 			}
+			if(!StringUtils.isEmpty(user.getAdminIP())){
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
+			}
 		}
 	}
 	
