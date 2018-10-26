@@ -68,7 +68,7 @@ function submitForm(){
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
-	var adminname = $("#adminname").val();
+	var adminOldName = $("#adminOldName option:selected").val();
 	var userDinding = $("#user_dinding").prop('checked');
 	addAtrr();
 	if(userDinding){
