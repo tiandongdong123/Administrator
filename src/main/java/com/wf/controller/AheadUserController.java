@@ -754,20 +754,24 @@ public class AheadUserController {
 			}
 			allNum = userList.size();
 			for (Map<String, Object> map : userList) {
-				
+				//userId
 				String oldLoginModel=aheadUserService.queryPersonInfo(map.get("userId").toString()).getLoginMode().toString();
 				
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
 				//发送solr
 				SolrThread.updateInfo(user);
-				
-				JSONObject json=new JSONObject();
-				json.put("userId", user.getUserId());
-				json.put("loginModel", oldLoginModel);
-				json.put("updateLaterLoginModel",user.getLoginMode());
-				String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
-				//sendMessage("GroupLoginModeModify",key,json);
+				/*Object str="userId:"+user.getUserId()
+						+",loginModel:"+oldLoginModel
+						+",updateLaterLoginModel:"+user.getLoginMode();*/
+				if(!oldLoginModel.equals(user.getLoginMode())){
+					JSONObject json=new JSONObject();
+					json.put("userId", user.getUserId());
+					json.put("loginModel", oldLoginModel);
+					json.put("updateLaterLoginModel",user.getLoginMode());
+					String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
+					sendMessage("GroupLoginModeModify",key,json);
+				}
 				
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
@@ -1319,7 +1323,6 @@ public class AheadUserController {
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{
-			
 			String oldLoginModel=aheadUserService.queryPersonInfo(user.getUserId()).getLoginMode().toString();
 			
 			List<String> delList = new ArrayList<String>();
@@ -1332,14 +1335,17 @@ public class AheadUserController {
 			aheadUserService.updateinfo(user);
 			//发送solr
 			SolrThread.registerInfo(user,false);
-			
-			JSONObject json=new JSONObject();
-			json.put("userId", user.getUserId());
-			json.put("loginModel", oldLoginModel);
-			json.put("updateLaterLoginModel",user.getLoginMode());
-			String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
-			//sendMessage("GroupLoginModeModify",key,json);
-			
+			/*Object str="userId:"+user.getUserId()
+					+",loginModel:"+oldLoginModel
+					+",updateLaterLoginModel:"+user.getLoginMode();*/
+			if(!oldLoginModel.equals(user.getLoginMode())){
+				JSONObject json=new JSONObject();
+				json.put("userId", user.getUserId());
+				json.put("loginModel", oldLoginModel);
+				json.put("updateLaterLoginModel",user.getLoginMode());
+				String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
+				sendMessage("GroupLoginModeModify",key,json);
+			}
 			// 修改购买项目
 			String msg=this.updateProject(user, req, delList);
 			if(msg.length()>0&&msg.contains("失败")){
@@ -2242,14 +2248,13 @@ public class AheadUserController {
 	@RequestMapping("getUserType")
 	@ResponseBody
 	public Integer getUserType(String userId){
-		
 		Person per=aheadUserService.queryPersonInfo(userId);
 		if(per==null){
 			return null;
 		}
 		return per.getUsertype();
 	}
-	
+
 	private boolean sendMessage(String topic,String topicKey,Object obj){
 		
 		boolean result=false;
@@ -2269,13 +2274,11 @@ public class AheadUserController {
 			SendRequest request=SendRequest.newBuilder().setTopic(topic).setKey(topicKey).setMessage(JsonHelper.serialize(obj)).build();
 	        SendResponse response = blockingStub.send(request);
 	        result = response.getResult();
+	        log.info(topicKey+"发送队列成功");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(topicKey+"发送队列失败",e);
 		}
-		
-        
         return result;
 	}
-	
 	
 }
