@@ -219,6 +219,8 @@ public class SolrThread implements Runnable {
 	//整体更新solr数据
 	public static void registerInfo(InstitutionalUser user,boolean isAdd) throws Exception{
 		Map<String,Object> solrMap=new LinkedHashMap<>();
+		// 全库更新机构管理员 
+		updateAllAdministrator(user);
 		addUser(solrMap,user,isAdd);
 		addIp(solrMap,user);
 		addLimit(solrMap,user);
@@ -232,7 +234,43 @@ public class SolrThread implements Runnable {
         Thread t1 = new Thread(mt,"solr线程");
         t1.start();
 	}
-	
+	/*
+	 * 全库更新机构管理员
+	 */
+	private static void updateAllAdministrator(InstitutionalUser user) {
+		log.info("全库更新机构管理员信息");
+		Map<String,Object> solrMap=new LinkedHashMap<>();
+		//查找同一个机构管理员的所有机构信息
+		SolrQuery solrquery=new SolrQuery();
+		solrquery.setQuery("AdministratorId:("+user.getAdminOldName()+")");
+		try {
+			SolrDocumentList result=SolrService.getDataList(solrquery);
+			log.info("该机构管理员信息需要更新"+result.size()+"条信息");
+			List<Map<String, Object>> solrList=new ArrayList<>();
+			//更新机构用户中的机构管理员信息
+			for (SolrDocument solrDocument : result) {
+				solrMap.put("Id", solrDocument.get("Id"));
+				//局部更新机构管理员密码
+				Map<String, String> partialUpdatePS = new HashMap<String, String>();
+				partialUpdatePS.put("set", PasswordHelper.encryptPassword(user.getAdminpassword()));
+				solrMap.put("AdministratorPassword", partialUpdatePS);		
+				//局部更新机构管理员Email
+				Map<String, String> partialUpdateEM = new HashMap<String, String>();
+				partialUpdateEM.put("set", user.getAdminEmail());
+				solrMap.put("AdministratorEmail", partialUpdateEM);
+				//局部更新机构管理员IP
+				Map<String, String> partialUpdateIP = new HashMap<String, String>();
+				partialUpdateIP.put("set", user.getAdminIP());
+				solrMap.put("AdministratorOpenIP", partialUpdateIP);
+				solrList.add(solrMap);
+			}
+			SolrThread mt = new SolrThread(null,solrList,null);
+			Thread t1 = new Thread(mt,"solr线程");
+			t1.start();
+		} catch (Exception e) {
+			log.info("全库更新机构管理员信息出错",e);
+		}
+	}
 	//将用户提交数据放入ImportSolrRequest
 	private static void swapParam(InstitutionalUser user, ImportSolrRequest request) throws Exception{
 		swapUser(user,request);
@@ -546,9 +584,7 @@ public class SolrThread implements Runnable {
 			if(!StringUtils.isEmpty(user.getAdminpassword())){
 				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
 			}
-			if(!StringUtils.isEmpty(user.getAdminIP())){
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
-			}
 		}
 	}
 	
