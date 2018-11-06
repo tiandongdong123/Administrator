@@ -525,6 +525,7 @@ public class SolrThread implements Runnable {
 	
 	public static void updateInfo(InstitutionalUser user) throws Exception{
 		Map<String,Object> solrMap=new LinkedHashMap<>();
+		updateAllAdministrator(user);
 		updateUser(solrMap,user);
 		updateIp(solrMap,user);
 		updateLimit(solrMap,user);
