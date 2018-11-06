@@ -246,27 +246,28 @@ public class SolrThread implements Runnable {
 		try {
 			SolrDocumentList result=SolrService.getDataList(solrquery);
 			log.info("该机构管理员信息需要更新"+result.size()+"条信息");
-			List<Map<String, Object>> solrList=new ArrayList<>();
+			List<SolrInputDocument> sdList=new ArrayList<SolrInputDocument>();
 			//更新机构用户中的机构管理员信息
 			for (SolrDocument solrDocument : result) {
-				solrMap.put("Id", solrDocument.get("Id"));
+				SolrInputDocument input=new SolrInputDocument();
+				input.addField("Id", solrDocument.get("Id"));				
 				//局部更新机构管理员密码
 				Map<String, String> partialUpdatePS = new HashMap<String, String>();
 				partialUpdatePS.put("set", PasswordHelper.encryptPassword(user.getAdminpassword()));
-				solrMap.put("AdministratorPassword", partialUpdatePS);		
+				input.addField("AdministratorPassword", partialUpdatePS);		
 				//局部更新机构管理员Email
 				Map<String, String> partialUpdateEM = new HashMap<String, String>();
 				partialUpdateEM.put("set", user.getAdminEmail());
-				solrMap.put("AdministratorEmail", partialUpdateEM);
+				input.addField("AdministratorEmail", partialUpdateEM);
 				//局部更新机构管理员IP
 				Map<String, String> partialUpdateIP = new HashMap<String, String>();
 				partialUpdateIP.put("set", user.getAdminIP());
-				solrMap.put("AdministratorOpenIP", partialUpdateIP);
-				solrList.add(solrMap);
+				input.addField("AdministratorOpenIP", partialUpdateIP);
+				sdList.add(input);
 			}
-			SolrThread mt = new SolrThread(null,solrList,null);
-			Thread t1 = new Thread(mt,"solr线程");
-			t1.start();
+			SolrThread mt = new SolrThread(sdList,null,null);
+	        Thread t1 = new Thread(mt,"solr线程");
+	        t1.start();
 		} catch (Exception e) {
 			log.info("全库更新机构管理员信息出错",e);
 		}
@@ -584,6 +585,7 @@ public class SolrThread implements Runnable {
 			if(!StringUtils.isEmpty(user.getAdminpassword())){
 				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
 			}
+			log.info("88888888888888888888888user.getAdminIp="+user.getAdminIP());
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
 		}
 	}
