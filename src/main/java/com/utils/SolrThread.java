@@ -261,15 +261,9 @@ public class SolrThread implements Runnable {
 					partialUpdateEM.put("set", user.getAdminEmail());
 					input.addField("AdministratorEmail", partialUpdateEM);
 					//局部更新机构管理员IP
-					if(StringUtil.isNotEmpty(user.getAdminIP())){
 					Map<String, String> partialUpdateIP = new HashMap<String, String>();
 					partialUpdateIP.put("set", user.getAdminIP());
-					input.addField("AdministratorOpenIP", partialUpdateIP);
-					}else{
-						Map<String, String> partialUpdateIP = new HashMap<String, String>();
-						partialUpdateIP.put("set", user.getAdminIP());
-						input.addField("AdministratorOpenIP", null);
-					}
+					input.addField("AdministratorOpenIP",StringUtil.isNotEmpty(user.getAdminIP())? partialUpdateIP:null);
 					sdList.add(input);
 				}
 			}
