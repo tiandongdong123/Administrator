@@ -224,6 +224,8 @@ public class SolrThread implements Runnable {
 		addIp(solrMap,user);
 		addLimit(solrMap,user);
 		addRole(solrMap,user);
+		log.info("机构管理员");
+		log.info("'''''''''''''''''user:"+user.getAdminOldName());
 		updateAllAdministrator(user);
 		Date date=SolrThread.getDate();
 		solrMap.put("CreateTime", date);
@@ -238,41 +240,47 @@ public class SolrThread implements Runnable {
 	 * 全库更新机构管理员
 	 */
 	public static void updateAllAdministrator(InstitutionalUser user) {
-		log.info("全库更新机构管理员信息");
-		Map<String,Object> solrMap=new LinkedHashMap<>();
-		//查找同一个机构管理员的所有机构信息
-		SolrQuery solrquery=new SolrQuery();
-		solrquery.setQuery("AdministratorId:("+user.getAdminOldName()+")");
-		try {
-			SolrDocumentList result=SolrService.getDataList(solrquery);
-			log.info("该机构管理员信息需要更新"+result.size()+"条信息");
-			List<SolrInputDocument> sdList=new ArrayList<SolrInputDocument>();
-			//更新机构用户中的机构管理员信息
-			if(result.size()>0){
-				for (SolrDocument solrDocument : result) {
-					SolrInputDocument input=new SolrInputDocument();
-					input.addField("Id", solrDocument.get("Id"));				
-					//局部更新机构管理员密码
-					Map<String, String> partialUpdatePS = new HashMap<String, String>();
-					partialUpdatePS.put("set", PasswordHelper.encryptPassword(user.getAdminpassword()));
-					input.addField("AdministratorPassword", partialUpdatePS);		
-					//局部更新机构管理员Email
-					Map<String, String> partialUpdateEM = new HashMap<String, String>();
-					partialUpdateEM.put("set", user.getAdminEmail());
-					input.addField("AdministratorEmail", partialUpdateEM);
-					//局部更新机构管理员IP
-					Map<String, String> partialUpdateIP = new HashMap<String, String>();
-					partialUpdateIP.put("set", user.getAdminIP());
-					input.addField("AdministratorOpenIP",StringUtil.isNotEmpty(user.getAdminIP())? partialUpdateIP:null);
-					sdList.add(input);
+		if(StringUtils.isNotEmpty(user.getAdminOldName())){
+			log.info("全库更新机构管理员信息");
+			Map<String,Object> solrMap=new LinkedHashMap<>();
+			//查找同一个机构管理员的所有机构信息
+			SolrQuery solrquery=new SolrQuery();
+			solrquery.setQuery("AdministratorId:("+user.getAdminOldName()+")");
+			try {
+				SolrDocumentList result=SolrService.getDataList(solrquery);
+				log.info("该机构管理员信息需要更新"+result.size()+"条信息");
+				List<SolrInputDocument> sdList=new ArrayList<SolrInputDocument>();
+				//更新机构用户中的机构管理员信息
+				if(result.size()>0){
+					for (SolrDocument solrDocument : result) {
+						SolrInputDocument input=new SolrInputDocument();
+						input.addField("Id", solrDocument.get("Id"));				
+						//局部更新机构管理员密码
+						Map<String, String> partialUpdatePS = new HashMap<String, String>();
+						partialUpdatePS.put("set", PasswordHelper.encryptPassword(user.getAdminpassword()));
+						input.addField("AdministratorPassword", partialUpdatePS);		
+						//局部更新机构管理员Email
+						Map<String, String> partialUpdateEM = new HashMap<String, String>();
+						partialUpdateEM.put("set", user.getAdminEmail());
+						input.addField("AdministratorEmail", partialUpdateEM);
+						//局部更新机构管理员IP
+						Map<String, String> partialUpdateIP = new HashMap<String, String>();
+						partialUpdateIP.put("set", user.getAdminIP());
+						input.addField("AdministratorOpenIP",StringUtil.isNotEmpty(user.getAdminIP())? partialUpdateIP:null);
+						sdList.add(input);
+					}
+					SolrThread mt = new SolrThread(sdList,null,null);
+			        Thread t1 = new Thread(mt,"solr线程");
+			        t1.start();
 				}
+			} catch (Exception e) {
+				log.info("全库更新机构管理员信息出错",e);
 			}
-			SolrThread mt = new SolrThread(sdList,null,null);
-	        Thread t1 = new Thread(mt,"solr线程");
-	        t1.start();
-		} catch (Exception e) {
-			log.info("全库更新机构管理员信息出错",e);
+			
+			
 		}
+		
+		
 	}
 	//将用户提交数据放入ImportSolrRequest
 	private static void swapParam(InstitutionalUser user, ImportSolrRequest request) throws Exception{
