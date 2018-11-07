@@ -224,8 +224,6 @@ public class SolrThread implements Runnable {
 		addIp(solrMap,user);
 		addLimit(solrMap,user);
 		addRole(solrMap,user);
-		log.info("机构管理员");
-		log.info("'''''''''''''''''user:"+user.getAdminOldName());
 		updateAllAdministrator(user);
 		Date date=SolrThread.getDate();
 		solrMap.put("CreateTime", date);
@@ -276,11 +274,7 @@ public class SolrThread implements Runnable {
 			} catch (Exception e) {
 				log.info("全库更新机构管理员信息出错",e);
 			}
-			
-			
 		}
-		
-		
 	}
 	//将用户提交数据放入ImportSolrRequest
 	private static void swapParam(InstitutionalUser user, ImportSolrRequest request) throws Exception{
