@@ -31,8 +31,8 @@ public class GrpcServer {
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(GRPCSERVER_CONFIG);
         try {
             pro.load(new InputStreamReader(in,"UTF-8"));
-            GrpcServer.host = pro.getProperty("grpc_host");
-            GrpcServer.port = Integer.valueOf(pro.getProperty("grpc_port"));
+            GrpcServer.host = "mqserver";
+            GrpcServer.port = Integer.valueOf(pro.getProperty("MQServer_port"));
             in.close();
         } catch (Exception var8) {
             log.error("无法加载配置文件" + GRPCSERVER_CONFIG);
