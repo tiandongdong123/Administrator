@@ -31,7 +31,7 @@ public class PersonController {
 	}
 	
 	/**
-	 *	个人订单记录
+	 *	 个人订单记录
 	 */
 	@RequestMapping("order")
 	public ModelAndView order(){
