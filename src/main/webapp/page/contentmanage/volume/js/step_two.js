@@ -6,6 +6,6 @@ function next(obj){
 }
 //----------------返回上一步-------------------
 function returnOne(){
-	$('#fromList').attr('action','../content/stepOne.do');
+	$('#fromList').attr('action','../content/papercollectadd.do');
 	$('#fromList').submit();
 }

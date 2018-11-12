@@ -10,7 +10,7 @@ $(function(){
 
 function findone(){
 	/*var shareType =$("#xkjb").find("option:selected").val();
-	window.location.href="../content/shareTemplate.do?shareType="+shareType;*/
+	window.location.href="../content/templatequery.do?shareType="+shareType;*/
 	showPage();
 }
 
@@ -90,10 +90,10 @@ for(var i = 0;i<pageRow.length;i++){
 }
 
 function updateResour(id){
-	window.location.href="../content/updateShareTemplate.do?ids="+id;
+	window.location.href="../content/templatemodify.do?ids="+id;
 }
 function addResour(){
-	window.location.href="../content/addShareTemplate.do";
+	window.location.href="../content/templateadd.do";
 }
 
 //单条删除
@@ -137,7 +137,7 @@ function deleteCallback(data) {
 	if (data.flag=="true") {
 		layer.msg("删除成功！",{icon: 1});
 		//showPage();
-		window.location.href="../content/shareTemplate.do";
+		window.location.href="../content/templatequery.do";
 	}else{
 		layer.msg("删除失败！",{icon: 2});
 	}
@@ -177,7 +177,7 @@ function findtext(){
 }
 
 function refresh(){
-	window.location.href="../content/shareTemplate.do";
+	window.location.href="../content/templatequery.do";
 }
 
 //导出分享模板

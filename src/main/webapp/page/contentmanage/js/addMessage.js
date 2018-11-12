@@ -21,7 +21,7 @@ $(function(){
 });
 
 function reset(){
-	window.location.href="../content/addMessage.do";
+	window.location.href="../content/add.do";
 }
 
 function uploadImage(statu){
@@ -123,7 +123,7 @@ function addMessage(){
 					var rspCode = data.flag;
 			    	if(rspCode == 'true'){
 			    		layer.msg("添加成功!",{icon: 1});
-			    		window.location.href="../content/message.do";
+			    		window.location.href="../content/index.do";
 			    	}else{
 			    		layer.msg("添加失败!",{icon: 2});
 			    	}
@@ -178,7 +178,7 @@ function updateMessage(){
 					success : function(data){
 						if(data.flag == 'true'){
 			        		layer.msg("修改成功!",{icon: 1});
-			        		window.location.href="../content/message.do";
+			        		window.location.href="../content/index.do";
 			        	}else{
 			        		layer.msg("修改失败!",{icon: 2});
 			        	}
@@ -192,7 +192,7 @@ function updateMessage(){
 }
 
 function noupdate(){
-	window.location.href="../content/message.do";
+	window.location.href="../content/index.do";
 }
 
 function selectValue(id,val){

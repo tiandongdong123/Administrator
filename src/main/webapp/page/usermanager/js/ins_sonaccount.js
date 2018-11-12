@@ -59,7 +59,7 @@ function exportexecl(){
 }
 //跳转到机构查询页
 function goInformation(pid){
-	window.location.href='../auser/information.do?userId='+pid;
+	window.location.href='../group/list.do?userId='+pid;
 }
 
 function showTd(id,obj){

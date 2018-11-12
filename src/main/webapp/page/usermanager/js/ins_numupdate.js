@@ -218,7 +218,7 @@ function updateUser(){
     		    skin: 'layui-layer-molv',
     		    btn: ['确定'], //按钮
     		    yes: function(){
-    		    	window.location.href="../auser/information.do?userId="+parent.$("#userId").val();
+    		    	window.location.href="../group/list.do?userId="+parent.$("#userId").val();
     		    }
     		});
 		}else{
@@ -231,7 +231,7 @@ function updateUser(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['继续修改'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+	    		    	window.location.href='../group/modify.do?userId='+userId;
 	    		    }
 	    		});
 			}else{

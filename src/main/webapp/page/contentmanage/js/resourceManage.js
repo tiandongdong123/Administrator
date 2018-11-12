@@ -134,7 +134,7 @@ function updateResour(id){
 		data:{"id":id},
 		success:function(data){
 			if(data.flag=="true"){
-				window.location.href="../content/updateResource.do?idRes="+id;
+				window.location.href="../content/resourcemodify.do?idRes="+id;
 			}else{
 				alert("请先下撤再修改！");
 			}
@@ -142,7 +142,7 @@ function updateResour(id){
 	});
 }
 function addResour(){
-	window.location.href="../content/addResource.do";
+	window.location.href="../content/resourceadd.do";
 }
 
 
@@ -296,7 +296,7 @@ function checkAll(){
 }
 
 function refresh(){
-	window.location.href="../content/resourceManage.do";
+	window.location.href="../content/resourcequery.do";
 }
 
 //----------------------------发布--liuYong-----------------------------

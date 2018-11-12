@@ -138,14 +138,14 @@ function stick(id,colums){
 
 function updateMessage(id,issueState){
 	if(issueState!=2){
-		window.location.href="../content/updateMessage.do?id="+id;
+		window.location.href="../content/modify.do?id="+id;
 	}else{
 		layer.msg("请先下撤该数据再进行修改",{icon: 2});
 	}
 }
 
 function addMessage(){
-	window.location.href="../content/addMessage.do";
+	window.location.href="../content/add.do";
 }
 
 //单条删除
@@ -239,7 +239,7 @@ function selectValue(id, val) {
 
 // 刷新
 function refresh(){
-	window.location.href="../content/message.do";
+	window.location.href="../content/index.do";
 }
 
 //发布
@@ -285,7 +285,7 @@ function publish(that,obj,colums,issueState){
 
 //详情页
 function turnHtml(type,id){
-	window.location.href="../content/getDetails.do?id="+id;
+	window.location.href="../content/detail.do?id="+id;
 }
 
 //导出

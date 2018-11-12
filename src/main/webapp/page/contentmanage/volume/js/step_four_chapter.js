@@ -63,7 +63,7 @@ function commit(obj){
 		dataType:'json',
 		success: function(data){
 			if(data){
-				window.location.href="../content/volumeDocu.do";
+				window.location.href="../content/papercollectquery.do";
 			}
 		},
 	})

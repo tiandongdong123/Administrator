@@ -42,7 +42,7 @@ function addSubject(){
 			success : function(data){
 				if(data.flag="true"){
 					layer.msg("添加成功!",{icon: 1});
-					window.location.href="../content/subject.do";
+					window.location.href="../content/subjectquery.do";
 				}else{
 					layer.msg("添加失败!",{icon: 2});
 				}
@@ -78,7 +78,7 @@ function upateSubject(){
 		success : function(data){
 			if(data.flag="true"){
 				layer.msg("修改成功!",{icon: 1});
-				window.location.href="../content/subject.do";
+				window.location.href="../content/subjectquery.do";
 			}else{
 				layer.msg("修改失败!",{icon: 2});
 			}
@@ -87,6 +87,6 @@ function upateSubject(){
 }
 
 function noupdate(){
-	window.location.href="../content/subject.do";
+	window.location.href="../content/subjectquery.do";
 }
 

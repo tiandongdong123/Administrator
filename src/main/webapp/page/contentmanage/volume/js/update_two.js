@@ -136,7 +136,7 @@ $(function(){
 })
 //----------------返回上一步-------------------
 function returnTwo(){
-	$('#fromList').attr('action','../content/updateOne.do');
+	$('#fromList').attr('action','../content/papercollectmodify.do');
 	$('#fromList').submit();
 }
 

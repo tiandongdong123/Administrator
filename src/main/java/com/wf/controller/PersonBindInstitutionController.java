@@ -77,26 +77,7 @@ public class PersonBindInstitutionController {
         return userIds;
     }
 
-    /**
-     * 跳转机构子账号信息管理页面
-     *
-     * @param userId 用户Id（此参数用于判断是否由信息管理页面跳转而来）
-     * @param model
-     * @return
-     */
-    @RequestMapping("/bindInfo")
-    public String toBindInfoManagement(String userId, Model model) {
-
-        if (userId != null && !"".equals(userId)) {
-            model.addAttribute("userId", userId);
-            model.addAttribute("upPage", true);
-        } else {
-            model.addAttribute("upPage", null);
-        }
-        model.addAttribute("pager", null);
-        return "/page/usermanager/user_binding_manager";
-    }
-
+  
     /**
      * 跳转个人绑定机构权限设置页面
      *

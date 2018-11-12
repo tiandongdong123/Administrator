@@ -34,7 +34,7 @@ function addResource(){
 				success : function(data){
 					if(data.flag="true"){
 						layer.msg('添加成功', {icon: 1});
-						window.location.href= "../content/resourceManage.do";
+						window.location.href= "../content/resourcequery.do";
 						reset();
 					}else{
 						layer.msg('添加失败',{icon: 2});
@@ -72,7 +72,7 @@ function updateResource(){
 		success : function(data){
 			if(data.flag="true"){
 				layer.msg('修改成功', {icon: 1});
-				window.location.href="../content/resourceManage.do";
+				window.location.href="../content/resourcequery.do";
 			}else{
 				layer.msg('修改失败！', {icon: 2});
 			}
@@ -81,7 +81,7 @@ function updateResource(){
 }
 
 function noupdate(){
-	window.location.href="../content/resourceManage.do";
+	window.location.href="../content/resourcequery.do";
 }
 
 //判断资源类型名称是否重复

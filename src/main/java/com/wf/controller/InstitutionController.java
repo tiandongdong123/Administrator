@@ -22,16 +22,7 @@ public class InstitutionController {
 
 	@Autowired
 	private InstitutionService institutionService;
-	
-	/**
-	 *	跳转到机构数据solr发布界面
-	 */
-	@RequestMapping("toSolrData")
-	public ModelAndView toSolrData(ModelAndView view){
-		view.setViewName("/page/usermanager/toSolrData");
-		return view;
-	}
-	
+
 	/**
 	 * 发布数据
 	 * @param userId

@@ -93,9 +93,9 @@ function submitForm(type){
 	    		    btn: ['确定'], //按钮
 	    		    yes: function(){
 	    		    	if(type==0){
-	    		    		window.location.href='../auser/register.do';
+	    		    		window.location.href='../group/register.do';
 	    		    	}else{
-	    		    		window.location.href='../auser/information.do?userId='+userId;
+	    		    		window.location.href='../group/list.do?userId='+userId;
 	    		    	}
 	    		    }
 	    		});
@@ -109,7 +109,7 @@ function submitForm(type){
 		    		    skin: 'layui-layer-molv',
 		    		    btn: ['继续添加'], //按钮
 		    		    yes: function(){
-		    		    	window.location.href='../auser/numupdate.do?userId='+userId;
+		    		    	window.location.href='../group/modify.do?userId='+userId;
 		    		    }
 		    		});
 				}else{
