@@ -586,4 +586,43 @@ public class CardController {
 		}
 		
 	}
+	
+	/**
+	 *	管理赠送万方卡
+	 */
+	@RequestMapping("wfcardmanage")
+	public ModelAndView manage_card(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/manage_card");
+		return view;
+	}
+	/**
+	 *	生成赠送万方卡
+	 */
+	@RequestMapping("wfcardcreate")
+	public ModelAndView creat_wfcard_view(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/creat_wfcard_view");
+		return view;
+	}
+	
+	/**
+	 *	审核赠送万方卡
+	 */
+	@RequestMapping("wfcardcentor")
+	public ModelAndView check_card(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/check_card");
+		return view;
+	}
+	
+	/**
+	 *	设置赠送万方卡
+	 */
+	@RequestMapping("wfcardoption")
+	public ModelAndView wfcard_type(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/wfcard_type");
+		return view;
+	}
 }

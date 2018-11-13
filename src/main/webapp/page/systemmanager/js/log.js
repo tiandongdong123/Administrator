@@ -177,7 +177,7 @@ function exportLog(){
 
 //刷新页面
 function refresh(){
-	window.location.href="../log/getLog.do";
+	window.location.href="../admin/logmanage.do";
 }
 
 //动态获取模块对应的操作类型

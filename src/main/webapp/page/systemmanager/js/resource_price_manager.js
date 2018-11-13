@@ -139,9 +139,9 @@ function checkedids(){
 }
 
 function addprice(){
-	window.location.href="../system/addPrice.do";
+	window.location.href="../admin/priceadd.do";
 }
 
 function updateprice(id){
-	window.location.href="../system/updateprice.do?rid="+id;
+	window.location.href="../admin/pricemodify.do?rid="+id;
 }

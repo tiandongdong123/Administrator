@@ -70,7 +70,7 @@ public class SolrManagerController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("solrManager")
+	@RequestMapping("withdraw")
 	public ModelAndView solrManager(Map<String,Object> model){
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());
@@ -83,7 +83,7 @@ public class SolrManagerController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("solrQuery")
+	@RequestMapping("blacklist")
 	public ModelAndView solrQuery(Map<String, Object> model) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());

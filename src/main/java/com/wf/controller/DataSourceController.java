@@ -106,13 +106,7 @@ public class DataSourceController {
 		}
 	}
 	/*********************/
-	// 跳转到 系统配置
-	@RequestMapping("setting-Manager")
-	public ModelAndView settingManager() {
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/systemmanager/setting_Manager");
-		return view;
-	}
+
 
 	// 系统配置 添加更新 页面
 	@RequestMapping("setting-addOrEdit-Manager")

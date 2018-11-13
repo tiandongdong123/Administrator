@@ -214,17 +214,7 @@ public class DataManagerController {
 		return result;
 	}
 	
-	
-	/**
-	 * 添加数据页
-	 * @return
-	 */
-	@RequestMapping("adddata")
-	public String addData(Map<String, Object> map){
-		Map<String,Object> mm = this.data.getResource();
-		map.put("rlmap", mm);
-		return "/page/systemmanager/add_data";
-	}
+
 	/**
 	 * 获取学科分类
 	 * @return
@@ -314,20 +304,7 @@ public class DataManagerController {
 
 		return rt;
 	}
-	/**
-	 * 数据库修改页面
-	 * @param id
-	 * @param map
-	 * @return
-	 */
-	@RequestMapping("updatedata")
-	public String doUpdateData(String id,Map<String, Object> map){
-		Map<String,Object> mm = this.data.getResource();
-		Map<String,Object> check = this.data.getCheck(id);
-		mm.putAll(check);
-		map.put("rlmap", mm);
-		return "/page/systemmanager/update_data";
-	}
+
 	
 	/**
 	 * 获取选中学科分类

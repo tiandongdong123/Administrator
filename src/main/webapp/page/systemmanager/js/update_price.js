@@ -1,5 +1,5 @@
 function addunit(){
-	window.location.href="../system/unitSystem.do";
+	window.location.href="../admin/unitoption.do";
 }
 
 
@@ -59,7 +59,7 @@ function doupdateprice(){
 			success : function(data) {
 				if(data){
 					layer.msg("修改成功",{time:2000});
-					window.location.href="../system/resourceManager.do";
+					window.location.href="../admin/pricemanage.do";
 				}else{
 					layer.msg("修改失败",{time:2000});
 				}

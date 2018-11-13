@@ -139,7 +139,7 @@ function doupdaterole(){
 				success : function(data) {
 					if(data){
 						layer.msg("修改成功");
-						window.location.href="../system/roleManager.do";
+						window.location.href="../admin/rolemanager.do";
 					}else{
 						layer.msg("修改失败");
 					}

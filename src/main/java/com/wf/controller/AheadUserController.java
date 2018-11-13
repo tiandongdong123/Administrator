@@ -1565,50 +1565,6 @@ public class AheadUserController {
 		}
 		return m;
     }
-
-
-	
-	/**
-	 *	管理赠送万方卡
-	 */
-	@RequestMapping("manage_card")
-	public ModelAndView manage_card(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/manage_card");
-		return view;
-	}
-	
-	/**
-	 *	生成赠送万方卡
-	 */
-	@RequestMapping("creat_wfcard_view")
-	public ModelAndView creat_wfcard_view(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/creat_wfcard_view");
-		return view;
-	}
-	
-	/**
-	 *	审核赠送万方卡
-	 */
-	@RequestMapping("check_card")
-	public ModelAndView check_card(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/check_card");
-		return view;
-	}
-	
-	/**
-	 *	设置赠送万方卡
-	 */
-	@RequestMapping("wfcard_type")
-	public ModelAndView wfcard_type(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/wfcard_type");
-		return view;
-	}
-	
-
 	
 	/**
 	 * 根据机构名称获取管理员
@@ -1756,37 +1712,6 @@ public class AheadUserController {
 		return ls;
 	}
 
-
-	/**
-	 *	生成充值码
-	 */
-	@RequestMapping("create_chargeCode")
-	public ModelAndView create_ChargeCode(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/create_chargeCode");
-		return view;
-	}
-
-	/**
-	 *	充值码批次查询
-	 */
-	@RequestMapping("search_chargeCode_Batch")
-	public ModelAndView search_ChargeCode_Batch(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_chargeCode_Batch");
-		return view;
-	}
-
-	/**
-	 *	充值码信息查询
-	 */
-	@RequestMapping("search_chargeCode")
-	public ModelAndView search_ChargeCode(){
-		ModelAndView view = new ModelAndView();
-		view.setViewName("/page/usermanager/search_chargeCode");
-		return view;
-	}
-
 	/**
 	 *	获取userType
 	 */
@@ -1825,5 +1750,4 @@ public class AheadUserController {
 		}
         return result;
 	}
-	
 }
