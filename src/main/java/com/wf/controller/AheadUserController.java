@@ -1048,7 +1048,10 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
-		
+		//日志打印充值名称和充值金额
+			for(int i=0;i<user.getRdlist().size();i++){
+				log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
+			}
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{
