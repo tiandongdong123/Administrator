@@ -212,7 +212,7 @@ public class GroupController {
 		Map<String,Object> jgmap=(Map<String, Object>) view.getModel().get("map");	
 		List<Map<String, Object>> gmxmlist=(List<Map<String, Object>>) jgmap.get("proList");
 		for (Map<String, Object> entry : gmxmlist) {
-			 log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
+			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
 		return view;
 	}
