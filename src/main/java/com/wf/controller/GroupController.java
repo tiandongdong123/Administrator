@@ -212,7 +212,7 @@ public class GroupController {
 		Map<String,Object> jgmap=(Map<String, Object>) view.getModel().get("map");	
 		List<Map<String, Object>> gmxmlist=(List<Map<String, Object>>) jgmap.get("proList");
 		for (Map<String, Object> entry : gmxmlist) {
-			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
+			 log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
 		return view;
 	}
@@ -338,7 +338,6 @@ public class GroupController {
 			PageList pageList = aheadUserService.getSonaccount(map);
 			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
 			pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
-			List<Object> a=pageList.getPageRow();
 			map.put("pageList", pageList);
 			map.put("userId",userId);
 			map.put("isBack", isBack);
