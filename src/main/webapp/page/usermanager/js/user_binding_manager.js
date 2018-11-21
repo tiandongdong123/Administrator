@@ -506,7 +506,7 @@ function redq(){
 }
 //刷新页面
 function refresh(){
-    window.location.href="../bindAuhtority/bindInfo.do";
+    window.location.href="../group/personbind.do";
 }
 /**
  * 日期转换

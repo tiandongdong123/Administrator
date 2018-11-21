@@ -2,7 +2,7 @@
 	getResource();
 });*/
 function addunit(){
-	window.location.href="../system/unitSystem.do?id=goback";
+	window.location.href="../admin/unitoption.do?id=goback";
 }
 
 function select_product(){
@@ -128,7 +128,7 @@ function doaddprice(id){
 						$("#unitname option:first").prop("selected", 'selected');  
 					}else{
 						layer.msg("添加成功",{time:2000});
-						window.location.href="../system/resourceManager.do";
+						window.location.href="../admin/pricemanage.do";
 					}
 				}else{
 					layer.msg("添加失败",{time:2000});
@@ -146,9 +146,9 @@ function MoneyCheck(str){
     }
 }
 function productType(){
-	window.location='../system/prductType.do';
+	window.location='../admin/productoption.do';
 }
 function sonSystem(){
-	window.location='../system/sonSystem.do';
+	window.location='../admin/platoption.do';
 }
 

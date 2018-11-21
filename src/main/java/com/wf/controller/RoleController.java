@@ -51,17 +51,7 @@ public class RoleController {
 
 		return pl;
 	}
-	/**
-	 * 角色添加页面
-	 * @param map
-	 * @return
-	 */
-	@RequestMapping("addrole")
-	public String addRole(Map<String,Object> map){
-		List<Object> rt =this.role.getAllDept();
-		map.put("rlmap", rt);
-		return "/page/systemmanager/add_role";
-	}
+
 	
 	/**
 	 * 菜单权限获取树
@@ -109,20 +99,7 @@ public class RoleController {
 		return rt ;
 	}
 	
-	/**
-	 * 修改角色页面
-	 * @param id
-	 * @param map
-	 * @return
-	 */
-	@RequestMapping("updaterole")
-	public String updateRole(String id,Map<String,Object> map){
-		Role rl = this.role.getRoleById(id);
-		List<Object> rt =this.role.getAllDept();
-		map.put("rlmap", rt);
-		map.put("role", rl);
-		return "/page/systemmanager/update_role";
-	}
+
 	
 	/**
 	 * 角色修改

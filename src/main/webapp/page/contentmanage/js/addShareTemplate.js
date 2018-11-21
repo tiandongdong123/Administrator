@@ -28,7 +28,7 @@ function addShareTemplate(){
 			success : function(data){
 				if(data.flag==true ||data.flag=="true"){
 					layer.msg("添加成功!");
-					window.location.href="../content/shareTemplate.do";
+					window.location.href="../content/templatequery.do";
 				}else{
 					layer.msg("添加失败!");
 				}
@@ -71,7 +71,7 @@ function updateShareTemplate(){
 			success : function(data){
 				if(data.flag=="true"){
 					layer.msg("修改成功!",{icon: 1});
-					window.location.href="../content/shareTemplate.do";
+					window.location.href="../content/templatequery.do";
 				}else{
 					layer.msg("修改失败！",{icon: 2});
 				}
@@ -135,7 +135,7 @@ function changecore(field){
 }
 
 function noupdate(){
-	window.location.href="../content/shareTemplate.do";
+	window.location.href="../content/templatequery.do";
 }
 
 //选择分享类型  展示相应的分享类型字段

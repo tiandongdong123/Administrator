@@ -43,12 +43,7 @@ public class PerioCommentController {
 	
 	@Autowired
 	private AdminService adminS;
-	
-	@RequestMapping("periocomment")
-	public String PerioComment(){
-		
-		return "/page/contentmanage/periocomment";
-	}
+
 	
 	@RequestMapping("getcomment")
 	@ResponseBody

@@ -304,7 +304,7 @@ function doadddata(){
             success: function (data) {
                 if (data) {
                     layer.msg("添加成功", {icon: 1});
-                    window.location.href = "../system/dataManager.do";
+                    window.location.href = "../admin/dbconfig.do";
                 } else {
                     layer.msg("添加失败", {icon: 2});
                 }

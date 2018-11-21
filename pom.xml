@@ -816,8 +816,8 @@
         </excludes>
       </resource>
     </resources>
-	<finalName>wf-framework-adminManager-web</finalName>
-	<directory>output/wf-framework-adminManager-web</directory>
+	<finalName>ROOT</finalName>
+	<directory>output/ROOT</directory>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -886,8 +886,7 @@
                 </tasks>
               </configuration>
             </execution>
-          </executions>
-        </plugin>
+          </executions>      </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>

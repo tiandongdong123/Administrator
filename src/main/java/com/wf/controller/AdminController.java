@@ -2,7 +2,9 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -15,18 +17,31 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.CookieUtil;
 import com.utils.DateTools;
 import com.wf.bean.Log;
 import com.wf.bean.PageList;
+import com.wf.bean.Role;
 import com.wf.bean.Wfadmin;
 import com.wf.service.AdminService;
+import com.wf.service.DataManagerService;
 import com.wf.service.LogService;
+import com.wf.service.ResourcePriceService;
+import com.wf.service.RoleService;
 
 @Controller
 @RequestMapping("admin")
 public class AdminController {
+	@Autowired
+	private ResourcePriceService rps;
+	
+	@Autowired
+	private DataManagerService data;
+	
+	@Autowired
+	private RoleService role;
 
 	@Autowired
 	private AdminService admin;
@@ -185,5 +200,196 @@ public class AdminController {
 		
 		boolean rt = this.admin.doUpdateAdmin(admin);
 		return rt;
+	}
+	/**
+	 * 管理员管理
+	 * @return
+	 */
+	@RequestMapping("/administrator")
+	public ModelAndView adminManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/admin_manager");
+		return mav;
+	}
+	/**
+	 * 角色管理
+	 * @return
+	 */
+	@RequestMapping("/rolemanager")
+	public ModelAndView roleManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/role_Manager");
+		return mav;
+	}	
+	/**
+	 * 角色添加页面
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("roleadd")
+	public String addRole(Map<String,Object> map){
+		List<Object> rt =this.role.getAllDept();
+		map.put("rlmap", rt);
+		return "/page/systemmanager/add_role";
+	}
+	/**
+	 * 修改角色页面
+	 * @param id
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("rolemodify")
+	public String updateRole(String id,Map<String,Object> map){
+		Role rl = this.role.getRoleById(id);
+		List<Object> rt =this.role.getAllDept();
+		map.put("rlmap", rt);
+		map.put("role", rl);
+		return "/page/systemmanager/update_role";
+	}
+	/**
+	 * 部门管理
+	 * @return
+	 */
+	@RequestMapping("/department")
+	public ModelAndView deptManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/dept_Manager");
+		return mav;
+	}	
+	/**
+	 * 数据库配置管理
+	 * @return
+	 */
+	@RequestMapping("/dbconfig")
+	public ModelAndView dataManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/data_manager");
+		return mav;
+	}
+	
+	
+	/**
+	 * 添加数据页
+	 * @return
+	 */
+	@RequestMapping("dbadd")
+	public String addData(Map<String, Object> map){
+		Map<String,Object> mm = this.data.getResource();
+		map.put("rlmap", mm);
+		return "/page/systemmanager/add_data";
+	}
+	/**
+	 * 数据库修改页面
+	 * @param id
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("dbmodify")
+	public String doUpdateData(String id,Map<String, Object> map){
+		Map<String,Object> mm = this.data.getResource();
+		Map<String,Object> check = this.data.getCheck(id);
+		mm.putAll(check);
+		map.put("rlmap", mm);
+		return "/page/systemmanager/update_data";
+	}
+	
+	/**
+	 * 资源单价配置管理
+	 * @return
+	 */
+	@RequestMapping("/pricemanage")
+	public ModelAndView resourceManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/resource_price_manager");
+		return mav;
+	}
+	
+	/**
+	 * 修改定价
+	 * @return
+	 */
+	@RequestMapping("/pricemodify")
+	public String updatePrice(String rid,Map<String,Object> map){
+		 Map<String,Object> resultmap = this.rps.getRP(rid);
+		map.put("rlmap", resultmap);
+		return "/page/systemmanager/update_price";
+	}
+	
+	/**
+	 * 添加定价
+	 * @return
+	 */
+	@RequestMapping("/priceadd")
+	public String addPrice(Map<String,Object> map){
+		Map<String,Object> resultmap = this.rps.getResource();
+		map.put("rlmap", resultmap);
+		return "/page/systemmanager/add_price";
+	}
+	/**
+	 * 产品类型设置
+	 * @return
+	 */
+	@RequestMapping("/productoption")
+	public ModelAndView prductType(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/product_type");
+		return mav;
+	}
+	
+
+	/**
+	 * 子系统设置
+	 * @return
+	 */
+	@RequestMapping("/platoption")
+	public ModelAndView sonSystem(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/son_system");
+		return mav;
+	}
+	
+	/**
+	 * 网站监控
+	 * @return
+	 */
+	@RequestMapping("/monitormanage")
+	public ModelAndView controlManager(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/page/systemmanager/control");
+		return mav;
+	}
+	
+	/**
+	 * 单位设置
+	 * @return
+	 */
+	@RequestMapping("/unitoption")
+	public ModelAndView unitSystem(String id){
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("goback",id);
+		mav.setViewName("/page/systemmanager/unit_set");
+		return mav;
+	}
+	// 跳转到 系统配置
+	@RequestMapping("systemconfig")
+	public ModelAndView settingManager() {
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/systemmanager/setting_Manager");
+		return view;
+	}
+
+	/**
+	 * 日志
+	 * 
+	 */
+	@RequestMapping("logmanage")
+	public String getLog(Map<String, Object> model) {
+		
+		Calendar   cal   =   Calendar.getInstance();
+		cal.add(Calendar.DATE,-1);
+		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+		model.put("yesterday", yesterday);
+		model.put("getAllModel", logService.getAllLogModel());
+		return "/page/systemmanager/log";
 	}
 }

@@ -37,98 +37,6 @@ public class SystemController {
 	
 	@Autowired
 	SonSystemService son;
-	/**
-	 * 管理员管理
-	 * @return
-	 */
-	@RequestMapping("/adminManager")
-	public ModelAndView adminManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/admin_manager");
-		return mav;
-	}
-	/**
-	 * 角色管理
-	 * @return
-	 */
-	@RequestMapping("/roleManager")
-	public ModelAndView roleManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/role_Manager");
-		return mav;
-	}	
-	/**
-	 * 部门管理
-	 * @return
-	 */
-	@RequestMapping("/deptManager")
-	public ModelAndView deptManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/dept_Manager");
-		return mav;
-	}	
-	/**
-	 * 数据库配置管理
-	 * @return
-	 */
-	@RequestMapping("/dataManager")
-	public ModelAndView dataManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/data_manager");
-		return mav;
-	}
-	/**
-	 * 资源单价配置管理
-	 * @return
-	 */
-	@RequestMapping("/resourceManager")
-	public ModelAndView resourceManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/resource_price_manager");
-		return mav;
-	}
-	
-	/**
-	 * 产品类型设置
-	 * @return
-	 */
-	@RequestMapping("/prductType")
-	public ModelAndView prductType(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/product_type");
-		return mav;
-	}
-	/**
-	 * 子系统设置
-	 * @return
-	 */
-	@RequestMapping("/sonSystem")
-	public ModelAndView sonSystem(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/son_system");
-		return mav;
-	}
-	/**
-	 * 单位设置
-	 * @return
-	 */
-	@RequestMapping("/unitSystem")
-	public ModelAndView unitSystem(String id){
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("goback",id);
-		mav.setViewName("/page/systemmanager/unit_set");
-		return mav;
-	}
-	/**
-	 * 添加定价
-	 * @return
-	 */
-	@RequestMapping("/addPrice")
-	public String addPrice(Map<String,Object> map){
-		Map<String,Object> resultmap = this.rps.getResource();
-		map.put("rlmap", resultmap);
-		return "/page/systemmanager/add_price";
-	}
 	
 	@RequestMapping("product_source")
 	@ResponseBody
@@ -154,17 +62,7 @@ public class SystemController {
 		List<ProductType> list=product.getByCode(code);
 		return list;
 	}
-	/**
-	 * 修改定价
-	 * @return
-	 */
-	@RequestMapping("/updateprice")
-	public String updatePrice(String rid,Map<String,Object> map){
-		 Map<String,Object> resultmap = this.rps.getRP(rid);
-		map.put("rlmap", resultmap);
-		return "/page/systemmanager/update_price";
-	}
-	
+
 	/**
 	 * 日志管理
 	 * @return
@@ -175,14 +73,5 @@ public class SystemController {
 		mav.setViewName("/page/systemmanager/log_manager");
 		return mav;
 	}
-	/**
-	 * 网站监控
-	 * @return
-	 */
-	@RequestMapping("/controlManager")
-	public ModelAndView controlManager(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/systemmanager/control");
-		return mav;
-	}
+
 }

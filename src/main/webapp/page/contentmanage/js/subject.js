@@ -37,7 +37,7 @@ function getAllChildrenNodes(treeNode,result){ 
 
 function find(){
 	findtext();
-	window.location.href="../content/subject.do?level="+level+"&classNum="+classNum+"&className="+className;
+	window.location.href="../content/subjectquery.do?level="+level+"&classNum="+classNum+"&className="+className;
 //	showPage();
 }
 /*分页显示*/
@@ -121,10 +121,10 @@ function serachdata(data){
 	document.getElementById("here").scrollIntoView();
 }
 function addsub(){
-	window.location.href="../content/addSubject.do";
+	window.location.href="../content/subjectadd.do";
 }
 function updateSub(id){
-	window.location.href="../content/updateSubject.do?idSub="+id;
+	window.location.href="../content/subjectmodify.do?idSub="+id;
 }
 function findtext(){
 	level=$("#xkjb").find("option:selected").val();
@@ -207,7 +207,7 @@ function selectValue(id,val){
 }
 
 function refresh(){
-	window.location.href="../content/subject.do";
+	window.location.href="../content/subjectquery.do";
 }
 
 //----------------------------发布--liuYong-----------------------------

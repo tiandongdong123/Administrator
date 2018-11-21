@@ -76,7 +76,7 @@ function submitForm(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['确定'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/batchregister.do';
+	    		    	window.location.href='../group/batchregister.do';
 	    		    }
 	    		});
 			}else if(data.flag=='fail'){
@@ -88,7 +88,7 @@ function submitForm(){
 	    		    title: '提示',
 	    		    btn: ['继续添加'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/batchregister.do';
+	    		    	window.location.href='../group/batchregister.do';
 	    		    }
 	    		});
 			}else if(data.flag=='list'){

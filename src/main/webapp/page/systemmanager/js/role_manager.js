@@ -63,11 +63,11 @@ function rolepage(curr){
 };
 
 function addrole(){
-	window.location.href="../role/addrole.do";
+	window.location.href="../admin/roleadd.do";
 }
 
 function updaterole(id){
-	window.location.href="../role/updaterole.do?id="+id;
+	window.location.href="../admin/rolemodify.do?id="+id;
 }
 
 function deleterole(id){

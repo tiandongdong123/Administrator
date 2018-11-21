@@ -218,7 +218,7 @@ function PushData(obj,id){
 }
 
 function adddata(){
-	window.location.href="../data/adddata.do";
+	window.location.href="../admin/dbadd.do";
 }
 
 function doupdatedata(id){
@@ -230,7 +230,7 @@ function doupdatedata(id){
 		data:{"id":id},
 		success:function(data){
 			if(data.flag=="true"){
-				window.location.href="../data/updatedata.do?id="+id;
+				window.location.href="../admin/dbmodify.do?id="+id;
 			}else{
 				layer.msg("请先下撤再修改！");
 			}

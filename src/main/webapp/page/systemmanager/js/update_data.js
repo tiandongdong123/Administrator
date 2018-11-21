@@ -299,7 +299,7 @@ function doupdatedata(){
                 success : function(data) {
                     if(data){
                         layer.msg("修改成功");
-                        window.location.href="../system/dataManager.do";
+                        window.location.href="../admin/dbconfig.do";
                     }else{
                         layer.msg("修改失败");
                     }

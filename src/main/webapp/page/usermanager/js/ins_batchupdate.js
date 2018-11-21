@@ -79,7 +79,7 @@ function submitForm(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['确定'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/batchupdate.do';
+	    		    	window.location.href='../group/batchmodify.do';
 	    		    }
 	    		});
 			}else if(data.flag=='fail'){
@@ -91,7 +91,7 @@ function submitForm(){
 	    		    skin: 'layui-layer-molv',
 	    		    btn: ['继续添加'], //按钮
 	    		    yes: function(){
-	    		    	window.location.href='../auser/batchupdate.do';
+	    		    	window.location.href='../group/batchmodify.do';
 	    		    }
 	    		});
 			}else if(data.flag=='list'){

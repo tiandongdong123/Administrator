@@ -14,7 +14,7 @@
     <div class="col-md-6">
       <div class="box box-primary">
         <div class="box-body">
-         <form action="../auser/information.do" method="post" id="fromList">
+         <form action="../group/list.do" method="post" id="fromList">
 	  		<table id="message1" style="margin:0 auto;margin-left:300px;<?if(map.isSimple=='1'){?>display:none;<?}?>">
 	  			<!--去除空格限制   onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')"-->
 	  			<tr><td class="alal">用户ID</td><td class="arar"><input type="text" <?if(map.isSimple=='0'){?>name="userId"<?}?> id="userId1" value="<?if(map.isSimple=='0'){?>${map.userId!}<?}?>">
@@ -92,14 +92,14 @@
           <span class="time"><?if(list.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.OrderType=='inner'){?>申请部门：<?}?>${list.OrderContent!}</span>
       </div>
      <div class="info_box_right">
-      	<a href="../auser/numupdate.do?userId=${list.Id}" class="add_admin">账号修改</a>
+      	<a href="../group/modify.do?userId=${list.Id}" class="add_admin">账号修改</a>
         <div class="btn-group">
 			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">账户管理<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
-			<li><a href="../auser/opration.do?userId=${list.Id}" class="add_admin">操作记录</a></li>
-			<li><a href="../auser/tosonaccount.do?userId=${list.Id}&isBack=true" class="add_admin">子账号列表</a></li>
-			<li><a href="../auser/groupOrder.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
-			<li><a href="../bindAuhtority/bindInfo.do?userId=${list.Id}" class="add_admin">个人绑定机构列表</a></li>
+			<li><a href="../group/operatelog.do?userId=${list.Id}" class="add_admin">操作记录</a></li>
+			<li><a href="../group/childquery.do?userId=${list.Id}&isBack=true" class="add_admin">子账号列表</a></li>
+			<li><a href="../group/order.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
+			<li><a href="../group/personbind.do?userId=${list.Id}" class="add_admin">个人绑定机构列表</a></li>
 			<li><?if(!isEmpty(list.ParentId)){?><a href="javascript:void(0);" onclick="delAdmin('${list.Id}');" class="add_admin">移除机构管理员</a>
 				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.Id}','${list.ParentId}','${list.Institution}');" class="add_admin">添加机构管理员</a><?}?></li>
 			</ul>

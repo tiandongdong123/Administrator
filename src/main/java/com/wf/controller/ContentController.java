@@ -138,7 +138,7 @@ public class ContentController{
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping("/subject")
+	@RequestMapping("/subjectquery")
 	public String getSubject(
 			@RequestParam(value="level",required=false) String level,
 			@RequestParam(value="classNum",required=false) String classNum,
@@ -206,7 +206,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/addSubject")
+	@RequestMapping("/subjectadd")
 	public String addSubject(Model model){
 		model.addAttribute("addupdate", "add");
 		return "/page/contentmanage/addSubjectType";
@@ -235,7 +235,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/updateSubject")
+	@RequestMapping("/subjectmodify")
 	public String updateSubject(
 			@RequestParam(value="idSub",required=false) String id,
 			HttpServletRequest request,Model model){
@@ -289,7 +289,7 @@ public class ContentController{
 	 * 增加资讯跳转
 	 * @return
 	 */
-	@RequestMapping("/addMessage")
+	@RequestMapping("/add")
 	public String addMessage(Model model){
 		model.addAttribute("addupdate", "add");
 		return "/page/contentmanage/addMessage";
@@ -323,7 +323,7 @@ public class ContentController{
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping("/message")
+	@RequestMapping("/index")
 	public String message(HttpServletRequest request, Model model) throws Exception {
 		Map<String, Object> mp = new HashMap<String, Object>();
 		mp.put("startTime", "");
@@ -362,7 +362,7 @@ public class ContentController{
 	 * 咨询详情跳转
 	 * @return
 	 */
-	@RequestMapping("/getDetails")
+	@RequestMapping("/detail")
 	public String getDetails(String id,Model model,HttpServletRequest request){
 		 String ip = request.getHeader("X-Forwarded-For");  
          if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
@@ -413,7 +413,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/updateMessage")
+	@RequestMapping("/modify")
 	public String updateMessage(@RequestParam(value="id",required=false) String id,
 			HttpServletRequest request,Model model){
 		
@@ -459,7 +459,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/resourceManage")
+	@RequestMapping("/resourcequery")
 	public String getResourceManage(
 			HttpServletRequest request,Model model){
 		int pageNum=1;
@@ -525,7 +525,7 @@ public class ContentController{
 	 * 添加资源跳转
 	 * @return
 	 */
-	@RequestMapping("/addResource")
+	@RequestMapping("/resourceadd")
 	public String addResource(Model model){
 		model.addAttribute("addupdate", "add");
 		return "/page/contentmanage/addResource";
@@ -604,7 +604,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/updateResource")
+	@RequestMapping("/resourcemodify")
 	public String updateResource(
 			@RequestParam(value="idRes",required=false) String id,
 			HttpServletRequest request,Model model){
@@ -696,7 +696,7 @@ public class ContentController{
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping("/shareTemplate")
+	@RequestMapping("/templatequery")
 	public String getShareTemplate(
 			@RequestParam(value="shareType",required=false) String shareType,
 			HttpServletRequest request,Model model){
@@ -740,7 +740,7 @@ public class ContentController{
 	 * 分享模板增加跳转
 	 * @return
 	 */
-	@RequestMapping("/addShareTemplate")
+	@RequestMapping("/templateadd")
 	public String addShareTemplate(Model model){
 		List<ShareTtemplateNames> names=shareTemplateNamesService.getAllShareTemplateNames();
 		model.addAttribute("names",names);
@@ -783,7 +783,7 @@ public class ContentController{
 		JsonUtil.toJsonHtml(response, b);
 	}
 	
-	@RequestMapping("/updateShareTemplate")
+	@RequestMapping("/templatemodify")
 	public String updateShareTemplate(
 			@RequestParam(value="ids",required=false) String ids,
 			Model model){
@@ -834,7 +834,7 @@ public class ContentController{
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/notes")
+	@RequestMapping("/notemanage")
 	public String notes(Model model){
 		int pageNum=1;
 		int pageSize=10;
@@ -978,7 +978,7 @@ public class ContentController{
 	 * 文辑管理
 	 * @return
 	 */
-	@RequestMapping("/volumeDocu")
+	@RequestMapping("/papercollectquery")
 	public ModelAndView volumeDocu(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/contentmanage/volume/volume_docu");
@@ -1052,7 +1052,7 @@ public class ContentController{
 	 * 文辑管理
 	 * @return
 	 */
-	@RequestMapping("/volumeDetails")
+	@RequestMapping("/papercollectdetail")
 	public ModelAndView volumeDetails(String id){
 		Map<String,Object> map = volumeService.queryDetails(id);
 		int volumeChapter = (Integer) map.get("volumeChapter");
@@ -1106,7 +1106,7 @@ public class ContentController{
 		 * 创建文辑第一步
 		 * @return
 		 */
-		@RequestMapping("/stepOne")
+		@RequestMapping("/papercollectadd")
 		public ModelAndView stepOne(HttpServletRequest request,@ModelAttribute Volume volume){
 			Wfadmin admin=CookieUtil.getWfadmin(request);
 			String publishPerson = admin.getUser_realname();
@@ -1237,7 +1237,7 @@ public class ContentController{
 		 * 修改文辑第一步
 		 * @return
 		 */
-		@RequestMapping("/updateOne")
+		@RequestMapping("/papercollectmodify")
 		public ModelAndView updateOne(HttpServletRequest request,@ModelAttribute Volume volume,String id){
 			Wfadmin admin=CookieUtil.getWfadmin(request);
 			String publishPerson = admin.getUser_realname();
@@ -1307,8 +1307,6 @@ public class ContentController{
 									}
 								}
 							}
-							
-								
 								if(id.equals(pid2)){
 									json2.put("data", cjsons3);
 									bjsons2.add(json2);
@@ -1742,7 +1740,7 @@ public class ContentController{
 		return isOK;
 	}
 	
-	@RequestMapping("/hotword")
+	@RequestMapping("/hotwordmanage")
 	public String hotword(Model model){
 		Map map=new HashMap();
 		map.put("status",1);
@@ -1750,7 +1748,7 @@ public class ContentController{
 		return "/page/contentmanage/hotword";
 	}
 	
-	@RequestMapping("/hotWordPublish")
+	@RequestMapping("/hotwordpublish")
 	public String hotWordPublish(){
 		return "/page/contentmanage/hotwordPublish";
 	}
@@ -1883,12 +1881,10 @@ public class ContentController{
 		return count>0 && isuccess;
 	}
 	
-	
 	@RequestMapping("/checkCount")
 	@ResponseBody
 	public Integer checkCount(){
 		return hotWordService.checkRedisCount();
-		
 	}
 
 	@RequestMapping("/doaddWordSetting")
@@ -2026,4 +2022,9 @@ public class ContentController{
 		hotWordSettingService.updateAllSettingTime();
 		return update>0;
 	}	
+	
+	@RequestMapping("periodicalcomment")
+	public String PerioComment(){
+		return "/page/contentmanage/periocomment";
+	}
 }

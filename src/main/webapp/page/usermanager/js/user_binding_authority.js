@@ -295,12 +295,12 @@ function sunmit(){
                 $("#bindAuthority").val("resource");
                 $("input[name='resourceType']").prop("checked",false);
                 $("#resourceInherited").prop("checked",true);
-                window.location.href="../bindAuhtority/bindInfo.do";
+                window.location.href="../group/personbind.do";
             }
         });
     }
 }
 function abolish(){
-    window.location.href="../bindAuhtority/bindInfo.do";
+    window.location.href="../group/personbind.do";
 }
 

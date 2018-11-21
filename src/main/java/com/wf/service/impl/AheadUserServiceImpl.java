@@ -794,8 +794,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	        boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
 			if (isSuccess) {
 				flag = 1;
+				log.info("id为："+com.getUserId()+" 的用户，购买项目:"+dto.getProjectname()+"  充值成功！");
 			} else {
 				flag = 0;
+				log.info("id为："+com.getUserId()+" 的用户，购买项目:"+dto.getProjectname()+"  充值失败！");
 			}
 		}catch(Exception e){
 			log.error("异常：",e);

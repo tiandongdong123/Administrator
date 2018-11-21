@@ -114,7 +114,7 @@ function doaddrole(){
 				success : function(data) {
 					if(data){
 						layer.msg("添加成功",{icon: 1});
-						window.location.href="../system/roleManager.do";
+						window.location.href="../admin/rolemanager.do";
 					}else{
 						layer.msg("添加失败",{icon: 2});
 					}

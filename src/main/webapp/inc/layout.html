@@ -123,27 +123,27 @@
 	          <li <?if(!strutil.contain(session.purviews,"机构用户")){?>style="display:none"<?}?>>
 		          <a href=""><i class="fa fa-circle-o"></i> 机构用户<i class="fa fa-angle-left pull-right"></i></a>
 		          <ul class="treeview-menu menu-open" style="display: block;">
-		            <li <?if(!strutil.contain(session.purviews,"机构账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../auser/toInformation.do"><i class="fa fa-circle-o"></i>机构账号信息管理</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="register.do"){ ?>class="active"<?}?>><a href="../auser/register.do"><i class="fa fa-circle-o"></i>机构账号注册</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../auser/batchregister.do"><i class="fa fa-circle-o"></i>批量机构账号注册</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../auser/batchupdate.do"><i class="fa fa-circle-o"></i>批量机构账号修改</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"机构子账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="tosonaccount.do"){ ?>class="active"<?}?>><a href="../auser/tosonaccount.do"><i class="fa fa-circle-o"></i>机构子账号信息管理</a></li>
-		       	 	<li <?if(!strutil.contain(session.purviews,"批量冻结/解冻账号")){?>style="display:none"<?}?> <? if(session.menu_first=="batchblock.do"){ ?>class="active"<?}?>><a href="../auser/batchblock.do"><i class="fa fa-circle-o"></i>批量账号冻结/解冻</a></li>
-                      <li ><a href="../bindAuhtority/bindInfo.do"><i class="fa fa-circle-o"></i>个人绑定机构信息管理</a></li>
+		            <li <?if(!strutil.contain(session.purviews,"机构账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="toInformation.do"){ ?>class="active"<?}?>><a href="../group/index.do"><i class="fa fa-circle-o"></i>机构账号信息管理</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="register.do"){ ?>class="active"<?}?>><a href="../group/register.do"><i class="fa fa-circle-o"></i>机构账号注册</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号注册")){?>style="display:none"<?}?> <? if(session.menu_first=="batchregister.do"){ ?>class="active"<?}?>><a href="../group/batchregister.do"><i class="fa fa-circle-o"></i>批量机构账号注册</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"批量机构账号修改")){?>style="display:none"<?}?> <? if(session.menu_first=="batchupdate.do"){ ?>class="active"<?}?>><a href="../group/batchmodify.do"><i class="fa fa-circle-o"></i>批量机构账号修改</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"机构子账号信息管理")){?>style="display:none"<?}?> <? if(session.menu_first=="tosonaccount.do"){ ?>class="active"<?}?>><a href="../group/childquery.do"><i class="fa fa-circle-o"></i>机构子账号信息管理</a></li>
+		       	 	<li <?if(!strutil.contain(session.purviews,"批量冻结/解冻账号")){?>style="display:none"<?}?> <? if(session.menu_first=="batchblock.do"){ ?>class="active"<?}?>><a href="../group/batchblock.do"><i class="fa fa-circle-o"></i>批量账号冻结/解冻</a></li>
+                      <li ><a href="../group/personbind.do"><i class="fa fa-circle-o"></i>个人绑定机构信息管理</a></li>
                      <!-- <ul class="treeview-menu menu-open" style="display: block;">
                           <li ><a href="../bindAuhtority/setPersonAuthority.do"><i class="fa fa-circle-o"></i>个人绑定机构权限设置</a></li>
                       </ul>-->
-                      <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../auser/warning.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
-                      <li <?if(!strutil.contain(session.purviews,"机构账号solr发布")){?>style="display:none"<?}?> <? if(session.menu_first=="toSolrData.do"){ ?>class="active"<?}?>><a href="../institution/toSolrData.do"><i class="fa fa-circle-o"></i>机构账号solr发布</a></li>
+                      <li <?if(!strutil.contain(session.purviews,"机构账号预警设置")){?>style="display:none"<?}?> <? if(session.menu_first=="warning.do"){ ?>class="active"<?}?>><a href="../group/warn.do"><i class="fa fa-circle-o"></i>机构用户预警设置</a></li>
+                      <li <?if(!strutil.contain(session.purviews,"机构账号solr发布")){?>style="display:none"<?}?> <? if(session.menu_first=="toSolrData.do"){ ?>class="active"<?}?>><a href="../group/solrsync.do"><i class="fa fa-circle-o"></i>机构账号solr发布</a></li>
 		          </ul>
 	          </li>
 	          <li <?if(!strutil.contain(session.purviews,"个人用户管理")){?>style="display:none"<?}?>>
             	<a href="#"><i class="fa fa-circle-o"></i>个人用户管理<i class="fa fa-angle-left pull-right"></i></a>
             	<ul class="treeview-menu menu-open" style="display: block;">
-		        	<li <?if(!strutil.contain(session.purviews,"个人基本信息")){?>style="display:none"<?}?> <?if(session.menu_first=="perManagers.do"){ ?>class="active"<?}?>><a href="../auser/perManagers.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>个人基本信息</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人充值记录")){?>style="display:none"<?}?> <?if(session.menu_first=="charge_order.do"){ ?>class="active"<?}?>><a href="../auser/charge_order.do"><i class="fa fa-circle-o"></i>个人充值记录</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../auser/pay_order.do"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_bind.do"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"个人基本信息")){?>style="display:none"<?}?> <?if(session.menu_first=="perManagers.do"){ ?>class="active"<?}?>><a href="../person/index.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>个人基本信息</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"个人充值记录")){?>style="display:none"<?}?> <?if(session.menu_first=="charge_order.do"){ ?>class="active"<?}?>><a href="../person/charge.do"><i class="fa fa-circle-o"></i>个人充值记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../person/order.do"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../person/wfcardbind.do"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
           		</ul>
               </li>
           </ul>
@@ -180,7 +180,7 @@
             <i class="fa fa-pie-chart"></i><span>充值管理</span><i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu menu-open" style="display: block;">
-            <li <? if(session.menu_first=="pay.do"){ ?>class="active"<?}?>><a href="../auser/pay.do"><i class="fa fa-circle-o"></i> 充值管理</a></li>
+            <li <? if(session.menu_first=="pay.do"){ ?>class="active"<?}?>><a href="../charge/manage.do"><i class="fa fa-circle-o"></i> 充值管理</a></li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"内容管理")){?>style="display:none"<?}?>>
@@ -188,31 +188,31 @@
             <i class="fa fa-edit"></i><span>内容管理</span><i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu menu-open" style="display: block;">
-	        <li <?if(!strutil.contain(session.purviews,"资讯管理")){?>style="display:none"<?}?><? if(session.menu_first=="message.do"){ ?>class="active"<?}?>><a href="../content/message.do"><i class="fa fa-circle-o"></i>资讯管理</a></li>
+	        <li <?if(!strutil.contain(session.purviews,"资讯管理")){?>style="display:none"<?}?><? if(session.menu_first=="message.do"){ ?>class="active"<?}?>><a href="../content/index.do"><i class="fa fa-circle-o"></i>资讯管理</a></li>
             <li <?if(!strutil.contain(session.purviews,"广告管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>广告管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-		            <li <? if(session.menu_first=="search_adMessage_result.do"){ ?>class="active"<?}?>><a href="../auser/search_adMessage_result.do"><i class="fa fa-circle-o"></i> 发布广告管理</a></li>
+		            <li <? if(session.menu_first=="search_adMessage_result.do"){ ?>class="active"<?}?>><a href="../ad/manage.do"><i class="fa fa-circle-o"></i> 发布广告管理</a></li>
 	         	</ul>
             </li>
           	<li <?if(!strutil.contain(session.purviews,"知识组织管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>知识组织管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-			        <li <?if(!strutil.contain(session.purviews,"学科分类管理")){?>style="display:none"<?}?><? if(session.menu_first=="subject.do"){ ?>class="active"<?}?>><a href="../content/subject.do"><i class="fa fa-circle-o"></i> 学科分类管理</a></li>
-		            <li <?if(!strutil.contain(session.purviews,"资源类型管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManage.do"){ ?>class="active"<?}?>><a href="../content/resourceManage.do"><i class="fa fa-circle-o"></i> 资源类型管理</a></li>
+			        <li <?if(!strutil.contain(session.purviews,"学科分类管理")){?>style="display:none"<?}?><? if(session.menu_first=="subject.do"){ ?>class="active"<?}?>><a href="../content/subjectquery.do"><i class="fa fa-circle-o"></i> 学科分类管理</a></li>
+		            <li <?if(!strutil.contain(session.purviews,"资源类型管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManage.do"){ ?>class="active"<?}?>><a href="../content/resourcequery.do"><i class="fa fa-circle-o"></i> 资源类型管理</a></li>
 	         	</ul>
             </li>
             <li <?if(!strutil.contain(session.purviews,"模板管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>模板管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-		            <li <?if(!strutil.contain(session.purviews,"分享模板管理")){?>style="display:none"<?}?><? if(session.menu_first=="shareTemplate.do"){ ?>class="active"<?}?>><a href="../content/shareTemplate.do"><i class="fa fa-circle-o"></i> 分享模板管理</a></li>
+		            <li <?if(!strutil.contain(session.purviews,"分享模板管理")){?>style="display:none"<?}?><? if(session.menu_first=="shareTemplate.do"){ ?>class="active"<?}?>><a href="../content/templatequery.do"><i class="fa fa-circle-o"></i> 分享模板管理</a></li>
 	         	</ul>
             </li>
-	        <li <?if(!strutil.contain(session.purviews,"文辑管理")){?>style="display:none"<?}?><? if(session.menu_first=="volumeDocu.do"){ ?>class="active"<?}?>><a href="../content/volumeDocu.do"><i class="fa fa-circle-o"></i> 文辑管理</a></li>
-            <li <?if(!strutil.contain(session.purviews,"期刊点评审核管理")){?>style="display:none"<?}?>><a href="../periocomment/periocomment.do"><i class="fa fa-circle-o"></i>期刊点评审核管理</a></li>
-           	<li <?if(!strutil.contain(session.purviews,"笔记审核管理")){?>style="display:none"<?}?><? if(session.menu_first=="notes.do"){ ?>class="active"<?}?>><a href="../content/notes.do"><i class="fa fa-circle-o"></i> 笔记审核管理</a></li>
-           	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="hotword.do"){ ?>class="active"<?}?>><a href="../content/hotword.do"><i class="fa fa-circle-o"></i> 热搜词管理</a></li>
-           	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="content/hotWordPublish.do"){ ?>class="active"<?}?>><a href="../content/hotWordPublish.do"><i class="fa fa-circle-o"></i>热搜词发布设置</a></li>
+	        <li <?if(!strutil.contain(session.purviews,"文辑管理")){?>style="display:none"<?}?><? if(session.menu_first=="volumeDocu.do"){ ?>class="active"<?}?>><a href="../content/papercollectquery.do"><i class="fa fa-circle-o"></i> 文辑管理</a></li>
+            <li <?if(!strutil.contain(session.purviews,"期刊点评审核管理")){?>style="display:none"<?}?>><a href="../content/periodicalcomment.do"><i class="fa fa-circle-o"></i>期刊点评审核管理</a></li>
+           	<li <?if(!strutil.contain(session.purviews,"笔记审核管理")){?>style="display:none"<?}?><? if(session.menu_first=="notes.do"){ ?>class="active"<?}?>><a href="../content/notemanage.do"><i class="fa fa-circle-o"></i> 笔记审核管理</a></li>
+           	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="hotword.do"){ ?>class="active"<?}?>><a href="../content/hotwordmanage.do"><i class="fa fa-circle-o"></i> 热搜词管理</a></li>
+           	<li <?if(!strutil.contain(session.purviews,"热搜词管理")){?>style="display:none"<?}?><? if(session.menu_first=="content/hotWordPublish.do"){ ?>class="active"<?}?>><a href="../content/hotwordpublish.do"><i class="fa fa-circle-o"></i>热搜词发布设置</a></li>
           </ul>
         </li>
         <li class="treeview" <?if(!strutil.contain(session.purviews,"其他管理")){?>style="display:none"<?}?>>
@@ -224,18 +224,18 @@
             		<li <?if(!strutil.contain(session.purviews,"生成万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="createCard.do"){ ?>class="active"<?}?>><a href="../card/createCard.do"><i class="fa fa-circle-o"></i> 生成万方卡</a></li>
             		<li <?if(!strutil.contain(session.purviews,"审核万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardCheck.do"){ ?>class="active"<?}?>><a href="../card/cardCheck.do"><i class="fa fa-circle-o"></i> 审核万方卡</a></li>
             		<li <?if(!strutil.contain(session.purviews,"管理万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="cardManager.do"){ ?>class="active"<?}?>><a href="../card/cardManager.do"><i class="fa fa-circle-o"></i> 管理万方卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"管理赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="manage_card.do"){ ?>class="active"<?}?>><a href="../auser/manage_card.do"><i class="fa fa-circle-o"></i>管理赠送万方卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"生成赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="creat_wfcard_view.do"){ ?>class="active"<?}?>><a href="../auser/creat_wfcard_view.do"><i class="fa fa-circle-o"></i>生成赠送万方卡</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"审核赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="check_card.do"){ ?>class="active"<?}?>><a href="../auser/check_card.do"><i class="fa fa-circle-o"></i>审核赠送万方卡</a>
-            		<li <?if(!strutil.contain(session.purviews,"设置赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="wfcard_type.do"){ ?>class="active"<?}?>><a href="../auser/wfcard_type.do"><i class="fa fa-circle-o"></i>设置赠送万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"管理赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="manage_card.do"){ ?>class="active"<?}?>><a href="../card/wfcardmanage.do"><i class="fa fa-circle-o"></i>管理赠送万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"生成赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="creat_wfcard_view.do"){ ?>class="active"<?}?>><a href="../card/wfcardcreate.do"><i class="fa fa-circle-o"></i>生成赠送万方卡</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"审核赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="check_card.do"){ ?>class="active"<?}?>><a href="../card/wfcardcentor.do"><i class="fa fa-circle-o"></i>审核赠送万方卡</a>
+            		<li <?if(!strutil.contain(session.purviews,"设置赠送万方卡")){?>style="display:none"<?}?> <? if(session.menu_first=="wfcard_type.do"){ ?>class="active"<?}?>><a href="../card/wfcardoption.do"><i class="fa fa-circle-o"></i>设置赠送万方卡</a></li>
 	         	</ul
             </li>
               <li <?if(!strutil.contain(session.purviews,"充值码管理")){?>style="display:none"<?}?>>
               <a href="#"><i class="fa fa-circle-o"></i>充值码管理<i class="fa fa-angle-left pull-right"></i></a>
               <ul class="treeview-menu menu-open" style="display: block;">
-                  <li <?if(!strutil.contain(session.purviews,"生成充值码")){?>style="display:none"<?}?> <? if(session.menu_first=="create_chargeCode.do"){ ?>class="active"<?}?>><a href="../auser/create_chargeCode.do"><i class="fa fa-circle-o"></i> 生成充值码</a></li>
-                  <li <?if(!strutil.contain(session.purviews,"充值码批次查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode_Batch.do"){ ?>class="active"<?}?>><a href="../auser/search_chargeCode_Batch.do"><i class="fa fa-circle-o"></i> 充值码批次查询</a></li>
-                  <li <?if(!strutil.contain(session.purviews,"充值码信息查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode.do"){ ?>class="active"<?}?>><a href="../auser/search_chargeCode.do"><i class="fa fa-circle-o"></i> 充值码信息查询</a></li>
+                  <li <?if(!strutil.contain(session.purviews,"生成充值码")){?>style="display:none"<?}?> <? if(session.menu_first=="create_chargeCode.do"){ ?>class="active"<?}?>><a href="../charge/chargecodecreate.do"><i class="fa fa-circle-o"></i> 生成充值码</a></li>
+                  <li <?if(!strutil.contain(session.purviews,"充值码批次查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode_Batch.do"){ ?>class="active"<?}?>><a href="../charge/chargecodebatchquery.do"><i class="fa fa-circle-o"></i> 充值码批次查询</a></li>
+                  <li <?if(!strutil.contain(session.purviews,"充值码信息查询")){?>style="display:none"<?}?> <? if(session.menu_first=="search_chargeCode.do"){ ?>class="active"<?}?>><a href="../charge/chargecodequery.do"><i class="fa fa-circle-o"></i> 充值码信息查询</a></li>
               </ul
               </li>
           </ul>
@@ -250,25 +250,25 @@
             <li <?if(!strutil.contain(session.purviews,"管理员管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>管理员管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-            		<li <?if(!strutil.contain(session.purviews,"管理员管理")){?>style="display:none"<?}?> <? if(session.menu_first=="adminManager.do"){ ?>class="active"<?}?>><a href="../system/adminManager.do"><i class="fa fa-circle-o"></i> 管理员管理</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"角色管理")){?>style="display:none"<?}?> <? if(session.menu_first=="roleManager.do"){ ?>class="active"<?}?>><a href="../system/roleManager.do"><i class="fa fa-circle-o"></i> 角色管理</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"部门管理")){?>style="display:none"<?}?> <? if(session.menu_first=="deptManager.do"){ ?>class="active"<?}?>><a href="../system/deptManager.do"><i class="fa fa-circle-o"></i> 部门管理</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"管理员管理")){?>style="display:none"<?}?> <? if(session.menu_first=="adminManager.do"){ ?>class="active"<?}?>><a href="../admin/administrator.do"><i class="fa fa-circle-o"></i> 管理员管理</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"角色管理")){?>style="display:none"<?}?> <? if(session.menu_first=="roleManager.do"){ ?>class="active"<?}?>><a href="../admin/rolemanager.do"><i class="fa fa-circle-o"></i> 角色管理</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"部门管理")){?>style="display:none"<?}?> <? if(session.menu_first=="deptManager.do"){ ?>class="active"<?}?>><a href="../admin/department.do"><i class="fa fa-circle-o"></i> 部门管理</a></li>
 	         	</ul>
             </li>
             <li <?if(!strutil.contain(session.purviews,"配置管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>配置管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-		            <li <?if(!strutil.contain(session.purviews,"数据库配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="dataManager.do"){ ?>class="active"<?}?>><a href="../system/dataManager.do"><i class="fa fa-circle-o"></i> 数据库配置管理</a></li>
-			        <li <?if(!strutil.contain(session.purviews,"资源单价配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManager.do"){ ?>class="active"<?}?>><a href="../system/resourceManager.do"><i class="fa fa-circle-o"></i> 资源单价配置管理</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"产品类型设置")){?>style="display:block"<?}?> <? if(session.menu_first=="prductType.do"){ ?>class="active"<?}?>><a href="../system/prductType.do"><i class="fa fa-circle-o"></i> 产品类型设置</a>
-            		<li <?if(!strutil.contain(session.purviews,"平台配置管理")){?>style="display:block"<?}?> <? if(session.menu_first=="sonSystem.do"){ ?>class="active"<?}?>><a href="../system/sonSystem.do"><i class="fa fa-circle-o"></i> 平台配置管理</a>
-            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:block"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../system/unitSystem.do"><i class="fa fa-circle-o"></i> 单位设置</a>
+		            <li <?if(!strutil.contain(session.purviews,"数据库配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="dataManager.do"){ ?>class="active"<?}?>><a href="../admin/dbconfig.do"><i class="fa fa-circle-o"></i> 数据库配置管理</a></li>
+			        <li <?if(!strutil.contain(session.purviews,"资源单价配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManager.do"){ ?>class="active"<?}?>><a href="../admin/pricemanage.do"><i class="fa fa-circle-o"></i> 资源单价配置管理</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"产品类型设置")){?>style="display:block"<?}?> <? if(session.menu_first=="prductType.do"){ ?>class="active"<?}?>><a href="../admin/productoption.do"><i class="fa fa-circle-o"></i> 产品类型设置</a>
+            		<li <?if(!strutil.contain(session.purviews,"平台配置管理")){?>style="display:block"<?}?> <? if(session.menu_first=="sonSystem.do"){ ?>class="active"<?}?>><a href="../admin/platoption.do"><i class="fa fa-circle-o"></i> 平台配置管理</a>
+            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:block"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../admin/unitoption.do"><i class="fa fa-circle-o"></i> 单位设置</a>
 	         	</ul>
             </li>
            <!--  <li <?if(!strutil.contain(session.purviews,"日志记录管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../system/logManager.do"><i class="fa fa-circle-o"></i>日志记录管理</a></li> -->
-            <li <?if(!strutil.contain(session.purviews,"网站监控管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../system/controlManager.do"><i class="fa fa-circle-o"></i>网站监控管理</a></li>
-            <li <? if(session.menu_first=="setting-Manager.do"){ ?>class="active"<?}?>><a href="../dataSource/setting-Manager.do"><i class="fa fa-circle-o"></i>系统配置</a></li>
-          	<li><a href="../log/getLog.do"><i class="fa fa-circle-o"></i>后台日志管理</a></li>
+            <li <?if(!strutil.contain(session.purviews,"网站监控管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../admin/monitormanage.do"><i class="fa fa-circle-o"></i>网站监控管理</a></li>
+            <li <? if(session.menu_first=="setting-Manager.do"){ ?>class="active"<?}?>><a href="../admin/systemconfig.do"><i class="fa fa-circle-o"></i>系统配置</a></li>
+          	<li><a href="../admin/logmanage.do"><i class="fa fa-circle-o"></i>后台日志管理</a></li>
           </ul>
         </li>
 
@@ -292,8 +292,8 @@
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu menu-open" style="display: block;">
-            <li <?if(!strutil.contain(session.purviews,"solr下撤")){?>style="display:none"<?}?><? if(session.menu_first=="solrManager.do"){ ?>class="active"<?}?>><a href="../solr/solrManager.do"><i class="fa fa-circle-o"></i>solr下撤</a></li>
-            <li <?if(!strutil.contain(session.purviews,"solr黑名单查询")){?>style="display:none"<?}?><? if(session.menu_first=="solrQuery.do"){ ?>class="active"<?}?>><a href="../solr/solrQuery.do"><i class="fa fa-circle-o"></i>solr黑名单查询</a></li>
+            <li <?if(!strutil.contain(session.purviews,"solr下撤")){?>style="display:none"<?}?><? if(session.menu_first=="solrManager.do"){ ?>class="active"<?}?>><a href="../solr/withdraw.do"><i class="fa fa-circle-o"></i>solr下撤</a></li>
+            <li <?if(!strutil.contain(session.purviews,"solr黑名单查询")){?>style="display:none"<?}?><? if(session.menu_first=="solrQuery.do"){ ?>class="active"<?}?>><a href="../solr/blacklist.do"><i class="fa fa-circle-o"></i>solr黑名单查询</a></li>
           </ul>
         </li>
 
