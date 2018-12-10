@@ -1993,7 +1993,7 @@ public class ContentController{
 		Map<String, Object> map=new HashMap<String, Object>();
 		map.put("pageNum",(pageNum-1)*pageSize);
 		map.put("pageSize",pageSize);
-		PageList list=hotWordSettingService.getHotWordSetting(map);
+		PageList list=hotWordSettingService.getHotWordManualSetting(map);
 		return  list;
 	}
 	/**

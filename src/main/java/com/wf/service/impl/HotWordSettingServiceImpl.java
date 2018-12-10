@@ -31,8 +31,8 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		PageList list = new PageList();
 		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
 		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
-		list.setPageRow(hotWordSettingDao.getHotWordManualSetting(map));
-		list.setTotalRow(hotWordSettingDao.getHotWordManualSettingCount(map).size());
+		list.setPageRow(hotWordSettingDao.getHotWordSetting(map));
+		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
 		return list;
 	}
 	
