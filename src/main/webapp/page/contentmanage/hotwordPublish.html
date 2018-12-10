@@ -10,33 +10,71 @@
 <section class="content-header">
       <h1>热搜词发布设置</h1>
 </section> 
+
+<ul class="nav nav-tabs change_setting">
+  <li role="presentation" id="manual_setting" class="active"><a>手动发布设置</a></li>
+  <li id="auto_setting"><a>自动发布设置</a></li>
+</ul>
     <!-- Main content -->
-<section class="content">
-		<button type='button' class='btn btn-primary' onclick="addWordSetting();" id="addWordSet">添加热搜词发布设置</button>
+<section class="content" id="manual_content">
+		<button type='button' class='btn btn-primary' onclick="addWordSetting();" id="addWordSet">添加手动发布设置</button>
           <div style="width: 100%;overflow-x: auto;">
             <table style="table-layout:fixed;width:1700px;" id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th style="width: 3%">序号</th>
-                  <th style="width: 7%">首次发布日期</th>
-                  <th style="width: 6%">发布周期</th>
-                  <th style="width: 6%">数据统计时间段</th>
-                  <th style="width: 5%">发布策略</th>
-                  <th style="width: 5%">发布时间</th>
-                  <th style="width: 5%;">数据抓取时间</th>
-                  <th style="width: 10%;">下次发布时间</th>
-                  <th style="width: 24%;">下次发布数据统计时间段</th>
+                  <th style="width: 7%">抓取数据周期</th>
+                  <th style="width: 6%">抓取数据时间段</th>
+                  <th style="width: 6%">抓取数据时间点</th>
                   <th style="width: 6%;">操作人</th>
                   <th style="width: 10%;">操作时间</th>
                   <th style="width: 4%;">状态</th>
                   <th style="width: 16%;">操作</th>
                 </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody id="manual_tbody">
+
+                </tbody>
+              </table>
+            </div>
+</section>
+
+<section class="content" id="auto_content" style="display:none">
+		<button type='button' class='btn btn-primary' onclick="addWordSetting();" id="addWordSet">添加自动发布设置</button>
+          <div style="width: 100%;overflow-x: auto;">
+            <table style="table-layout:fixed;width:1700px;" id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th style="width: 3%">序号</th>
+                  <th style="width: 6%">发布周期</th>
+                  <th style="width: 6%">抓取数据时间段</th>
+                  <th style="width: 5%">发布时间点</th>
+                  <th style="width: 5%">抓取数据时间点</th>
+                  <th style="width: 6%;">操作人</th>
+                  <th style="width: 10%;">操作时间</th>
+                  <th style="width: 4%;">状态</th>
+                  <th style="width: 16%;">操作</th>
+                </tr>
+                </thead>
+                <tbody id="auto_tbody">
 
                 </tbody>
               </table>
             </div>
 </section>
 </div>	
+<script>
+$('#manual_setting').click(function(){
+	$('#manual_content').show()
+	$('#auto_content').hide()
+	$(this).addClass('active').siblings().removeClass('active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+})
+$('#auto_setting').click(function(){
+	$("#auto_content").show()
+	$('#manual_content').hide()
+	$(this).addClass('active').siblings().removeClass('active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+})
+</script>
 <?}?>

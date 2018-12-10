@@ -1,17 +1,20 @@
 var pageNum;
 var pageSize = 30;
+
 $(function(){
-	showPage(1);
+	showPage(1,'auto_tbody');
+	showManualPage(1,'manual_tbody')
 	selectValue("nature",$("#publish_strategy").val());
 	changenature("#nature");
 });
 
 /*分页显示*/
 function findOne(){
-	showPage(1);
+	showPage(1,'auto_tbody');
+	showManualPage(1,'manual_tbody')
 }
 
-function showPage(curr){
+function showPage(curr,id){
 	$.ajax({
 		type : "post",
 		async:false,
@@ -22,12 +25,12 @@ function showPage(curr){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			serachdata(curr,data);
+			serachdata(curr,data,id);
 		}
 	});
 }
 
-function serachdata(curr,data){
+function serachdata(curr,data,id){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var resHtml ="";
@@ -55,7 +58,7 @@ function serachdata(curr,data){
 		}
 	}
 	
-	$("#tbody").html(resHtml);
+	$('#'+id).html(resHtml);
 	layui.use(['laypage', 'layer'], function(){
 		var laypage = layui.laypage,layer = layui.layer;
 		laypage.render({
@@ -361,4 +364,20 @@ function cancel(){
 }
 
 
-
+// 获取手动发布设置内容
+function showManualPage(curr,id){
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/getHotWordManualSettingJson.do",
+		dataType : "json",
+		data : {
+			"pageNum" : curr || 1,
+			"pageSize" : pageSize,
+			},
+		success : function (data){
+			console.log(data)
+			serachdata(curr,data,id);
+		}
+	});
+}
