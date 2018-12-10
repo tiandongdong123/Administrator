@@ -183,7 +183,7 @@ public class HotWordJob {
 	/**
 	 * 手动设置任务定时器
 	 */
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/1 * * * ?")
 	public void exechotWordManual() {
 		try {
 			log.info("开始执行手动设置热搜词的统计");
@@ -319,6 +319,7 @@ public class HotWordJob {
 				hot.setWordStatus(2);
 				//把热搜词插入到数据库hot_search_word
 				log.info("保存热搜词："+entry.getKey());
+				log.info("查询到热搜词"+hot.toString());
 				hotwordService.addWord(hot);
 			}			
 			// 设置本次抓取数据时间段=下次抓取时间-抓取数据时间段--下次抓取时间
@@ -336,8 +337,9 @@ public class HotWordJob {
 			set.setNow_get_time_space(now_get_time_space);
 			hotWordSettingService.updateWordSetting(set);
 			// 更改下次抓取时间
+			sdf = new SimpleDateFormat("yyyy-MM-dd");
 			cal.set(Calendar.DATE,day+set.getGet_cyc()); 
-			String next_get_time=cal.getTime()+" "+set.getGet_time();
+			String next_get_time=sdf.format(cal.getTime())+" "+set.getGet_time();
 			set.setNext_get_time(next_get_time);
 			hotWordSettingService.updateWordSetting(set);
 			log.info("手动设置热搜词更新时间完成");
