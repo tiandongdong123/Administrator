@@ -1402,7 +1402,7 @@ public class ContentController{
 	
 	/**
 	* @Title: addSubject
-	* @Description: TODO(redis取值批量插入学科数据) 
+	* @Description: (redis取值批量插入学科数据) 
 	* @return boolean 返回类型 
 	* @author LiuYong 
 	* @date 3 Dis 2016 2:21:34 PM
@@ -1416,7 +1416,7 @@ public class ContentController{
 	
 	/**
 	* @Title: subjectPublish
-	* @Description: TODO(学科发布功能) 
+	* @Description: (学科发布功能) 
 	* @return boolean 返回类型 
 	* @author LiuYong 
 	* @param type 学科分类
@@ -1431,7 +1431,7 @@ public class ContentController{
 	
 	/**
 	* @Title: resourcePublish
-	* @Description: TODO(资源发布功能) 
+	* @Description: (资源发布功能) 
 	* @return boolean 返回类型 
 	* @author LiuYong 
 	* @date 2 Dis 2016 4:23:40 PM
@@ -1844,31 +1844,15 @@ public class ContentController{
 		hotWord.setWordStatus(issueState);
 		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
 		isuccess=hotWordService.publishToRedis();
-		return isuccess;
-	}
-	
-	/**
-	 * 更新手动热搜词状态
-	 * @param word_content
-	 * @return
-	 */
-	@RequestMapping("/updateWordManualIssue")
-	@ResponseBody
-	public boolean updateWordManualIssue(HttpServletRequest request,Integer issueState,Integer id){
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-		HotWord hotWord=new HotWord();
-		hotWord.setId(id);
-		hotWord.setOperationTime(df.format(new Date()));
-		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
-		hotWord.setWordStatus(issueState);
-		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
-		isuccess=hotWordService.publishToRedis();
 		if(isuccess){
 			//更改目前发布数据时间段
-		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
-		String now_publish_time_space=set.getNow_get_time_space();
-		set.setNow_get_time_space(now_publish_time_space);
-		hotWordSettingService.updateWordSetting(set);
+			HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
+			//判断现在应用是否是手动发布
+			if(set!=null){
+				String now_publish_time_space=set.getNow_get_time_space();
+				set.setNow_get_time_space(now_publish_time_space);
+				hotWordSettingService.updateWordSetting(set);
+			}
 		}
 		return isuccess;
 	}
@@ -1907,6 +1891,9 @@ public class ContentController{
 		return count>0 && isuccess;
 	}
 	
+	/*
+	 * 获取redies中的热搜词数
+	 */
 	@RequestMapping("/checkCount")
 	@ResponseBody
 	public Integer checkCount(){
