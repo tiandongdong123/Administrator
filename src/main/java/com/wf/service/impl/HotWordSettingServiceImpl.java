@@ -33,7 +33,16 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
 		list.setPageRow(hotWordSettingDao.getHotWordSetting(map));
 		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
-
+		return list;
+	}
+	
+	@Override
+	public PageList getHotWordManualSetting(Map map) {
+		PageList list = new PageList();
+		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
+		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
+		list.setPageRow(hotWordSettingDao.getHotWordManualSetting(map));
+		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
 		return list;
 	}
 
@@ -63,6 +72,11 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		return hotWordSettingDao.getHotWordSettingTask();
 	}
 
+	@Override
+	public HotWordSetting getHotWordManualSettingTask() {
+		return hotWordSettingDao.getHotWordManualSettingTask();
+	}
+	
 	@Override
 	public Integer updateAllSetting() {
 		return hotWordSettingDao.updateAllSetting();
@@ -122,5 +136,10 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	@Override
 	public HotWordSetting getExecHotWordSetting(Integer status) {
 		return hotWordSettingDao.getExecHotWordSetting(status);
+	}
+
+	@Override
+	public HotWordSetting getOneHotWordManualSetting() {
+		return hotWordSettingDao.getOneHotWordManualSetting();
 	}
 }
