@@ -25,12 +25,13 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			serachdata(curr,data,id);
+			console.log(data)
+			serachAutodata(curr,data,id);
 		}
 	});
 }
 
-function serachdata(curr,data,id){
+function serachAutodata(curr,data,id){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var resHtml ="";
@@ -377,7 +378,56 @@ function showManualPage(curr,id){
 			},
 		success : function (data){
 			console.log(data)
-			serachdata(curr,data,id);
+			serachManualdata(curr,data,id);
 		}
+	});
+}
+// 渲染手动发布内容
+function serachManualdata(curr,data,id){
+	var pageNum = data.pageNum;
+	var pageRow=data.pageRow;
+	var resHtml ="";
+	if(pageRow.length>0){
+		for(var i = 0;i<pageRow.length;i++){
+			var index = 1+i+10*(pageNum);
+			var rows = pageRow[i];	
+			resHtml+=" <tr style='text-align: center;'>" +
+			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.first_publish_time+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_strategy+"</div></td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time_space+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
+            "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
+			"<td class='mailbox-name' style='width:350px;'><div>"+
+			 divShow(rows.id,rows.status)+"&nbsp;" +
+			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update\">修改</button></div></td>" +
+          "</tr>";
+		}
+	}
+	
+	$('#'+id).html(resHtml);
+	layui.use(['laypage', 'layer'], function(){
+		var laypage = layui.laypage,layer = layui.layer;
+		laypage.render({
+			elem: 'divPager',
+			count: data.totalRow,
+			first: '首页',
+			last: '尾页',
+			curr: curr || 1,
+			page: Math.ceil(data.totalRow / pageSize),	//总页数
+			limit: pageSize,
+			layout: ['count', 'prev', 'page', 'next', 'skip'],
+			jump: function (obj, first) {
+	            if(!first){
+	            	showPage(obj.curr);
+	            }
+			}
+		});
 	});
 }
