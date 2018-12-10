@@ -183,7 +183,7 @@ public class HotWordJob {
 	/**
 	 * 手动设置任务定时器
 	 */
-	@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWordManual() {
 		try {
 			log.info("开始执行手动设置热搜词的统计");
@@ -327,7 +327,7 @@ public class HotWordJob {
 			Date date =sdf.parse(set.getNext_get_time().substring(0, 10));
 			cal.setTime(date); 
 			int day=cal.get(Calendar.DATE); 
-			cal.set(Calendar.DATE,day-set.getTime_slot()); 
+			cal.set(Calendar.DATE,day-set.getGet_cyc()); 
 			sdf=new SimpleDateFormat("yyyy年MM月dd日");
 			StringBuffer sb=new StringBuffer("");
 			String str=set.getNext_get_time().substring(0, 10);
@@ -338,7 +338,7 @@ public class HotWordJob {
 			hotWordSettingService.updateWordSetting(set);
 			// 更改下次抓取时间
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
-			cal.set(Calendar.DATE,day+set.getGet_cyc()); 
+			cal.set(Calendar.DATE,day+set.getTime_slot()); 
 			String next_get_time=sdf.format(cal.getTime())+" "+set.getGet_time();
 			set.setNext_get_time(next_get_time);
 			hotWordSettingService.updateWordSetting(set);
