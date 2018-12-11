@@ -1761,7 +1761,11 @@ public class ContentController{
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}
-	
+	/**
+	 * 添加手动设置的页面跳转
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/addWordManualSetting")
 	public String addWordManualSetting(Model model){
 		model.addAttribute("isupdate","add");
@@ -1930,7 +1934,8 @@ public class ContentController{
 			sb.append(str.replaceFirst("-", "年").replaceFirst("-", "月"));
 			sb.append("日");
 			String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
-	 		wordset.setNext_publish_time(nextPublish);
+			wordset.setPublish_strategy("自动发布");
+			wordset.setNext_publish_time(nextPublish);
 	 		wordset.setNext_publish_time_space(next_publish_time_space);
 	 		wordset.setStatus(2);
 	 		wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
@@ -2029,6 +2034,19 @@ public class ContentController{
 		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
 
 		return "/page/contentmanage/add_word_setting";
+	}
+	
+	/**
+	 * 手动设置的修改页面跳转
+	 * @param word
+	 * @return
+	 */
+	@RequestMapping("/getHotWordManualSetting")
+	public String getHotWordManualSetting(Integer id,Model model){
+		HotWordSetting item=hotWordSettingService.getOneHotWordSetting(id); 
+		model.addAttribute("item",item);
+		model.addAttribute("isupdate","update");
+		return "/page/contentmanage/add_word_Manual_setting";
 	}
 	
 	@RequestMapping("/doupdateWordSetting")
