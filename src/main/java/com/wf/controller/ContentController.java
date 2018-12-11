@@ -1854,19 +1854,39 @@ public class ContentController{
 		hotWord.setWordStatus(issueState);
 		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
 		isuccess=hotWordService.publishToRedis();
-		if(isuccess){
-			//更改目前发布数据时间段
-			HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
-			//判断现在应用是否是手动发布
-			if(set!=null){
-				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_get_time_space(now_publish_time_space);
-				hotWordSettingService.updateWordSetting(set);
-			}
-		}
 		return isuccess;
 	}
 	
+	
+	/**手动发布热搜词
+	 * @param word_content
+	 * @return
+	 */
+	@RequestMapping("/updateWordManualIssue")
+	@ResponseBody
+	public boolean updateWordManualIssue(HttpServletRequest request,Integer issueState,Integer id){
+		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
+		//判断是否是首次执行
+		if(set.getIs_first().equals("0")){
+			redis.del(11, "theme");
+		}
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		HotWord hotWord=new HotWord();
+		hotWord.setId(id);
+		hotWord.setOperationTime(df.format(new Date()));
+		hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+		hotWord.setWordStatus(issueState);
+		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
+		isuccess=hotWordService.publishToRedis();
+		if(isuccess){
+			//更改目前发布数据时间段
+			String now_publish_time_space=set.getNow_get_time_space();
+			set.setNow_get_time_space(now_publish_time_space);
+			set.setIs_first("1");
+			hotWordSettingService.updateWordSetting(set);
+		}
+		return isuccess;
+	}
 	
 	/**
 	 * @param word_content
@@ -1875,6 +1895,49 @@ public class ContentController{
 	@RequestMapping("/batch")
 	@ResponseBody
 	public boolean batch(HttpServletRequest request,
+			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
+		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
+		//判断是否是首次执行
+		if(set.getIs_first().equals("0")){
+			redis.del(11, "theme");
+		}
+		if(status==1){
+			int c=20-hotWordService.checkRedisCount();
+			Map map=new HashMap();
+			map.put("ids", ids);
+			map.put("end", c);
+			Integer[] orderid=hotWordService.getHotWordByOrder(map);
+			ids=orderid;
+		}
+		
+		HotWord hotWord=null;
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		int count=0;
+		for (int i = 0; i < ids.length; i++) {
+			hotWord=new HotWord();
+			hotWord.setId(ids[i]);
+			hotWord.setOperationTime(df.format(new Date()));
+			hotWord.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+			hotWord.setWordStatus(status);
+			count+=hotWordService.updateWordIssue(hotWord);
+		}
+		boolean isuccess=hotWordService.publishToRedis();
+		if(isuccess){
+			//更改目前发布数据时间段
+			String now_publish_time_space=set.getNow_get_time_space();
+			set.setNow_get_time_space(now_publish_time_space);
+			set.setIs_first("1");
+			hotWordSettingService.updateWordSetting(set);
+		}
+		return count>0 && isuccess;
+	}
+	/**
+	 * @param word_content
+	 * @return
+	 */
+	@RequestMapping("/batchManual")
+	@ResponseBody
+	public boolean batchManual(HttpServletRequest request,
 			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
 		
 		if(status==1){
@@ -1922,7 +1985,7 @@ public class ContentController{
 			if(isFirst.equals("true")){
 				nextPublish=hotWordSettingService.getNextPublishTime();
 			}else{
-				nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+				nextPublish=sdf.format(d)+" "+wordset.getPublish_date();
 			}
 			Date date =sdf.parse(nextPublish.substring(0, 10));
 			cal.setTime(date); 
@@ -1945,7 +2008,7 @@ public class ContentController{
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-	
+
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
 	

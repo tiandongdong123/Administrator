@@ -251,7 +251,6 @@ public class HotWordJob {
 				log.info("执行sql:"+query);
 				List<Map<String,String>> list=jdbcUtils.getConnectTheme(query);
 				if(list.size()==0){
-					log.info("没有抓取到数据");
 					break;
 				}
 				//循环遍历list结果集
@@ -335,6 +334,8 @@ public class HotWordJob {
 			sb.append("日");
 			String now_get_time_space=sdf.format(cal.getTime())+" "+set.getGet_time()+"───"+sb.toString()+" "+set.getGet_time();
 			set.setNow_get_time_space(now_get_time_space);
+			//是否发布，0未发布  1已发布
+			set.setIs_first("0");
 			hotWordSettingService.updateWordSetting(set);
 			// 更改下次抓取时间
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
