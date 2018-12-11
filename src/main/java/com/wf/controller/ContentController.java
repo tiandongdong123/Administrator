@@ -1761,6 +1761,12 @@ public class ContentController{
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}
+	
+	@RequestMapping("/addWordManualSetting")
+	public String addWordManualSetting(Model model){
+		model.addAttribute("isupdate","add");
+		return "/page/contentmanage/add_word_Manual_setting";
+	}
 
 	
 	/**
