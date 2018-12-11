@@ -2027,4 +2027,15 @@ public class ContentController{
 	public String PerioComment(){
 		return "/page/contentmanage/periocomment";
 	}
+
+
+	/**
+	 * 资讯标签管理
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/informationLabel")
+	public String InformationLabel() throws Exception {
+		return "/page/contentmanage/informationLabel";
+	}
 }
