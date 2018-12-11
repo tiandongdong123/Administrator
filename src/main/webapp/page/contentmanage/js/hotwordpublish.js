@@ -25,7 +25,6 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachAutodata(curr,data,id);
 		}
 	});
@@ -41,20 +40,16 @@ function serachAutodata(curr,data,id){
 			var rows = pageRow[i];	
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.first_publish_time+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_strategy+"</div></td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time_space+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
             "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>"+
 			 divShow(rows.id,rows.status)+"&nbsp;" +
-			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update\">修改</button></div></td>" +
+			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -84,7 +79,7 @@ function addWordSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['50%', '70%'],
-	    title: '热搜词发布设置',
+	    title: '添加自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/addWordSetting.do",
 	}); 
@@ -115,12 +110,7 @@ function doaddWordSetting(){
 		first_publish_time=$("#first_publish_time").val();
 	}
 	
-	if(isFirst!="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
-		$("#checkfirst_publish_time").text("请填写首次发布日期！");
-		return;
-	}else{
-		$("#checkfirst_publish_time").text("");
-	}
+
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
@@ -160,7 +150,6 @@ function doaddWordSetting(){
 			"time_slot" :time_slot,
 			"publish_strategy" :publish_strategy,
 			"publish_date" :publish_date,
-			"first_publish_time" :first_publish_time,
 			"get_time" :get_time,
 			"isFirst":isFirst,
 			},
@@ -190,7 +179,7 @@ function updateSetting(id,status){
 	layer.open({
 	    type: 2, //page层 1div，2页面
 	    area: ['50%', '70%'],
-	    title: '热搜词发布设置',
+	    title: '修改自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/getHotWordSetting.do?id="+id,
 	}); 
@@ -224,12 +213,6 @@ function doupdateWordSetting(){
 		publish_date="";
 	}
 	
-	if(isFirst!="true" && (first_publish_time=='' || first_publish_time==null || first_publish_time==undefined)){
-		$("#checkfirst_publish_time").text("请填写首次发布日期！");
-		return;
-	}else{
-		$("#checkfirst_publish_time").text("");
-	} 
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
@@ -354,7 +337,7 @@ function compareGetTime(id){
 function  divShow(id,status){
 	var html="";
 	if(status==2){
-		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application\">应用</button>";
+		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
 	}
 	return html;
 }
@@ -393,20 +376,15 @@ function serachManualdata(curr,data,id){
 			var rows = pageRow[i];	
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.first_publish_time+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_cyc+"天"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_strategy+"</div></td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.next_publish_time_space+"</td>"+
+			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</div></td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
             "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
 			"<td class='mailbox-name' style='width:350px;'><div>"+
-			 divShow(rows.id,rows.status)+"&nbsp;" +
-			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update\">修改</button></div></td>" +
+			divManualShow(rows.id,rows.status)+"&nbsp;" +
+			"<button type='button' onclick=\"updateManualSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
           "</tr>";
 		}
 	}
@@ -430,4 +408,111 @@ function serachManualdata(curr,data,id){
 			}
 		});
 	});
+}
+// 手动发布设置按钮弹窗
+function addWordManualSetting(){
+	layer.open({
+	    type: 2, //page层 1div，2页面
+	    area: ['50%', '70%'],
+	    title: '添加手动发布设置',
+	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+	    content: "../content/addWordManualSetting.do",
+	}); 
+}
+// 手动发布弹窗保存
+function doaddWordManualSetting(){
+	var publish_cyc=$("#get_cycle").val();
+	var time_slot=$("#time_quantum").val();
+	var publish_strategy=$("#nature").val();
+	var publish_date=$("#publish_date").val();
+	var first_publish_time="";
+	var get_time=$("#get_time").val();
+	var issuccess=false;
+	var isFirst=$("#isFirst").val();
+	
+
+	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
+		$("#checkpublish_cyc").text("请填写发布周期！");
+		return;
+	}else{
+		$("#checkpublish_cyc").text("");
+	}
+	if(time_slot=='' || time_slot==null || time_slot==undefined){
+		$("#checktime_slot").text("请填写数据统计时间段！");
+		return;
+	}else{
+		$("#checktime_slot").text("");
+	}
+	
+	
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/doaddWordManualSetting.do",
+		dataType : "json",
+		data : {
+			"get_cyc" :publish_cyc,
+			"time_slot" :time_slot,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	
+	if(issuccess){
+		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
+		setTimeout("parent.location.reload();",1000);
+	}else{
+		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
+	}
+	
+}
+// 手动发布修改
+function updateManualSetting(id,status){
+	layer.open({
+	    type: 2, //page层 1div，2页面
+	    area: ['50%', '70%'],
+	    title: '修改手动发布设置',
+	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+	    content: "../content/getHotWordManualSetting.do?id="+id,
+	}); 
+}
+
+// 手动发布应用
+function  divManualShow(id,status){
+	var html="";
+	if(status==2){
+		html="<button type='button' onclick=\"publishManual('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+	}
+	return html;
+}
+function publishManual(id,status){		
+	layer.alert("确定要应用此数据吗?",{
+		icon: 1,
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'], //按钮
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",
+	    		async:false,
+	    		url : "../content/updateWordManualSettingStatus.do",
+	    		dataType : "json",
+	    		data : {
+	    			"id":id,
+	    			"status":status,
+	    			},
+	    		success : function (data){
+	    			issuccess=data;
+	    		}
+	    	});
+	    	console.log(issuccess)
+	    	if(issuccess){
+	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
+	    		setTimeout("window.location.reload();",1000);
+	    	}else{
+	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
+	    	}
+	    }
+	
+	  });
 }
