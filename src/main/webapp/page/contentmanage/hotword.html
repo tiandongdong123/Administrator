@@ -10,119 +10,250 @@
 <section class="content-header">
       <h1>热搜词管理</h1>
 </section> 
+<ul class="nav nav-tabs change_setting">
+  <li role="presentation" id="manual_setting" class="active"><a>手动发布管理</a></li>
+  <li id="auto_setting"><a>自动发布管理</a></li>
+</ul>
     <!-- Main content -->
-    <section class="content">
+    <section class="content" id="manual_content">
       <div class="row">
 		<?if(!isEmpty(item)){?>
-	      	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
-	      	<br/>下次发布数据统计时间:${item.next_publish_time_space!}</div>		
+	      	<div style="margin-left:67px;color:#F00;font-size:30px;">目前发布数据时间段:${item.now_publish_time_space!}
+	      	<br/>本次抓取数据时间段:${item.now_get_time_space!}</div>		
 		<?}?>
-	  		<table id="messagetable">
-	  			<tr>
-	  				<td class="al">热搜词性质</td>
-	  				<td class="ar">
-	  					<select id="word_nature">
-	  						<option value="">全部</option>
-	  						<option value="前台获取">前台获取</option>
-	  						<option value="后台添加">后台添加</option>
-	  					</select>
-	  				</td>
-  				<td class="al">热搜词</td><td class="ar"><input type="text" id="word" autocomplete="off"></td>	
-	  			</tr>
-	  			<tr>
-	  				<td class="al">热搜词状态</td>
-	  				<td class="ar">
-	  					<select id="status">
-	  					 <option value="0">全部</option>
-	  					 <option value="1">已发布</option>
-	  					 <option value="2">待发布</option>
-	  					 <option value="3">已下撤</option>
-	  					</select>
-	  				</td>
-	
-	  			</tr>
-			</table>
-		
+	  	<table class="messagetable">
+  			<tr>
+  				<td class="al">热搜词性质</td>
+  				<td class="ar">
+  					<select id="word_nature_manual">
+  						<option value="">全部</option>
+  						<option value="前台获取">前台获取</option>
+  						<option value="后台添加">后台添加</option>
+  					</select>
+  				</td>
+ 				<td class="al">热搜词</td><td class="ar"><input type="text" id="word_manual" autocomplete="off"></td>	
+  			</tr>
+  			<tr>
+  				<td class="al">热搜词状态</td>
+  				<td class="ar">
+  					<select id="status_manual">
+  					 <option value="0">全部</option>
+  					 <option value="1">已发布</option>
+  					 <option value="2">待发布</option>
+  					 <option value="3">已下撤</option>
+  					</select>
+  				</td>
+  			</tr>
+  			
+		</table>	
 		<div style="text-align: center;width: 550px;margin-top: 2%;">
-		 	<button type="submit" class="btn btn-primary" onclick="findOne()" id="query">查询</button>
+	 		<button type="submit" class="btn btn-primary" onclick="findOneManual()" id="query_manual">查询</button>
 		</div>
 		<br/><br/>
 		<div style="overflow-y :auto;position:relative">
-        <div class="col-md-12">
-          <div class="box box-primary">
-            <div  class="box-body no-padding">
-              <div class="mailbox-controls">
-              <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
-              <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
-                 	热搜词:<input type="text" id="word_content" style="height:29px;color:#909090;" autocomplete="off">
-                <button type="button" class="btn btn-primary" onclick="add_word();" id="add">添加热搜词</button> 
-              </div>
-              
-			<div class="table-responsive mailbox-messages">
-               <table class="table table-bordered table-striped" id="list"></table></div>
-			</div>
-               <div id="page"></div>
-                <style>
-              	#pages{
-              		text-align: center;	
-              		padding: 15px 0px;
-              		font-size: 14px;
-              	}
-              	#pages span{
-              		padding: 0px 5px;
-              		 vertical-align: middle;
-              	}
-              	#pages span u{
-              		text-decoration: none;
-				    padding: 0px 5px;
-				    color: #00CCFF;
-              	}
-              	#pages select{
-              		height:25px;
-              	}
-              	#pages input[type="text"]{
-              		width: 40px;
-					height: 25px;
-					text-align: center;
-              	}
-              	#pages a img{
-              		vertical-align: top;
-              	}
-              	#pages button{
-              	    width: 50px;
-				    height: 25px;
-				    border: 1px solid #ccc;
-				    background-color: #fff;
-              	}
-              </style>
-			
-              <div id="pages">
-              	<span>每页显示:</span>
-              	<select id="pagesize" onchange="getAllpageNum();">
-              		<option value="50" selected="selected">50</option>
-              	</select>
-              	<span>条数据</span>
-              	<a href="javascript:void(0);" class="first_page" onclick="firstPage();"><img src="../page/contentmanage/images/first_page.png"/></a>
-              	<a href="javascript:void(0);" class="up_page" onclick="upPage();"><img src="../page/contentmanage/images/up_page.png"/></a>
-              	<span>当前在第</span>
-              	<input id="pagenum" maxlength=""  style="width: 40px;" value="1" onkeydown="selectPage();" onkeypress="return event.keyCode>=48&&event.keyCode<=57" ng-pattern="/[^a-zA-Z]/"  />
-              	<span>页</span>
-              	<a href="javascript:void(0);" class="down_page" onclick="downPage();"><img src="../page/contentmanage/images/down_page.png"/></a>
-              	<a href="javascript:void(0);" class="last_page" onclick="lastPage();"><img src="../page/contentmanage/images/last_page.png"/></a>
-              	<span>共<u id="totalRow"></u>条数据</span>
-              	<span>共<u id="totalpage"></u>页</span>
-              	<input id="pageTotal" type="hidden">
-              </div>			
-			
-			
+       <div class="col-md-12">
+         <div class="box box-primary">
+           <div  class="box-body no-padding">
+             <div class="mailbox-controls">
+             <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
+             <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
+                	热搜词:<input type="text" id="word_content_manual" style="height:29px;color:#909090;" autocomplete="off">
+               <button type="button" class="btn btn-primary" onclick="add_word_manual();" id="add">添加热搜词</button> 
+             </div>
+             
+		<div class="table-responsive mailbox-messages">
+              <table class="table table-bordered table-striped" id="list_manual"></table></div>
+		</div>
+              <div id="page"></div>
+               <style>
+             	#pages_manual{
+             		text-align: center;	
+             		padding: 15px 0px;
+             		font-size: 14px;
+             	}
+             	#pages_manual span{
+             		padding: 0px 5px;
+             		 vertical-align: middle;
+             	}
+             	#pages_manual span u{
+             		text-decoration: none;
+			    padding: 0px 5px;
+			    color: #00CCFF;
+             	}
+             	#pages_manual select{
+             		height:25px;
+             	}
+             	#pages_manual input[type="text"]{
+             		width: 40px;
+				height: 25px;
+				text-align: center;
+             	}
+             	#pages_manual a img{
+             		vertical-align: top;
+             	}
+             	#pages_manual button{
+             	    width: 50px;
+			    height: 25px;
+			    border: 1px solid #ccc;
+			    background-color: #fff;
+             	}
+             </style>
+		
+             <div id="pages_manual">
+             	<span>每页显示:</span>
+             	<select id="pagesize_manual" onchange="getAllpageNumManual();">
+             		<option value="50" selected="selected">50</option>
+             	</select>
+             	<span>条数据</span>
+             	<a href="javascript:void(0);" class="first_page" onclick="firstPageManual();"><img src="../page/contentmanage/images/first_page.png"/></a>
+             	<a href="javascript:void(0);" class="up_page" onclick="upPageManual();"><img src="../page/contentmanage/images/up_page.png"/></a>
+             	<span>当前在第</span>
+             	<input id="pagenum_manual" maxlength=""  style="width: 40px;" value="1" onkeydown="selectPageManual();" onkeypress="return event.keyCode>=48&&event.keyCode<=57" ng-pattern="/[^a-zA-Z]/"  />
+             	<span>页</span>
+             	<a href="javascript:void(0);" class="down_page" onclick="downPageManual();"><img src="../page/contentmanage/images/down_page.png"/></a>
+             	<a href="javascript:void(0);" class="last_page" onclick="lastPageManual();"><img src="../page/contentmanage/images/last_page.png"/></a>
+             	<span>共<u id="totalRowManual"></u>条数据</span>
+             	<span>共<u id="totalpageManual"></u>页</span>
+             	<input id="pageTotalManual" type="hidden">
+             </div>			
+		
+		
 <!-- 			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
   			</div>
  -->
-          <!-- /. box -->
+         <!-- /. box -->
+        </div>
+        </div>
+        </div>
+	</div>
+</section>
+
+<section class="content" id="auto_content" style="display:none">
+     <div class="row">
+	<?if(!isEmpty(item)){?>
+      	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
+      	<br/>下次发布数据统计时间:${item.next_publish_time_space!}</div>		
+	<?}?>
+  		<table class="messagetable">
+  			<tr>
+  				<td class="al">热搜词性质</td>
+  				<td class="ar">
+  					<select id="word_nature">
+  						<option value="">全部</option>
+  						<option value="前台获取">前台获取</option>
+  						<option value="后台添加">后台添加</option>
+  					</select>
+  				</td>
+ 				<td class="al">热搜词</td><td class="ar"><input type="text" id="word" autocomplete="off"></td>	
+  			</tr>
+  			<tr>
+  				<td class="al">热搜词状态</td>
+  				<td class="ar">
+  					<select id="status">
+  					 <option value="0">全部</option>
+  					 <option value="1">已发布</option>
+  					 <option value="2">待发布</option>
+  					 <option value="3">已下撤</option>
+  					</select>
+  				</td>
+
+  			</tr>
+		</table>
+	
+	<div style="text-align: center;width: 550px;margin-top: 2%;">
+	 	<button type="submit" class="btn btn-primary" onclick="findOne()" id="query">查询</button>
+	</div>
+	<br/><br/>
+	<div style="overflow-y :auto;position:relative">
+       <div class="col-md-12">
+         <div class="box box-primary">
+           <div  class="box-body no-padding">
+             <div class="mailbox-controls">
+             <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
+             <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
+                	热搜词:<input type="text" id="word_content" style="height:29px;color:#909090;" autocomplete="off">
+               <button type="button" class="btn btn-primary" onclick="add_word();" id="add">添加热搜词</button> 
+             </div>
+             
+		<div class="table-responsive mailbox-messages">
+              <table class="table table-bordered table-striped" id="list"></table></div>
+		</div>
+              <div id="page"></div>
+               <style>
+             	#pages{
+             		text-align: center;	
+             		padding: 15px 0px;
+             		font-size: 14px;
+             	}
+             	#pages span{
+             		padding: 0px 5px;
+             		 vertical-align: middle;
+             	}
+             	#pages span u{
+             		text-decoration: none;
+			    padding: 0px 5px;
+			    color: #00CCFF;
+             	}
+             	#pages select{
+             		height:25px;
+             	}
+             	#pages input[type="text"]{
+             		width: 40px;
+				height: 25px;
+				text-align: center;
+             	}
+             	#pages a img{
+             		vertical-align: top;
+             	}
+             	#pages button{
+             	    width: 50px;
+			    height: 25px;
+			    border: 1px solid #ccc;
+			    background-color: #fff;
+             	}
+             </style>
+		
+             <div id="pages">
+             	<span>每页显示:</span>
+             	<select id="pagesize" onchange="getAllpageNum();">
+             		<option value="50" selected="selected">50</option>
+             	</select>
+             	<span>条数据</span>
+             	<a href="javascript:void(0);" class="first_page" onclick="firstPage();"><img src="../page/contentmanage/images/first_page.png"/></a>
+             	<a href="javascript:void(0);" class="up_page" onclick="upPage();"><img src="../page/contentmanage/images/up_page.png"/></a>
+             	<span>当前在第</span>
+             	<input id="pagenum" maxlength=""  style="width: 40px;" value="1" onkeydown="selectPage();" onkeypress="return event.keyCode>=48&&event.keyCode<=57" ng-pattern="/[^a-zA-Z]/"  />
+             	<span>页</span>
+             	<a href="javascript:void(0);" class="down_page" onclick="downPage();"><img src="../page/contentmanage/images/down_page.png"/></a>
+             	<a href="javascript:void(0);" class="last_page" onclick="lastPage();"><img src="../page/contentmanage/images/last_page.png"/></a>
+             	<span>共<u id="totalRow"></u>条数据</span>
+             	<span>共<u id="totalpage"></u>页</span>
+             	<input id="pageTotal" type="hidden">
+             </div>			
+		
+		
+<!-- 			<div id="divPager" style="width:960px;height:100px;background-color:#FFFFFF;margin:auto;">
+  			</div>
+ -->
+         <!-- /. box -->
         </div>
         </div>
         </div>
 	</div>
 </section>
 </div>	
+<script>
+$('#manual_setting').click(function(){
+	$('#manual_content').show()
+	$('#auto_content').hide()
+	$(this).addClass('active').siblings().removeClass('active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+})
+$('#auto_setting').click(function(){
+	$("#auto_content").show()
+	$('#manual_content').hide()
+	$(this).addClass('active').siblings().removeClass('active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+})
+</script>
 <?}?>

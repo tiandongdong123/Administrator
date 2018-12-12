@@ -17,7 +17,7 @@
              <input type="text" id="get_cycle" maxlength="16"  class="form-control input_width" value="${item.get_cyc!}"><span id="checkpublish_cyc" style="color:red;"></span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据统计时间段：</label>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据时间段：</label>
             	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}">天<span id="checktime_slot" style="color:red;"></span>
          	</div>
          </div>		
@@ -30,7 +30,7 @@
 			  	  <input value="${item.next_publish_time!}" type="hidden" id="nextPublish"/>
 	              <div class="box-footer" style="text-align:center;">
 	               <input type="hidden" value="${item.id!}" id="id"/>
-	               <button type="button" onclick="doaddWordManualSetting()" class="btn btn-primary" id="update_wordset">修改</button>
+	               <button type="button" onclick="doupdateWordSettingManual()" class="btn btn-primary" id="update_wordset">修改</button>
 	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
 	              </div>
 			  <?}?>  

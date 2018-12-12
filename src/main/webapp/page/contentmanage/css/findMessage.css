@@ -12,14 +12,14 @@
 .ar{
 	text-align: left;
 }
-#messagetable{
+.messagetable{
 	margin-left: 50px;
 }
-#messagetable td{
+.messagetable td{
 	padding-left: 15px;
 	padding-top: 10px;
 }
-#messagetable select{
+.messagetable select{
 	padding: 2px 2px 2px 4px;
 }
 

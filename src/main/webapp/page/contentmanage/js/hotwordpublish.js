@@ -125,13 +125,6 @@ function doaddWordSetting(){
 		$("#checktime_slot").text("");
 	}
 	
-	if(get_time=='' || get_time==null || get_time==undefined){
-		$("#checkget_time").text("请填写抓取时间！");
-		return;
-	}else{
-		$("#checkget_time").text("");		
-	}
-	
 	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
 		$("#checkpublish_date").text("请填写发布时间！");
 		return;
@@ -360,7 +353,6 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
@@ -495,7 +487,7 @@ function publishManual(id,status){
 	    	$.ajax({
 	    		type : "post",
 	    		async:false,
-	    		url : "../content/updateWordManualSettingStatus.do",
+	    		url : "../content/doupdateWordManualSetting.do",
 	    		dataType : "json",
 	    		data : {
 	    			"id":id,
@@ -505,7 +497,6 @@ function publishManual(id,status){
 	    			issuccess=data;
 	    		}
 	    	});
-	    	console.log(issuccess)
 	    	if(issuccess){
 	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
 	    		setTimeout("window.location.reload();",1000);
@@ -515,4 +506,57 @@ function publishManual(id,status){
 	    }
 	
 	  });
+}
+
+function doupdateWordSettingManual(){
+	var publish_cyc=$("#get_cycle").val();
+	var time_slot=$("#time_quantum").val();
+	var publish_strategy=$("#nature").val();
+	var publish_date=$("#publish_date").val();
+	var first_publish_time=$("#first_publish_time").val();
+	var get_time=$("#get_time").val();
+	var isFirst=$("#isFirst").val();	
+	var issuccess=false;
+	
+	if(publish_strategy=="手动发布"){
+		publish_date="";
+	}
+	
+
+	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
+		$("#checkpublish_cyc").text("请填写发布周期！");
+		return;
+	}else{
+		$("#checkpublish_cyc").text("");
+	}
+	if(time_slot=='' || time_slot==null || time_slot==undefined){
+		$("#checktime_slot").text("请填写数据统计时间段！");
+		return;
+	}else{
+		$("#checktime_slot").text("");
+	}
+
+	
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/doupdateWordManualSetting.do",
+		dataType : "json",
+		data : {
+			"get_cyc" :publish_cyc,
+			"time_slot" :time_slot,
+			"isFirst":isFirst,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	
+	if(issuccess){
+		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
+		setTimeout("parent.location.reload();",1000);
+	}else{
+		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
+	}
+
 }
