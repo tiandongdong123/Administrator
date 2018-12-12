@@ -25,6 +25,7 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
+			console.log(data)
 			serachAutodata(curr,data,id);
 		}
 	});
@@ -353,12 +354,14 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
+			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
 }
 // 渲染手动发布内容
 function serachManualdata(curr,data,id){
+	console.log(id)
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var resHtml ="";
@@ -516,6 +519,7 @@ function doupdateWordSettingManual(){
 	var first_publish_time=$("#first_publish_time").val();
 	var get_time=$("#get_time").val();
 	var isFirst=$("#isFirst").val();	
+	var id=$("#id").val();
 	var issuccess=false;
 	
 	if(publish_strategy=="手动发布"){
@@ -545,6 +549,7 @@ function doupdateWordSettingManual(){
 		data : {
 			"get_cyc" :publish_cyc,
 			"time_slot" :time_slot,
+			"id":id,
 			"isFirst":isFirst,
 			},
 		success : function (data){

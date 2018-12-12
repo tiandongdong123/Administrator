@@ -6,6 +6,7 @@ $(function(){
 	enterAddWord();
 	enterUpdateWord();
 	enterAddWordManual()
+	enterUpdateWordManual()
 	showPageManual(1)
 });
 
@@ -443,7 +444,9 @@ function publish(that,obj,issueState){
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				clear();
+	    				clearManual()
 	    				showPage(1);
+	    				showPageManual(1)
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -876,6 +879,66 @@ function enterUpdateWordManual(){
 		}
 	});
 }
+function batch(status){	
+	var str=status==3?"下撤":"发布";
+	var ids=new Array();
+	if(!$("input:checkbox[name=commonid]:checked").is(':checked')){
+		layer.msg("请选择"+str+"内容！",{icon: 2});
+		return;
+	}
+	
+	if(status==3){
+		str="下撤";
+		$("input:checkbox[name=commonid][id='下撤']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}else{
+		str="发布";
+		$("input:checkbox[name=commonid][id='发布']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}
+	
+	if(ids.length==0){
+		layer.msg("<div style=\"color:#8B0000;\">您选择的热搜词没有必要"+str+"!</div>",{icon: 2});
+		return;
+	}
+	
+	var count=checkCount();
+	if(status!=3 && count>=20){
+		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
+    	return;
+	}
+	
+	layer.alert('确定'+str+'该数据吗？',{
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'], //按钮
+	    yes: function(){
+			$.ajax({
+				type : "post",
+				data : {ids: ids,"status":status},
+				url :"../content/batch.do",
+				dataType : "json",
+				beforeSend : function(XMLHttpRequest) {},
+				success :function(data){
+	    			layer.closeAll();
+	    			if(data){
+	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
+	    				clear();
+	    				showPage(1);
+	    			}else{
+	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
+	    			}
+	    		},
+				complete : function(XMLHttpRequest, textStatus) {},
+				error : function(data) {alert(data);}
+			});
+	        layer.closeAll();
+	    }
+	});
+	
+}
+
 function clearManual(){
 	$("#word_content_manual").val("");
 	$("#word_manual").val("");
