@@ -66,7 +66,7 @@ function serachdata(curr,data){
 	"<td class='mailbox-star'>序号</td>" +
 	"<td class=\"mailbox-name\">热搜词</td>"+
     "<td class=\"mailbox-name\">检索量</td>"+
-    "<td class=\"mailbox-name\">热搜词性质</td>"+
+    "<td class=\"mailbox-name\">热搜词来源</td>"+
     "<td class=\"mailbox-name\">操作时间</td>"+
     "<td class=\"mailbox-name\">操作人</td>"+
     "<td class=\"mailbox-name\">热搜词状态</td>"+
@@ -583,7 +583,7 @@ function serachdataManual(curr,data){
 	"<td class='mailbox-star'>序号</td>" +
 	"<td class=\"mailbox-name\">热搜词</td>"+
     "<td class=\"mailbox-name\">检索量</td>"+
-    "<td class=\"mailbox-name\">热搜词性质</td>"+
+    "<td class=\"mailbox-name\">热搜词来源</td>"+
     "<td class=\"mailbox-name\">操作时间</td>"+
     "<td class=\"mailbox-name\">操作人</td>"+
     "<td class=\"mailbox-name\">热搜词状态</td>"+
@@ -626,7 +626,7 @@ function serachdataManual(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
 			"<td class='mailbox-name' style='width:280px;'><div>"+
-			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
+			"<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
           "</tr>";
 		}
@@ -879,22 +879,66 @@ function enterUpdateWordManual(){
 		}
 	});
 }
-function batch(status){	
+
+function publishManual(that,obj,issueState){
+	if(issueState!='3' && checkCount()>=20){
+    	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
+    	return;
+	}
+	
+	var value = "";
+	if(issueState=='3'){
+		value = '下撤';
+	}else{
+		value = '发布';
+	}
+	var prompt="是否确定"+value+"?";
+	layer.alert(prompt,{
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'], //按钮
+	    yes: function(){
+	    	$.ajax({
+	    		type : "post",  
+	    		url : "../content/updateWordManualIssue.do",
+	    		data :{ 
+	    			"id" : obj,
+	    			"issueState": issueState
+	    		},
+	    		dataType : "json",
+	    		success : function(data){
+	    			layer.closeAll();
+	    			if(data){
+	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
+	    				clear();
+	    				clearManual()
+	    				showPage(1);
+	    				showPageManual(1)
+	    			}else{
+	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
+	    			}
+	    		},
+	    		error : function(data){
+	    		}
+	    	});
+	    }
+	  });
+}
+function batchManual(status){	
 	var str=status==3?"下撤":"发布";
 	var ids=new Array();
-	if(!$("input:checkbox[name=commonid]:checked").is(':checked')){
+	if(!$("input:checkbox[name=commonidManual]:checked").is(':checked')){
 		layer.msg("请选择"+str+"内容！",{icon: 2});
 		return;
 	}
 	
 	if(status==3){
 		str="下撤";
-		$("input:checkbox[name=commonid][id='下撤']:checked").each(function(){
+		$("input:checkbox[name=commonidManual][id='下撤']:checked").each(function(){
 			ids.push($(this).val());
 		});
 	}else{
 		str="发布";
-		$("input:checkbox[name=commonid][id='发布']:checked").each(function(){
+		$("input:checkbox[name=commonidManual][id='发布']:checked").each(function(){
 			ids.push($(this).val());
 		});
 	}
@@ -917,7 +961,7 @@ function batch(status){
 			$.ajax({
 				type : "post",
 				data : {ids: ids,"status":status},
-				url :"../content/batch.do",
+				url :"../content/batchManual.do",
 				dataType : "json",
 				beforeSend : function(XMLHttpRequest) {},
 				success :function(data){
@@ -925,7 +969,9 @@ function batch(status){
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
 	    				clear();
+	    				clearManual()
 	    				showPage(1);
+	    				showPageManual(1)
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}
@@ -938,7 +984,6 @@ function batch(status){
 	});
 	
 }
-
 function clearManual(){
 	$("#word_content_manual").val("");
 	$("#word_manual").val("");

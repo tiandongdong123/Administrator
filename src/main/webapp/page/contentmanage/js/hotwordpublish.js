@@ -25,7 +25,6 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachAutodata(curr,data,id);
 		}
 	});
@@ -43,8 +42,8 @@ function serachAutodata(curr,data,id){
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
             "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
@@ -278,7 +277,7 @@ function publish(id,status){
 	}
 */	
 	
-	layer.alert("确定要应用此数据吗?",{
+	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
@@ -354,7 +353,6 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
@@ -398,7 +396,7 @@ function serachManualdata(curr,data,id){
 			layout: ['count', 'prev', 'page', 'next', 'skip'],
 			jump: function (obj, first) {
 	            if(!first){
-	            	showPage(obj.curr);
+	            	showManualPage(obj.curr);
 	            }
 			}
 		});
@@ -482,7 +480,7 @@ function  divManualShow(id,status){
 	return html;
 }
 function publishManual(id,status){		
-	layer.alert("确定要应用此数据吗?",{
+	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
@@ -490,7 +488,7 @@ function publishManual(id,status){
 	    	$.ajax({
 	    		type : "post",
 	    		async:false,
-	    		url : "../content/doupdateWordManualSetting.do",
+	    		url : "../content/updateWordManualSettingStatus.do",
 	    		dataType : "json",
 	    		data : {
 	    			"id":id,

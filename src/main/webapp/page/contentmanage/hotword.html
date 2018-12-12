@@ -23,7 +23,7 @@
 		<?}?>
 	  	<table class="messagetable">
   			<tr>
-  				<td class="al">热搜词性质</td>
+  				<td class="al">热搜词来源</td>
   				<td class="ar">
   					<select id="word_nature_manual">
   						<option value="">全部</option>
@@ -55,8 +55,8 @@
          <div class="box box-primary">
            <div  class="box-body no-padding">
              <div class="mailbox-controls">
-             <button type="button" class="btn btn-primary" onclick="batch(1);" id="publish">批量发布</button>
-             <button type="button" class="btn btn-primary" onclick="batch(3);" id="xiache">批量下撤</button>
+             <button type="button" class="btn btn-primary" onclick="batchManual(1);" id="publish">批量发布</button>
+             <button type="button" class="btn btn-primary" onclick="batchManual(3);" id="xiache">批量下撤</button>
                 	热搜词:<input type="text" id="word_content_manual" style="height:29px;color:#909090;" autocomplete="off">
                <button type="button" class="btn btn-primary" onclick="add_word_manual();" id="add">添加热搜词</button> 
              </div>
@@ -132,11 +132,11 @@
      <div class="row">
 	<?if(!isEmpty(item)){?>
       	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
-      	<br/>下次发布数据统计时间:${item.next_publish_time_space!}</div>		
+      	<br/>下次抓取数据统计时间:${item.next_publish_time_space!}</div>		
 	<?}?>
   		<table class="messagetable">
   			<tr>
-  				<td class="al">热搜词性质</td>
+  				<td class="al">热搜词来源</td>
   				<td class="ar">
   					<select id="word_nature">
   						<option value="">全部</option>
