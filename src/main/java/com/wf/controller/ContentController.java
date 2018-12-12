@@ -1866,9 +1866,11 @@ public class ContentController{
 	@ResponseBody
 	public boolean updateWordManualIssue(HttpServletRequest request,Integer issueState,Integer id){
 		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
-		//判断是否是首次执行
-		if(set.getIs_first().equals("0")){
-			redis.del(11, "theme");
+		if(set!=null){
+			//判断是否是首次执行
+			if(set.getIs_first().equals("0")){
+				redis.del(11, "theme");
+			}
 		}
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		HotWord hotWord=new HotWord();
@@ -1879,11 +1881,13 @@ public class ContentController{
 		boolean isuccess=hotWordService.updateWordIssue(hotWord)>0;
 		isuccess=hotWordService.publishToRedis();
 		if(isuccess){
-			//更改目前发布数据时间段
-			String now_publish_time_space=set.getNow_get_time_space();
-			set.setNow_get_time_space(now_publish_time_space);
-			set.setIs_first("1");
-			hotWordSettingService.updateWordSetting(set);
+			if(set!=null){
+				//更改目前发布数据时间段
+				String now_publish_time_space=set.getNow_get_time_space();
+				set.setNow_get_time_space(now_publish_time_space);
+				set.setIs_first("1");
+				hotWordSettingService.updateWordSetting(set);
+			}
 		}
 		return isuccess;
 	}
@@ -1896,11 +1900,7 @@ public class ContentController{
 	@ResponseBody
 	public boolean batch(HttpServletRequest request,
 			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
-		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
-		//判断是否是首次执行
-		if(set.getIs_first().equals("0")){
-			redis.del(11, "theme");
-		}
+		
 		if(status==1){
 			int c=20-hotWordService.checkRedisCount();
 			Map map=new HashMap();
@@ -1922,16 +1922,9 @@ public class ContentController{
 			count+=hotWordService.updateWordIssue(hotWord);
 		}
 		boolean isuccess=hotWordService.publishToRedis();
-		if(isuccess){
-			//更改目前发布数据时间段
-			String now_publish_time_space=set.getNow_get_time_space();
-			set.setNow_get_time_space(now_publish_time_space);
-			set.setIs_first("1");
-			hotWordSettingService.updateWordSetting(set);
-		}
 		return count>0 && isuccess;
 	}
-	/**
+	/**手动批量发布
 	 * @param word_content
 	 * @return
 	 */
@@ -1939,7 +1932,13 @@ public class ContentController{
 	@ResponseBody
 	public boolean batchManual(HttpServletRequest request,
 			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
-		
+		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
+		//判断是否是首次执行
+		if(set!=null){
+			if(set.getIs_first().equals("0")){
+				redis.del(11, "theme");
+			}
+		}
 		if(status==1){
 			int c=20-hotWordService.checkRedisCount();
 			Map map=new HashMap();
@@ -1961,6 +1960,15 @@ public class ContentController{
 			count+=hotWordService.updateWordIssue(hotWord);
 		}
 		boolean isuccess=hotWordService.publishToRedis();
+		if(set!=null){
+			if(isuccess){
+				//更改目前发布数据时间段
+				String now_publish_time_space=set.getNow_get_time_space();
+				set.setNow_get_time_space(now_publish_time_space);
+				set.setIs_first("1");
+				hotWordSettingService.updateWordSetting(set);
+			}
+		}
 		return count>0 && isuccess;
 	}
 	
@@ -2036,6 +2044,7 @@ public class ContentController{
 			wordset.setGet_time(getTime);
 			sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			wordset.setNext_get_time(sdf.format(d)+"  "+getTime);
+			wordset.setIs_first("0");
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
 	
@@ -2117,7 +2126,7 @@ public class ContentController{
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
 	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
-		
+		System.out.println("----------修改自动设置");
 		try{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
@@ -2158,7 +2167,7 @@ public class ContentController{
 	@RequestMapping("/doupdateWordManualSetting")
 	@ResponseBody
 	public boolean doupdateWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
-		
+		System.out.println("----------修改手动设置");
 		try{
 		SimpleDateFormat sdf =  sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 Date d = new Date();
@@ -2177,6 +2186,7 @@ public class ContentController{
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
+		System.out.println("----------应用自动设置");
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
@@ -2200,6 +2210,7 @@ public class ContentController{
 	@RequestMapping("/updateWordManualSettingStatus")
 	@ResponseBody
 	public boolean updateWordManualSettingStatus(Integer id,Integer status){
+		System.out.println("----------应用手动设置");
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
