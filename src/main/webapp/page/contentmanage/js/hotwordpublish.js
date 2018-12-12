@@ -278,6 +278,7 @@ function publish(id,status){
 */	
 	
 	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
+		title: '添加自动发布设置',
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
@@ -359,7 +360,6 @@ function showManualPage(curr,id){
 }
 // 渲染手动发布内容
 function serachManualdata(curr,data,id){
-	console.log(id)
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var resHtml ="";
@@ -481,6 +481,7 @@ function  divManualShow(id,status){
 }
 function publishManual(id,status){		
 	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
+		title: '添加手动发布设置',
 		icon: 1,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮

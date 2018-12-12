@@ -428,6 +428,7 @@ function publish(that,obj,issueState){
 	}
 	var prompt="是否确定"+value+"?";
 	layer.alert(prompt,{
+		title: value,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
 	    yes: function(){
@@ -894,6 +895,7 @@ function publishManual(that,obj,issueState){
 	}
 	var prompt="是否确定"+value+"?";
 	layer.alert(prompt,{
+		title: value,
 	    skin: 'layui-layer-molv',
 	    btn: ['确定','取消'], //按钮
 	    yes: function(){
