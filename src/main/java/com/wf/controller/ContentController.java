@@ -1965,7 +1965,7 @@ public class ContentController{
 	}
 	
 	/*
-	 * 获取redies中的热搜词数
+	 * 获取redies中的热搜词数 
 	 */
 	@RequestMapping("/checkCount")
 	@ResponseBody
@@ -1982,10 +1982,11 @@ public class ContentController{
 			Date d = new Date();
 			Calendar cal = Calendar.getInstance();
 			String nextPublish="";
+			wordset.setFirst_publish_time(sdf.format(d));
 			if(isFirst.equals("true")){
 				nextPublish=hotWordSettingService.getNextPublishTime();
 			}else{
-				nextPublish=sdf.format(d)+" "+wordset.getPublish_date();
+				nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
 			}
 			Date date =sdf.parse(nextPublish.substring(0, 10));
 			cal.setTime(date); 
@@ -1998,6 +1999,7 @@ public class ContentController{
 			sb.append("日");
 			String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
 			wordset.setPublish_strategy("自动发布");
+			wordset.setFirst_publish_time(nextPublish.substring(0, 10));
 			wordset.setNext_publish_time(nextPublish);
 	 		wordset.setNext_publish_time_space(next_publish_time_space);
 	 		wordset.setStatus(2);
