@@ -1965,7 +1965,7 @@ public class ContentController{
 	}
 	
 	/*
-	 * 获取redies中的热搜词数
+	 * 获取redies中的热搜词数 
 	 */
 	@RequestMapping("/checkCount")
 	@ResponseBody
