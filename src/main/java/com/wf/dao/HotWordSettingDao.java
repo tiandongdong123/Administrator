@@ -21,6 +21,7 @@ public interface HotWordSettingDao {
 	Integer checkFirst();
 	String getNextPublishTime();
 	List<HotWordSetting> getHotWordSettingList();
+	List<HotWordSetting> getHotWordManualSettingList();
 	HotWordSetting getExecHotWordSetting(Integer status);
 	HotWordSetting getOneHotWordManualSetting();
 	

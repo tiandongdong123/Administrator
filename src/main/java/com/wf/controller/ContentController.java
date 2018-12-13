@@ -1882,11 +1882,14 @@ public class ContentController{
 		isuccess=hotWordService.publishToRedis();
 		if(isuccess){
 			if(set!=null){
-				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_publish_time_space(now_publish_time_space);
-				set.setIs_first("1");
-				hotWordSettingService.updateWordSetting(set);
+				//更改所有手动目前发布数据时间段
+				List<HotWordSetting> list=hotWordSettingService.getHotWordManualSettingList();
+				for (HotWordSetting hotWordSetting : list) {
+					hotWordSetting.setNow_publish_time_space(now_publish_time_space);
+					hotWordSetting.setIs_first("1");
+					hotWordSettingService.updateWordSetting(hotWordSetting);
+				}
 			}
 		}
 		return isuccess;
@@ -1960,11 +1963,14 @@ public class ContentController{
 		boolean isuccess=hotWordService.publishToRedis();
 		if(set!=null){
 			if(isuccess){
-				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_publish_time_space(now_publish_time_space);
-				set.setIs_first("1");
-				hotWordSettingService.updateWordSetting(set);
+				//更改所有手动目前发布数据时间段
+				List<HotWordSetting> list=hotWordSettingService.getHotWordManualSettingList();
+				for (HotWordSetting hotWordSetting : list) {
+					hotWordSetting.setNow_publish_time_space(now_publish_time_space);
+					hotWordSetting.setIs_first("1");
+					hotWordSettingService.updateWordSetting(hotWordSetting);
+				}
 			}
 		}
 		return count>0 && isuccess;
@@ -2030,6 +2036,9 @@ public class ContentController{
 	@RequestMapping("/doaddWordManualSetting")
 	@ResponseBody
 	public boolean doaddWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
+		if(wordset.getTime_slot()==0||wordset.getGet_cyc()==0){
+			return false;
+		}else{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			Date d = new Date();
 			String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
@@ -2041,6 +2050,15 @@ public class ContentController{
 			wordset.setGet_time(getTime);
 			wordset.setIs_first("0");
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
+		}
+	}
+	
+	/*
+	 * 获取设定的抓取时间点
+	 */
+	@RequestMapping("/getHotWordSettingGetTime")
+	public String getHotWordSettingGetTime(){
+		return com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();
 	}
 	
 	

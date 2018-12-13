@@ -2,6 +2,7 @@ package com.wf.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -141,5 +142,33 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	@Override
 	public HotWordSetting getOneHotWordManualSetting() {
 		return hotWordSettingDao.getOneHotWordManualSetting();
+	}
+
+	/*
+	 * 更新所有手动设置的本次抓取数据时间段和下次抓取时间段
+	 * 
+	 */
+	@Override
+	public Integer updateAllManualNowGetTimeApace(HotWordSetting hotWordSetting) {
+		int num=0;
+		try {
+			//获取所有手动设置
+			List<HotWordSetting> list=hotWordSettingDao.getHotWordManualSettingList();
+			//遍历更新设置手动设置属性
+			for (HotWordSetting set : list) {
+				set.setNow_get_time_space(hotWordSetting.getNow_get_time_space());
+				set.setIs_first(hotWordSetting.getIs_first());
+				num+=hotWordSettingDao.updateHotWordSetting(set);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return num;
+	}
+
+	@Override
+	public List<HotWordSetting> getHotWordManualSettingList() {
+	
+		return hotWordSettingDao.getHotWordManualSettingList();
 	}
 }
