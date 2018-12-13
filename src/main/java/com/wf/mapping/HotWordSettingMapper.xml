@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>   
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wf.dao.HotWordSettingDao" >
   <resultMap id="TaskResultMap" type="com.wf.bean.HotWordSetting" >
@@ -111,6 +111,9 @@
       <if test="next_publish_time_space!=null">
         next_publish_time_space,
       </if>
+      <if test="is_first!=null">
+        is_first,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="publish_cyc != null">
@@ -157,6 +160,9 @@
       </if>
       <if test="next_publish_time_space!=null">
         #{next_publish_time_space,jdbcType=VARCHAR},
+      </if>
+      <if test="is_first!=null">
+        #{is_first,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
