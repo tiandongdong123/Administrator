@@ -2092,6 +2092,7 @@ public class ContentController{
 		map.put("pageNum",(pageNum-1)*pageSize);
 		map.put("pageSize",pageSize);
 		PageList list=hotWordSettingService.getHotWordManualSetting(map);
+		System.out.println("----------------------"+list.getPageTotal());
 		return  list;
 	}
 	/**
@@ -2190,6 +2191,7 @@ public class ContentController{
 			int day=cal.get(Calendar.DATE); 
 			cal.set(Calendar.DATE,day+1);
 			wordset.setNext_get_time(sdf.format(cal.getTime())+"  "+getTime);
+			sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 wordset.setOperation_date(sdf.format(d));
 		}catch(Exception e){
 			e.printStackTrace();
