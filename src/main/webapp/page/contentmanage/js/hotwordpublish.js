@@ -33,7 +33,25 @@ function showPage(curr,id){
 function serachAutodata(curr,data,id){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
+	var pageTotal = data.pageTotal;
 	var resHtml ="";
+	var totalRow=data.totalRow;
+    var pageall;
+    if(totalRow%pageSize==0){
+ 	   pageall=totalRow/pageSize;
+    }else{
+ 	   pageall= parseInt(totalRow/pageSize)+1;
+    }
+    var maxLenght=(pageall+"").length;
+    $("#totalRow").text(pageRow.length);
+    $("#totalpage").text(pageall);
+    $("#pageTotal").val(pageTotal);
+    $("#pagenum").attr("maxlength",maxLenght); 
+    if(totalRow<=20){
+    	$("#pages").hide();
+    }else{
+    	$("#pages").show();
+    }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+10*(pageNum);
@@ -75,6 +93,70 @@ function serachAutodata(curr,data,id){
 	});
 }
 
+function firstPage(){
+	var pagenum=Number($("#pagenum").val());
+	if(pagenum==1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val("1");
+		showPage(1,'auto_tbody');
+	}
+}
+
+
+function upPage(){
+	var pagenum=Number($("#pagenum").val())-1;
+	if(pagenum<1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		showPage(pagenum,'auto_tbody');
+	}
+
+}
+
+function lastPage(){
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(pagenum==$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(total);
+		showPage(total,'auto_tbody');
+	}
+}
+
+function downPage(){
+	var pagenum=Number($("#pagenum").val())+1;
+	if(pagenum>$("#pageTotal").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum").val(pagenum);
+		showPage(pagenum,'auto_tbody');
+	}
+}
+
+
+function getAllpageNum(){
+	$("#pagenum").val("1");
+	showPage(pagenum,'auto_tbody');
+}
+
+function selectPage(){
+	var keyCode=event.keyCode;
+	var pagenum=$("#pagenum").val();
+	var total=$("#totalpage").text();
+	if(keyCode==13){
+		if(pagenum>total){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum==0){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum<=total){
+			showPage(pagenum,'auto_tbody');
+		}
+	}
+}
+
 function addWordSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
@@ -102,7 +184,7 @@ function doaddWordSetting(){
 	var first_publish_time="";
 	var get_time=$("#get_time").val();
 	var issuccess=false;
-	var isFirst=$("#isFirst").val();
+	var isFirst=false;
 	if(publish_strategy=="手动发布"){
 		publish_date="";
 	}
@@ -125,12 +207,12 @@ function doaddWordSetting(){
 		$("#checktime_slot").text("");
 	}
 	
-	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
-		$("#checkpublish_date").text("请填写发布时间！");
-		return;
-	}else{
-		$("#checkpublish_date").text("");		
-	} 
+//	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+//		$("#checkpublish_date").text("请填写发布时间！");
+//		return;
+//	}else{
+//		$("#checkpublish_date").text("");		
+//	} 
 
 	
 	$.ajax({
@@ -222,7 +304,7 @@ function doupdateWordSetting(){
 	} 
 	
 	if(get_time=='' || get_time==null || get_time==undefined){
-		$("#checkget_time").text("请填写抓取时间！");
+		$("#checkget_time").text("请填写发布时间！");
 		return;
 	}else{
 		$("#checkget_time").text("");
@@ -362,7 +444,25 @@ function showManualPage(curr,id){
 function serachManualdata(curr,data,id){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
+	var pageTotal = data.pageTotal;
+	var totalRow=data.totalRow;
 	var resHtml ="";
+	var pageall;
+    if(totalRow%pageSize==0){
+ 	   pageall=totalRow/pageSize;
+    }else{
+ 	   pageall= parseInt(totalRow/pageSize)+1;
+    }
+    var maxLenght=(pageall+"").length;
+    $("#totalRowManual").text(pageRow.length);
+    $("#totalpageManual").text(pageall);
+    $("#pageTotalManual").val(pageTotal);
+    $("#pagenum_manual").attr("maxlength",maxLenght); 
+    if(pageRow.length<=20){
+    	$("#pages_manual").hide();
+    }else{
+    	$("#pages_manual").show();
+    }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+10*(pageNum);
@@ -401,6 +501,62 @@ function serachManualdata(curr,data,id){
 			}
 		});
 	});
+}
+function firstPageManual(){
+	var pagenum=Number($("#pagenum_manual").val());
+	if(pagenum==1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum_manual").val("1");
+		showPageManual(1);
+	}
+}
+function upPageManual(){
+	var pagenum=Number($("#pagenum_manual").val())-1;
+	if(pagenum<1){
+		layer.msg("已经是第一页了");
+	}else{
+		$("#pagenum_manual").val(pagenum);
+		showPageManual(pagenum);
+	}
+}
+function lastPageManual(){
+	var pagenum=$("#pagenum_manual").val();
+	var total=$("#totalpageManual").text();
+	if(pagenum==$("#pageTotalManual").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum_manual").val(total);
+		showPageManual(total);
+	}
+}
+function downPageManual(){
+	var pagenum=Number($("#pagenum_manual").val())+1;
+	if(pagenum>$("#pageTotalManual").val()){
+		layer.msg("已经是最后一页了");
+	}else{
+		$("#pagenum_manual").val(pagenum);
+		showPageManual(pagenum);
+	}
+}
+function getAllpageNumManual(){
+	$("#pagenum_manual").val("1");
+	showPageManual(pagenum);
+}
+
+function selectPageManual(){
+	var keyCode=event.keyCode;
+	var pagenum=$("#pagenum_manual").val();
+	var total=$("#totalpageManual").text();
+	if(keyCode==13){
+		if(pagenum>total){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum==0){
+			layer.msg("请输入正确的页码");
+		}else if(pagenum<=total){
+			showPageManual(pagenum);
+		}
+	}
 }
 // 手动发布设置按钮弹窗
 function addWordManualSetting(){

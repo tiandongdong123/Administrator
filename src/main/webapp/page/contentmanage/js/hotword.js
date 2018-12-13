@@ -784,6 +784,7 @@ function add_word_manual(){
 		layer.msg("<div style=\"color:#0000FF;\">添加成功!</div>",{icon: 1});
 		clearManual();
 		showPage(1);
+		showPageManual(1)
 	  }else{
 		layer.msg("<div style=\"color:#8B0000;\">添加失败!</div>",{icon: 2});
 	  }
