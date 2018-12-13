@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,11 +19,13 @@ public class SearchInformationLabelParameter implements Serializable {
     /**
      * 操作日期开始
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date operatingTimeStart;
 
     /**
      * 操作日期结束
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date operatingTimeEnd;
 
     /**
@@ -49,6 +53,7 @@ public class SearchInformationLabelParameter implements Serializable {
     public void setOperator(String operator) {
         this.operator = operator;
     }
+
 
     public Date getOperatingTimeStart() {
         return operatingTimeStart;

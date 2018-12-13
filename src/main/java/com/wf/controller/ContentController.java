@@ -2196,7 +2196,7 @@ public class ContentController {
      * @param ids
      * @return
      */
-    @RequestMapping(value = "/deleteInformationLabel" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteInformationLabel", method = RequestMethod.POST)
     public Boolean DeleteInformationLabel(@RequestParam(value = "ids[]") String[] ids) {
         try {
             informationLabelService.deleteInformationLabel(Arrays.asList(ids));
