@@ -2191,7 +2191,7 @@ public class ContentController {
         String url = "/chargeCode/searchChargeCodeBatch";
         PagerModel<InformationLabelViewModel> pager = new PagerModel<>(parameter.getPage(), searchResponse.getTotalCount(), pageSize, list, url, parameter);
         model.addAttribute("pager", pager);
-        return "";
+        return "/page/contentmanage/informationLabelList";
     }
 
     /**
