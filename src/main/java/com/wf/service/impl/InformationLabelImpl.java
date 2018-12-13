@@ -13,6 +13,7 @@ import scala.collection.generic.BitOperations;
 import wfks.accounting.transaction.SearchResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -116,6 +117,7 @@ public class InformationLabelImpl implements InformationLabelService {
         InformationLabel informationLabel = new InformationLabel();
         informationLabel.setLabel(label);
         informationLabel.setId(Integer.valueOf(id));
+        informationLabel.setOperatingTime(new Date());
         try {
             informationLabelMapper.updateByPrimaryKeySelective(informationLabel);
             return true;
