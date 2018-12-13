@@ -326,7 +326,7 @@ public class HotWordJob {
 			Date date =sdf.parse(set.getNext_get_time().substring(0, 10));
 			cal.setTime(date); 
 			int day=cal.get(Calendar.DATE); 
-			cal.set(Calendar.DATE,day-set.getGet_cyc()); 
+			cal.set(Calendar.DATE,day-set.getTime_slot()); 
 			sdf=new SimpleDateFormat("yyyy年MM月dd日");
 			StringBuffer sb=new StringBuffer("");
 			String str=set.getNext_get_time().substring(0, 10);
@@ -334,12 +334,12 @@ public class HotWordJob {
 			sb.append("日");
 			String now_get_time_space=sdf.format(cal.getTime())+" "+set.getGet_time()+"───"+sb.toString()+" "+set.getGet_time();
 			set.setNow_get_time_space(now_get_time_space);
-			//是否发布，0未发布  1已发布
 			// 更改下次抓取时间
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
-			cal.set(Calendar.DATE,day+set.getTime_slot()); 
+			cal.set(Calendar.DATE,day+set.getGet_cyc()); 
 			String next_get_time=sdf.format(cal.getTime())+" "+set.getGet_time();
 			set.setNext_get_time(next_get_time);
+			//是否发布，0未发布  1已发布
 			set.setIs_first("0");
 			hotWordSettingService.updateWordSetting(set);
 			hotWordSettingService.updateAllManualNowGetTimeApace(set);
