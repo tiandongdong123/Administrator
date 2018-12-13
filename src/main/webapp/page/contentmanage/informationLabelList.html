@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="table-responsive mailbox-messages">
+    <table class="table table-bordered table-striped" id="labelInfo">
+        <tbody>
+        <tr style="text-align: center;">
+            <td><input class="allId" type="checkbox"></td>
+            <td>序号</td>
+            <td>标签</td>
+            <td>总数</td>
+            <td>操作人</td>
+            <td>操作时间</td>
+            <td>操作</td>
+        </tr>
+        <? if(pager.pageRecords.~size == 0 ){?>
+        </tbody>
+        <div class="empty-warning">很抱歉，当前未找到符合查询条件的结果</div>
+        <?}else{
+          for(item in pager.pageRecords){?>
+        <tr style="text-align: center;" class="queryData">
+            <td>${(pager.currentPage-1) * pager.pageSize + itemLP.index }</td>
+            <td>${item.label}</td>
+            <td>${item.totalNumber}</td>
+            <td>${item.operator}</td>
+            <td>${item.operator}</td>
+            <td class="ar" width="30%;" style="text-align: center">
+                <div class="modify-label">
+                    <button type="button"class="btn btn-primary modify-label-confirm">修改</button>
+                    <button type="button" class="btn btn-danger modify-label-cancel">取消</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <? include("../content/pagePlugin.btl",{maxPageNumber:5, pager:pager}){}}?>
+    <?}?>
+</div>
+</body>
+</html>

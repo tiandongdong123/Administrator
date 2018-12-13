@@ -2196,11 +2196,12 @@ public class ContentController {
 
     /**
      * 删除资讯标签列表
+     *
      * @param ids
      * @return
      */
     @RequestMapping("/deleteInformationLabel")
-    public Boolean DeleteInformationLabel(List<Integer> ids) {
+    public Boolean DeleteInformationLabel(List<String> ids) {
         try {
             informationLabelService.deleteInformationLabel(ids);
             log.info("删除资讯标签成功ids：" + ids.toString());
@@ -2213,7 +2214,7 @@ public class ContentController {
 
     @RequestMapping("/updateInformationLabel")
     @ResponseBody
-    public Map UpdateInformationLabel(int id, String label) {
+    public Map UpdateInformationLabel(String id, String label) {
         Map<String, String> map = new HashMap<>();
         InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
         try {

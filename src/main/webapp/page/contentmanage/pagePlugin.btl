@@ -1,0 +1,166 @@
+<div  class="page">
+	<div class="laypage_main laypageskin_molv">
+		<?if( pager.pageCount > 1 ){?>
+			<span>每页显示: &nbsp</span>
+		<script>
+			//可选展示数据条数
+			 function getQueryString(pageSize,url,newPageSize) {
+				 var re=eval('/('+ pageSize+'=)([^&]*)/gi');
+				 var newurl = url.replace(re,pageSize+'='+newPageSize);
+				 return newurl;
+			 }
+			 function getOldPageSizeOrPageNum(pageSize,url){
+				 var reg = new RegExp("(^|&)" + pageSize + "=([^&]*)(&|$)");
+				 var r = url.substr(url.indexOf("\?")+1).match(reg);
+				 return unescape(r[2]);
+			 }
+			 $('#inputpageSize').change(function(){
+			      var $this=$(this),
+			          $newPageSize=$this.find('option:selected').val(),
+			          $oldUrl=$this.closest('.page .laypage_main').find('.laypage_curr').data('url');
+				 //计算更改页面前第一条数据的序号
+				  var $oldPageSize=getOldPageSizeOrPageNum('pageSize',$oldUrl);
+				  var $oldPageNum=getOldPageSizeOrPageNum('page',$oldUrl);
+				  var $number=$oldPageSize*($oldPageNum-1)+1;
+				  var $newNumber=parseInt($number/$newPageSize)+1;
+				  var $newPage=getQueryString('page',$oldUrl,$newNumber);
+				  var $newUrl=getQueryString('pageSize',$newPage,$newPageSize);
+				 $this.closest('.sync-html').find('.loadingPic').show();
+				 $.ajax({
+					 url:$newUrl,
+					 success:function (html) {
+						 $this.closest('.sync-html').html(html);
+						 $this.closest('.sync-html').find('.loadingPic').hide();
+					 },
+					 error:function () {
+						 $this.closest('.sync-html').find('.loadingPic').hide();
+					 }
+				 });
+			 })
+		</script>
+		<select id="inputpageSize" name="pageSize">
+				<option value="20" ${pager.pageSize==20?'selected="selected"':''}>20</option>
+				<option value="30" ${pager.pageSize==30?'selected="selected"':''}>30</option>
+				<option value="50" ${pager.pageSize==50?'selected="selected"':''}>50</option>
+			</select>
+		<span>条数据</span>
+		<?}?>
+<?if(pager.onlyOnePage==false){?>
+	<?
+		var beforePageNumber = 0;
+		var laterPageNumber = 0;
+		
+		if (maxPageNumber % 2 == 0) {
+			beforePageNumber = maxPageNumber / 2;
+			laterPageNumber = maxPageNumber / 2 - 1;
+		} else {
+			beforePageNumber = (maxPageNumber - 1) / 2;
+			laterPageNumber = beforePageNumber;
+		}
+	
+		var beforeCount = (pager.currentPage - beforePageNumber) > 0 ? beforePageNumber : pager.currentPage - 1;
+		var laterCount = (pager.currentPage + laterPageNumber) < pager.pageCount ? laterPageNumber : pager.pageCount - pager.currentPage;
+		
+		if(pager.pageCount > maxPageNumber){
+			if(beforeCount < beforePageNumber){
+				laterCount = laterCount + (beforePageNumber - beforeCount);
+			}
+			if(laterCount < laterPageNumber){
+				beforeCount = beforeCount + (laterPageNumber - laterCount);
+			}
+		}else{
+			if(beforeCount < beforePageNumber){
+				laterCount = pager.pageCount - beforeCount - 1;
+			}
+				if(laterCount < laterPageNumber){
+				beforeCount = pager.pageCount - laterCount - 1;
+			}
+		}
+
+		if ((pager.currentPage - beforeCount) != 1)
+		{
+	?>
+			<span><a href="${ctxPath}${pager.url}1">首页</a></span>
+	<?
+		}
+		if(pager.hasPreviousPage == true)
+		{
+	?>
+			<a href="${ctxPath}${pager.url}${pager.currentPage-1 }"  class="laypage_prev">上一页</a>
+	<?
+		}
+	?>
+	<?
+		for (var i = beforeCount; i > 0; i--)
+		{
+	?>
+			<a href="${ctxPath}${pager.url}${pager.currentPage-i }">${pager.currentPage-i }</a>
+	<?
+		}
+	?>
+			<span class="laypage_curr" data-url="${ctxPath}${pager.url}${pager.currentPage}">${pager.currentPage}</span>
+	<?
+		for(var i = 1; i <= laterCount; i++)
+		{
+	?>
+			<a href="${ctxPath}${pager.url}${pager.currentPage+i }">${pager.currentPage+i }</a>
+	<?
+		}
+	?>
+	<?
+		if(pager.hasNextPage == true){
+	?>
+			<a href="${ctxPath}${pager.url}${pager.currentPage+1 }" class="laypage_next">下一页</a>
+	<?
+		}
+
+
+
+		if(pager.currentPage + laterCount != pager.pageCount)
+		{
+	?>
+			<span><a href="${ctxPath}${pager.url}${pager.pageCount }">尾页</a></span>
+	<?
+		}
+	?>
+<?}?>
+<?
+	if( pager.pageCount > 1 ){
+?>
+		<span>
+		<form action="${ctxPath}${pager.url}" method="get" class="laypage_total" data-action="${ctxPath}${pager.url}" data-all="${pager.pageCount}">
+            <input  type="hidden"  class="from_url" value="${ctxPath}${pager.url}"/>
+		   <label>共<span class="allPage">${pager.pageCount }</span>页&nbsp;&nbsp;&nbsp;到第</label>
+		   <input name="page" type="number"  class="laypage_skip" autocomplete="off" value=""/>
+		   <label>页</label>
+		   <a class="from_submit" href = "javascript:void(0);"><button type="button" class="laypage_btn">确定</button></a>
+		</form>
+		</span>
+		<span>共${ pager.total }条数据</span>
+<?
+	}
+?>
+	</div>
+	<div class="mask-layer loadingPic" style="display: none;">
+		<img  class="img-loadingPic" src="${ctxPath}//Content/images/loading.gif"/>
+	</div>
+</div>
+<script>
+	$(function(){
+       var a =  $("span.laypage_curr").text();
+	    $(".laypage_skip").val(a)
+	});
+    $(function(){
+        $(".laypage_btn").click(function(){
+            var all_page = parseInt($(".allPage").text());//最大的
+            var from_url = $(".from_url").val();
+            var laypage_skip =parseInt($(".laypage_skip").val()) ;//输入
+          if(laypage_skip > 0 && laypage_skip <= all_page){
+              $(".from_submit").attr("href",from_url+laypage_skip);
+            }else{
+              alert("请输入正确的页码！");
+              return false;
+            }
+        });
+    })
+</script>

@@ -27,12 +27,12 @@ public interface InformationLabelService {
      * @param ids
      * @return
      */
-    void deleteInformationLabel(List<Integer> ids);
+    void deleteInformationLabel(List<String> ids);
 
     /**
      * 修改资讯标签
      *
      * @param id
      */
-    boolean updateInformationLabel(int id,String label);
+    boolean updateInformationLabel(String id,String label);
 }

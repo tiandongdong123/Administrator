@@ -3,11 +3,16 @@ package com.wf.service.impl;
 import com.wf.bean.*;
 import com.wf.dao.InformationLabelMapper;
 import com.wf.service.InformationLabelService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.ecs.wml.I;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.collection.generic.BitOperations;
 import wfks.accounting.transaction.SearchResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -79,12 +84,20 @@ public class InformationLabelImpl implements InformationLabelService {
     }
 
     @Override
-    public void deleteInformationLabel(List<Integer> ids) {
+    public void deleteInformationLabel(List<String> ids) {
+        List<Integer> list = new ArrayList<Integer>();
+        CollectionUtils.collect(ids, new Transformer() {
+            @Override
+            public Object transform(Object o) {
+                return Integer.valueOf(o.toString());
+            }
+        }, list);
+
         try {
             InformationLabelExample example = new InformationLabelExample();
             InformationLabelExample.Criteria criteria = example.createCriteria();
             if (ids != null && ids.size() > 0) {
-                criteria.andIdIn(ids);
+                criteria.andIdIn(list);
             }
             informationLabelMapper.deleteByExample(example);
 
@@ -94,7 +107,7 @@ public class InformationLabelImpl implements InformationLabelService {
     }
 
     @Override
-    public boolean updateInformationLabel(int id, String label) {
+    public boolean updateInformationLabel(String id, String label) {
         log.info("修改资讯标签开始！！");
         if (label.equals("") || label == null) {
             log.info("参数为空 id：" + id);
@@ -102,7 +115,7 @@ public class InformationLabelImpl implements InformationLabelService {
         }
         InformationLabel informationLabel = new InformationLabel();
         informationLabel.setLabel(label);
-        informationLabel.setId(id);
+        informationLabel.setId(Integer.valueOf(id));
         try {
             informationLabelMapper.updateByPrimaryKeySelective(informationLabel);
             return true;
