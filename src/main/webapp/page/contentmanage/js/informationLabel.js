@@ -227,8 +227,7 @@ function queryHandle(page) {
             "operator": operation,
             "operatingTimeStart": operatTimeStart,
             "operatingTimeEnd": operatTimeEnd,
-            "page": page,
-            "pageSize": 20
+            "page": page
         },
         success: function (data) {
             infoLabelData.html(data);
