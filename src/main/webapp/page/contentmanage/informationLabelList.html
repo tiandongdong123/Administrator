@@ -2,7 +2,9 @@
     <div class="box box-primary">
         <div class="mailbox-controls">
             <div class="btn-group">
+                <? if(pager.pageRecords.~size != 0 ){?>
                 <button type="button" class="btn btn-default btn-sm delete_batch"><i class="fa fa-trash-o"></i></button>
+                <?}?>
             </div>
             <div class="btn-group" style="padding:0 10px;margin-left: 300px;">
                 <input type="text" placeholder="请输入添加的标签" class="label_input">
@@ -10,6 +12,9 @@
                 <!--<span class="add_label-tip">请填写标签!</span>-->
             </div>
         </div>
+        <? if(pager.pageRecords.~size == 0 ){?>
+        <div class="empty-warning">很抱歉，当前未找到符合查询条件的结果</div>
+        <?}else{?>
         <div class="table-responsive mailbox-messages">
             <table class="table table-bordered table-striped" id="labelInfo">
                 <tr style="text-align: center;">
@@ -21,10 +26,7 @@
                     <td>操作时间</td>
                     <td>操作</td>
                 </tr>
-                <? if(pager.pageRecords.~size == 0 ){?>
-                <div class="empty-warning">很抱歉，当前未找到符合查询条件的结果</div>
-                <?}else{
-                for(item in pager.pageRecords){?>
+                <?for(item in pager.pageRecords){?>
                 <tr style="text-align: center;" class="queryData">
                     <td style="width:10px;"><input type="checkbox" name="commonid" data-id="${item.id}"></td>
                     <td>${(pager.currentPage-1) * pager.pageSize + itemLP.index }</td>
@@ -51,7 +53,7 @@
 
             </table>
             <? include("pagePlugin.btl",{maxPageNumber:5, pager:pager}){}?>
-    </div>
+        </div>
 
     </div>
 </div>
