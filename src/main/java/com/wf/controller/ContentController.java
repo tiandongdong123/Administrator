@@ -2049,6 +2049,14 @@ public class ContentController{
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
 	
+	/*
+	 * 获取设定的抓取时间点
+	 */
+	@RequestMapping("/getHotWordSettingGetTime")
+	public String getHotWordSettingGetTime(){
+		return com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();
+	}
+	
 	
 	/**
 	 * 
