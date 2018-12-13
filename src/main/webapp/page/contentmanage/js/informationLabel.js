@@ -1,24 +1,5 @@
 $(function () {
-    //单条删除标签
-    $('#labelInfo').on('click','.delete_label',function () {
-        var _this = $(this);
-        var parentEle = _this.parents('.queryData');
-        var labelDataEel = parentEle.find('.label_data');
-        var labelArr = [];
-        labelArr.push(labelDataEel.attr('data-id'))
-        layer.alert('确定删除该数据吗？',{
-            icon: 1,
-            skin: 'layui-layer-molv',
-            btn: ['确定','取消'], //按钮
-            yes: function(){
-                delelLabel(labelArr)
-            },btn2:function () {
-                layer.closeAll();
-            }
-        });
-    });
-
-    //修改标签
+     //修改标签
     $('#labelInfo').on('click','.modify-style',function () {
         var _this = $(this);
         var parentEle = _this.parents('.queryData');
@@ -43,31 +24,28 @@ $(function () {
         var _this = $(this);
         var labelData = $.trim(_this.siblings('input').val());
         var labelDataID = _this.parents('.ar').find('.label_data').attr('data-id');
-        var dataJSON = {'labelData':labelData,'labelDataID':labelDataID};
-        addLabel(dataJSON, "../content/updateIssue.do","修改失败");
+        var dataJSON = {'label':labelData,'id':labelDataID};
+        updataLabel(dataJSON, "../content/updateInformationLabel.do",_this.siblings('input'));
     });
-
     $('#infoLabelData').on('keypress','.modify-label input',function () {
         var labelData = $.trim($(this).val());
         var labelDataID = $(this).parents('.ar').find('.label_data').attr('data-id');
-        var dataJSON = {'labelData':labelData,'labelDataID':labelDataID};
+        var dataJSON = {'label':labelData,'id':labelDataID};
         if(event.keyCode == 13){
-            addLabel(dataJSON, "../content/updateIssue.do","修改失败");
+            updataLabel(dataJSON, "../content/updateInformationLabel.do",$(this));
         }
     });
 
     //添加标签
     $('#infoLabelData').on('click','.add_label-btn',function () {
         var _this = $(this);
-        var labelData = $.trim(_this.siblings('.label_input').val());
-        var dataJSON = {'labelData':labelData};
-        addLabel(dataJSON, "../content/updateIssue.do","添加失败");
+        var labelData = _this.siblings('.label_input');;
+        addLabel( "../content/addInformationLabel.do",labelData);
     });
     $('#infoLabelData').on('keypress','.label_input',function () {
-        var labelData = $.trim($(this).val());
-        var dataJSON = {'labelData':labelData};
+        var labelData = $(this);
         if(event.keyCode == 13){
-            addLabel(dataJSON, "../content/updateIssue.do","添加失败");
+            addLabel("../content/addInformationLabel.do",labelData);
         }
     });
 
@@ -85,6 +63,24 @@ $(function () {
         }else{
             delelLabel(labelData)
         }
+    });
+    //单条删除标签
+    $('#labelInfo').on('click','.delete_label',function () {
+        var _this = $(this);
+        var parentEle = _this.parents('.queryData');
+        var labelDataEel = parentEle.find('.label_data');
+        var labelArr = [];
+        labelArr.push(labelDataEel.attr('data-id'))
+        layer.alert('确定删除该数据吗？',{
+            icon: 1,
+            skin: 'layui-layer-molv',
+            btn: ['确定','取消'], //按钮
+            yes: function(){
+                delelLabel(labelArr)
+            },btn2:function () {
+                layer.closeAll();
+            }
+        });
     });
 
     //全选
@@ -115,14 +111,14 @@ $(function () {
 function delelLabel(labelArr) {
     $.ajax({
         type : "post",
-        url : "../content/updateIssue.do",
+        url : "../content/deleteInformationLabel.do",
         data :{
-            "label" : labelArr
+            "ids" : labelArr
         },
         dataType : "json",
         success : function(data){
             layer.closeAll();
-            if(data.status == 200){
+            if(data){
                 window.location.href();
             }else{
                 layer.msg("删除失败!");
@@ -135,26 +131,61 @@ function delelLabel(labelArr) {
     });
 }
 
-function addLabel(labelData,url,tip) {
+function addLabel(url,labelDataEle) {
+    var labelData = $.trim(labelDataEle.val());
+    labelDataEle.val('');
     if(labelData == ''){
         layer.msg("请填写标签!")
     }else{
         $.ajax({
-            type : "post",
             url :url,
-            data :labelData,
+            data :{'label':labelData},
             dataType : "json",
             success : function(data){
-                if(data.status == 200){
-                    window.location.href();
-                }else if(data.status == 401){
+                if(data.isSuccess == 'Success'){
+                    layer.msg('添加成功');
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1000);
+                }else if(data.isSuccess == 'exist'){
                     layer.msg("标签已存在，请填写别的标签！");
+                }else if(data.isSuccess == 'notEmpty'){
+                    layer.msg('请填写标签');
                 }else{
-                    layer.msg(tip);
+                    layer.msg('添加失败');
                 }
             },
             error : function(err){
-                layer.msg(tip);
+                layer.msg("添加失败");
+            }
+        })
+    }
+}
+
+function updataLabel(dataJSON,url,labelDataEle) {
+    var labelData = $.trim(labelDataEle.val());
+    labelDataEle.val('');
+    if(labelData == ''){
+        layer.msg("请填写标签!")
+    }else{
+        $.ajax({
+            url :url,
+            data :dataJSON,
+            dataType : "json",
+            success : function(data){
+                if(data.isSuccess == 'Success'){
+                    layer.msg('修改成功');
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1000);
+                }else if(data.isSuccess == 'exist'){
+                    layer.msg("标签已存在，请填写别的标签！");
+                }else{
+                    layer.msg('修改失败');
+                }
+            },
+            error : function(err){
+                layer.msg('修改失败');
             }
         })
     }
