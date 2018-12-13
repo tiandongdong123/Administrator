@@ -2197,9 +2197,9 @@ public class ContentController {
      * @return
      */
     @RequestMapping(value = "/deleteInformationLabel" ,method = RequestMethod.POST)
-    public Boolean DeleteInformationLabel(List<String> ids) {
+    public Boolean DeleteInformationLabel(@RequestParam(value = "ids[]") String[] ids) {
         try {
-            informationLabelService.deleteInformationLabel(ids);
+            informationLabelService.deleteInformationLabel(Arrays.asList(ids));
             log.info("删除资讯标签成功ids：" + ids.toString());
             return true;
         } catch (Exception e) {
