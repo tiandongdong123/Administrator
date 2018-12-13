@@ -125,7 +125,7 @@ function delelLabel(labelArr) {
         type : "post",
         url : "../content/deleteInformationLabel.do",
         data :{
-            ids:JSON.stringify(labelArr)
+            ids:labelArr
         },
         dataType : "json",
         success : function(data){
