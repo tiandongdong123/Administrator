@@ -58,11 +58,20 @@ $(function () {
         parentEle.find("input[name='commonid']:checked").each(function (index,value) {
             labelData.push($(value).attr('data-id'));
         })
-        if(!labelData.length){
-            layer.msg("请选择删除的内容");
-        }else{
-            delelLabel(labelData)
-        }
+        layer.alert('确定删除该数据吗？',{
+            icon: 1,
+            skin: 'layui-layer-molv',
+            btn: ['确定','取消'], //按钮
+            yes: function(){
+                if(!labelData.length){
+                    layer.msg("请选择删除的内容");
+                }else{
+                    delelLabel(labelData)
+                }
+            },btn2:function () {
+                layer.closeAll();
+            }
+        });
     });
     //单条删除标签
     $('#labelInfo').on('click','.delete_label',function () {
