@@ -24,7 +24,7 @@
                 <? if(pager.pageRecords.~size == 0 ){?>
                 <div class="empty-warning">很抱歉，当前未找到符合查询条件的结果</div>
                 <?}else{
-                  for(item in pager.pageRecords){?>
+                for(item in pager.pageRecords){?>
                 <tr style="text-align: center;" class="queryData">
                     <td style="width:10px;"><input type="checkbox" name="commonid" data-id="${item.id}"></td>
                     <td>${(pager.currentPage-1) * pager.pageSize + itemLP.index }</td>
@@ -32,7 +32,7 @@
                         <div class="label_data" data-id="${item.id}">${item.label}</div>
                         <div class="modify-label">
                             <input type="text" value="${item.label}">
-                            <button type="button"class="btn btn-primary modify-label-confirm">修改</button>
+                            <button type="button" class="btn btn-primary modify-label-confirm">修改</button>
                             <button type="button" class="btn btn-danger modify-label-cancel">取消</button>
                         </div>
                     </td>
@@ -41,16 +41,15 @@
                     <td>${item.operatingTime}</td>
                     <td>
                         <div>
-                            <button type="button"class="btn btn-primary modify-style">修改</button>
+                            <button type="button" class="btn btn-primary modify-style">修改</button>
                             &nbsp;
                             <button type="button" class="btn btn-primary delete_label">删除</button>
                         </div>
                     </td>
                 </tr>
-                <?}?>
+                <?}}?>
+
             </table>
-            <? include("../content/pagePlugin.btl",{maxPageNumber:5, pager:pager}){}}?>
-            <?}?>
         </div>
 
     </div>

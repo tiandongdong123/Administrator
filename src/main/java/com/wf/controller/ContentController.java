@@ -2152,7 +2152,6 @@ public class ContentController {
      * 查询资讯标签列表
      */
     @RequestMapping("/searchInformationLabel")
-    @ResponseBody
     public String SearchInformationLabel(Model model, SearchInformationLabelParameter parameter) throws Exception {
         if (parameter.getPage() == null || parameter.getPage() == 0) {
             parameter.setPage(1);

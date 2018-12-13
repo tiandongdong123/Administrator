@@ -115,7 +115,12 @@ $(function () {
         }
     });
 
-})
+    //点击查询
+    $('.query-confirm').on('click',function () {
+        queryHandle(1);
+    })
+
+    })
 
 function delelLabel(labelArr) {
     $.ajax({
@@ -128,7 +133,8 @@ function delelLabel(labelArr) {
         success : function(data){
             layer.closeAll();
             if(data){
-                window.location.href();
+                queryHandle(1);
+                // window.location.href();
             }else{
                 layer.msg("删除失败!");
             }
@@ -153,9 +159,10 @@ function addLabel(url,labelDataEle) {
             success : function(data){
                 if(data.isSuccess == 'Success'){
                     layer.msg('添加成功');
-                    setTimeout(function () {
-                        window.location.reload();
-                    },1000);
+                    queryHandle(1);
+                    // setTimeout(function () {
+                    //     window.location.reload();
+                    // },1000);
                 }else if(data.isSuccess == 'exist'){
                     layer.msg("标签已存在，请填写别的标签！");
                 }else if(data.isSuccess == 'notEmpty'){
@@ -184,9 +191,10 @@ function updataLabel(dataJSON,url,labelDataEle) {
             success : function(data){
                 if(data.isSuccess == 'Success'){
                     layer.msg('修改成功');
-                    setTimeout(function () {
-                        window.location.reload();
-                    },1000);
+                    queryHandle(1);
+                    // setTimeout(function () {
+                    //     window.location.reload();
+                    // },1000);
                 }else if(data.isSuccess == 'exist'){
                     layer.msg("标签已存在，请填写别的标签！");
                 }else{
@@ -198,4 +206,28 @@ function updataLabel(dataJSON,url,labelDataEle) {
             }
         })
     }
+}
+
+function queryHandle(page) {
+    var infoLabelData = $('#infoLabelData');
+    var label = $.trim($('#label').val());
+    var operation = $.trim($('#operation').val());
+    var startTime = $.trim($('#startTime').val());
+    var endTime = $.trim($('#endTime').val());
+    var page = page;
+    // window.location.href='../content/informationLabelList.do?label='+label+'&operator='+operation+'&operatingTimeStart='+startTime+'&operatingTimeEnd='+endTime;
+    $.ajax({
+        url:"../content/searchInformationLabel.do",
+        data:{
+            "parameter.label":label,
+            "parameter.operator":operation,
+            "parameter.operatingTimeStart":startTime,
+            "parameter.operatingTimeEnd":endTime,
+            "parameter.page":page
+        },
+        dataType:'json',
+        success : function(data){
+            infoLabelData.html(data);
+        }
+    })
 }
