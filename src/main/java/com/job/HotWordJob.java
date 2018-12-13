@@ -354,7 +354,7 @@ public class HotWordJob {
 			e.printStackTrace();
 		}
 		log.info("完成手动热搜词的抓取");
-	}
+	} 
 	
 	private boolean isChinese(char c) {
 		Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
