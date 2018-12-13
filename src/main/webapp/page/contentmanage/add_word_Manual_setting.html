@@ -14,11 +14,11 @@
 			<div id="addadmin">
 			<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据周期：</label>
-             <input type="text" id="get_cycle" maxlength="16"  class="form-control input_width" value="${item.get_cyc!}">天<span id="checkpublish_cyc" style="color:red;"></span>
+             <input type="text" id="get_cycle" maxlength="16"  class="form-control input_width" value="${item.get_cyc!}">&nbsp;&nbsp;天<span id="checkpublish_cyc" style="color:red;margin-left:10px"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据时间段：</label>
-            	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}">天<span id="checktime_slot" style="color:red;"></span>
+            	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}" style="width:43.5%">&nbsp;&nbsp;天<span id="checktime_slot" style="color:red;margin-left:10px"></span>
          	</div>
          </div>		
               <?if(isupdate=='add'){?>

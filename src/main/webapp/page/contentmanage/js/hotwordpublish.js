@@ -425,13 +425,13 @@ function doaddWordManualSetting(){
 	
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
-		$("#checkpublish_cyc").text("请填写发布周期！");
+		$("#checkpublish_cyc").text("请填写抓取数据周期！");
 		return;
 	}else{
 		$("#checkpublish_cyc").text("");
 	}
 	if(time_slot=='' || time_slot==null || time_slot==undefined){
-		$("#checktime_slot").text("请填写数据统计时间段！");
+		$("#checktime_slot").text("请填写抓取数据时间段！");
 		return;
 	}else{
 		$("#checktime_slot").text("");
