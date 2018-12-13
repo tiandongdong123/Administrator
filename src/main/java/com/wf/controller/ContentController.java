@@ -2130,7 +2130,7 @@ public class ContentController {
             searchRequest.setLabel(label);
             //查询标签在数据库是否存在
             SearchResponse<InformationLabel> searchResponse = informationLabelService.searchInformationLabel(searchRequest);
-            if (searchResponse != null) {
+            if (searchResponse != null && searchResponse.getItems().size() > 0) {
                 log.info("标签已存在,添加失败。label：" + label);
                 map.put("isSuccess", "exist");
                 return map;
