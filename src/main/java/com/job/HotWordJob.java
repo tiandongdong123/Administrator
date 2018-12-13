@@ -192,10 +192,10 @@ public class HotWordJob {
 			String hostip = addr.getHostAddress();
 			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);//热搜词执行定时器ip
 			//当本机ip和热搜词执行定时器ip不相等时不执行
-			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
-				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
-				return;
-			}
+//			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
+//				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
+//				return;
+//			}
 			//获取任务(并且任务的下次抓取时间为当天的)
 			HotWordSetting set = hotWordSettingService.getHotWordManualSettingTask();
 			if(set==null){
@@ -258,6 +258,7 @@ public class HotWordJob {
 					String theme=map.get("theme");
 					int count=Integer.parseInt(map.get("frequency"));
 					//大数据的查询
+					log.info("执行对比禁用词");
 					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
 					if(forbid>0 || isMessyCode(theme)){
 						continue;
@@ -318,7 +319,6 @@ public class HotWordJob {
 				hot.setWordStatus(2);
 				//把热搜词插入到数据库hot_search_word
 				log.info("保存热搜词："+entry.getKey());
-				log.info("查询到热搜词"+hot.toString());
 				hotwordService.addWord(hot);
 			}			
 			// 设置本次抓取数据时间段=下次抓取时间-抓取数据时间段--下次抓取时间
