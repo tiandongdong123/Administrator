@@ -2036,6 +2036,9 @@ public class ContentController{
 	@RequestMapping("/doaddWordManualSetting")
 	@ResponseBody
 	public boolean doaddWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
+		if(wordset.getTime_slot()==0||wordset.getGet_cyc()==0){
+			return false;
+		}else{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			Date d = new Date();
 			String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
@@ -2047,6 +2050,7 @@ public class ContentController{
 			wordset.setGet_time(getTime);
 			wordset.setIs_first("0");
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
+		}
 	}
 	
 	/*
