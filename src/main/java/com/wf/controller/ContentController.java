@@ -2185,8 +2185,9 @@ public class ContentController{
 		 Calendar cal = Calendar.getInstance();
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		 //TODO 更新下次发布时间
+		 // 更新下次发布时间
 		 String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
+		 sdf = new SimpleDateFormat("yyyy-MM-dd"); 
 			int day=cal.get(Calendar.DATE); 
 			cal.set(Calendar.DATE,day+1);
 			wordset.setNext_get_time(sdf.format(cal.getTime())+"  "+getTime);
@@ -2197,8 +2198,6 @@ public class ContentController{
 		 return hotWordSettingService.updateWordSetting(wordset)>0;
 	}
 
-
-	
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
