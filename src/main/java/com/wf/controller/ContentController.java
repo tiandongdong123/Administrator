@@ -2151,7 +2151,7 @@ public class ContentController {
     /**
      * 查询资讯标签列表
      */
-    @RequestMapping("/SearchInformationLabel")
+    @RequestMapping("/searchInformationLabel")
     @ResponseBody
     public String SearchInformationLabel(Model model, SearchInformationLabelParameter parameter) throws Exception {
         if (parameter.getPage() == null || parameter.getPage() == 0) {
@@ -2185,7 +2185,7 @@ public class ContentController {
             InformationLabelViewModel viewModel = new InformationLabelViewModel(informationLabel);
             list.add(viewModel);
         }
-        String url = "/chargeCode/searchChargeCodeBatch";
+        String url = "/content/searchInformationLabel";
         PagerModel<InformationLabelViewModel> pager = new PagerModel<>(parameter.getPage(), searchResponse.getTotalCount(), pageSize, list, url, parameter);
         model.addAttribute("pager", pager);
         return "/page/contentmanage/informationLabelList";
