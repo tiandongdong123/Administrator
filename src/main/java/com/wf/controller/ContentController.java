@@ -2184,7 +2184,7 @@ public class ContentController {
             InformationLabelViewModel viewModel = new InformationLabelViewModel(informationLabel);
             list.add(viewModel);
         }
-        String url = "/content/searchInformationLabel";
+        String url = "/content/searchInformationLabel.do";
         PagerModel<InformationLabelViewModel> pager = new PagerModel<>(parameter.getPage(), searchResponse.getTotalCount(), pageSize, list, url, parameter);
         model.addAttribute("pager", pager);
         return "/page/contentmanage/informationLabelList";
