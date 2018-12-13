@@ -42,10 +42,7 @@ import org.neo4j.cypher.internal.compiler.v2_2.functions.E;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -2200,7 +2197,7 @@ public class ContentController {
      * @param ids
      * @return
      */
-    @RequestMapping("/deleteInformationLabel")
+    @RequestMapping(value = "/deleteInformationLabel" ,method = RequestMethod.POST)
     public Boolean DeleteInformationLabel(List<String> ids) {
         try {
             informationLabelService.deleteInformationLabel(ids);
