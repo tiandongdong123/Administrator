@@ -43,7 +43,7 @@ function serachAutodata(curr,data,id){
  	   pageall= parseInt(totalRow/pageSize)+1;
     }
     var maxLenght=(pageall+"").length;
-    $("#totalRow").text(pageRow.length);
+    $("#totalRow").text(totalRow);
     $("#totalpage").text(pageall);
     $("#pageTotal").val(pageTotal);
     $("#pagenum").attr("maxlength",maxLenght); 
@@ -207,18 +207,35 @@ function doaddWordSetting(){
 		$("#checktime_slot").text("");
 	}
 	
-//	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
-//		$("#checkpublish_date").text("请填写发布时间！");
-//		return;
-//	}else{
-//		$("#checkpublish_date").text("");		
-//	} 
+	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
+		$("#checkpublish_date").text("请填写发布时间！");
+		return;
+	}else{
+		$("#checkpublish_date").text("");		
+	} 
 
 	
 	$.ajax({
 		type : "post",
 		async:false,
 		url : "../content/doaddWordSetting.do",
+		dataType : "json",
+		data : {
+			"publish_cyc" :publish_cyc,
+			"time_slot" :time_slot,
+			"publish_strategy" :publish_strategy,
+			"publish_date" :publish_date,
+			"get_time" :get_time,
+			"isFirst":isFirst,
+			},
+		success : function (data){
+			issuccess=data;
+		}
+	});
+	$.ajax({
+		type : "post",
+		async:false,
+		url : "../content/getHotWordSettingGetTime.do",
 		dataType : "json",
 		data : {
 			"publish_cyc" :publish_cyc,
@@ -436,6 +453,7 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
+			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
@@ -454,14 +472,14 @@ function serachManualdata(curr,data,id){
  	   pageall= parseInt(totalRow/pageSize)+1;
     }
     var maxLenght=(pageall+"").length;
-    $("#totalRowManual").text(pageRow.length);
-    $("#totalpageManual").text(pageall);
-    $("#pageTotalManual").val(pageTotal);
-    $("#pagenum_manual").attr("maxlength",maxLenght); 
-    if(pageRow.length<=20){
-    	$("#pages_manual").hide();
+    $("#totalRow").text(totalRow);
+    $("#totalpage").text(pageall);
+    $("#pageTotal").val(pageTotal);
+    $("#pagenum").attr("maxlength",maxLenght); 
+    if(totalRow<=20){
+    	$("#pages").hide();
     }else{
-    	$("#pages_manual").show();
+    	$("#pages").show();
     }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
