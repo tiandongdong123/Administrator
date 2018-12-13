@@ -29,21 +29,25 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 
 	@Override
 	public PageList getHotWordSetting(Map map) {
+		List<Object> count=hotWordSettingDao.getHotWordSettingCount(map);
 		PageList list = new PageList();
 		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
 		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
 		list.setPageRow(hotWordSettingDao.getHotWordSetting(map));
-		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
+		list.setTotalRow(count.size());
+		list.setPageTotal(count.size()%list.getPageSize()==0?count.size()/list.getPageSize():count.size()/list.getPageSize()+1);
 		return list;
 	}
 	
 	@Override
 	public PageList getHotWordManualSetting(Map map) {
+		List<Object> count=hotWordSettingDao.getHotWordManualSettingCount(map);
 		PageList list = new PageList();
 		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
 		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
 		list.setPageRow(hotWordSettingDao.getHotWordManualSetting(map));
-		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
+		list.setTotalRow(count.size());
+		list.setPageTotal(count.size()%list.getPageSize()==0?count.size()/list.getPageSize():count.size()/list.getPageSize()+1);
 		return list;
 	}
 
