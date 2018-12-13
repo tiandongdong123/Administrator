@@ -1757,7 +1757,7 @@ public class ContentController{
 	public String addWordSetting(Model model){
 		String nextPublishTime=hotWordSettingService.getNextPublishTime();
 		model.addAttribute("isupdate","add");
-		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
+		model.addAttribute("get_time_cur",com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time());
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}
@@ -2118,8 +2118,7 @@ public class ContentController{
 		model.addAttribute("item",item);
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		model.addAttribute("isupdate","update");
-		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
-
+		model.addAttribute("get_time_cur",com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time());
 		return "/page/contentmanage/add_word_setting";
 	}
 	
