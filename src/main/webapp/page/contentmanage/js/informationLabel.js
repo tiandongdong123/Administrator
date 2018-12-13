@@ -1,6 +1,6 @@
 $(function () {
      //修改标签
-    $('#labelInfo').on('click','.modify-style',function () {
+    $('#infoLabelData').on('click','.modify-style',function () {
         var _this = $(this);
         var parentEle = _this.parents('.queryData');
         var labelDataEel = parentEle.find('.label_data');
@@ -10,7 +10,7 @@ $(function () {
     });
 
     //修改取消
-    $('#labelInfo').on('click','.modify-label-cancel',function () {
+    $('#infoLabelData').on('click','.modify-label-cancel',function () {
         var _this = $(this);
         var parentEle = _this.parents('.queryData');
         var labelDataEel = parentEle.find('.label_data');
@@ -20,7 +20,7 @@ $(function () {
     });
 
     //修改确认
-    $('#labelInfo').on('click','.modify-label-confirm',function () {
+    $('#infoLabelData').on('click','.modify-label-confirm',function () {
         var _this = $(this);
         var labelData = $.trim(_this.siblings('input').val());
         var labelDataID = _this.parents('.ar').find('.label_data').attr('data-id');
@@ -74,7 +74,7 @@ $(function () {
         });
     });
     //单条删除标签
-    $('#labelInfo').on('click','.delete_label',function () {
+    $('#infoLabelData').on('click','.delete_label',function () {
         var _this = $(this);
         var parentEle = _this.parents('.queryData');
         var labelDataEel = parentEle.find('.label_data');
@@ -93,7 +93,7 @@ $(function () {
     });
 
     //全选
-    $('#labelInfo').on('click','.allId',function () {
+    $('#infoLabelData').on('click','.allId',function () {
         var _this = $(this);
         if (_this.is(':checked')) {
             $("input[name=commonid]").each(function() {
@@ -105,7 +105,7 @@ $(function () {
             });
         }
     });
-    $('#labelInfo').on('change','input[name=commonid]',function () {
+    $('#infoLabelData').on('change','input[name=commonid]',function () {
         var checkbedLen = $('input[name=commonid]:checked').length;
         var noCheckedLen = $('input[name=commonid]').length;
         if(checkbedLen == noCheckedLen){
@@ -114,27 +114,24 @@ $(function () {
             $('.allId').removeAttr("checked");
         }
     });
-
-    //点击查询
+        //点击查询
     $('.query-confirm').on('click',function () {
         queryHandle(1);
-    })
-
-    })
+    });
+})
 
 function delelLabel(labelArr) {
     $.ajax({
         type : "post",
         url : "../content/deleteInformationLabel.do",
         data :{
-            "ids" : labelArr
+            ids:JSON.stringify(labelArr)
         },
         dataType : "json",
         success : function(data){
             layer.closeAll();
             if(data){
                 queryHandle(1);
-                // window.location.href();
             }else{
                 layer.msg("删除失败!");
             }
@@ -189,7 +186,7 @@ function updataLabel(dataJSON,url,labelDataEle) {
             data :dataJSON,
             dataType : "json",
             success : function(data){
-                if(data.isSuccess == 'Success'){
+                if(data.isSuccess == 'success'){
                     layer.msg('修改成功');
                     queryHandle(1);
                     // setTimeout(function () {
@@ -225,9 +222,11 @@ function queryHandle(page) {
             "parameter.operatingTimeEnd":endTime,
             "parameter.page":page
         },
-        dataType:'json',
         success : function(data){
             infoLabelData.html(data);
+        },
+        error:function (err) {
+            console.log(err)
         }
     })
 }
