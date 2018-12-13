@@ -1757,7 +1757,7 @@ public class ContentController{
 	public String addWordSetting(Model model){
 		String nextPublishTime=hotWordSettingService.getNextPublishTime();
 		model.addAttribute("isupdate","add");
-		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
+		model.addAttribute("get_time_cur",com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time());
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		return "/page/contentmanage/add_word_setting";
 	}
@@ -2118,8 +2118,7 @@ public class ContentController{
 		model.addAttribute("item",item);
 		model.addAttribute("isFirst",hotWordSettingService.checkFirst()>0);
 		model.addAttribute("isupdate","update");
-		model.addAttribute("get_time_cur",nextPublishTime==null?"":nextPublishTime.substring(11,nextPublishTime.length()));
-
+		model.addAttribute("get_time_cur",com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time());
 		return "/page/contentmanage/add_word_setting";
 	}
 	
@@ -2185,6 +2184,12 @@ public class ContentController{
 		 Calendar cal = Calendar.getInstance();
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		 // 更新下次发布时间
+		 String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
+		 sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+			int day=cal.get(Calendar.DATE); 
+			cal.set(Calendar.DATE,day+1);
+			wordset.setNext_get_time(sdf.format(cal.getTime())+"  "+getTime);
 		 wordset.setOperation_date(sdf.format(d));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -2192,8 +2197,6 @@ public class ContentController{
 		 return hotWordSettingService.updateWordSetting(wordset)>0;
 	}
 
-
-	
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
