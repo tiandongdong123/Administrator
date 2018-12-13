@@ -132,6 +132,7 @@ function delelLabel(labelArr) {
         success: function (data) {
             layer.closeAll();
             if (data) {
+                layer.msg("删除成功");
                 queryHandle(1);
             } else {
                 layer.msg("删除失败!");
