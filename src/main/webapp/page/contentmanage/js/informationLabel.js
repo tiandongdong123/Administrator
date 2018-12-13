@@ -208,6 +208,7 @@ function updataLabel(dataJSON,url,labelDataEle) {
 function queryHandle(page) {
     var infoLabelData = $('#infoLabelData');
     var label = $.trim($('#label').val());
+    alert(label)
     var operation = $.trim($('#operation').val());
     var startTime = $.trim($('#startTime').val());
     var endTime = $.trim($('#endTime').val());
@@ -216,11 +217,12 @@ function queryHandle(page) {
     $.ajax({
         url:"../content/searchInformationLabel.do",
         data:{
-            "parameter.label":label,
-            "parameter.operator":operation,
-            "parameter.operatingTimeStart":startTime,
-            "parameter.operatingTimeEnd":endTime,
-            "parameter.page":page
+            "label":label,
+            "operator":operation,
+            "operatingTimeStart":startTime,
+            "operatingTimeEnd":endTime,
+            "page":page,
+            "pageSize":20
         },
         success : function(data){
             infoLabelData.html(data);
