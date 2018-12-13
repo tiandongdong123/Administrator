@@ -1884,7 +1884,7 @@ public class ContentController{
 			if(set!=null){
 				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_get_time_space(now_publish_time_space);
+				set.setNow_publish_time_space(now_publish_time_space);
 				set.setIs_first("1");
 				hotWordSettingService.updateWordSetting(set);
 			}
@@ -1900,7 +1900,6 @@ public class ContentController{
 	@ResponseBody
 	public boolean batch(HttpServletRequest request,
 			@RequestParam(value="ids[]",required=false) Integer[]ids,Integer status){
-		
 		if(status==1){
 			int c=20-hotWordService.checkRedisCount();
 			Map map=new HashMap();
@@ -1909,7 +1908,6 @@ public class ContentController{
 			Integer[] orderid=hotWordService.getHotWordByOrder(map);
 			ids=orderid;
 		}
-		
 		HotWord hotWord=null;
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		int count=0;
@@ -1964,7 +1962,7 @@ public class ContentController{
 			if(isuccess){
 				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_get_time_space(now_publish_time_space);
+				set.setNow_publish_time_space(now_publish_time_space);
 				set.setIs_first("1");
 				hotWordSettingService.updateWordSetting(set);
 			}
@@ -2034,7 +2032,6 @@ public class ContentController{
 	public boolean doaddWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			Date d = new Date();
-			Calendar cal = Calendar.getInstance();
 			String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
 			wordset.setPublish_strategy("手动发布");
 			wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
@@ -2042,8 +2039,6 @@ public class ContentController{
 			wordset.setOperation_date(sdf.format(d));
 			wordset.setStatus(2);
 			wordset.setGet_time(getTime);
-			sdf = new SimpleDateFormat("yyyy-MM-dd");  
-			wordset.setNext_get_time(sdf.format(d)+"  "+getTime);
 			wordset.setIs_first("0");
 	 		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
@@ -2126,7 +2121,6 @@ public class ContentController{
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
 	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
-		System.out.println("----------修改自动设置");
 		try{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
@@ -2167,7 +2161,6 @@ public class ContentController{
 	@RequestMapping("/doupdateWordManualSetting")
 	@ResponseBody
 	public boolean doupdateWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
-		System.out.println("----------修改手动设置");
 		try{
 		SimpleDateFormat sdf =  sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 Date d = new Date();
@@ -2186,7 +2179,6 @@ public class ContentController{
 	@RequestMapping("/updateWordSettingStatus")
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
-		System.out.println("----------应用自动设置");
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
@@ -2210,7 +2202,6 @@ public class ContentController{
 	@RequestMapping("/updateWordManualSettingStatus")
 	@ResponseBody
 	public boolean updateWordManualSettingStatus(Integer id,Integer status){
-		System.out.println("----------应用手动设置");
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
@@ -2220,13 +2211,17 @@ public class ContentController{
 		wordset.setId(id);
 		wordset.setOperation_date(sdf.format(new Date()));
 		sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-		Date d = new Date();
+		Date d = new Date(); 
 		String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
-		wordset.setNext_get_time(sdf.format(d)+"  "+getTime);
+		Calendar cal = Calendar.getInstance();
+		int day=cal.get(Calendar.DATE); 
+		cal.set(Calendar.DATE,day+1);
+		wordset.setNext_get_time(sdf.format(cal.getTime())+"  "+getTime);
+		wordset.setIs_first("0");
 		//更新属性
 		Integer update=hotWordSettingService.updateWordSetting(wordset);
 		return update>0;
-	}	
+	}	  
 	
 	@RequestMapping("periodicalcomment")
 	public String PerioComment(){
