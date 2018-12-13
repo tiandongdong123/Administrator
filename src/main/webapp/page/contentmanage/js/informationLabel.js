@@ -203,7 +203,6 @@ function updataLabel(dataJSON, url, labelDataEle) {
 function queryHandle(page) {
     var infoLabelData = $('#infoLabelData');
     var label = $.trim($('#label').val());
-    alert(label)
     var operation = $.trim($('#operation').val());
     var startTime = $.trim($('#startTime').val());
     var endTime = $.trim($('#endTime').val());

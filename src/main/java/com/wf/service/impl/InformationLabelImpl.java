@@ -126,4 +126,24 @@ public class InformationLabelImpl implements InformationLabelService {
             return false;
         }
     }
+
+    @Override
+    public SearchResponse<InformationLabel> searchOnlyInformationLabel(InformationLabelSearchRequset request) {
+        //初始化example，为了放置查询参数、起始的下标、偏移量
+        InformationLabelExample example = new InformationLabelExample();
+        //通过example创建criteria，为了放置查询条件
+        InformationLabelExample.Criteria criteria = example.createCriteria();
+        if (request.getLabel() != null && !"".equals(request.getLabel())) {
+            criteria.andLabelEqualTo(request.getLabel());
+        }
+        try {
+            List<InformationLabel> list = informationLabelMapper.selectByExample(example);
+            long count = informationLabelMapper.countByExample(example);
+            return new SearchResponse<InformationLabel>(list, new Long(count).intValue());
+        } catch (Exception e) {
+            log.error("查询资讯标签失败，request：" + request.toString(), e);
+            throw e;
+        }
+    }
+
 }

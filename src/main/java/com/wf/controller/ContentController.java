@@ -2127,7 +2127,7 @@ public class ContentController {
         try {
             searchRequest.setLabel(label);
             //查询标签在数据库是否存在
-            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchInformationLabel(searchRequest);
+            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchOnlyInformationLabel(searchRequest);
             if (searchResponse != null && searchResponse.getItems().size() > 0) {
                 log.info("标签已存在,添加失败。label：" + label);
                 map.put("isSuccess", "exist");
@@ -2208,6 +2208,12 @@ public class ContentController {
         }
     }
 
+    /**
+     * 修改资讯标签
+     * @param id
+     * @param label
+     * @return
+     */
     @RequestMapping("/updateInformationLabel")
     @ResponseBody
     public Map UpdateInformationLabel(String id, String label) {
@@ -2216,7 +2222,7 @@ public class ContentController {
         try {
             searchRequest.setLabel(label);
             //查询标签在数据库是否存在
-            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchInformationLabel(searchRequest);
+            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchOnlyInformationLabel(searchRequest);
             if (searchResponse != null && searchResponse.getItems().size() > 0) {
                 log.info("标签已存在,修改失败。label：" + label);
                 map.put("isSuccess", "exist");

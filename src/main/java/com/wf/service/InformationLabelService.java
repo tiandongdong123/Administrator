@@ -35,4 +35,11 @@ public interface InformationLabelService {
      * @param id
      */
     boolean updateInformationLabel(String id,String label);
+
+    /**
+     * 资讯标签精确查询，用于添加标签及修改标签
+     * @param request
+     * @return
+     */
+    SearchResponse<InformationLabel> searchOnlyInformationLabel(InformationLabelSearchRequset request);
 }
