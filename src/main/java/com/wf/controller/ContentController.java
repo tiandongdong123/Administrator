@@ -1882,11 +1882,14 @@ public class ContentController{
 		isuccess=hotWordService.publishToRedis();
 		if(isuccess){
 			if(set!=null){
-				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_publish_time_space(now_publish_time_space);
-				set.setIs_first("1");
-				hotWordSettingService.updateWordSetting(set);
+				//更改所有手动目前发布数据时间段
+				List<HotWordSetting> list=hotWordSettingService.getHotWordManualSettingList();
+				for (HotWordSetting hotWordSetting : list) {
+					hotWordSetting.setNow_publish_time_space(now_publish_time_space);
+					hotWordSetting.setIs_first("1");
+					hotWordSettingService.updateWordSetting(hotWordSetting);
+				}
 			}
 		}
 		return isuccess;
@@ -1960,11 +1963,14 @@ public class ContentController{
 		boolean isuccess=hotWordService.publishToRedis();
 		if(set!=null){
 			if(isuccess){
-				//更改目前发布数据时间段
 				String now_publish_time_space=set.getNow_get_time_space();
-				set.setNow_publish_time_space(now_publish_time_space);
-				set.setIs_first("1");
-				hotWordSettingService.updateWordSetting(set);
+				//更改所有手动目前发布数据时间段
+				List<HotWordSetting> list=hotWordSettingService.getHotWordManualSettingList();
+				for (HotWordSetting hotWordSetting : list) {
+					hotWordSetting.setNow_publish_time_space(now_publish_time_space);
+					hotWordSetting.setIs_first("1");
+					hotWordSettingService.updateWordSetting(hotWordSetting);
+				}
 			}
 		}
 		return count>0 && isuccess;

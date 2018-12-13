@@ -21,4 +21,6 @@ public interface HotWordSettingService {
 	Integer updateAllSettingTime();
 	HotWordSetting getExecHotWordSetting(Integer status);
 	HotWordSetting getOneHotWordManualSetting();//获取状态为正在执行的手动设置
+	Integer updateAllManualNowGetTimeApace(HotWordSetting hotWordSetting);//更新所有手动设置的本次抓取数据时间段和下次抓取数据时间段
+	List<HotWordSetting> getHotWordManualSettingList();
 }

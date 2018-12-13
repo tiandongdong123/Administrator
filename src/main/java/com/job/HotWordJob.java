@@ -259,10 +259,10 @@ public class HotWordJob {
 					int count=Integer.parseInt(map.get("frequency"));
 					//大数据的查询
 					log.info("执行对比禁用词");
-					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-					if(forbid>0 || isMessyCode(theme)){
-						continue;
-					}
+//					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
+//					if(forbid>0 || isMessyCode(theme)){
+//						continue;
+//					}
 					if(StringUtils.isBlank(theme)){
 						continue;
 					}
@@ -335,14 +335,14 @@ public class HotWordJob {
 			String now_get_time_space=sdf.format(cal.getTime())+" "+set.getGet_time()+"───"+sb.toString()+" "+set.getGet_time();
 			set.setNow_get_time_space(now_get_time_space);
 			//是否发布，0未发布  1已发布
-			set.setIs_first("0");
-			hotWordSettingService.updateWordSetting(set);
 			// 更改下次抓取时间
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
 			cal.set(Calendar.DATE,day+set.getTime_slot()); 
 			String next_get_time=sdf.format(cal.getTime())+" "+set.getGet_time();
 			set.setNext_get_time(next_get_time);
+			set.setIs_first("0");
 			hotWordSettingService.updateWordSetting(set);
+			hotWordSettingService.updateAllManualNowGetTimeApace(set);
 			log.info("手动设置热搜词更新时间完成");
 		} catch (Exception e) {
 			e.printStackTrace();

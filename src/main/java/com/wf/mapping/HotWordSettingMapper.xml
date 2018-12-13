@@ -27,6 +27,9 @@
  	<select id="getHotWordSettingList" resultType="com.wf.bean.HotWordSetting">
  	  select * from hot_search_word_setting 
  	</select>
+ 	<select id="getHotWordManualSettingList" resultType="com.wf.bean.HotWordSetting">
+ 	  select * from hot_search_word_setting where publish_strategy='手动发布'
+ 	</select>
  	<select id="getHotWordSetting"  resultType="map" parameterType="map">
  	  select * from hot_search_word_setting where publish_strategy='自动发布'  order by status,operation_date DESC
  	  limit #{pageNum},#{pageSize}
