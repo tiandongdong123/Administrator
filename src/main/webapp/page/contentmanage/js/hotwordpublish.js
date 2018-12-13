@@ -1,5 +1,5 @@
 var pageNum;
-var pageSize = 30;
+var pageSize = 20;
 
 $(function(){
 	showPage(1,'auto_tbody');
@@ -225,24 +225,7 @@ function doaddWordSetting(){
 			"time_slot" :time_slot,
 			"publish_strategy" :publish_strategy,
 			"publish_date" :publish_date,
-			"get_time" :get_time,
-			"isFirst":isFirst,
-			},
-		success : function (data){
-			issuccess=data;
-		}
-	});
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/getHotWordSettingGetTime.do",
-		dataType : "json",
-		data : {
-			"publish_cyc" :publish_cyc,
-			"time_slot" :time_slot,
-			"publish_strategy" :publish_strategy,
-			"publish_date" :publish_date,
-			"get_time" :get_time,
+//			"get_time" :get_time,
 			"isFirst":isFirst,
 			},
 		success : function (data){
@@ -453,7 +436,6 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
@@ -465,21 +447,21 @@ function serachManualdata(curr,data,id){
 	var pageTotal = data.pageTotal;
 	var totalRow=data.totalRow;
 	var resHtml ="";
-	var pageall;
+    var pageall;
     if(totalRow%pageSize==0){
  	   pageall=totalRow/pageSize;
     }else{
  	   pageall= parseInt(totalRow/pageSize)+1;
     }
     var maxLenght=(pageall+"").length;
-    $("#totalRow").text(totalRow);
-    $("#totalpage").text(pageall);
-    $("#pageTotal").val(pageTotal);
-    $("#pagenum").attr("maxlength",maxLenght); 
+    $("#totalRowManual").text(totalRow);
+    $("#totalpageManual").text(pageall);
+    $("#pageTotalManual").val(pageTotal);
+    $("#pagenum_manual").attr("maxlength",maxLenght); 
     if(totalRow<=20){
-    	$("#pages").hide();
+    	$("#pages_manual").hide();
     }else{
-    	$("#pages").show();
+    	$("#pages_manual").show();
     }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
@@ -526,7 +508,7 @@ function firstPageManual(){
 		layer.msg("已经是第一页了");
 	}else{
 		$("#pagenum_manual").val("1");
-		showPageManual(1);
+		showManualPage(1,'manual_tbody');
 	}
 }
 function upPageManual(){
@@ -535,7 +517,7 @@ function upPageManual(){
 		layer.msg("已经是第一页了");
 	}else{
 		$("#pagenum_manual").val(pagenum);
-		showPageManual(pagenum);
+		showManualPage(pagenum,'manual_tbody');
 	}
 }
 function lastPageManual(){
@@ -545,7 +527,7 @@ function lastPageManual(){
 		layer.msg("已经是最后一页了");
 	}else{
 		$("#pagenum_manual").val(total);
-		showPageManual(total);
+		showManualPage(total,'manual_tbody');
 	}
 }
 function downPageManual(){
@@ -554,12 +536,12 @@ function downPageManual(){
 		layer.msg("已经是最后一页了");
 	}else{
 		$("#pagenum_manual").val(pagenum);
-		showPageManual(pagenum);
+		showManualPage(pagenum,'manual_tbody');
 	}
 }
 function getAllpageNumManual(){
 	$("#pagenum_manual").val("1");
-	showPageManual(pagenum);
+	showManualPage(pagenum,'manual_tbody');
 }
 
 function selectPageManual(){
@@ -572,7 +554,7 @@ function selectPageManual(){
 		}else if(pagenum==0){
 			layer.msg("请输入正确的页码");
 		}else if(pagenum<=total){
-			showPageManual(pagenum);
+			showManualPage(pagenum,'manual_tbody');
 		}
 	}
 }
