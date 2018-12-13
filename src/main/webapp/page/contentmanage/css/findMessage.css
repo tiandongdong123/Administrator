@@ -33,7 +33,11 @@
 	/*display: none;*/
 	/*color: red;*/
 /*}*/
-
+.empty-warning{
+	font-size: 20px;
+	line-height: 70px;
+	text-align: center;
+}
 .modify-label{
 	display: none;
 }
