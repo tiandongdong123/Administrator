@@ -157,9 +157,6 @@ function addLabel(url,labelDataEle) {
                 if(data.isSuccess == 'Success'){
                     layer.msg('添加成功');
                     queryHandle(1);
-                    // setTimeout(function () {
-                    //     window.location.reload();
-                    // },1000);
                 }else if(data.isSuccess == 'exist'){
                     layer.msg("标签已存在，请填写别的标签！");
                 }else if(data.isSuccess == 'notEmpty'){
@@ -189,9 +186,6 @@ function updataLabel(dataJSON,url,labelDataEle) {
                 if(data.isSuccess == 'success'){
                     layer.msg('修改成功');
                     queryHandle(1);
-                    // setTimeout(function () {
-                    //     window.location.reload();
-                    // },1000);
                 }else if(data.isSuccess == 'exist'){
                     layer.msg("标签已存在，请填写别的标签！");
                 }else{
@@ -213,7 +207,6 @@ function queryHandle(page) {
     var startTime = $.trim($('#startTime').val());
     var endTime = $.trim($('#endTime').val());
     var page = page;
-    // window.location.href='../content/informationLabelList.do?label='+label+'&operator='+operation+'&operatingTimeStart='+startTime+'&operatingTimeEnd='+endTime;
     $.ajax({
         url:"../content/searchInformationLabel.do",
         data:{
