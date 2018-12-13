@@ -2146,7 +2146,7 @@ public class ContentController {
             return map;
         }
         log.info("添加资讯标签成功。label：" + label);
-        map.put("isSuccess", "isSuccess");
+        map.put("isSuccess", "Success");
         return map;
     }
 
@@ -2193,6 +2193,11 @@ public class ContentController {
         return "";
     }
 
+    /**
+     * 删除资讯标签列表
+     * @param ids
+     * @return
+     */
     @RequestMapping("/deleteInformationLabel")
     public Boolean DeleteInformationLabel(List<Integer> ids) {
         try {
