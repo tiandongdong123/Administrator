@@ -2112,6 +2112,7 @@ public class ContentController {
      * @throws Exception
      */
     @RequestMapping("/addInformationLabel")
+    @ResponseBody
     public Map AddInformationLabel(String label, HttpServletRequest req) {
         Map<String, String> map = new HashMap<>();
         if (label == null || label.length() == 0) {
@@ -2211,6 +2212,7 @@ public class ContentController {
     }
 
     @RequestMapping("/updateInformationLabel")
+    @ResponseBody
     public Map UpdateInformationLabel(int id, String label) {
         Map<String, String> map = new HashMap<>();
         InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
