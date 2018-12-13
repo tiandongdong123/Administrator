@@ -183,7 +183,7 @@ public class HotWordJob {
 	/**
 	 * 手动设置任务定时器
 	 */
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/2 * * * ?")
 	public void exechotWordManual() {
 		try {
 			log.info("开始执行手动设置热搜词的统计");
