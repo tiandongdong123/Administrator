@@ -225,7 +225,7 @@ function doaddWordSetting(){
 			"time_slot" :time_slot,
 			"publish_strategy" :publish_strategy,
 			"publish_date" :publish_date,
-//			"get_time" :get_time,
+			"get_time" :get_time,
 			"isFirst":isFirst,
 			},
 		success : function (data){
