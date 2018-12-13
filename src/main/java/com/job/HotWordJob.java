@@ -339,9 +339,6 @@ public class HotWordJob {
 			Calendar calendar = Calendar.getInstance();
 			day=calendar.get(Calendar.DATE);
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
-			
-			
-			System.out.println("--------------"+day);
 			calendar.set(Calendar.DATE,day+set.getGet_cyc()); 
 			String next_get_time=sdf.format(calendar.getTime())+" "+set.getGet_time();
 			set.setNext_get_time(next_get_time);
