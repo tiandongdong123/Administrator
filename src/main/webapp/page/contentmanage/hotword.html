@@ -10,15 +10,22 @@
 <section class="content-header">
       <h1>热搜词管理</h1>
 </section> 
+<?if(strategy=='手动发布'){?>
+	<h1>手动发布</h1>
+<?}else if(strategy=='自动发布'){?>
+	<h1>自动发布</h1>
+<?}else if(strategy=='无应用'){?>
+	<h1>无应用</h1>
+<?}?>
 <ul class="nav nav-tabs change_setting">
-  <li role="presentation" id="manual_setting" class="active"><a>手动发布管理</a></li>
-  <li id="auto_setting"><a>自动发布管理</a></li>
+  <li id="manual_setting" class="active"><a>手动发布管理</a></li>
+  <li id="auto_setting" class="active"><a>自动发布管理</a></li>
 </ul>
     <!-- Main content -->
     <section class="content" id="manual_content">
       <div class="row">
 		<?if(!isEmpty(item)){?>
-	      	<div style="margin-left:67px;color:#F00;font-size:30px;">目前发布数据时间段:${item.now_publish_time_space!}
+	      	<div style="margin-left:67px;color:#F00;font-size:26px;">目前发布数据时间段:${item.now_publish_time_space!}
 	      	<br/>本次抓取数据时间段:${item.now_get_time_space!}</div>		
 		<?}?>
 	  	<table class="messagetable">
@@ -131,7 +138,7 @@
 <section class="content" id="auto_content" style="display:none">
      <div class="row">
 	<?if(!isEmpty(item)){?>
-      	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
+      	<div style="margin-left:67px;color:#F00;font-size:26px;">下次发布时间:${item.next_publish_time!}
       	<br/>下次抓取数据统计时间:${item.next_publish_time_space!}</div>		
 	<?}?>
   		<table class="messagetable">
@@ -243,7 +250,7 @@
 </section>
 </div>	
 <script>
-$('#manual_setting').click(function(){
+/* $('#manual_setting').click(function(){
 	$('#manual_content').show()
 	$('#auto_content').hide()
 	$(this).addClass('active').siblings().removeClass('active');
@@ -254,6 +261,6 @@ $('#auto_setting').click(function(){
 	$('#manual_content').hide()
 	$(this).addClass('active').siblings().removeClass('active');
   	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
-})
+}) */
 </script>
 <?}?>

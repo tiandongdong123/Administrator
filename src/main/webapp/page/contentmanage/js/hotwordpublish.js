@@ -25,6 +25,7 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
+			console.log(data)
 			serachAutodata(curr,data,id);
 		}
 	});
@@ -43,18 +44,18 @@ function serachAutodata(curr,data,id){
  	   pageall= parseInt(totalRow/pageSize)+1;
     }
     var maxLenght=(pageall+"").length;
-    $("#totalRow").text(pageRow.length);
+    $("#totalRow").text(totalRow);
     $("#totalpage").text(pageall);
     $("#pageTotal").val(pageTotal);
     $("#pagenum").attr("maxlength",maxLenght); 
-    if(pageRow.length<=20){
+    if(totalRow<=20){
     	$("#pages").hide();
     }else{
     	$("#pages").show();
     }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i+10*(pageNum);
+			var index = 1+pageNum++;
 			var rows = pageRow[i];	
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
@@ -160,7 +161,7 @@ function selectPage(){
 function addWordSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['38%', '300px'],
 	    title: '添加自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/addWordSetting.do",
@@ -201,7 +202,7 @@ function doaddWordSetting(){
 		$("#checkpublish_cyc").text("");
 	}
 	if(time_slot=='' || time_slot==null || time_slot==undefined){
-		$("#checktime_slot").text("请填写数据统计时间段！");
+		$("#checktime_slot").text("请填写抓取数据时间段！");
 		return;
 	}else{
 		$("#checktime_slot").text("");
@@ -436,6 +437,7 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
+			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});
@@ -562,7 +564,7 @@ function selectPageManual(){
 function addWordManualSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['38%', '300px'],
 	    title: '添加手动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/addWordManualSetting.do",
