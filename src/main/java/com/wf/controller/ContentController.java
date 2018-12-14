@@ -1989,44 +1989,45 @@ public class ContentController{
 	@ResponseBody
 	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
 		try {
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-			Date d = new Date();
-			Calendar cal = Calendar.getInstance();
-			Calendar cal1 = Calendar.getInstance();
-			String nextPublish="";
-			int day1=cal.get(Calendar.DATE);
-			cal1.set(Calendar.DATE,day1+1);
-			wordset.setFirst_publish_time(sdf.format(cal1.getTime()));
-			if(isFirst.equals("true")){
-				nextPublish=hotWordSettingService.getNextPublishTime();
+			if(wordset.getTime_slot()==0||wordset.getPublish_cyc()==0){
+				return false;
 			}else{
-				nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+				Date d = new Date();
+				Calendar cal = Calendar.getInstance();
+				Calendar cal1 = Calendar.getInstance();
+				String nextPublish="";
+				int day1=cal.get(Calendar.DATE);
+				cal1.set(Calendar.DATE,day1+1);
+				wordset.setFirst_publish_time(sdf.format(cal1.getTime()));
+				if(isFirst.equals("true")){
+					nextPublish=hotWordSettingService.getNextPublishTime();
+				}else{
+					nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
+				}
+				Date date =sdf.parse(nextPublish.substring(0, 10));
+				cal.setTime(date); 
+				int day=cal.get(Calendar.DATE); 
+				cal.set(Calendar.DATE,day-wordset.getTime_slot()); 
+				sdf=new SimpleDateFormat("yyyy年MM月dd日");
+				StringBuffer sb=new StringBuffer("");
+				String str=nextPublish.substring(0, 10);
+				sb.append(str.replaceFirst("-", "年").replaceFirst("-", "月"));
+				sb.append("日");
+				String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
+				wordset.setPublish_strategy("自动发布");
+				wordset.setFirst_publish_time(nextPublish.substring(0, 10));
+				wordset.setNext_publish_time(nextPublish);
+				wordset.setNext_publish_time_space(next_publish_time_space);
+				wordset.setStatus(2);
+				wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+				sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				wordset.setOperation_date(sdf.format(d));
 			}
-			Date date =sdf.parse(nextPublish.substring(0, 10));
-			cal.setTime(date); 
-			int day=cal.get(Calendar.DATE); 
-			cal.set(Calendar.DATE,day-wordset.getTime_slot()); 
-			sdf=new SimpleDateFormat("yyyy年MM月dd日");
-			StringBuffer sb=new StringBuffer("");
-			String str=nextPublish.substring(0, 10);
-			sb.append(str.replaceFirst("-", "年").replaceFirst("-", "月"));
-			sb.append("日");
-			String next_publish_time_space=sdf.format(cal.getTime())+" "+wordset.getGet_time()+"───"+sb.toString()+" "+wordset.getGet_time();
-			wordset.setPublish_strategy("自动发布");
-			wordset.setFirst_publish_time(nextPublish.substring(0, 10));
-			wordset.setNext_publish_time(nextPublish);
-	 		wordset.setNext_publish_time_space(next_publish_time_space);
-	 		wordset.setStatus(2);
-	 		wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
-	 		sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	 		wordset.setOperation_date(sdf.format(d));
-	 		
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
-	 		return hotWordSettingService.addWordSetting(wordset)>0;
+		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
 	
 	/**
@@ -2039,31 +2040,26 @@ public class ContentController{
 	@RequestMapping("/doaddWordManualSetting")
 	@ResponseBody
 	public boolean doaddWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
-		if(wordset.getTime_slot()==0||wordset.getGet_cyc()==0){
-			return false;
-		}else{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-			Date d = new Date();
-			String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
-			wordset.setPublish_strategy("手动发布");
-			wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
-			sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			wordset.setOperation_date(sdf.format(d));
-			wordset.setStatus(2);
-			wordset.setGet_time(getTime);
-			wordset.setIs_first("0");
-	 		return hotWordSettingService.addWordSetting(wordset)>0;
+		try {
+			if(wordset.getTime_slot()==0||wordset.getGet_cyc()==0){
+				return false;
+			}else{
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+				Date d = new Date();
+				String getTime=com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();//获取设定的几点抓取时间
+				wordset.setPublish_strategy("手动发布");
+				wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
+				sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				wordset.setOperation_date(sdf.format(d));
+				wordset.setStatus(2);
+				wordset.setGet_time(getTime);
+				wordset.setIs_first("0");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return hotWordSettingService.addWordSetting(wordset)>0;
 	}
-	
-	/*
-	 * 获取设定的抓取时间点
-	 */
-	@RequestMapping("/getHotWordSettingGetTime")
-	public String getHotWordSettingGetTime(){
-		return com.wanfangdata.hotwordsetting.HotWordSetting.getGet_time();
-	}
-	
 	
 	/**
 	 * 
