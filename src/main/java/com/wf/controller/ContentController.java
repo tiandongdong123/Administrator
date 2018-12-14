@@ -2000,7 +2000,7 @@ public class ContentController{
 	@ResponseBody
 	public boolean doaddWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
 		try {
-			if(wordset.getTime_slot()==0||wordset.getPublish_cyc()==0){
+			if(wordset.getTime_slot()<=0||wordset.getPublish_cyc()<=0){
 				return false;
 			}else{
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
@@ -2052,7 +2052,7 @@ public class ContentController{
 	@ResponseBody
 	public boolean doaddWordManualSetting(HotWordSetting wordset, HttpServletRequest request){
 		try {
-			if(wordset.getTime_slot()==0||wordset.getGet_cyc()==0){
+			if(wordset.getTime_slot()<=0||wordset.getGet_cyc()<=0){
 				return false;
 			}else{
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
