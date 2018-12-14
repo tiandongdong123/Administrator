@@ -43,11 +43,11 @@ function serachAutodata(curr,data,id){
  	   pageall= parseInt(totalRow/pageSize)+1;
     }
     var maxLenght=(pageall+"").length;
-    $("#totalRow").text(totalRow);
+    $("#totalRow").text(pageRow.length);
     $("#totalpage").text(pageall);
     $("#pageTotal").val(pageTotal);
     $("#pagenum").attr("maxlength",maxLenght); 
-    if(totalRow<=20){
+    if(pageRow.length<=20){
     	$("#pages").hide();
     }else{
     	$("#pages").show();
@@ -465,7 +465,7 @@ function serachManualdata(curr,data,id){
     }
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i+10*(pageNum);
+			var index = 1+pageNum++;
 			var rows = pageRow[i];	
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
