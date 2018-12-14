@@ -257,12 +257,12 @@ public class HotWordJob {
 				for(Map<String,String> map:list){
 					String theme=map.get("theme");
 					int count=Integer.parseInt(map.get("frequency"));
-					//大数据的查询
+					//过滤禁用词
 					log.info("执行对比禁用词");
-//					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-//					if(forbid>0 || isMessyCode(theme)){
-//						continue;
-//					}
+					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
+					if(forbid>0 || isMessyCode(theme)){
+						continue;
+					}
 					if(StringUtils.isBlank(theme)){
 						continue;
 					}

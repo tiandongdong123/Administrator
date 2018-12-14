@@ -41,7 +41,7 @@
  	</select>
  	
  	<select id="getHotWordSettingCount" resultType="map" parameterType="map">
- 		select * from hot_search_word_setting where 1=1
+ 		select * from hot_search_word_setting where 1=1 publish_strategy='自动发布'
 	      <if test="status != null">
 	        and  status=#{status}
 	      </if>
@@ -57,6 +57,10 @@
  	
  	<select id="getOneHotWordManualSetting" resultType="com.wf.bean.HotWordSetting">
  		select * from hot_search_word_setting where publish_strategy='手动发布' and status='1'
+ 	</select>
+ 	
+ 	<select id="getNowWordSetting" resultType="String">
+ 		select publish_strategy from hot_search_word_setting where status='1'
  	</select>
  	
  	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
