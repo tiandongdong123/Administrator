@@ -1744,6 +1744,7 @@ public class ContentController{
 	public String hotword(Model model){
 		Map map=new HashMap();
 		map.put("status",1);
+		// TODO 返回前台页面目前应用的设置
 		model.addAttribute("item",hotWordSettingService.getOneHotWordSettingShow(map));
 		return "/page/contentmanage/hotword";
 	}
@@ -2077,7 +2078,6 @@ public class ContentController{
 		return  list;
 	}
 
-	
 	/**
 	 * 获取手动设置
 	 * @param response
@@ -2136,23 +2136,22 @@ public class ContentController{
 	
 	@RequestMapping("/doupdateWordSetting")
 	@ResponseBody
-	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request,String isFirst){
+	public boolean doupdateWordSetting(HotWordSetting wordset, HttpServletRequest request){
 		try{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 		 Date d = new Date();
 		 Calendar cal = Calendar.getInstance();
-		 String nextPublish="";
-		if(isFirst.equals("true")){
-			nextPublish=wordset.getNext_publish_time();
-		}else{
-			nextPublish=wordset.getFirst_publish_time()+" "+wordset.getPublish_date();
-		}
-		
+		 Calendar cal1 = Calendar.getInstance();
+		 int day1=cal1.get(Calendar.DATE); 
+		 cal1.set(Calendar.DATE,day1+1);
+		 wordset.setFirst_publish_time(sd.format(cal1.getTime()));
+		 wordset.getPublish_date();
+		 String nextPublish=sd.format(cal1.getTime())+"  "+wordset.getPublish_date();
 		 wordset.setNext_publish_time(nextPublish);
 		 Date date =sd.parse(wordset.getNext_publish_time().substring(0, 10));
 		 cal.setTime(date); 
-		int day=cal.get(Calendar.DATE); 
+		int day=cal.get(Calendar.DATE);
 		cal.set(Calendar.DATE,day-wordset.getTime_slot()); 
 		StringBuffer sb=new StringBuffer("");
 		String str=nextPublish.substring(0, 10);
