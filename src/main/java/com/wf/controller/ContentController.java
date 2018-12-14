@@ -1993,8 +1993,11 @@ public class ContentController{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			Date d = new Date();
 			Calendar cal = Calendar.getInstance();
+			Calendar cal1 = Calendar.getInstance();
 			String nextPublish="";
-			wordset.setFirst_publish_time(sdf.format(d));
+			int day1=cal.get(Calendar.DATE);
+			cal1.set(Calendar.DATE,day1+1);
+			wordset.setFirst_publish_time(sdf.format(cal1.getTime()));
 			if(isFirst.equals("true")){
 				nextPublish=hotWordSettingService.getNextPublishTime();
 			}else{
@@ -2092,7 +2095,6 @@ public class ContentController{
 		map.put("pageNum",(pageNum-1)*pageSize);
 		map.put("pageSize",pageSize);
 		PageList list=hotWordSettingService.getHotWordManualSetting(map);
-		System.out.println("----------------------"+list.getPageTotal());
 		return  list;
 	}
 	/**
@@ -2226,6 +2228,17 @@ public class ContentController{
 	@ResponseBody
 	public boolean updateWordManualSettingStatus(Integer id,Integer status){
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//获取目前正在应用的手动设置  如果有 获取本次发布 和本次抓取时间段、是否首次发布
+		HotWordSetting word=hotWordSettingService.getOneHotWordManualSetting();
+		if(word!=null){
+			//更新本次的应用获取本次发布 和本次抓取时间段
+			HotWordSetting updateWord=new HotWordSetting();
+			updateWord.setId(id);
+			updateWord.setNow_get_time_space(word.getNow_get_time_space());
+			updateWord.setNow_publish_time_space(word.getNow_publish_time_space());
+			updateWord.setIs_first(word.getIs_first());
+			hotWordSettingService.updateWordSetting(updateWord);	
+		}	
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
 		HotWordSetting wordset=new HotWordSetting();
@@ -2240,7 +2253,6 @@ public class ContentController{
 		int day=cal.get(Calendar.DATE); 
 		cal.set(Calendar.DATE,day+1);
 		wordset.setNext_get_time(sdf.format(cal.getTime())+"  "+getTime);
-		wordset.setIs_first("0");
 		//更新属性
 		Integer update=hotWordSettingService.updateWordSetting(wordset);
 		return update>0;
