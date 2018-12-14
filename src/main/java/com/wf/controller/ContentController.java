@@ -2211,35 +2211,36 @@ public class ContentController {
 
     /**
      * 修改资讯标签
-     * @param id
-     * @param label
+     * @param request
      * @return
      */
     @RequestMapping("/updateInformationLabel")
     @ResponseBody
-    public Map UpdateInformationLabel(String id, String label) {
+    public Map UpdateInformationLabel(InformationLabelRequest request, HttpServletRequest req) {
         Map<String, String> map = new HashMap<>();
         InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
         try {
-            searchRequest.setLabel(label);
+            searchRequest.setLabel(request.getLabel());
             //查询标签在数据库是否存在
             SearchResponse<InformationLabel> searchResponse = informationLabelService.searchOnlyInformationLabel(searchRequest);
             if (searchResponse != null && searchResponse.getItems().size() > 0) {
-                log.info("标签已存在,修改失败。label：" + label);
+                log.info("标签已存在,修改失败。label：" + request.getLabel());
                 map.put("isSuccess", "exist");
                 return map;
             }
-            boolean result = informationLabelService.updateInformationLabel(id, label);
+            Wfadmin admin = CookieUtil.getWfadmin(req);
+            request.setOperator(admin.getWangfang_admin_id());
+            boolean result = informationLabelService.updateInformationLabel(request);
             if (!result) {
-                log.info("修改资讯标签失败id：" + id + ",标签：" + label);
+                log.info("修改资讯标签失败id：" + request.getId() + ",标签：" + request.getLabel());
                 map.put("isSuccess", "Fail");
                 return map;
             }
-            log.info("修改资讯标签成功id：" + id + ",标签：" + label);
+            log.info("修改资讯标签成功id：" + request.getId() + ",标签：" + request.getLabel());
             map.put("isSuccess", "success");
             return map;
         } catch (Exception e) {
-            log.error("修改资讯标签调用服务时出错id：" + id + ",标签：" + label + e);
+            log.error("修改资讯标签调用服务时出错id：" + request.getId() + ",标签：" + request.getLabel() + e);
             map.put("isSuccess", "Fail");
             return map;
         }

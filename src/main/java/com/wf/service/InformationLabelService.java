@@ -30,10 +30,10 @@ public interface InformationLabelService {
 
     /**
      * 修改资讯标签
-     *
-     * @param id
+     * @param informationLabelRequest
+     * @return
      */
-    boolean updateInformationLabel(String id,String label);
+    boolean updateInformationLabel(InformationLabelRequest informationLabelRequest);
 
     /**
      * 资讯标签精确查询，用于添加标签及修改标签

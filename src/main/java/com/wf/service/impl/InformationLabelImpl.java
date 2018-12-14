@@ -108,15 +108,17 @@ public class InformationLabelImpl implements InformationLabelService {
     }
 
     @Override
-    public boolean updateInformationLabel(String id, String label) {
+    public boolean updateInformationLabel(InformationLabelRequest request) {
         log.info("修改资讯标签开始！！");
-        if (label.equals("") || label == null) {
-            log.info("参数为空 id：" + id);
+        if (request.getLabel().equals("") || request.getLabel() == null) {
+            log.info("参数为空 id：" + request.getLabel());
             return false;
         }
         InformationLabel informationLabel = new InformationLabel();
-        informationLabel.setLabel(label);
-        informationLabel.setId(Integer.valueOf(id));
+        informationLabel.setId(Integer.valueOf(request.getId()));
+        informationLabel.setLabel(request.getLabel());
+        informationLabel.setTotalNumber(request.getTotalNumber());
+        informationLabel.setOperator(request.getOperator());
         informationLabel.setOperatingTime(new Date());
         try {
             informationLabelMapper.updateByPrimaryKeySelective(informationLabel);

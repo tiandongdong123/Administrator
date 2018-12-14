@@ -7,7 +7,7 @@ public class InformationLabelRequest implements Serializable {
     /**
      * id
      */
-    private int id;
+    private String id;
 
     /**
      * 标签
@@ -29,11 +29,11 @@ public class InformationLabelRequest implements Serializable {
      */
     private Date operatingTime;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
