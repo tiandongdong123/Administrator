@@ -2172,6 +2172,7 @@ public class ContentController{
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 wordset.setOperation_date(sdf.format(d));
+		 System.out.println("+++++++++++"+wordset.getPublish_date());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
