@@ -158,7 +158,11 @@ function addLabel(url, labelDataEle) {
             success: function (data) {
                 if (data.isSuccess == 'Success') {
                     layer.msg('添加成功');
-                    queryHandle(1);
+                    $.trim($('#label').val(''));
+                    $.trim($('#operation').val(''));
+                    $.trim($('#startTime').val(''));
+                    $.trim($('#endTime').val(''));
+                    queryHandleLabel(1);
                 } else if (data.isSuccess == 'exist') {
                     layer.msg("标签已存在，请填写别的标签！");
                 } else if (data.isSuccess == 'notEmpty') {
@@ -227,6 +231,27 @@ function queryHandle(page) {
             "operator": operation,
             "operatingTimeStart": operatTimeStart,
             "operatingTimeEnd": operatTimeEnd,
+            "page": page
+        },
+        success: function (data) {
+            infoLabelData.html(data);
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    })
+}
+
+function queryHandleLabel(page) {
+    var infoLabelData = $('#infoLabelData');
+    var page = page;
+    $.ajax({
+        url: "../content/searchInformationLabel.do",
+        data: {
+            "label": '',
+            "operator": '',
+            "operatingTimeStart": '',
+            "operatingTimeEnd": '',
             "page": page
         },
         success: function (data) {
