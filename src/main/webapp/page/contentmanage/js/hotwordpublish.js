@@ -25,7 +25,6 @@ function showPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachAutodata(curr,data,id);
 		}
 	});
@@ -254,7 +253,7 @@ function updateSetting(id,status){
 	
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['38%', '300px'],
 	    title: '修改自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/getHotWordSetting.do?id="+id,
@@ -437,7 +436,6 @@ function showManualPage(curr,id){
 			"pageSize" : pageSize,
 			},
 		success : function (data){
-			console.log(data)
 			serachManualdata(curr,data,id);
 		}
 	});

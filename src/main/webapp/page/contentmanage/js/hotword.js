@@ -5,9 +5,9 @@ $(function(){
 	showPage(1);
 	enterAddWord();
 	enterUpdateWord();
+	showPageManual(1)
 	enterAddWordManual()
 	enterUpdateWordManual()
-	showPageManual(1)
 });
 
 /*分页显示*/
@@ -508,6 +508,7 @@ function batch(status){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+str+"成功!</div>",{icon: 1});
 	    				clear();
 	    				showPage(1);
+	    				location.reload()
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}
@@ -975,6 +976,7 @@ function batchManual(status){
 	    				clearManual()
 	    				showPage(1);
 	    				showPageManual(1)
+	    				location.reload()
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+str+"失败!</div>",{icon: 2});
 	    			}
