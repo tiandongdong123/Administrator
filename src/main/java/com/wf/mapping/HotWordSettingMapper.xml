@@ -59,6 +59,10 @@
  		select * from hot_search_word_setting where publish_strategy='手动发布' and status='1'
  	</select>
  	
+ 	<select id="getNowWordSetting" resultType="String">
+ 		select publish_strategy from hot_search_word_setting where status='1'
+ 	</select>
+ 	
  	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
  		select * from hot_search_word_setting where id=#{id}
  	</select>

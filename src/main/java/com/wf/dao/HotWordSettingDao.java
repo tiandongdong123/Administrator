@@ -24,5 +24,5 @@ public interface HotWordSettingDao {
 	List<HotWordSetting> getHotWordManualSettingList();
 	HotWordSetting getExecHotWordSetting(Integer status);
 	HotWordSetting getOneHotWordManualSetting();
-	
+	String getNowWordSetting();
 }

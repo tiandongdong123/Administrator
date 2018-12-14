@@ -175,4 +175,9 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	
 		return hotWordSettingDao.getHotWordManualSettingList();
 	}
+
+	@Override
+	public String getNowWordSetting() {
+		return hotWordSettingDao.getNowWordSetting();
+	}
 }

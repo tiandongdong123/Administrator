@@ -55,6 +55,7 @@ import com.utils.GetUuid;
 import com.utils.Getproperties;
 import com.utils.JsonUtil;
 import com.utils.ParamUtils;
+import com.utils.StringUtil;
 import com.wf.bean.Department;
 import com.wf.bean.HotWord;
 import com.wf.bean.HotWordSetting;
@@ -1742,10 +1743,19 @@ public class ContentController{
 	
 	@RequestMapping("/hotwordmanage")
 	public String hotword(Model model){
-		Map map=new HashMap();
-		map.put("status",1);
-		// TODO 返回前台页面目前应用的设置
-		model.addAttribute("item",hotWordSettingService.getOneHotWordSettingShow(map));
+		try {
+			Map map=new HashMap();
+			map.put("status",1);
+			String strategy=hotWordSettingService.getNowWordSetting();
+			if(StringUtil.isNotEmpty(strategy)){
+				model.addAttribute("strategy",strategy);
+			}else{
+				model.addAttribute("strategy","无应用");
+			}
+			model.addAttribute("item",hotWordSettingService.getOneHotWordSettingShow(map));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "/page/contentmanage/hotword";
 	}
 	
