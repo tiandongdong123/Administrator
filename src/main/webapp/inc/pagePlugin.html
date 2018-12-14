@@ -1,17 +1,18 @@
-<div  class="page_bind">
-	<div class="laypage_main laypageskin_molv">
-		<?if( pager.pageCount > 1 ){?>
-		<span>每页显示: &nbsp</span>
+<div class="mypage clear">
+    <div class="page_bind">
+        <div class="laypage_main laypageskin_molv">
+            <?if( pager.pageCount > 1 ){?>
+            <span>每页显示: &nbsp</span>
 
-		<select id="inputpageSize" name="pageSize">
-			<option value="20" ${pager.pageSize==20?'selected="selected"':''}>20</option>
-			<option value="30" ${pager.pageSize==30?'selected="selected"':''}>30</option>
-			<option value="50" ${pager.pageSize==50?'selected="selected"':''}>50</option>
-		</select>
-		<span>条数据</span>
-		<?}?>
-		<?if(pager.onlyOnePage==false){?>
-		<?
+            <select id="inputpageSize" name="pageSize">
+                <option value="20" ${pager.pageSize==20?'selected="selected"':''}>20</option>
+                <option value="30" ${pager.pageSize==30?'selected="selected"':''}>30</option>
+                <option value="50" ${pager.pageSize==50?'selected="selected"':''}>50</option>
+            </select>
+            <span>条数据</span>
+            <?}?>
+            <?if(pager.onlyOnePage==false){?>
+            <?
 		var beforePageNumber = 0;
 		var laterPageNumber = 0;
 
@@ -24,59 +25,60 @@
 		}
 
 		var beforeCount = (pager.currentPage - beforePageNumber) > 0 ? beforePageNumber : pager.currentPage - 1;
-		var laterCount = (pager.currentPage + laterPageNumber) < pager.pageCount ? laterPageNumber : pager.pageCount - pager.currentPage;
+            var laterCount = (pager.currentPage + laterPageNumber) < pager.pageCount ? laterPageNumber : pager.pageCount
+            - pager.currentPage;
 
-		if(pager.pageCount > maxPageNumber){
-		if(beforeCount < beforePageNumber){
-		laterCount = laterCount + (beforePageNumber - beforeCount);
-		}
-		if(laterCount < laterPageNumber){
-		beforeCount = beforeCount + (laterPageNumber - laterCount);
-		}
-		}else{
-		if(beforeCount < beforePageNumber){
-		laterCount = pager.pageCount - beforeCount - 1;
-		}
-		if(laterCount < laterPageNumber){
-		beforeCount = pager.pageCount - laterCount - 1;
-		}
-		}
+            if(pager.pageCount > maxPageNumber){
+            if(beforeCount < beforePageNumber){
+            laterCount = laterCount + (beforePageNumber - beforeCount);
+            }
+            if(laterCount < laterPageNumber){
+            beforeCount = beforeCount + (laterPageNumber - laterCount);
+            }
+            }else{
+            if(beforeCount < beforePageNumber){
+            laterCount = pager.pageCount - beforeCount - 1;
+            }
+            if(laterCount < laterPageNumber){
+            beforeCount = pager.pageCount - laterCount - 1;
+            }
+            }
 
-		if ((pager.currentPage - beforeCount) != 1)
-		{
-		?>
-		<span><a href="${ctxPath}${pager.url}1">首页</a></span>
-		<?
+            if ((pager.currentPage - beforeCount) != 1)
+            {
+            ?>
+            <span><a href="${ctxPath}${pager.url}1">首页</a></span>
+            <?
 		}
 		if(pager.hasPreviousPage == true)
 		{
 	?>
-		<a href="${ctxPath}${pager.url}${pager.currentPage-1 }"  class="laypage_prev">上一页</a>
-		<?
+            <a href="${ctxPath}${pager.url}${pager.currentPage-1 }" class="laypage_prev">上一页</a>
+            <?
 		}
 	?>
-		<?
+            <?
 		for (var i = beforeCount; i > 0; i--)
-		{
-		?>
-		<a href="${ctxPath}${pager.url}${pager.currentPage-i }">${pager.currentPage-i }</a>
-		<?
+            {
+            ?>
+            <a href="${ctxPath}${pager.url}${pager.currentPage-i }">${pager.currentPage-i }</a>
+            <?
 		}
 	?>
-		<span class="laypage_curr" data-url="${ctxPath}${pager.url}${pager.currentPage}">${pager.currentPage}</span>
-		<?
+            <span class="laypage_curr" data-url="${ctxPath}${pager.url}${pager.currentPage}">${pager.currentPage}</span>
+            <?
 		for(var i = 1; i <= laterCount; i++)
 		{
 	?>
-		<a href="${ctxPath}${pager.url}${pager.currentPage+i }">${pager.currentPage+i }</a>
-		<?
+            <a href="${ctxPath}${pager.url}${pager.currentPage+i }">${pager.currentPage+i }</a>
+            <?
 		}
 	?>
-		<?
+            <?
 		if(pager.hasNextPage == true){
 	?>
-		<a href="${ctxPath}${pager.url}${pager.currentPage+1 }" class="laypage_next">下一页</a>
-		<?
+            <a href="${ctxPath}${pager.url}${pager.currentPage+1 }" class="laypage_next">下一页</a>
+            <?
 		}
 
 
@@ -84,61 +86,65 @@
 		if(pager.currentPage + laterCount != pager.pageCount)
 		{
 	?>
-		<span><a href="${ctxPath}${pager.url}${pager.pageCount }">尾页</a></span>
-		<?
+            <span><a href="${ctxPath}${pager.url}${pager.pageCount }">尾页</a></span>
+            <?
 		}
 	?>
-		<?}?>
-		<?
+            <?}?>
+            <?
 	if( pager.pageCount > 1 ){
-		?>
-		<span>
-		<form action="${ctxPath}${pager.url}" method="get" class="laypage_total" data-action="${ctxPath}${pager.url}" data-all="${pager.pageCount}">
+            ?>
+            <span>
+		<form action="${ctxPath}${pager.url}" method="get" class="laypage_total" data-action="${ctxPath}${pager.url}"
+              data-all="${pager.pageCount}">
 		   <label>共<span class="allPage">${pager.pageCount }</span>页到第</label>
-		   <input name="page" type="number"  class="laypage_skip" autocomplete="off"/>
+		   <input name="page" type="number" class="laypage_skip" autocomplete="off"/>
 		   <label>页</label>
 		   <button type="submit" class="laypage_btn">确定</button>
 		</form></span>
-		<span>共${ pager.total }条数据</span>
-		<?
+            <span>共${ pager.total }条数据</span>
+            <?
 	}
 ?>
-	</div>
-	<div class="mask-layer loadingPic" style="display: none;"></div>
+        </div>
+        <div class="mask-layer loadingPic" style="display: none;"></div>
+    </div>
 </div>
 <script>
-	//可选展示数据条数
-	function getQueryString(pageSize,url,newPageSize) {
-		var re=eval('/('+ pageSize+'=)([^&]*)/gi');
-		var newurl = url.replace(re,pageSize+'='+newPageSize);
-		return newurl;
-	}
-	function getOldPageSizeOrPageNum(pageSize,url){
-		var reg = new RegExp("(^|&)" + pageSize + "=([^&]*)(&|$)");
-		var r = url.substr(url.indexOf("\?")+1).match(reg);
-		return unescape(r[2]);
-	}
-	$('#inputpageSize').change(function(){
-		var $this=$(this),
-				$newPageSize=$this.find('option:selected').val(),
-				$oldUrl=$this.closest('.page_bind .laypage_main').find('.laypage_curr').data('url');
-		//计算更改页面前第一条数据的序号
-		var $oldPageSize=getOldPageSizeOrPageNum('pageSize',$oldUrl);
-		var $oldPageNum=getOldPageSizeOrPageNum('page',$oldUrl);
-		var $number=$oldPageSize*($oldPageNum-1)+1;
-		var $newNumber=parseInt($number/$newPageSize)+1;
-		var $newPage=getQueryString('page',$oldUrl,$newNumber);
-		var $newUrl=getQueryString('pageSize',$newPage,$newPageSize);
-		$this.closest('.sync-html').find('.loadingPic').show();
-		$.ajax({
-			url:$newUrl,
-			success:function (html) {
-				$this.closest('.sync-html').html(html);
-				$this.closest('.sync-html').find('.loadingPic').hide();
-			},
-			error:function () {
-				$this.closest('.sync-html').find('.loadingPic').hide();
-			}
-		});
-	})
+    //可选展示数据条数
+    function getQueryString(pageSize, url, newPageSize) {
+        var re = eval('/(' + pageSize + '=)([^&]*)/gi');
+        var newurl = url.replace(re, pageSize + '=' + newPageSize);
+        return newurl;
+    }
+
+    function getOldPageSizeOrPageNum(pageSize, url) {
+        var reg = new RegExp("(^|&)" + pageSize + "=([^&]*)(&|$)");
+        var r = url.substr(url.indexOf("\?") + 1).match(reg);
+        return unescape(r[2]);
+    }
+
+    $('#inputpageSize').change(function () {
+        var $this = $(this),
+            $newPageSize = $this.find('option:selected').val(),
+            $oldUrl = $this.closest('.page_bind .laypage_main').find('.laypage_curr').data('url');
+        //计算更改页面前第一条数据的序号
+        var $oldPageSize = getOldPageSizeOrPageNum('pageSize', $oldUrl);
+        var $oldPageNum = getOldPageSizeOrPageNum('page', $oldUrl);
+        var $number = $oldPageSize * ($oldPageNum - 1) + 1;
+        var $newNumber = parseInt($number / $newPageSize) + 1;
+        var $newPage = getQueryString('page', $oldUrl, $newNumber);
+        var $newUrl = getQueryString('pageSize', $newPage, $newPageSize);
+        $this.closest('.sync-html').find('.loadingPic').show();
+        $.ajax({
+            url: $newUrl,
+            success: function (html) {
+                $this.closest('.sync-html').html(html);
+                $this.closest('.sync-html').find('.loadingPic').hide();
+            },
+            error: function () {
+                $this.closest('.sync-html').find('.loadingPic').hide();
+            }
+        });
+    })
 </script>

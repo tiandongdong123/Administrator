@@ -1,0 +1,42 @@
+<?
+	layout("/inc/layout.html",{
+			title:'资讯标签管理'
+		}){
+?>
+<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
+<script type="text/javascript" src="../js/laypage-v1.3/laypage/laypage.js"></script>
+<script type="text/javascript" src="../page/contentmanage/js/pagePlugin.js"></script>
+<script type="text/javascript" src="../page/contentmanage/js/informationLabel.js"></script>
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>资讯标签管理</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <table id="infoLabel">
+                <tr>
+                    <td class="al">标签</td>
+                    <td class="ar">
+                        <input type="text" id="label">
+                    </td>
+                    <td class="al">操作人</td>
+                    <td class="ar"><input type="text" id="operation"></td>
+                </tr>
+                <tr>
+                    <td class="al">操作日期</td><td class="ar"><input type="text" id="startTime"  onclick="WdatePicker()"></td>
+                    <td>——</td><td class="ar" ><input type="text" id="endTime"  onclick="WdatePicker()"></td>
+                </tr>
+            </table>
+            <div style="text-align: center;width: 550px;margin-top: 2%;">
+                <button type="submit" class="btn btn-primary query-confirm" >查询</button>
+            </div>
+        </div>
+        <div style="margin-top: 20px;" id="infoLabelData" class="clear">
+
+        </div>
+    </section>
+    <div class="mask-layer loadingPicPersonal" style="display: none;">
+        <img  class="img-loadingPic" src="${ctxPath}//js/zTree/img/loading.gif"/>
+    </div>
+</div>
+<?}?>
