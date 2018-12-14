@@ -18,8 +18,12 @@
     <section class="content" id="manual_content">
       <div class="row">
 		<?if(!isEmpty(item)){?>
+		<?if(!isEmpty(item.now_publish_time_space)){?>
 	      	<div style="margin-left:67px;color:#F00;font-size:30px;">目前发布数据时间段:${item.now_publish_time_space!}
-	      	<br/>本次抓取数据时间段:${item.now_get_time_space!}</div>		
+	      		<?}?>
+	      		<?if(!isEmpty(item.now_get_time_space)){?>
+	      	<br/>本次抓取数据时间段:${item.now_get_time_space!}</div>	
+	      		<?}?>
 		<?}?>
 	  	<table class="messagetable">
   			<tr>
@@ -131,8 +135,12 @@
 <section class="content" id="auto_content" style="display:none">
      <div class="row">
 	<?if(!isEmpty(item)){?>
+	<?if(!isEmpty(item.next_publish_time)){?>
       	<div style="margin-left:67px;color:#F00;font-size:30px;">下次发布时间:${item.next_publish_time!}
-      	<br/>下次抓取数据统计时间:${item.next_publish_time_space!}</div>		
+      	<?}?>
+      	<?if(!isEmpty(item.next_publish_time_space)){?>
+      	<br/>下次抓取数据统计时间:${item.next_publish_time_space!}</div>	
+      	<?}?>	
 	<?}?>
   		<table class="messagetable">
   			<tr>
