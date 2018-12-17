@@ -620,7 +620,7 @@ function doaddWordManualSetting(){
 function updateManualSetting(id,status){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['38%', '300px'],
 	    title: '修改手动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/getHotWordManualSetting.do?id="+id,
