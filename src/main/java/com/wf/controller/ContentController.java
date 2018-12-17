@@ -27,6 +27,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.bigdata.framework.common.api.volume.IVolumeService;
 import org.bigdata.framework.common.model.SearchPageList;
 import org.bigdata.framework.forbidden.iservice.IForbiddenSerivce;
@@ -48,6 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.exportExcel.ExportExcel;
+import com.job.HotWordJob;
 import com.redis.RedisUtil;
 import com.utils.CookieUtil;
 import com.utils.DateTools;
@@ -86,6 +88,7 @@ import com.wf.service.VolumeService;
 @Controller
 @RequestMapping("/content")   
 public class ContentController{
+	private static Logger log = Logger.getLogger(ContentController.class);
 	@Autowired
 	SubjectService subjectService;
 	
@@ -1993,6 +1996,13 @@ public class ContentController{
 	@RequestMapping("/checkCount")
 	@ResponseBody
 	public Integer checkCount(){
+		//获取任务是否首次发布 如果是首次发布 则返回0
+		HotWordSetting set=hotWordSettingService.getOneHotWordManualSetting();
+		if(set!=null){
+			if(set.getIs_first().equals("0")){
+				return 0;
+			}
+		}
 		return hotWordService.checkRedisCount();
 	}
 
@@ -2172,7 +2182,6 @@ public class ContentController{
 		 wordset.setOperation(CookieUtil.getWfadmin(request).getUser_realname());
 		 sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 wordset.setOperation_date(sdf.format(d));
-		 System.out.println("+++++++++++"+wordset.getPublish_date());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
