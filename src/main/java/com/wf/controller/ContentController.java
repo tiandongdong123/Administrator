@@ -88,7 +88,6 @@ import com.wf.service.VolumeService;
 @Controller
 @RequestMapping("/content")   
 public class ContentController{
-	private static Logger log = Logger.getLogger(ContentController.class);
 	@Autowired
 	SubjectService subjectService;
 	
@@ -2220,6 +2219,8 @@ public class ContentController{
 	@ResponseBody
 	public boolean updateWordSettingStatus(Integer id,Integer status){
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		HotWordSetting set= hotWordSettingService.getOneHotWordSetting(id);
 		//把所有设置状态改为2，待应用
 		hotWordSettingService.updateAllSetting();
 		HotWordSetting wordset=new HotWordSetting();
@@ -2227,6 +2228,13 @@ public class ContentController{
 		wordset.setStatus(status);
 		wordset.setId(id);
 		wordset.setOperation_date(sdf.format(new Date()));
+		 Calendar cal1 = Calendar.getInstance();
+		 int day1=cal1.get(Calendar.DATE); 
+		 cal1.set(Calendar.DATE,day1+1);
+		 wordset.setFirst_publish_time(sd.format(cal1.getTime()));
+		 wordset.getPublish_date();
+		 String nextPublish=sd.format(cal1.getTime())+"  "+set.getPublish_date();
+		 wordset.setNext_publish_time(nextPublish);
 		//更新属性
 		Integer update=hotWordSettingService.updateWordSetting(wordset);
 		hotWordSettingService.updateAllSettingTime();
