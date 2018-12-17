@@ -431,7 +431,7 @@ function publish(that,obj,issueState){
 		});
 	}
 	var count=checkCount();
-	if((issueState==3)&& ((count-ids.length)<15)) {
+	if((issueState==3)&& ((count-ids.length)<=15)) {
 		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
     	return;
 	}
@@ -927,7 +927,7 @@ var ids=new Array();
 		});
 	}
 	var count=checkCount();
-	if((issueState==3)&& ((count-ids.length)<15)) {
+	if((issueState==3)&& ((count-ids.length)<=15)) {
 		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
     	return;
 	}
