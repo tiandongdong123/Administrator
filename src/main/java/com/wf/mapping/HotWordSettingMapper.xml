@@ -39,7 +39,13 @@
  	  select * from hot_search_word_setting where publish_strategy='手动发布' order by status,operation_date DESC
  	  limit #{pageNum},#{pageSize}
  	</select>
- 	
+ 	<select id="getHotWordSettingNowCount" resultType="map" parameterType="map">
+ 		select * from hot_search_word_setting where 1='1'
+	      <if test="status != null">
+	        and  status=#{status}
+	      </if>
+ 		order by status,operation_date DESC
+ 	</select>
  	<select id="getHotWordSettingCount" resultType="map" parameterType="map">
  		select * from hot_search_word_setting where publish_strategy='自动发布'
 	      <if test="status != null">

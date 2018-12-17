@@ -1752,7 +1752,7 @@ public class ContentController{
 			}else{
 				model.addAttribute("strategy","无应用");
 			}
-			model.addAttribute("item",hotWordSettingService.getOneHotWordSettingShow(map));
+			model.addAttribute("item",hotWordSettingService.getOneHotWordSettingNowShow(map));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

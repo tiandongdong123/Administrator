@@ -71,6 +71,16 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		}
 		
 	}
+	
+	@Override
+	public Object getOneHotWordSettingNowShow(Map map) {
+		List<Object> list=hotWordSettingDao.getHotWordSettingNowCount(map);
+		if(list.size()==0){
+			return null;
+		}else{
+			return hotWordSettingDao.getHotWordSettingNowCount(map).get(0);	
+		}
+	}
 
 	@Override
 	public HotWordSetting getHotWordSettingTask() {
@@ -180,4 +190,6 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	public String getNowWordSetting() {
 		return hotWordSettingDao.getNowWordSetting();
 	}
+
+
 }

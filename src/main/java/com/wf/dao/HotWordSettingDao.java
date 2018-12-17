@@ -12,6 +12,7 @@ public interface HotWordSettingDao {
 	List<Object> getHotWordSetting(Map map);//自动设置
 	List<Object> getHotWordManualSetting(Map map);//手动设置
 	List<Object> getHotWordSettingCount(Map map);//自动设置
+	List<Object> getHotWordSettingNowCount(Map map);//现在应用的设置
 	List<Object> getHotWordManualSettingCount(Map map);//手动设置
 	HotWordSetting getOneHotWordSetting(Integer id);
 	Integer updateHotWordSetting(HotWordSetting hotWordSetting);
@@ -25,4 +26,5 @@ public interface HotWordSettingDao {
 	HotWordSetting getExecHotWordSetting(Integer status);
 	HotWordSetting getOneHotWordManualSetting();
 	String getNowWordSetting();
+	
 }

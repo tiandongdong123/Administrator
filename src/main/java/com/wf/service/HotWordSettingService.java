@@ -24,4 +24,5 @@ public interface HotWordSettingService {
 	Integer updateAllManualNowGetTimeApace(HotWordSetting hotWordSetting);//更新所有手动设置的本次抓取数据时间段和下次抓取数据时间段
 	List<HotWordSetting> getHotWordManualSettingList();
 	String getNowWordSetting();
+	Object getOneHotWordSettingNowShow(Map map);
 }
