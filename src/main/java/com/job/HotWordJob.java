@@ -45,7 +45,7 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/2 * * * ?")
 	public void exechotWord() {
 		try {
 			log.info("开始执行热搜词的统计");
