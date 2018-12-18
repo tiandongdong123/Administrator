@@ -5,9 +5,9 @@ $(function(){
 	showPage(1);
 	enterAddWord();
 	enterUpdateWord();
-	showPageManual(1)
-	enterAddWordManual()
-	enterUpdateWordManual()
+	showPageManual(1);
+	enterAddWordManual();
+	enterUpdateWordManual();
 });
 
 /*分页显示*/
@@ -21,6 +21,7 @@ function showPage(curr){
 	status=$("#status").find("option:selected").val();
 	word=$.trim($("#word").val());
 	pageSize=$("#pagesize").val();
+	pageSize=Number(pageSize)
 	$.ajax({
 		type : "post",
 		async:false,
@@ -540,6 +541,7 @@ function showPageManual(curr){
 	status_manual=$("#status_manual").find("option:selected").val();
 	word_manual=$.trim($("#word_manual").val());
 	pageSizeManual=$("#pagesize_manual").val();
+	pageSizeManual=Number(pageSizeManual)
 	$.ajax({
 		type : "post",
 		async:false,
