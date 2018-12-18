@@ -467,7 +467,7 @@ function publish(that,obj,issueState){
 	    				clear();
 	    				clearManual()
 	    				if (issueState=='3') {
-	    					$(that).parent().parent().prev().children()[0].textContent = '待发布'
+	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
 	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
@@ -978,7 +978,7 @@ var ids=new Array();
 	    				clear();
 	    				clearManual()
 	    				if (issueState=='3') {
-	    					$(that).parent().parent().prev().children()[0].textContent = '待发布'
+	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
 	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
