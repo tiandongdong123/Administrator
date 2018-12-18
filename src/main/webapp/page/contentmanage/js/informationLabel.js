@@ -130,6 +130,7 @@ function delelLabel(labelArr) {
             ids: labelArr
         },
         dataType: "json",
+        cache:false,
         success: function (data) {
             layer.closeAll();
             if (data) {
@@ -155,6 +156,7 @@ function addLabel(url, labelDataEle,tip) {
             url: url,
             data: {'label': labelData},
             dataType: "json",
+            cache:false,
             success: function (data) {
                 if (data.isSuccess == 'Success') {
                     layer.msg('添加成功');
@@ -187,6 +189,7 @@ function updataLabel(dataJSON, url, labelDataEle) {
             url: url,
             data: dataJSON,
             dataType: "json",
+            cache:false,
             success: function (data) {
                 if (data.isSuccess == 'success') {
                     layer.msg('修改成功');
@@ -254,6 +257,7 @@ function queryHandleLabel(page) {
             "operatingTimeEnd": '',
             "page": page
         },
+        cache:false,
         success: function (data) {
             infoLabelData.html(data);
         },
