@@ -1852,6 +1852,10 @@ public class ContentController{
 		return hotWordService.updateWord(hotWord)>0;
 	}
 
+	@RequestMapping("/getOperation")
+	public String getOperation(HttpServletRequest request){
+		return CookieUtil.getWfadmin(request).getUser_realname();
+	}
 	/**
 	 * @param word_content
 	 * @return
