@@ -104,7 +104,7 @@ function serachdata(curr,data){
 			"<button type='button' id=\""+rows.id+"_update_word\" onclick=\"update_word('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_cancel\" onclick=\"cancel('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
 			"</div></td>"+
-			"<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
+			"<td><div style='text-align:center;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
@@ -420,6 +420,22 @@ function publish(that,obj,issueState){
     	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
+	var ids=new Array();
+	
+	if(issueState==3){
+		$("input:checkbox[name=commonid][id='下撤']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}else{
+		$("input:checkbox[name=commonid][id='发布']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}
+	var count=checkCount();
+	if((issueState==3)&& ((count-ids.length)<=15)) {
+		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
+    	return;
+	}
 	
 	var value = "";
 	if(issueState=='3'){
@@ -492,6 +508,16 @@ function batch(status){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
+
+	if((status==3) && (ids.length>=6)) {
+		layer.msg("<div style=\"color:#8B0000;\">最多只能批量下撤5条数据!</div>",{icon: 2});
+    	return;
+	}
+	
+	if((status==3)&& ((count-ids.length)<15)) {
+		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
+    	return;
+	}
 	
 	layer.alert('确定'+str+'该数据吗？',{
 	    skin: 'layui-layer-molv',
@@ -561,6 +587,7 @@ function showPageManual(curr){
 }
 
 function serachdataManual(curr,data){
+	var pageSize = data.pageSize
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
 	var pageRow=data.pageRow;
@@ -624,7 +651,7 @@ function serachdataManual(curr,data){
 			"<button type='button' id=\""+rows.id+"_mupdate_word\" onclick=\"update_wordManual('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">修改</button>&nbsp;" +
 			"<button type='button' id=\""+rows.id+"_mcancel\" onclick=\"cancelManual('"+rows.id+"')\" class='btn btn-primary' style=\"padding-left: 3px; padding-right: 3px;display:none;\">取消</button></div></td>"+
 			"</div></td>"+
-			"<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
+			"<td><div style='text-align:center;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
@@ -890,6 +917,22 @@ function publishManual(that,obj,issueState){
     	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
 	}
+var ids=new Array();
+	
+	if(issueState==3){
+		$("input:checkbox[name=commonid][id='下撤']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}else{
+		$("input:checkbox[name=commonid][id='发布']:checked").each(function(){
+			ids.push($(this).val());
+		});
+	}
+	var count=checkCount();
+	if((issueState==3)&& ((count-ids.length)<=15)) {
+		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
+    	return;
+	}
 	
 	var value = "";
 	if(issueState=='3'){
@@ -955,8 +998,19 @@ function batchManual(status){
 	}
 	
 	var count=checkCount();
+	console.log(count)
 	if(status!=3 && count>=20){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
+    	return;
+	}
+	
+	if((status==3) && (ids.length>=6)&&(((count-ids.length)<=15))) {
+		layer.msg("<div style=\"color:#8B0000;\">最多只能批量下撤5条数据!</div>",{icon: 2});
+    	return;
+	}
+	
+	if((status==3)&& ((count-ids.length)<15)) {
+		layer.msg("<div style=\"color:#8B0000;width:330px;\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
     	return;
 	}
 	
