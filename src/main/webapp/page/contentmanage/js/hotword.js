@@ -752,8 +752,7 @@ function checkCountManual(){
 		url : "../content/checkCount.do",
 		dataType : "json",
 		success : function(data){
-			isCount=data;
-			console.log(data)
+			isCount=data;)
 		},
 		error : function(data){
 		}
@@ -945,7 +944,6 @@ var ids=new Array();
 		});
 	}
 	var count=checkCount();
-	console.log(count)
 	if((issueState==3)&& ((count-ids.length)<=15)) {
 		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
     	return;
@@ -1020,7 +1018,6 @@ function batchManual(status){
 	}
 	
 	var count=checkCount();
-	console.log(count)
 	if(status!=3 && count>=20){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
