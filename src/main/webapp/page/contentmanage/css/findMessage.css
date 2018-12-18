@@ -28,11 +28,12 @@
 	line-height: 26px;
 	border-bottom: 1px solid #cdcdcd;
 	padding-left: 10px;
+	height: 26px;
 }
-/*.add_label-tip{*/
-	/*display: none;*/
-	/*color: red;*/
-/*}*/
+.add_label-tip{
+	display: none;
+	color: red;
+}
 .empty-warning{
 	font-size: 20px;
 	line-height: 70px;
