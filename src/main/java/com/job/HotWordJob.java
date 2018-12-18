@@ -45,7 +45,7 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWord() {
 		try {
 			log.info("开始执行热搜词的统计");
@@ -109,6 +109,7 @@ public class HotWordJob {
 				}
 				for(Map<String,String> map:list){
 					String theme=map.get("theme");
+					theme=file(theme);
 					int count=Integer.parseInt(map.get("frequency"));
 					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
 					if(forbid>0 || isMessyCode(theme)){
@@ -256,13 +257,14 @@ public class HotWordJob {
 				//循环遍历list结果集
 				for(Map<String,String> map:list){
 					String theme=map.get("theme");
+					theme=file(theme);
 					int count=Integer.parseInt(map.get("frequency"));
 					//过滤禁用词
-					log.info("执行对比禁用词");
-					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-					if(forbid>0 || isMessyCode(theme)){
-						continue;
-					}
+//					log.info("执行对比禁用词");
+//					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
+//					if(forbid>0 || isMessyCode(theme)){
+//						continue;
+//					}
 					if(StringUtils.isBlank(theme)){
 						continue;
 					}
@@ -401,10 +403,31 @@ public class HotWordJob {
 	}
 
 	/**
+	 * 过滤特殊符号
+	 * @param str
+	 * @return
+	 */
+		private String file(String str){
+		String regEx="[\"`~!@#$%^&*()+=|{}';',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；”“’。，、？]";
+		Pattern p = Pattern.compile(regEx); 
+		Matcher m = p.matcher(str);
+		return m.replaceAll("").trim();
+		}
+	/**
 	 * 情况查询的热搜词
 	 */
 	public static void setHotWordClear() {
 		hotwordList.clear();
+	}
+	
+	/**
+	 * 过滤特殊词
+	 */
+	private boolean filter(String theme){
+		if(theme.contains("*")||theme.contains("(")||theme.contains("（")||theme.contains("!")||theme.contains("\"")||theme.contains("“")){
+			return false;
+		}
+		return true;
 	}
 
 }
