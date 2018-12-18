@@ -105,7 +105,7 @@ public class HotWordJob {
 				log.info("执行sql:"+query);
 				List<Map<String,String>> list=jdbcUtils.getConnectTheme(query);
 				if(list.size()==0){
-					break;
+					break; 
 				}
 				for(Map<String,String> map:list){
 					String theme=map.get("theme");
