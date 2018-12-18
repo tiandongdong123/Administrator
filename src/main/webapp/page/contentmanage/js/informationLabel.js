@@ -232,6 +232,7 @@ function queryHandle(page) {
             "operatingTimeEnd": operatTimeEnd,
             "page": page
         },
+        cache:false,
         success: function (data) {
             infoLabelData.html(data);
         },
