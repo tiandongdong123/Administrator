@@ -107,7 +107,7 @@ function serachdata(curr,data){
 			"<td><div style='text-align:center;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' id=\""+rows.id+"_user\">"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
 			"<td class='mailbox-name' style='width:280px;'><div>"+
 			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
@@ -305,7 +305,6 @@ function add_word(){
 
 
 function update(id,issueState){
-	
 	if(issueState==1){
 		layer.msg("请先下撤该数据再进行修改",{icon: 2});
 		return;
@@ -370,7 +369,11 @@ function update_word(id){
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clear();
-		showPage(1);
+		$("#"+id+"_span").text($("#"+id+"_value").val())
+		var cookie_info = eval('(' + $.cookie('Wfadmin') + ')')
+		$("#"+id+"_user").text(cookie_info.user_realname)
+		cancel(id)
+//		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -463,8 +466,16 @@ function publish(that,obj,issueState){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				clear();
 	    				clearManual()
-	    				showPage(1);
-	    				showPageManual(1)
+	    				if (issueState=='3') {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				} else {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				}
+//	    				console.log($(that)[0].parentNode.innerHTML)
+//	    				showPage(1);
+//	    				showPageManual(1)
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -741,7 +752,7 @@ function checkCountManual(){
 		url : "../content/checkCount.do",
 		dataType : "json",
 		success : function(data){
-			isCount=data;
+			isCount=data;)
 		},
 		error : function(data){
 		}
@@ -883,7 +894,11 @@ function update_wordManual(id){
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clearManual();
-		showPageManual(1);
+		$("#"+id+"_mspan").text($("#"+id+"_mvalue").val())
+		var cookie_info = eval('(' + $.cookie('Wfadmin') + ')')
+		$("#"+id+"_user").text(cookie_info.user_realname)
+		cancelManual(id)
+//		showPageManual(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -960,8 +975,13 @@ var ids=new Array();
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				clear();
 	    				clearManual()
-	    				showPage(1);
-	    				showPageManual(1)
+	    				if (issueState=='3') {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				} else {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				}
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -998,7 +1018,6 @@ function batchManual(status){
 	}
 	
 	var count=checkCount();
-	console.log(count)
 	if(status!=3 && count>=20){
 		layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
