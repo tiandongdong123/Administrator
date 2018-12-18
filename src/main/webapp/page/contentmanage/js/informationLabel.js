@@ -40,13 +40,14 @@ $(function () {
     $('#infoLabelData').on('click', '.add_label-btn', function () {
         var _this = $(this);
         var labelData = _this.siblings('.label_input');
-        ;
-        addLabel("../content/addInformationLabel.do", labelData);
+        var tip = _this.siblings('.add_label-tip');
+        addLabel("../content/addInformationLabel.do", labelData,tip);
     });
     $('#infoLabelData').on('keypress', '.label_input', function () {
         var labelData = $(this);
+        var tip = $(this).siblings('.add_label-tip');
         if (event.keyCode == 13) {
-            addLabel("../content/addInformationLabel.do", labelData);
+            addLabel("../content/addInformationLabel.do", labelData,tip);
         }
     });
 
@@ -129,6 +130,7 @@ function delelLabel(labelArr) {
             ids: labelArr
         },
         dataType: "json",
+        cache:false,
         success: function (data) {
             layer.closeAll();
             if (data) {
@@ -145,16 +147,16 @@ function delelLabel(labelArr) {
     });
 }
 
-function addLabel(url, labelDataEle) {
+function addLabel(url, labelDataEle,tip) {
     var labelData = $.trim(labelDataEle.val());
-    labelDataEle.val('');
     if (labelData == '') {
-        layer.msg("请填写标签!")
+        tip.show().text('请填写标签!');
     } else {
         $.ajax({
             url: url,
             data: {'label': labelData},
             dataType: "json",
+            cache:false,
             success: function (data) {
                 if (data.isSuccess == 'Success') {
                     layer.msg('添加成功');
@@ -164,9 +166,9 @@ function addLabel(url, labelDataEle) {
                     $.trim($('#endTime').val(''));
                     queryHandleLabel(1);
                 } else if (data.isSuccess == 'exist') {
-                    layer.msg("标签已存在，请填写别的标签！");
+                    tip.show().text('标签已存在，请填写别的标签！');
                 } else if (data.isSuccess == 'notEmpty') {
-                    layer.msg('请填写标签');
+                    tip.show().text('请填写标签!');
                 } else {
                     layer.msg('添加失败');
                 }
@@ -180,7 +182,6 @@ function addLabel(url, labelDataEle) {
 
 function updataLabel(dataJSON, url, labelDataEle) {
     var labelData = $.trim(labelDataEle.val());
-    labelDataEle.val('');
     if (labelData == '') {
         layer.msg("请填写标签!")
     } else {
@@ -188,6 +189,7 @@ function updataLabel(dataJSON, url, labelDataEle) {
             url: url,
             data: dataJSON,
             dataType: "json",
+            cache:false,
             success: function (data) {
                 if (data.isSuccess == 'success') {
                     layer.msg('修改成功');
@@ -233,6 +235,7 @@ function queryHandle(page) {
             "operatingTimeEnd": operatTimeEnd,
             "page": page
         },
+        cache:false,
         success: function (data) {
             infoLabelData.html(data);
         },
@@ -254,6 +257,7 @@ function queryHandleLabel(page) {
             "operatingTimeEnd": '',
             "page": page
         },
+        cache:false,
         success: function (data) {
             infoLabelData.html(data);
         },
