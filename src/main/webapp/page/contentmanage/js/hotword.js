@@ -107,7 +107,7 @@ function serachdata(curr,data){
 			"<td><div style='text-align:center;word-wrap:break-word;word-break:break-all;'>"+rows.searchCount+"</div></td>"+
 			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.wordNature+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' id=\""+rows.id+"_user\">"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
 			"<td class='mailbox-name' style='width:280px;'><div>"+
 			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
@@ -370,6 +370,8 @@ function update_word(id){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clear();
 		$("#"+id+"_span").text($("#"+id+"_value").val())
+		var cookie_info = eval('(' + $.cookie('Wfadmin') + ')')
+		$("#"+id+"_user").text(cookie_info.user_realname)
 		cancel(id)
 //		showPage(1);
 	}else{
@@ -894,6 +896,8 @@ function update_wordManual(id){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clearManual();
 		$("#"+id+"_mspan").text($("#"+id+"_mvalue").val())
+		var cookie_info = eval('(' + $.cookie('Wfadmin') + ')')
+		$("#"+id+"_user").text(cookie_info.user_realname)
 		cancelManual(id)
 //		showPageManual(1);
 	}else{
