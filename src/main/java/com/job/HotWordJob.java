@@ -40,7 +40,7 @@ public class HotWordJob {
 	private HotWordSettingService hotWordSettingService;
 	@Autowired
 	private HotWordService hotwordService;
-	@Autowired
+	@Autowired 
 	private HotWordService hotWordService;
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
