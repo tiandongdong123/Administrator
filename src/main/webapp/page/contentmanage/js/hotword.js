@@ -304,7 +304,6 @@ function add_word(){
 
 
 function update(id,issueState){
-	
 	if(issueState==1){
 		layer.msg("请先下撤该数据再进行修改",{icon: 2});
 		return;
@@ -369,7 +368,9 @@ function update_word(id){
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clear();
-		showPage(1);
+		$("#"+id+"_span").text($("#"+id+"_value").val())
+		cancel(id)
+//		showPage(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -462,8 +463,16 @@ function publish(that,obj,issueState){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				clear();
 	    				clearManual()
-	    				showPage(1);
-	    				showPageManual(1)
+	    				if (issueState=='3') {
+	    					$(that).parent().parent().prev().children()[0].textContent = '待发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				} else {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				}
+//	    				console.log($(that)[0].parentNode.innerHTML)
+//	    				showPage(1);
+//	    				showPageManual(1)
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
@@ -740,6 +749,7 @@ function checkCountManual(){
 		dataType : "json",
 		success : function(data){
 			isCount=data;
+			console.log(data)
 		},
 		error : function(data){
 		}
@@ -881,7 +891,9 @@ function update_wordManual(id){
 	if(success){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		clearManual();
-		showPageManual(1);
+		$("#"+id+"_mspan").text($("#"+id+"_mvalue").val())
+		cancelManual(id)
+//		showPageManual(1);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">修改失败!</div>",{icon: 2});
 	}
@@ -927,6 +939,7 @@ var ids=new Array();
 		});
 	}
 	var count=checkCount();
+	console.log(count)
 	if((issueState==3)&& ((count-ids.length)<=15)) {
 		layer.msg("<div style=\"color:#8B0000;width:330px\">不能再进行下撤了，可以先发布热搜词后再下撤!</div>",{icon: 2});
     	return;
@@ -958,8 +971,13 @@ var ids=new Array();
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
 	    				clear();
 	    				clearManual()
-	    				showPage(1);
-	    				showPageManual(1)
+	    				if (issueState=='3') {
+	    					$(that).parent().parent().prev().children()[0].textContent = '待发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				} else {
+	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    				}
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});
 	    			}
