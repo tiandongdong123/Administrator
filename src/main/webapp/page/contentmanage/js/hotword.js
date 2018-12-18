@@ -468,10 +468,10 @@ function publish(that,obj,issueState){
 	    				clearManual()
 	    				if (issueState=='3') {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
 	    				}
 //	    				console.log($(that)[0].parentNode.innerHTML)
 //	    				showPage(1);
@@ -752,7 +752,7 @@ function checkCountManual(){
 		url : "../content/checkCount.do",
 		dataType : "json",
 		success : function(data){
-			isCount=data;)
+			isCount=data;
 		},
 		error : function(data){
 		}
@@ -977,7 +977,7 @@ var ids=new Array();
 	    				clearManual()
 	    				if (issueState=='3') {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',2)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
 	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
