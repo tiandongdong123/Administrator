@@ -129,10 +129,12 @@ public class HotWordJob {
 						if(word.indexOf("：")!=-1){
 							word=word.substring(word.indexOf("：")+1, word.length());
 						}
-						if (countMap.get(word) == null) {
-							countMap.put(word, count);
-						} else {
-							countMap.put(word, countMap.get(word) + count);
+						if(file(word)!=null&&!file(word).equals("")){
+							if (countMap.get(word) == null) {
+								countMap.put(word, count);
+							} else {
+								countMap.put(word, countMap.get(word) + count);
+							}
 						}
 						if (countMap.size() >= 50) {
 							break;
@@ -278,10 +280,12 @@ public class HotWordJob {
 						if(word.indexOf("：")!=-1){
 							word=word.substring(word.indexOf("：")+1, word.length());
 						}
-						if (countMap.get(word) == null) {
-							countMap.put(word, count);
-						} else {
-							countMap.put(word, countMap.get(word) + count);
+						if(file(word)!=null&&!file(word).equals("")){
+							if (countMap.get(word) == null) {
+								countMap.put(word, count);
+							} else {
+								countMap.put(word, countMap.get(word) + count);
+							}
 						}
 						if (countMap.size() >= 50) {
 							break;
