@@ -160,7 +160,7 @@ function selectPage(){
 function addWordSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['38%', '300px'],
+	    area: ['30%', '300px'],
 	    title: '添加自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/addWordSetting.do",
@@ -253,7 +253,7 @@ function updateSetting(id,status){
 	
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['38%', '300px'],
+	    area: ['30%', '300px'],
 	    title: '修改自动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/getHotWordSetting.do?id="+id,
@@ -562,7 +562,7 @@ function selectPageManual(){
 function addWordManualSetting(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['38%', '300px'],
+	    area: ['30%', '300px'],
 	    title: '添加手动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/addWordManualSetting.do",
@@ -620,7 +620,7 @@ function doaddWordManualSetting(){
 function updateManualSetting(id,status){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['38%', '300px'],
+	    area: ['30%', '300px'],
 	    title: '修改手动发布设置',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../content/getHotWordManualSetting.do?id="+id,
