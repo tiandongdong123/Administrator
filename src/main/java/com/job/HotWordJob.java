@@ -45,17 +45,17 @@ public class HotWordJob {
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
-	@Scheduled(cron = "0 0/2 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWord() {
 		try {
 			log.info("开始执行热搜词的统计");
 			InetAddress addr = InetAddress.getLocalHost();
 			String hostip = addr.getHostAddress();
 			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);
-			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
-				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
-				return;
-			}
+//			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
+//				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
+//				return;
+//			}
 			HotWordSetting set = hotWordSettingService.getHotWordSettingTask();
 			if(set==null){
 				log.info("没有任务需要执行");
@@ -185,19 +185,10 @@ public class HotWordJob {
 	/**
 	 * 手动设置任务定时器
 	 */
-	@Scheduled(cron = "0 0/1 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void exechotWordManual() {
 		try {
 			log.info("开始执行手动设置热搜词的统计");
-			//返回本机ip地址  hostip为本机ip地址
-			InetAddress addr = InetAddress.getLocalHost();//本机ip
-			String hostip = addr.getHostAddress();
-			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);//热搜词执行定时器ip
-			//当本机ip和热搜词执行定时器ip不相等时不执行
-//			if (!StringUtils.isEmpty(execIp)&&!"127.0.0.1".equals(execIp) && !hostip.equals(execIp)) {
-//				log.info("服务器" + hostip + "无需发布数据,有权限执行的ip:" + execIp);
-//				return;
-//			}
 			//获取任务(并且任务的下次抓取时间为当天的)
 			HotWordSetting set = hotWordSettingService.getHotWordManualSettingTask();
 			if(set==null){
@@ -260,11 +251,11 @@ public class HotWordJob {
 					String theme=map.get("theme");
 					int count=Integer.parseInt(map.get("frequency"));
 					//过滤禁用词
-//					log.info("执行对比禁用词");
-//					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
-//					if(forbid>0 || isMessyCode(theme)){
-//						continue;
-//					}
+					log.info("执行对比禁用词");
+					int forbid=forbiddenSerivce.CheckForBiddenWord(theme);
+					if(forbid>0 || isMessyCode(theme)){
+						continue;
+					}
 					if(StringUtils.isBlank(theme)){
 						continue;
 					}
