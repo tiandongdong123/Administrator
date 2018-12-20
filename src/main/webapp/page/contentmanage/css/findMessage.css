@@ -22,6 +22,11 @@
 #messagetable select,#infoLabel select{
 	padding: 2px 2px 2px 4px;
 }
+
+#auto_content .messagetable,#manual_setting .messagetable {
+    margin-left: 16px;
+    margin-top: 10px;
+}
 .change_setting {
     margin-left: 16px;
     margin-top: 10px;
