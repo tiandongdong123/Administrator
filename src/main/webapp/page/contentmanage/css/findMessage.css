@@ -22,6 +22,24 @@
 #messagetable select,#infoLabel select{
 	padding: 2px 2px 2px 4px;
 }
+.change_setting {
+    margin-left: 16px;
+    margin-top: 10px;
+}
+#manual_setting, #auto_setting {
+    cursor: pointer;
+}
+.nav-tabs > li.hot_active > a ,.nav-tabs > li.hot_active > a:focus,.nav-tabs > li.hot_active > a:hover{
+	background-color: #3c8dbc;
+    color: #fff;
+}
+.change_setting a,.change_setting a{
+	color: #444;
+    background: #f7f7f7;
+}
+#manual_content tr th, #auto_content tr th{
+	text-align: center;
+}
 
 .label_input{
 	border: none;
