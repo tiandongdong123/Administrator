@@ -1,0 +1,41 @@
+	<?
+	  include("/inc/header.html",{title:'热搜词发布设置'}) {}
+    ?>
+	<script type="text/javascript" src="../page/contentmanage/js/hotwordpublish.js"></script>
+<input type="hidden" id="checkname">
+<input type="hidden" id="cname" value="N">
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <form>
+			<div id="addadmin">
+			<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据周期：</label>
+             <input type="text" id="get_cycle" maxlength="16"  class="form-control input_width" value="${item.get_cyc!}" style="width:25.5%">&nbsp;&nbsp;天<span id="checkpublish_cyc" style="color:red;margin-left:10px"></span>
+         	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据时间段：</label>
+            	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}" style="width:23%">&nbsp;&nbsp;天<span id="checktime_slot" style="color:red;margin-left:10px"></span>
+         	</div>
+         </div>		
+              <?if(isupdate=='add'){?>
+ 	              <div class="box-footer" style="text-align:center;">
+	               <button type="button" onclick="doaddWordManualSetting()" class="btn btn-primary" id="add_wordset">保存</button>
+	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
+	              </div>             
+			  <?}else{?>
+			  	  <input value="${item.next_publish_time!}" type="hidden" id="nextPublish"/>
+	              <div class="box-footer" style="text-align:center;">
+	               <input type="hidden" value="${item.id!}" id="id"/>
+	               <button type="button" onclick="doupdateWordSettingManual()" class="btn btn-primary" id="update_wordset">修改</button>
+	               <button type="button" onclick="cancel();" class="btn btn-primary" id="reset">取消</button>
+	              </div>
+			  <?}?>  
+              </form>
+            </div>
+          </div>
+      	 </div>
+    </section>

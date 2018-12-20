@@ -3,16 +3,20 @@ package com.wf.bean;
 public class HotWordSetting {
 	
 	private Integer id;
-	private Integer publish_cyc;
 	private Integer time_slot;
+	private Integer get_cyc;
+	private Integer publish_cyc;
 	private String publish_strategy;
 	private String publish_date;
+	private String get_time;
 	private String operation;
 	private String operation_date;
 	private Integer status;
 	private String first_publish_time;
-	private String get_time;
 	private String next_publish_time;
+	private String next_get_time;
+	private String now_publish_time_space;
+	private String now_get_time_space;
 	private String next_publish_time_space;
 	private String is_first;
 
@@ -30,6 +34,14 @@ public class HotWordSetting {
 
 	public void setPublish_cyc(Integer publish_cyc) {
 		this.publish_cyc = publish_cyc;
+	}
+	
+	public Integer getGet_cyc() {
+		return get_cyc;
+	}
+
+	public void setGet_cyc(Integer get_cyc) {
+		this.get_cyc = get_cyc;
 	}
 
 	public Integer getTime_slot() {
@@ -88,6 +100,15 @@ public class HotWordSetting {
 		this.first_publish_time = first_publish_time;
 	}
 
+	
+	public String getNext_get_time() {
+		return next_get_time;
+	}
+
+	public void setNext_get_time(String next_get_time) {
+		this.next_get_time = next_get_time;
+	}
+
 	public String getGet_time() {
 		return get_time;
 	}
@@ -102,6 +123,23 @@ public class HotWordSetting {
 
 	public void setNext_publish_time(String next_publish_time) {
 		this.next_publish_time = next_publish_time;
+	}
+
+	public String getNow_get_time_space() {
+		return now_get_time_space;
+	}
+
+	
+	public String getNow_publish_time_space() {
+		return now_publish_time_space;
+	}
+
+	public void setNow_publish_time_space(String now_publish_time_space) {
+		this.now_publish_time_space = now_publish_time_space;
+	}
+
+	public void setNow_get_time_space(String now_get_time_space) {
+		this.now_get_time_space = now_get_time_space;
 	}
 
 	public String getNext_publish_time_space() {

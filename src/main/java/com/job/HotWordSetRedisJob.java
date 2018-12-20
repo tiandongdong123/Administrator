@@ -35,10 +35,10 @@ public class HotWordSetRedisJob {
 	private static Logger log = Logger.getLogger(HotWordSetRedisJob.class);
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 0/3 * * * ?")
 	public void execHotWordSetRedis() {
 		try{
-			log.info("开始热搜词redis发布");
+			log.info("开始热搜词redis发布"); 
 			InetAddress addr = InetAddress.getLocalHost();
 			String hostip = addr.getHostAddress();
 			String execIp = XxlConfClient.get("wf-admin.hotWordExecIP", null);

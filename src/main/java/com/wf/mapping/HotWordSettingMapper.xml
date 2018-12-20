@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>   
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wf.dao.HotWordSettingDao" >
   <resultMap id="TaskResultMap" type="com.wf.bean.HotWordSetting" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="publish_cyc" property="publish_cyc" jdbcType="INTEGER" />
     <result column="time_slot" property="time_slot" jdbcType="INTEGER" />
+    <result column="get_cyc" property="get_cyc" jdbcType="INTEGER" />
     <result column="publish_strategy" property="publish_strategy" jdbcType="VARCHAR" />
     <result column="publish_date" property="publish_date" jdbcType="VARCHAR" />
     <result column="operation" property="operation" jdbcType="VARCHAR" />
@@ -13,6 +14,9 @@
     <result column="first_publish_time" property="first_publish_time" jdbcType="VARCHAR" />
     <result column="get_time" property="get_time" jdbcType="VARCHAR" />
     <result column="next_publish_time" property="next_publish_time" jdbcType="VARCHAR" />
+     <result column="next_get_time" property="next_get_time" jdbcType="VARCHAR" />
+     <result column="now_get_time_space" property="now_get_time_space" jdbcType="VARCHAR" />
+     <result column="now_publish_time_space" property="now_publish_time_space" jdbcType="VARCHAR" />
     <result column="next_publish_time_space" property="next_publish_time_space" jdbcType="VARCHAR" />
     <result column="is_first" property="is_first" jdbcType="VARCHAR" />
   </resultMap>
@@ -23,17 +27,46 @@
  	<select id="getHotWordSettingList" resultType="com.wf.bean.HotWordSetting">
  	  select * from hot_search_word_setting 
  	</select>
+ 	<select id="getHotWordManualSettingList" resultType="com.wf.bean.HotWordSetting">
+ 	  select * from hot_search_word_setting where publish_strategy='手动发布'
+ 	</select>
  	<select id="getHotWordSetting"  resultType="map" parameterType="map">
- 	  select * from hot_search_word_setting  order by status,operation_date DESC
+ 	  select * from hot_search_word_setting where publish_strategy='自动发布'  order by status,operation_date DESC
  	  limit #{pageNum},#{pageSize}
  	</select>
  	
- 	<select id="getHotWordSettingCount" resultType="map" parameterType="map">
- 		select * from hot_search_word_setting where 1=1
+ 	 <select id="getHotWordManualSetting"  resultType="map" parameterType="map">
+ 	  select * from hot_search_word_setting where publish_strategy='手动发布' order by status,operation_date DESC
+ 	  limit #{pageNum},#{pageSize}
+ 	</select>
+ 	<select id="getHotWordSettingNowCount" resultType="map" parameterType="map">
+ 		select * from hot_search_word_setting where 1='1'
 	      <if test="status != null">
 	        and  status=#{status}
 	      </if>
  		order by status,operation_date DESC
+ 	</select>
+ 	<select id="getHotWordSettingCount" resultType="map" parameterType="map">
+ 		select * from hot_search_word_setting where publish_strategy='自动发布'
+	      <if test="status != null">
+	        and  status=#{status}
+	      </if>
+ 		order by status,operation_date DESC
+ 	</select>
+ 	<select id="getHotWordManualSettingCount" resultType="map" parameterType="map">
+ 		select * from hot_search_word_setting where publish_strategy='手动发布'
+	      <if test="status != null">
+	        and  status=#{status}
+	      </if>
+ 		order by status,operation_date DESC
+ 	</select>
+ 	
+ 	<select id="getOneHotWordManualSetting" resultType="com.wf.bean.HotWordSetting">
+ 		select * from hot_search_word_setting where publish_strategy='手动发布' and status='1'
+ 	</select>
+ 	
+ 	<select id="getNowWordSetting" resultType="String">
+ 		select publish_strategy from hot_search_word_setting where status='1'
  	</select>
  	
  	<select id="getOneHotWordSetting" resultType="com.wf.bean.HotWordSetting" parameterType="int">
@@ -51,6 +84,9 @@
       </if>
       <if test="time_slot != null">
         time_slot,
+      </if>
+       <if test="get_cyc != null">
+        get_cyc,
       </if>
       <if test="publish_strategy != null">
         publish_strategy,
@@ -76,8 +112,20 @@
       <if test="next_publish_time!=null">
         next_publish_time,
       </if>
+      <if test="next_get_time!=null">
+        next_get_time,
+      </if>
+      <if test="now_get_time_space!=null">
+        now_get_time_space,
+      </if>
+      <if test="now_get_time_space!=null">
+        now_get_time_space,
+      </if>
       <if test="next_publish_time_space!=null">
         next_publish_time_space,
+      </if>
+      <if test="is_first!=null">
+        is_first,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -86,6 +134,9 @@
       </if>
       <if test="time_slot != null">
         #{time_slot,jdbcType=INTEGER},
+      </if>
+      <if test="get_cyc != null">
+       #{get_cyc,jdbcType=INTEGER},
       </if>
       <if test="publish_strategy != null">
         #{publish_strategy,jdbcType=VARCHAR},
@@ -111,8 +162,20 @@
       <if test="next_publish_time!=null">
         #{next_publish_time,jdbcType=VARCHAR},
       </if>
+       <if test="next_get_time!=null">
+       #{next_get_time,jdbcType=VARCHAR},
+      </if>
+       <if test="now_get_time_space!=null">
+       #{now_get_time_space,jdbcType=VARCHAR},
+      </if>
+      <if test="now_get_time_space!=null">
+       #{now_get_time_space,jdbcType=VARCHAR},
+      </if>
       <if test="next_publish_time_space!=null">
         #{next_publish_time_space,jdbcType=VARCHAR},
+      </if>
+      <if test="is_first!=null">
+        #{is_first,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -123,6 +186,9 @@
       <if test="publish_cyc != null">
         publish_cyc=#{publish_cyc,jdbcType=INTEGER},
       </if>
+      <if test="get_cyc != null">
+        get_cyc=#{get_cyc,jdbcType=INTEGER},
+      </if>
       <if test="time_slot != null">
         time_slot=#{time_slot,jdbcType=INTEGER},
       </if>
@@ -131,6 +197,9 @@
       </if>
       <if test="publish_date != null">
         publish_date=#{publish_date,jdbcType=VARCHAR},
+      </if>
+      <if test="get_time != null">
+        get_time=#{get_time,jdbcType=VARCHAR},
       </if>
       <if test="operation != null">
       	 operation=#{operation,jdbcType=VARCHAR},
@@ -144,11 +213,17 @@
       <if test="first_publish_time!=null">
         first_publish_time=#{first_publish_time,jdbcType=VARCHAR},
       </if>
-      <if test="get_time!=null">
-        get_time=#{get_time,jdbcType=VARCHAR},
-      </if>
       <if test="next_publish_time!=null">
         next_publish_time=#{next_publish_time,jdbcType=VARCHAR},
+      </if>
+       <if test="next_get_time!=null">
+        next_get_time=#{next_get_time,jdbcType=VARCHAR},
+      </if>
+      <if test="now_get_time_space!=null">
+        now_get_time_space=#{now_get_time_space,jdbcType=VARCHAR},
+      </if>
+        <if test="now_publish_time_space!=null">
+        now_publish_time_space=#{now_publish_time_space,jdbcType=VARCHAR},
       </if>
       <if test="next_publish_time_space!=null">
         next_publish_time_space=#{next_publish_time_space,jdbcType=VARCHAR},
@@ -161,6 +236,10 @@
   </update>
    	<select id="getHotWordSettingTask" resultMap="TaskResultMap">
  		select * from hot_search_word_setting where substr(next_publish_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='自动发布' and status=1 limit 0,1
+ 	</select>
+ 	
+ 	<select id="getHotWordManualSettingTask" resultMap="TaskResultMap">
+ 		select * from hot_search_word_setting where substr(next_get_time,1,10)=DATE_FORMAT(now(),"%Y-%m-%d") and publish_strategy='手动发布' and status=1 limit 0,1
  	</select>
  	
  	<update id="updateAllSetting">

@@ -2,6 +2,7 @@ package com.wf.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +29,25 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 
 	@Override
 	public PageList getHotWordSetting(Map map) {
+		List<Object> count=hotWordSettingDao.getHotWordSettingCount(map);
 		PageList list = new PageList();
 		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
 		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
 		list.setPageRow(hotWordSettingDao.getHotWordSetting(map));
-		list.setTotalRow(hotWordSettingDao.getHotWordSettingCount(map).size());
-
+		list.setTotalRow(count.size());
+		list.setPageTotal(count.size()%list.getPageSize()==0?count.size()/list.getPageSize():count.size()/list.getPageSize()+1);
+		return list;
+	}
+	
+	@Override
+	public PageList getHotWordManualSetting(Map map) {
+		List<Object> count=hotWordSettingDao.getHotWordManualSettingCount(map);
+		PageList list = new PageList();
+		list.setPageNum(Integer.valueOf(map.get("pageNum").toString()));
+		list.setPageSize(Integer.valueOf(map.get("pageSize").toString()));
+		list.setPageRow(hotWordSettingDao.getHotWordManualSetting(map));
+		list.setTotalRow(count.size());
+		list.setPageTotal(count.size()%list.getPageSize()==0?count.size()/list.getPageSize():count.size()/list.getPageSize()+1);
 		return list;
 	}
 
@@ -57,12 +71,27 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 		}
 		
 	}
+	
+	@Override
+	public Object getOneHotWordSettingNowShow(Map map) {
+		List<Object> list=hotWordSettingDao.getHotWordSettingNowCount(map);
+		if(list.size()==0){
+			return null;
+		}else{
+			return hotWordSettingDao.getHotWordSettingNowCount(map).get(0);	
+		}
+	}
 
 	@Override
 	public HotWordSetting getHotWordSettingTask() {
 		return hotWordSettingDao.getHotWordSettingTask();
 	}
 
+	@Override
+	public HotWordSetting getHotWordManualSettingTask() {
+		return hotWordSettingDao.getHotWordManualSettingTask();
+	}
+	
 	@Override
 	public Integer updateAllSetting() {
 		return hotWordSettingDao.updateAllSetting();
@@ -123,4 +152,44 @@ public class HotWordSettingServiceImpl implements HotWordSettingService {
 	public HotWordSetting getExecHotWordSetting(Integer status) {
 		return hotWordSettingDao.getExecHotWordSetting(status);
 	}
+
+	@Override
+	public HotWordSetting getOneHotWordManualSetting() {
+		return hotWordSettingDao.getOneHotWordManualSetting();
+	}
+
+	/*
+	 * 更新所有手动设置的本次抓取数据时间段和下次抓取时间段
+	 * 
+	 */
+	@Override
+	public Integer updateAllManualNowGetTimeApace(HotWordSetting hotWordSetting) {
+		int num=0;
+		try {
+			//获取所有手动设置
+			List<HotWordSetting> list=hotWordSettingDao.getHotWordManualSettingList();
+			//遍历更新设置手动设置属性
+			for (HotWordSetting set : list) {
+				set.setNow_get_time_space(hotWordSetting.getNow_get_time_space());
+				set.setIs_first(hotWordSetting.getIs_first());
+				num+=hotWordSettingDao.updateHotWordSetting(set);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return num;
+	}
+
+	@Override
+	public List<HotWordSetting> getHotWordManualSettingList() {
+	
+		return hotWordSettingDao.getHotWordManualSettingList();
+	}
+
+	@Override
+	public String getNowWordSetting() {
+		return hotWordSettingDao.getNowWordSetting();
+	}
+
+
 }
