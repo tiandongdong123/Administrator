@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,8 +20,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wanfangdata.model.PagerModel;
 import com.wf.Setting.ResourceTypeSetting;
 
+import com.wf.bean.*;
+import com.wf.service.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -36,15 +38,11 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.jboss.resteasy.plugins.server.sun.http.HttpServerRequest;
+import org.neo4j.cypher.internal.compiler.v2_2.functions.E;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -84,1072 +82,1139 @@ import com.wf.service.ShareTemplateNamesService;
 import com.wf.service.ShareTemplateService;
 import com.wf.service.SubjectService;
 import com.wf.service.VolumeService;
+import wfks.accounting.transaction.SearchResponse;
 
 @Controller
-@RequestMapping("/content")   
-public class ContentController{
-	@Autowired
-	SubjectService subjectService;
-	
-	@Autowired
-	MessageService messageService;
-	
-	@Autowired
-	ResourceTypeService resourceTypeService;
-	
-	@Autowired
-	ShareTemplateService shareTemplateService;
-	
-	@Autowired
-	NotesService notesService;
-	
-	@Autowired
-	VolumeService volumeService;//文辑接口
-	
-	@Autowired
-	IVolumeService iVolume;//文辑存到solr接口
-	
-	@Autowired
-	ISearchCoreResultService searchAllResult;
-	
-	@Autowired
-	ShareTemplateNamesService shareTemplateNamesService;
-	
-	@Autowired
-	ShareTemplateNamesFiledsService filedsService;
+@RequestMapping("/content")
+public class ContentController {
+    private static org.apache.log4j.Logger log = Logger.getLogger(ContentController.class);
+    @Autowired
+    SubjectService subjectService;
 
-	@Autowired
-	DepartmentService departmentService;
-	
-	@Autowired
-	HotWordService hotWordService;
-	
-	@Autowired
-	HotWordSettingService hotWordSettingService;
-	
-	@Autowired
-	IForbiddenSerivce forbiddenSerivce;
-	
-	@Autowired
-	LogService logService;
-	
-	RedisUtil redis = new RedisUtil();
-	/**
-	 * 学科分类信息查询
-	 * @param request
-	 * @param model
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping("/subjectquery")
-	public String getSubject(
-			@RequestParam(value="level",required=false) String level,
-			@RequestParam(value="classNum",required=false) String classNum,
-			@RequestParam(value="className",required=false) String className,
-			HttpServletRequest request,Model model){
-		
-		int pageNum=1;
-		int pageSize=5;
-		PageList subjectList =subjectService.getSubject(pageNum,pageSize,level,classNum,className);
-		Map<String,String> mapPara=new HashMap<String, String>();
-		mapPara.put("level", level);
-		mapPara.put("className", className);
-		mapPara.put("classNum", classNum);
-		model.addAttribute("pageList",subjectList);
-		model.addAttribute("paraList",mapPara);
-		
-		//记录日志
-		Log log=new Log("学科分类管理","查询","查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
-		logService.addLog(log);
-		
-		return "/page/contentmanage/subject";
-	}
-	/**
-	 * 学科分类信息分页
-	 * @param response
-	 * @param request
-	 * @throws IOException
-	 */
-	@RequestMapping("/subjectJson")
-	public void getJsonSubject(
-			@RequestParam(value="level",required=false) String level,
-			@RequestParam(value="classNum",required=false) String classNum,
-			@RequestParam(value="className",required=false) String className,
-			@RequestParam(value="page",required=false) int pageNum,
-			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		int pageSize=5;
-		//int pageNum=Integer.parseInt(request.getParameter("page"));
-		
-		//记录日志
-		Log log=new Log("学科分类管理","查询","查询条件:级别:"+level+",分类号:"+classNum+",分类名称:"+className,request);
-		logService.addLog(log);
+    @Autowired
+    MessageService messageService;
 
-		PageList subjectList =subjectService.getSubject(pageNum,pageSize,level,classNum,className);
-		JSONObject json=JSONObject.fromObject(subjectList);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());
-	}
-	
-	@RequestMapping("subjectTree")
-	public void subjectTree(HttpServletResponse response,HttpServletRequest request) throws IOException{
-		PageList subjectList =subjectService.getSubject(1,2504,"","","");
-		JSONArray array=JSONArray.fromObject(subjectList.getPageRow());
-		for (int i = 0; i < array.size(); i++) {
-			array.getJSONObject(i).put("name",array.getJSONObject(i).get("className"));
-			array.getJSONObject(i).put("pId",array.getJSONObject(i).get("pid"));
-		}
-		
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(array.toString());
-	}
-	
-	
-	/**
-	 * 增加学科分类跳转
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/subjectadd")
-	public String addSubject(Model model){
-		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addSubjectType";
-	}
-	/**
-	 * 增加学科分类信息
-	 * @param subject
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/addSubjectType")
-	public void addSubjectType(Subject subject,HttpServletResponse response,HttpServletRequest request) throws Exception{
-		subject.setId(GetUuid.getId());
-		Boolean b=subjectService.insertSubject(subject);
-		
-		//记录日志
-		Log log=new Log("学科分类管理","增加",subject.toString(),request);
-		logService.addLog(log);
+    @Autowired
+    ResourceTypeService resourceTypeService;
 
-		JsonUtil.toJsonHtml(response, b);
-	}
-	/**
-	 * 修改学科分类信息跳转
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/subjectmodify")
-	public String updateSubject(
-			@RequestParam(value="idSub",required=false) String id,
-			HttpServletRequest request,Model model){
-		Subject  subject=subjectService.findSubject(id);
-		model.addAttribute("addupdate", "update");
-		model.addAttribute("subject", subject);
-		return "/page/contentmanage/addSubjectType";
-	}
-	@RequestMapping("showMessage")
-	public String showMessage(HttpServletRequest request){
-		return "/page/contentmanage/messageshow";
-	}
-	/**
-	 * 修改学科分类信息
-	 * @param subject
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/updateSubjectJson")
-	public void updateSubjectJson(Subject subject,HttpServletResponse response,HttpServletRequest request) throws Exception{
-		boolean b =subjectService.updateSubject(subject);
-		
-		//记录日志
-		Log log=new Log("学科分类管理","修改",subject.toString(),request);
-		logService.addLog(log);
-		
-		JsonUtil.toJsonHtml(response, b);
-	}
-	/**
-	 * 删除学科分类信息
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/deleteSubject")
-	public void deleteSub(
-			@RequestParam(value="ids",required=false) String ids,
-			HttpServletResponse response,HttpServletRequest request) throws Exception{
-		if(StringUtils.isEmpty(ids))ids=null;
-		Boolean b=subjectService.deleteSubject(ids);
-		JsonUtil.toJsonHtml(response, b);
-		
-		//记录日志
-		Log log=new Log("学科分类管理","删除",ids.toString(),request);
-		logService.addLog(log);
-		
-	}
-	
-	/**
-	 * 增加资讯跳转
-	 * @return
-	 */
-	@RequestMapping("/add")
-	public String addMessage(Model model){
-		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addMessage";
-	}
-	
-	
-	@RequestMapping("/addMessageJson")
-	public void addMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
-		
-		Wfadmin admin=CookieUtil.getWfadmin(request);
-		message.setId(GetUuid.getId());
-		message.setHuman(admin.getUser_realname());
-		message.setBranch(admin.getDept().getDeptName());
-		message.setIssueState(1);
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		message.setCreateTime(sdf1.format(new Date()));
-		message.setStick(sdf1.format(new Date()));
-		boolean b =messageService.insertMessage(message);
-		JsonUtil.toJsonHtml(response, b);
-		//记录日志
-		//Log log=new Log("资讯管理","增加",message.toString(),request);
-		//log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
-		//logService.addLog(log);
-	}
-	
-	/**
-	 * 资讯查询
-	 * @param request
-	 * @param model
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping("/index")
-	public String message(HttpServletRequest request, Model model) throws Exception {
-		Map<String, Object> mp = new HashMap<String, Object>();
-		mp.put("startTime", "");
-		mp.put("endTime", "");
-		mp.put("branch", "");
-		mp.put("colums", "");
-		model.addAttribute("meaasgeMap", mp);
-		List<String> deptList = new ArrayList<String>();
-		for (Object department : departmentService.getAllDept()) {
-			deptList.add(((Department) department).getDeptName());
-		}
-		model.addAttribute("deptList", deptList);
-		return "/page/contentmanage/message";
-	}
-	
-	/**
-	 * 资讯查询分页
-	 * @param response
-	 * @param request
-	 * @throws IOException
-	 */
-	@RequestMapping("/messageJson")
-	@ResponseBody
-	public Object getMessageJson(String branch,String human,String colums,String isTop,String startTime,String endTime,int pageNum,int pageSize,
-			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		
-		PageList messageList=messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime,isTop);
-		//记录日志
-		Log log=new Log("资讯管理","查询","查询条件:添加部门:"+branch+",添加人:"+human+",添加日期:"+startTime+"-"+endTime+",栏目:"+colums,request);
-		logService.addLog(log);
-		return  messageList;
-	}
-	
-	
-	/**
-	 * 咨询详情跳转
-	 * @return
-	 */
-	@RequestMapping("/detail")
-	public String getDetails(String id,Model model,HttpServletRequest request){
-		 String ip = request.getHeader("X-Forwarded-For");  
-         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-             ip = request.getHeader("Proxy-Client-IP");
-         }  
-         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-             ip = request.getHeader("WL-Proxy-Client-IP"); 
-         }  
-         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-             ip = request.getHeader("HTTP_CLIENT_IP");  
-         }  
-         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-             ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
-         }  
-         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-             ip = request.getRemoteAddr()+":"+request.getServerPort() ; 
-         }
-		
-		Message message=messageService.findMessage(id);
-		model.addAttribute("message", message);
-		model.addAttribute("url", "http://"+ip);
-		return "/page/contentmanage/messageDetail";
-	}
-	
-	
-	/**
-	 * 删除资讯信息
-	 * @param response
-	 * @param request
-	 * @throws Exception 
-	 */
-	@RequestMapping("/deleteMessage")
-	public void deleteMessage(
-			@RequestParam(value="ids",required=false) String ids,
-			HttpServletResponse response,HttpServletRequest request) throws Exception{
-		boolean b =messageService.deleteMessage(ids);
-		
-		//记录日志
-		Log log=new Log("资讯管理","删除",ids.toString(),request);
-		logService.addLog(log);
+    @Autowired
+    ShareTemplateService shareTemplateService;
 
-		JsonUtil.toJsonHtml(response, b);
-	}
-	/**
-	 * 修改资讯
-	 * @param id
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/modify")
-	public String updateMessage(@RequestParam(value="id",required=false) String id,
-			HttpServletRequest request,Model model){
-		
-		Message message=messageService.findMessage(id);
-		model.addAttribute("message", message);
-		model.addAttribute("addupdate", "update");
-		return "/page/contentmanage/addMessage";
-	}
-	
-	@RequestMapping("/updateMessageJson")
-	public void updateMessageJson(Message message,HttpServletRequest request,HttpServletResponse response) throws Exception{
-		Wfadmin admin=CookieUtil.getWfadmin(request);
-		message.setHuman(admin.getUser_realname());
-		boolean b =messageService.updateMessage(message);
-		//记录日志
-		//Log log=new Log("资讯管理","修改",message.toString(),request);
-		//logService.addLog(log);
-		JsonUtil.toJsonHtml(response, b);
-	}
-	/**
-	 * 发布/下撤/再发布
-	 * @param id
-	 * @param issueState
-	 * @param request 
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping("/updateIssue")
-	@ResponseBody
-	public boolean updateIssue(String id,String colums,String issueState, HttpServletRequest request) throws Exception{
-		
-		boolean b =messageService.updateIssue(id,colums,issueState);
-		
-		//记录日志
-		Log log=new Log("资讯管理","发布/下撤/再发布","资讯ID:"+id+",栏目:"+colums+",发布状态:"+issueState,request);
-		logService.addLog(log);
+    @Autowired
+    NotesService notesService;
 
-		return b;
-	}
-	/**
-	 * 资源类型管理查询
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/resourcequery")
-	public String getResourceManage(
-			HttpServletRequest request,Model model){
-		int pageNum=1;
-		int pageSize=10;
-		PageList p=resourceTypeService.getResourceType(pageNum, pageSize);
-		model.addAttribute("pageList",p);
-		return "/page/contentmanage/resourceManage";
-	}
+    @Autowired
+    VolumeService volumeService;//文辑接口
 
-	/**
-	 * 根据name查找资源类型
-	 */
+    @Autowired
+    IVolumeService iVolume;//文辑存到solr接口
 
-	@RequestMapping("/findResourseByName")
-	public void findResourseByName(
-			@RequestParam(value="typeName",required=false) String typeName,
-            HttpServletResponse response,HttpServletRequest request,Model model) throws IOException {
-		int pageNum=1;
-		int pageSize=10;
-		PageList p=new PageList();
-		if(null==typeName || "".equals(typeName)){
-			 p=resourceTypeService.getResourceType(pageNum, pageSize);
-		}else{
-			p=resourceTypeService.getResourceTypeByName(pageNum, pageSize,typeName);
-		}
-		
-		model.addAttribute("pageList",p);
-        JSONObject json=JSONObject.fromObject(p);
+    @Autowired
+    ISearchCoreResultService searchAllResult;
+
+    @Autowired
+    ShareTemplateNamesService shareTemplateNamesService;
+
+    @Autowired
+    ShareTemplateNamesFiledsService filedsService;
+
+    @Autowired
+    DepartmentService departmentService;
+
+    @Autowired
+    HotWordService hotWordService;
+
+    @Autowired
+    HotWordSettingService hotWordSettingService;
+
+    @Autowired
+    IForbiddenSerivce forbiddenSerivce;
+
+    @Autowired
+    LogService logService;
+
+    @Autowired
+    InformationLabelService informationLabelService;
+
+    RedisUtil redis = new RedisUtil();
+
+    /**
+     * 学科分类信息查询
+     *
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/subjectquery")
+    public String getSubject(
+            @RequestParam(value = "level", required = false) String level,
+            @RequestParam(value = "classNum", required = false) String classNum,
+            @RequestParam(value = "className", required = false) String className,
+            HttpServletRequest request, Model model) {
+
+        int pageNum = 1;
+        int pageSize = 5;
+        PageList subjectList = subjectService.getSubject(pageNum, pageSize, level, classNum, className);
+        Map<String, String> mapPara = new HashMap<String, String>();
+        mapPara.put("level", level);
+        mapPara.put("className", className);
+        mapPara.put("classNum", classNum);
+        model.addAttribute("pageList", subjectList);
+        model.addAttribute("paraList", mapPara);
+
+        //记录日志
+        Log log = new Log("学科分类管理", "查询", "查询条件:级别:" + level + ",分类号:" + classNum + ",分类名称:" + className, request);
+        logService.addLog(log);
+
+        return "/page/contentmanage/subject";
+    }
+
+    /**
+     * 学科分类信息分页
+     *
+     * @param response
+     * @param request
+     * @throws IOException
+     */
+    @RequestMapping("/subjectJson")
+    public void getJsonSubject(
+            @RequestParam(value = "level", required = false) String level,
+            @RequestParam(value = "classNum", required = false) String classNum,
+            @RequestParam(value = "className", required = false) String className,
+            @RequestParam(value = "page", required = false) int pageNum,
+            HttpServletResponse response, HttpServletRequest request) throws IOException {
+        int pageSize = 5;
+        //int pageNum=Integer.parseInt(request.getParameter("page"));
+
+        //记录日志
+        Log log = new Log("学科分类管理", "查询", "查询条件:级别:" + level + ",分类号:" + classNum + ",分类名称:" + className, request);
+        logService.addLog(log);
+
+        PageList subjectList = subjectService.getSubject(pageNum, pageSize, level, classNum, className);
+        JSONObject json = JSONObject.fromObject(subjectList);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json.toString());
-        
-		//记录日志
-		Log log=new Log("资源类型管理","查询","查询条件:资源类型名称:"+typeName,request);
-		logService.addLog(log);
-	}
+    }
+
+    @RequestMapping("subjectTree")
+    public void subjectTree(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        PageList subjectList = subjectService.getSubject(1, 2504, "", "", "");
+        JSONArray array = JSONArray.fromObject(subjectList.getPageRow());
+        for (int i = 0; i < array.size(); i++) {
+            array.getJSONObject(i).put("name", array.getJSONObject(i).get("className"));
+            array.getJSONObject(i).put("pId", array.getJSONObject(i).get("pid"));
+        }
+
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(array.toString());
+    }
 
 
+    /**
+     * 增加学科分类跳转
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("/subjectadd")
+    public String addSubject(Model model) {
+        model.addAttribute("addupdate", "add");
+        return "/page/contentmanage/addSubjectType";
+    }
 
-	/**
-	 * 资源类型管理分页
-	 * @param response
-	 * @param request
-	 * @throws IOException
-	 */
-	@RequestMapping("/resourceManageJson")
-	public void getJsonResourceManage(
-			@RequestParam(value="page",required=false) int pageNum,String typeName,
-			HttpServletResponse response,HttpServletRequest request) throws IOException{
-		
-		int pageSize=10;
-		PageList p=resourceTypeService.getResourceType(pageNum, pageSize);
-		JSONObject json=JSONObject.fromObject(p);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());
-		
-		//记录日志
-		Log log=new Log("资源类型管理","查询","查询条件:资源类型名称:"+typeName,request);
-		logService.addLog(log);
+    /**
+     * 增加学科分类信息
+     *
+     * @param subject
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/addSubjectType")
+    public void addSubjectType(Subject subject, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        subject.setId(GetUuid.getId());
+        Boolean b = subjectService.insertSubject(subject);
 
-	}
-	
-	/**
-	 * 添加资源跳转
-	 * @return
-	 */
-	@RequestMapping("/resourceadd")
-	public String addResource(Model model){
-		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addResource";
-	}
-	/**
-	 * 添加资源
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/addResourceJson")
-	@ResponseBody
-	public void addResourceJson(ResourceType resourceType,HttpServletResponse response,HttpServletRequest request) throws Exception{
-		resourceType.setId(GetUuid.getId());
-		boolean result=resourceTypeService.addResourceType(resourceType);
-		
-		JsonUtil.toJsonHtml(response, result);
-		
-		//记录日志
-		Log log=new Log("资源类型管理","增加",resourceType.toString(),request);
-		logService.addLog(log);
-	}
+        //记录日志
+        Log log = new Log("学科分类管理", "增加", subject.toString(), request);
+        logService.addLog(log);
 
-	/**
-	 * 资源类型上移
-	 */
-	@RequestMapping("/moveUpResource")
-	public void moveUpResource(
-			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		
-		boolean result=resourceTypeService.moveUpResource(id);
-		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
-		Thread.sleep(100);
-		JSONArray list = resourceTypeService.getAll1();
-		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);
-		JsonUtil.toJsonHtml(response, result);
-		
-		//记录日志
-		Log log=new Log("资源类型管理","上移",id,request);
-		logService.addLog(log);
+        JsonUtil.toJsonHtml(response, b);
+    }
 
-	}
-	/**
-	 * 资源类型下移
-	 */
-	@RequestMapping("/moveDownResource")
-	public void moveDownResource(
-			@RequestParam(value="id",required=false) String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-	
-		boolean result=resourceTypeService.moveDownResource(id);
-		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
-		Thread.sleep(100);
-		JSONArray list = resourceTypeService.getAll1();
-			redis.del("sourcetype");
-			redis.set("sourcetype", list.toString(), 6);
-		JsonUtil.toJsonHtml(response, result);
-		
-		//记录日志
-		Log log=new Log("资源类型管理","下移",id,request);
-		logService.addLog(log);
-	}
-	/**
-	 *判断资源类型是否发布
-	 */
-	@RequestMapping("/checkResourceForOne")
-	public void checkResourceForOne(String id,HttpServletResponse response,HttpServletRequest request) throws Exception {
-		boolean result = resourceTypeService.checkResourceForOne(id);
-		JsonUtil.toJsonHtml(response, result);
-	}
+    /**
+     * 修改学科分类信息跳转
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping("/subjectmodify")
+    public String updateSubject(
+            @RequestParam(value = "idSub", required = false) String id,
+            HttpServletRequest request, Model model) {
+        Subject subject = subjectService.findSubject(id);
+        model.addAttribute("addupdate", "update");
+        model.addAttribute("subject", subject);
+        return "/page/contentmanage/addSubjectType";
+    }
+
+    @RequestMapping("showMessage")
+    public String showMessage(HttpServletRequest request) {
+        return "/page/contentmanage/messageshow";
+    }
+
+    /**
+     * 修改学科分类信息
+     *
+     * @param subject
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/updateSubjectJson")
+    public void updateSubjectJson(Subject subject, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        boolean b = subjectService.updateSubject(subject);
+
+        //记录日志
+        Log log = new Log("学科分类管理", "修改", subject.toString(), request);
+        logService.addLog(log);
+
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    /**
+     * 删除学科分类信息
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/deleteSubject")
+    public void deleteSub(
+            @RequestParam(value = "ids", required = false) String ids,
+            HttpServletResponse response, HttpServletRequest request) throws Exception {
+        if (StringUtils.isEmpty(ids)) ids = null;
+        Boolean b = subjectService.deleteSubject(ids);
+        JsonUtil.toJsonHtml(response, b);
+
+        //记录日志
+        Log log = new Log("学科分类管理", "删除", ids.toString(), request);
+        logService.addLog(log);
+
+    }
+
+    /**
+     * 增加资讯跳转
+     *
+     * @return
+     */
+    @RequestMapping("/add")
+    public String addMessage(Model model) {
+        model.addAttribute("addupdate", "add");
+        return "/page/contentmanage/addMessage";
+    }
 
 
-	/**
-	 * 修改学科分类信息跳转
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/resourcemodify")
-	public String updateResource(
-			@RequestParam(value="idRes",required=false) String id,
-			HttpServletRequest request,Model model){
-		//ResourceType  resourceType=resourceTypeService.findResourceType(id);
-		ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
-		ResourceType  resourceType= resourceTypeSetting.findResourceTypeById(id);
-		model.addAttribute("addupdate", "update");
-		model.addAttribute("resourceType", resourceType);
-		return "/page/contentmanage/addResource";
-	}
-	/**
-	 * 修改资源信息
-	 * @param subject
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/updateResourceJson")
-	public void updateResourceJson(ResourceType resourceType,HttpServletResponse response,HttpServletRequest request) throws Exception{
+    @RequestMapping("/addMessageJson")
+    public void addMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		boolean b =resourceTypeService.updateResourceType(resourceType);
-		JsonUtil.toJsonHtml(response, b);
-		
-		//记录日志
-		Log log=new Log("资源类型管理","修改",resourceType.toString(),request);
-		logService.addLog(log);
+        Wfadmin admin = CookieUtil.getWfadmin(request);
+        message.setId(GetUuid.getId());
+        message.setHuman(admin.getUser_realname());
+        message.setBranch(admin.getDept().getDeptName());
+        message.setIssueState(1);
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        message.setCreateTime(sdf1.format(new Date()));
+        message.setStick(sdf1.format(new Date()));
+        boolean b = messageService.insertMessage(message);
+        JsonUtil.toJsonHtml(response, b);
+        //记录日志
+        //Log log=new Log("资讯管理","增加",message.toString(),request);
+        //log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
+        //logService.addLog(log);
+    }
 
-		//更新REDIS资源类型状态
+    /**
+     * 资讯查询
+     *
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/index")
+    public String message(HttpServletRequest request, Model model) throws Exception {
+        Map<String, Object> mp = new HashMap<String, Object>();
+        mp.put("startTime", "");
+        mp.put("endTime", "");
+        mp.put("branch", "");
+        mp.put("colums", "");
+        model.addAttribute("meaasgeMap", mp);
+        List<String> deptList = new ArrayList<String>();
+        for (Object department : departmentService.getAllDept()) {
+            deptList.add(((Department) department).getDeptName());
+        }
+        model.addAttribute("deptList", deptList);
+        return "/page/contentmanage/message";
+    }
+
+    /**
+     * 资讯查询分页
+     *
+     * @param response
+     * @param request
+     * @throws IOException
+     */
+    @RequestMapping("/messageJson")
+    @ResponseBody
+    public Object getMessageJson(String branch, String human, String colums, String isTop, String startTime, String endTime, int pageNum, int pageSize,
+                                 HttpServletResponse response, HttpServletRequest request) throws IOException {
+
+        PageList messageList = messageService.getMessage(pageNum, pageSize, branch, human, colums, startTime, endTime, isTop);
+        //记录日志
+        Log log = new Log("资讯管理", "查询", "查询条件:添加部门:" + branch + ",添加人:" + human + ",添加日期:" + startTime + "-" + endTime + ",栏目:" + colums, request);
+        logService.addLog(log);
+        return messageList;
+    }
+
+
+    /**
+     * 咨询详情跳转
+     *
+     * @return
+     */
+    @RequestMapping("/detail")
+    public String getDetails(String id, Model model, HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr() + ":" + request.getServerPort();
+        }
+
+        Message message = messageService.findMessage(id);
+        model.addAttribute("message", message);
+        model.addAttribute("url", "http://" + ip);
+        return "/page/contentmanage/messageDetail";
+    }
+
+
+    /**
+     * 删除资讯信息
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/deleteMessage")
+    public void deleteMessage(
+            @RequestParam(value = "ids", required = false) String ids,
+            HttpServletResponse response, HttpServletRequest request) throws Exception {
+        boolean b = messageService.deleteMessage(ids);
+
+        //记录日志
+        Log log = new Log("资讯管理", "删除", ids.toString(), request);
+        logService.addLog(log);
+
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    /**
+     * 修改资讯
+     *
+     * @param id
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping("/modify")
+    public String updateMessage(@RequestParam(value = "id", required = false) String id,
+                                HttpServletRequest request, Model model) {
+
+        Message message = messageService.findMessage(id);
+        model.addAttribute("message", message);
+        model.addAttribute("addupdate", "update");
+        return "/page/contentmanage/addMessage";
+    }
+
+    @RequestMapping("/updateMessageJson")
+    public void updateMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Wfadmin admin = CookieUtil.getWfadmin(request);
+        message.setHuman(admin.getUser_realname());
+        boolean b = messageService.updateMessage(message);
+        //记录日志
+        //Log log=new Log("资讯管理","修改",message.toString(),request);
+        //logService.addLog(log);
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    /**
+     * 发布/下撤/再发布
+     *
+     * @param id
+     * @param issueState
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/updateIssue")
+    @ResponseBody
+    public boolean updateIssue(String id, String colums, String issueState, HttpServletRequest request) throws Exception {
+
+        boolean b = messageService.updateIssue(id, colums, issueState);
+
+        //记录日志
+        Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + id + ",栏目:" + colums + ",发布状态:" + issueState, request);
+        logService.addLog(log);
+
+        return b;
+    }
+
+    /**
+     * 资源类型管理查询
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping("/resourcequery")
+    public String getResourceManage(
+            HttpServletRequest request, Model model) {
+        int pageNum = 1;
+        int pageSize = 10;
+        PageList p = resourceTypeService.getResourceType(pageNum, pageSize);
+        model.addAttribute("pageList", p);
+        return "/page/contentmanage/resourceManage";
+    }
+
+    /**
+     * 根据name查找资源类型
+     */
+
+    @RequestMapping("/findResourseByName")
+    public void findResourseByName(
+            @RequestParam(value = "typeName", required = false) String typeName,
+            HttpServletResponse response, HttpServletRequest request, Model model) throws IOException {
+        int pageNum = 1;
+        int pageSize = 10;
+        PageList p = new PageList();
+        if (null == typeName || "".equals(typeName)) {
+            p = resourceTypeService.getResourceType(pageNum, pageSize);
+        } else {
+            p = resourceTypeService.getResourceTypeByName(pageNum, pageSize, typeName);
+        }
+
+        model.addAttribute("pageList", p);
+        JSONObject json = JSONObject.fromObject(p);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json.toString());
+
+        //记录日志
+        Log log = new Log("资源类型管理", "查询", "查询条件:资源类型名称:" + typeName, request);
+        logService.addLog(log);
+    }
+
+
+    /**
+     * 资源类型管理分页
+     *
+     * @param response
+     * @param request
+     * @throws IOException
+     */
+    @RequestMapping("/resourceManageJson")
+    public void getJsonResourceManage(
+            @RequestParam(value = "page", required = false) int pageNum, String typeName,
+            HttpServletResponse response, HttpServletRequest request) throws IOException {
+
+        int pageSize = 10;
+        PageList p = resourceTypeService.getResourceType(pageNum, pageSize);
+        JSONObject json = JSONObject.fromObject(p);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json.toString());
+
+        //记录日志
+        Log log = new Log("资源类型管理", "查询", "查询条件:资源类型名称:" + typeName, request);
+        logService.addLog(log);
+
+    }
+
+    /**
+     * 添加资源跳转
+     *
+     * @return
+     */
+    @RequestMapping("/resourceadd")
+    public String addResource(Model model) {
+        model.addAttribute("addupdate", "add");
+        return "/page/contentmanage/addResource";
+    }
+
+    /**
+     * 添加资源
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/addResourceJson")
+    @ResponseBody
+    public void addResourceJson(ResourceType resourceType, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        resourceType.setId(GetUuid.getId());
+        boolean result = resourceTypeService.addResourceType(resourceType);
+
+        JsonUtil.toJsonHtml(response, result);
+
+        //记录日志
+        Log log = new Log("资源类型管理", "增加", resourceType.toString(), request);
+        logService.addLog(log);
+    }
+
+    /**
+     * 资源类型上移
+     */
+    @RequestMapping("/moveUpResource")
+    public void moveUpResource(
+            @RequestParam(value = "id", required = false) String id, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+        boolean result = resourceTypeService.moveUpResource(id);
+        //存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+        Thread.sleep(100);
+        JSONArray list = resourceTypeService.getAll1();
+        redis.del("sourcetype");
+        redis.set("sourcetype", list.toString(), 6);
+        JsonUtil.toJsonHtml(response, result);
+
+        //记录日志
+        Log log = new Log("资源类型管理", "上移", id, request);
+        logService.addLog(log);
+
+    }
+
+    /**
+     * 资源类型下移
+     */
+    @RequestMapping("/moveDownResource")
+    public void moveDownResource(
+            @RequestParam(value = "id", required = false) String id, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+        boolean result = resourceTypeService.moveDownResource(id);
+        //存到zookeeper后会有反应时间，sleep防止数据不能实时更新
+        Thread.sleep(100);
+        JSONArray list = resourceTypeService.getAll1();
+        redis.del("sourcetype");
+        redis.set("sourcetype", list.toString(), 6);
+        JsonUtil.toJsonHtml(response, result);
+
+        //记录日志
+        Log log = new Log("资源类型管理", "下移", id, request);
+        logService.addLog(log);
+    }
+
+    /**
+     * 判断资源类型是否发布
+     */
+    @RequestMapping("/checkResourceForOne")
+    public void checkResourceForOne(String id, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        boolean result = resourceTypeService.checkResourceForOne(id);
+        JsonUtil.toJsonHtml(response, result);
+    }
+
+
+    /**
+     * 修改学科分类信息跳转
+     *
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping("/resourcemodify")
+    public String updateResource(
+            @RequestParam(value = "idRes", required = false) String id,
+            HttpServletRequest request, Model model) {
+        //ResourceType  resourceType=resourceTypeService.findResourceType(id);
+        ResourceTypeSetting resourceTypeSetting = new ResourceTypeSetting();
+        ResourceType resourceType = resourceTypeSetting.findResourceTypeById(id);
+        model.addAttribute("addupdate", "update");
+        model.addAttribute("resourceType", resourceType);
+        return "/page/contentmanage/addResource";
+    }
+
+    /**
+     * 修改资源信息
+     *
+     * @param subject
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/updateResourceJson")
+    public void updateResourceJson(ResourceType resourceType, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+        boolean b = resourceTypeService.updateResourceType(resourceType);
+        JsonUtil.toJsonHtml(response, b);
+
+        //记录日志
+        Log log = new Log("资源类型管理", "修改", resourceType.toString(), request);
+        logService.addLog(log);
+
+        //更新REDIS资源类型状态
 /*		JSONArray list=	resourceTypeService.getAll1();
 		redis.del("sourcetype");
 		redis.set("sourcetype", list.toString(), 6);	*/
-	}
-	/**
-	 * 删除资源信息
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/deleteResourceType")
-	public void deleteResourceType(
-			@RequestParam(value="ids",required=false) String ids,
-			HttpServletResponse response,HttpServletRequest request) throws Exception{
-		if(StringUtils.isEmpty(ids))ids=null;
-		
-		//记录日志
-		Log log=new Log("资源类型管理","删除","删除的资源类型ID:"+ids,request);
-		logService.addLog(log);
+    }
 
-		Boolean b=resourceTypeService.deleteResourceType(ids);
-		JsonUtil.toJsonHtml(response, b);
+    /**
+     * 删除资源信息
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/deleteResourceType")
+    public void deleteResourceType(
+            @RequestParam(value = "ids", required = false) String ids,
+            HttpServletResponse response, HttpServletRequest request) throws Exception {
+        if (StringUtils.isEmpty(ids)) ids = null;
+
+        //记录日志
+        Log log = new Log("资源类型管理", "删除", "删除的资源类型ID:" + ids, request);
+        logService.addLog(log);
+
+        Boolean b = resourceTypeService.deleteResourceType(ids);
+        JsonUtil.toJsonHtml(response, b);
 		/*//更新REDIS资源类型状态
 		JSONArray list=	resourceTypeService.getAll1();
 		redis.del("sourcetype");
 		redis.set("sourcetype", list.toString(), 6);*/
-	}
-	/**
-	 * 图片上传
-	 * @param file
-	 * @param response
-	 * @throws Exception
-	 */
-	@RequestMapping("/uploadImg")
-	public void upload(@RequestParam("file") MultipartFile file,HttpServletRequest request,HttpServletResponse response) throws Exception {
-	    String path = request.getSession().getServletContext().getRealPath("upload");  
-	    String fileName = file.getOriginalFilename();
-	    String fileNameStr = (new Date().getTime())+"-"+fileName;
-	    File targetFile = new File(path, fileNameStr);
-	    if(!targetFile.exists()){  
-	        targetFile.mkdirs();
-	    }  
-	    //保存  
-	    try {  
-	        file.transferTo(targetFile);  
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    JSONObject jo = new JSONObject();
-	    String url=request.getContextPath()+"/upload/"+fileNameStr;
-	    jo.accumulate("url", url);
-	    response.setCharacterEncoding("UTF-8");
-		response.getWriter().print(jo);
-		
-	}
-	
-	/**
-	 * 分享模板
-	 * @param request
-	 * @param model
-	 * @return
-	 * @throws Exception 
-	 */
-	@RequestMapping("/templatequery")
-	public String getShareTemplate(
-			@RequestParam(value="shareType",required=false) String shareType,
-			HttpServletRequest request,Model model){
-		int pageNum=1;
-		int pageSize=10;
-		PageList p=shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
-		List<ShareTemplate> list = shareTemplateService.selectAll();
-		model.addAttribute("pageList",p);
-		model.addAttribute("shareType", shareType);
-		model.addAttribute("templates", list);
-		
-		//记录日志
-		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
-		logService.addLog(log);
+    }
 
-		return "/page/contentmanage/shareTemplate";
-	}
-	/**
-	 * 分享模板管理分页
-	 * @param response
-	 * @param request
-	 * @throws Exception 
-	 */
-	@RequestMapping("/shareTemplateJson")
-	public void getJsonShareTemplate(
-			@RequestParam(value="shareType",required=false) String shareType,
-			@RequestParam(value="page",required=false) int pageNum,
-			HttpServletResponse response,HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log("分享模板管理","查询","查询条件:分享类型:"+shareType,request);
-		logService.addLog(log);
-		
-		int pageSize=10;
-		PageList p=shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
-		JSONObject json=JSONObject.fromObject(p);
-		JsonUtil.toJsonHtml(response, json.toString());
-	}
-	
-	/**
-	 * 分享模板增加跳转
-	 * @return
-	 */
-	@RequestMapping("/templateadd")
-	public String addShareTemplate(Model model){
-		List<ShareTtemplateNames> names=shareTemplateNamesService.getAllShareTemplateNames();
-		model.addAttribute("names",names);
-		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addShareTemplate";
-	}
-	/**
-	 * 分享模板新增
-	 * @param response
-	 * @param request
-	 * @throws Exception
-	 */
-	@RequestMapping("/addShareTemplateJson")
-	public void addShareTemplateJson(ShareTemplate shareTemplate,@RequestParam(value="checkValue[]",required=false)String[] checkValue,HttpServletResponse response,HttpServletRequest request) throws Exception{
-		
-		shareTemplate.setId(GetUuid.getId());
-		String str="";
-		
-		for (String string : checkValue) {
-			str+=string;
-		}
-		shareTemplate.setShareContent(str);
-		boolean b=shareTemplateService.addShareTemplate(shareTemplate);
-		
-		//记录日志
-		Log log=new Log("分享模板管理","增加","新增分享模块信息:"+shareTemplate.toString(),request);
-		logService.addLog(log);
-		
-		JsonUtil.toJsonHtml(response,b);
-	}
-	
-	@RequestMapping("/deleteShareTemplate")
-	public void deleteShareTemplate(HttpServletResponse response,String ids, HttpServletRequest request) throws Exception{
-		
-		//记录日志
-		Log log=new Log("分享模板管理","删除","删除的分享模块ID:"+ids,request);
-		logService.addLog(log);
+    /**
+     * 图片上传
+     *
+     * @param file
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping("/uploadImg")
+    public void upload(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String fileName = file.getOriginalFilename();
+        String fileNameStr = (new Date().getTime()) + "-" + fileName;
+        File targetFile = new File(path, fileNameStr);
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }
+        //保存
+        try {
+            file.transferTo(targetFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        JSONObject jo = new JSONObject();
+        String url = request.getContextPath() + "/upload/" + fileNameStr;
+        jo.accumulate("url", url);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print(jo);
 
-		boolean b =shareTemplateService.deleteShareTemplate(ids);
-		JsonUtil.toJsonHtml(response, b);
-	}
-	
-	@RequestMapping("/templatemodify")
-	public String updateShareTemplate(
-			@RequestParam(value="ids",required=false) String ids,
-			Model model){
-		List<ShareTtemplateNames> names=shareTemplateNamesService.getAllShareTemplateNames();
-		ShareTemplate shareTemplate =shareTemplateService.findShareTemplate(ids);
-		List<ShareTemplateNamesFileds> fileds=filedsService.getFiledsByShareNameType(shareTemplate.getShareType());
-		for (int i = 0; i < fileds.size(); i++) {
-			 if(StringUtils.isNotBlank(fileds.get(i).getField_eng())){
-				 if(shareTemplate.getShareContent().contains(fileds.get(i).getField_eng())){
-					 fileds.get(i).setCheck(true);
-				 }
-			 }	 
-		}
-		
-		
-		model.addAttribute("names",names);
-		model.addAttribute("addupdate", "update");
-		model.addAttribute("shareTemplate", shareTemplate);
-		model.addAttribute("fileds", fileds);
-		return "/page/contentmanage/addShareTemplate";
-	}
-	
-	@RequestMapping("/updateShareTemplates")
-	public void updateShareTemplate(HttpServletResponse response,ShareTemplate shareTemplate,@RequestParam(value="checkValue[]",required=false)String[]checkValue, HttpServletRequest request) throws Exception{
-		
-		String str="";
-		for (String string : checkValue) {
-			str+=string;
-		}
-		shareTemplate.setShareContent(str);
-		boolean b =shareTemplateService.updateShareTemplate(shareTemplate);
-		
-		//记录日志
-		Log log=new Log("分享模板管理","修改","修改后的分享模板信息:"+shareTemplate.toString(),request);
-		logService.addLog(log);
+    }
 
-		JsonUtil.toJsonHtml(response, b);
-	}
-	
-	@RequestMapping("checkShareTemplates")
-	public void checkShareTemplates(HttpServletResponse response,ShareTemplate shareTemplate,String addOrUpdate) throws Exception{
-		boolean isExists=shareTemplateService.checkShareTemplate(shareTemplate,addOrUpdate)==null?true:false;
-		JsonUtil.toJsonHtml(response,isExists);
-	}
-	
-	/**
-	 * 笔记
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/notemanage")
-	public String notes(Model model){
-		int pageNum=1;
-		int pageSize=10;
-		PageList pageList =notesService.getNotes(pageNum, pageSize,null, null, null, null, null, null, null, null,null,null);
-		model.addAttribute("pageList",pageList);
-		model.addAttribute("res",resourceTypeService.getAll());
-		return "/page/contentmanage/notes";
-	}
-	
-	@RequestMapping("noteShow")
-	public String noteShow(Model model,HttpServletRequest request) {
-		String id=request.getParameter("id");
-	
-	Notes notes=notesService.findNotes(id);
-	model.addAttribute("text",notes.getNoteContent());
-		return "/page/contentmanage/notesText";
-	}
-	
-	
+    /**
+     * 分享模板
+     *
+     * @param request
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/templatequery")
+    public String getShareTemplate(
+            @RequestParam(value = "shareType", required = false) String shareType,
+            HttpServletRequest request, Model model) {
+        int pageNum = 1;
+        int pageSize = 10;
+        PageList p = shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
+        List<ShareTemplate> list = shareTemplateService.selectAll();
+        model.addAttribute("pageList", p);
+        model.addAttribute("shareType", shareType);
+        model.addAttribute("templates", list);
 
-	
-	
-	/**
-	 * 笔记管理
-	 * @param model
-	 * @param response
-	 * @param userName
-	 * @param noteNum
-	 * @param resourceName
-	 * @param resourceType
-	 * @param dataState
-	 * @param complaintStatus
-	 * @param startTime
-	 * @param endTime
-	 * @param pageNum
-	 * @param request 
-	 * @throws IOException
-	 * @throws ParseException 
-	 */
-	
-	@RequestMapping("/notesJson")
-	public void notesJson(HttpServletResponse response,
-			@RequestParam(value="userName",required=false) String userName,
-			@RequestParam(value="noteNum",required=false) String noteNum,
-			@RequestParam(value="resourceName",required=false) String resourceName,
-			@RequestParam(value="resourceType[]",required=false) String[] resourceType,
-			@RequestParam(value="dataState[]",required=false) String[] dataState,
-			@RequestParam(value="complaintStatus[]",required=false) String[] complaintStatus,
-			@RequestParam(value="startTime",required=false) String startTime,
-			@RequestParam(value="endTime",required=false) String endTime,
-			@RequestParam(value="noteProperty[]",required=false) String[] noteProperty,
-			@RequestParam(value="performAction[]",required=false) String[] performAction,
-			@RequestParam(value="pagesize",required=false) int pagesize,
-			@RequestParam(value="page",required=false) int pageNum, HttpServletRequest request
-			) throws Exception{
-		
-		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-		Calendar  calendar=new  GregorianCalendar(); 
-		
-		if(StringUtils.isEmpty(userName)) userName=null;
-		if(StringUtils.isEmpty(noteNum)) noteNum=null;
-		if(StringUtils.isEmpty(resourceName)) resourceName=null;
-		if(StringUtils.isEmpty(startTime)) startTime=null;
-		
-		if(StringUtils.isEmpty(endTime)){
-			endTime=null;
-		}else{
-			calendar.setTime(format.parse(endTime));
-			calendar.add(calendar.DATE,1);
-			endTime=format.format(calendar.getTime());
-		}
-		
-		PageList NotepageList =notesService.getNotes(pageNum, pagesize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime,noteProperty,performAction);
-		JSONObject json=JSONObject.fromObject(NotepageList);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());
-		
-		//记录日志
-		Log log=new Log("笔记管理","查询","笔记管理查询条件:用户ID:"+userName+",笔记编号:"+noteNum
-				+",资源名称:"+resourceName+",笔记日期:"+startTime+"-"+endTime
-				+ ",资源类型:"+(resourceType==null?"":Arrays.asList(resourceType))+",数据状态:"+(dataState==null?"":Arrays.asList(dataState))+","
-				+"申诉状态:"+(complaintStatus==null?"":Arrays.asList(complaintStatus)),request);
-		logService.addLog(log);
-		
-	}
-	
-	@RequestMapping("/findNote")
-	public String findNote(Model model,@RequestParam(value="id",required=false) String id){
-	
-		boolean b=notesService.handlingNote(id);
+        //记录日志
+        Log log = new Log("分享模板管理", "查询", "查询条件:分享类型:" + shareType, request);
+        logService.addLog(log);
 
-		Notes notes =notesService.findNotes(id);
-		String noteDate = notes.getNoteDate();
-		if(!"".equals(noteDate)){
-			noteDate = noteDate.substring(0, 4) + "年" + noteDate.substring(5, 7) + "月" + noteDate.substring(8, 10) + "日" + noteDate.substring(10, 19);
-		}
-		notes.setNoteDate(noteDate);
-		model.addAttribute("notes", notes);
-		return "/page/contentmanage/notes_detail";
-	}
-	
-	
-	@RequestMapping("/findNotes")
-	public String findNotes(Model model,@RequestParam(value="id",required=false) String id){
-		Notes notes =notesService.findNotes(id);
-		model.addAttribute("notes", notes);
-		return "/page/contentmanage/notes_detail";
-	}
-	
-	@RequestMapping("/findNotes_close_note")
-	public String findNotes_close_note(Model model,@RequestParam(value="id",required=false) String id,@RequestParam(value="type",required=false) String type){
-		Notes notes =notesService.findNoteOne(id);
-		model.addAttribute("notes", notes);
-		model.addAttribute("type",type);
-		return "/page/contentmanage/notes_detail";
-	}
-	
-	@RequestMapping("/updateNotes")
-	public void updateNotes(Notes notes,HttpServletRequest request,HttpServletResponse response) throws Exception{
-		Date currentTime = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String dateString = formatter.format(currentTime);
-		notes.setAuditTime(dateString);//审核日期
-		Wfadmin admin = CookieUtil.getWfadmin(request);
-		notes.setAuditId(admin.getWangfang_admin_id());//审核人ID
-		Boolean b = notesService.updateNotes(notes);
-		JsonUtil.toJsonHtml(response, b);
-		//记录日志
-		Log log=new Log("笔记管理","修改","修改后的笔记信息:"+notes.toString(),request);
-		logService.addLog(log);
-	}
-	
-	@RequestMapping("/stick")
-	public void stick(Message message,HttpServletResponse response) throws Exception{
-		message.setStick(DateTools.getSysTime());
-		boolean b =messageService.updataMessageStick(message);
-		JsonUtil.toJsonHtml(response, b);
-	}
-	
-	/**
-	 * 文辑管理
-	 * @return
-	 */
-	@RequestMapping("/papercollectquery")
-	public ModelAndView volumeDocu(){
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/page/contentmanage/volume/volume_docu");
-		return mav;
-	}
-	/**
-	 * 列表
-	 * @param startTime
-	 * @param endTime
-	 * @param searchWord
-	 * @param volumeType
-	 * @param volumeState
-	 * @param pageNum
-	 * @param pageSize
-	 * @return
-	 */
-	@RequestMapping("/getVolume")
-	@ResponseBody
-	public PageList getVolume(String startTime,String endTime,String searchWord,String volumeType,String volumeState,
-			String sortColumn,String sortWay,int pageNum,int pageSize){
-		PageList p = volumeService.queryList(startTime, endTime, searchWord, volumeType, volumeState, sortColumn,sortWay,pageNum, pageSize);
-		return p;
-	}
-	/**
-	 * 删除
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping("/delete")
-	@ResponseBody
-	public boolean delete(String id){
-		boolean flag = volumeService.delete(id);
-		//在后台删除文辑同时删除前台显示
-		List<String> ids = new ArrayList<String>();
-		ids.add(id);
-		boolean flag2 = iVolume.deleteVolumeList(ids);
-		return flag;
-	}
-	/**
-	 * 推优
-	 * @param id
-	 * @param subject
-	 * @param price
-	 * @return
-	 */
-	@RequestMapping("/push")
-	@ResponseBody
-	public boolean push(String id,String subject,String subjectName, double price){
-		boolean flag = volumeService.updateVolumeType(id, subject,subjectName, price);
-		return flag;
-	}
-	/**
-	 * 获取知识发现路径
-	 */
-	@RequestMapping("geturl")
-	public void geturl(HttpServletResponse response,HttpServletRequest request){
-		response.setCharacterEncoding("UTF-8");
-		JSONObject json = new JSONObject();
-		json.put("search", Getproperties.getPros("httpurl.properties").getProperty("menu.index.wf_fw_zsfx"));
-		PrintWriter out  = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		out.print(json);
-		out.flush();
-		out.close();
-	}
-	/**
-	 * 文辑管理
-	 * @return
-	 */
-	@RequestMapping("/papercollectdetail")
-	public ModelAndView volumeDetails(String id){
-		Map<String,Object> map = volumeService.queryDetails(id);
-		int volumeChapter = (Integer) map.get("volumeChapter");
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("map",map);
-		if(Integer.valueOf(volumeChapter) == 1){
-			mav.setViewName("/page/contentmanage/volume/volume_details");//有章节
-		}else{
-			mav.setViewName("/page/contentmanage/volume/volume_detailsNone");//无章节
-		}
-		return mav;
-	}
-	
-	/**
-	 * 文辑发布/下撤/再发布
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping("/issue")
-	@ResponseBody
-	public boolean issue(String id,String issueNum){
-		if("3".equals(issueNum)){//下撤
-			//删除前台显示
-			List<String> ids = new ArrayList<String>();
-			ids.add(id);
-			boolean flag1 = iVolume.deleteVolumeList(ids);
-		}else{//发布和再发布
-			
-			Map<String,Object> map = volumeService.queryDetails(id);
-			Volume volume = (Volume) map.get("volume");
-			//--------------------存到solr里-----------------
-			boolean flag1 = iVolume.sendSolrByVolumeId(id);//存到solr里
-		}
-		//文辑发布/下撤/再发布后修改数据库文辑状态
-		boolean flag2 = volumeService.updateIssue(id,issueNum);
-		return flag2;
-	}
-	/**
-	 * 修改价格
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping("/updatePrice")
-	@ResponseBody
-	public boolean updatePrice(String price,String volumeId){
-		boolean flag = volumeService.updatePrice(price,volumeId);
-		return flag;
-	}
-	//----------------------------------------创建文辑-----------------------------------
-		/**
-		 * 创建文辑第一步
-		 * @return
-		 */
-		@RequestMapping("/papercollectadd")
-		public ModelAndView stepOne(HttpServletRequest request,@ModelAttribute Volume volume){
-			Wfadmin admin=CookieUtil.getWfadmin(request);
-			String publishPerson = admin.getUser_realname();
-			ModelAndView mav = new ModelAndView();
-			mav.addObject("volume", volume);
-			mav.addObject("publishPerson", publishPerson);
-			mav.setViewName("/page/contentmanage/volume/step_one");
-			return mav;
-		}
-		/**
-		 * 创建文辑第二步
-		 * @return
-		 */
-		@RequestMapping("/stepTwo")
-		public ModelAndView stepTwo(@ModelAttribute Volume volume){
-			ModelAndView mav = new ModelAndView();
-			mav.addObject("volume", volume);
-			mav.setViewName("/page/contentmanage/volume/step_two");
-			return mav;
-		}
-		/**
-		 * 创建文辑第三步
-		 * @return
-		 */
-		@RequestMapping("/stepThree")
-		public ModelAndView stepThree(@ModelAttribute Volume volume,String listContent){
-			ModelAndView mav = new ModelAndView();
-			mav.addObject("volume", volume);
-			mav.addObject("listContent", listContent);
-			mav.setViewName("/page/contentmanage/volume/step_three");
-			return mav;
-		}
-		/**
-		 * 搜全站
-		 */
-		@RequestMapping("/queryGlobal")
-		@ResponseBody
-		public SearchPageList queryGlobal(String queryWords,String sort,int pageNum,int pageSize){
-			String paramStrs = queryWords;	//检索参数
-			//字段处理
+        return "/page/contentmanage/shareTemplate";
+    }
+
+    /**
+     * 分享模板管理分页
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/shareTemplateJson")
+    public void getJsonShareTemplate(
+            @RequestParam(value = "shareType", required = false) String shareType,
+            @RequestParam(value = "page", required = false) int pageNum,
+            HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+        //记录日志
+        Log log = new Log("分享模板管理", "查询", "查询条件:分享类型:" + shareType, request);
+        logService.addLog(log);
+
+        int pageSize = 10;
+        PageList p = shareTemplateService.getShareTemplate(pageNum, pageSize, shareType);
+        JSONObject json = JSONObject.fromObject(p);
+        JsonUtil.toJsonHtml(response, json.toString());
+    }
+
+    /**
+     * 分享模板增加跳转
+     *
+     * @return
+     */
+    @RequestMapping("/templateadd")
+    public String addShareTemplate(Model model) {
+        List<ShareTtemplateNames> names = shareTemplateNamesService.getAllShareTemplateNames();
+        model.addAttribute("names", names);
+        model.addAttribute("addupdate", "add");
+        return "/page/contentmanage/addShareTemplate";
+    }
+
+    /**
+     * 分享模板新增
+     *
+     * @param response
+     * @param request
+     * @throws Exception
+     */
+    @RequestMapping("/addShareTemplateJson")
+    public void addShareTemplateJson(ShareTemplate shareTemplate, @RequestParam(value = "checkValue[]", required = false) String[] checkValue, HttpServletResponse response, HttpServletRequest request) throws Exception {
+
+        shareTemplate.setId(GetUuid.getId());
+        String str = "";
+
+        for (String string : checkValue) {
+            str += string;
+        }
+        shareTemplate.setShareContent(str);
+        boolean b = shareTemplateService.addShareTemplate(shareTemplate);
+
+        //记录日志
+        Log log = new Log("分享模板管理", "增加", "新增分享模块信息:" + shareTemplate.toString(), request);
+        logService.addLog(log);
+
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    @RequestMapping("/deleteShareTemplate")
+    public void deleteShareTemplate(HttpServletResponse response, String ids, HttpServletRequest request) throws Exception {
+
+        //记录日志
+        Log log = new Log("分享模板管理", "删除", "删除的分享模块ID:" + ids, request);
+        logService.addLog(log);
+
+        boolean b = shareTemplateService.deleteShareTemplate(ids);
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    @RequestMapping("/templatemodify")
+    public String updateShareTemplate(
+            @RequestParam(value = "ids", required = false) String ids,
+            Model model) {
+        List<ShareTtemplateNames> names = shareTemplateNamesService.getAllShareTemplateNames();
+        ShareTemplate shareTemplate = shareTemplateService.findShareTemplate(ids);
+        List<ShareTemplateNamesFileds> fileds = filedsService.getFiledsByShareNameType(shareTemplate.getShareType());
+        for (int i = 0; i < fileds.size(); i++) {
+            if (StringUtils.isNotBlank(fileds.get(i).getField_eng())) {
+                if (shareTemplate.getShareContent().contains(fileds.get(i).getField_eng())) {
+                    fileds.get(i).setCheck(true);
+                }
+            }
+        }
+
+
+        model.addAttribute("names", names);
+        model.addAttribute("addupdate", "update");
+        model.addAttribute("shareTemplate", shareTemplate);
+        model.addAttribute("fileds", fileds);
+        return "/page/contentmanage/addShareTemplate";
+    }
+
+    @RequestMapping("/updateShareTemplates")
+    public void updateShareTemplate(HttpServletResponse response, ShareTemplate shareTemplate, @RequestParam(value = "checkValue[]", required = false) String[] checkValue, HttpServletRequest request) throws Exception {
+
+        String str = "";
+        for (String string : checkValue) {
+            str += string;
+        }
+        shareTemplate.setShareContent(str);
+        boolean b = shareTemplateService.updateShareTemplate(shareTemplate);
+
+        //记录日志
+        Log log = new Log("分享模板管理", "修改", "修改后的分享模板信息:" + shareTemplate.toString(), request);
+        logService.addLog(log);
+
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    @RequestMapping("checkShareTemplates")
+    public void checkShareTemplates(HttpServletResponse response, ShareTemplate shareTemplate, String addOrUpdate) throws Exception {
+        boolean isExists = shareTemplateService.checkShareTemplate(shareTemplate, addOrUpdate) == null ? true : false;
+        JsonUtil.toJsonHtml(response, isExists);
+    }
+
+    /**
+     * 笔记
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("/notemanage")
+    public String notes(Model model) {
+        int pageNum = 1;
+        int pageSize = 10;
+        PageList pageList = notesService.getNotes(pageNum, pageSize, null, null, null, null, null, null, null, null, null, null);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("res", resourceTypeService.getAll());
+        return "/page/contentmanage/notes";
+    }
+
+    @RequestMapping("noteShow")
+    public String noteShow(Model model, HttpServletRequest request) {
+        String id = request.getParameter("id");
+
+        Notes notes = notesService.findNotes(id);
+        model.addAttribute("text", notes.getNoteContent());
+        return "/page/contentmanage/notesText";
+    }
+
+
+    /**
+     * 笔记管理
+     *
+     * @param model
+     * @param response
+     * @param userName
+     * @param noteNum
+     * @param resourceName
+     * @param resourceType
+     * @param dataState
+     * @param complaintStatus
+     * @param startTime
+     * @param endTime
+     * @param pageNum
+     * @param request
+     * @throws IOException
+     * @throws ParseException
+     */
+
+    @RequestMapping("/notesJson")
+    public void notesJson(HttpServletResponse response,
+                          @RequestParam(value = "userName", required = false) String userName,
+                          @RequestParam(value = "noteNum", required = false) String noteNum,
+                          @RequestParam(value = "resourceName", required = false) String resourceName,
+                          @RequestParam(value = "resourceType[]", required = false) String[] resourceType,
+                          @RequestParam(value = "dataState[]", required = false) String[] dataState,
+                          @RequestParam(value = "complaintStatus[]", required = false) String[] complaintStatus,
+                          @RequestParam(value = "startTime", required = false) String startTime,
+                          @RequestParam(value = "endTime", required = false) String endTime,
+                          @RequestParam(value = "noteProperty[]", required = false) String[] noteProperty,
+                          @RequestParam(value = "performAction[]", required = false) String[] performAction,
+                          @RequestParam(value = "pagesize", required = false) int pagesize,
+                          @RequestParam(value = "page", required = false) int pageNum, HttpServletRequest request
+    ) throws Exception {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = new GregorianCalendar();
+
+        if (StringUtils.isEmpty(userName)) userName = null;
+        if (StringUtils.isEmpty(noteNum)) noteNum = null;
+        if (StringUtils.isEmpty(resourceName)) resourceName = null;
+        if (StringUtils.isEmpty(startTime)) startTime = null;
+
+        if (StringUtils.isEmpty(endTime)) {
+            endTime = null;
+        } else {
+            calendar.setTime(format.parse(endTime));
+            calendar.add(calendar.DATE, 1);
+            endTime = format.format(calendar.getTime());
+        }
+
+        PageList NotepageList = notesService.getNotes(pageNum, pagesize, userName, noteNum, resourceName, resourceType, dataState, complaintStatus, startTime, endTime, noteProperty, performAction);
+        JSONObject json = JSONObject.fromObject(NotepageList);
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json.toString());
+
+        //记录日志
+        Log log = new Log("笔记管理", "查询", "笔记管理查询条件:用户ID:" + userName + ",笔记编号:" + noteNum
+                + ",资源名称:" + resourceName + ",笔记日期:" + startTime + "-" + endTime
+                + ",资源类型:" + (resourceType == null ? "" : Arrays.asList(resourceType)) + ",数据状态:" + (dataState == null ? "" : Arrays.asList(dataState)) + ","
+                + "申诉状态:" + (complaintStatus == null ? "" : Arrays.asList(complaintStatus)), request);
+        logService.addLog(log);
+
+    }
+
+    @RequestMapping("/findNote")
+    public String findNote(Model model, @RequestParam(value = "id", required = false) String id) {
+
+        boolean b = notesService.handlingNote(id);
+
+        Notes notes = notesService.findNotes(id);
+        String noteDate = notes.getNoteDate();
+        if (!"".equals(noteDate)) {
+            noteDate = noteDate.substring(0, 4) + "年" + noteDate.substring(5, 7) + "月" + noteDate.substring(8, 10) + "日" + noteDate.substring(10, 19);
+        }
+        notes.setNoteDate(noteDate);
+        model.addAttribute("notes", notes);
+        return "/page/contentmanage/notes_detail";
+    }
+
+
+    @RequestMapping("/findNotes")
+    public String findNotes(Model model, @RequestParam(value = "id", required = false) String id) {
+        Notes notes = notesService.findNotes(id);
+        model.addAttribute("notes", notes);
+        return "/page/contentmanage/notes_detail";
+    }
+
+    @RequestMapping("/findNotes_close_note")
+    public String findNotes_close_note(Model model, @RequestParam(value = "id", required = false) String id, @RequestParam(value = "type", required = false) String type) {
+        Notes notes = notesService.findNoteOne(id);
+        model.addAttribute("notes", notes);
+        model.addAttribute("type", type);
+        return "/page/contentmanage/notes_detail";
+    }
+
+    @RequestMapping("/updateNotes")
+    public void updateNotes(Notes notes, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+        notes.setAuditTime(dateString);//审核日期
+        Wfadmin admin = CookieUtil.getWfadmin(request);
+        notes.setAuditId(admin.getWangfang_admin_id());//审核人ID
+        Boolean b = notesService.updateNotes(notes);
+        JsonUtil.toJsonHtml(response, b);
+        //记录日志
+        Log log = new Log("笔记管理", "修改", "修改后的笔记信息:" + notes.toString(), request);
+        logService.addLog(log);
+    }
+
+    @RequestMapping("/stick")
+    public void stick(Message message, HttpServletResponse response) throws Exception {
+        message.setStick(DateTools.getSysTime());
+        boolean b = messageService.updataMessageStick(message);
+        JsonUtil.toJsonHtml(response, b);
+    }
+
+    /**
+     * 文辑管理
+     *
+     * @return
+     */
+    @RequestMapping("/papercollectquery")
+    public ModelAndView volumeDocu() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("/page/contentmanage/volume/volume_docu");
+        return mav;
+    }
+
+    /**
+     * 列表
+     *
+     * @param startTime
+     * @param endTime
+     * @param searchWord
+     * @param volumeType
+     * @param volumeState
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getVolume")
+    @ResponseBody
+    public PageList getVolume(String startTime, String endTime, String searchWord, String volumeType, String volumeState,
+                              String sortColumn, String sortWay, int pageNum, int pageSize) {
+        PageList p = volumeService.queryList(startTime, endTime, searchWord, volumeType, volumeState, sortColumn, sortWay, pageNum, pageSize);
+        return p;
+    }
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public boolean delete(String id) {
+        boolean flag = volumeService.delete(id);
+        //在后台删除文辑同时删除前台显示
+        List<String> ids = new ArrayList<String>();
+        ids.add(id);
+        boolean flag2 = iVolume.deleteVolumeList(ids);
+        return flag;
+    }
+
+    /**
+     * 推优
+     *
+     * @param id
+     * @param subject
+     * @param price
+     * @return
+     */
+    @RequestMapping("/push")
+    @ResponseBody
+    public boolean push(String id, String subject, String subjectName, double price) {
+        boolean flag = volumeService.updateVolumeType(id, subject, subjectName, price);
+        return flag;
+    }
+
+    /**
+     * 获取知识发现路径
+     */
+    @RequestMapping("geturl")
+    public void geturl(HttpServletResponse response, HttpServletRequest request) {
+        response.setCharacterEncoding("UTF-8");
+        JSONObject json = new JSONObject();
+        json.put("search", Getproperties.getPros("httpurl.properties").getProperty("menu.index.wf_fw_zsfx"));
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.print(json);
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 文辑管理
+     *
+     * @return
+     */
+    @RequestMapping("/papercollectdetail")
+    public ModelAndView volumeDetails(String id) {
+        Map<String, Object> map = volumeService.queryDetails(id);
+        int volumeChapter = (Integer) map.get("volumeChapter");
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("map", map);
+        if (Integer.valueOf(volumeChapter) == 1) {
+            mav.setViewName("/page/contentmanage/volume/volume_details");//有章节
+        } else {
+            mav.setViewName("/page/contentmanage/volume/volume_detailsNone");//无章节
+        }
+        return mav;
+    }
+
+    /**
+     * 文辑发布/下撤/再发布
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/issue")
+    @ResponseBody
+    public boolean issue(String id, String issueNum) {
+        if ("3".equals(issueNum)) {//下撤
+            //删除前台显示
+            List<String> ids = new ArrayList<String>();
+            ids.add(id);
+            boolean flag1 = iVolume.deleteVolumeList(ids);
+        } else {//发布和再发布
+
+            Map<String, Object> map = volumeService.queryDetails(id);
+            Volume volume = (Volume) map.get("volume");
+            //--------------------存到solr里-----------------
+            boolean flag1 = iVolume.sendSolrByVolumeId(id);//存到solr里
+        }
+        //文辑发布/下撤/再发布后修改数据库文辑状态
+        boolean flag2 = volumeService.updateIssue(id, issueNum);
+        return flag2;
+    }
+
+    /**
+     * 修改价格
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/updatePrice")
+    @ResponseBody
+    public boolean updatePrice(String price, String volumeId) {
+        boolean flag = volumeService.updatePrice(price, volumeId);
+        return flag;
+    }
+    //----------------------------------------创建文辑-----------------------------------
+
+    /**
+     * 创建文辑第一步
+     *
+     * @return
+     */
+    @RequestMapping("/papercollectadd")
+    public ModelAndView stepOne(HttpServletRequest request, @ModelAttribute Volume volume) {
+        Wfadmin admin = CookieUtil.getWfadmin(request);
+        String publishPerson = admin.getUser_realname();
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("volume", volume);
+        mav.addObject("publishPerson", publishPerson);
+        mav.setViewName("/page/contentmanage/volume/step_one");
+        return mav;
+    }
+
+    /**
+     * 创建文辑第二步
+     *
+     * @return
+     */
+    @RequestMapping("/stepTwo")
+    public ModelAndView stepTwo(@ModelAttribute Volume volume) {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("volume", volume);
+        mav.setViewName("/page/contentmanage/volume/step_two");
+        return mav;
+    }
+
+    /**
+     * 创建文辑第三步
+     *
+     * @return
+     */
+    @RequestMapping("/stepThree")
+    public ModelAndView stepThree(@ModelAttribute Volume volume, String listContent) {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("volume", volume);
+        mav.addObject("listContent", listContent);
+        mav.setViewName("/page/contentmanage/volume/step_three");
+        return mav;
+    }
+
+    /**
+     * 搜全站
+     */
+    @RequestMapping("/queryGlobal")
+    @ResponseBody
+    public SearchPageList queryGlobal(String queryWords, String sort, int pageNum, int pageSize) {
+        String paramStrs = queryWords;    //检索参数
+        //字段处理
 //			paramStrs = "$title:" + paramStrs + "+$summary:" + paramStrs + "+$keywords:" + paramStrs;//标题、摘要、关键词 或的关系连接
 			paramStrs = ParamUtils.getParam(paramStrs);
 			//排序字段
@@ -2285,4 +2350,160 @@ public class ContentController{
 	public String PerioComment(){
 		return "/page/contentmanage/periocomment";
 	}
+
+    /**
+     * 资讯标签管理bel
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/informationLabel")
+    public String InformationLabel() throws Exception {
+        return "/page/contentmanage/informationLabel";
+    }
+
+    /**
+     * 资讯标签管理
+     * 添加标签
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/addInformationLabel")
+    @ResponseBody
+    public Map AddInformationLabel(String label, HttpServletRequest req) {
+        Map<String, String> map = new HashMap<>();
+        if (label == null || label.length() == 0) {
+            log.info("添加资讯标签，标签不能为空。label：" + label);
+            map.put("isSuccess", "notEmpty");
+            return map;
+        }
+        InformationLabelRequest request = new InformationLabelRequest();
+        request.setLabel(label);
+        Wfadmin admin = CookieUtil.getWfadmin(req);
+        request.setOperator(admin.getWangfang_admin_id());
+        request.setOperatingTime(new Date());
+        InformationLabelResponse response = null;
+        InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
+        try {
+            searchRequest.setLabel(label);
+            //查询标签在数据库是否存在
+            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchOnlyInformationLabel(searchRequest);
+            if (searchResponse != null && searchResponse.getItems().size() > 0) {
+                log.info("标签已存在,添加失败。label：" + label);
+                map.put("isSuccess", "exist");
+                return map;
+            }
+            response = informationLabelService.insertInformationLabel(request);
+        } catch (Exception e) {
+            log.error("添加资讯标签调用服务时出错，标签：" + label + e);
+            throw e;
+        }
+        if (response.isSuccess() == false) {
+            log.info("添加资讯标签失败。label：" + label);
+            map.put("isSuccess", "Fail");
+            return map;
+        }
+        log.info("添加资讯标签成功。label：" + label);
+        map.put("isSuccess", "Success");
+        return map;
+    }
+
+    /**
+     * 查询资讯标签列表
+     */
+    @RequestMapping("/searchInformationLabel")
+    public String SearchInformationLabel(Model model, SearchInformationLabelParameter parameter) throws Exception {
+        if (parameter.getPage() == null || parameter.getPage() == 0) {
+            parameter.setPage(1);
+        }
+        // 设置每页显示最多条目
+        if (parameter.getPageSize() == 0) {
+            parameter.setPageSize(20);
+        }
+        int pageSize = parameter.getPageSize();
+        InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
+        searchRequest.setCount(pageSize);
+        searchRequest.setStartIndex((parameter.getPage() - 1) * pageSize);
+
+        searchRequest.setLabel(parameter.getLabel());
+        searchRequest.setOperator(parameter.getOperator());
+        searchRequest.setOperatingTimeStart(parameter.getOperatingTimeStart());
+        searchRequest.setOperatingTimeEnd(parameter.getOperatingTimeEnd());
+        SearchResponse<InformationLabel> searchResponse = null;
+        try {
+            searchResponse = informationLabelService.searchInformationLabel(searchRequest);
+        } catch (Exception e) {
+            log.error("查询资讯标签调用服务时出错" + e.getMessage() +
+                    "，searchRequest：" + searchRequest.toString() +
+                    "。造成这个问题的传递的参数为parameter" + parameter.toString(), e);
+            throw e;
+        }
+        List<InformationLabel> responseList = searchResponse.getItems();
+        List<InformationLabelViewModel> list = new ArrayList<>();
+        for (InformationLabel informationLabel : responseList) {
+            InformationLabelViewModel viewModel = new InformationLabelViewModel(informationLabel);
+            list.add(viewModel);
+        }
+        String url = "/content/searchInformationLabel.do";
+        PagerModel<InformationLabelViewModel> pager = new PagerModel<>(parameter.getPage(), searchResponse.getTotalCount(), pageSize, list, url, parameter);
+        model.addAttribute("pager", pager);
+        return "/page/contentmanage/informationLabelList";
+    }
+
+    /**
+     * 删除资讯标签列表
+     *
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "/deleteInformationLabel", method = RequestMethod.POST)
+    @ResponseBody
+    public Boolean DeleteInformationLabel(@RequestParam(value = "ids[]") String[] ids) {
+        try {
+            informationLabelService.deleteInformationLabel(Arrays.asList(ids));
+            log.info("删除资讯标签成功ids：" + ids.toString());
+            return true;
+        } catch (Exception e) {
+            log.error("删除资讯标签调用服务时出错ids：" + ids.toString() + e);
+            return false;
+        }
+    }
+
+    /**
+     * 修改资讯标签
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateInformationLabel")
+    @ResponseBody
+    public Map UpdateInformationLabel(InformationLabelRequest request, HttpServletRequest req) {
+        Map<String, String> map = new HashMap<>();
+        InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
+        try {
+            searchRequest.setLabel(request.getLabel());
+            //查询标签在数据库是否存在
+            SearchResponse<InformationLabel> searchResponse = informationLabelService.searchOnlyInformationLabel(searchRequest);
+            if (searchResponse != null && searchResponse.getItems().size() > 0) {
+                log.info("标签已存在,修改失败。label：" + request.getLabel());
+                map.put("isSuccess", "exist");
+                return map;
+            }
+            Wfadmin admin = CookieUtil.getWfadmin(req);
+            request.setOperator(admin.getWangfang_admin_id());
+            boolean result = informationLabelService.updateInformationLabel(request);
+            if (!result) {
+                log.info("修改资讯标签失败id：" + request.getId() + ",标签：" + request.getLabel());
+                map.put("isSuccess", "Fail");
+                return map;
+            }
+            log.info("修改资讯标签成功id：" + request.getId() + ",标签：" + request.getLabel());
+            map.put("isSuccess", "success");
+            return map;
+        } catch (Exception e) {
+            log.error("修改资讯标签调用服务时出错id：" + request.getId() + ",标签：" + request.getLabel() + e);
+            map.put("isSuccess", "Fail");
+            return map;
+        }
+    }
 }

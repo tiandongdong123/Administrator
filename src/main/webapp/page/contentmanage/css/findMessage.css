@@ -12,31 +12,39 @@
 .ar{
 	text-align: left;
 }
-.messagetable{
+#messagetable,#infoLabel{
 	margin-left: 50px;
 }
-.messagetable td{
+#messagetable td,#infoLabel td{
 	padding-left: 15px;
 	padding-top: 10px;
 }
-.messagetable select{
+#messagetable select,#infoLabel select{
 	padding: 2px 2px 2px 4px;
 }
-.change_setting {
-    margin-left: 16px;
-    margin-top: 10px;
+
+.label_input{
+	border: none;
+	line-height: 26px;
+	border-bottom: 1px solid #cdcdcd;
+	padding-left: 10px;
+	height: 26px;
 }
-#manual_setting, #auto_setting {
-    cursor: pointer;
+.add_label-tip{
+	display: none;
+	color: red;
 }
-.nav-tabs > li.active > a ,.nav-tabs > li.active > a:focus,.nav-tabs > li.active > a:hover{
-	background-color: #3c8dbc;
-    color: #fff;
-}
-.change_setting a,.change_setting a{
-	color: #444;
-    background: #f7f7f7;
-}
-#manual_content tr th, #auto_content tr th{
+.empty-warning{
+	font-size: 20px;
+	line-height: 70px;
 	text-align: center;
 }
+.modify-label{
+	display: none;
+}
+
+.mypage .page_bind{
+	float: none;
+	margin-top: 20px;
+}
+
