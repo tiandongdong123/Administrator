@@ -40,8 +40,6 @@ public class HotWordJob {
 	private HotWordSettingService hotWordSettingService;
 	@Autowired
 	private HotWordService hotwordService;
-	@Autowired 
-	private HotWordService hotWordService;
 	@Autowired
 	private IForbiddenSerivce forbiddenSerivce;
 	
@@ -302,7 +300,7 @@ public class HotWordJob {
 				}
 			});
 			//清理数据库
-			hotWordService.deleteHotWord();
+			hotwordService.deleteHotWord();
 			log.info("清理热搜词数据库完成");
 			// 插入数据库
 			for (Map.Entry<String,Integer> entry : listmap) {
