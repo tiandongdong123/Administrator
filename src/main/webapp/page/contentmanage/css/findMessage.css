@@ -24,8 +24,11 @@
 }
 
 #auto_content .messagetable,#manual_setting .messagetable {
-    margin-left: 16px;
-    margin-top: 10px;
+    margin-left: 50px;
+}
+#auto_content .messagetable td,#manual_setting .messagetable td {
+    padding-left: 15px;
+    padding-top: 10px;
 }
 .change_setting {
     margin-left: 16px;
