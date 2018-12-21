@@ -23,10 +23,10 @@
 	padding: 2px 2px 2px 4px;
 }
 
-#auto_content .messagetable,#manual_setting .messagetable {
+#auto_content .messagetable,#manual_content .messagetable {
     margin-left: 50px;
 }
-#auto_content .messagetable td,#manual_setting .messagetable td {
+#auto_content .messagetable td,#manual_content .messagetable td {
     padding-left: 15px;
     padding-top: 10px;
 }

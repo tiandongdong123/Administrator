@@ -19,7 +19,7 @@
               	<input value="${isFirst}" id="isFirst" type="hidden">         
 			  	<?if(!isFirst){?>
 					<div class="form-group input_block" style="display:none">
-		             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>首次发布日期：</label>
+		             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>首次发布日期：</label>
 		             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate: '%y-%M-%d 00:00:00'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time"><span id="checkfirst_publish_time" style="color:red;"></span>
 		         	</div>			  			  	
 			  	<?}?>
@@ -27,7 +27,7 @@
 			    <input value="${isFirst}" id="isFirst" type="hidden">
 			  	<?if(!isFirst){?>
 					<div class="form-group input_block" style="display:none">
-		             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>首次发布日期：</label>
+		             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>首次发布日期：</label>
 		             <input onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate: '%y-%M-%d 00:00:00'})" placeholder="请选择首次发布时间"  type="text" class="Wdate" id="first_publish_time" value="${item.first_publish_time!}"><span id="checkfirst_publish_time" style="color:red;"></span>
 		         	</div>			  			  	
 			  	<?}else{?>
@@ -35,15 +35,15 @@
 			  	<?}?>
 			  <?}?>  
 			<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布周期：</label>
+             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>发布周期：</label>
              <input type="text" id="publish_cycle" maxlength="16"  class="form-control input_width" value="${item.publish_cyc!}" style="width:25.5%">&nbsp;&nbsp;天<span id="checkpublish_cyc" style="color:red; margin-left:10px"></span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>抓取数据时间段：</label>
+             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>抓取数据时间段：</label>
             	 近<input type="text" id="time_quantum"  class="form-control input_width" value="${item.time_slot!}" style="width:23%">&nbsp;&nbsp;天<span id="checktime_slot" style="color:red;margin-left:10px"></span>
          	</div>
          	 <div class="form-group input_block"  style="display:none">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布策略：</label>
+             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>发布策略：</label>
              <input type="hidden" value="${item.publish_strategy!}" id="publish_strategy"/>
              <input type="hidden" value="${get_time_cur!}" id="get_time_cur"/>
              <select id="nature" onchange="changenature(this);">
@@ -53,12 +53,12 @@
          	</div>
 			  <?if(isupdate=='add'){?>
 	        	<div class="form-group input_block" style="display:none">
-	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
+	             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>数据抓取时间：</label>
 	             <input value="${get_time_cur!}" placeholder="请选择时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;margin-left: 10px;"></span>
 	         	</div>	  
 
 		         <div class="form-group input_block" id="publish_time_div">
-		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间点：</label>
+		           <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>发布时间点：</label>
 		          <!--  <input onclick="WdatePicker({dateFmt:'HH:00:00',startDate:'02:00:00'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date"><span id="checkpublish_date" style="color:red;margin-left: 10px;"></span> -->
 		           <select id="publish_date" class="select">
   					<option value ="00:00:00">00</option>
@@ -89,12 +89,12 @@
 		         </div>						  	
 			  <?}else{?>
 	        	<div class="form-group input_block" style="display:none">
-	             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>数据抓取时间：</label>
+	             <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>数据抓取时间：</label>
 	             <input value="${get_time_cur!}" placeholder="请选择时间"  type="text" class="Wdate" id="get_time" value="${item.get_time!}"><span id="checkget_time" style="color:red;"></span>
 	         	</div>
 	         		
 		         <div class="form-group input_block" id="publish_time_div">
-		           <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>发布时间点：</label>
+		           <label for="exampleInputEmail1" class="input_name input_hot_name"><span style="color: red">*</span>发布时间点：</label>
 		           <!-- <input onclick="WdatePicker({dateFmt:'HH:00:00'})" placeholder="请选择时间"  type="text" class="Wdate" id="publish_date" value="${item.publish_date!}"><span id="checkpublish_date" style="color:red;"></span> -->
 		           <select id="publish_date">
   					<option value ="00:00:00">00</option>
