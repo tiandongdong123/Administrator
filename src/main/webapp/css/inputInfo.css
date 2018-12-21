@@ -7,7 +7,8 @@ ul,li{ list-style: none; padding: 0; margin: 0;}
 input {line-height: normal;}
 .input_block{margin: 10px auto;}
 .block_left{ margin-left:19%;    padding-left: 4px;}
-.input_name{ text-align: right; display: inline-block; width: 35%;}
+.input_name{ padding-right: 15px; text-align: right; display: inline-block; width: 19%;}
+.input_hot_name{ text-align: right; display: inline-block; width: 35%;}
 .input_width{ width: 45%; margin: 0 auto; display: inline-block; }
 .input_time{ width: 20%; margin: 0 auto; display: inline-block; }
 dd { margin-left: 0;}
