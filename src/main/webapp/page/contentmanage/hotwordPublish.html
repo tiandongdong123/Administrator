@@ -170,16 +170,16 @@
 </div>	
 <script>
 if($.cookie('hot_word_setting')==undefined){
-	$('#manual_setting').addClass('active')
+	$('#manual_setting').addClass('hot_active')
 	$('#manual_content').show()
 	$('#auto_content').hide()
 }
 if($.cookie('hot_word_setting')=='manual'){
-	$('#manual_setting').addClass('active')
+	$('#manual_setting').addClass('hot_active')
 	$('#manual_content').show()
 	$('#auto_content').hide()
 }else if($.cookie('hot_word_setting')=='auto') {
-	$('#auto_setting').addClass('active')
+	$('#auto_setting').addClass('hot_active')
 	$("#auto_content").show()
 	$('#manual_content').hide()
 }
@@ -187,15 +187,15 @@ if($.cookie('hot_word_setting')=='manual'){
 $('#manual_setting').click(function(){
 	$('#manual_content').show()
 	$('#auto_content').hide()
-	$(this).addClass('active').siblings().removeClass('active');
-  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+	$(this).addClass('hot_active').siblings().removeClass('hot_active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('hot_active');
   	$.cookie('hot_word_setting','manual')
 })
 $('#auto_setting').click(function(){
 	$("#auto_content").show()
 	$('#manual_content').hide()
-	$(this).addClass('active').siblings().removeClass('active');
-  	$(this).parent().siblings('.change_setting').find('li').removeClass('active');
+	$(this).addClass('hot_active').siblings().removeClass('hot_active');
+  	$(this).parent().siblings('.change_setting').find('li').removeClass('hot_active');
   	$.cookie('hot_word_setting','auto')
 })
 </script>
