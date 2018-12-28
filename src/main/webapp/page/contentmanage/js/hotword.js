@@ -464,6 +464,7 @@ function publish(that,obj,issueState){
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
+	    				cancel(obj)
 	    				clear();
 	    				clearManual()
 	    				if (issueState=='3') {
@@ -973,6 +974,7 @@ var ids=new Array();
 	    			layer.closeAll();
 	    			if(data){
 	    				layer.msg("<div style=\"color:#0000FF;\">"+value+"成功!</div>",{icon: 1});
+	    				cancelManual(obj)
 	    				clear();
 	    				clearManual()
 	    				if (issueState=='3') {
