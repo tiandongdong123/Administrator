@@ -33,6 +33,9 @@
     	<if test="issueState!=null and issueState!= ''">
     		and issue_state=#{issueState}
     	</if>
+    	<if test="topState!=null and topState!= ''">
+    		and is_top=#{topState}
+    	</if>
     	<if test="title!=null and title!= ''">
     		and title LIKE CONCAT('%',#{title,jdbcType=VARCHAR},'%')
     	</if>

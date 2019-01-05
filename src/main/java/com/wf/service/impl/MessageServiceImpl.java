@@ -25,21 +25,24 @@ import com.xxl.conf.core.XxlConfClient;
 public class MessageServiceImpl implements MessageService {
 	@Autowired
 	MessageMapper dao;
-	
+
 	RedisUtil redis = new RedisUtil();
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
-	
+
 	@Override
 	public PageList getMessage(MessageSearchRequest request) {
 		PageList p=new PageList();
-		Map<String,Object> mp=new HashMap<String, Object>();
-		List<Object> pageRow = dao.getMessageList(request);
+        if (request.getIssueState() != null && request.getIssueState().equals("4")) {
+            request.setIssueState("2");
+            request.setTopState("1");
+        }
+		List<Message> pageRow = dao.getMessageList(request);
 		int num = dao.getMessageCount(request);
 		p.setPageRow(pageRow);
 		p.setTotalRow(num);
 		return p;
 	}
-	
+
 	@Override
 	public Message findMessage(String id) {
 		Message message =dao.findMessage(id);
@@ -49,21 +52,21 @@ public class MessageServiceImpl implements MessageService {
 	public Boolean insertMessage(Message message) {
 		return dao.insertMessage(message)>0?true:false;
 	}
-	
+
 	@Override
 	public Boolean deleteMessage(String ids) {
 		int n =dao.deleteMessage(ids);
 		boolean b=n>0?true:false;
 		return b;
 	}
-	
+
 	@Override
 	public Boolean updateMessage(Message message) {
 		int n =dao.updateMessage(message);
 		boolean b=n>0?true:false;
 		return b;
 	}
-	
+
 	@Override
 	public Boolean updataMessageStick(Message message) {
 		boolean flag = false;
@@ -79,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return flag;
 	}
-	
+
 	/**
 	 * 发布/下撤/再发布
 	 * @param id
@@ -102,7 +105,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return flag;
 	}
-	
+
 	//操作数据
 	private void setData(String colums,int issue,String id){
 		//发布redis
@@ -128,7 +131,7 @@ public class MessageServiceImpl implements MessageService {
 			SolrService.deleteIndex(id);
 		}
 	}
-	
+
 	/**
 	 * redis插入数据
 	 * @param colums
@@ -150,7 +153,7 @@ public class MessageServiceImpl implements MessageService {
 			if(topSize<3){
 				map.put("size", 10-topSize);
 				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);	
+				list.addAll(ls);
 			}
 			for(int i = 0;i < list.size();i++){
 				Message m = (Message) list.get(i);
@@ -206,7 +209,7 @@ public class MessageServiceImpl implements MessageService {
 			}
 		}
 	}
-	
+
 	private void deployInformation(String core,String type,Message message){
 		Map<String,Object> newMap = new HashMap<>();
 		List<Map<String,Object>> list = new ArrayList<>();
@@ -225,7 +228,7 @@ public class MessageServiceImpl implements MessageService {
 		String stick = message.getStick();
 		String title = message.getTitle();
 		String isTop=message.getIsTop();
-		
+
 		newMap.put("id", id);
 		newMap.put("type", type);
 		newMap.put("auto_stringITS_abstracts", abstracts);
@@ -275,10 +278,10 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return sort;
 	}
-	
+
 	@Override
 	public List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime) {
-		
+
 		if(StringUtils.isEmpty(branch)) branch=null;
 		if(StringUtils.isEmpty(human)) human=null;
 		if(StringUtils.isEmpty(colums)) colums=null;
@@ -291,13 +294,13 @@ public class MessageServiceImpl implements MessageService {
 		mpPara.put("startTime", startTime);
 		mpPara.put("endTime", endTime);
 		return dao.selectMessageInforAll(mpPara);
-	}     
+	}
 
 	@Override
 	public List<Object> getAllMessage(Map<String, Object> map) {
 		return dao.selectMessageInforAll(map);
 	}
-	
+
 	@Override
 	public void updateBatch(List<Object> list){
 		setRedis("专题聚焦");
@@ -374,6 +377,6 @@ public class MessageServiceImpl implements MessageService {
 			System.out.println("发送"+indexList.size()+"条");
 		}
 		System.out.println("一键发布完毕");
-	}     
+	}
 
 }

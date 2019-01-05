@@ -14,6 +14,10 @@ public class MessageSearchRequest {
      */
     private String issueState;
     /**
+     * 置顶状态
+     */
+    private String topState;
+    /**
      * 标题
      */
     private String title;
@@ -42,6 +46,14 @@ public class MessageSearchRequest {
      * 需要返回的记录数
      */
     private int count = 10;
+
+    public String getTopState() {
+        return topState;
+    }
+
+    public void setTopState(String topState) {
+        this.topState = topState;
+    }
 
     public String getColums() {
         return colums;
