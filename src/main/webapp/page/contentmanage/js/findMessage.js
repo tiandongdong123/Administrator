@@ -19,16 +19,11 @@ function showPage(curr){
 	if(clum=='全部'){
 		clum="";
 	}
-    var infor = $("#infor").find("option:selected").text();
-    if(infor=='全部'){
-        infor="";
-    }
+    var infor = $("#infor").find("option:selected").val();
 	human=$("#human").val();
 	startTime=$("#startTime").val();
 	endTime=$("#endTime").val();
     var title = $("#title").val().trim();
-
-	/*isTop=$("#isTop").val();*/
 	$.ajax({
 		type : "post",
 		async:false,
