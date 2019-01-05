@@ -18,16 +18,6 @@
          资讯修改
       </h1>
 		 <?}?>
-      <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-          <?if(addupdate=="add"){?>
-        <li class="active">   添加资讯</li>
-      <?}?>
-		<?if(addupdate=="update"){?>       
-       <li class="active">  资讯修改</li>
-		 <?}?>
-        
-      </ol> -->
     </section>
 
     <!-- Main content -->
@@ -37,15 +27,25 @@
         	<input type="hidden" id="messageId" value="${message.id!}"/>
         	<input type="hidden" id="issueState" value="${message.issueState!}"/>
         	<table id="defaultForm">
+				<tr>
+					<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>发布渠道</td>
+					<td class="tdr">
+						<select id="colums" name="colums" class="lm">
+							<option>PC</option>
+						</select>
+					</td>
+				</tr>
         		<tr>
-	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>栏目</td>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>PC端栏目</td>
 	        		<td class="tdr">
-	        			<select id="colums" name="colums" class="lm">
-	  						<option>专题聚焦</option>
-		  					<option>科技动态</option>
-		  					<option>基金会议</option>
-		  					<option>万方资讯</option>
-	  					</select>
+						<input type="checkbox" id="item1">
+						<label for="item1">专题聚焦</label>&nbsp;&nbsp;
+						<input type="checkbox" id="item2">
+						<label for="item2">科技动态</label>&nbsp;&nbsp;
+						<input type="checkbox" id="item3">
+						<label for="item3">基金会议</label>&nbsp;&nbsp;
+						<input type="checkbox" id="item4">
+						<label for="item4">万方资讯</label>
 	  				</td>
         		</tr>
         		<tr>
@@ -54,7 +54,7 @@
         		</tr>
         		<tr>
 	        		<td class="tdl">摘要</td>
-	        		<td class="tdr"><textarea class="b" placeholder="摘要控制在200字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea></td>
+	        		<td class="tdr"><textarea class="b" placeholder="摘要控制在150字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea></td>
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>内容</td>
@@ -69,7 +69,7 @@
 					</td>
         		</tr>
         		<tr>
-	        		<td class="tdl">标题图片</td>
+	        		<td class="tdl">PC端标题图片</td>
 	        		<td class="tdr">
 						<div>
 							<form id="addGoodsForm" method="post" enctype="multipart/form-data">
@@ -95,8 +95,22 @@
 	        		<td class="tdl">转载平台</td>
 	        		<td class="tdr"><input id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
         		</tr>
+				<tr>
+					<td class="tdl">标签</td>
+					<td class="tdr">
+						<input id="addMark"  name="mark" class="lm" type="text"/>
+						<button type="button" class="btn btn-default btn-sm add_label_btn" style="float: none;">添加</button>
+
+					</td>
+				</tr>
+
         	</table>
         	<!-- 提交 -->
+		   <div style="width: 400px;margin-top: 20px;margin-left: 180px;" id="markList">
+            <span style="padding: 10px 20px; display: inline-block"><i class="fa fa-trash-o"></i> 111111</span>  <span style="padding: 10px 20px;  display: inline-block"><i class="fa fa-trash-o"></i> 111111</span>
+            <span style="padding: 10px 20px; display: inline-block"><i class="fa fa-trash-o"></i> 111111</span>  <span style="padding: 10px 20px; display: inline-block "><i class="fa fa-trash-o"></i> 11111122222222</span>
+            <span style="padding: 10px 20px; display: inline-block"><i class="fa fa-trash-o"></i> 111111</span>  <span style="padding: 10px 20px;  display: inline-block"><i class="fa fa-trash-o"></i> 111111</span>
+		   </div>
 		<br>
 		<input id="addupdate" type="hidden" value="${addupdate}">
 		<?if(addupdate=="add"){?>

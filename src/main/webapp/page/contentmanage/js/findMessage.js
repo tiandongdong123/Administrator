@@ -19,10 +19,16 @@ function showPage(curr){
 	if(clum=='全部'){
 		clum="";
 	}
+    var infor = $("#infor").find("option:selected").text();
+    if(infor=='全部'){
+        infor="";
+    }
 	human=$("#human").val();
 	startTime=$("#startTime").val();
 	endTime=$("#endTime").val();
-	isTop=$("#isTop").val();
+    var title = $("#title").val().trim();
+
+	/*isTop=$("#isTop").val();*/
 	$.ajax({
 		type : "post",
 		async:false,
@@ -36,7 +42,8 @@ function showPage(curr){
 			"human":human,
 			"startTime":startTime,
 			"endTime":endTime,
-			"isTop":isTop
+			"title":title,
+			"issueState":infor
 			},
 		success : function (data){
 			serachdata(curr,data);
@@ -51,11 +58,12 @@ function serachdata(curr,data){
 	var resHtml = "<tbody><tr style='text-align: center;'>" +
 	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
 	"<td class='mailbox-star'>序号</td>" +
-	"<td class=\"mailbox-name\">栏目</td>"+
+   /* "<td class=\"mailbox-name\">发布渠道</td>"+*/
+	"<td class=\"mailbox-name\">PC端栏目</td>"+
     "<td class=\"mailbox-attachment\" style='width:30%'>标题</td>"+
     "<td class=\"mailbox-name\">原文链接</td>"+
-    "<td class=\"mailbox-name\">添加人</td>"+
-    "<td class=\"mailbox-date\">添加日期</td>"+
+    "<td class=\"mailbox-name\">操作人</td>"+
+    "<td class=\"mailbox-date\">操作时间</td>"+
     "<td class=\"mailbox-date\">是否置顶</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
@@ -81,16 +89,23 @@ function serachdata(curr,data){
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+			"<td class='mailbox-name mailbox-clum'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
+
 			resHtml+="<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
             "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
             "<td class='mailbox-date'><div title='"+is_top+"' style='width:40px;'>"+is_top+"</td>"+
-			"<td class='mailbox-name' style='width:350px;'><div>";
-			if(issueNum!=3){
-				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
-			}
+			"<td class='mailbox-name' style='width:353px;'><div>";
+          /*  if(issueNum!=3){
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
+            }else if(issueNum==3){
+                resHtml+="<button type='button' class='btn btn-primary'>撤销置顶</button>&nbsp;";
+			}*/
+            if(issueNum!=3){
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
+            }
 			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
           "</tr>";
@@ -116,7 +131,7 @@ function serachdata(curr,data){
 			}
 		});
 	});
-	document.getElementById("here").scrollIntoView();
+	/*document.getElementById("here").scrollIntoView();*/
 }
 
 //置顶
@@ -161,6 +176,49 @@ function removee(id){
 		error : function(data) {alert(data);}
 	});
 }
+
+
+//批量发布
+function publishMore(that,issueState){
+    var publishId = '';
+    var publishClums = '';
+	$("input:checkbox[name=commonid]:checked").each(function(){
+		publishId += $(this).val() + ",";
+		publishClums += $(this).parent("td").siblings(".mailbox-clum").children("div").text() + ',';
+	});
+    publishId = publishId.substring(0,publishId.length-1);
+    publishClums = publishClums.substring(0,publishClums.length-1);
+    if(issueState == 3){
+        value = '是否确定批量下撤?';
+    }else if(issueState == 2){
+        value = '是否确定批量发布?';
+    }
+    layer.alert(value,{
+        icon: 1,
+        skin: 'layui-layer-molv',
+        btn: ['确定'], //按钮
+        yes: function() {
+            layer.closeAll();
+            $.ajax({
+                type: "post",
+                url: "../content/updateIssue.do",
+                data: {
+                    "id": publishId,
+                    "colums": publishClums,
+                    "issueState": issueState
+                },
+                dataType: "json",
+                success: function (data) {
+                    layer.closeAll();
+                    if (data) {
+                        findOne();
+                    }
+                },
+            });
+        }
+    });
+}
+
 
 // 多条删除
 function deleteMore(){
