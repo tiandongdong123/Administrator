@@ -12,7 +12,7 @@ public interface MessageMapper {
 	 * 查询学科分类信息(分页数据)
 	 * @return
 	 */
-	public List<Message> getMessageList(MessageSearchRequest request);
+	public List<Object> getMessageList(MessageSearchRequest request);
 	
 	/**
 	 * 查询学科分类信息(分页计数)

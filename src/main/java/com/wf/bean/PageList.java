@@ -11,7 +11,7 @@ public class PageList {
 	
 	private int pageTotal;//总页数
 	
-	private List<Message> pageRow;//查询结果列表
+	private List<Object> pageRow;//查询结果列表
 
 	public int getPageNum() {
 		return pageNum;
@@ -45,11 +45,11 @@ public class PageList {
 		this.pageTotal = pageTotal;
 	}
 
-	public List<Message> getPageRow() {
+	public List<Object> getPageRow() {
 		return pageRow;
 	}
 
-	public void setPageRow(List<Message> pageRow) {
+	public void setPageRow(List<Object> pageRow) {
 		this.pageRow = pageRow;
 	}	
 }

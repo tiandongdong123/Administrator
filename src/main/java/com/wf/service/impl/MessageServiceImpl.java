@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
             request.setIssueState("2");
             request.setTopState("1");
         }
-		List<Message> pageRow = dao.getMessageList(request);
+		List<Object> pageRow = dao.getMessageList(request);
 		int num = dao.getMessageCount(request);
 		p.setPageRow(pageRow);
 		p.setTotalRow(num);
