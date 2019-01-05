@@ -216,4 +216,19 @@
       operating_time = #{operatingTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectLabelName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from information_label
+    <where>
+      <if test="labelId != null and labelId != ''">
+        id &lt;&gt; #{labelId,jdbcType=VARCHAR}
+      </if>
+      <if test="labelName != null and labelName != ''">
+        label = #{labelName,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by total_number desc
+  </select>
 </mapper>

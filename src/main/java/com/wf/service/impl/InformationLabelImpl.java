@@ -148,4 +148,9 @@ public class InformationLabelImpl implements InformationLabelService {
         }
     }
 
+    @Override
+    public List<String> selectLabelName(String labelId, String labelName) {
+        return null;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.wf.service;
 
 import com.wf.bean.*;
+import org.apache.ibatis.annotations.Param;
 import wfks.accounting.transaction.SearchResponse;
 
 import java.util.List;
@@ -41,4 +42,12 @@ public interface InformationLabelService {
      * @return
      */
     SearchResponse<InformationLabel> searchOnlyInformationLabel(InformationLabelSearchRequset request);
+
+    /**
+     * 查询标签名称（按照标签引用量倒序排序），也可用于标签名称查重：传递labelId即排除此id所对应的标签
+     * @param labelId
+     * @param labelName
+     * @return
+     */
+    List<String> selectLabelName(@Param("labelId") String labelId, @Param("labelName") String labelName);
 }

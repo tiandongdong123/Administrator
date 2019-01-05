@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,28 +30,11 @@ public class MessageServiceImpl implements MessageService {
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
 	
 	@Override
-	public PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime,String isTop) {
-		if(StringUtils.isEmpty(branch)) branch=null;
-		if(StringUtils.isEmpty(human)) human=null;
-		if(StringUtils.isEmpty(colums)) colums=null;
-		if(StringUtils.isEmpty(startTime)) startTime=null;
-		if(StringUtils.isEmpty(endTime)) endTime=null;
-		if(StringUtils.isEmpty(isTop)) isTop=null;
+	public PageList getMessage(MessageSearchRequest request) {
 		PageList p=new PageList();
 		Map<String,Object> mp=new HashMap<String, Object>();
-		int pagen=(pageNum-1)*pageSize;
-		mp.put("pageNum", pagen);
-		mp.put("pageSize", pageSize);
-		mp.put("branch", branch);
-		mp.put("human", human);
-		mp.put("colums", colums);
-		mp.put("startTime", startTime);
-		mp.put("endTime", endTime);
-		mp.put("isTop", isTop);
-		List<Object> pageRow = dao.getMessageList(mp);
-		int num = dao.getMessageCount(mp);
-		p.setPageNum(pageNum);
-		p.setPageSize(pageSize);
+		List<Object> pageRow = dao.getMessageList(request);
+		int num = dao.getMessageCount(request);
 		p.setPageRow(pageRow);
 		p.setTotalRow(num);
 		return p;

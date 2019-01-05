@@ -27,4 +27,7 @@ public interface InformationLabelMapper {
     int updateByPrimaryKeySelective(InformationLabel record);
 
     int updateByPrimaryKey(InformationLabel record);
+
+    //查询标签名称（按照标签引用量倒序排序），也可用于标签名称查重
+    List<InformationLabel> selectLabelName(@Param("labelId") String labelId,@Param("labelName") String labelName);
 }

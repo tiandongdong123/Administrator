@@ -4,19 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.wf.bean.Message;
+import com.wf.bean.MessageSearchRequest;
+
 public interface MessageMapper {
 	
 	/**
 	 * 查询学科分类信息(分页数据)
 	 * @return
 	 */
-	public List<Object> getMessageList(Map<String,Object> map);
+	public List<Object> getMessageList(MessageSearchRequest request);
 	
 	/**
 	 * 查询学科分类信息(分页计数)
 	 * @return
 	 */
-	public int getMessageCount(Map<String,Object> map);
+	public int getMessageCount(MessageSearchRequest request);
 	
 	/**
 	 * 根据咨询类型查前n行
