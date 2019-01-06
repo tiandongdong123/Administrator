@@ -116,13 +116,35 @@
 	<select id="selectBycolums" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select <include refid="Base_Column_List" />
 		from message
-		where is_top='0' and issue_state=2 and colums=#{colums}
-		ORDER BY create_time DESC
+		where is_top='0' and issue_state=2 and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+		ORDER BY stick DESC
+		limit 0,#{size}
+	</select>
+	<select id="selectBycolums2" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List" />
+		from message
+		where is_top='0' and issue_state=2
+        and (colums LIKE CONCAT('%',#{colum1,jdbcType=VARCHAR},'%') or colums LIKE CONCAT('%',#{colum2,jdbcType=VARCHAR},'%'))
+		ORDER BY stick DESC
 		limit 0,#{size}
 	</select>
 	<!-- 查询置顶数据 -->
 	<select id="selectIsTop" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select <include refid="Base_Column_List" /> from message where is_top='1' and issue_state=2 and colums=#{colums} ORDER BY stick DESC limit 0,#{size}
+		select
+        <include refid="Base_Column_List" />
+        from message
+        where is_top='1' and issue_state=2 and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+        ORDER BY stick DESC
+        limit 0,#{size}
+	</select>
+	<select id="selectIsTop2" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+        <include refid="Base_Column_List" />
+        from message
+        where is_top='1' and issue_state=2
+        and (colums LIKE CONCAT('%',#{colum1,jdbcType=VARCHAR},'%') or colums LIKE CONCAT('%',#{colum2,jdbcType=VARCHAR},'%'))
+        ORDER BY stick DESC
+        limit 0,#{size}
 	</select>
   	<delete id="deleteMessage" parameterType="java.lang.String">
            delete from message where 
@@ -137,12 +159,14 @@
            </if> 
    </delete>
 	<insert id="insertMessage" parameterType="com.wf.bean.Message">
-		insert into message(id,colums,title,abstract,link_address,create_time,author,organ_name,content,branch,image_url,human,issue_state,stick)
-			values(#{id},#{colums}, #{title}, #{abstracts},#{linkAddress},#{createTime},#{author},#{organName},#{content},#{branch},#{imageUrl},#{human},#{issueState},#{stick})
+		insert into message(
+		id,channel,colums,title,abstract,link_address,create_time,author,organ_name,content,branch,image_url,human,issue_state,stick,label)
+		values(
+		#{id},#{channel},#{colums}, #{title}, #{abstracts},#{linkAddress},#{createTime},#{author},#{organName},#{content},#{branch},#{imageUrl},#{human},#{issueState},#{stick},#{label})
 	</insert>
 	<update id="updateMessage" parameterType="com.wf.bean.Message">
-		update message SET colums=#{colums},title=#{title},abstract=#{abstracts},link_address=#{linkAddress},
-		author=#{author},organ_name=#{organName},content=#{content},image_url=#{imageUrl},branch=#{branch},human=#{human},stick=now() where id=#{id}
+		update message SET channel=#{channel},colums=#{colums},title=#{title},abstract=#{abstracts},link_address=#{linkAddress},
+		author=#{author},organ_name=#{organName},content=#{content},image_url=#{imageUrl},branch=#{branch},human=#{human},label=#{label},stick=now() where id=#{id}
 	</update>
 	<!-- 更改状态 -->
 	<update id="updateIssue" parameterType="java.util.Map">
@@ -164,4 +188,12 @@
 	<update id="updateIsTop" parameterType="java.lang.String">
 		update message SET is_top='0' where colums=#{colums}
 	</update>
+	<select id="judgeMessageTitle">
+		select count(title)
+		where
+		<if test="messageId != null and messageId != ''">
+			id = #{messageId}
+		</if>
+		title = #{title}
+	</select>
 </mapper>

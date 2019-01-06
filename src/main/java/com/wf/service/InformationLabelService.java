@@ -1,6 +1,7 @@
 package com.wf.service;
 
 import com.wf.bean.*;
+import org.apache.ecs.wml.B;
 import org.apache.ibatis.annotations.Param;
 import wfks.accounting.transaction.SearchResponse;
 
@@ -49,5 +50,19 @@ public interface InformationLabelService {
      * @param labelName
      * @return
      */
-    List<String> selectLabelName(@Param("labelId") String labelId, @Param("labelName") String labelName);
+    List<InformationLabel> selectLabelName(@Param("labelId") String labelId, @Param("labelName") String labelName);
+
+    /**
+     * 获取被引前十的标签名
+     * @param labelName
+     * @return
+     */
+    List<String> echoInformationLabel(@Param("labelName") String labelName);
+
+    /**
+     * 标签被引量自加1
+     * @param labelName
+     * @return
+     */
+    Boolean updateInformationLabelNumber(@Param("labelName") String labelName);
 }

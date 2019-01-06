@@ -149,8 +149,20 @@ public class InformationLabelImpl implements InformationLabelService {
     }
 
     @Override
-    public List<String> selectLabelName(String labelId, String labelName) {
-        return null;
+    public List<InformationLabel> selectLabelName(String labelId, String labelName) {
+
+        return informationLabelMapper.selectLabelName(labelId, labelName);
+    }
+
+    @Override
+    public List<String> echoInformationLabel(String labelName) {
+
+        return informationLabelMapper.echoInformationLabel(labelName);
+    }
+
+    @Override
+    public Boolean updateInformationLabelNumber(String labelName) {
+        return informationLabelMapper.updateInformationLabelNumber(labelName);
     }
 
 }

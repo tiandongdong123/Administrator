@@ -6,6 +6,8 @@ import java.util.Map;
 import com.wf.bean.Message;
 import com.wf.bean.MessageSearchRequest;
 import com.wf.bean.PageList;
+import org.springframework.web.bind.annotation.RequestParam;
+
 public interface MessageService {
 	/**
 	 * 条件查询学科分类的信息
@@ -35,7 +37,12 @@ public interface MessageService {
 	 * @return
 	 */
 	Boolean updateMessage(Message message);
-	
+
+	/**
+	 * 置顶、取消置顶
+	 * @param message
+	 * @return
+	 */
 	Boolean updataMessageStick(Message message);
 	/**
 	 * 发布/下撤/再发布
@@ -60,4 +67,13 @@ public interface MessageService {
 	 * @param list
 	 */
 	void updateBatch(List<Object> list);
+
+    /**
+     * 判断标题是否存在
+     * @param messageId
+     * @param title
+     * @return
+     */
+	Boolean judgeMessageTitle(@RequestParam(value = "messageId",required = false) String messageId,
+                              @RequestParam(value = "title") String title);
 }

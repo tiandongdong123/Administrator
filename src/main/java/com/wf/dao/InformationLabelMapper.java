@@ -30,4 +30,10 @@ public interface InformationLabelMapper {
 
     //查询标签名称（按照标签引用量倒序排序），也可用于标签名称查重
     List<InformationLabel> selectLabelName(@Param("labelId") String labelId,@Param("labelName") String labelName);
+
+    //获取被引前十的标签名
+    List<String> echoInformationLabel(@Param("labelName") String labelName);
+
+    //标签被引量自加1
+    Boolean updateInformationLabelNumber(@Param("labelName") String labelName);
 }

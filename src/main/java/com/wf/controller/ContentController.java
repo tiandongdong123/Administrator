@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.wanfangdata.model.PagerModel;
+import com.wanfangdata.model.TResult;
 import com.wf.Setting.ResourceTypeSetting;
 
 import com.wf.bean.*;
@@ -324,7 +325,6 @@ public class ContentController {
         message.setId(GetUuid.getId());
         message.setHuman(admin.getUser_realname());
         message.setBranch(admin.getDept().getDeptName());
-        message.setIssueState(1);
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         message.setCreateTime(sdf1.format(new Date()));
@@ -402,8 +402,8 @@ public class ContentController {
                     + ",资讯状态:" + param.getColums(), request);
             logService.addLog(log);
             return messageList;
-        }catch (Exception e){
-            log.error("资讯查询分页出错！",e);
+        } catch (Exception e) {
+            log.error("资讯查询分页出错！", e);
             return null;
         }
     }
@@ -491,23 +491,21 @@ public class ContentController {
 
     /**
      * 发布/下撤/再发布
-     *
-     * @param id
-     * @param issueState 发布状态
+     * @param parameters
      * @param request
      * @return
      * @throws Exception
      */
     @RequestMapping("/updateIssue")
     @ResponseBody
-    public boolean updateIssue(String id, String colums, String issueState, HttpServletRequest request) throws Exception {
-
-        boolean b = messageService.updateIssue(id, colums, issueState);
-
-        //记录日志
-        Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + id + ",栏目:" + colums + ",发布状态:" + issueState, request);
-        logService.addLog(log);
-
+    public boolean updateIssue(List<UpdateMessageIssueParameter> parameters, HttpServletRequest request) throws Exception {
+        boolean b = false;
+        for (UpdateMessageIssueParameter parameter : parameters) {
+            b = messageService.updateIssue(parameter.getId(), parameter.getColums(), parameter.getIssueState());
+            //记录日志
+            Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + parameter.getId() + ",栏目:" + parameter.getColums() + ",发布状态:" + parameter.getIssueState(), request);
+            logService.addLog(log);
+        }
         return b;
     }
 
@@ -1043,11 +1041,30 @@ public class ContentController {
         logService.addLog(log);
     }
 
+    /**
+     * 置顶\取消置顶
+     *
+     * @param message
+     * @throws Exception
+     */
     @RequestMapping("/stick")
-    public void stick(Message message, HttpServletResponse response) throws Exception {
-        message.setStick(DateTools.getSysTime());
-        boolean b = messageService.updataMessageStick(message);
-        JsonUtil.toJsonHtml(response, b);
+    @ResponseBody
+    public TResult stick(Message message) {
+        try {
+            Message serviceMessage = messageService.findMessage(message.getId());
+            if (serviceMessage.getIssueState() != null && serviceMessage.getIssueState().equals("2")) {
+                message.setStick(DateTools.getSysTime());
+                boolean b = messageService.updataMessageStick(message);
+                if (b) {
+                    return new TResult(200);
+                }
+                return new TResult(500);
+            }
+            return new TResult(202, "资讯未发布或者不存在");
+        } catch (Exception e) {
+            log.error("置顶或取消置顶失败！message:" + message, e);
+            return new TResult(500, "服务出错");
+        }
     }
 
     /**
@@ -2576,11 +2593,79 @@ public class ContentController {
         }
     }
 
+    /**
+     * 添加标签（用于添加咨询和修改资讯页面标签添加功能）
+     * @param labelName
+     * @return
+     */
+    @RequestMapping("/insertInformationLabel")
+    @ResponseBody
+    public Boolean addInformationLabel(@RequestParam(value = "label") String labelName,HttpServletRequest req){
+        try {
+            List<InformationLabel> informationLabels = informationLabelService.selectLabelName(null, labelName);
+            if (informationLabels != null && informationLabels.size() > 0) {
+                return true;
+            }
+            InformationLabelRequest request = new InformationLabelRequest();
+            request.setLabel(labelName);
+            Wfadmin admin = CookieUtil.getWfadmin(req);
+            request.setOperator(admin.getWangfang_admin_id());
+            request.setOperatingTime(new Date());
+            informationLabelService.insertInformationLabel(request);
+            return true;
+        }catch (Exception e){
+            log.error("添加标签出错！",e);
+            return false;
+        }
+    }
+
+    /**
+     * 获取被引前十的标签名
+     * @param label
+     * @return
+     */
+    @RequestMapping("/echoInformationLabel")
+    @ResponseBody
+    public List<String> echoInformationLabel(@RequestParam(value = "label") String label){
+        try {
+            return informationLabelService.echoInformationLabel(label);
+        }catch (Exception e){
+            log.error("获取被引前十的标签名出错！",e);
+            return null;
+        }
+    }
+
+    /**
+     * 资讯标签数量自加1(多个标签以“，”)
+     * @param label
+     * @return
+     */
     @RequestMapping("/updateInformationLabelNumber")
     @ResponseBody
-    public Boolean updateInformationLabelNumber() {
-        Map<String, String> map = new HashMap<>();
-        InformationLabelSearchRequset searchRequest = new InformationLabelSearchRequset();
-        return true;
+    public Boolean updateInformationLabelNumber(@RequestParam(value = "label") String label) {
+        try {
+            return informationLabelService.updateInformationLabelNumber(label);
+        }catch (Exception e){
+            log.error("修改资讯标签数量!",e);
+            return false;
+        }
+    }
+
+    /**
+     * 资讯标题查重
+     * @param messageId
+     * @param title
+     * @return
+     */
+    @RequestMapping("/judgeMessageTitle")
+    @ResponseBody
+    public Boolean judgeMessageTitle(@RequestParam(value = "messageId",required = false) String messageId,
+                                     @RequestParam(value = "title") String title){
+        try {
+            return messageService.judgeMessageTitle(messageId,title);
+        }catch (Exception e){
+            log.error("资讯标题查重出错！",e);
+            return false;
+        }
     }
 }

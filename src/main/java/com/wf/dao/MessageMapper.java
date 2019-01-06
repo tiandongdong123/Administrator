@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.wf.bean.Message;
 import com.wf.bean.MessageSearchRequest;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface MessageMapper {
 	
@@ -21,15 +22,17 @@ public interface MessageMapper {
 	public int getMessageCount(MessageSearchRequest request);
 	
 	/**
-	 * 根据咨询类型查前n行
+	 * 根据咨询类型查前n行(发布未置顶状态资讯)
 	 */
 	public List<Object> selectBycolums(Map<String,Object> map);
-	
+	public List<Object> selectBycolums2(Map<String,Object> map);
+
 	/**
-	 * 查询专题聚焦
+	 * 查询专题聚焦（发布置顶状态资讯）
 	 */
 	public List<Object> selectIsTop(Map<String,Object> map);
-	
+	public List<Object> selectIsTop2(Map<String,Object> map);
+
 	/**
 	 * 查询所有的资讯信息
 	 * @param map
@@ -72,4 +75,13 @@ public interface MessageMapper {
 	 * @return
 	 */
 	int updateIsTop(String colums);
+
+	/**
+	 * 判断标题是否存在
+	 * @param messageId
+	 * @param title
+	 * @return
+	 */
+	int judgeMessageTitle(@RequestParam(value = "messageId",required = false) String messageId,
+							  @RequestParam(value = "title") String title);
 }

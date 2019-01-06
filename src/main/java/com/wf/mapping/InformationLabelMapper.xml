@@ -231,4 +231,26 @@
     </where>
     order by total_number desc
   </select>
+
+  <select id="echoInformationLabel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from information_label
+    <where>
+      <if test="labelName != null and labelName != ''">
+        label LIKE CONCAT('%',#{labelName,jdbcType=VARCHAR},'%')
+      </if>
+    </where>
+    order by total_number desc
+  </select>
+
+  <update id="updateInformationLabelNumber">
+    update information_label
+    set total_number = total_number + 1
+    where
+    label in
+    <foreach collection="labelName.split(',')"  open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </update>
 </mapper>
