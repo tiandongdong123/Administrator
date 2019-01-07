@@ -498,13 +498,17 @@ public class ContentController {
      */
     @RequestMapping("/updateIssue")
     @ResponseBody
-    public boolean updateIssue(List<UpdateMessageIssueParameter> parameters, HttpServletRequest request) throws Exception {
+    public boolean updateIssue(HttpServletRequest request) throws Exception {
         boolean b = false;
-        for (UpdateMessageIssueParameter parameter : parameters) {
-            b = messageService.updateIssue(parameter.getId(), parameter.getColums(), parameter.getIssueState());
-            //记录日志
-            Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + parameter.getId() + ",栏目:" + parameter.getColums() + ",发布状态:" + parameter.getIssueState(), request);
-            logService.addLog(log);
+        String[] parameters = request.getParameterValues("parameters");
+        if(null != parameters){
+            for (String parameter : parameters) {
+                JSONObject jsonObject = JSONObject.fromObject(parameter);
+                b = messageService.updateIssue(jsonObject.get("id").toString(), jsonObject.get("colums").toString(),jsonObject.get("issueState").toString());
+                //记录日志
+                Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + jsonObject.get("id").toString() + ",栏目:" +jsonObject.get("colums").toString() + ",发布状态:" + jsonObject.get("colums").toString(), request);
+                logService.addLog(log);
+            }
         }
         return b;
     }
