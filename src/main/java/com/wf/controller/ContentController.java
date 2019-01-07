@@ -491,7 +491,6 @@ public class ContentController {
 
     /**
      * 发布/下撤/再发布
-     * @param parameters
      * @param request
      * @return
      * @throws Exception
@@ -1056,7 +1055,7 @@ public class ContentController {
     public TResult stick(Message message) {
         try {
             Message serviceMessage = messageService.findMessage(message.getId());
-            if (serviceMessage == null || serviceMessage.getIssueState().equals("1")) {
+            if (serviceMessage == null || serviceMessage.getIssueState() != 2) {
                 return new TResult(202, "资讯未发布或者不存在");
             }
             message.setStick(DateTools.getSysTime());
