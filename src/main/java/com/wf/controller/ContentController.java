@@ -1056,15 +1056,15 @@ public class ContentController {
     public TResult stick(Message message) {
         try {
             Message serviceMessage = messageService.findMessage(message.getId());
-            if (serviceMessage.getIssueState() != null && serviceMessage.getIssueState().equals("2")) {
-                message.setStick(DateTools.getSysTime());
-                boolean b = messageService.updataMessageStick(message);
-                if (b) {
-                    return new TResult(200);
-                }
-                return new TResult(500);
+            if (serviceMessage == null || serviceMessage.getIssueState().equals("1")) {
+                return new TResult(500, "资讯未发布或者不存在");
             }
-            return new TResult(202, "资讯未发布或者不存在");
+            message.setStick(DateTools.getSysTime());
+            boolean b = messageService.updataMessageStick(message);
+            if (b) {
+                return new TResult(200);
+            }
+            return new TResult(500);
         } catch (Exception e) {
             log.error("置顶或取消置顶失败！message:" + message, e);
             return new TResult(500, "服务出错");
