@@ -171,7 +171,10 @@
 	<!-- 更改状态 -->
 	<update id="updateIssue" parameterType="java.util.Map">
 		update message
-		SET issue_state=#{issueState},stick=#{stick}
+		SET stick=#{stick}
+		<if test="issueState!=null">
+			,issue_state=#{issueState}
+		</if>
 		<if test="isTop!=null">
 			,is_top=#{isTop}
 		</if>
