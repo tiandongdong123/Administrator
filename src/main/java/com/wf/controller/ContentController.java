@@ -1057,7 +1057,7 @@ public class ContentController {
         try {
             Message serviceMessage = messageService.findMessage(message.getId());
             if (serviceMessage == null || serviceMessage.getIssueState().equals("1")) {
-                return new TResult(500, "资讯未发布或者不存在");
+                return new TResult(202, "资讯未发布或者不存在");
             }
             message.setStick(DateTools.getSysTime());
             boolean b = messageService.updataMessageStick(message);
