@@ -148,10 +148,16 @@ function stick(id,colums,topState){
 		data : {
 			"id":id,
 			'colums':colums,
-            'topState':topState
+            'isTop':topState
 			},
-		success : function(){
-			showPage();
+		success : function(data){
+		    if(data.code == 200){
+		        layer.msg("置顶发布成功！");
+                showPage();
+            }else{
+		        layer.msg("置顶发布失败！")
+            }
+
 		}
 	});
 }
