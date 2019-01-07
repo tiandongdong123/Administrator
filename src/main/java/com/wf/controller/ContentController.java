@@ -2630,7 +2630,7 @@ public class ContentController {
      */
     @RequestMapping("/echoInformationLabel")
     @ResponseBody
-    public List<String> echoInformationLabel(@RequestParam(value = "label") String label){
+    public List<String> echoInformationLabel(@RequestParam(value = "label",required = false) String label){
         try {
             return informationLabelService.echoInformationLabel(label);
         }catch (Exception e){
