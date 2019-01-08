@@ -3,6 +3,7 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.Message;
 import com.wf.bean.MessageSearchRequest;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,10 +79,8 @@ public interface MessageMapper {
 
 	/**
 	 * 判断标题是否存在
-	 * @param messageId
-	 * @param title
+	 * @param parameter
 	 * @return
 	 */
-	int judgeMessageTitle(@RequestParam(value = "messageId",required = false) String messageId,
-							  @RequestParam(value = "title") String title);
+	int judgeMessageTitle(JudgeMessageTitleParameter parameter);
 }

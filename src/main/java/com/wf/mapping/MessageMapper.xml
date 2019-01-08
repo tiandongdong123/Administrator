@@ -191,12 +191,16 @@
 	<update id="updateIsTop" parameterType="java.lang.String">
 		update message SET is_top='0' where colums=#{colums}
 	</update>
-	<select id="judgeMessageTitle">
-		select count(title)
-		where
-		<if test="messageId != null and messageId != ''">
-			id = #{messageId}
-		</if>
-		title = #{title}
+	<select id="judgeMessageTitle" parameterType="com.wf.bean.JudgeMessageTitleParameter" resultType="java.lang.Integer">
+		select count(*)
+		from message
+		<where>
+			<if test="messageId != null and messageId != ''">
+				id = #{messageId,jdbcType=VARCHAR} and
+			</if>
+			<if test="title != null and title != ''">
+				title = #{title,jdbcType=VARCHAR}
+			</if>
+		</where>
 	</select>
 </mapper>

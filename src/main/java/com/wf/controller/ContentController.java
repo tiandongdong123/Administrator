@@ -2658,16 +2658,14 @@ public class ContentController {
 
     /**
      * 资讯标题查重
-     * @param messageId
-     * @param title
+     * @param parameter
      * @return
      */
     @RequestMapping("/judgeMessageTitle")
     @ResponseBody
-    public Boolean judgeMessageTitle(@RequestParam(value = "messageId",required = false) String messageId,
-                                     @RequestParam(value = "title") String title){
+    public Boolean judgeMessageTitle(JudgeMessageTitleParameter parameter){
         try {
-            return messageService.judgeMessageTitle(messageId,title);
+            return messageService.judgeMessageTitle(parameter);
         }catch (Exception e){
             log.error("资讯标题查重出错！",e);
             return false;

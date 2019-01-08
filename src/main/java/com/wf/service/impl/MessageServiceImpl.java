@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
 
@@ -406,8 +407,8 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public Boolean judgeMessageTitle(String messageId, String title) {
-		if (dao.judgeMessageTitle(messageId,title)>0){
+	public Boolean judgeMessageTitle(JudgeMessageTitleParameter parameter) {
+		if (dao.judgeMessageTitle(parameter)>0){
 			return false;
 		}return true;
 	}
