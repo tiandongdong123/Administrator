@@ -129,7 +129,7 @@ public class ContentController {
     HotWordSettingService hotWordSettingService;
 
     @Autowired
-    IForbiddenSerivce forbiddenSerivce;
+    IForbiddenSerivce forbiddenService;
 
     @Autowired
     LogService logService;
@@ -319,20 +319,31 @@ public class ContentController {
 
 
     @RequestMapping("/addMessageJson")
-    public void addMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @ResponseBody
+    public TResult addMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Wfadmin admin = CookieUtil.getWfadmin(request);
-        message.setId(GetUuid.getId());
-        message.setHuman(admin.getUser_realname());
-        message.setBranch(admin.getDept().getDeptName());
-        message.setIssueState(1);
-        message.setIsTop("0");
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        message.setCreateTime(sdf1.format(new Date()));
-        message.setStick(sdf1.format(new Date()));
-        boolean b = messageService.insertMessage(message);
-        JsonUtil.toJsonHtml(response, b);
+        try {
+            Wfadmin admin = CookieUtil.getWfadmin(request);
+            message.setId(GetUuid.getId());
+            message.setHuman(admin.getUser_realname());
+            message.setBranch(admin.getDept().getDeptName());
+            message.setIssueState(1);
+            message.setIsTop("0");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            message.setCreateTime(sdf1.format(new Date()));
+            message.setStick(sdf1.format(new Date()));
+            boolean b = messageService.insertMessage(message);
+            if (b) {
+                return new TResult(200, message.getId());
+            } else {
+                return new TResult(500);
+            }
+        } catch (Exception e) {
+            log.error("增加资讯出错！message：" + message);
+            return new TResult(500);
+        }
+
         //记录日志
         //Log log=new Log("资讯管理","增加",message.toString(),request);
         //log.setUsername(CookieUtil.getWfadmin(request).getUser_realname());
@@ -2267,12 +2278,12 @@ public class ContentController {
     @RequestMapping("/checkForBiddenWord")
     @ResponseBody
     public boolean checkForBiddenWord(String word) {
-        return forbiddenSerivce.CheckForBiddenWord(word) > 0;
+        return forbiddenService.CheckForBiddenWord(word) > 0;
     }
 
 
     /**
-     * @param word
+     * @param id
      * @return
      */
     @RequestMapping("/getHotWordSetting")
