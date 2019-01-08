@@ -249,9 +249,13 @@ public class MessageServiceImpl implements MessageService {
 		String stick = message.getStick();
 		String title = message.getTitle();
 		String isTop=message.getIsTop();
+		String channel = message.getChannel();
+		String label = message.getLabel();
 
 		newMap.put("id", id);
 		newMap.put("type", type);
+		newMap.put("stringIS_channel", channel);
+		newMap.put("stringIS_label", label);
 		newMap.put("auto_stringITS_abstracts", abstracts);
 		//处理特殊字符
 		newMap.put("auto_stringITS_content", content);

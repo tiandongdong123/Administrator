@@ -46,7 +46,7 @@
     		and human=#{human}
     	</if>
     	<if test="colums!=null and colums!= ''">
-    		and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+    		and colums =#{colums,jdbcType=VARCHAR}
     	</if>
     	<if test="startTime!=null and startTime!= ''">
     		and create_time <![CDATA[ >= ]]> #{startTime} 
@@ -74,7 +74,7 @@
 			and human=#{human}
 		</if>
 		<if test="colums!=null and colums!= ''">
-			and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+			and colums LIKE = #{colums,jdbcType=VARCHAR}
 		</if>
 		<if test="startTime!=null and startTime!= ''">
 			and create_time <![CDATA[ >= ]]> #{startTime}
