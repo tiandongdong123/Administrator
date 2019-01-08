@@ -325,6 +325,8 @@ public class ContentController {
         message.setId(GetUuid.getId());
         message.setHuman(admin.getUser_realname());
         message.setBranch(admin.getDept().getDeptName());
+        message.setIssueState(1);
+        message.setIsTop("0");
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         message.setCreateTime(sdf1.format(new Date()));
