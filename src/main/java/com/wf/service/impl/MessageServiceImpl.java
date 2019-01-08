@@ -162,6 +162,10 @@ public class MessageServiceImpl implements MessageService {
         int topSize=list.size();//获取到的符合条件的资讯个数
         Map<String,Object> map=new HashMap<String,Object>();
         map.put("colums", colums);
+        if ("会议速递".equals(colums) || "基金申报".equals(colums)) {
+            map.put("colum1", "会议速递");
+            map.put("colum2", "基金申报");
+        }
         map.put("size", 3);
         if("专题聚焦".equals(colums)){
             //清空redis中对应的key
