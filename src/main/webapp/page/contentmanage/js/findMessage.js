@@ -1,6 +1,6 @@
 var branch,clum,human,startTime,endTime,isTop;
 var pageNum;
-var pageSize = 10;
+var pageSize = 20;
 $(function(){
 	showPage(1);
 });
@@ -102,7 +102,7 @@ function serachdata(curr,data){
              "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.label==null?"":rows.label)+"</td>"+
 
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
+            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.stick+"</td>"+
             "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"</td>"+
 			"<td class='mailbox-name' style='width:353px;'><div>";
             if(is_top==0){
