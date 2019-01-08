@@ -136,6 +136,7 @@ function serachdata(curr,data){
 			}
 		});
 	});
+    (data.totalRow  > 20)?$("#divPager").show(): $("#divPager").hide();
 	/*document.getElementById("here").scrollIntoView();*/
 }
 
