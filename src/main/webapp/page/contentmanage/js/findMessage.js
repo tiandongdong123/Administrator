@@ -47,6 +47,7 @@ function showPage(curr){
 }
 
 function serachdata(curr,data){
+	console.log(data)
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
 	var pageRow=data.pageRow;
@@ -65,7 +66,7 @@ function serachdata(curr,data){
     "</tr>";
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i+10*(pageNum-1);
+			var index = 1+i+20*(pageNum-1);
 			var rows = pageRow[i];
 			var issue = rows.issueState;
 			var issueNum = 1;
