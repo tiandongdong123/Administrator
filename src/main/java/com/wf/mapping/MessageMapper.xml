@@ -43,7 +43,7 @@
     		and branch=#{branch}
     	</if>
     	<if test="human!=null and human!= ''">
-    		and human=#{human}
+    		and human LIKE CONCAT('%',#{human,jdbcType=VARCHAR},'%')
     	</if>
     	<if test="colums!=null and colums!= ''">
     		and colums =#{colums,jdbcType=VARCHAR}
@@ -71,7 +71,7 @@
 			and branch=#{branch}
 		</if>
 		<if test="human!=null and human!= ''">
-			and human=#{human}
+            and human LIKE CONCAT('%',#{human,jdbcType=VARCHAR},'%')
 		</if>
 		<if test="colums!=null and colums!= ''">
 			and colums = #{colums,jdbcType=VARCHAR}
