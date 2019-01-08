@@ -117,31 +117,28 @@ public class MessageServiceImpl implements MessageService {
 
 	//操作数据
 	private void setData(String colums,int issue,String id){
-        String[] split = colums.split(",");
-        for (String colum : split) {
-            //发布redis
-            setRedis(colum);
-            String type="";
-            if("专题聚焦".equals(colum)){
-                type="special";
-            }else if("科技动态".equals(colum)){
-                type="conference";
-            }else if("会议速递".equals(colum) || "基金申报".equals(colum)){
-                type="fund";
-            }else if("万方资讯".equals(colum)){
-                type="activity";
-            }
-            //修改/下撤成功发布至solr
-            if(issue==2){//发布
-                Message message=dao.findMessage(id);
-                deployInformation("information",type,message);
-            }else if(issue==3){//下撤
-                RedisUtil redisUtil = new RedisUtil();
-                String collection = redisUtil.get("information", 3);
-                SolrService.getInstance(hosts+"/"+collection);
-                SolrService.deleteIndex(id);
-            }
-        }
+		//发布redis
+		setRedis(colums);
+		String type="";
+		if("专题聚焦".equals(colums)){
+			type="special";
+		}else if("科技动态".equals(colums)){
+			type="conference";
+		}else if("会议速递".equals(colums) || "基金申报".equals(colums)){
+			type="fund";
+		}else if("万方资讯".equals(colums)){
+			type="activity";
+		}
+		//修改/下撤成功发布至solr
+		if(issue==2){//发布
+			Message message=dao.findMessage(id);
+			deployInformation("information",type,message);
+		}else if(issue==3){//下撤
+			RedisUtil redisUtil = new RedisUtil();
+			String collection = redisUtil.get("information", 3);
+			SolrService.getInstance(hosts+"/"+collection);
+			SolrService.deleteIndex(id);
+		}
 
 	}
 

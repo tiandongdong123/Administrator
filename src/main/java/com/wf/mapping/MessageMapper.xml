@@ -74,7 +74,7 @@
 			and human=#{human}
 		</if>
 		<if test="colums!=null and colums!= ''">
-			and colums LIKE = #{colums,jdbcType=VARCHAR}
+			and colums = #{colums,jdbcType=VARCHAR}
 		</if>
 		<if test="startTime!=null and startTime!= ''">
 			and create_time <![CDATA[ >= ]]> #{startTime}
@@ -116,7 +116,7 @@
 	<select id="selectBycolums" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select <include refid="Base_Column_List" />
 		from message
-		where is_top='0' and issue_state=2 and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+		where is_top='0' and issue_state=2 and colums =#{colums,jdbcType=VARCHAR}
 		ORDER BY stick DESC
 		limit 0,#{size}
 	</select>
@@ -124,7 +124,7 @@
 		select <include refid="Base_Column_List" />
 		from message
 		where is_top='0' and issue_state=2
-        and (colums LIKE CONCAT('%',#{colum1,jdbcType=VARCHAR},'%') or colums LIKE CONCAT('%',#{colum2,jdbcType=VARCHAR},'%'))
+        and (colums =#{colum1,jdbcType=VARCHAR} or colums =#{colum2,jdbcType=VARCHAR})
 		ORDER BY stick DESC
 		limit 0,#{size}
 	</select>
@@ -133,7 +133,7 @@
 		select
         <include refid="Base_Column_List" />
         from message
-        where is_top='1' and issue_state=2 and colums LIKE CONCAT('%',#{colums,jdbcType=VARCHAR},'%')
+        where is_top='1' and issue_state=2 and colums =#{colums,jdbcType=VARCHAR}
         ORDER BY stick DESC
         limit 0,#{size}
 	</select>
@@ -141,8 +141,8 @@
 		select
         <include refid="Base_Column_List" />
         from message
-        where is_top='1' and issue_state=2
-        and (colums LIKE CONCAT('%',#{colum1,jdbcType=VARCHAR},'%') or colums LIKE CONCAT('%',#{colum2,jdbcType=VARCHAR},'%'))
+        where is_top='1' and issue_state= 2
+        and (colums = #{colum1,jdbcType=VARCHAR} or colums = #{colum2,jdbcType=VARCHAR})
         ORDER BY stick DESC
         limit 0,#{size}
 	</select>
