@@ -20,7 +20,7 @@ function showPage(curr){
 		clum="";
 	}
     var infor = $("#infor").find("option:selected").val();
-	human=$("#human").val();
+	human=$("#human").val().trim();
 	startTime=$("#startTime").val();
 	endTime=$("#endTime").val();
     var title = $("#title").val().trim();
