@@ -165,4 +165,9 @@ public class InformationLabelImpl implements InformationLabelService {
         return informationLabelMapper.updateInformationLabelNumber(labelName);
     }
 
+    @Override
+    public Boolean updateInformationLabelNumberDel(String labelName) {
+        return informationLabelMapper.updateInformationLabelNumberDel(labelName);
+    }
+
 }

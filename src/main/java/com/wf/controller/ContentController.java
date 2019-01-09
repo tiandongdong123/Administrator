@@ -335,6 +335,7 @@ public class ContentController {
             message.setStick(sdf1.format(new Date()));
             boolean b = messageService.insertMessage(message);
             if (b) {
+                informationLabelService.updateInformationLabelNumber(message.getLabel());
                 return new TResult(200, message.getId());
             } else {
                 return new TResult(500);
@@ -514,9 +515,10 @@ public class ContentController {
         boolean b = false;
         String[] parameters = request.getParameterValues("parameters");
         if(null != parameters){
+            Wfadmin admin = CookieUtil.getWfadmin(request);
             for (String parameter : parameters) {
                 JSONObject jsonObject = JSONObject.fromObject(parameter);
-                b = messageService.updateIssue(jsonObject.get("id").toString(), jsonObject.get("colums").toString(),jsonObject.get("issueState").toString());
+                b = messageService.updateIssue(jsonObject.get("id").toString(), jsonObject.get("colums").toString(),jsonObject.get("issueState").toString(),admin.getUser_realname());
                 //记录日志
                 Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + jsonObject.get("id").toString() + ",栏目:" +jsonObject.get("colums").toString() + ",发布状态:" + jsonObject.get("colums").toString(), request);
                 logService.addLog(log);
@@ -1065,12 +1067,14 @@ public class ContentController {
      */
     @RequestMapping("/stick")
     @ResponseBody
-    public TResult stick(Message message) {
+    public TResult stick(Message message, HttpServletRequest request) {
         try {
             Message serviceMessage = messageService.findMessage(message.getId());
             if (serviceMessage == null || serviceMessage.getIssueState() != 2) {
                 return new TResult(202, "资讯未发布或者不存在");
             }
+            Wfadmin admin = CookieUtil.getWfadmin(request);
+            message.setHuman(admin.getUser_realname());
             message.setStick(DateTools.getSysTime());
             boolean b = messageService.updataMessageStick(message);
             if (b) {

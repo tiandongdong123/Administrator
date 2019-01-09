@@ -12,6 +12,7 @@ import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.html.S;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("id", message.getId());
 		map.put("stick", new Date());
 		map.put("isTop", message.getIsTop());
+		map.put("human", message.getHuman());
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
@@ -100,7 +102,7 @@ public class MessageServiceImpl implements MessageService {
 	 * @return
 	 */
 	@Override
-	public boolean updateIssue(String id,String colums,String issueState) {
+	public boolean updateIssue(String id, String colums, String issueState, String human) {
 		boolean flag = false;
 		int issue = Integer.valueOf(issueState);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -108,6 +110,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("issueState", issue);
 		map.put("stick", new Date());
 		map.put("isTop", "0");
+		map.put("human", human);
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;

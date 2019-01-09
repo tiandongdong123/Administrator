@@ -254,4 +254,16 @@
       #{item}
     </foreach>
   </update>
+
+  <update id="updateInformationLabelNumberDel">
+    update information_label
+    set total_number = total_number - 1
+    where
+    label in
+    <foreach collection="labelName.split(',')"  open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </update>
+
+
 </mapper>
