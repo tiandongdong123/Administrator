@@ -178,6 +178,9 @@
 		<if test="isTop!=null">
 			,is_top=#{isTop}
 		</if>
+		<if test="human!=null">
+			,human=#{human}
+		</if>
 		<where>
 			<if test="id !=null and id != ''">
 				id in
