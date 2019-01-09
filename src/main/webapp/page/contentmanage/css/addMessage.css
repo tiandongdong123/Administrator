@@ -73,6 +73,9 @@ td{
 }
 .add_goods_form div input{
     float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 30px;
     width: 215px;
 }

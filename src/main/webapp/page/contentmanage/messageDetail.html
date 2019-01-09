@@ -7,7 +7,9 @@
 <script type="text/javascript">
 
 </script>
-
+<input type="hidden" value="information" id="informationHidden">
+<input type="hidden" id="columsh" value="${message.colums!}"/>
+<input type="hidden" id="messageId" value="${message.id!}"/>
   <div class="content-wrapper">
 
     <section class="content">
@@ -21,7 +23,7 @@
 			</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>PC端栏目</td>
-	        		<td class="tdr">
+	        		<td class="tdr colum_list">
 						<span>
                             <input type="radio" name="colum_item"  id="item1"value=${message.colums!} checked>
 						    <label for="item1">${message.colums!}</label>
@@ -38,12 +40,23 @@
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>内容</td>
-	        		<td class="tdr"><div class="box-body pad" style="width: 150%;margin-left: -10px;">
+	        		<!--<td class="tdr"><div class="box-body pad" style="width: 150%;margin-left: -10px;">
 						<div class="box-body pad" style="margin-left: -10px;">
-							<div style="width: 1024px;border: 1px solid #A9A9A9;background: #fff;">
+							<div style="width: 1024px;border: 1px solid #A9A9A9;background: #fff;" class="content_wrap" id="contentWrap ">
 								${message.content!}
 							</div>
 						</div>
+						</div>
+					</td>-->
+					<td class="tdr " style="position: relative">
+						<div class="cover_content_pad" style="width: 1024px;position: absolute;position: absolute;z-index: 1000;background-color: #000;opacity: 0.1; top: 31px;"></div>
+
+						<div class="box-body pad content_pad" style="margin-left: -10px;">
+							<script id="content" type="text/plain" style="width:1024px;height:500px;">${message.content!}</script>
+                            <link rel="stylesheet" href="../js/ueditor/1.4.3/themes/default/css/ueditor.css">
+                                <script type="text/javascript" charset="utf-8" src="../js/ueditor/1.4.3/ueditor.config.js"></script>
+							<script type="text/javascript" charset="utf-8" src="../js/ueditor/1.4.3/ueditor.all.js"></script>
+							<script type="text/javascript" src="../js/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
 						</div>
 					</td>
         		</tr>
@@ -71,13 +84,17 @@
 	        		<td class="tdr"><input readonly="readonly" id="linkAddress" name="linkAddress" class="b" type="text" value="${message.linkAddress!}"/></td>
         		</tr>
         		<tr>
-	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>作者</td>
+	        		<td class="tdl">作者</td>
 	        		<td class="tdr"><input readonly="readonly" id="author"   name="author" class="b" type="text" value="${message.author!}"/></td>
         		</tr>
         		<tr>
 	        		<td class="tdl">转载平台</td>
 	        		<td class="tdr"><input readonly="readonly" id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
         		</tr>
+				<tr>
+					<td class="tdl">标签</td>
+					<td class="tdr"><input readonly="readonly" id="mark" name="mark" class="b" type="text" value="${message.label!}"/></td>
+				</tr>
         	</table>
 
         	<!-- 提交 -->
@@ -85,7 +102,7 @@
 		  <div style="text-align: center;width: 700px;">
 			  <button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
 			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			  <button type="button" onclick="showMessage()" class="btn btn-primary" >发布</button>
+			  <button type="button" onclick="detailPublish()" class="btn btn-primary" >发布</button>
 			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			  <button type="button" class="btn btn-primary" onclick="reset()">返回</button>
 		  </div>

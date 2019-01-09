@@ -6,7 +6,7 @@ function action(){
 	var colums=parent.$("#colums").find("option:selected").val();
 	var title=parent.$("#title").val();
 	var abstracts=parent.document.getElementById("abstracts").value;
-	var editor1=parent.ues.getContent();
+    var editor1 = parent.ues.getContent();
 	var linkAddress=parent.$("#linkAddress").val();
 	var author=parent.$("#author").val();
 	var organName=parent.$("#organName").val();

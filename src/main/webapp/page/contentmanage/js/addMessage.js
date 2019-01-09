@@ -1,80 +1,113 @@
 var ues;
 
 $(function(){
-	ues=UE.getEditor('content',{
-		//autoHeightEnabled: true,
-	});
-    addMark();
-    commonMark();
-    getMark();
-    //标题校验
-	$("#title").on("blur",function(){
-        checkTitle()
-	});
-    blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
-    blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//摘要敏感词
-    blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//摘要敏感词
-    blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//摘要敏感词
-    UE.getEditor('content').addListener('blur',function(editor){
-    	if(ues.getContent()){
-            $(".content_error").hide();
-            checkSensitive(ues.getContent(),$(".content_sensitive_error"))
-		}else{
-    		$(".content_error").show();
-		}
-    });
 
-   $(document).on("click",function(e){
-       var target = $(e.target);
-       if(target.closest(".add_mark_list").length == 0){
-            $(".add_mark_list").hide();
-       }
-   });
-  $(".colum_list span label").each(function(){
-       if( $(this).text().trim() == $("#columsHidden").val().trim()){
-          $(this).siblings("input").attr("checked","checked")
-       }
-   })
+      $("#uploadFile").on("change",function(){
+          var value = $(this).val();
+          value = value.split("\\")[2];
+          $("#showFile").val(value)
+      });
+
+
+
+
+
+
+        ues=UE.getEditor('content',{
+            //autoHeightEnabled: true,
+        });
+        addMark();
+        commonMark();
+        getMark();
+        //标题校验
+        $("#title").on("blur",function(){
+            checkTitle()
+        });
+        blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
+        blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//摘要敏感词
+        blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//摘要敏感词
+        blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//摘要敏感词
+        UE.getEditor('content').addListener('blur',function(editor){
+            if(ues.getContent()){
+                $(".content_error").hide();
+                checkSensitive(ues.getContent(),$(".content_sensitive_error"))
+            }else{
+                $(".content_error").show();
+            }
+        });
+
+        $(document).on("click",function(e){
+            var target = $(e.target);
+            if(target.closest(".add_mark_list").length == 0){
+                $(".add_mark_list").hide();
+            }
+        });
+        if($("#informationHidden").val()=="information"){
+            ues.ready(function(){
+                UE.getEditor('content').setDisabled('fullscreen');//设置编译器为不可编译
+            })
+        }else{
+            $(".colum_list span label").each(function(){
+                if( $(this).text().trim() == $("#columsHidden").val().trim()){
+                    $(this).siblings("input").attr("checked","checked")
+                }
+            })
+        }
+
+
+
+
 
 });
 //点击添加标签
 function addMark(){
-    var html = "";
+
 
     $(".add_label_btn").click(function () {
-	     if(!$("#addMark").val().trim()){
-		     layer.alert("请填写标签！")
-	     }else {
-	         $.ajax({
-                 type:'post',
-                 url:'../content/insertInformationLabel.do',
-                 data:{
-                     label:$("#addMark").val(),
-                 },
-                 success:function(data){
-                     var flag = true;
-                     var markList = [];
-                     if(data){
-                         $(".hover_item p").each(function(){
-                             markList.push($(this).text())
-                         });
-                         for(var i = 0;i<markList.length;i++){
-                             if($("#addMark").val() == markList[i] ){
-                                 flag = false
-                             }
-                         }
-                         if(flag){
-                             html = ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  $("#addMark").val() +'</p> '+ '</span> ';
-                             $("#markList").append(html);
-                             $("#addMark").val("");
-                         }else{
-                             $("#addMark").val('');
-                         }
-                     }
-                 }
-             });
-	     }
+        corporateMark();
     })
+    $('#addMark').keydown(function(event) {
+        if (event.keyCode == 13) {
+            corporateMark();
+        }
+    });
+
+}
+
+function corporateMark(){
+    var html = "";
+    if(!$("#addMark").val().trim()){
+        layer.alert("请填写标签！")
+    }else {
+        $.ajax({
+            type:'post',
+            url:'../content/insertInformationLabel.do',
+            data:{
+                label:$("#addMark").val(),
+            },
+            success:function(data){
+                var flag = true;
+                var markList = [];
+                if(data){
+                    $(".hover_item p").each(function(){
+                        markList.push($(this).text())
+                    });
+                    for(var i = 0;i<markList.length;i++){
+                        if($("#addMark").val() == markList[i] ){
+                            flag = false
+                        }
+                    }
+                    if(flag){
+                        html = ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  $("#addMark").val() +'</p> '+ '</span> ';
+                        $("#markList").append(html);
+                        $("#addMark").val("");
+                    }else{
+                        $("#addMark").val('');
+                    }
+                }
+            }
+        });
+    }
 }
 //点击删除标签
 function deleteMark(that){
@@ -143,15 +176,14 @@ function submission() {
 }
 
 function showMessage(){
-
-	var text = ues.getContent();
+    var text =ues.getContent();
 	var colums = $("input[name=colum_item]:checked").val();
 	var title = $("#title").val();
 	var author = $("#author").val();
 	var regu = "^[ ]+$";
 	var re = new RegExp(regu);
 	if(text!=''&&text!=undefined&&!re.test(text)
-			&&colums!=''&&colums!=undefined&&!re.test(colums)
+			&&colums!=''
 			&&title!=''&&title!=undefined&&!re.test(title)){
 		layer.open({
 		    type: 2, //page层 1div，2页面
@@ -166,180 +198,67 @@ function showMessage(){
 		layer.msg("*为必填项！",{icon: 2});
 	}
 }
+function detailPublish(){
+    var colum = $("#columsh").val();
+    var messageId = $("#messageId").val();
+    var params;
+    var _json = {
+        "id" : messageId,
+        "colums":colum,
+        "issueState":2
+    };
+    params = JSON.stringify(_json);
+    $.ajax({
+        type: "post",
+        url: "../content/updateIssue.do",
+        data: {
+            parameters: params
+        },
+        traditional: true,
+        success: function (data) {
+            if (data) {
+                window.location.href = "../content/index.do";
+            } else {
+                layer.msg("发布失败！")
+            }
 
-function messahePublish(){
-    var channel = $(".channel").val();
-    var colum =  $("input[name=colum_item]:checked").val();
-
-    var title=$("#title").val();
-    var abstracts=document.getElementById("abstracts").value;
-    var content= ues.getContent();
-
-    var imageUrl=$("#imageUrl").val();
-
-    var linkAddress=$("#linkAddress").val();
-    var author=$("#author").val();
-    var organName=$("#organName").val();
-
-    var addMark = "";
-    $(".hover_item p").each(function(){
-        addMark += $(this).text()+','
-    });
-    addMark = addMark.substring(0,addMark.length-1);
-    var regu = "^[ ]+$";
-    var re = new RegExp(regu);
-    checkColum();
-    checkTitle();
-    checkCheet();
-    if(colum!=""&&colum!=undefined
-        &&title!=""&&title!=undefined&&!re.test(title)
-        &&content!=""&&content!=undefined&&!re.test(content)){
-        if(linkAddress.length>0 && !IsURL(linkAddress)){
-            layer.msg("源文链接格式不正确！",{icon: 2});
-        }else{
-            $.ajax({
-                type : "post",
-                url : "../content/addMessageJson.do",
-                dataType : "json",
-                data : {
-                    "channel":channel,
-                    "colums":colum,
-                    "title":title,
-                    "abstracts":abstracts,
-                    "content":content,
-                    "imageUrl":imageUrl,
-                    "linkAddress":linkAddress,
-                    "author":author,
-                    "organName":organName,
-                    "label":addMark
-                },
-                async: false,
-                beforeSend : function(XMLHttpRequest) {},
-                success : function(data){
-                	if(data.code == 200){
-                        var params;
-                        var _json = {
-                            "id" : data.data,
-                            "colums":colum,
-                            "issueState":2
-                        };
-                        params = JSON.stringify(_json);
-                        $.ajax({
-                            type:"post",
-                            url:"../content/updateIssue.do",
-                            data:{
-                                parameters:params
-                            },
-                            traditional: true,
-                            success:function(data){
-                                if(data){
-                                    window.location.href="../content/index.do";
-                                }else{
-                                    layer.msg("发布失败！")
-                                }
-                            }
-                        })
-                    }else{
-                	    layer.msg("添加失败！")
-                    }
-                },
-                complete : function(XMLHttpRequest, textStatus) {},
-                error : function(data) {alert("添加失败");}
-            });
         }
-    }else{
-        /*layer.msg("*为必填项！",{icon: 2});*/
-    }
+    });
 }
-
-function addMessage(){
-    uploadImage('upload')
+function messahePublish(){
+    var errorCount = 0;
     var channel = $(".channel").val();
     var colum =  $("input[name=colum_item]:checked").val();
 
-	var title=$("#title").val();
-	var abstracts=document.getElementById("abstracts").value;
-	var content= ues.getContent();
-
-	var imageUrl=$("#imageUrl").val();
-
-	var linkAddress=$("#linkAddress").val();
-	var author=$("#author").val();
-	var organName=$("#organName").val();
-
-	var addMark = "";
-    $(".hover_item p").each(function(){
-        addMark += $(this).text()+','
-	});
-    addMark = addMark.substring(0,addMark.length-1);
-	var regu = "^[ ]+$";
-	var re = new RegExp(regu);
-    checkColum();
-    checkTitle();
-    checkCheet();
-	if(colum!=""&&colum!=undefined
-			&&title!=""&&title!=undefined&&!re.test(title)
-			&&content!=""&&content!=undefined&&!re.test(content)){
-		if(linkAddress.length>0 && !IsURL(linkAddress)){
-			layer.msg("源文链接格式不正确！",{icon: 2});
-		}else{
-			$.ajax({
-				type : "post",
-				url : "../content/addMessageJson.do",
-				dataType : "json",
-				data : {
-                    "channel":channel,
-					"colums":colum,
-					"title":title,
-					"abstracts":abstracts,
-					"content":content,
-					"imageUrl":imageUrl,
-					"linkAddress":linkAddress,
-					"author":author,
-					"organName":organName,
-                    "label":addMark
-				},
-				async: false,
-				beforeSend : function(XMLHttpRequest) {},
-				success : function(data){
-					var rspCode = data.code;
-			    	if(rspCode == 200){
-			    		layer.msg("添加成功!",{icon: 1});
-			    		window.location.href="../content/index.do";
-			    	}else{
-			    		layer.msg("添加失败!",{icon: 2});
-			    	}
-				},
-				complete : function(XMLHttpRequest, textStatus) {},
-				error : function(data) {alert("添加失败");}
-			});
-		}
-	}else{
-		/*layer.msg("*为必填项！",{icon: 2});*/
-	}
-}
-function updatePublish(){
-    var channel = $(".channel").val();
-    var id=$("#messageId").val();
-    var colums =  $("input[name=colum_item]:checked").val();
     var title=$("#title").val();
     var abstracts=document.getElementById("abstracts").value;
     var content= ues.getContent();
+
     var imageUrl=$("#imageUrl").val();
+
     var linkAddress=$("#linkAddress").val();
     var author=$("#author").val();
     var organName=$("#organName").val();
+
     var addMark = "";
+
     $(".hover_item p").each(function(){
         addMark += $(this).text()+','
     });
     addMark = addMark.substring(0,addMark.length-1);
     var regu = "^[ ]+$";
     var re = new RegExp(regu);
-    if($("#issueState").val()==2){
-        layer.msg("请先下撤该数据再进行修改",{icon: 2});
-    }else{
-        if(colums!=""&&colums!=undefined&&!re.test(colums)
+    checkColum();
+    checkTitle();
+    checkCheet();
+    $(".error_mark ").each(function(){
+        if($(this).css("display") == "inline") {
+            errorCount=errorCount+1;
+
+        }
+    });
+    if(errorCount == 0){
+        if(colum!=""&&colum!=undefined
             &&title!=""&&title!=undefined&&!re.test(title)
             &&content!=""&&content!=undefined&&!re.test(content)){
             if(linkAddress.length>0 && !IsURL(linkAddress)){
@@ -347,12 +266,11 @@ function updatePublish(){
             }else{
                 $.ajax({
                     type : "post",
-                    url : "../content/updateMessageJson.do",
+                    url : "../content/addMessageJson.do",
                     dataType : "json",
                     data : {
                         "channel":channel,
-                        "id":id,
-                        "colums":colums,
+                        "colums":colum,
                         "title":title,
                         "abstracts":abstracts,
                         "content":content,
@@ -365,11 +283,11 @@ function updatePublish(){
                     async: false,
                     beforeSend : function(XMLHttpRequest) {},
                     success : function(data){
-                        if(data.flag == 'true'){
+                        if(data.code == 200){
                             var params;
                             var _json = {
-                                "id" : $("#messageId").val(),
-                                "colums":colums,
+                                "id" : data.data,
+                                "colums":colum,
                                 "issueState":2
                             };
                             params = JSON.stringify(_json);
@@ -393,13 +311,191 @@ function updatePublish(){
                         }
                     },
                     complete : function(XMLHttpRequest, textStatus) {},
-                    error : function(data) {alert(data);}
+                    error : function(data) {alert("添加失败");}
                 });
+            }
+        }else{
+            /*layer.msg("*为必填项！",{icon: 2});*/
+        }
+    }
+
+}
+
+function addMessage(){
+   /* uploadImage('upload')*/
+    var errorCount = 0;
+    var channel = $(".channel").val();
+    var colum =  $("input[name=colum_item]:checked").val();
+
+	var title=$("#title").val();
+	var abstracts=document.getElementById("abstracts").value;
+	var content= ues.getContent();
+
+	var imageUrl=$("#imageUrl").val();
+
+	var linkAddress=$("#linkAddress").val();
+	var author=$("#author").val();
+	var organName=$("#organName").val();
+
+	var addMark = "";
+    $(".hover_item p").each(function(){
+        addMark += $(this).text()+','
+	});
+    addMark = addMark.substring(0,addMark.length-1);
+	var regu = "^[ ]+$";
+	var re = new RegExp(regu);
+    checkColum();
+    checkTitle();
+    checkCheet();
+    $(".error_mark ").each(function(){
+        if($(this).css("display") == "inline") {
+            errorCount=errorCount+1;
+
+        }
+    });
+    if(errorCount == 0){
+
+        if (colum != "" && colum != undefined
+            && title != "" && title != undefined && !re.test(title)
+            && content != "" && content != undefined && !re.test(content)) {
+
+            if (linkAddress.length > 0 && !IsURL(linkAddress)) {
+                layer.msg("源文链接格式不正确！", {icon: 2});
+            } else {
+                $.ajax({
+                    type: "post",
+                    url: "../content/addMessageJson.do",
+                    dataType: "json",
+                    data: {
+                        "channel": channel,
+                        "colums": colum,
+                        "title": title,
+                        "abstracts": abstracts,
+                        "content": content,
+                        "imageUrl": imageUrl,
+                        "linkAddress": linkAddress,
+                        "author": author,
+                        "organName": organName,
+                        "label": addMark
+                    },
+                    async: false,
+                    beforeSend: function (XMLHttpRequest) {
+                    },
+                    success: function (data) {
+                        var rspCode = data.code;
+                        if (rspCode == 200) {
+                            layer.msg("添加成功!", {icon: 1});
+                            window.location.href = "../content/index.do";
+                        } else {
+                            layer.msg("添加失败!", {icon: 2});
+                        }
+                    },
+                    complete: function (XMLHttpRequest, textStatus) {
+                    },
+                    error: function (data) {
+                        alert("添加失败");
+                    }
+                });
+            }
+        } else {
+            /*layer.msg("*为必填项！",{icon: 2});*/
+        }
+    }
+
+
+}
+function updatePublish(){
+    var errorCount = 0;
+    var channel = $(".channel").val();
+    var id=$("#messageId").val();
+    var colums =  $("input[name=colum_item]:checked").val();
+    var title=$("#title").val();
+    var abstracts=document.getElementById("abstracts").value;
+    var content= ues.getContent();
+    var imageUrl=$("#imageUrl").val();
+    var linkAddress=$("#linkAddress").val();
+    var author=$("#author").val();
+    var organName=$("#organName").val();
+    var addMark = "";
+    $(".hover_item p").each(function(){
+        addMark += $(this).text()+','
+    });
+    addMark = addMark.substring(0,addMark.length-1);
+    var regu = "^[ ]+$";
+    var re = new RegExp(regu);
+    $(".error_mark ").each(function(){
+        if($(this).css("display") == "inline") {
+            errorCount=errorCount+1;
+        }
+    });
+    if(errorCount == 0){
+        if($("#issueState").val()==2){
+            layer.msg("请先下撤该数据再进行修改",{icon: 2});
+        }else{
+            if(colums!=""&&colums!=undefined&&!re.test(colums)
+                &&title!=""&&title!=undefined&&!re.test(title)
+                &&content!=""&&content!=undefined&&!re.test(content)){
+                if(linkAddress.length>0 && !IsURL(linkAddress)){
+                    layer.msg("源文链接格式不正确！",{icon: 2});
+                }else{
+                    $.ajax({
+                        type : "post",
+                        url : "../content/updateMessageJson.do",
+                        dataType : "json",
+                        data : {
+                            "channel":channel,
+                            "id":id,
+                            "colums":colums,
+                            "title":title,
+                            "abstracts":abstracts,
+                            "content":content,
+                            "imageUrl":imageUrl,
+                            "linkAddress":linkAddress,
+                            "author":author,
+                            "organName":organName,
+                            "label":addMark
+                        },
+                        async: false,
+                        beforeSend : function(XMLHttpRequest) {},
+                        success : function(data){
+                            if(data.flag == 'true'){
+                                var params;
+                                var _json = {
+                                    "id" : $("#messageId").val(),
+                                    "colums":colums,
+                                    "issueState":2
+                                };
+                                params = JSON.stringify(_json);
+                                $.ajax({
+                                    type:"post",
+                                    url:"../content/updateIssue.do",
+                                    data:{
+                                        parameters:params
+                                    },
+                                    traditional: true,
+                                    success:function(data){
+                                        if(data){
+                                            window.location.href="../content/index.do";
+                                        }else{
+                                            layer.msg("发布失败！")
+                                        }
+                                    }
+                                })
+                            }else{
+                                layer.msg("添加失败！")
+                            }
+                        },
+                        complete : function(XMLHttpRequest, textStatus) {},
+                        error : function(data) {alert(data);}
+                    });
+                }
             }
         }
     }
+
 }
 function updateMessage(){
+    var errorCount = 0;
     var channel = $(".channel").val();
     var id=$("#messageId").val();
     var colums =  $("input[name=colum_item]:checked").val();
@@ -417,48 +513,57 @@ function updateMessage(){
     addMark = addMark.substring(0,addMark.length-1);
 	var regu = "^[ ]+$";
 	var re = new RegExp(regu);
-	if($("#issueState").val()==2){
-		layer.msg("请先下撤该数据再进行修改",{icon: 2});
-	}else{
-		if(colums!=""&&colums!=undefined&&!re.test(colums)
-				&&title!=""&&title!=undefined&&!re.test(title)
-				&&content!=""&&content!=undefined&&!re.test(content)){
-			if(linkAddress.length>0 && !IsURL(linkAddress)){
-				layer.msg("源文链接格式不正确！",{icon: 2});
-			}else{
-				$.ajax({
-					type : "post",
-					url : "../content/updateMessageJson.do",
-					dataType : "json",
-					data : {
-                        "channel":channel,
-						"id":id,
-						"colums":colums,
-						"title":title,
-						"abstracts":abstracts,
-						"content":content,
-						"imageUrl":imageUrl,
-						"linkAddress":linkAddress,
-						"author":author,
-						"organName":organName,
-                        "label":addMark
-					},
-					async: false,
-					beforeSend : function(XMLHttpRequest) {},
-					success : function(data){
-						if(data.flag == 'true'){
-			        		layer.msg("修改成功!",{icon: 1});
-			        		window.location.href="../content/index.do";
-			        	}else{
-			        		layer.msg("修改失败!",{icon: 2});
-			        	}
-					},
-					complete : function(XMLHttpRequest, textStatus) {},
-					error : function(data) {alert(data);}
-				});
-			}
-		}
-	}
+    $(".error_mark ").each(function(){
+        if($(this).css("display") == "inline") {
+            errorCount=errorCount+1;
+
+        }
+    });
+	if(errorCount == 0){
+        if($("#issueState").val()==2){
+            layer.msg("请先下撤该数据再进行修改",{icon: 2});
+        }else{
+            if(colums!=""&&colums!=undefined&&!re.test(colums)
+                &&title!=""&&title!=undefined&&!re.test(title)
+                &&content!=""&&content!=undefined&&!re.test(content)){
+                if(linkAddress.length>0 && !IsURL(linkAddress)){
+                    layer.msg("源文链接格式不正确！",{icon: 2});
+                }else{
+                    $.ajax({
+                        type : "post",
+                        url : "../content/updateMessageJson.do",
+                        dataType : "json",
+                        data : {
+                            "channel":channel,
+                            "id":id,
+                            "colums":colums,
+                            "title":title,
+                            "abstracts":abstracts,
+                            "content":content,
+                            "imageUrl":imageUrl,
+                            "linkAddress":linkAddress,
+                            "author":author,
+                            "organName":organName,
+                            "label":addMark
+                        },
+                        async: false,
+                        beforeSend : function(XMLHttpRequest) {},
+                        success : function(data){
+                            if(data.flag == 'true'){
+                                layer.msg("修改成功!",{icon: 1});
+                                window.location.href="../content/index.do";
+                            }else{
+                                layer.msg("修改失败!",{icon: 2});
+                            }
+                        },
+                        complete : function(XMLHttpRequest, textStatus) {},
+                        error : function(data) {alert(data);}
+                    });
+                }
+            }
+        }
+    }
+
 }
 
 function noupdate(){
@@ -466,14 +571,17 @@ function noupdate(){
 }
 
 function selectValue(id,val){
-	for(var i=0;i<document.getElementById(id).options.length;i++)
-    {
-        if(document.getElementById(id).options[i].value == val)
+    if(document.getElementById(id)){
+        for(var i=0;i<document.getElementById(id).options.length;i++)
         {
-            document.getElementById(id).options[i].selected=true;
-            break;
+            if(document.getElementById(id).options[i].value == val)
+            {
+                document.getElementById(id).options[i].selected=true;
+                break;
+            }
         }
     }
+
 }
 
 function imageShow(statu){
@@ -564,26 +672,23 @@ function checkImgPX(ths, width, height) {
             url:"../content/echoInformationLabel.do",
             success:function (data) {
                 max =data[0].totalNumber;
-                console.log(data);
                for(var j = 0;j < data.length;j++){
                     cur = data[j].totalNumber;
                     cur > max ? max = cur : max;
                 }
-                for(var i = 0;i<data.length;i++){
+               for(var i = 0;i<data.length;i++){
                    if(data[i].totalNumber == 0){
                        mark_html += '<span style ="font-size:12px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span> '
                    }else{
                        mark_html += '<span style ="font-size:'+(data[i].totalNumber/max)*28+'px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span> '
                    }
-                }
+               }
                 $(".common_mark").empty();
                 $(".common_mark").append(mark_html);
             }
-
         });
         $(".common_mark").toggle();
     })
-
  }
  //模糊查询标签
 function getMark(){
@@ -608,11 +713,11 @@ function getMark(){
              }
            }
        })
-
     })
 }
 function selecteMark(that){
       $("#addMark").val($(that).text());
+      $("#addMark").focus();
     if( $(that).parent('ul').parent('.add_mark_list').css("display")== "block"){
         $(that).parent('ul').parent('.add_mark_list').hide();
     }

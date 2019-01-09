@@ -22,8 +22,8 @@
 
     <!-- Main content -->
     <section class="content">
-      <div class="row">
-      	<input type="hidden" id="columsh" value="${message.colums!}"/>
+        <div class="row">
+      	    <input type="hidden" id="columsh" value="${message.colums!}"/>
         	<input type="hidden" id="messageId" value="${message.id!}"/>
         	<input type="hidden" id="issueState" value="${message.issueState!}"/>
         	<table id="defaultForm">
@@ -92,7 +92,7 @@
 	        		<td class="tdr">
 						<div>
 							<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data" >
-                                <div onclick="fileUpload()"><input type="text" readonly><span >浏览</span></div>
+                                <div onclick="fileUpload()"><input id="showFile" type="text" readonly><span >浏览</span></div>
 								<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
 							</form>
 							<img style="display: none" src="${message.imageUrl!}" id="filetext" height="100" width="100"/>
