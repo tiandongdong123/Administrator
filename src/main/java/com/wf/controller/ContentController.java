@@ -20,6 +20,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.utils.*;
+import com.wanfangdata.model.LabelListModel;
 import com.wanfangdata.model.PagerModel;
 import com.wanfangdata.model.TResult;
 import com.wf.Setting.ResourceTypeSetting;
@@ -50,13 +52,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.exportExcel.ExportExcel;
 import com.job.HotWordJob;
 import com.redis.RedisUtil;
-import com.utils.CookieUtil;
-import com.utils.DateTools;
-import com.utils.GetUuid;
-import com.utils.Getproperties;
-import com.utils.JsonUtil;
-import com.utils.ParamUtils;
-import com.utils.StringUtil;
 import com.wf.bean.Department;
 import com.wf.bean.HotWord;
 import com.wf.bean.HotWordSetting;
@@ -335,6 +330,9 @@ public class ContentController {
             message.setStick(sdf1.format(new Date()));
             boolean b = messageService.insertMessage(message);
             if (b) {
+                InformationLabelRequest insertLabel = new InformationLabelRequest();
+//                insertLabel.setLabel();
+//                informationLabelService.insertInformationLabel()
                 informationLabelService.updateInformationLabelNumber(message.getLabel());
                 return new TResult(200, message.getId());
             } else {
@@ -494,9 +492,13 @@ public class ContentController {
 
     @RequestMapping("/updateMessageJson")
     public void updateMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Message findMessage = messageService.findMessage(message.getId());
+        LabelListModel changeMessageLabel = MessageLabelUtil.getChangeMessageLabel(findMessage.getLabel().split(","), message.getLabel().split(","));
         Wfadmin admin = CookieUtil.getWfadmin(request);
         message.setHuman(admin.getUser_realname());
         boolean b = messageService.updateMessage(message);
+        informationLabelService.updateInformationLabelNumber(changeMessageLabel.getAddOneStr());
+        informationLabelService.updateInformationLabelNumberDel(changeMessageLabel.getDelOneStr());
         //记录日志
         //Log log=new Log("资讯管理","修改",message.toString(),request);
         //logService.addLog(log);
