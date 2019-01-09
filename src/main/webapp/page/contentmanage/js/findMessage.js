@@ -47,7 +47,6 @@ function showPage(curr){
 }
 
 function serachdata(curr,data){
-	console.log(data)
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
 	var pageRow=data.pageRow;
@@ -107,9 +106,9 @@ function serachdata(curr,data){
             "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"</td>"+
 			"<td class='mailbox-name' style='width:353px;'><div>";
             if(is_top==0){
-                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary'>置顶</button>&nbsp;";
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
             }else {
-                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary'>撤销置顶</button>&nbsp;";
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
 			}
 			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
@@ -154,12 +153,15 @@ function stick(id,colums,topState){
 			},
 		success : function(data){
 		    if(data.code == 200){
-		        layer.msg("置顶发布成功！");
+                if(topState == 0){
+                    layer.msg("置顶撤销成功！");
+                }else if( topState == 1){
+                    layer.msg("置顶发布成功！");
+                }
                 showPage();
             }else{
 		        layer.msg("置顶发布失败！")
             }
-
 		}
 	});
 }
