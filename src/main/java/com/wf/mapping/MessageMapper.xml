@@ -199,7 +199,7 @@
 		from message
 		<where>
 			<if test="messageId != null and messageId != ''">
-				id = #{messageId,jdbcType=VARCHAR} and
+				id != #{messageId,jdbcType=VARCHAR} and
 			</if>
 			<if test="title != null and title != ''">
 				title = #{title,jdbcType=VARCHAR}
