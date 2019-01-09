@@ -36,4 +36,7 @@ public interface InformationLabelMapper {
 
     //标签被引量自加1
     Boolean updateInformationLabelNumber(@Param("labelName") String labelName);
+
+    //标签被引量自减1
+    Boolean updateInformationLabelNumberDel(@Param("labelName") String labelName);
 }

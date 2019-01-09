@@ -65,4 +65,11 @@ public interface InformationLabelService {
      * @return
      */
     Boolean updateInformationLabelNumber(@Param("labelName") String labelName);
+
+    /**
+     * 标签被引量自减1
+     * @param labelName
+     * @return
+     */
+    Boolean updateInformationLabelNumberDel(@Param("labelName") String labelName);
 }

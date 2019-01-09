@@ -335,6 +335,7 @@ public class ContentController {
             message.setStick(sdf1.format(new Date()));
             boolean b = messageService.insertMessage(message);
             if (b) {
+                informationLabelService.updateInformationLabelNumber(message.getLabel());
                 return new TResult(200, message.getId());
             } else {
                 return new TResult(500);
