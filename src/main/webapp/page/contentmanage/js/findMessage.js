@@ -93,7 +93,7 @@ function serachdata(curr,data){
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
             "<td class='mailbox-name mailbox-clum'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.channel+"</div></td>"+
-			"<td class='mailbox-name mailbox-clum'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+			"<td class='mailbox-name mailbox-clum colums'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
 
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
 
@@ -200,7 +200,8 @@ function publishMore(that,issueState){
     var params = [];
 	$("input:checkbox[name=commonid]:checked").each(function(){
 		publishId.push($(this).val()) ;
-		publishClums.push($(this).parent("td").siblings(".mailbox-clum").children("div").text());
+		publishClums.push($(this).parent("td").siblings(".colums").children("div").text());
+		console.log(publishClums)
 	});
    for(var i=0;i<publishId.length;i++){
        var _json = {
@@ -210,7 +211,6 @@ function publishMore(that,issueState){
 	   };
        params[i] = JSON.stringify(_json)
    }
-   console.log(params)
     if(issueState == 3){
         value = '是否确定批量下撤?';
     }else if(issueState == 2){
