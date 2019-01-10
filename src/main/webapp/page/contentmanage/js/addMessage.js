@@ -4,94 +4,99 @@ $(function(){
     ues=UE.getEditor('content',{
         //autoHeightEnabled: true,
     });
-
-    if($("#labelHidden").val()!=""){
-        var mark_list='';
-        var labelArr = $("#labelHidden").val().split(",");
-        for(var i = 0;i<labelArr.length;i++){
-            mark_list += ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  labelArr[i] +'</p> '+ '</span> ';
+    fileshow();//上传图片的展示
+    fileEcho();//上传图片的回显
+    fileAllShow();//悬浮附件上完全展示
+    addMark();//点击添加标签
+    addOrUpdateFile();//判断是添加还是修改的图片上传
+    commonMark();
+    getMark();
+    blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
+    blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//作者敏感词
+    blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//转载平台敏感词
+    blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//标签敏感词
+    otherSpace();//点击空白
+//详情页面编译器为不可编译&非详情页面栏目,标签回显
+    if($("#informationHidden").val()=="information"){
+        ues.ready(function(){
+            UE.getEditor('content').setDisabled('fullscreen');//设置编译器为不可编译
+        })
+    }else{
+        $(".colum_list span label").each(function(){
+            if( $(this).text().trim() == $("#columsHidden").val().trim()){
+                $(this).siblings("input").attr("checked","checked")
+            }
+        });
+        if($("#labelHidden").val()!=""){
+            var mark_list='';
+            var labelArr = $("#labelHidden").val().split(",");
+            for(var i = 0;i<labelArr.length;i++){
+                mark_list += ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  labelArr[i] +'</p> '+ '</span> ';
+            }
+            $("#markList").append(mark_list);
+            $("#addMark").val("");
         }
-        $("#markList").append(mark_list);
-        $("#addMark").val("");
     }
-      $("#uploadFile").on("change",function(){
-          var value = $(this).val();
-          value = value.split("\\")[2];
-          $("#showFile").val(value);
-      });
-      if($("#imageUrl").val()!=""){
-
-          var imageUrl = $("#imageUrl").val();
-          var index = imageUrl.indexOf("-");
-          var showFile = imageUrl.substring(index + 1,imageUrl.length);
-          $("#showFile").val(showFile);
-
-
-      }
-    $("#showFile").on("mouseover",function(){
-        if($("#imageUrl").val()!="") {
-            $(".all_file_url").text($("#showFile").val());
-            $(".all_file_url").show();
-        }
-    }).on("mouseout",function(){
-        $(".all_file_url").hide();
-        $(".all_file_url").text( '')
-    });
-
-
-
-        addMark();
-        commonMark();
-        getMark();
-        //标题校验
-        $("#title").on("blur",function(){
-            if(!$("#titleHidden").val()){
-                checkTitle()
-            }else{
-                checkTitle('update')
-            }
-        });
-        blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
-        blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//作者敏感词
-        blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//转载平台敏感词
-        blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//标签敏感词
-        UE.getEditor('content').addListener('blur',function(editor){
-            if(ues.getContent()){
-                $(".content_error").hide();
-                checkSensitive(ues.getContent(),$(".content_sensitive_error"))
-            }else{
-                $(".content_error").show();
-            }
-        });
-
-        $(document).on("click",function(e){
-            var target = $(e.target);
-            if(target.closest(".add_mark_list").length == 0){
-                $(".add_mark_list").hide();
-            }
-        });
-        if($("#informationHidden").val()=="information"){
-            ues.ready(function(){
-                UE.getEditor('content').setDisabled('fullscreen');//设置编译器为不可编译
-            })
+//标题校验
+    $("#title").on("blur",function(){
+        if(!$("#titleHidden").val()){
+            checkTitle()
         }else{
-            $(".colum_list span label").each(function(){
-                if( $(this).text().trim() == $("#columsHidden").val().trim()){
-                    $(this).siblings("input").attr("checked","checked")
-                }
-            })
+            checkTitle('update')
         }
-
-
-
-
+    });
+//编译器内容校验
+    UE.getEditor('content').addListener('blur',function(editor){
+        if(ues.getContent()){
+            $(".content_error").hide();
+            checkSensitive(ues.getContent(),$(".content_sensitive_error"))
+        }else{
+            $(".content_error").show();
+        }
+    });
 
 });
 
-
-
-
-
+//点击空白
+function otherSpace(){
+    $(document).on("click",function(e){
+        var target = $(e.target);
+        if(target.closest(".add_mark_list").length == 0){
+            $(".add_mark_list").hide();
+        }
+    });
+}
+//上传图片的展示
+function fileshow(){
+    $("#uploadFile").on("change",function(){
+        var value = $(this).val();
+        value = value.split("\\")[2];
+        $("#showFile").val(value);
+    });
+}
+//上传图片的回显
+function fileEcho(){
+    if($("#imageUrl").val()!=""){
+        var imageUrl = $("#imageUrl").val();
+        var index = imageUrl.indexOf("-");
+        var showFile = imageUrl.substring(index + 1,imageUrl.length);
+        $("#showFile").val(showFile);
+    }
+}
+//悬浮附件上完全展示
+function fileAllShow(){
+    var allFileUrl = $(".all_file_url");
+    $("#showFile").on("mouseover",function(){
+        if($("#imageUrl").val()!="") {
+            allFileUrl.text($("#showFile").val());
+            allFileUrl.show();
+        }
+    }).on("mouseout",function(){
+        allFileUrl.hide();
+        allFileUrl.text( '')
+    });
+}
+//获取上传图片的宽高
 function verificationPicFile(file) {
     var filePath = file.value;
     if(filePath){
@@ -123,29 +128,27 @@ function verificationPicFile(file) {
 }
 //点击添加标签
 function addMark(){
-
-
     $(".add_label_btn").click(function () {
         corporateMark();
-    })
+    });
     $('#addMark').keydown(function(event) {
         if (event.keyCode == 13) {
             corporateMark();
         }
     });
-
 }
-
+//生成标签
 function corporateMark(){
     var html = "";
-    if(!$("#addMark").val().trim()){
+    var addMark = $("#addMark").val();
+    if(!addMark.trim()){
         layer.alert("请填写标签！")
     }else {
         $.ajax({
             type:'post',
             url:'../content/insertInformationLabel.do',
             data:{
-                label:$("#addMark").val(),
+                label:addMark,
             },
             success:function(data){
                 var flag = true;
@@ -155,12 +158,12 @@ function corporateMark(){
                         markList.push($(this).text())
                     });
                     for(var i = 0;i<markList.length;i++){
-                        if($("#addMark").val() == markList[i] ){
+                        if(addMark == markList[i] ){
                             flag = false
                         }
                     }
                     if(flag){
-                        html = ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  $("#addMark").val() +'</p> '+ '</span> ';
+                        html = ' <span class="hover_item" ><i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' + addMark +'</p></span> ';
                         $("#markList").append(html);
                         $("#addMark").val("");
                     }else{
@@ -175,30 +178,31 @@ function corporateMark(){
 function deleteMark(that){
    $(that).parent("span").remove();
 }
-$(function(){
-	var columsh ="";
-	columsh=$("#columsh").val();
-	if(columsh !=""){
-		selectValue("colums",columsh);
-	}
-	var addupdate =$("#addupdate").val();
-	if(addupdate=="add"){
-		imageShow("reupload");
-	}else if(addupdate=="update"){
-		imageShow("upload");
-	}
-});
-
+//判断是添加还是修改的图片上传
+function addOrUpdateFile(){
+    var columsh ="";
+    columsh=$("#columsh").val();
+    if(columsh !=""){
+        selectValue("colums",columsh);
+    }
+    var addupdate =$("#addupdate").val();
+    if(addupdate=="add"){
+        imageShow("reupload");
+    }else if(addupdate=="update"){
+        imageShow("upload");
+    }
+}
+//添加/修改/详情的取消
 function reset(){
 	window.location.href="../content/index.do";
 }
-
+//选择上传文件
 function fileUpload(){
     $("#uploadFile").click();
-
 }
+//上传图片
 function uploadImage(statu,flag){
-	if(!checkImgType()){
+	if(!checkImgType()){ //校验上传文件格式
 		return false;
 	}
     var options = {
@@ -206,7 +210,6 @@ function uploadImage(statu,flag){
     	dataType: 'json',
         type : 'POST',
         success : function(data) {
-        /*	$("#fileDiv").text("上传成功！");*/
         	var imageURL=data.url;
         	imageURL=imageURL.replace("\/","\\");
         	$("#imageUrl").val(imageURL);
@@ -220,12 +223,6 @@ function uploadImage(statu,flag){
     $('#addGoodsForm').ajaxSubmit(options);
     return false;
 }
-
-function resetfile(statu){
-	imageShow(statu);
-	return false;
-}
-
 /*验证填写添加内容--liuYong*/
 function submission() {
 //	 alert("验证结果------"+fieldsCheck());
@@ -257,6 +254,7 @@ function showMessage(){
 		layer.msg("*为必填项！",{icon: 2});
 	}
 }
+//详情页面的发布
 function detailPublish(){
     var colum = $("#columsh").val();
     var messageId = $("#messageId").val();
@@ -284,36 +282,31 @@ function detailPublish(){
         }
     });
 }
-function messahePublish(){
+//添加页面发布
+function messagePublish(){
     var errorCount = 0;
     var channel = $(".channel").val();
     var colum =  $("input[name=colum_item]:checked").val();
-
     var title=$("#title").val();
     var abstracts=document.getElementById("abstracts").value;
     var content= ues.getContent();
-
     var imageUrl=$("#imageUrl").val();
-
     var linkAddress=$("#linkAddress").val();
     var author=$("#author").val();
     var organName=$("#organName").val();
-
     var addMark = "";
-
     $(".hover_item p").each(function(){
         addMark += $(this).text()+','
     });
     addMark = addMark.substring(0,addMark.length-1);
     var regu = "^[ ]+$";
     var re = new RegExp(regu);
-    checkColum();
-    checkTitle();
-    checkCheet();
+    checkColum();//校验栏目
+    checkTitle();//校验标题
+    checkCheet();//校验内容
     $(".error_mark ").each(function(){
         if($(this).css("display") == "inline") {
             errorCount=errorCount+1;
-
         }
     });
     if(errorCount == 0){
@@ -373,28 +366,21 @@ function messahePublish(){
                     error : function(data) {alert("添加失败");}
                 });
             }
-        }else{
-            /*layer.msg("*为必填项！",{icon: 2});*/
         }
     }
-
 }
 
 function addMessage(){
     var errorCount = 0;
     var channel = $(".channel").val();
     var colum =  $("input[name=colum_item]:checked").val();
-
 	var title=$("#title").val();
 	var abstracts=document.getElementById("abstracts").value;
 	var content= ues.getContent();
-
 	var imageUrl=$("#imageUrl").val();
-
 	var linkAddress=$("#linkAddress").val();
 	var author=$("#author").val();
 	var organName=$("#organName").val();
-
 	var addMark = "";
     $(".hover_item p").each(function(){
         addMark += $(this).text()+','
@@ -408,11 +394,9 @@ function addMessage(){
     $(".error_mark ").each(function(){
         if($(this).css("display") == "inline") {
             errorCount=errorCount+1;
-
         }
     });
     if(errorCount == 0){
-
         if (colum != "" && colum != undefined
             && title != "" && title != undefined && !re.test(title)
             && content != "" && content != undefined && !re.test(content)) {
@@ -455,12 +439,8 @@ function addMessage(){
                     }
                 });
             }
-        } else {
-            /*layer.msg("*为必填项！",{icon: 2});*/
         }
     }
-
-
 }
 function updatePublish(){
     var errorCount = 0;
@@ -550,7 +530,6 @@ function updatePublish(){
             }
         }
     }
-
 }
 function updateMessage(){
     if($("#showFile").val()!=""){
@@ -577,7 +556,6 @@ function updateMessage(){
     $(".error_mark ").each(function(){
         if($(this).css("display") == "inline") {
             errorCount=errorCount+1;
-
         }
     });
     if(errorCount == 0){
@@ -625,13 +603,6 @@ function updateMessage(){
         }
     }
 }
-
-
-
-function noupdate(){
-	window.location.href="../content/index.do";
-}
-
 function selectValue(id,val){
     if(document.getElementById(id)){
         for(var i=0;i<document.getElementById(id).options.length;i++)
@@ -645,7 +616,6 @@ function selectValue(id,val){
     }
 
 }
-
 function imageShow(statu){
 	if(statu=="upload"){
 		$("#filebutton1").hide();
@@ -675,8 +645,6 @@ function IsURL(str_url){
 		return (false);
 	}
 }
-
-
 /* 
  * 判断图片类型 
  *  
@@ -852,7 +820,7 @@ function checkCheet(){
 }
 //敏感词校验
 function checkSensitive(word,obj){
-   /* $.ajax({
+    $.ajax({
         type:"post",
         url:"../content/checkForBiddenWord.do",
         data:{
@@ -865,9 +833,8 @@ function checkSensitive(word,obj){
                 obj.hide();
 			}
         }
-    })*/
+    })
 }
-
 function blurEvent(that,word,obj){
 	$(that).on("blur",function(){
         checkSensitive(word,obj)
