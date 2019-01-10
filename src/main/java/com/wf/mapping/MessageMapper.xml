@@ -49,10 +49,10 @@
     		and colums =#{colums,jdbcType=VARCHAR}
     	</if>
     	<if test="startTime!=null and startTime!= ''">
-    		and create_time <![CDATA[ >= ]]> #{startTime} 
+    		and stick <![CDATA[ >= ]]> #{startTime}
     	</if>
     	<if test="endTime!=null and endTime!= ''">
-    		and create_time <![CDATA[ <= ]]> #{endTime}
+    		and stick <![CDATA[ <= ]]> #{endTime}
     	</if>
     	ORDER BY stick DESC
 		<if test="count != 0 ">
