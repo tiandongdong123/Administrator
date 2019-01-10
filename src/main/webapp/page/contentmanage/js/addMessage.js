@@ -1,7 +1,9 @@
 var ues;
 
 $(function(){
-
+    ues=UE.getEditor('content',{
+        //autoHeightEnabled: true,
+    });
 
     if($("#labelHidden").val()!=""){
         var mark_list='';
@@ -37,9 +39,7 @@ $(function(){
     });
 
 
-        ues=UE.getEditor('content',{
-            //autoHeightEnabled: true,
-        });
+
         addMark();
         commonMark();
         getMark();
