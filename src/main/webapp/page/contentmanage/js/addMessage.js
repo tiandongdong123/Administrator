@@ -5,12 +5,27 @@ $(function(){
       $("#uploadFile").on("change",function(){
           var value = $(this).val();
           value = value.split("\\")[2];
-          $("#showFile").val(value)
+          $("#showFile").val(value);
       });
 
+      if($("#imageUrl").val()!=""){
+
+          var imageUrl = $("#imageUrl").val();
+          var index = imageUrl.indexOf("-");
+          var showFile = imageUrl.substring(index + 1,imageUrl.length);
+          $("#showFile").val(showFile);
 
 
-
+      }
+    $("#showFile").on("mouseover",function(){
+        if($("#imageUrl").val()!="") {
+            $(".all_file_url").text($("#showFile").val());
+            $(".all_file_url").show();
+        }
+    }).on("mouseout",function(){
+        $(".all_file_url").hide();
+        $(".all_file_url").text( '')
+    });
 
 
         ues=UE.getEditor('content',{
@@ -21,12 +36,16 @@ $(function(){
         getMark();
         //标题校验
         $("#title").on("blur",function(){
-            checkTitle()
+            if(!$("#titleHidden").val()){
+                checkTitle()
+            }else{
+                checkTitle('update')
+            }
         });
         blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
-        blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//摘要敏感词
-        blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//摘要敏感词
-        blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//摘要敏感词
+        blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//作者敏感词
+        blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//转载平台敏感词
+        blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//标签敏感词
         UE.getEditor('content').addListener('blur',function(editor){
             if(ues.getContent()){
                 $(".content_error").hide();
@@ -59,6 +78,40 @@ $(function(){
 
 
 });
+
+
+
+
+
+function verificationPicFile(file) {
+    var filePath = file.value;
+    if(filePath){
+        //读取图片数据
+        var filePic = file.files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var data = e.target.result;
+            //加载图片获取图片真实宽度和高度
+            var image = new Image();
+            image.onload=function(){
+                var width = image.width;
+                var height = image.height;
+                if (width == 500 | height == 500){
+                    uploadImage('upload');
+                }else {
+                    layer.msg("图片大小应为：500*500像素！");
+                    file.value = "";
+                    $("#showFile").val("");
+                    return false;
+                }
+            };
+            image.src= data;
+        };
+        reader.readAsDataURL(filePic);
+    }else{
+        return false;
+    }
+}
 //点击添加标签
 function addMark(){
 
@@ -114,7 +167,7 @@ function deleteMark(that){
    $(that).parent("span").remove();
 }
 $(function(){
-	var  columsh="";
+	var columsh ="";
 	columsh=$("#columsh").val();
 	if(columsh !=""){
 		selectValue("colums",columsh);
@@ -133,12 +186,9 @@ function reset(){
 
 function fileUpload(){
     $("#uploadFile").click();
-    /*$("#filebutton1").click();*/
-   /* uploadImage('upload')*/
-
 
 }
-function uploadImage(statu){
+function uploadImage(statu,flag){
 	if(!checkImgType()){
 		return false;
 	}
@@ -152,7 +202,7 @@ function uploadImage(statu){
         	imageURL=imageURL.replace("\/","\\");
         	$("#imageUrl").val(imageURL);
         	$("#filetext").attr("src",imageURL);
-        	/*imageShow(statu);*/
+        	imageShow(statu);
         },
         error: function(XmlHttpRequest, textStatus, errorThrown){
            layer.msg("照片上传失败！请检查是否添加照片！或照片是否符合规格！");
@@ -322,7 +372,9 @@ function messahePublish(){
 }
 
 function addMessage(){
-   /* uploadImage('upload')*/
+   /* if($("showFile").val()!=""){
+        uploadImage('upload')
+    }*/
     var errorCount = 0;
     var channel = $(".channel").val();
     var colum =  $("input[name=colum_item]:checked").val();
@@ -495,31 +547,34 @@ function updatePublish(){
 
 }
 function updateMessage(){
+    if($("#showFile").val()!=""){
+        uploadImage('upload','update');
+    }
     var errorCount = 0;
     var channel = $(".channel").val();
     var id=$("#messageId").val();
     var colums =  $("input[name=colum_item]:checked").val();
-	var title=$("#title").val();
-	var abstracts=document.getElementById("abstracts").value;
-	var content= ues.getContent();
-	var imageUrl=$("#imageUrl").val();
-	var linkAddress=$("#linkAddress").val();
-	var author=$("#author").val();
-	var organName=$("#organName").val();
+    var title=$("#title").val();
+    var abstracts=document.getElementById("abstracts").value;
+    var content= ues.getContent();
+    var imageUrl=$("#imageUrl").val();
+    var linkAddress=$("#linkAddress").val();
+    var author=$("#author").val();
+    var organName=$("#organName").val();
     var addMark = "";
     $(".hover_item p").each(function(){
         addMark += $(this).text()+','
     });
     addMark = addMark.substring(0,addMark.length-1);
-	var regu = "^[ ]+$";
-	var re = new RegExp(regu);
+    var regu = "^[ ]+$";
+    var re = new RegExp(regu);
     $(".error_mark ").each(function(){
         if($(this).css("display") == "inline") {
             errorCount=errorCount+1;
 
         }
     });
-	if(errorCount == 0){
+    if(errorCount == 0){
         if($("#issueState").val()==2){
             layer.msg("请先下撤该数据再进行修改",{icon: 2});
         }else{
@@ -563,8 +618,9 @@ function updateMessage(){
             }
         }
     }
-
 }
+
+
 
 function noupdate(){
 	window.location.href="../content/index.do";
@@ -587,10 +643,13 @@ function selectValue(id,val){
 function imageShow(statu){
 	if(statu=="upload"){
 		$("#filebutton1").hide();
-		$("#uploadFile").hide();
-		$("#filetext").show();
+		$("#uploadFile").show();
+		/*$("#filetext").show();
 		$("#refile").show();
-		$("#fileDiv").show();
+		$("#fileDiv").show();*/
+        $("#filetext").hide();
+        $("#refile").hide();
+        $("#fileDiv").hide();
 	}else if(statu=="reupload"){
 		$("#filebutton1").show();
 		$("#uploadFile").show();
@@ -660,6 +719,7 @@ function checkImgPX(ths, width, height) {
 		return false;
 	}
 	return true;
+
 }
 //获取常用标签
  function commonMark(){
@@ -732,26 +792,46 @@ function checkColum(){
 		}
 }
 //校验标题
-function checkTitle(){
+function checkTitle(flag){
 	if(!$("#title").val()){
        $(".title_error").show()
 	}else{
         $(".title_error").hide();
-		$.ajax({
-			type:"post",
-			url:"../content/judgeMessageTitle.do",
-			data:{
-				title:$("#title").val()
-			},
-			success:function(data){
-				if(!data){
-					$(".title_exist").show();
-				}else{
-                    $(".title_exist").hide();
-                    checkSensitive($("#title").val(),$(".title_sensitive_error"))
-				}
-			}
-		})
+        if(flag == 'update'){
+            $.ajax({
+                type:"post",
+                url:"../content/judgeMessageTitle.do",
+                data:{
+                    title:$("#title").val(),
+                    messageId:$("#messageId").val()
+                },
+                success:function(data){
+                    if(!data){
+                        $(".title_exist").show();
+                    }else{
+                        $(".title_exist").hide();
+                        checkSensitive($("#title").val(),$(".title_sensitive_error"))
+                    }
+                }
+            })
+        }else{
+            $.ajax({
+                type:"post",
+                url:"../content/judgeMessageTitle.do",
+                data:{
+                    title:$("#title").val()
+                },
+                success:function(data){
+                    if(!data){
+                        $(".title_exist").show();
+                    }else{
+                        $(".title_exist").hide();
+                        checkSensitive($("#title").val(),$(".title_sensitive_error"))
+                    }
+                }
+            })
+        }
+
 	}
 }
 //校验内容

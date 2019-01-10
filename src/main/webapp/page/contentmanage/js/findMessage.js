@@ -55,9 +55,9 @@ function serachdata(curr,data){
 	"<td class='mailbox-star'>序号</td>" +
     "<td class=\"mailbox-name\">发布渠道</td>"+
 	"<td class=\"mailbox-name\">PC端栏目</td>"+
-    "<td class=\"mailbox-attachment\" style='width:26%'>标题</td>"+
+    "<td class=\"mailbox-attachment\" style='width:20%'>标题</td>"+
     "<td class=\"mailbox-name\">原文链接</td>"+
-    "<td class=\"mailbox-name\">标签</td>"+
+    "<td class=\"mailbox-name\"  style='width:10% '>标签</td>"+
     "<td class=\"mailbox-name\">操作人</td>"+
     "<td class=\"mailbox-date\">操作时间</td>"+
     "<td class=\"mailbox-date\">资讯状态</td>"+
@@ -99,11 +99,11 @@ function serachdata(curr,data){
 
 			resHtml+= "<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
 
-             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.label==null?"":rows.label)+"</td>"+
+             "<td class='mailbox-name><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.label==null?"":rows.label)+"<div></td>"+
 
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.stick+"</td>"+
-            "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"</td>"+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"<div></td>"+
+            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.stick+"</td><div>"+
+            "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"<div></td>"+
 			"<td class='mailbox-name' style='width:353px;'><div>";
             if(is_top==0){
                 resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";

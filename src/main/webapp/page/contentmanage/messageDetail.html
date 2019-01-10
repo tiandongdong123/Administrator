@@ -1,5 +1,5 @@
 <?
-	layout("/inc/layout.html",{title:'资讯详情'}){
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
 <script type="text/javascript" src="../page/contentmanage/js/jquery.form.js"></script>
@@ -68,14 +68,16 @@
 						imageU=url+message.imageUrl;
 					}?>
 					<div>
-						<form id="addGoodsForm" method="post" enctype="multipart/form-data">
-							<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
-						</form>
-						<img style="display: none" src="${imageU!}" id="filetext" height="100" width="100"/>
+						<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data">
+                            <div onclick="fileUpload()">
+                                <input id="showFile" type="text" readonly style="background: #F2F2F2; border: 1px solid #ccc;">
+                                <span >浏览</span>
+                            </div>
+                            <input onchange="verificationPicFile(this)" style="float: left;" type="file" id="uploadFile" name="file" disabled />
+                            <span class="all_file_url"></span>
+									</form>
 						<input type="hidden" id="imageUrl" value="${message.imageUrl!}">
-						<input id="refile" style="display: none" type="button" onclick="return resetfile('reupload');" value="重新上传"/>
-						<span style="display: none" id="fileDiv"></span>
-						<p>图片大小500*500</p>			
+						<p style="line-height: 31px;text-indent: 5px;">图片大小500*500像素</p>
 					</div>
 	        	</td>		        		
         		</tr>

@@ -1,5 +1,5 @@
 <?
-	layout("/inc/layout.html",{title:'添加资讯'}){
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
 <script type="text/javascript" src="../page/contentmanage/js/jquery.form.js"></script>
@@ -59,7 +59,9 @@
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>标题</td>
-	        		<td class="tdr"><input id="title" class="b"  style="width: 400px;" type="text" name="name" value="${message.title!}"/>
+	        		<td class="tdr">
+						<input id="title" class="b"  style="width: 400px;" type="text" name="name" value="${message.title!}"/>
+						<input type="hidden" value="${message.title!}" id="titleHidden">
                         <span class="error_mark title_error" style="padding-left: 27px;">请填写标题！</span>
                         <span class="error_mark title_sensitive_error" style="padding-left: 27px;">输入的标题存在敏感词，请重新输入！</span>
                         <span class="error_mark title_exist" style="padding-left: 27px;">标题已存在，请填写别的标题！</span>
@@ -92,15 +94,16 @@
 	        		<td class="tdr">
 						<div>
 							<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data" >
-                                <div onclick="fileUpload()"><input id="showFile" type="text" readonly><span >浏览</span></div>
-								<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
+                                <div onclick="fileUpload()">
+                                    <input id="showFile" type="text" readonly>
+                                    <span >浏览</span>
+                                </div>
+								<input onchange="verificationPicFile(this)" style="float: left;" type="file" id="uploadFile" name="file" />
+                                <span class="all_file_url"></span>
 							</form>
-							<img style="display: none" src="${message.imageUrl!}" id="filetext" height="100" width="100"/>
 							<input type="hidden" id="imageUrl" value="${message.imageUrl!}">
-							<input id="refile" style="display: none" type="button" onclick="return resetfile('reupload');" value="重新上传"/>
-							<span style="display: none" id="fileDiv"></span>
-							<p style="line-height: 31px;text-indent: 5px;">图片大小500*500</p>
-						</div>
+							<p style="line-height: 31px;text-indent: 5px;">图片大小500*500像素</p>
+                        </div>
 	        		</td>		        		
         		</tr>
         		<tr>
@@ -146,7 +149,7 @@
 		<input id="addupdate" type="hidden" value="${addupdate}">
 		<?if(addupdate=="add"){?>
 		<div style="text-align: center;width: 700px;">
-		 	<button type="button" class="btn btn-primary" onclick="addMessage()">提交</button>
+		 	<button type="button" class="btn btn-primary" onclick="addMessage()">保存</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		 	<button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -157,7 +160,7 @@
 		<?}?>
 		<?if(addupdate=="update"){?>
 		<div style="text-align: center;width: 700px;">
-		 	<button type="button" class="btn btn-primary" onclick="updateMessage()">保存</button>
+		 	<button type="button" class="btn btn-primary" onclick="updateMessage()">提交</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		 	<button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

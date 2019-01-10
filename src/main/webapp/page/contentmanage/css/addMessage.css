@@ -97,7 +97,15 @@ td{
     color: red;
     padding-left:100px;
 }
-
+.all_file_url{
+    position: absolute;
+    display: none;
+    top: 31px;
+    border: 1px solid #ccc;
+    left: 20px;
+    padding: 3px;
+    background: #fff;
+}
 
 
 
