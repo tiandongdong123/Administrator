@@ -21,8 +21,17 @@ function showPage(curr){
 	}
     var infor = $("#infor").find("option:selected").val();
 	human=$("#human").val().trim();
-	startTime=$("#startTime").val();
-	endTime=$("#endTime").val();
+
+    if($("#startTime").val()){
+        startTime=$("#startTime").val() + " 00:00:00";
+    }else{
+        startTime=$("#startTime").val();
+    }
+	if($("#endTime").val()){
+        endTime=$("#endTime").val() + " 23:59:59";
+    }else{
+        endTime=$("#endTime").val();
+    }
     var title = $("#title").val().trim();
 	$.ajax({
 		type : "post",
