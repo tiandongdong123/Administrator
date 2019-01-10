@@ -15,7 +15,7 @@
     <result column="branch" property="branch" jdbcType="VARCHAR" />
     <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
     <result column="human" property="human" jdbcType="VARCHAR" />
-    <result column="stick" property="stick" jdbcType="VARCHAR" />
+    <result column="stick" property="stick" jdbcType="TIMESTAMP" />
     <result column="issue_state" property="issueState" jdbcType="INTEGER" />
     <result column="is_top" property="isTop" jdbcType="VARCHAR" />
     <result column="label" property="label" jdbcType="VARCHAR" />
@@ -49,10 +49,10 @@
     		and colums =#{colums,jdbcType=VARCHAR}
     	</if>
     	<if test="startTime!=null and startTime!= ''">
-    		and stick <![CDATA[ >= ]]> #{startTime}
+    		and stick &gt;= #{startTime,jdbcType=TIMESTAMP}
     	</if>
     	<if test="endTime!=null and endTime!= ''">
-    		and stick <![CDATA[ <= ]]> #{endTime}
+    		and stick &lt;= #{endTime,jdbcType=TIMESTAMP}
     	</if>
     	ORDER BY stick DESC
 		<if test="count != 0 ">
@@ -76,12 +76,12 @@
 		<if test="colums!=null and colums!= ''">
 			and colums = #{colums,jdbcType=VARCHAR}
 		</if>
-		<if test="startTime!=null and startTime!= ''">
-			and create_time <![CDATA[ >= ]]> #{startTime}
-		</if>
-		<if test="endTime!=null and endTime!= ''">
-			and create_time <![CDATA[ <= ]]> #{endTime}
-		</if>
+        <if test="startTime!=null and startTime!= ''">
+            and stick &gt;= #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime!=null and endTime!= ''">
+            and stick &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
 	</select>
   
 	<select id="selectMessageInforAll" resultMap="BaseResultMap" parameterType="java.util.Map">

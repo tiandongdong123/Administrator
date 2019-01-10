@@ -1,5 +1,9 @@
 package com.wf.bean;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 /**
  * 查询资讯参数
  */
@@ -19,11 +23,13 @@ public class SearchMessageParameter {
     /**
      * 操作开始时间
      */
-    private String startTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
     /**
      * 操作结束时间
      */
-    private String endTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date endTime;
     /**
      * 操作部门
      */
@@ -65,19 +71,19 @@ public class SearchMessageParameter {
         this.title = title;
     }
 
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
