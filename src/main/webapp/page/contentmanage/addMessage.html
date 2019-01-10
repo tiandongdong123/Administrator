@@ -38,20 +38,20 @@
 	        		<td class="tdr colum_list">
                         <input type="hidden" id="columsHidden" value=" ${message.colums!}">
                         <span>
-                            <input type="radio" name="colum_item"  id="item1"value="专题聚焦">
-						    <label for="item1">专题聚焦</label>&nbsp;&nbsp;
+                            <input type="radio" name="colum_item" id="item4" value="万方资讯">
+                            <label for="item4">万方资讯</label>
+                        </span>
+                        <span>
+                            <input type="radio" name="colum_item"  id="item1"value="会议速递">
+						    <label for="item1">会议速递</label>&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <input type="radio" name="colum_item" id="item3" value="基金申报">
+                            <label for="item3">基金申报</label>&nbsp;&nbsp;
                         </span>
                         <span>
                             <input type="radio" name="colum_item" id="item2" value="科技动态">
                             <label for="item2">科技动态</label>&nbsp;&nbsp;
-                        </span>
-                        <span>
-                            <input type="radio" name="colum_item" id="item3" value="基金会议">
-                            <label for="item3">基金会议</label>&nbsp;&nbsp;
-                             </span>
-                        <span>
-                            <input type="radio" name="colum_item" id="item4" value="万方资讯">
-                            <label for="item4">万方资讯</label>
                         </span>
                     <span class="error_mark colum_error">请选择PC端栏目！</span>
 	  				</td>
@@ -127,7 +127,8 @@
 				<tr>
 					<td class="tdl">标签</td>
 					<td class="tdr" style="position: relative;">
-						<input id="addMark"  name="mark" class="lm" type="text"/>
+						<input id="addMark"  name="mark" class="lm" type="text" />
+                        <input type="hidden" id="labelHidden" value="${message.label!}">
 						<button type="button" class="btn btn-default btn-sm add_label_btn" style="float: none;">添加</button>
                         <span class="error_mark mark_sensitive_error" style="padding-left: 27px;">输入的标签存在敏感词，请重新输入！</span>
                          <div  class="add_mark_list">

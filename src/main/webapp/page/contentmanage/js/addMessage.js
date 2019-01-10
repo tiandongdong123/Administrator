@@ -2,6 +2,19 @@ var ues;
 
 $(function(){
 
+
+    if($("#labelHidden").val()!=""){
+        var mark_list='';
+        var labelArr = $("#labelHidden").val().split(",");
+        alert(labelArr)
+        console.log(labelArr)
+        for(var i = 0;i<labelArr.length;i++){
+            mark_list += ' <span class="hover_item" >' + '<i class="fa fa-trash-o" onclick="deleteMark(this)"></i> '+' <p>' +  labelArr[i] +'</p> '+ '</span> ';
+        }
+        $("#markList").append(mark_list);
+        $("#addMark").val("");
+    }
+
       $("#uploadFile").on("change",function(){
           var value = $(this).val();
           value = value.split("\\")[2];
