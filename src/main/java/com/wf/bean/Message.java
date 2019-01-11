@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable{
 	private String id;
+	private String channel;
 	private String colums;
 	private String title;
 	private String abstracts;
@@ -18,23 +19,37 @@ public class Message implements Serializable{
 	private String stick;
 	private Integer issueState;
 	private String isTop;
+	private String label;
 	public String getStick() {
 		return stick;
 	}
 	public void setStick(String stick) {
 		this.stick = stick;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Message [id=" + id + ", colums=" + colums + ", title=" + title
-				+ ", abstracts=" + abstracts + ", content=" + content
-				+ ", linkAddress=" + linkAddress + ", createTime=" + createTime
-				+ ", author=" + author + ", organName=" + organName
-				+ ", imageUrl=" + imageUrl + ", branch=" + branch + ", human="
-				+ human + ", stick=" + stick + ", issueState=" + issueState+", isTop="+isTop
-				+ "]";
+		return "Message{" +
+				"id='" + id + '\'' +
+				", channel='" + channel + '\'' +
+				", colums='" + colums + '\'' +
+				", title='" + title + '\'' +
+				", abstracts='" + abstracts + '\'' +
+				", content='" + content + '\'' +
+				", linkAddress='" + linkAddress + '\'' +
+				", createTime='" + createTime + '\'' +
+				", author='" + author + '\'' +
+				", organName='" + organName + '\'' +
+				", imageUrl='" + imageUrl + '\'' +
+				", branch='" + branch + '\'' +
+				", human='" + human + '\'' +
+				", stick='" + stick + '\'' +
+				", issueState=" + issueState +
+				", isTop='" + isTop + '\'' +
+				", label='" + label + '\'' +
+				'}';
 	}
+
 	public Integer getIssueState() {
 		return issueState;
 	}
@@ -119,5 +134,16 @@ public class Message implements Serializable{
 	public void setIsTop(String isTop) {
 		this.isTop = isTop;
 	}
-	
+	public String getChannel() {
+		return channel;
+	}
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+	public String getLabel() {
+		return label;
+	}
+	public void setLabel(String label) {
+		this.label = label;
+	}
 }

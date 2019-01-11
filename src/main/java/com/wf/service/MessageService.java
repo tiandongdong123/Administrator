@@ -3,13 +3,17 @@ package com.wf.service;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.Message;
+import com.wf.bean.MessageSearchRequest;
 import com.wf.bean.PageList;
+import org.springframework.web.bind.annotation.RequestParam;
+
 public interface MessageService {
 	/**
 	 * 条件查询学科分类的信息
 	 */
-	PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime,String isTop);
+	PageList getMessage(MessageSearchRequest param);
 	/**
 	 * 查询单条资讯
 	 * @param id 查询ID
@@ -34,7 +38,12 @@ public interface MessageService {
 	 * @return
 	 */
 	Boolean updateMessage(Message message);
-	
+
+	/**
+	 * 置顶、取消置顶
+	 * @param message
+	 * @return
+	 */
 	Boolean updataMessageStick(Message message);
 	/**
 	 * 发布/下撤/再发布
@@ -42,7 +51,7 @@ public interface MessageService {
 	 * @param issueState
 	 * @return
 	 */
-	boolean updateIssue(String id,String colums,String issueState);
+	boolean updateIssue(String id,String colums,String issueState,String human);
 	
 	List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime);
 
@@ -59,4 +68,11 @@ public interface MessageService {
 	 * @param list
 	 */
 	void updateBatch(List<Object> list);
+
+    /**
+     * 判断标题是否存在
+     * @param parameter
+     * @return
+     */
+	Boolean judgeMessageTitle(JudgeMessageTitleParameter parameter);
 }

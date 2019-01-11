@@ -1,5 +1,5 @@
 <?
-	layout("/inc/layout.html",{title:'添加资讯'}){
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
 <script type="text/javascript" src="../page/contentmanage/js/jquery.form.js"></script>
@@ -7,21 +7,27 @@
 <script type="text/javascript">
 
 </script>
-
+<input type="hidden" value="information" id="informationHidden">
+<input type="hidden" id="columsh" value="${message.colums!}"/>
+<input type="hidden" id="messageId" value="${message.id!}"/>
   <div class="content-wrapper">
 
     <section class="content">
       <div class="row">
         <table id="defaultForm">
+			<tr>
+				<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>发布渠道</td>
+				<td class="tdr">
+					<input type="text" class="channel" readonly value="PC">
+				</td>
+			</tr>
         		<tr>
-	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>栏目</td>
-	        		<td class="tdr">
-	        			<select id="colums" name="colums" class="lm">
-	  						<option <?if(message.colums=='专题聚焦'){?>selected="selected"<?}?>>专题聚焦</option>
-		  					<option <?if(message.colums=='科技动态'){?>selected="selected"<?}?>>科技动态</option>
-		  					<option <?if(message.colums=='基金会议'){?>selected="selected"<?}?>>基金会议</option>
-		  					<option <?if(message.colums=='万方资讯'){?>selected="selected"<?}?>>万方资讯</option>
-	  					</select>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>PC端栏目</td>
+	        		<td class="tdr colum_list">
+						<span>
+                            <input type="radio" name="colum_item"  id="item1"value=${message.colums!} checked>
+						    <label for="item1">${message.colums!}</label>
+                        </span>
 	  				</td>
         		</tr>
         		<tr>
@@ -34,14 +40,23 @@
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>内容</td>
-	        		<td class="tdr"><div class="box-body pad" style="width: 150%;margin-left: -10px;">
+	        		<!--<td class="tdr"><div class="box-body pad" style="width: 150%;margin-left: -10px;">
 						<div class="box-body pad" style="margin-left: -10px;">
-	        				<script id="content" type="text/plain" style="width:1024px;height:500px;">${message.content!}</script>
-	        				<link rel="stylesheet" href="../js/ueditor/1.4.3/themes/default/css/ueditor.css">
-							<script type="text/javascript" charset="utf-8" src="../js/ueditor/1.4.3/ueditor.config.js"></script>
+							<div style="width: 1024px;border: 1px solid #A9A9A9;background: #fff;" class="content_wrap" id="contentWrap ">
+								${message.content!}
+							</div>
+						</div>
+						</div>
+					</td>-->
+					<td class="tdr " style="position: relative">
+						<div class="cover_content_pad" style="width: 1024px;position: absolute;position: absolute;z-index: 1000;background-color: #000;opacity: 0.1; top: 31px;"></div>
+
+						<div class="box-body pad content_pad" style="margin-left: -10px;">
+							<script id="content" type="text/plain" style="width:1024px;height:500px;">${message.content!}</script>
+                            <link rel="stylesheet" href="../js/ueditor/1.4.3/themes/default/css/ueditor.css">
+                                <script type="text/javascript" charset="utf-8" src="../js/ueditor/1.4.3/ueditor.config.js"></script>
 							<script type="text/javascript" charset="utf-8" src="../js/ueditor/1.4.3/ueditor.all.js"></script>
 							<script type="text/javascript" src="../js/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
-						</div>
 						</div>
 					</td>
         		</tr>
@@ -53,14 +68,16 @@
 						imageU=url+message.imageUrl;
 					}?>
 					<div>
-						<form id="addGoodsForm" method="post" enctype="multipart/form-data">
-							<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
-						</form>
-						<img style="display: none" src="${imageU!}" id="filetext" height="100" width="100"/>
+						<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data">
+                            <div onclick="fileUpload()">
+                                <input id="showFile" type="text" readonly style="background: #F2F2F2; border: 1px solid #ccc;">
+                                <span >浏览</span>
+                            </div>
+                            <input onchange="verificationPicFile(this)" style="float: left;" type="file" id="uploadFile" name="file" disabled />
+                            <span class="all_file_url"></span>
+									</form>
 						<input type="hidden" id="imageUrl" value="${message.imageUrl!}">
-						<input id="refile" style="display: none" type="button" onclick="return resetfile('reupload');" value="重新上传"/>
-						<span style="display: none" id="fileDiv"></span>
-						<p>图片大小500*500</p>			
+						<p style="line-height: 31px;text-indent: 5px;">图片大小500*500像素</p>
 					</div>
 	        	</td>		        		
         		</tr>
@@ -69,16 +86,30 @@
 	        		<td class="tdr"><input readonly="readonly" id="linkAddress" name="linkAddress" class="b" type="text" value="${message.linkAddress!}"/></td>
         		</tr>
         		<tr>
-	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>作者</td>
+	        		<td class="tdl">作者</td>
 	        		<td class="tdr"><input readonly="readonly" id="author"   name="author" class="b" type="text" value="${message.author!}"/></td>
         		</tr>
         		<tr>
 	        		<td class="tdl">转载平台</td>
 	        		<td class="tdr"><input readonly="readonly" id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
         		</tr>
+				<tr>
+					<td class="tdl">标签</td>
+					<td class="tdr">
+                        <input readonly="readonly" id="mark" name="mark" class="b" type="text" value="${message.label!}"/>
+                    </td>
+				</tr>
         	</table>
+
         	<!-- 提交 -->
 		<br>
+		  <div style="text-align: center;width: 700px;">
+			  <button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <button type="button" onclick="detailPublish()" class="btn btn-primary" >发布</button>
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <button type="button" class="btn btn-primary" onclick="reset()">返回</button>
+		  </div>
       </div>
     </section>
   </div>

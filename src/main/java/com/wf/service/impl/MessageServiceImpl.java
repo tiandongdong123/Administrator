@@ -7,9 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.JudgeMessageTitleParameter;
+import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.html.S;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,38 +27,24 @@ import com.xxl.conf.core.XxlConfClient;
 public class MessageServiceImpl implements MessageService {
 	@Autowired
 	MessageMapper dao;
-	
+
 	RedisUtil redis = new RedisUtil();
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
-	
+
 	@Override
-	public PageList getMessage(int pageNum,int pageSize,String branch,String human,String colums,String startTime,String endTime,String isTop) {
-		if(StringUtils.isEmpty(branch)) branch=null;
-		if(StringUtils.isEmpty(human)) human=null;
-		if(StringUtils.isEmpty(colums)) colums=null;
-		if(StringUtils.isEmpty(startTime)) startTime=null;
-		if(StringUtils.isEmpty(endTime)) endTime=null;
-		if(StringUtils.isEmpty(isTop)) isTop=null;
+	public PageList getMessage(MessageSearchRequest request) {
 		PageList p=new PageList();
-		Map<String,Object> mp=new HashMap<String, Object>();
-		int pagen=(pageNum-1)*pageSize;
-		mp.put("pageNum", pagen);
-		mp.put("pageSize", pageSize);
-		mp.put("branch", branch);
-		mp.put("human", human);
-		mp.put("colums", colums);
-		mp.put("startTime", startTime);
-		mp.put("endTime", endTime);
-		mp.put("isTop", isTop);
-		List<Object> pageRow = dao.getMessageList(mp);
-		int num = dao.getMessageCount(mp);
-		p.setPageNum(pageNum);
-		p.setPageSize(pageSize);
+        if (request.getIssueState() != null && request.getIssueState().equals("4")) {
+            request.setIssueState("2");
+            request.setTopState("1");
+        }
+		List<Object> pageRow = dao.getMessageList(request);
+		int num = dao.getMessageCount(request);
 		p.setPageRow(pageRow);
 		p.setTotalRow(num);
 		return p;
 	}
-	
+
 	@Override
 	public Message findMessage(String id) {
 		Message message =dao.findMessage(id);
@@ -65,37 +54,47 @@ public class MessageServiceImpl implements MessageService {
 	public Boolean insertMessage(Message message) {
 		return dao.insertMessage(message)>0?true:false;
 	}
-	
+
 	@Override
 	public Boolean deleteMessage(String ids) {
 		int n =dao.deleteMessage(ids);
 		boolean b=n>0?true:false;
 		return b;
 	}
-	
+
+    /**
+     * 修改资讯信息
+     * @param message 插入的实体类
+     * @return
+     */
 	@Override
 	public Boolean updateMessage(Message message) {
 		int n =dao.updateMessage(message);
 		boolean b=n>0?true:false;
 		return b;
 	}
-	
+
+    /**
+     * 置顶、取消置顶
+     * @param message
+     * @return
+     */
 	@Override
 	public Boolean updataMessageStick(Message message) {
 		boolean flag = false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", message.getId());
-		map.put("issueState", 2);
 		map.put("stick", new Date());
-		map.put("isTop", "1");
+		map.put("isTop", message.getIsTop());
+		map.put("human", message.getHuman());
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
-			setData(message.getColums(), 2, message.getId());
+			setData(message.getColums(), Integer.parseInt(message.getIsTop()), message.getId());
 		}
 		return flag;
 	}
-	
+
 	/**
 	 * 发布/下撤/再发布
 	 * @param id
@@ -103,7 +102,7 @@ public class MessageServiceImpl implements MessageService {
 	 * @return
 	 */
 	@Override
-	public boolean updateIssue(String id,String colums,String issueState) {
+	public boolean updateIssue(String id, String colums, String issueState, String human) {
 		boolean flag = false;
 		int issue = Integer.valueOf(issueState);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -111,6 +110,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("issueState", issue);
 		map.put("stick", new Date());
 		map.put("isTop", "0");
+		map.put("human", human);
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
@@ -118,7 +118,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return flag;
 	}
-	
+
 	//操作数据
 	private void setData(String colums,int issue,String id){
 		//发布redis
@@ -128,7 +128,7 @@ public class MessageServiceImpl implements MessageService {
 			type="special";
 		}else if("科技动态".equals(colums)){
 			type="conference";
-		}else if("基金会议".equals(colums)){
+		}else if("会议速递".equals(colums) || "基金申报".equals(colums)){
 			type="fund";
 		}else if("万方资讯".equals(colums)){
 			type="activity";
@@ -143,86 +143,99 @@ public class MessageServiceImpl implements MessageService {
 			SolrService.getInstance(hosts+"/"+collection);
 			SolrService.deleteIndex(id);
 		}
+
 	}
-	
+
 	/**
 	 * redis插入数据
 	 * @param colums
 	 */
 	private void setRedis(String colums){
-		List<Object> list = new ArrayList<Object>();
-		Map<String,Object> topMap=new HashMap<String,Object>();
-		topMap.put("colums", colums);
-		topMap.put("size", 3);
-		list = dao.selectIsTop(topMap);//获取
-		int topSize=list.size();
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("colums", colums);
-		map.put("size", 3);
-		if("专题聚焦".equals(colums)){
-			//清空redis中对应的key
-			redis.del("ztID");
-			redis.del("special");
-			if(topSize<3){
-				map.put("size", 10-topSize);
-				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);	
-			}
-			for(int i = 0;i < list.size();i++){
-				Message m = (Message) list.get(i);
-				m.setContent("");
-				String object = JSONObject.fromObject(m).toString();
-				redis.zadd("ztID", i, m.getId());//发布到redis
-				redis.hset("special", m.getId(), object);
-			}
-		}else if("科技动态".equals(colums)){
-			redis.del("hyID");
-			redis.del("conference");
-			if(topSize<3){
-				map.put("size", 3-topSize);
-				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);
-			}
-			for(int i = 0;i < list.size();i++){
-				Message m = (Message) list.get(i);
-				m.setContent("");
-				String object = JSONObject.fromObject(m).toString();
-				redis.zadd("hyID", i, m.getId());
-				redis.hset("conference", m.getId(), object);
-			}
-		}else if("基金会议".equals(colums)){
-			redis.del("jjID");
-			redis.del("fund");
-			if(topSize<3){
-				map.put("size", 3-topSize);
-				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);
-			}
-			for(int i = 0;i < list.size();i++){
-				Message m = (Message) list.get(i);
-				m.setContent("");
-				String object = JSONObject.fromObject(m).toString();
-				redis.zadd("jjID", i, m.getId());
-				redis.hset("fund", m.getId(), object);
-			}
-		}else if("万方资讯".equals(colums)){
-			redis.del("kkID");
-			redis.del("activity");
-			if(topSize<3){
-				map.put("size", 3-topSize);
-				List<Object> ls = dao.selectBycolums(map);
-				list.addAll(ls);
-			}
-			for(int i = 0;i < list.size();i++){
-				Message m = (Message) list.get(i);
-				m.setContent("");
-				String object = JSONObject.fromObject(m).toString();
-				redis.zadd("kkID", i, m.getId());
-				redis.hset("activity", m.getId(), object);
-			}
-		}
+        List<Object> list = new ArrayList<Object>();
+        Map<String,Object> topMap=new HashMap<String,Object>();
+        topMap.put("colums", colums);
+        topMap.put("size", 3);
+        //如果栏目为会议速递或基金申报
+        if ("会议速递".equals(colums) || "基金申报".equals(colums)){
+            topMap.put("colum1", "会议速递");
+            topMap.put("colum2", "基金申报");
+            list = dao.selectIsTop2(topMap);
+        }else {
+            list = dao.selectIsTop(topMap);//根据栏目获取发布置顶状态资讯信息3个
+        }
+        int topSize=list.size();//获取到的符合条件的资讯个数
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("colums", colums);
+        if ("会议速递".equals(colums) || "基金申报".equals(colums)) {
+            map.put("colum1", "会议速递");
+            map.put("colum2", "基金申报");
+        }
+        map.put("size", 3);
+        if("专题聚焦".equals(colums)){
+            //清空redis中对应的key
+            redis.del("ztID");
+            redis.del("special");
+            if(topSize<3){
+                map.put("size", 10-topSize);
+                List<Object> ls = dao.selectBycolums(map);//获取发布未置顶状态资讯
+                list.addAll(ls);//合并到发布置顶状态集合中
+            }
+            for(int i = 0;i < list.size();i++){
+                Message m = (Message) list.get(i);
+                m.setContent("");
+                String object = JSONObject.fromObject(m).toString();
+                redis.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
+                redis.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
+            }
+        }else if("科技动态".equals(colums)){
+            redis.del("hyID");
+            redis.del("conference");
+            if(topSize<3){
+                map.put("size", 3-topSize);
+                List<Object> ls = dao.selectBycolums(map);
+                list.addAll(ls);
+            }
+            for(int i = 0;i < list.size();i++){
+                Message m = (Message) list.get(i);
+                m.setContent("");
+                String object = JSONObject.fromObject(m).toString();
+                redis.zadd("hyID", i, m.getId());
+                redis.hset("conference", m.getId(), object);
+            }
+        }else if("会议速递".equals(colums) || "基金申报".equals(colums)){
+            redis.del("jjID");
+            redis.del("fund");
+            if(topSize<3){
+                map.put("size", 3-topSize);
+                List<Object> ls = dao.selectBycolums2(map);
+                list.addAll(ls);
+            }
+            for(int i = 0;i < list.size();i++){
+                Message m = (Message) list.get(i);
+                m.setContent("");
+                String object = JSONObject.fromObject(m).toString();
+                redis.zadd("jjID", i, m.getId());
+                redis.hset("fund", m.getId(), object);
+            }
+        }else if("万方资讯".equals(colums)){
+            redis.del("kkID");
+            redis.del("activity");
+            if(topSize<3){
+                map.put("size", 3-topSize);
+                List<Object> ls = dao.selectBycolums(map);
+                list.addAll(ls);
+            }
+            for(int i = 0;i < list.size();i++){
+                Message m = (Message) list.get(i);
+                m.setContent("");
+                String object = JSONObject.fromObject(m).toString();
+                redis.zadd("kkID", i, m.getId());
+                redis.hset("activity", m.getId(), object);
+            }
+        }
+
 	}
-	
+
 	private void deployInformation(String core,String type,Message message){
 		Map<String,Object> newMap = new HashMap<>();
 		List<Map<String,Object>> list = new ArrayList<>();
@@ -241,9 +254,13 @@ public class MessageServiceImpl implements MessageService {
 		String stick = message.getStick();
 		String title = message.getTitle();
 		String isTop=message.getIsTop();
-		
+		String channel = message.getChannel();
+		String label = message.getLabel();
+
 		newMap.put("id", id);
 		newMap.put("type", type);
+		newMap.put("stringIS_channel", channel);
+		newMap.put("stringIS_label", label);
 		newMap.put("auto_stringITS_abstracts", abstracts);
 		//处理特殊字符
 		newMap.put("auto_stringITS_content", content);
@@ -291,10 +308,10 @@ public class MessageServiceImpl implements MessageService {
 		}
 		return sort;
 	}
-	
+
 	@Override
 	public List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime) {
-		
+
 		if(StringUtils.isEmpty(branch)) branch=null;
 		if(StringUtils.isEmpty(human)) human=null;
 		if(StringUtils.isEmpty(colums)) colums=null;
@@ -307,13 +324,13 @@ public class MessageServiceImpl implements MessageService {
 		mpPara.put("startTime", startTime);
 		mpPara.put("endTime", endTime);
 		return dao.selectMessageInforAll(mpPara);
-	}     
+	}
 
 	@Override
 	public List<Object> getAllMessage(Map<String, Object> map) {
 		return dao.selectMessageInforAll(map);
 	}
-	
+
 	@Override
 	public void updateBatch(List<Object> list){
 		setRedis("专题聚焦");
@@ -390,6 +407,13 @@ public class MessageServiceImpl implements MessageService {
 			System.out.println("发送"+indexList.size()+"条");
 		}
 		System.out.println("一键发布完毕");
-	}     
+	}
+
+	@Override
+	public Boolean judgeMessageTitle(JudgeMessageTitleParameter parameter) {
+		if (dao.judgeMessageTitle(parameter)>0){
+			return false;
+		}return true;
+	}
 
 }

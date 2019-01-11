@@ -26,7 +26,7 @@ dl dd select { width: 334px;height: 32px;padding: 5px; border: #999 1px solid;}
 .name_left li .cur,.name_left li a:hover{ background: #d8d8d8; color: #009966; font-weight: bold; text-decoration: none;}
 
 .content li{ line-height: 30px;}
-.content input[type="checkbox"]{ position: relative; top: 1px; margin-right:8px;}
+.content input[type="checkbox"]{ position: relative; top: 1px; margin-right:2px;}
 .name_left:before, .content:before {clear:both;content:'.';display:block;width: 0;height: 0;visibility:hidden;} 
 .info_block {
 	border-top: 2px solid #2C99FF;

@@ -2,6 +2,10 @@
 	width: 600px;
 	height: 30px;
 }
+.channel{
+    width: 400px;
+    height: 30px;
+ }
 .lm{
 	width: 400px;
 	height: 30px;
@@ -17,4 +21,91 @@ td{
 	padding-left: 40px;
 	padding-top: 20px;
 }
+.add_mark_list{
+    width: 400px;
+    display: none;
+    top: 49px;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+}
+.add_mark_list ul li{
+   /* border-bottom:1px solid #ccc ;*/
+    cursor: pointer;
+    text-indent: 5px;
+}
+.mark_list{
+	width: 406px;
+	margin-top: 10px;
+	margin-left: 162px;
+}
+.mark_list span{
+	display: inline-block;
+	margin-left: 10px;
+	min-width: 40px;
+	height: 30px;
+	line-height: 30px;
+	cursor: pointer;
+}
+.mark_list span i{
+	cursor: pointer;
+}
+.mark_list span p{
+	display: inline-block;
+}
+.mark_common_wrap{
+    margin-left: 169px;
+}
+.mark_common_wrap p{
+    color: #2196F3;
+    cursor: pointer;
+    width: 115px;
+}
+.mark_common_wrap .common_mark span{
+    color: #0000FF;
+    padding-right: 5px;
+}
+.add_goods_form{
+    position: relative;
+}
+.add_goods_form div{
+    position: absolute;
+}
+.add_goods_form div input{
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 30px;
+    width: 215px;
+}
+.add_goods_form div span{
+    float: left;
+    height: 30px;
+    width: 50px;
+    display: inline-block;
+    line-height: 30px;
+    text-align: center;
+    background: #ccc;
+}
+.colum_list span label{
+    color: #000;
+    font-weight: 400;
+}
+.error_mark{
+    display: none;
+    color: red;
+    padding-left:100px;
+}
+.all_file_url{
+    position: absolute;
+    display: none;
+    top: 31px;
+    border: 1px solid #ccc;
+    left: 20px;
+    padding: 3px;
+    background: #fff;
+}
+
+
 

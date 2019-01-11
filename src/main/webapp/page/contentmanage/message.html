@@ -1,6 +1,6 @@
 <?	
 	layout("/inc/layout.html",{
-			title:'资讯管理'
+			title:'知识服务平台后台管理系统'
 		}){
 ?>
 	<link rel="stylesheet" href="../page/contentmanage/css/findMessage.css">
@@ -17,43 +17,56 @@
       <div class="row">
 	  		<table id="messagetable">
 	  			<tr>
-	  				<td class="al">添加部门</td>
-	  				<td class="ar">
-	  					<select id="xjbm">
-	  						<option>全部</option>
-	  						<?for(dept in deptList){?>
-		        				<option>${dept}</option>
-		        			<?}?>
-	  					</select>
-	  				</td>
-	  				<td class="al">添加人</td>
-	  				<td class="ar"><input type="text" id="human" value="${meaasgeMap.human!}"></td>
+					<td class="al">PC端栏目</td>
+					<td class="ar">
+						<select id="clum">
+							<option>全部</option>
+							<option>万方资讯</option>
+							<option>会议速递</option>
+							<option>基金申报</option>
+							<option>科技动态</option>
+						</select>
+					</td>
+					<td class="al">资讯状态</td>
+					<td class="ar">
+						<select id="infor">
+							<option value>全部</option>
+							<option value="2" >已发布</option>
+							<option value="4" >已置顶发布</option>
+							<option value="1" >未发布</option>
+							<option value="3" >已下撤</option>
+						</select>
+					</td>
 	  			</tr>
 	  			<tr>
-	  				<td class="al">添加日期</td><td class="ar"><input type="text" id="startTime" value="${meaasgeMap.startTime!}" onclick="WdatePicker()"></td>
-	  				<td>——</td><td class="ar" ><input type="text" id="endTime" value="${meaasgeMap.endTime!}" onclick="WdatePicker()"></td>
+					<td class="al">标题</td>
+					<td class="ar"><input type="text" id="title"></td>
+	  				<td class="al">操作日期</td><td class="ar" style="display: inline-block;"><input type="text" id="startTime" value="${meaasgeMap.startTime!}" onclick="WdatePicker()" style="width: 88px;"></td>
+	  				<td style="display: inline-block;padding-left: 5px;">—</td><td class="ar" style="display: inline-block;padding-left: 5px;"><input type="text" id="endTime" value="${meaasgeMap.endTime!}" onclick="WdatePicker()"  style="width: 88px;"></td>
 	  			</tr>
 	  			<tr>
-	  				<td class="al">栏目</td>
-	  				<td class="ar">
-		  				<select id="clum">
-		  					<option>全部</option>
-		  					<option>专题聚焦</option>
-		  					<option>科技动态</option>
-		  					<option>基金会议</option>
-		  					<option>万方资讯</option>
-		  				</select>
-	  				</td>
-	  				<td>是否置顶</td>
+					<td class="al">操作部门</td>
+					<td class="ar">
+						<select id="xjbm">
+							<option>全部</option>
+							<?for(dept in deptList){?>
+							<option>${dept}</option>
+							<?}?>
+						</select>
+					</td>
+
+					<td class="al">操作人</td>
+					<td class="ar"><input type="text" id="human" value="${meaasgeMap.human!}"></td>
+	  			<!--<td>是否置顶</td>
 	  				<td><select id="isTop">
 	  					<option value="">全部</option>
 	  					<option value="1">是</option>
 	  					<option value="0">否</option>
-	  				</select></td>
+	  				</select></td>-->
 	  			</tr>
 	  		</table>
 		
-		<div style="text-align: center;width: 550px;margin-top: 2%;">
+		<div style="text-align: center;width: 730px;margin-top: 2%;">
 		 	<button type="submit" class="btn btn-primary" onclick="findOne()">查询</button>
 		</div>
 		<br/><br/>
@@ -61,16 +74,13 @@
         <div class="col-md-12">
           <div class="box box-primary">
             <div  class="box-body no-padding">
-              <div class="mailbox-controls">
-                <div class="btn-group">
-                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                </div>
+             <div class="mailbox-controls">
+				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,2)">批量发布</button>
+
+				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,3)">批量下撤</button>
+				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="deleteMore()">批量删除</button>
                 <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
-                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="oneKeyDeploy();">重建索引</button>
-				<button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a onclick="exportexecl();" href="javascript:void(0);"><i class="fa fa-refresh"></i></a></button>
-				<button type="button" style="float: right;margin-right: 5px;"  class="btn btn-default btn-sm"><a onclick="refresh();" href="javascript:void(0);"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
-              </div>
-              
+             </div>
 			<div class="table-responsive mailbox-messages">
                <table class="table table-bordered table-striped" id="list"></table></div>
 			</div>

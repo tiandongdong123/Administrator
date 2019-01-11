@@ -1,5 +1,5 @@
 <?
-	layout("/inc/layout.html",{title:'添加资讯'}){
+	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
 ?>
 <link rel="stylesheet" href="../page/contentmanage/css/addMessage.css">
 <script type="text/javascript" src="../page/contentmanage/js/jquery.form.js"></script>
@@ -18,43 +18,60 @@
          资讯修改
       </h1>
 		 <?}?>
-      <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
-          <?if(addupdate=="add"){?>
-        <li class="active">   添加资讯</li>
-      <?}?>
-		<?if(addupdate=="update"){?>       
-       <li class="active">  资讯修改</li>
-		 <?}?>
-        
-      </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
-      <div class="row">
-      	<input type="hidden" id="columsh" value="${message.colums!}"/>
+        <div class="row">
+      	    <input type="hidden" id="columsh" value="${message.colums!}"/>
         	<input type="hidden" id="messageId" value="${message.id!}"/>
         	<input type="hidden" id="issueState" value="${message.issueState!}"/>
         	<table id="defaultForm">
+				<tr>
+					<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>发布渠道</td>
+					<td class="tdr">
+                        <input type="text" class="channel" readonly value="PC">
+					</td>
+				</tr>
         		<tr>
-	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>栏目</td>
-	        		<td class="tdr">
-	        			<select id="colums" name="colums" class="lm">
-	  						<option>专题聚焦</option>
-		  					<option>科技动态</option>
-		  					<option>基金会议</option>
-		  					<option>万方资讯</option>
-	  					</select>
+	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>PC端栏目</td>
+	        		<td class="tdr colum_list">
+                        <input type="hidden" id="columsHidden" value=" ${message.colums!}">
+                        <span>
+                            <input type="radio" name="colum_item" id="item4" value="万方资讯">
+                            <label for="item4">万方资讯</label>
+                        </span>
+                        <span>
+                            <input type="radio" name="colum_item"  id="item1"value="会议速递">
+						    <label for="item1">会议速递</label>&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <input type="radio" name="colum_item" id="item3" value="基金申报">
+                            <label for="item3">基金申报</label>&nbsp;&nbsp;
+                        </span>
+                        <span>
+                            <input type="radio" name="colum_item" id="item2" value="科技动态">
+                            <label for="item2">科技动态</label>&nbsp;&nbsp;
+                        </span>
+                    <span class="error_mark colum_error">请选择PC端栏目！</span>
 	  				</td>
+
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>标题</td>
-	        		<td class="tdr"><input id="title" class="b" type="text" name="name" value="${message.title!}"/></td>
+	        		<td class="tdr">
+						<input id="title" class="b"  style="width: 400px;" type="text" name="name" value="${message.title!}"/>
+						<input type="hidden" value="${message.title!}" id="titleHidden">
+                        <span class="error_mark title_error" style="padding-left: 27px;">请填写标题！</span>
+                        <span class="error_mark title_sensitive_error" style="padding-left: 27px;">输入的标题存在敏感词，请重新输入！</span>
+                        <span class="error_mark title_exist" style="padding-left: 27px;">标题已存在，请填写别的标题！</span>
+                    </td>
         		</tr>
         		<tr>
 	        		<td class="tdl">摘要</td>
-	        		<td class="tdr"><textarea class="b" placeholder="摘要控制在200字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea></td>
+	        		<td class="tdr"><textarea class="b"  maxlength="150" placeholder="摘要控制在150字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea>
+                        <span class="error_mark text_sensitive_error" style="padding-left: 27px;line-height: 140px;">输入的摘要存在敏感词，请重新输入！</span>
+                    </td>
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>内容</td>
@@ -67,20 +84,26 @@
 							<script type="text/javascript" src="../js/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
 						</div>
 					</td>
+                    <td class="tdl">
+                        <span class="error_mark content_error" style="padding-left: 27px;">请填写内容！</span>
+                        <span class="error_mark content_sensitive_error" style="padding-left: 27px;">输入的内容存在敏感词，请重新输入！</span>
+                    </td>
         		</tr>
         		<tr>
-	        		<td class="tdl">标题图片</td>
+	        		<td class="tdl">PC端标题图片</td>
 	        		<td class="tdr">
 						<div>
-							<form id="addGoodsForm" method="post" enctype="multipart/form-data">
-								<input style="float: left;" type="file" id="uploadFile" name="file"/><button style="float: left;" id="filebutton1" onclick="return uploadImage('upload');">上传</button>
+							<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data" >
+                                <div onclick="fileUpload()">
+                                    <input id="showFile" type="text" readonly>
+                                    <span >浏览</span>
+                                </div>
+								<input onchange="verificationPicFile(this)" style="float: left;" type="file" id="uploadFile" name="file" />
+                                <span class="all_file_url"></span>
 							</form>
-							<img style="display: none" src="${message.imageUrl!}" id="filetext" height="100" width="100"/>
 							<input type="hidden" id="imageUrl" value="${message.imageUrl!}">
-							<input id="refile" style="display: none" type="button" onclick="return resetfile('reupload');" value="重新上传"/>
-							<span style="display: none" id="fileDiv"></span>
-							<p>图片大小500*500</p>			
-						</div>
+							<p style="line-height: 31px;text-indent: 5px;">图片大小500*500像素</p>
+                        </div>
 	        		</td>		        		
         		</tr>
         		<tr>
@@ -89,32 +112,62 @@
         		</tr>
         		<tr>
 	        		<td class="tdl">作者</td>
-	        		<td class="tdr"><input id="author"   name="author" class="b" type="text" value="${message.author!}"/></td>
+	        		<td class="tdr"><input id="author"   name="author" class="b" type="text" value="${message.author!}"/>
+                        <span class="error_mark author_sensitive_error" style="padding-left: 27px;">输入的作者存在敏感词，请重新输入！</span>
+                    </td>
+
         		</tr>
         		<tr>
 	        		<td class="tdl">转载平台</td>
-	        		<td class="tdr"><input id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
+	        		<td class="tdr"><input id="organName" name="organName" class="b" type="text" value="${message.organName!}"/>
+                        <span class="error_mark platform_sensitive_error" style="padding-left: 27px;">输入的转载平台存在敏感词，请重新输入！</span>
+                    </td>
+
         		</tr>
+				<tr>
+					<td class="tdl">标签</td>
+					<td class="tdr" style="position: relative;">
+						<input id="addMark"  name="mark" class="lm" type="text" />
+                        <input type="hidden" id="labelHidden" value="${message.label!}">
+						<button type="button" class="btn btn-default btn-sm add_label_btn" style="float: none;">添加</button>
+                        <span class="error_mark mark_sensitive_error" style="padding-left: 27px;">输入的标签存在敏感词，请重新输入！</span>
+                         <div  class="add_mark_list">
+                             <ul>
+                             </ul>
+                         </div>
+
+					</td>
+				</tr>
+
         	</table>
         	<!-- 提交 -->
+		   <div id="markList" class="mark_list"></div>
+          <div  class="mark_common_wrap">
+              <p id="commonMark">从常用标签中选择</p>
+              <div class="common_mark" style="display: none"></div>
+          </div>
 		<br>
 		<input id="addupdate" type="hidden" value="${addupdate}">
 		<?if(addupdate=="add"){?>
-		<div style="text-align: center;width: 550px;">
-		 	<button type="button" class="btn btn-primary" onclick="addMessage()">提交</button>
+		<div style="text-align: center;width: 700px;">
+		 	<button type="button" class="btn btn-primary" onclick="addMessage()">保存</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		 	<button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		 	<button type="button" class="btn btn-primary" onclick="reset()">重置</button>
+            <button type="button"  class="btn btn-primary" onclick="messagePublish()" >发布</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="button" class="btn btn-primary" onclick="reset()">取消</button>
 		</div>
 		<?}?>
 		<?if(addupdate=="update"){?>
-		<div style="text-align: center;width: 550px;">
-		 	<button type="button" class="btn btn-primary" onclick="updateMessage()">保存</button>
+		<div style="text-align: center;width: 700px;">
+		 	<button type="button" class="btn btn-primary" onclick="updateMessage()">提交</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		 	<button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
 		 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		 	<button type="button" class="btn btn-primary" onclick="noupdate()">取消</button>
+            <button type="button"  class="btn btn-primary" onclick="updatePublish()" >发布</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 	<button type="button" class="btn btn-primary" onclick="reset()">取消</button>
 		</div>
 		<?}?>
       </div>

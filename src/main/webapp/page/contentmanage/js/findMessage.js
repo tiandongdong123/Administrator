@@ -1,6 +1,6 @@
 var branch,clum,human,startTime,endTime,isTop;
 var pageNum;
-var pageSize = 10;
+var pageSize = 20;
 $(function(){
 	showPage(1);
 });
@@ -12,17 +12,14 @@ function findOne(){
 
 function showPage(curr){
 	branch=$("#xjbm").find("option:selected").text();
-	if(branch=='全部'){
-		branch="";
-	}
+	if(branch=='全部'){branch="";}
 	clum=$("#clum").find("option:selected").text();
-	if(clum=='全部'){
-		clum="";
-	}
-	human=$("#human").val();
-	startTime=$("#startTime").val();
-	endTime=$("#endTime").val();
-	isTop=$("#isTop").val();
+	if(clum=='全部'){clum="";}
+    var infor = $("#infor").find("option:selected").val();
+	human=$("#human").val().trim();
+    ($("#startTime").val())? startTime=$("#startTime").val() + " 00:00:00": startTime=$("#startTime").val();
+    ($("#endTime").val())? endTime=$("#endTime").val() + " 23:59:59":   endTime=$("#endTime").val();
+    var title = $("#title").val().trim();
 	$.ajax({
 		type : "post",
 		async:false,
@@ -36,14 +33,14 @@ function showPage(curr){
 			"human":human,
 			"startTime":startTime,
 			"endTime":endTime,
-			"isTop":isTop
+			"title":title,
+			"issueState":infor
 			},
 		success : function (data){
 			serachdata(curr,data);
 		}
 	});
 }
-
 function serachdata(curr,data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
@@ -51,17 +48,19 @@ function serachdata(curr,data){
 	var resHtml = "<tbody><tr style='text-align: center;'>" +
 	"<td><input onclick=\"checkAll()\" class='allId' type='checkbox'></td>" +
 	"<td class='mailbox-star'>序号</td>" +
-	"<td class=\"mailbox-name\">栏目</td>"+
-    "<td class=\"mailbox-attachment\" style='width:30%'>标题</td>"+
+    "<td class=\"mailbox-name\">发布渠道</td>"+
+	"<td class=\"mailbox-name\">PC端栏目</td>"+
+    "<td class=\"mailbox-attachment\" style='width:20%'>标题</td>"+
     "<td class=\"mailbox-name\">原文链接</td>"+
-    "<td class=\"mailbox-name\">添加人</td>"+
-    "<td class=\"mailbox-date\">添加日期</td>"+
-    "<td class=\"mailbox-date\">是否置顶</td>"+
+    "<td class=\"mailbox-name\"  style='width:10% '>标签</td>"+
+    "<td class=\"mailbox-name\">操作人</td>"+
+    "<td class=\"mailbox-date\">操作时间</td>"+
+    "<td class=\"mailbox-date\">资讯状态</td>"+
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
 		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+i+10*(pageNum-1);
+			var index = 1+i+20*(pageNum-1);
 			var rows = pageRow[i];
 			var issue = rows.issueState;
 			var issueNum = 1;
@@ -72,24 +71,39 @@ function serachdata(curr,data){
 				issue = "下撤";
 				issueNum = 3;
 			}
-			var is_top = rows.isTop;
-			if(is_top=="1"){
-				is_top="是";
-			}else{
-				is_top="否";
-			}
+			var is_sueState = rows.issueState;
+            var is_top = rows.isTop;
+			if(is_sueState=="3"){
+                is_sueState="已下撤";
+			}else if(is_sueState=="1"){
+                is_sueState="未发布";
+			}else if(is_sueState=="2"){
+                if (is_top == "1"){
+                    is_sueState="已置顶发布";
+				}else {
+                    is_sueState="已发布";
+				}
+            }
 			resHtml+=" <tr style='text-align: center;'>" +
 			"<td style='width:10px;'><input type='checkbox' name='commonid' id='"+issue+"' value='"+rows.id+"'></td>" +
 			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+            "<td class='mailbox-name mailbox-clum'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.channel+"</div></td>"+
+			"<td class='mailbox-name mailbox-clum colums'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.colums+"</div></td>";
+
 			resHtml+="<td><div style='text-align:left;word-wrap:break-word;word-break:break-all;'><a href='javascript:;' onclick=\"turnHtml('"+rows.colums+"','"+rows.id+"')\">"+rows.title+"</a></div></td>";
-			resHtml+="<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"</td>"+
-            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.createTime+"</td>"+
-            "<td class='mailbox-date'><div title='"+is_top+"' style='width:40px;'>"+is_top+"</td>"+
-			"<td class='mailbox-name' style='width:350px;'><div>";
-			if(issueNum!=3){
-				resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"')\" class='btn btn-primary'>置顶</button>&nbsp;";
+
+			resHtml+= "<td class='mailbox-name' style='width:200px;'><div style='width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'><a href='"+rows.linkAddress+"'>"+rows.linkAddress+"</a></div></td>"+
+
+             "<td class='mailbox-name><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.label==null?"":rows.label)+"<div></td>"+
+
+            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.human==null?"":rows.human)+"<div></td>"+
+            "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.stick+"</td><div>"+
+            "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"<div></td>"+
+			"<td class='mailbox-name' style='width:353px;'><div>";
+            if(is_top==0){
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
+            }else {
+                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
 			}
 			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
@@ -116,31 +130,60 @@ function serachdata(curr,data){
 			}
 		});
 	});
-	document.getElementById("here").scrollIntoView();
+    (data.totalRow  > 20)?$("#divPager").show(): $("#divPager").hide();
+	/*document.getElementById("here").scrollIntoView();*/
 }
 
 //置顶
-function stick(id,colums){
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/stick.do",
-		dataType : "json",
-		data : {
-			"id":id,
-			'colums':colums
-			},
-		success : function(){
-			showPage();
-		}
-	});
+function stick(id,colums,topState){
+    var value;
+    if( topState == "0"){
+        value = "确定要下撤数据吗？"
+	}
+   if(topState == "1"){
+       value = '确定要置顶发布数据到前台吗?';
+   }
+    layer.alert(value,{
+        icon: 1,
+        skin: 'layui-layer-molv',
+        btn: ['确定'], //按钮
+        yes: function() {
+            layer.closeAll();
+            $.ajax({
+                type : "post",
+                async:false,
+                url : "../content/stick.do",
+                dataType : "json",
+                data : {
+                    "id":id,
+                    'colums':colums,
+                    'isTop':topState
+                },
+                success : function(data){
+                    if(data.code == 200){
+                        if(topState == 0){
+							showPage();
+                            layer.msg("下撤成功！");
+
+                        }else if( topState == 1){
+                            showPage();
+                            layer.msg("置顶发布成功！");
+                        }
+                    }else{
+                        layer.msg(data.data)
+                    }
+                }
+            });
+        }
+    });
+
 }
 
 function updateMessage(id,issueState){
 	if(issueState!=2){
 		window.location.href="../content/modify.do?id="+id;
 	}else{
-		layer.msg("请先下撤该数据再进行修改",{icon: 2});
+		layer.msg("请先将资讯下撤后再修改！",{icon: 2});
 	}
 }
 
@@ -158,9 +201,59 @@ function removee(id){
 		beforeSend : function(XMLHttpRequest) {},
 		success : deleteCallback,
 		complete : function(XMLHttpRequest, textStatus) {},
-		error : function(data) {alert(data);}
+		error : function(data) {}
 	});
 }
+
+
+//批量发布
+function publishMore(that,issueState){
+    var publishId = [];
+    var publishClums = [];
+    var params = [];
+	$("input:checkbox[name=commonid]:checked").each(function(){
+		publishId.push($(this).val()) ;
+		publishClums.push($(this).parent("td").siblings(".colums").children("div").text());
+		console.log(publishClums)
+	});
+   for(var i=0;i<publishId.length;i++){
+       var _json = {
+           id:publishId[i],
+           colums:publishClums[i],
+           issueState:issueState
+	   };
+       params[i] = JSON.stringify(_json)
+   }
+    if(issueState == 3){
+        value = '是否确定批量下撤?';
+    }else if(issueState == 2){
+        value = '是否确定批量发布?';
+    }
+    layer.alert(value,{
+        icon: 1,
+        skin: 'layui-layer-molv',
+        btn: ['确定'], //按钮
+        yes: function() {
+            layer.closeAll();
+            $.ajax({
+                type: "post",
+                url: "../content/updateIssue.do",
+                data:{
+                    parameters:params
+				},
+                dataType: "json",
+                traditional: true,
+                success: function (data) {
+                    layer.closeAll();
+                    if (data) {
+                        findOne();
+                    }
+                },
+            });
+        }
+    });
+}
+
 
 // 多条删除
 function deleteMore(){
@@ -192,7 +285,7 @@ function deleteMore(){
 					beforeSend : function(XMLHttpRequest) {},
 					success : deleteCallback,
 					complete : function(XMLHttpRequest, textStatus) {},
-					error : function(data) {alert(data);}
+					error : function(data) {}
 				});
 		        layer.closeAll();
 		    }
@@ -245,17 +338,24 @@ function refresh(){
 //发布
 function publish(that,obj,colums,issueState){
 	var value = "";
+	var params=[];
 	if(issueState=='3'){
-		value = '是否确定下撤?';
+		value = '确定要下撤数据吗?';
 	}else if(issueState=='2'){
 		if($(that).text()=='发布'){
-			value = '是否确定发布?';
+			value = '确定要发布数据到前台吗?';
 		}else{
 			value = '是否确定再发布?';
 		}
 	}else{
-		value = '是否确定发布?';
+		value = '确定要发布数据到前台吗?';
 	}
+	var _json = {
+        "id" : obj,
+        "colums":colums,
+        "issueState":issueState
+	}
+    params = JSON.stringify(_json);
 	layer.alert(value,{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -264,19 +364,22 @@ function publish(that,obj,colums,issueState){
 	    	$.ajax({
 	    		type : "post",  
 	    		url : "../content/updateIssue.do",
-	    		data :{ 
-	    			"id" : obj,
-	    			"colums":colums,
-	    			"issueState":issueState
-	    		},
+	    		data :{
+                    parameters:params
+				},
 	    		dataType : "json",
+                traditional: true,
 	    		success : function(data){
 	    			layer.closeAll();
 	    			if(data){
 	    				findOne();
-	    			}
+                        (issueState == "2")?layer.msg("发布成功！"): layer.msg("下撤成功！");
+	    			}else{
+                        (issueState == "2")?  layer.msg("发布失败！"): layer.msg("下撤失败！");
+					}
 	    		},
 	    		error : function(data){
+                    layer.msg("发布失败！")
 	    		}
 	    	});
 	    }

@@ -3,31 +3,37 @@ package com.wf.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.Message;
+import com.wf.bean.MessageSearchRequest;
+import org.springframework.web.bind.annotation.RequestParam;
+
 public interface MessageMapper {
 	
 	/**
 	 * 查询学科分类信息(分页数据)
 	 * @return
 	 */
-	public List<Object> getMessageList(Map<String,Object> map);
+	public List<Object> getMessageList(MessageSearchRequest request);
 	
 	/**
 	 * 查询学科分类信息(分页计数)
 	 * @return
 	 */
-	public int getMessageCount(Map<String,Object> map);
+	public int getMessageCount(MessageSearchRequest request);
 	
 	/**
-	 * 根据咨询类型查前n行
+	 * 根据咨询类型查前n行(发布未置顶状态资讯)
 	 */
 	public List<Object> selectBycolums(Map<String,Object> map);
-	
+	public List<Object> selectBycolums2(Map<String,Object> map);
+
 	/**
-	 * 查询专题聚焦
+	 * 查询专题聚焦（发布置顶状态资讯）
 	 */
 	public List<Object> selectIsTop(Map<String,Object> map);
-	
+	public List<Object> selectIsTop2(Map<String,Object> map);
+
 	/**
 	 * 查询所有的资讯信息
 	 * @param map
@@ -70,4 +76,11 @@ public interface MessageMapper {
 	 * @return
 	 */
 	int updateIsTop(String colums);
+
+	/**
+	 * 判断标题是否存在
+	 * @param parameter
+	 * @return
+	 */
+	int judgeMessageTitle(JudgeMessageTitleParameter parameter);
 }
