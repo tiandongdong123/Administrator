@@ -370,7 +370,7 @@ function messagePublish(){
                         }
                     },
                     complete : function(XMLHttpRequest, textStatus) {},
-                    error : function(data) {alert("添加失败");}
+                    error : function(data) {}
                 });
             }
         }
@@ -441,7 +441,7 @@ function addMessage(){
                     complete: function (XMLHttpRequest, textStatus) {
                     },
                     error: function (data) {
-                        alert("添加失败");
+
                     }
                 });
             }
@@ -530,7 +530,7 @@ function updatePublish(){
                             }
                         },
                         complete : function(XMLHttpRequest, textStatus) {},
-                        error : function(data) {alert(data);}
+                        error : function(data) {}
                     });
                 }
             }
@@ -602,7 +602,9 @@ function updateMessage(){
                             }
                         },
                         complete : function(XMLHttpRequest, textStatus) {},
-                        error : function(data) {alert(data);}
+                        error : function(data) {
+
+                        }
                     });
                 }
             }

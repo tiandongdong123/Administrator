@@ -201,7 +201,7 @@ function removee(id){
 		beforeSend : function(XMLHttpRequest) {},
 		success : deleteCallback,
 		complete : function(XMLHttpRequest, textStatus) {},
-		error : function(data) {alert(data);}
+		error : function(data) {}
 	});
 }
 
@@ -285,7 +285,7 @@ function deleteMore(){
 					beforeSend : function(XMLHttpRequest) {},
 					success : deleteCallback,
 					complete : function(XMLHttpRequest, textStatus) {},
-					error : function(data) {alert(data);}
+					error : function(data) {}
 				});
 		        layer.closeAll();
 		    }
