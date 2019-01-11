@@ -3,6 +3,8 @@ var ues;
 $(function(){
     ues=UE.getEditor('content',{
         //autoHeightEnabled: true,
+        wordCount:true,
+        maximumWords:16000,
     });
     fileshow();//上传图片的展示
     fileEcho();//上传图片的回显
