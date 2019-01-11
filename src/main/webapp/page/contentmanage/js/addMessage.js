@@ -11,10 +11,10 @@ $(function(){
     addOrUpdateFile();//判断是添加还是修改的图片上传
     commonMark();
     getMark();
-    blurEvent($("#abstracts"),$("#abstracts").val(),$(".text_sensitive_error"));//摘要敏感词
-    blurEvent($("#author"),$("#author").val(),$(".author_sensitive_error"));//作者敏感词
-    blurEvent($("#organName"),$("#organName").val(),$(".platform_sensitive_error"));//转载平台敏感词
-    blurEvent($("#addMark"),$("#addMark").val(),$(".mark_sensitive_error"));//标签敏感词
+    blurEvent($("#abstracts"),$(".text_sensitive_error"),);//摘要敏感词
+    blurEvent($("#author"),$(".author_sensitive_error"),);//作者敏感词
+    blurEvent($("#organName"),$(".platform_sensitive_error"),);//转载平台敏感词
+    blurEvent($("#addMark"),$(".mark_sensitive_error"),);//标签敏感词
     otherSpace();//点击空白
 //详情页面编译器为不可编译&非详情页面栏目,标签回显
     if($("#informationHidden").val()=="information"){
@@ -38,7 +38,7 @@ $(function(){
         }
     }
 //标题校验
-    $("#title").on("blur",function(){
+    $("#title").blur(function(){
         if(!$("#titleHidden").val()){
             checkTitle()
         }else{
@@ -369,7 +369,6 @@ function messagePublish(){
         }
     }
 }
-
 function addMessage(){
     var errorCount = 0;
     var channel = $(".channel").val();
@@ -767,46 +766,53 @@ function checkColum(){
 }
 //校验标题
 function checkTitle(flag){
-	if(!$("#title").val()){
-       $(".title_error").show()
-	}else{
-        $(".title_error").hide();
-        if(flag == 'update'){
-            $.ajax({
-                type:"post",
-                url:"../content/judgeMessageTitle.do",
-                data:{
-                    title:$("#title").val(),
-                    messageId:$("#messageId").val()
-                },
-                success:function(data){
-                    if(!data){
-                        $(".title_exist").show();
-                    }else{
-                        $(".title_exist").hide();
-                        checkSensitive($("#title").val(),$(".title_sensitive_error"))
-                    }
-                }
-            })
+    if($("#title").val() !=''){
+        if(!$("#title").val().trim()){
+            $(".title_error").show()
         }else{
-            $.ajax({
-                type:"post",
-                url:"../content/judgeMessageTitle.do",
-                data:{
-                    title:$("#title").val()
-                },
-                success:function(data){
-                    if(!data){
-                        $(".title_exist").show();
-                    }else{
-                        $(".title_exist").hide();
-                        checkSensitive($("#title").val(),$(".title_sensitive_error"))
+            $(".title_error").hide();
+            var titleVal = $("#title").val().trim();
+            var titleExist = $(".title_exist");
+            if(flag == 'update'){
+                $.ajax({
+                    type:"post",
+                    url:"../content/judgeMessageTitle.do",
+                    data:{
+                        title:titleVal,
+                        messageId:$("#messageId").val()
+                    },
+                    success:function(data){
+                        if(!data){
+                            titleExist.show();
+                        }else{
+                            titleExist.hide();
+                            checkSensitive(titleVal,$(".title_sensitive_error"))
+                        }
                     }
-                }
-            })
-        }
+                })
+            }else{
+                $.ajax({
+                    type:"post",
+                    url:"../content/judgeMessageTitle.do",
+                    data:{
+                        title:titleVal
+                    },
+                    success:function(data){
+                        if(!data){
+                            titleExist.show();
+                        }else{
+                            titleExist.hide();
+                            checkSensitive(titleVal,$(".title_sensitive_error"))
+                        }
+                    }
+                })
+            }
 
-	}
+        }
+    }else{
+        $(".title_error").show();
+    }
+
 }
 //校验内容
 function checkCheet(){
@@ -828,15 +834,19 @@ function checkSensitive(word,obj){
         },
         success:function(data){
             if(!data){
-                obj.show();
-            }else{
                 obj.hide();
+            }else{
+                obj.show();
 			}
         }
     })
 }
-function blurEvent(that,word,obj){
-	$(that).on("blur",function(){
-        checkSensitive(word,obj)
-	})
+function blurEvent(that,obj,){
+   that.blur(function(){
+       if(that.val() !=''){
+           if(that.val().trim() !=''){
+               checkSensitive(that.val().trim(),obj)
+           }
+       }
+   })
 }
