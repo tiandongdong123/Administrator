@@ -13,10 +13,10 @@ $(function(){
     addOrUpdateFile();//判断是添加还是修改的图片上传
     commonMark();
     getMark();
-    blurEvent($("#abstracts"),$(".text_sensitive_error"),);//摘要敏感词
-    blurEvent($("#author"),$(".author_sensitive_error"),);//作者敏感词
-    blurEvent($("#organName"),$(".platform_sensitive_error"),);//转载平台敏感词
-    blurEvent($("#addMark"),$(".mark_sensitive_error"),);//标签敏感词
+    blurEvent($("#abstracts"),$(".text_sensitive_error"));//摘要敏感词
+    blurEvent($("#author"),$(".author_sensitive_error"));//作者敏感词
+    blurEvent($("#organName"),$(".platform_sensitive_error"));//转载平台敏感词
+    blurEvent($("#addMark"),$(".mark_sensitive_error"));//标签敏感词
     otherSpace();//点击空白
 //详情页面编译器为不可编译&非详情页面栏目,标签回显
     if($("#informationHidden").val()=="information"){
@@ -843,7 +843,7 @@ function checkSensitive(word,obj){
         }
     })
 }
-function blurEvent(that,obj,){
+function blurEvent(that,obj){
    that.blur(function(){
        if(that.val() !=''){
            if(that.val().trim() !=''){
