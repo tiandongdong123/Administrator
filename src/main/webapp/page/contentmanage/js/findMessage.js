@@ -12,26 +12,13 @@ function findOne(){
 
 function showPage(curr){
 	branch=$("#xjbm").find("option:selected").text();
-	if(branch=='全部'){
-		branch="";
-	}
+	if(branch=='全部'){branch="";}
 	clum=$("#clum").find("option:selected").text();
-	if(clum=='全部'){
-		clum="";
-	}
+	if(clum=='全部'){clum="";}
     var infor = $("#infor").find("option:selected").val();
 	human=$("#human").val().trim();
-
-    if($("#startTime").val()){
-        startTime=$("#startTime").val() + " 00:00:00";
-    }else{
-        startTime=$("#startTime").val();
-    }
-	if($("#endTime").val()){
-        endTime=$("#endTime").val() + " 23:59:59";
-    }else{
-        endTime=$("#endTime").val();
-    }
+    ($("#startTime").val())? startTime=$("#startTime").val() + " 00:00:00": startTime=$("#startTime").val();
+    ($("#endTime").val())? endTime=$("#endTime").val() + " 23:59:59":   endTime=$("#endTime").val();
     var title = $("#title").val().trim();
 	$.ajax({
 		type : "post",
@@ -54,7 +41,6 @@ function showPage(curr){
 		}
 	});
 }
-
 function serachdata(curr,data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
@@ -150,36 +136,54 @@ function serachdata(curr,data){
 
 //置顶
 function stick(id,colums,topState){
-	$.ajax({
-		type : "post",
-		async:false,
-		url : "../content/stick.do",
-		dataType : "json",
-		data : {
-			"id":id,
-			'colums':colums,
-            'isTop':topState
-			},
-		success : function(data){
-		    if(data.code == 200){
-                if(topState == 0){
-                    layer.msg("置顶撤销成功！");
-                }else if( topState == 1){
-                    layer.msg("置顶发布成功！");
+    var value;
+    if( topState == "0"){
+        value = "确定要下撤数据吗？"
+	}
+   if(topState == "1"){
+       value = '确定要置顶发布数据到前台吗?';
+   }
+    layer.alert(value,{
+        icon: 1,
+        skin: 'layui-layer-molv',
+        btn: ['确定'], //按钮
+        yes: function() {
+            layer.closeAll();
+            $.ajax({
+                type : "post",
+                async:false,
+                url : "../content/stick.do",
+                dataType : "json",
+                data : {
+                    "id":id,
+                    'colums':colums,
+                    'isTop':topState
+                },
+                success : function(data){
+                    if(data.code == 200){
+                        if(topState == 0){
+							showPage();
+                            layer.msg("下撤成功！");
+
+                        }else if( topState == 1){
+                            showPage();
+                            layer.msg("置顶发布成功！");
+                        }
+                    }else{
+                        layer.msg(data.data)
+                    }
                 }
-                showPage();
-            }else{
-		        layer.msg("置顶发布失败！")
-            }
-		}
-	});
+            });
+        }
+    });
+
 }
 
 function updateMessage(id,issueState){
 	if(issueState!=2){
 		window.location.href="../content/modify.do?id="+id;
 	}else{
-		layer.msg("请先下撤该数据再进行修改",{icon: 2});
+		layer.msg("请先将资讯下撤后再修改！",{icon: 2});
 	}
 }
 
@@ -336,15 +340,15 @@ function publish(that,obj,colums,issueState){
 	var value = "";
 	var params=[];
 	if(issueState=='3'){
-		value = '是否确定下撤?';
+		value = '确定要下撤数据吗?';
 	}else if(issueState=='2'){
 		if($(that).text()=='发布'){
-			value = '是否确定发布?';
+			value = '确定要发布数据到前台吗?';
 		}else{
 			value = '是否确定再发布?';
 		}
 	}else{
-		value = '是否确定发布?';
+		value = '确定要发布数据到前台吗?';
 	}
 	var _json = {
         "id" : obj,
@@ -369,9 +373,13 @@ function publish(that,obj,colums,issueState){
 	    			layer.closeAll();
 	    			if(data){
 	    				findOne();
-	    			}
+                        (issueState == "2")?layer.msg("发布成功！"): layer.msg("下撤成功！");
+	    			}else{
+                        (issueState == "2")?  layer.msg("发布失败！"): layer.msg("下撤失败！");
+					}
 	    		},
 	    		error : function(data){
+                    layer.msg("发布失败！")
 	    		}
 	    	});
 	    }
