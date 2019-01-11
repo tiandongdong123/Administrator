@@ -56,6 +56,11 @@ $(function(){
             $(".content_error").show();
         }
     });
+    $("#abstracts").on("input propertychange",function(){
+        if( $("#abstracts").val().length>=150){
+            layer.msg("摘要控制在150字以内！")
+        }
+    });
 
 });
 
