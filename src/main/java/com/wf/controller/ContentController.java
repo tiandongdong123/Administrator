@@ -493,12 +493,28 @@ public class ContentController {
     @RequestMapping("/updateMessageJson")
     public void updateMessageJson(Message message, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Message findMessage = messageService.findMessage(message.getId());
-        LabelListModel changeMessageLabel = MessageLabelUtil.getChangeMessageLabel(findMessage.getLabel().split(","), message.getLabel().split(","));
         Wfadmin admin = CookieUtil.getWfadmin(request);
         message.setHuman(admin.getUser_realname());
         boolean b = messageService.updateMessage(message);
-        informationLabelService.updateInformationLabelNumber(changeMessageLabel.getAddOneStr());
-        informationLabelService.updateInformationLabelNumberDel(changeMessageLabel.getDelOneStr());
+        LabelListModel changeMessageLabel = new LabelListModel();
+        if (findMessage.getLabel() != null && !"".equals(findMessage.getLabel())
+                && message.getLabel() != null && !"".equals(message.getLabel())) {
+            changeMessageLabel = MessageLabelUtil.getChangeMessageLabel(
+                    findMessage.getLabel().split(","), message.getLabel().split(","));
+            informationLabelService.updateInformationLabelNumber(changeMessageLabel.getAddOneStr());
+            informationLabelService.updateInformationLabelNumberDel(changeMessageLabel.getDelOneStr());
+        }
+        if ((message.getLabel() == null || "".equals(message.getLabel()))
+                && findMessage.getLabel() != null && !"".equals(findMessage.getLabel())) {
+            changeMessageLabel.setDelOneStr(message.getLabel());
+            informationLabelService.updateInformationLabelNumberDel(changeMessageLabel.getDelOneStr());
+        }
+        if (message.getLabel() != null && !"".equals(message.getLabel())
+                && (findMessage.getLabel() == null || "".equals(findMessage.getLabel()))) {
+
+            changeMessageLabel.setAddOneStr(findMessage.getLabel());
+            informationLabelService.updateInformationLabelNumber(changeMessageLabel.getAddOneStr());
+        }
         //记录日志
         //Log log=new Log("资讯管理","修改",message.toString(),request);
         //logService.addLog(log);
