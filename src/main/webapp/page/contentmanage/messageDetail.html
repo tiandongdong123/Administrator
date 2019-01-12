@@ -18,7 +18,7 @@
 			<tr>
 				<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>发布渠道</td>
 				<td class="tdr">
-					<input type="text" class="channel" readonly value="PC">
+					<input type="text" class="channel" disabled value="PC">
 				</td>
 			</tr>
         		<tr>
@@ -32,22 +32,14 @@
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>标题</td>
-	        		<td class="tdr"><input id="title" class="b" type="text" name="name" value="${message.title!}" readonly="readonly"/></td>
+	        		<td class="tdr"><input id="title" class="b" type="text" name="name" value="${message.title!}" disabled/></td>
         		</tr>
         		<tr>
 	        		<td class="tdl">摘要</td>
-	        		<td class="tdr"><textarea readonly="readonly" class="b" placeholder="摘要控制在200字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea></td>
+	        		<td class="tdr"><textarea disabled class="b"   id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea></td>
         		</tr>
         		<tr>
 	        		<td class="tdl"><b style="color: #FF0000;margin-right: 5px;">*</b>内容</td>
-	        		<!--<td class="tdr"><div class="box-body pad" style="width: 150%;margin-left: -10px;">
-						<div class="box-body pad" style="margin-left: -10px;">
-							<div style="width: 1024px;border: 1px solid #A9A9A9;background: #fff;" class="content_wrap" id="contentWrap ">
-								${message.content!}
-							</div>
-						</div>
-						</div>
-					</td>-->
 					<td class="tdr " style="position: relative">
 						<div class="cover_content_pad" style="width: 1024px;position: absolute;position: absolute;z-index: 1000;background-color: #000;opacity: 0.1; top: 31px;"></div>
 
@@ -70,7 +62,7 @@
 					<div>
 						<form id="addGoodsForm" class="add_goods_form" method="post" enctype="multipart/form-data">
                             <div onclick="fileUpload()">
-                                <input id="showFile" type="text" readonly style="background: #F2F2F2; border: 1px solid #ccc;">
+                                <input id="showFile" type="text" disabled style="background: #F2F2F2; border: 1px solid #ccc;">
                                 <span >浏览</span>
                             </div>
                             <input onchange="verificationPicFile(this)" style="float: left;" type="file" id="uploadFile" name="file" disabled />
@@ -83,20 +75,20 @@
         		</tr>
         		<tr>
 	        		<td class="tdl">源文链接</td>
-	        		<td class="tdr"><input readonly="readonly" id="linkAddress" name="linkAddress" class="b" type="text" value="${message.linkAddress!}"/></td>
+	        		<td class="tdr"><input disabled id="linkAddress" name="linkAddress" class="b" type="text" value="${message.linkAddress!}"/></td>
         		</tr>
         		<tr>
 	        		<td class="tdl">作者</td>
-	        		<td class="tdr"><input readonly="readonly" id="author"   name="author" class="b" type="text" value="${message.author!}"/></td>
+	        		<td class="tdr"><input disabled id="author"   name="author" class="b" type="text" value="${message.author!}"/></td>
         		</tr>
         		<tr>
 	        		<td class="tdl">转载平台</td>
-	        		<td class="tdr"><input readonly="readonly" id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
+	        		<td class="tdr"><input disabled id="organName" name="organName" class="b" type="text" value="${message.organName!}"/></td>
         		</tr>
 				<tr>
 					<td class="tdl">标签</td>
 					<td class="tdr">
-                        <input readonly="readonly" id="mark" name="mark" class="b" type="text" value="${message.label!}"/>
+                        <input disabled id="mark" name="mark" class="b" type="text" value="${message.label!}"/>
                     </td>
 				</tr>
         	</table>

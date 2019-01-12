@@ -3,6 +3,7 @@ $(function(){
 });
 
 function action(){
+    var subTitle = parent.$("input[name=colum_item]:checked").val();
 	var colums=parent.$("#colums").find("option:selected").val();
 	var title=parent.$("#title").val();
 	var abstracts=parent.document.getElementById("abstracts").value;
@@ -23,4 +24,5 @@ function action(){
 	$("#source").text(organName);
 	$("#anthours").text(author);
 	$("#data").text(str);
+	$(".SubTitle").text(subTitle);
 }

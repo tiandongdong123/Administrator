@@ -711,32 +711,34 @@ function checkImgPX(ths, width, height) {
 }
 //获取常用标签
  function commonMark(){
-    $(".mark_common_wrap").on("click","#commonMark",function () {
-        var mark_html = '';
-        var cur;
-        var max;
-        $.ajax({
-            type:"post",
-            url:"../content/echoInformationLabel.do",
-            success:function (data) {
-                max =data[0].totalNumber;
-               for(var j = 0;j < data.length;j++){
-                    cur = data[j].totalNumber;
-                    cur > max ? max = cur : max;
-                }
-               for(var i = 0;i<data.length;i++){
-                   if(data[i].totalNumber == 0){
-                       mark_html += '<span style ="font-size:12px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span> '
-                   }else{
-                       mark_html += '<span style ="font-size:'+(data[i].totalNumber/max)*28+'px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span> '
-                   }
-               }
-                $(".common_mark").empty();
-                $(".common_mark").append(mark_html);
-            }
-        });
-        $(".common_mark").toggle();
-    })
+     var mark_html = '';
+     var cur;
+     var max;
+     $.ajax({
+         type:"post",
+         url:"../content/echoInformationLabel.do",
+         success:function (data) {
+             if(data){
+                 max =data[0].totalNumber;
+                 for(var j = 0;j < data.length;j++){
+                     cur = data[j].totalNumber;
+                     cur > max ? max = cur : max;
+                 }
+                 for(var i = 0;i<data.length;i++){
+                     if(data[i].totalNumber == 0){
+                         mark_html += '<span style ="font-size:12px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span>'
+                     }else{
+                         mark_html += '<span style ="font-size:'+(data[i].totalNumber/max)*28+'px ;cursor: pointer" onclick="selecteMark(this)">' + data[i].label + '</span>'
+                     }
+                 }
+                 $(".common_mark").empty();
+                 $(".common_mark").append(mark_html);
+             }else{
+                 $(".mark_common_wrap").hide();
+             }
+
+         }
+     });
  }
  //模糊查询标签
 function getMark(){
