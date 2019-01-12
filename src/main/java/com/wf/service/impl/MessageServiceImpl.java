@@ -87,6 +87,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("stick", new Date());
 		map.put("isTop", message.getIsTop());
 		map.put("human", message.getHuman());
+		map.put("branch", message.getBranch());
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
@@ -102,7 +103,7 @@ public class MessageServiceImpl implements MessageService {
 	 * @return
 	 */
 	@Override
-	public boolean updateIssue(String id, String colums, String issueState, String human) {
+	public boolean updateIssue(String id, String colums, String issueState, String human,String branch) {
 		boolean flag = false;
 		int issue = Integer.valueOf(issueState);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -111,6 +112,7 @@ public class MessageServiceImpl implements MessageService {
 		map.put("stick", new Date());
 		map.put("isTop", "0");
 		map.put("human", human);
+		map.put("branch",branch);
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;

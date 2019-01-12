@@ -51,7 +51,7 @@ public interface MessageService {
 	 * @param issueState
 	 * @return
 	 */
-	boolean updateIssue(String id,String colums,String issueState,String human);
+	boolean updateIssue(String id,String colums,String issueState,String human,String branch);
 	
 	List<Object> exportMessage(String branch,String colums,String human,String startTime,String endTime);
 

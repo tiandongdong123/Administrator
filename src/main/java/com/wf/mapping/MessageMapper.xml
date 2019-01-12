@@ -181,6 +181,9 @@
 		<if test="human!=null">
 			,human=#{human}
 		</if>
+		<if test="branch!=null">
+			,branch=#{branch}
+		</if>
 		<where>
 			<if test="id !=null and id != ''">
 				id in
