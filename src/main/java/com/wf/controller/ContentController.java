@@ -537,7 +537,7 @@ public class ContentController {
             Wfadmin admin = CookieUtil.getWfadmin(request);
             for (String parameter : parameters) {
                 JSONObject jsonObject = JSONObject.fromObject(parameter);
-                b = messageService.updateIssue(jsonObject.get("id").toString(), jsonObject.get("colums").toString(),jsonObject.get("issueState").toString(),admin.getUser_realname());
+                b = messageService.updateIssue(jsonObject.get("id").toString(), jsonObject.get("colums").toString(),jsonObject.get("issueState").toString(),admin.getUser_realname(),admin.getDept().getDeptName());
                 //记录日志
                 Log log = new Log("资讯管理", "发布/下撤/再发布", "资讯ID:" + jsonObject.get("id").toString() + ",栏目:" +jsonObject.get("colums").toString() + ",发布状态:" + jsonObject.get("colums").toString(), request);
                 logService.addLog(log);
@@ -1094,6 +1094,7 @@ public class ContentController {
             }
             Wfadmin admin = CookieUtil.getWfadmin(request);
             message.setHuman(admin.getUser_realname());
+            message.setBranch(admin.getDept().getDeptName());
             message.setStick(DateTools.getSysTime());
             boolean b = messageService.updataMessageStick(message);
             if (b) {
