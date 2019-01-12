@@ -57,8 +57,10 @@ $(function(){
         }
     });
     $("#abstracts").on("input propertychange",function(){
-        if( $("#abstracts").val().length>=150){
-            layer.msg("摘要控制在150字以内！")
+        if( $("#abstracts").val().length > 150){
+           $(".text_beyond_error").show();
+        }else{
+            $(".text_beyond_error").hide();
         }
     });
 //校验栏目
