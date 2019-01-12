@@ -61,6 +61,12 @@ $(function(){
             layer.msg("摘要控制在150字以内！")
         }
     });
+//校验栏目
+    $(".colum_list span input[type = radio]").each(function(){
+        $(this).click(function(){
+           $(".colum_error").hide();
+        })
+    })
 
 });
 
