@@ -869,9 +869,9 @@ function checkSensitive(word,obj){
 function blurEvent(that,obj){
    that.blur(function(){
        if(that.val() !=''){
-           if(that.val().trim() !=''){
-               checkSensitive(that.val().trim(),obj)
-           }
+           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
+       }else{
+           obj.hide();
        }
    })
 }
