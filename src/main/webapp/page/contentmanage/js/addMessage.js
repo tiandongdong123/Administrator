@@ -144,11 +144,17 @@ function verificationPicFile(file) {
 //点击添加标签
 function addMark(){
     $(".add_label_btn").click(function () {
-        corporateMark();
+        blurEvent($("#addMark"),$(".mark_sensitive_error"));
+        if($(".mark_sensitive_error").css("display") !="inline"){
+            corporateMark();
+        }
     });
     $('#addMark').keydown(function(event) {
         if (event.keyCode == 13) {
-            corporateMark();
+            blurEvent($("#addMark"),$(".mark_sensitive_error"));
+            if($(".mark_sensitive_error").css("display") !="inline"){
+                corporateMark();
+            }
         }
     });
 }
