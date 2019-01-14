@@ -809,6 +809,7 @@ function checkTitle(flag){
                     },
                     success:function(data){
                         if(!data){
+                            titleExist.siblings("span").hide();
                             titleExist.show();
                         }else{
                             titleExist.hide();
@@ -836,7 +837,8 @@ function checkTitle(flag){
 
         }
     }else{
-        $(".title_error").show();
+        $(".title_error").siblings("span").hide();
+        $(".title_error").show()
     }
 
 }
@@ -863,6 +865,7 @@ function checkSensitive(word,obj){
             if(!data){
                 obj.hide();
             }else{
+                obj.siblings("span").hide();
                 obj.show();
 			}
         }
