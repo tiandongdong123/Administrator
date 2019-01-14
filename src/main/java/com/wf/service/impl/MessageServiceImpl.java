@@ -91,7 +91,9 @@ public class MessageServiceImpl implements MessageService {
 		int num = dao.updateIssue(map);
 		if (num > 0) {
 			flag = true;
-			setData(message.getColums(), Integer.parseInt(message.getIsTop()), message.getId());
+            if (message.getIsTop() != null) {
+                setData(message.getColums(), 2, message.getId());
+            }
 		}
 		return flag;
 	}
