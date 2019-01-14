@@ -100,12 +100,12 @@ function serachdata(curr,data){
             "<td class='mailbox-date'><div title='"+rows.createTime+"'>"+rows.stick+"</td><div>"+
             "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"<div></td>"+
 			"<td class='mailbox-name' style='width:353px;'><div>";
-            if(is_top==0){
-                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
+            if(is_top == 0){
+                resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
             }else {
-                resHtml+="<button type='button' onclick=\"stick('"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
+                resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
 			}
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary'>"+issue+"</button>&nbsp;" +
+			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary second_btn'>"+issue+"</button>&nbsp;" +
 			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
           "</tr>";
 		}
@@ -135,48 +135,51 @@ function serachdata(curr,data){
 }
 
 //置顶
-function stick(id,colums,topState){
-    var value;
-    if( topState == "0"){
-        value = "确定要下撤数据吗？"
-	}
-   if(topState == "1"){
-       value = '确定要置顶发布数据到前台吗?';
-   }
-    layer.alert(value,{
-        icon: 1,
-        skin: 'layui-layer-molv',
-        btn: ['确定'], //按钮
-        yes: function() {
-            layer.closeAll();
-            $.ajax({
-                type : "post",
-                async:false,
-                url : "../content/stick.do",
-                dataType : "json",
-                data : {
-                    "id":id,
-                    'colums':colums,
-                    'isTop':topState
-                },
-                success : function(data){
-                    if(data.code == 200){
-                        if(topState == 0){
-							showPage();
-                            layer.msg("下撤成功！");
-
-                        }else if( topState == 1){
-                            showPage();
-                            layer.msg("置顶发布成功！");
-                        }
-                    }else{
-                        layer.msg(data.data)
-                    }
-                }
-            });
+function stick(that,id,colums,topState){
+	if($(that).siblings(".second_btn").text() == "发布"){
+       layer.msg("请先发布资讯后再置顶！")
+	}else{
+        var value;
+        if( topState == "0"){
+            value = "确定要下撤数据吗？"
         }
-    });
+        if(topState == "1"){
+            value = '确定要置顶发布数据到前台吗?';
+        }
+        layer.alert(value,{
+            icon: 1,
+            skin: 'layui-layer-molv',
+            btn: ['确定'], //按钮
+            yes: function() {
+                layer.closeAll();
+                $.ajax({
+                    type : "post",
+                    async:false,
+                    url : "../content/stick.do",
+                    dataType : "json",
+                    data : {
+                        "id":id,
+                        'colums':colums,
+                        'isTop':topState
+                    },
+                    success : function(data){
+                        if(data.code == 200){
+                            if(topState == 0){
+                                showPage();
+                                layer.msg("下撤成功！");
 
+                            }else if( topState == 1){
+                                showPage();
+                                layer.msg("置顶发布成功！");
+                            }
+                        }else{
+                            layer.msg(data.data)
+                        }
+                    }
+                });
+            }
+        });
+	}
 }
 
 function updateMessage(id,issueState){
