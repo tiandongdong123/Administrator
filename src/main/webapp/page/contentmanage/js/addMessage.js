@@ -793,6 +793,7 @@ function checkColum(){
 function checkTitle(flag){
     if($("#title").val() !=''){
         if(!$("#title").val().trim()){
+            $(".title_error").siblings("span").hide();
             $(".title_error").show()
         }else{
             $(".title_error").hide();
@@ -843,6 +844,7 @@ function checkTitle(flag){
 function checkCheet(){
     var content= ues.getContent();
     if(!content){
+        $(".content_error").siblings("span").hide();
     	$(".content_error").show();
 	}else{
         $(".content_error").hide();
