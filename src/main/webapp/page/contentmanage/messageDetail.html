@@ -97,8 +97,10 @@
 		<br>
 		  <div style="text-align: center;width: 700px;">
 			  <button type="button" onclick="showMessage()" class="btn btn-primary" >预览</button>
+			  <?if(message.issueState != 2){?>
 			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			  <button type="button" onclick="detailPublish()" class="btn btn-primary" >发布</button>
+			  <?}?>
 			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			  <button type="button" class="btn btn-primary" onclick="reset()">返回</button>
 		  </div>
