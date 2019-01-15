@@ -152,10 +152,8 @@ function addMark(){
     });
     $('#addMark').keydown(function(event) {
         if (event.keyCode == 13) {
-            blurEvent($("#addMark"),$(".mark_sensitive_error"));
-            if($(".mark_sensitive_error").css("display") !="inline"){
-                corporateMark();
-            }
+            blurEvent($("#addMark"),$(".mark_sensitive_error"),"keyCode");
+
         }
     });
 }
@@ -847,7 +845,6 @@ function checkTitle(flag){
 //校验内容
 function checkCheet(){
     var content= ues.getContent();
-    alert(content)
     if(!content){
         $(".content_sensitive_error").hide();
     	$(".content_error").show();
@@ -874,10 +871,16 @@ function checkSensitive(word,obj){
         }
     })
 }
-function blurEvent(that,obj){
+function blurEvent(that,obj,code){
    that.blur(function(){
        if(that.val() !=''){
-           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
+           if(code = "keyCode"){
+               if($(".mark_sensitive_error").css("display") !="inline"){
+                   corporateMark();
+               }
+           }else{
+               (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
+           }
        }else{
            obj.hide();
        }
