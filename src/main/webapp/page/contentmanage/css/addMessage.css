@@ -56,10 +56,10 @@ td{
 .mark_common_wrap{
     margin-left: 169px;
 }
-.mark_common_wrap p{
+.mark_common_wrap span.mark_title{
     color: #2196F3;
     cursor: pointer;
-    width: 115px;
+
 }
 .mark_common_wrap .common_mark span{
     color: #0000FF;

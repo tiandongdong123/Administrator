@@ -53,6 +53,7 @@ $(function(){
             $(".content_error").hide();
             checkSensitive(ues.getContent(),$(".content_sensitive_error"))
         }else{
+            $(".content_sensitive_error").hide();
             $(".content_error").show();
         }
     });
@@ -151,12 +152,31 @@ function addMark(){
     });
     $('#addMark').keydown(function(event) {
         if (event.keyCode == 13) {
-            blurEvent($("#addMark"),$(".mark_sensitive_error"));
-            if($(".mark_sensitive_error").css("display") !="inline"){
-                corporateMark();
+            if ($('#addMark').val() != '') {
+                if ($('#addMark').val().trim() != '') {
+                    $.ajax({
+                        type: "post",
+                        url: "../content/checkForBiddenWord.do",
+                        data: {
+                            word: $('#addMark').val()
+                        },
+                        success: function (data) {
+                            if (!data) {
+                                $(".mark_sensitive_error").hide();
+                                corporateMark();
+                            } else {
+                                $(".mark_sensitive_error").show();
+                            }
+                        }
+                    })
+                } else {
+                    $(".mark_sensitive_error").hide();
+                }
+            } else {
+                $(".mark_sensitive_error").hide();
             }
         }
-    });
+    })
 }
 //生成标签
 function corporateMark(){
@@ -793,6 +813,7 @@ function checkColum(){
 function checkTitle(flag){
     if($("#title").val() !=''){
         if(!$("#title").val().trim()){
+            $(".title_error").siblings("span").hide();
             $(".title_error").show()
         }else{
             $(".title_error").hide();
@@ -808,6 +829,7 @@ function checkTitle(flag){
                     },
                     success:function(data){
                         if(!data){
+                            titleExist.siblings("span").hide();
                             titleExist.show();
                         }else{
                             titleExist.hide();
@@ -824,6 +846,7 @@ function checkTitle(flag){
                     },
                     success:function(data){
                         if(!data){
+                            titleExist.siblings("span").hide();
                             titleExist.show();
                         }else{
                             titleExist.hide();
@@ -835,7 +858,8 @@ function checkTitle(flag){
 
         }
     }else{
-        $(".title_error").show();
+        $(".title_error").siblings("span").hide();
+        $(".title_error").show()
     }
 
 }
@@ -843,6 +867,7 @@ function checkTitle(flag){
 function checkCheet(){
     var content= ues.getContent();
     if(!content){
+        $(".content_sensitive_error").hide();
     	$(".content_error").show();
 	}else{
         $(".content_error").hide();
@@ -861,6 +886,7 @@ function checkSensitive(word,obj){
             if(!data){
                 obj.hide();
             }else{
+                obj.siblings("span").hide();
                 obj.show();
 			}
         }
@@ -869,9 +895,9 @@ function checkSensitive(word,obj){
 function blurEvent(that,obj){
    that.blur(function(){
        if(that.val() !=''){
-           if(that.val().trim() !=''){
-               checkSensitive(that.val().trim(),obj)
-           }
+           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
+       }else{
+           obj.hide();
        }
    })
 }
