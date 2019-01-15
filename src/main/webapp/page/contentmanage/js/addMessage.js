@@ -70,11 +70,6 @@ $(function(){
            $(".colum_error").hide();
         })
     })
-    $('#addMark').keydown(function(event) {
-        if (event.keyCode == 13) {
-            blurEvent($("#addMark"),$(".mark_sensitive_error"),"keyCode");
-        }
-    });
 
 });
 
@@ -155,6 +150,31 @@ function addMark(){
             corporateMark();
         }
     });
+    $('#addMark').keydown(function(event) {
+        if($('#addMark').val() !=''){
+            if($('#addMark').val().trim() !=''){
+                $.ajax({
+                    type:"post",
+                    url:"../content/checkForBiddenWord.do",
+                    data:{
+                        word:word
+                    },
+                    success:function(data){
+                        if(!data){
+                            $(".mark_sensitive_error").hide();
+                            corporateMark();
+                        }else{
+                            $(".mark_sensitive_error").show();
+                        }
+                    }
+                })
+            }else{
+                $(".mark_sensitive_error").hide();
+            }
+        }else{
+            $(".mark_sensitive_error").hide();
+        }
+    })
 }
 //生成标签
 function corporateMark(){
@@ -853,7 +873,7 @@ function checkCheet(){
 	}
 }
 //敏感词校验
-function checkSensitive(word,obj,code){
+function checkSensitive(word,obj){
     $.ajax({
         type:"post",
         url:"../content/checkForBiddenWord.do",
@@ -863,9 +883,6 @@ function checkSensitive(word,obj,code){
         success:function(data){
             if(!data){
                 obj.hide();
-                if(code == "keyCode"){
-                    corporateMark();
-                }
             }else{
                 obj.siblings("span").hide();
                 obj.show();
@@ -873,18 +890,10 @@ function checkSensitive(word,obj,code){
         }
     })
 }
-function blurEvent(that,obj,code){
+function blurEvent(that,obj){
    that.blur(function(){
        if(that.val() !=''){
-           if(code = "keyCode"){
-               if(that.val().trim() !=''){
-                   checkSensitive(that.val().trim(),obj,"keyCode")
-               }else{
-                   obj.hide()
-               }
-           }else{
-               (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
-           }
+           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
        }else{
            obj.hide();
        }
