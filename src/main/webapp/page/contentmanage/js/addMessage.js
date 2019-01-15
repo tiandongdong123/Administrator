@@ -53,6 +53,7 @@ $(function(){
             $(".content_error").hide();
             checkSensitive(ues.getContent(),$(".content_sensitive_error"))
         }else{
+            $(".content_sensitive_error").hide();
             $(".content_error").show();
         }
     });
@@ -826,6 +827,7 @@ function checkTitle(flag){
                     },
                     success:function(data){
                         if(!data){
+                            titleExist.siblings("span").hide();
                             titleExist.show();
                         }else{
                             titleExist.hide();
@@ -845,8 +847,9 @@ function checkTitle(flag){
 //校验内容
 function checkCheet(){
     var content= ues.getContent();
+    alert(content)
     if(!content){
-        $(".content_error").siblings("span").hide();
+        $(".content_sensitive_error").hide();
     	$(".content_error").show();
 	}else{
         $(".content_error").hide();
