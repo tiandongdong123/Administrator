@@ -70,6 +70,11 @@ $(function(){
            $(".colum_error").hide();
         })
     })
+    $('#addMark').keydown(function(event) {
+        if (event.keyCode == 13) {
+            blurEvent($("#addMark"),$(".mark_sensitive_error"),"keyCode");
+        }
+    });
 
 });
 
@@ -148,11 +153,6 @@ function addMark(){
         blurEvent($("#addMark"),$(".mark_sensitive_error"));
         if($(".mark_sensitive_error").css("display") !="inline"){
             corporateMark();
-        }
-    });
-    $('#addMark').keydown(function(event) {
-        if (event.keyCode == 13) {
-            blurEvent($("#addMark"),$(".mark_sensitive_error"),"keyCode");
         }
     });
 }
