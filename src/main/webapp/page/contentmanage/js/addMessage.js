@@ -151,28 +151,30 @@ function addMark(){
         }
     });
     $('#addMark').keydown(function(event) {
-        if($('#addMark').val() !=''){
-            if($('#addMark').val().trim() !=''){
-                $.ajax({
-                    type:"post",
-                    url:"../content/checkForBiddenWord.do",
-                    data:{
-                        word:word
-                    },
-                    success:function(data){
-                        if(!data){
-                            $(".mark_sensitive_error").hide();
-                            corporateMark();
-                        }else{
-                            $(".mark_sensitive_error").show();
+        if (event.keyCode == 13) {
+            if ($('#addMark').val() != '') {
+                if ($('#addMark').val().trim() != '') {
+                    $.ajax({
+                        type: "post",
+                        url: "../content/checkForBiddenWord.do",
+                        data: {
+                            word: word
+                        },
+                        success: function (data) {
+                            if (!data) {
+                                $(".mark_sensitive_error").hide();
+                                corporateMark();
+                            } else {
+                                $(".mark_sensitive_error").show();
+                            }
                         }
-                    }
-                })
-            }else{
+                    })
+                } else {
+                    $(".mark_sensitive_error").hide();
+                }
+            } else {
                 $(".mark_sensitive_error").hide();
             }
-        }else{
-            $(".mark_sensitive_error").hide();
         }
     })
 }
