@@ -158,7 +158,7 @@ function addMark(){
                         type: "post",
                         url: "../content/checkForBiddenWord.do",
                         data: {
-                            word: word
+                            word: $('#addMark').val()
                         },
                         success: function (data) {
                             if (!data) {
