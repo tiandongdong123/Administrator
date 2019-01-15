@@ -153,7 +153,6 @@ function addMark(){
     $('#addMark').keydown(function(event) {
         if (event.keyCode == 13) {
             blurEvent($("#addMark"),$(".mark_sensitive_error"),"keyCode");
-
         }
     });
 }
@@ -854,7 +853,7 @@ function checkCheet(){
 	}
 }
 //敏感词校验
-function checkSensitive(word,obj){
+function checkSensitive(word,obj,code){
     $.ajax({
         type:"post",
         url:"../content/checkForBiddenWord.do",
@@ -864,6 +863,9 @@ function checkSensitive(word,obj){
         success:function(data){
             if(!data){
                 obj.hide();
+                if(code == "keyCode"){
+                    corporateMark();
+                }
             }else{
                 obj.siblings("span").hide();
                 obj.show();
@@ -875,8 +877,10 @@ function blurEvent(that,obj,code){
    that.blur(function(){
        if(that.val() !=''){
            if(code = "keyCode"){
-               if($(".mark_sensitive_error").css("display") !="inline"){
-                   corporateMark();
+               if(that.val().trim() !=''){
+                   checkSensitive(that.val().trim(),obj,"keyCode")
+               }else{
+                   obj.hide()
                }
            }else{
                (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
