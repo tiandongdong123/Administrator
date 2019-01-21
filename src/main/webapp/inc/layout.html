@@ -141,9 +141,9 @@
             	<a href="#"><i class="fa fa-circle-o"></i>个人用户管理<i class="fa fa-angle-left pull-right"></i></a>
             	<ul class="treeview-menu menu-open" style="display: block;">
 		        	<li <?if(!strutil.contain(session.purviews,"个人基本信息")){?>style="display:none"<?}?> <?if(session.menu_first=="perManagers.do"){ ?>class="active"<?}?>><a href="../person/index.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>个人基本信息</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人充值记录")){?>style="display:none"<?}?> <?if(session.menu_first=="charge_order.do"){ ?>class="active"<?}?>><a href="../person/charge.do"><i class="fa fa-circle-o"></i>个人充值记录</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../person/order.do"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
-		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../person/wfcardbind.do"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"个人充值记录")){?>style="display:none"<?}?> <?if(session.menu_first=="charge_order.do"){ ?>class="active"<?}?>><a href="../person/charge.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>个人充值记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"个人订单记录")){?>style="display:none"<?}?> <?if(session.menu_first=="pay_order.do"){ ?>class="active"<?}?>><a href="../person/order.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>个人订单记录</a></li>
+		        	<li <?if(!strutil.contain(session.purviews,"万方卡绑定记录")){?>style="display:none"<?}?> <?if(session.menu_first=="wfcard_bind.do"){ ?>class="active"<?}?>><a href="../person/wfcardbind.do" class="pesonalinfo-nav"><i class="fa fa-circle-o"></i>万方卡绑定记录</a></li>
           		</ul>
               </li>
           </ul>
@@ -313,9 +313,11 @@
     </section>
   </aside>
 <script>
-   $('.pesonalinfo-nav').click(function(){
-       sessionStorage.setItem('chargeId','');
-   })
+    $(".pesonalinfo-nav").each(function(){
+        $(this).click(function(){
+            sessionStorage.setItem('chargeId','');
+        })
+    });
 </script>
   ${layoutContent}
 
