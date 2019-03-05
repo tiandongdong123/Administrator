@@ -110,6 +110,8 @@ public class AheadUserController {
 	
 	/**
 	 *	判断ip段是否重复
+	 *ip:注册或修改的当前用户ip
+	 *userid:注册或修改的当前用户
 	 */
 	@RequestMapping("validateip")
 	@ResponseBody
@@ -119,14 +121,20 @@ public class AheadUserController {
 		StringBuffer sb = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
 		 Map<String,String> maps = new LinkedHashMap<String,String>();
-		String [] str = ip.split("\n");	
-		//校验<数据库>是否存在IP重复
+		//获取多个ip段
+		 String [] str = ip.split("\n");	
+		//校验<数据库>是否存在IP重复 
 		List<UserIp> list=new ArrayList<UserIp>();
-		for(int i = 0; i < str.length; i++){		
+		//遍历用户输入的ip  组装成UserIp对象 一个用户可以有多个ip段
+		for(int i = 0; i < str.length; i++){	
+			//开始ip
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
+			//结束ip
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
+			//将IPv4字符串转换成数字
 			long begin=IPConvertHelper.IPToNumber(beginIp);
 			long end=IPConvertHelper.IPToNumber(endIp);
+			//如果开始ip大于结束ip  返回信息
 			if(begin>end){
 				map.put("flag", "true");
 				map.put("errorIP", beginIp+"-"+endIp+" 开始IP大于结束IP");
@@ -137,8 +145,12 @@ public class AheadUserController {
 			user.setEndIpAddressNumber(end);
 			list.add(user);
 		}
+		System.out.println("list:"+list);
+		//判断存储错误信息的map是否等于0
 		if(map.size()==0){
+			//验证ip是否有交集
 			List<Map<String,Object>> bool = aheadUserService.validateIp(list);
+			//如果查出有ip交集的
 			if(bool.size()>0){
 				int index=1;
 				for(Map<String,Object> mbo : bool){
@@ -156,16 +168,21 @@ public class AheadUserController {
 					if(userType!=2||loginCode!=0){
 						continue;
 					}
+					//循环注册或修改用户的输入的ip
 					for(UserIp src:list){
+						//只要有交集的ip
 						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
+							//TODO 判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
 							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
 							sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
 									+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
+							//TODO 添加购买资源相同信息
 						}
 					}
 				}
 				if(maps.size()>0){
+					//判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
 					map.put("flag", "true");
 					map.put("userId",userId);
 					for (String key : maps.keySet()) {
@@ -180,8 +197,12 @@ public class AheadUserController {
 			map.put("flag", "false");
 		}
 		log.info("IP校验："+userId+" "+ip.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
+		System.out.println("map:"+map);
 		return map;
 	}
+	/**
+	 * 判断ip重复
+	 */
 	
 	/**
 	 *	查询机构管理员信息
