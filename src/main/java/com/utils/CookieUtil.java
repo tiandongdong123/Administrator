@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import com.redis.RedisUtil;
+import com.redis.UserRedisUtil;
 import com.wf.bean.Wfadmin;
 
 public class CookieUtil {
 	
-	public static RedisUtil redis = new RedisUtil();
+	//public static RedisUtil redis = new RedisUtil();
+	public static UserRedisUtil redis=new UserRedisUtil();
 	
 	public static final String LOGIN_URL = "/user/toLogin.do";
 	public static final String REMIND="/user/getRemind.do";

@@ -41,7 +41,7 @@ public class UserRedisUtil {
     public UserRedisUtil() {
         		if (pool == null) {
         			JedisPoolConfig config = new JedisPoolConfig();
-        	        config.setMaxTotal(maxActive);
+        	        config.setMaxActive(maxActive);
         	        config.setMaxIdle(maxIdle);
         	        config.setMinIdle(minIdle);
         	        config.setTestOnBorrow(testOnBorrow);
@@ -49,7 +49,7 @@ public class UserRedisUtil {
         	        config.setTestWhileIdle(testWhileIdle);
         	        config.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
         	        config.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        	        config.setMaxWaitMillis(maxWait);
+        	        config.setMaxWait(maxWait);
         	        pool = new JedisPool(config, redisHost, redisPort, 6000);
         		}
         }
