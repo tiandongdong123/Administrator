@@ -173,6 +173,13 @@ public class AheadUserController {
 						//只要有交集的ip
 						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
 							//TODO 判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
+							  //1.获取和重复ip的用户的购买资源。
+							    System.out.println("重复的ip："+userid);
+							   // opreationLogs.getProjectByUserId(userid);
+							    
+							    List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
+							    System.out.println("999999999:"+projectlist);
+							
 							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
 							sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
@@ -200,9 +207,6 @@ public class AheadUserController {
 		System.out.println("map:"+map);
 		return map;
 	}
-	/**
-	 * 判断ip重复
-	 */
 	
 	/**
 	 *	查询机构管理员信息
