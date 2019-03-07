@@ -805,6 +805,11 @@
 			<artifactId>message-queue-grpc-api</artifactId>
 			<version>1.2018.50</version>
 		</dependency>
+		<dependency>
+			<groupId>com.wanfangdata</groupId>
+			<artifactId>common-config-tools</artifactId>
+			<version>1.2018.45</version>
+		</dependency>
 	</dependencies>
  <build>
     <sourceDirectory>src/main/java</sourceDirectory>

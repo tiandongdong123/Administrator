@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.redis.RedisUtil;
+import com.redis.UserRedisUtil;
 import com.utils.CookieUtil;
 import com.utils.GetUuid;
 import com.wf.bean.Department;
@@ -45,7 +46,8 @@ public class UserController {
 	@Autowired
 	RemindService remindService;
 	
-	private RedisUtil redis = new RedisUtil();
+	//private RedisUtil redis = new RedisUtil();
+	private UserRedisUtil redis=new UserRedisUtil();
 	private static Logger log = Logger.getLogger(UserController.class);
 	
 	/**
