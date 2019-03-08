@@ -151,3 +151,25 @@ function validatePeron(obj){
 		});
 	}
 }
+// 检查IP冲突 
+function checkIPError () {
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    data.append('send',isCheckedMe);
+    $.ajax({  
+        url: '../auser/validateip.do',  
+        type: 'POST',
+        data: data,
+        cache: false,  
+        processData: false,
+        contentType: false  
+    })
+}

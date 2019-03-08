@@ -80,10 +80,10 @@
 				<div class="form-group input_block" id="ipvalue" style="display: none;">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
 					<textarea class="input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);"></textarea>
-					<span>
+					<!-- <span>
 					<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
 					<button type="button" onclick="deleteIP();" id="deleteIp">剔除冲突IP</button>
-					</span>
+					</span> -->
 				</div>
 				</div>
                 <div class="form-group input_block">
@@ -224,6 +224,8 @@
                	</div>
 				<div class="box-footer block_left">
 					<!-- <button type="button" class="btn btn-primary" id="submit1" onclick="submitForm(0);">保存并新增</button> -->
+					<button type="button" class="btn btn-primary" onclick="checkIPError();" id="checkIp">检查IP冲突</button>
+					<button type="button" class="btn btn-primary" onclick="deleteIPError();" id="deleteIp">剔除冲突IP</button>
 					<button type="button" class="btn btn-primary" id="submit2" onclick="submitForm(1);">保存</button>
 					<button type="reset" class="btn btn-primary" id="submit3" onclick="location=location;">取消</button>
 				</div>
