@@ -171,5 +171,9 @@ function checkIPError () {
         cache: false,  
         processData: false,
         contentType: false  
-    })
+    }).done(function(data){
+		if(data.flag=='fail'){
+			layer.msg(data.fail, {icon: 2});
+		}
+    });
 }

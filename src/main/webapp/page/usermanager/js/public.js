@@ -467,9 +467,11 @@ function switchcs(obj){
 		$("#upass").show().siblings().hide();
 	}else if($(obj).val()=="0"){
 		$("#ipvalue").show().siblings().hide();
+		$('.IPAutomatic').show().siblings().hide();
 	}else{
 		$("#upass").show();
 		$("#ipvalue").show();
+		$('.IPAutomatic').show();
 	}
 	if($(obj).val()=="0"){
 		$("#checkIp").show();
