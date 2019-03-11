@@ -631,3 +631,95 @@ function addAtrr(){
 	$("#submit").attr({disabled: "disabled"});
 	$("#submit1").attr({disabled: "disabled"});
 }
+
+//检测机构账号IP
+function checkInsIPError () {
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    data.append('send',isCheckedMe);
+    $.ajax({  
+        url: '../auser/registerInfo.do',  
+        type: 'POST',
+        data: data,
+        cache: false,  
+        processData: false,
+        contentType: false  
+    });
+	var ip = $("#ipSegment").val();
+	if(ip==""){
+		var msg="<font style='color:red'>IP不存在</font>";
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+	if(!IpFormat(ip)){
+		var  msg="<font style='color:red''>IP段格式错误：</font>";
+		for(var ar in IpArray){
+			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
+		}
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+	var userId = $("#userId").val();
+	validateInsIp(ip,userId,"#checkIp");
+}
+function validateInsIp(ip,userId,object) {
+	var loginMode = $("#loginMode").val();
+	errorIP="";
+	if(loginMode==0){
+		var bool = false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/validateip.do",
+			data:{ip:ip,userId:userId},
+			dataType : "json",
+			success: function(data){
+				if(data.flag=="true"){
+					bool = true;
+					var msg="";
+					if(data.tableIP!=null){
+						errorIP=data.errorIP;
+						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>"
+						msg += "<font style='color:red'>相冲突购买项目</font></br><font style='color:#000000'>"+data.tableProject+"</font>";
+						$('#IpErrorInfo').append(msg)
+					}else{
+						msg="<font style='color:red'>IP格式错误:</font></br><font style='color:#000000'>"+data.errorIP+"</font>";
+						$('#IpErrorInfo').append(msg)
+					}
+					
+				}else{
+					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
+						tips: [3, '#FFFFFF'],
+						area: ['350px', ''], //宽高
+						closeBtn :1,
+						time: 0
+					});
+					bool = false;
+				}
+			}
+		});
+		return bool;
+	}
+}
+function deleteInsIPError(){
+	layer.closeAll();
+	$('#IpErrorInfo').html('')
+}

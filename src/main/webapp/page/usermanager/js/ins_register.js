@@ -165,7 +165,7 @@ function checkIPError () {
     var isCheckedMe = $('#isPublishEmail').is(':checked');
     data.append('send',isCheckedMe);
     $.ajax({  
-        url: '../auser/validateip.do',  
+        url: '../auser/registerInfo.do',  
         type: 'POST',
         data: data,
         cache: false,  
