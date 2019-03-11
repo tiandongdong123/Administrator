@@ -39,25 +39,30 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     private static final String MONTHFORMAT = "yyyy-MM";
 
 
-    private static ThreadLocal<DateFormat> threadLocal = new ThreadLocal<DateFormat>();
+    private static final ThreadLocal <SimpleDateFormat> threadLocal = new ThreadLocal <SimpleDateFormat>();
+    private static final Object object = new Object();
 
-    public static DateFormat getDayFormat() {
-        DateFormat dayFormat = threadLocal.get();
-        if (dayFormat == null) {
-            dayFormat = new SimpleDateFormat(DATEFORMAT);
-            threadLocal.set(dayFormat);
+    /**
+     * 拿到指定输出格式的SimpleDateFormat
+     *
+     * @param pattern
+     * @return
+     */
+    public static SimpleDateFormat getSimpleDateFormat(String pattern) {
+        SimpleDateFormat dateFormat = threadLocal.get();
+        if (dateFormat == null) {
+            synchronized (object) {
+                if (dateFormat == null) {
+                    dateFormat = new SimpleDateFormat(pattern);
+                    dateFormat.setLenient(false);
+                    threadLocal.set(dateFormat);
+                }
+            }
         }
-        return dayFormat;
+        dateFormat.applyPattern(pattern);
+        return dateFormat;
     }
 
-    public static DateFormat getMonthFormat() {
-        DateFormat monthFormat = threadLocal.get();
-        if (monthFormat == null) {
-            monthFormat = new SimpleDateFormat(MONTHFORMAT);
-            threadLocal.set(monthFormat);
-        }
-        return monthFormat;
-    }
 
     //倒序排列
     private static final int DESC = 1;
@@ -112,12 +117,12 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
             close(sumResultSet, sumPs, conn);
         }
 
-        String today = getDayFormat().format(new Date());
+        String today = getSimpleDateFormat(DATEFORMAT).format(new Date());
         try {
             //个人绑定机构新增个人账号
             SearchBindDetailsRequest countRequest = SearchBindDetailsRequest.newBuilder()
-                    .setStartAddTime(Timestamps.fromMillis(getDayFormat().parse(dateTime).getTime()))
-                    .setEndAddTime(Timestamps.fromMillis(getDayFormat().parse(today).getTime()))
+                    .setStartAddTime(Timestamps.fromMillis(getSimpleDateFormat(DATEFORMAT).parse(dateTime).getTime()))
+                    .setEndAddTime(Timestamps.fromMillis(getSimpleDateFormat(DATEFORMAT).parse(today).getTime()))
                     .build();
             SearchBindDetailsResponse countResponse = bindAccountChannel.getBlockingStub().searchBindDetailsOrderUser(countRequest);
             int bindCount = 0;
@@ -136,7 +141,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                             .build();
                     userIdList.add(accountId);
                 }
-                Date now = getDayFormat().parse(dateTime);
+                Date now = getSimpleDateFormat(DATEFORMAT).parse(dateTime);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(now);
                 calendar.add(Calendar.DATE, -1);
@@ -195,7 +200,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     }
 
                     Date endDateTime = (Date) method.invoke(account);
-                    if (endDateTime.compareTo(getDayFormat().parse(today)) != 1) {
+                    if (endDateTime.compareTo(getSimpleDateFormat(DATEFORMAT).parse(today)) != 1) {
                         continue;
                     }
 
@@ -366,8 +371,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         Date startDate = null;
         Date endDate = null;
         try {
-            startDate = getDayFormat().parse(startTime);
-            endDate = getDayFormat().parse(endTime);
+            startDate = getSimpleDateFormat(DATEFORMAT).parse(startTime);
+            endDate = getSimpleDateFormat(DATEFORMAT).parse(endTime);
         } catch (ParseException e) {
             log.error("时间转换失败", e);
         }
@@ -387,7 +392,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     start.add(Calendar.DATE, 1);
 
                     while (start.before(end)) {
-                        dateList.add(getDayFormat().format(start.getTime()));
+                        dateList.add(getSimpleDateFormat(DATEFORMAT).format(start.getTime()));
                         start.add(Calendar.DATE, 1);
                     }
                     dateList.add(endTime);
@@ -397,20 +402,20 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     try {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(startDate);
-                        String startDayOfWeek = getDayFormat().format(startDate);
+                        String startDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(startDate);
                         int whichDay = calendar.get(Calendar.DAY_OF_WEEK) - 1;
                         if (whichDay == 0) {
                             whichDay = 7;
                         }
                         calendar.add(Calendar.DATE, 7 - whichDay);
-                        String endDayOfWeek = getDayFormat().format(calendar.getTime());
+                        String endDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
 
-                        while (getDayFormat().parse(endDayOfWeek).compareTo(endDate) == -1) {
+                        while (getSimpleDateFormat(DATEFORMAT).parse(endDayOfWeek).compareTo(endDate) == -1) {
                             dateList.add(startDayOfWeek + "-" + endDayOfWeek);
                             calendar.add(Calendar.DATE, 1);
-                            startDayOfWeek = getDayFormat().format(calendar.getTime());
+                            startDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
                             calendar.add(Calendar.DATE, 6);
-                            endDayOfWeek = getDayFormat().format(calendar.getTime());
+                            endDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
                         }
                         dateList.add(startDayOfWeek + "-" + endTime);
 
@@ -424,20 +429,20 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                     Calendar max = Calendar.getInstance();
 
                     try {
-                        min.setTime(getMonthFormat().parse(startTime));
+                        min.setTime(getSimpleDateFormat(MONTHFORMAT).parse(startTime));
                         min.set(min.get(Calendar.YEAR), min.get(Calendar.MONTH), 1);
-                        max.setTime(getMonthFormat().parse(endTime));
+                        max.setTime(getSimpleDateFormat(MONTHFORMAT).parse(endTime));
                         max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
                         Calendar calendar = min;
                         String startDayOfMonth = startTime;
                         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-                        String endDayOfMonth = getDayFormat().format(calendar.getTime());
-                        while (getDayFormat().parse(endDayOfMonth).compareTo(endDate) == -1) {
+                        String endDayOfMonth = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
+                        while (getSimpleDateFormat(DATEFORMAT).parse(endDayOfMonth).compareTo(endDate) == -1) {
                             dateList.add(startDayOfMonth + "-" + endDayOfMonth);
                             calendar.add(Calendar.DATE, 1);
-                            startDayOfMonth = getDayFormat().format(calendar.getTime());
+                            startDayOfMonth = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
                             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-                            endDayOfMonth = getDayFormat().format(calendar.getTime());
+                            endDayOfMonth = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
                         }
                         dateList.add(startDayOfMonth + "-" + endTime);
                         break;
@@ -464,8 +469,8 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         Date startDate = null;
         Date endDate = null;
         try {
-            startDate = getDayFormat().parse(startTime);
-            endDate = getDayFormat().parse(endTime);
+            startDate = getSimpleDateFormat(DATEFORMAT).parse(startTime);
+            endDate = getSimpleDateFormat(DATEFORMAT).parse(endTime);
 
         } catch (ParseException e) {
             log.error("时间转换失败", e);
@@ -481,11 +486,11 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                         whichDay = 7;
                     }
                     calendar.add(Calendar.DATE, 7 - whichDay);
-                    String endDayOfWeek = getDayFormat().format(calendar.getTime());
-                    while (getDayFormat().parse(endDayOfWeek).compareTo(endDate) == -1) {
+                    String endDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
+                    while (getSimpleDateFormat(DATEFORMAT).parse(endDayOfWeek).compareTo(endDate) == -1) {
                         lastDateList.add(endDayOfWeek);
                         calendar.add(Calendar.DATE, 7);
-                        endDayOfWeek = getDayFormat().format(calendar.getTime());
+                        endDayOfWeek = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
 
                     }
                     lastDateList.add(endTime);
@@ -500,15 +505,15 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
                 Calendar max = Calendar.getInstance();
 
                 try {
-                    min.setTime(getMonthFormat().parse(startTime));
+                    min.setTime(getSimpleDateFormat(MONTHFORMAT).parse(startTime));
                     min.set(min.get(Calendar.YEAR), min.get(Calendar.MONTH), 1);
-                    max.setTime(getMonthFormat().parse(endTime));
+                    max.setTime(getSimpleDateFormat(MONTHFORMAT).parse(endTime));
                     max.set(max.get(Calendar.YEAR), max.get(Calendar.MONTH), 2);
                     Calendar calendar = min;
                     while (calendar.before(max)) {
                         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                         if (calendar.getTime().compareTo(endDate) == -1) {
-                            String lastDayOfMonth = getDayFormat().format(calendar.getTime());
+                            String lastDayOfMonth = getSimpleDateFormat(DATEFORMAT).format(calendar.getTime());
                             lastDateList.add(lastDayOfMonth);
                         }
                         calendar.add(Calendar.MONTH, 1);
