@@ -1955,6 +1955,47 @@ function validateIp(ip,userId,object){
 	}
 }
 
+function validateIpChange(data,object){
+	var loginMode = $("#loginMode").val();
+	errorIP="";
+	if(loginMode==0){
+		var bool = false;
+		$.ajax({
+			type : "post",
+			async:false,
+			url : "../auser/validateip.do",
+			data:data,
+			dataType : "json",
+			success: function(data){
+				if(data.flag=="true"){
+					bool = true;
+					var msg="";
+					if(data.tableIP!=null){
+						errorIP=data.errorIP;
+						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>";
+					}else{
+						msg="<font style='color:red'>IP格式错误:</font></br><font style='color:#000000'>"+data.errorIP+"</font>";
+					}
+					layer.tips(msg, object, {
+						tips: [3, '#FFFFFF'],
+						area: ['350px', ''], //宽高
+						closeBtn :1,
+						time: 0
+					});
+				}else{
+					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
+						tips: [3, '#FFFFFF'],
+						area: ['350px', ''], //宽高
+						closeBtn :1,
+						time: 0
+					});
+					bool = false;
+				}
+			}
+		});
+		return bool;
+	}
+}
 //校验多行ip对
 var IpArray=new Array();
 function IpFormat(str){

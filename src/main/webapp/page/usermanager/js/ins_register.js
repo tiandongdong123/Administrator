@@ -13,6 +13,17 @@ $(document).ready(function(){
 function submitForm(type){
 	var reg = /^[1-9]\d*$/;
 	var bool = false;
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    data.append('send',isCheckedMe);
 	if($("#bindLimit").val()==""){
 		$(".mistaken").text("绑定个人上限不能为空，请填写正确的数字");
 		style();
@@ -63,21 +74,11 @@ function submitForm(type){
 		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
 		removeAtrr();
 		return false;
-	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
+	}else if(ip!="" && validateIpChange(data,'#ipSegment')){
 		removeAtrr();
 		return false;
 	}else{
-	   var data = new FormData($('#fromList')[0]);
-        var openBindStart = data.get('openBindStart');
-        var openBindEnd = data.get('openBindEnd');
-        if(openBindStart){
-            data.set('openBindStart',openBindStart+' 00:00:00');
-        }
-        if(openBindEnd){
-            data.set('openBindEnd',openBindEnd+' 23:59:59');
-        }
-        var isCheckedMe = $('#isPublishEmail').is(':checked');
-        data.append('send',isCheckedMe);
+	   
 	    $.ajax({  
 	        url: '../auser/registerInfo.do',  
 	        type: 'POST',
@@ -183,15 +184,18 @@ function checkIPError () {
 					$('#IpErrorInfo').append(msg)
 				}
 				
-			}else{
+			}else if(data.flag === 'false'){
 				layer.tips("<font style='color:#000000'>无冲突</font></br>", "#checkIp", {
 					tips: [3, '#FFFFFF'],
 					area: ['350px', ''], //宽高
 					closeBtn :1,
 					time: 0
 				});
+			}else if (data.flag === 'fail') {
+				layer.msg(data.fail, {icon: 2});
+				}
 			}
-		}
+		
     })
 }
 function deleteIPError() {

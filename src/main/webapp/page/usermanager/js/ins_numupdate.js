@@ -64,7 +64,19 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
-
+	
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    data.append('send',isCheckedMe);
+    
 	var ip = $("#ipSegment").val();
 	var adminIP = $("#adminIP").val();
 	var userId = $("#userId").val();
@@ -126,7 +138,7 @@ function submitForm(){
 		layer.msg("管理员账号IP段不合法，请填写规范的IP段",{icon: 2});
 		removeAtrr();
 		return false;
-	}else if(ip!="" && validateIp(ip,userId,'#ipSegment')){
+	}else if(ip!="" && validateIpChange(data,'#ipSegment')){
 		removeAtrr();
 		return false;
 	}else{
@@ -141,6 +153,7 @@ function submitForm(){
 		updateUser();
 	}
 }
+
 
 function validateUserInstitution(olds,institution){
 	$.ajax({
@@ -664,15 +677,18 @@ function checkInsIPError () {
 					$('#IpErrorInfo').append(msg)
 				}
 				
-			}else{
+			}else if(data.flag === 'false'){
 				layer.tips("<font style='color:#000000'>无冲突</font></br>", "#checkIp", {
 					tips: [3, '#FFFFFF'],
 					area: ['350px', ''], //宽高
 					closeBtn :1,
 					time: 0
 				});
+			}else if (data.flag === 'fail') {
+				layer.msg(data.fail, {icon: 2});
+				}
 			}
-		}
+		
     });
 }
 
