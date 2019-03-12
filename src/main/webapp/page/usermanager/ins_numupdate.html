@@ -872,8 +872,8 @@
 		</form>
 		<input type="hidden" id="count" value="${i}">
 		<div class="box-footer block_left">
-			<button type="button" onclick="checkInsIPError();" class="btn btn-primary" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
-			<button type="button" onclick="deleteInsIPError();" class="btn btn-primary" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP段</button>
+			<button type="button" onclick="checkIPError();" class="btn btn-primary" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
+			<button type="button" onclick="deleteIPError();" class="btn btn-primary" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP段</button>
 			<button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">保存</button>
 			<button type="button" class="btn btn-primary" id="submit1" onclick="javascript:history.back(-1)">取消</button>
 		</div>
