@@ -245,9 +245,7 @@ public class AheadUserController {
 								List<ResourceLimitsDTO> listrld = userrdlist.get(y).getRldto();
 								for(int d=0;d<listrld.size();d++){
 									//判断冲突用户选择的数据库  注册用户有没有选择  如果选择
-									boolean isNotEnpty=StringUtils.isNotEmpty(listrld.get(d).getResourceid());
-									boolean chack=listrld.get(d).getResourceid().equals(tableproduct);
-									if(isNotEnpty && chack){
+									if(StringUtils.isNotEmpty(listrld.get(d).getResourceid()) && listrld.get(d).getResourceid().equals(tableproduct)){
 										//判断有没有选择详情  如果没有选择详情  则冲突   如果选择了详情  则判断详情是否冲突
 										if(tableplList.get(h).containsKey("contract")){
 											//判断详情是否冲突
@@ -824,8 +822,6 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> registerInfo(InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
-
-		System.out.println("保存   保存："+user.getRdlist());
 		long time = System.currentTimeMillis();
 		Map<String, String> errorMap = new HashMap<String, String>();
 		try {
