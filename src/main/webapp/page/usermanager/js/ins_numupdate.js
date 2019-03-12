@@ -679,4 +679,37 @@ function checkInsIPError () {
 function deleteInsIPError(){
 	layer.closeAll();
 	$('#IpErrorInfo').html('')
+	var ipSegment = $("#ipSegment").val();
+	if (ipSegment == "") {
+		return;
+	}
+	var ips = ipSegment.split("\n");
+	var array = errorIP.split('</br>');
+	var ipHtml = "";
+	for (var ip in ips) {
+		if(ips[ip]==""){
+			continue;
+		}
+		var flag = false;
+		for(var ar in IpArray){
+			if(IpArray[ar]==""){
+				continue;
+			}
+			if (ips[ip]==IpArray[ar]) {
+				flag = true;
+			}
+		}
+		for (var ar in array) {
+			if(array[ar]==""){
+				continue;
+			}
+			if (ips[ip]==array[ar]) {
+				flag = true;
+			}
+		}
+		if (!flag) {
+			ipHtml += ips[ip] + "\n";
+		}
+	}
+	$("#ipSegment").val(ipHtml);
 }
