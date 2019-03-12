@@ -183,7 +183,7 @@ public class AheadUserController {
 									sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
 											+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
 									//组装返回数据
-									sbt=getData(projectCheck,count++,userid);
+									sbt.append(getData(projectCheck,count++,userid));
 								}
 							}
 						}
@@ -217,7 +217,7 @@ public class AheadUserController {
 		sb.append("("+count+") "+userid+"， ");
 		for (Map<String, Set<String>> map : projectCheck) {
 			for (Map.Entry<String, Set<String>> entry : map.entrySet()) { 
-				sb.append(entry.getKey()+"   "+transfer(entry.getValue().toString())+"</br>");  
+				sb.append(entry.getKey()+" : "+transfer(entry.getValue().toString())+"</br>");  
 			}
 		}	
 		return sb;
