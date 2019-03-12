@@ -128,20 +128,15 @@ public class AheadUserController {
 		StringBuffer sbt = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
 		Map<String,String> maps = new LinkedHashMap<String,String>();
-		//获取多个ip段
 		String [] str = ipSegment.split("\n");	
-		//校验<数据库>是否存在IP重复 
 		List<UserIp> list=new ArrayList<UserIp>();
-		//遍历用户输入的ip  组装成UserIp对象 一个用户可以有多个ip段
 		for(int i = 0; i < str.length; i++){	
 			//开始ip
 			String beginIp = str[i].substring(0, str[i].indexOf("-"));
 			//结束ip
 			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
-			//将IPv4字符串转换成数字
 			long begin=IPConvertHelper.IPToNumber(beginIp);
 			long end=IPConvertHelper.IPToNumber(endIp);
-			//如果开始ip大于结束ip  返回信息
 			if(begin>end){
 				map.put("flag", "true");
 				map.put("errorIP", beginIp+"-"+endIp+" 开始IP大于结束IP");
@@ -152,11 +147,12 @@ public class AheadUserController {
 			user.setEndIpAddressNumber(end);
 			list.add(user);
 		}
-		//判断存储错误信息的map是否等于0
+		if(institutionUser.getRdlist()==null){
+			map.put("flag", "fail");
+			map.put("fail","购买项目不能为空，请选择购买项目");
+		}
 		if(map.size()==0){
-			//验证ip是否有交集
 			List<Map<String,Object>> bool = aheadUserService.validateIp(list);
-			//如果查出有ip交集的
 			if(bool.size()>0){
 				int index=1;
 				int count=1;
@@ -176,11 +172,9 @@ public class AheadUserController {
 						continue;
 					}
 					try {
-						//循环注册或修改用户的输入的ip
 						for(UserIp src:list){
 							//只要有交集的ip
 							if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
-								//TODO 判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
 								//1.获取和重复ip的用户的购买资源。
 								List<Map<String, Set<String>>> projectCheck=getProjectCheck(institutionUser,userid);
 								if(projectCheck.size()>0){
@@ -190,8 +184,6 @@ public class AheadUserController {
 											+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
 									//组装返回数据
 									sbt=getData(projectCheck,count++,userid);
-
-
 								}
 							}
 						}
@@ -200,7 +192,6 @@ public class AheadUserController {
 					}	
 				}
 				if(maps.size()>0){
-					//判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
 					map.put("flag", "true");
 					map.put("userId",userId);
 					for (String key : maps.keySet()) {
@@ -233,11 +224,8 @@ public class AheadUserController {
 	}
 
 	private List<Map<String, Set<String>>> getProjectCheck( InstitutionalUser user,String userid) {
-		//存放返回的冲突信息
 		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
-		//注册用户购买信息
 		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
-		//重复ip用户已购买的资源
 		List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
 		for(int i=0;i<projectlist.size();i++){
 			Map<String,Set<String>> errormap=new HashMap<>();
@@ -257,7 +245,9 @@ public class AheadUserController {
 								List<ResourceLimitsDTO> listrld = userrdlist.get(y).getRldto();
 								for(int d=0;d<listrld.size();d++){
 									//判断冲突用户选择的数据库  注册用户有没有选择  如果选择
-									if(StringUtils.isNotEmpty(listrld.get(d).getResourceid()) && listrld.get(d).getResourceid().equals(tableproduct)){
+									boolean isNotEnpty=StringUtils.isNotEmpty(listrld.get(d).getResourceid());
+									boolean chack=listrld.get(d).getResourceid().equals(tableproduct);
+									if(isNotEnpty && chack){
 										//判断有没有选择详情  如果没有选择详情  则冲突   如果选择了详情  则判断详情是否冲突
 										if(tableplList.get(h).containsKey("contract")){
 											//判断详情是否冲突
@@ -353,36 +343,34 @@ public class AheadUserController {
 		if(source.equals("DB_CLGD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
 			//先判断是自定义导入还是分类筛选
-				//存储的值
-				String[] table_gazetteers_id=null;
-				String[] table_item_id=null;
-				String table_gazetteers_area=null;
-				String[] table_gazetteers_album=null;
-				//先取出页面上的值
-				String[] gazetteers_id=null;
-				String[] item_id=null;
-				String gazetteers_area=null;
-				String[] gazetteers_album=null;
-				
-				
-				for(int i=0;i<conlist.size();i++){
+			//存储的值
+			String[] table_gazetteers_id=null;
+			String[] table_item_id=null;
+			String table_gazetteers_area=null;
+			String[] table_gazetteers_album=null;
+			//先取出页面上的值
+			String[] gazetteers_id=null;
+			String[] item_id=null;
+			String gazetteers_area=null;
+			String[] gazetteers_album=null;
+			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
 				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
 					String json=(String) conlist.get(i).get("Value");
 					table_gazetteers_id=json.split(";");
 					gazetteers_id=rld.getGazetteersId().split(";");
-					
+
 				}
 				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
 					String json=(String) conlist.get(i).get("Value");
 					table_item_id=json.split(";");
 					item_id=rld.getItemId().split(";");
 				}
-				
+
 				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
 					table_gazetteers_area=(String) conlist.get(i).get("Value");
-					 gazetteers_area= rld.getGazetteersArea();
-					
+					gazetteers_area= rld.getGazetteersArea();
+
 				}
 				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
 					String json=rld.getGazetteersAlbum();
@@ -390,44 +378,44 @@ public class AheadUserController {
 					String jsona=(String) conlist.get(i).get("Value");
 					table_gazetteers_album=jsona.split(";");
 				}
-		}
-				if(table_gazetteers_id!=null&&gazetteers_id!=null){
-					for(int y=0;y<table_gazetteers_id.length;y++){
-						for(int t=0;t<gazetteers_id.length;t++){
-							if(table_gazetteers_id[y].equals(gazetteers_id[t])){
+			}
+			if(table_gazetteers_id!=null&&gazetteers_id!=null){
+				for(int y=0;y<table_gazetteers_id.length;y++){
+					for(int t=0;t<gazetteers_id.length;t++){
+						if(table_gazetteers_id[y].equals(gazetteers_id[t])){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+			if(table_item_id!=null&&item_id!=null){
+				for(int y=0;y<table_item_id.length;y++){
+					for(int t=0;t<item_id.length;t++){
+						if(table_item_id[y].equals((item_id[t]))){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+			boolean a=StringUtils.isNotEmpty(table_gazetteers_area);
+			boolean b=StringUtils.isNotEmpty(gazetteers_area);
+			boolean c=table_gazetteers_area.equals(gazetteers_area);
+			//分类筛选  判断地区
+			if(a && b && c){
+				//分类筛选  判断专题分类
+				if(table_gazetteers_album.length>0 && gazetteers_album.length>0){
+					for(int y=0;y<table_gazetteers_album.length;y++){
+						for(int t=0;t<gazetteers_album.length;t++){
+							if(table_gazetteers_album[y].equals(gazetteers_album[t])){
 								boo=true;
 								break;
 							}
 						}
 					}
 				}
-				if(table_item_id!=null&&item_id!=null){
-					for(int y=0;y<table_item_id.length;y++){
-						for(int t=0;t<item_id.length;t++){
-							if(table_item_id[y].equals((item_id[t]))){
-								boo=true;
-								break;
-							}
-						}
-					}
-				}
-				boolean a=StringUtils.isNotEmpty(table_gazetteers_area);
-				boolean b=StringUtils.isNotEmpty(gazetteers_area);
-				boolean c=table_gazetteers_area.equals(gazetteers_area);
-				//分类筛选  判断地区
-				if(a && b && c){
-					//分类筛选  判断专题分类
-					if(table_gazetteers_album.length>0 && gazetteers_album.length>0){
-						for(int y=0;y<table_gazetteers_album.length;y++){
-							for(int t=0;t<gazetteers_album.length;t++){
-								if(table_gazetteers_album[y].equals(gazetteers_album[t])){
-									boo=true;
-									break;
-								}
-							}
-						}
-					}
-				}
+			}
 		}
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
@@ -506,31 +494,6 @@ public class AheadUserController {
 
 		return sb.toString();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	/**
