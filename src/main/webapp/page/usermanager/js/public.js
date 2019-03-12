@@ -1963,26 +1963,25 @@ function validateIpChange(data,object){
 		$.ajax({
 			type : "post",
 			async:false,
-			processData: false,
+			cache: false,  
+	        processData: false,
+	        contentType: false,
 			url : "../auser/validateip.do",
 			data:data,
 			dataType : "json",
 			success: function(data){
 				if(data.flag=="true"){
 					bool = true;
+					$('#IpErrorInfo').html('')
 					var msg="";
 					if(data.tableIP!=null){
 						errorIP=data.errorIP;
 						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>";
+						$('#IpErrorInfo').append(msg)
 					}else{
 						msg="<font style='color:red'>IP格式错误:</font></br><font style='color:#000000'>"+data.errorIP+"</font>";
+						$('#IpErrorInfo').append(msg)
 					}
-					layer.tips(msg, object, {
-						tips: [3, '#FFFFFF'],
-						area: ['350px', ''], //宽高
-						closeBtn :1,
-						time: 0
-					});
 				}else{
 					layer.tips("<font style='color:#000000'>无冲突</font></br>", object, {
 						tips: [3, '#FFFFFF'],
@@ -2176,4 +2175,83 @@ function showError(data){
 	}
 	html+="</table>";
 	$("#errorList").html(html);
+}
+
+// 检测ip冲突
+function checkIPError () {
+	var data = new FormData($('#fromList')[0]);
+    var openBindStart = data.get('openBindStart');
+    var openBindEnd = data.get('openBindEnd');
+    if(openBindStart){
+        data.set('openBindStart',openBindStart+' 00:00:00');
+    }
+    if(openBindEnd){
+        data.set('openBindEnd',openBindEnd+' 23:59:59');
+    }
+    var isCheckedMe = $('#isPublishEmail').is(':checked');
+    data.append('send',isCheckedMe);
+    var ip = $("#ipSegment").val();
+	if(ip==""){
+		var msg="<font style='color:red'>IP不存在</font>";
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+	if(!IpFormat(ip)){
+		var  msg="<font style='color:red''>IP段格式错误：</font>";
+		for(var ar in IpArray){
+			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
+		}
+		layer.tips(msg, "#checkIp", {
+			tips: [3, '#FFFFFF'],
+			area: ['350px', ''], //宽高
+			closeBtn :1,
+			time: 0
+		});
+		return;
+	}
+    validateIpChange(data,"#checkIp");
+}
+
+// 剔除冲突ip
+function deleteIPError() {
+	layer.closeAll();
+	$('#IpErrorInfo').html('')
+	var ipSegment = $("#ipSegment").val();
+	if (ipSegment == "") {
+		return;
+	}
+	var ips = ipSegment.split("\n");
+	var array = errorIP.split('</br>');
+	var ipHtml = "";
+	for (var ip in ips) {
+		if(ips[ip]==""){
+			continue;
+		}
+		var flag = false;
+		for(var ar in IpArray){
+			if(IpArray[ar]==""){
+				continue;
+			}
+			if (ips[ip]==IpArray[ar]) {
+				flag = true;
+			}
+		}
+		for (var ar in array) {
+			if(array[ar]==""){
+				continue;
+			}
+			if (ips[ip]==array[ar]) {
+				flag = true;
+			}
+		}
+		if (!flag) {
+			ipHtml += ips[ip] + "\n";
+		}
+	}
+	$("#ipSegment").val(ipHtml);
 }
