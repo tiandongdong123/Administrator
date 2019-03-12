@@ -121,8 +121,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("validateip")
 	@ResponseBody
-	public JSONObject validateIp(InstitutionalUser institutionUser,String ip,String userId){
-		ip="127.0.0.2-127.0.0.2";
+	public JSONObject validateIp(InstitutionalUser institutionUser,String ipSegment,String userId){
 		long time=System.currentTimeMillis();
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
@@ -130,7 +129,7 @@ public class AheadUserController {
 		StringBuffer sbf = new StringBuffer();
 		Map<String,String> maps = new LinkedHashMap<String,String>();
 		//获取多个ip段
-		String [] str = ip.split("\n");	
+		String [] str = ipSegment.split("\n");	
 		//校验<数据库>是否存在IP重复 
 		List<UserIp> list=new ArrayList<UserIp>();
 		//遍历用户输入的ip  组装成UserIp对象 一个用户可以有多个ip段
@@ -217,7 +216,7 @@ public class AheadUserController {
 		if(map.size()==0){
 			map.put("flag", "false");
 		}
-		log.info("IP校验："+userId+" "+ip.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
+		log.info("IP校验："+userId+" "+ipSegment.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
 		System.out.println("map:"+map);
 		return map;
 	}
