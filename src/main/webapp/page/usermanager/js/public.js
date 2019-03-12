@@ -1963,6 +1963,7 @@ function validateIpChange(data,object){
 		$.ajax({
 			type : "post",
 			async:false,
+			processData: false,
 			url : "../auser/validateip.do",
 			data:data,
 			dataType : "json",
