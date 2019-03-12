@@ -9,10 +9,14 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +26,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.ecs.xhtml.map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,6 +68,7 @@ import com.wf.bean.PageList;
 import com.wf.bean.Person;
 import com.wf.bean.Query;
 import com.wf.bean.ResourceDetailedDTO;
+import com.wf.bean.ResourceLimitsDTO;
 import com.wf.bean.StandardUnit;
 import com.wf.bean.UserInstitution;
 import com.wf.bean.UserIp;
@@ -87,10 +93,10 @@ public class AheadUserController {
 
 	@Autowired
 	private AheadUserService aheadUserService;
-	
+
 	@Autowired
 	private PersonService personservice;
-	
+
 	@Autowired
 	private OpreationLogsService opreationLogs;
 
@@ -104,10 +110,10 @@ public class AheadUserController {
 	private BindAccountChannel bindAccountChannel;
 
 	private RedisUtil redis = new RedisUtil();
-	
+
 	private static Logger log = Logger.getLogger(AheadUserController.class);
-	
-	
+
+
 	/**
 	 *	判断ip段是否重复
 	 *ip:注册或修改的当前用户ip
@@ -115,14 +121,15 @@ public class AheadUserController {
 	 */
 	@RequestMapping("validateip")
 	@ResponseBody
-	public JSONObject validateIp(String ip,String userId){
+	public JSONObject validateIp(InstitutionalUser institutionUser,String ipSegment,String userId){
 		long time=System.currentTimeMillis();
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
+		StringBuffer sbt = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
-		 Map<String,String> maps = new LinkedHashMap<String,String>();
+		Map<String,String> maps = new LinkedHashMap<String,String>();
 		//获取多个ip段
-		 String [] str = ip.split("\n");	
+		String [] str = ipSegment.split("\n");	
 		//校验<数据库>是否存在IP重复 
 		List<UserIp> list=new ArrayList<UserIp>();
 		//遍历用户输入的ip  组装成UserIp对象 一个用户可以有多个ip段
@@ -145,7 +152,6 @@ public class AheadUserController {
 			user.setEndIpAddressNumber(end);
 			list.add(user);
 		}
-		System.out.println("list:"+list);
 		//判断存储错误信息的map是否等于0
 		if(map.size()==0){
 			//验证ip是否有交集
@@ -153,6 +159,7 @@ public class AheadUserController {
 			//如果查出有ip交集的
 			if(bool.size()>0){
 				int index=1;
+				int count=1;
 				for(Map<String,Object> mbo : bool){
 					if(StringUtils.equals(String.valueOf(mbo.get("userId")), userId)){
 						continue;
@@ -168,25 +175,29 @@ public class AheadUserController {
 					if(userType!=2||loginCode!=0){
 						continue;
 					}
-					//循环注册或修改用户的输入的ip
-					for(UserIp src:list){
-						//只要有交集的ip
-						if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
-							//TODO 判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
-							  //1.获取和重复ip的用户的购买资源。
-							    System.out.println("重复的ip："+userid);
-							   // opreationLogs.getProjectByUserId(userid);
-							    
-							    List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
-							    System.out.println("999999999:"+projectlist);
-							
-							maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
-									+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
-							sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
-									+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
-							//TODO 添加购买资源相同信息
+					try {
+						//循环注册或修改用户的输入的ip
+						for(UserIp src:list){
+							//只要有交集的ip
+							if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
+								//TODO 判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
+								//1.获取和重复ip的用户的购买资源。
+								List<Map<String, Set<String>>> projectCheck=getProjectCheck(institutionUser,userid);
+								if(projectCheck.size()>0){
+									maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
+											+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
+									sb.append("("+(index++)+") "+userid+"， "+IPConvertHelper.NumberToIP(begin)
+											+"-"+IPConvertHelper.NumberToIP(end)+"</br>");
+									//组装返回数据
+									sbt=getData(projectCheck,count++,userid);
+
+
+								}
+							}
 						}
-					}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}	
 				}
 				if(maps.size()>0){
 					//判断重复ip的账号资源是否重复  如果重复则查找重复的资源并返回重复信息
@@ -197,17 +208,331 @@ public class AheadUserController {
 					}
 					map.put("errorIP", sbf.toString());
 					map.put("tableIP", sb.toString());
+					map.put("tableProject", sbt.toString());
+					System.out.println("-----有冲突-----："+sbt.toString());
 				}
 			}
 		}
 		if(map.size()==0){
 			map.put("flag", "false");
 		}
-		log.info("IP校验："+userId+" "+ip.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
+		log.info("IP校验："+userId+" "+ipSegment.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
 		System.out.println("map:"+map);
 		return map;
 	}
-	
+
+	private StringBuffer getData(List<Map<String, Set<String>>> projectCheck,int count,String userid) {
+		StringBuffer sb=new StringBuffer();
+		sb.append("("+count+") "+userid+"， ");
+		for (Map<String, Set<String>> map : projectCheck) {
+			for (Map.Entry<String, Set<String>> entry : map.entrySet()) { 
+				sb.append(entry.getKey()+"   "+transfer(entry.getValue().toString())+"</br>");  
+			}
+		}	
+		return sb;
+	}
+
+	private List<Map<String, Set<String>>> getProjectCheck( InstitutionalUser user,String userid) {
+		//存放返回的冲突信息
+		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
+		//注册用户购买信息
+		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
+		//重复ip用户已购买的资源
+		List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
+		for(int i=0;i<projectlist.size();i++){
+			Map<String,Set<String>> errormap=new HashMap<>();
+			String name=(String) projectlist.get(i).get("name");
+			if(projectlist.get(i).containsKey("plList")){
+				//获取重复ip用户的购买数据库信息
+				List<Map<String, Object>> tableplList=(List<Map<String, Object>>) projectlist.get(i).get("plList");
+				//用于存放冲突库信息
+				Set<String> errorSet=new HashSet();
+				for(int h=0;h<tableplList.size();h++){
+					//如果冲突用户选择了改数据库
+					if(tableplList.get(h).containsKey("checked")&&tableplList.get(h).get("checked").equals("checked")){
+						//获取注册用户的当前数据库是否选择
+						String tableproduct=(String)tableplList.get(h).get("productSourceCode");
+						for(int y=0;y<userrdlist.size();y++){
+							if(userrdlist.get(y).getProjectid()!=null&&userrdlist.get(y).getRldto()!=null){
+								List<ResourceLimitsDTO> listrld = userrdlist.get(y).getRldto();
+								for(int d=0;d<listrld.size();d++){
+									//判断冲突用户选择的数据库  注册用户有没有选择  如果选择
+									if(StringUtils.isNotEmpty(listrld.get(d).getResourceid()) && listrld.get(d).getResourceid().equals(tableproduct)){
+										//判断有没有选择详情  如果没有选择详情  则冲突   如果选择了详情  则判断详情是否冲突
+										if(tableplList.get(h).containsKey("contract")){
+											//判断详情是否冲突
+											boolean boo=Contrast(tableplList.get(h),listrld.get(d));
+											if(boo){
+												errorSet.add(tableplList.get(h).get("abbreviation")+"库详情设置");
+											}
+										}else{
+											errorSet.add(tableplList.get(h).get("abbreviation")+"库");
+										}
+									}
+								}
+								if(errorSet.size()>0){
+									errormap.put(name, errorSet);
+								}
+							}
+						}
+					}
+				}
+			}else{
+				//没有选择数据库的检测（万方检测 或者万方分析）
+				String payChannelid= (String) projectlist.get(i).get("payChannelid");
+				String projectname=(String) projectlist.get(i).get("name");
+				for(int y=0;y<userrdlist.size();y++){
+					Set<String> set=new HashSet<>();
+					if(userrdlist.get(y).getProjectid()!=null){
+						String projectid=userrdlist.get(y).getProjectid();
+						if(projectname.startsWith("万方分析")&&userrdlist.get(y).getProjectname().startsWith("万方分析")){
+							//万方分析冲突
+							errormap.put(projectname, set);
+						}else if(payChannelid.equals(projectid)||payChannelid.equals(projectid+"Count")||projectid.equals(payChannelid+"Count")){
+							//冲突
+							errormap.put(projectname, set);
+						}
+					}	
+				}
+			}
+			if(errormap.size()>0){
+				projectCheck.add(errormap);
+			}
+		}
+		return projectCheck;
+	}
+
+	private boolean Contrast(Map<String, Object> tableContract,ResourceLimitsDTO rld){
+		boolean boo=false;
+		String source=null;
+		if(tableContract.containsKey("productSourceCode")){
+			source=(String) tableContract.get("productSourceCode");
+		}
+		//学位详情
+		if(source.equals("DB_CDDB")){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			for(int i=0;i<conlist.size();i++){ 
+				JSONArray json=(JSONArray) conlist.get(i).get("Value");
+				String[] value=new String[json.size()];
+				for(int m=0;m<json.size();m++){
+					value[m]=(String) json.get(m);
+				}
+				String[] resource=transfer(rld.getDegreeClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+				for(int y=0;y<value.length;y++){
+					for(int t=0;t<resource.length;t++){
+						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		//会议详情
+		if(source.equals("DB_CCPD")){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			for(int i=0;i<conlist.size();i++){
+				JSONArray json=(JSONArray) conlist.get(i).get("Value");
+				String[] value=new String[json.size()];
+				for(int m=0;m<json.size();m++){
+					value[m]=(String) json.get(m);
+				}
+				String[] resource=transfer(rld.getConferenceClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+				for(int y=0;y<value.length;y++){
+					for(int t=0;t<resource.length;t++){
+						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		//地方志
+		if(source.equals("DB_CLGD")){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			//先判断是自定义导入还是分类筛选
+				//存储的值
+				String[] table_gazetteers_id=null;
+				String[] table_item_id=null;
+				String table_gazetteers_area=null;
+				String[] table_gazetteers_album=null;
+				//先取出页面上的值
+				String[] gazetteers_id=null;
+				String[] item_id=null;
+				String gazetteers_area=null;
+				String[] gazetteers_album=null;
+				
+				
+				for(int i=0;i<conlist.size();i++){
+				//自定义导入正本数据读取
+				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
+					String json=(String) conlist.get(i).get("Value");
+					table_gazetteers_id=json.split(";");
+					gazetteers_id=rld.getGazetteersId().split(";");
+					
+				}
+				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
+					String json=(String) conlist.get(i).get("Value");
+					table_item_id=json.split(";");
+					item_id=rld.getItemId().split(";");
+				}
+				
+				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
+					table_gazetteers_area=(String) conlist.get(i).get("Value");
+					 gazetteers_area= rld.getGazetteersArea();
+					
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
+					String json=rld.getGazetteersAlbum();
+					gazetteers_album=json.split(";");
+					String jsona=(String) conlist.get(i).get("Value");
+					table_gazetteers_album=jsona.split(";");
+				}
+		}
+				if(table_gazetteers_id!=null&&gazetteers_id!=null){
+					for(int y=0;y<table_gazetteers_id.length;y++){
+						for(int t=0;t<gazetteers_id.length;t++){
+							if(table_gazetteers_id[y].equals(gazetteers_id[t])){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+				if(table_item_id!=null&&item_id!=null){
+					for(int y=0;y<table_item_id.length;y++){
+						for(int t=0;t<item_id.length;t++){
+							if(table_item_id[y].equals((item_id[t]))){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+				boolean a=StringUtils.isNotEmpty(table_gazetteers_area);
+				boolean b=StringUtils.isNotEmpty(gazetteers_area);
+				boolean c=table_gazetteers_area.equals(gazetteers_area);
+				//分类筛选  判断地区
+				if(a && b && c){
+					//分类筛选  判断专题分类
+					if(table_gazetteers_album.length>0 && gazetteers_album.length>0){
+						for(int y=0;y<table_gazetteers_album.length;y++){
+							for(int t=0;t<gazetteers_album.length;t++){
+								if(table_gazetteers_album[y].equals(gazetteers_album[t])){
+									boo=true;
+									break;
+								}
+							}
+						}
+					}
+				}
+		}
+		//期刊   需判断选刊还是选文献还是都选
+		if(source.equals("DB_CSPD")){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			for(int i=0;i<conlist.size();i++){
+				if(conlist.get(i).get("Field").equals("perioInfo_CLC")){
+					JSONArray json=(JSONArray) conlist.get(i).get("Value");
+					String[] value=new String[json.size()];
+					for(int m=0;m<json.size();m++){
+						value[m]=(String) json.get(m);
+					}
+					String[] resource=transfer(rld.getPerioInfoClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					for(int y=0;y<value.length;y++){
+						for(int t=0;t<resource.length;t++){
+							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+				if(conlist.get(i).get("Field").equals("journal_CLC")){
+					JSONArray json=(JSONArray) conlist.get(i).get("Value");
+					String[] value=new String[json.size()];
+					for(int m=0;m<json.size();m++){
+						value[m]=(String) json.get(m);
+					}
+					String[] resource=transfer(rld.getJournalClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					for(int y=0;y<value.length;y++){
+						for(int t=0;t<resource.length;t++){
+							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		//TODO 标准
+		if(source.equals("DB_WFSD")){
+
+
+		}
+		//专利
+		if(source.equals("DB_WFPD")){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			for(int i=0;i<conlist.size();i++){
+				JSONArray json=(JSONArray) conlist.get(i).get("Value");
+				String[] value=new String[json.size()];
+				for(int m=0;m<json.size();m++){
+					value[m]=(String) json.get(m);
+				}
+				String[] resource=transfer(rld.getPatentIpc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+				for(int y=0;y<value.length;y++){
+					for(int t=0;t<resource.length;t++){
+						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return boo;
+	}
+	public static String transfer(String param) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < param.length(); i++) {
+			char c = param.charAt(i);
+			if (c == '[' ||c==']' ||c=='{' || c=='}' ) {
+				continue;
+			}
+			sb.append(c);
+		}
+
+		return sb.toString();
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 *	查询机构管理员信息
 	 */
@@ -216,7 +541,7 @@ public class AheadUserController {
 	public Map<String,Object> findAdmin(String pid){
 		return aheadUserService.findInfoByPid(pid);
 	}
-	
+
 	@RequestMapping("getPerson")
 	@ResponseBody
 	public Map<String,String> getPerson(String userId){
@@ -230,8 +555,8 @@ public class AheadUserController {
 		}
 		return errorMap;
 	}
-	
-	
+
+
 	/**
 	 *	查询相似机构管理员
 	 */
@@ -240,7 +565,7 @@ public class AheadUserController {
 	public List<String> getAdminName(String value){
 		return null;
 	}
-	
+
 	/**
 	 *	查询相似机构名称 
 	 */
@@ -252,7 +577,7 @@ public class AheadUserController {
 		log.info("查询相似机构名称["+value+"],耗时："+(System.currentTimeMillis()-time)+"ms");
 		return list;
 	}
-	
+
 	/**
 	 *	更新用户解冻/冻结状态
 	 */
@@ -274,7 +599,7 @@ public class AheadUserController {
 		}
 		return "false";
 	}
-	
+
 	/**
 	 *	移除管理员
 	 */
@@ -295,8 +620,8 @@ public class AheadUserController {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 *	跳转添加管理员
 	 */
@@ -307,7 +632,7 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/add_admin");
 		return view;
 	}
-	
+
 	/**
 	 *	添加管理员/修改
 	 */
@@ -344,7 +669,7 @@ public class AheadUserController {
 		}
 		return null;
 	}
-	
+
 	/**
 	 *	查询专利IPC分类信息
 	 */
@@ -365,7 +690,7 @@ public class AheadUserController {
 		map.put("number", num);
 		return map;
 	}
-	
+
 	/**
 	 * 查询地方志的地区和专辑分类信息
 	 */
@@ -413,7 +738,7 @@ public class AheadUserController {
 		map.put("arrayArea", arrayArea);
 		return map;
 	}
-	
+
 	/**
 	 * 查询地方志的地区
 	 */
@@ -436,7 +761,7 @@ public class AheadUserController {
 		map.put("arrayArea", arrayArea);
 		return map;
 	}
-	
+
 	/**
 	 *	查询其他中图分类信息
 	 */
@@ -451,14 +776,14 @@ public class AheadUserController {
 			String id = obj.getString("value");
 			obj.element("name",id+"_"+name);
 			obj.put("num", num);
-			
+
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ztreeJson", array);
 		map.put("number", num);
 		return map;
 	}
-	
+
 	/**
 	 *	查询其他中图分类信息
 	 */
@@ -473,16 +798,16 @@ public class AheadUserController {
 			String id = obj.getString("value");
 			obj.element("name",id+"_"+name);
 			obj.put("num", num);
-			
+
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ztreeJson", array);
 		map.put("number", num);
 		return map;
 	}
-	
 
-	
+
+
 	/**
 	 *	机构用户预警信息提交
 	 */
@@ -490,7 +815,7 @@ public class AheadUserController {
 	@ResponseBody
 	public String updateWarning(String flag, Integer amountthreshold, Integer datethreshold,
 			Integer remindtime, String remindemail, Integer countthreshold,HttpServletRequest request) {
-		
+
 		Log log=null;
 		String operation_content="金额阈值:"+amountthreshold+",次数阈值:"+countthreshold+",有效期阈值:"+datethreshold+",邮件提醒间隔时间:"+remindtime+",提醒邮箱:"+remindemail;
 		int i = 0;
@@ -504,7 +829,7 @@ public class AheadUserController {
 		logService.addLog(log);
 		return i > 0 ? "true" : "false";
 	}
-	
+
 	/**
 	 * 查询所有数据库信息
 	 */
@@ -516,7 +841,7 @@ public class AheadUserController {
 		log.info("getdata耗时：" + (System.currentTimeMillis() - time) + "ms");
 		return list;
 	}
-	
+
 	/**
 	 * 获取地区
 	 */
@@ -525,9 +850,9 @@ public class AheadUserController {
 	public JSONArray getRegion(HttpServletResponse httpResponse){
 		return SettingUtil.getRegionCode();
 	}
-	
 
-	
+
+
 	/**
 	 *	机构用户注册
 	 * @throws ParseException
@@ -537,6 +862,7 @@ public class AheadUserController {
 	public Map<String, String> registerInfo(InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
 
+		System.out.println("保存   保存："+user.getRdlist());
 		long time = System.currentTimeMillis();
 		Map<String, String> errorMap = new HashMap<String, String>();
 		try {
@@ -571,9 +897,9 @@ public class AheadUserController {
 			return errorMap;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 *	机构用户批量注册
 	 */
@@ -581,7 +907,7 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, Object> addbatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
-		
+
 		long time=System.currentTimeMillis();
 		Map<String,Object> errorMap = new HashMap<>();
 		List<Map<String,String>> errorList=new ArrayList<>();
@@ -626,23 +952,23 @@ public class AheadUserController {
 					aheadUserService.openBindAuthority(bindAuthorityModel);
 					log.info("成功开通个人绑定机构权限");
 					String email = bindAuthorityModel.getEmail();
-                    List<String> userIdList = new ArrayList<>();
-                    // 发送邮箱
-                    try {
-                        if (bindAuthorityModel.getSend()) {
-                        	userIdList.add(userId);
-                            if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
-                                log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
-                                        + userIdList.toString() + "，email:" + email);
-                            } else {
-                            	log.info("发送邮件失败");
-                                //throw new Exception("发送邮件失败");
-                            }
-                        }
-                    } catch (Exception e) {
-                        log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userId + "，email:" + email, e);
-                    }
-                }
+					List<String> userIdList = new ArrayList<>();
+					// 发送邮箱
+					try {
+						if (bindAuthorityModel.getSend()) {
+							userIdList.add(userId);
+							if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+								log.info("机构用户批量注册，发送邮件成功，userIdList：" + userIdList
+										+ userIdList.toString() + "，email:" + email);
+							} else {
+								log.info("发送邮件失败");
+								//throw new Exception("发送邮件失败");
+							}
+						}
+					} catch (Exception e) {
+						log.error("机构用户批量注册，发送邮箱出现异常！，userIdList：" + userId + "，email:" + email, e);
+					}
+				}
 				this.addOperationLogs(user, "批量注册", req);
 				log.info("机构用户[" + user.getUserId() + "]注册成功");
 				sucNum++;
@@ -676,7 +1002,7 @@ public class AheadUserController {
 		errorMap.clear();
 		return errorMap;
 	}
-	
+
 	//批量验证excel中的机构是否存在
 	private void getUserValidate(InstitutionalUser user,
 			List<Map<String, Object>> userList,List<Map<String,String>> errorList) {
@@ -700,7 +1026,7 @@ public class AheadUserController {
 		}
 	}
 
-	
+
 	/**
 	 * 
 	 *	机构用户批量更新
@@ -709,7 +1035,7 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
-		
+
 		long time=System.currentTimeMillis();
 		Map<String, Object> errorMap = new HashMap<>();
 		int sucNum = 0;
@@ -738,7 +1064,7 @@ public class AheadUserController {
 			for (Map<String, Object> map : userList) {
 				//userId
 				String oldLoginModel=aheadUserService.queryPersonInfo(map.get("userId").toString()).getLoginMode().toString();
-				
+
 				// 修改机构用户
 				aheadUserService.batchUpdateInfo(user, map);
 				//发送solr
@@ -754,7 +1080,7 @@ public class AheadUserController {
 					String key =user.getUserId()+"_"+oldLoginModel+"to"+user.getLoginMode()+"_"+System.currentTimeMillis();
 					sendMessage("GroupLoginModeModify",key,json);
 				}
-				
+
 				//导入金额和次数
 				InstitutionUtils.importData(user,map);
 				// 修改购买项目
@@ -783,7 +1109,7 @@ public class AheadUserController {
 		}
 		return errorMap;
 	}
-	
+
 	//修改个人绑定机构
 	private void updateBindAuthorityModel(BindAuthorityModel bindAuthorityModel,String userId) throws Exception {
 		if(bindAuthorityModel.getOpenState()==null){
@@ -798,23 +1124,23 @@ public class AheadUserController {
 			}
 			String email = bindAuthorityModel.getEmail();
 			//发送邮箱
-            try {
-                if (bindAuthorityModel.getSend()) {
-                	 List<String> userIdList = new ArrayList<>();
-                	userIdList.add(userId);
-                    if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
-                        log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
-                        //hashmap.put("emailFlag", "success");
-                    } else {
-                    	log.info("发送邮件失败");
-                        //throw new Exception("发送邮件失败");
-                    }
-                }
-            } catch (Exception e) {
-                log.error("机构用户批量更新，发送邮箱出现异常！userIdList:" + userId
-                        + "，email:" + email, e);
-                //hashmap.put("emailFlag", "fail");
-            }
+			try {
+				if (bindAuthorityModel.getSend()) {
+					List<String> userIdList = new ArrayList<>();
+					userIdList.add(userId);
+					if (wfMailUtil.sendQRCodeMail(email, userIdList, bindAccountChannel)) {
+						log.info("机构用户批量更新，发送邮件成功，userIdList：+userIdList：" + userIdList.toString() + "，email:" + email);
+						//hashmap.put("emailFlag", "success");
+					} else {
+						log.info("发送邮件失败");
+						//throw new Exception("发送邮件失败");
+					}
+				}
+			} catch (Exception e) {
+				log.error("机构用户批量更新，发送邮箱出现异常！userIdList:" + userId
+						+ "，email:" + email, e);
+				//hashmap.put("emailFlag", "fail");
+			}
 		}else {
 			int count = aheadUserService.getBindAuthorityCount(bindAuthorityModel.getUserId());
 			if (count>0){
@@ -822,7 +1148,7 @@ public class AheadUserController {
 			}
 		}
 	}
-	
+
 	//批量添加校验
 	private Map<String,Object> batchUpdateValidate(List<Map<String, Object>> userList,InstitutionalUser user,List<Map<String,String>> errorList) throws Exception{
 		Map<String,Object> errorMap = new HashMap<>();
@@ -844,7 +1170,7 @@ public class AheadUserController {
 		errorMap.clear();
 		return errorMap;
 	}
-	
+
 	//批量修改验证excel中的机构是否存在
 	private void getUpdateUserValidate(InstitutionalUser user,
 			List<Map<String, Object>> userList,List<Map<String, String>> errorList) throws Exception{
@@ -927,7 +1253,7 @@ public class AheadUserController {
 
 	@RequestMapping("/worddownload")
 	public void worddownload(Model model,HttpServletResponse response,HttpServletRequest request) {
-        // 下载本地文件
+		// 下载本地文件
 		String fileName = request.getParameter("title"); // 文件的默认保存名
 		InputStream inStream = null;
 		try{
@@ -962,14 +1288,14 @@ public class AheadUserController {
 		}
 	}
 
-	
+
 	/**
 	 *	批量冻结和解冻
 	 */
 	@RequestMapping("blockunlock")
 	@ResponseBody
 	public Map<String,Object> blockUnlock(MultipartFile file,String radio,HttpServletRequest request){
-		
+
 		String operation_content="";
 		Map<String,Object> hashmap = new HashMap<String, Object>();
 		List<String> list = aheadUserService.getExceluser(file);
@@ -1000,13 +1326,13 @@ public class AheadUserController {
 		hashmap.put("flag", "success");
 		hashmap.put("num", in);
 		hashmap.put("count", list.size());
-		
+
 		Log log=new Log("批量账号冻结/解冻","1".equals(radio)?"冻结":"解冻",operation_content,request);
 		logService.addLog(log);
-		
+
 		return hashmap;
 	}
-	
+
 	/**
 	 *	机构信息列表（查询机构下管理员）此方法已经废弃
 	 */
@@ -1026,8 +1352,8 @@ public class AheadUserController {
 		}
 		return idMap;
 	}
-	
-	
+
+
 	/**
 	 *	机构信息列表（查询机构下管理员）此方法已经废弃
 	 */
@@ -1037,7 +1363,7 @@ public class AheadUserController {
 		//查询机构下机构管理员列表
 		return aheadUserService.findInstitutionAdmin(institution,userId);
 	}
-	
+
 	/**
 	 * 更新机构名称
 	 */
@@ -1056,7 +1382,7 @@ public class AheadUserController {
 		}
 		return map;
 	}
-	
+
 	/**
 	 *获取用户信息
 	 */
@@ -1065,7 +1391,7 @@ public class AheadUserController {
 	public Map<String, Object> getAdmin(String userId){
 		return aheadUserService.findInfoByPid(userId);
 	}
-	
+
 	/**
 	 *	账号修改
 	 */
@@ -1074,14 +1400,14 @@ public class AheadUserController {
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
 		//日志打印充值名称和充值金额
-			for(int i=0;i<user.getRdlist().size();i++){
-				 log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
-			}
+		for(int i=0;i<user.getRdlist().size();i++){
+			log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
+		}
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{
 			String oldLoginModel=aheadUserService.queryPersonInfo(user.getUserId()).getLoginMode().toString();
-			
+
 			List<String> delList = new ArrayList<String>();
 			// 机构修改校验
 			errorMap = this.updateValidate(user, delList);
@@ -1125,7 +1451,7 @@ public class AheadUserController {
 			return errorMap;
 		}
 	}
-	
+
 	//机构修改验证
 	private Map<String,String> updateValidate(InstitutionalUser user,List<String> delList) throws Exception{
 		List<ResourceDetailedDTO> list=new ArrayList<ResourceDetailedDTO>();
@@ -1205,7 +1531,7 @@ public class AheadUserController {
 		}
 		return right.append(wrong).toString();
 	}
-	
+
 	//个人信息绑定
 	private void addBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
 		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
@@ -1230,7 +1556,7 @@ public class AheadUserController {
 			}
 		}
 	}
-	
+
 	//个人信息绑定修改
 	private void updateBindAuthorityModel(InstitutionalUser user,BindAuthorityModel bindAuthorityModel) throws Exception{
 		HttpClientUtil.updateUserData(user.getUserId(), user.getLoginMode());// 更新前台用户信息
@@ -1264,7 +1590,7 @@ public class AheadUserController {
 			log.error("账号修改，发送邮箱出现异常！userId：" + userId + "，email:" + email, e);
 		}
 	}
-	
+
 	//修改机构用户购买项目
 	private String updateProject(InstitutionalUser com,HttpServletRequest req,List<String> delList) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
@@ -1315,7 +1641,7 @@ public class AheadUserController {
 		aheadUserService.updateSubaccount(com,adminId);
 		return right.append(wrong).toString();
 	}
-	
+
 	//删除购买项目 
 	private void removeproject(HttpServletRequest req,List<String> list) throws Exception{
 		String adminId = CookieUtil.getCookie(req);
@@ -1359,14 +1685,14 @@ public class AheadUserController {
 		com.setRdlist(rdlist);
 		this.addOperationLogs(com, "删除", req);;
 	}
-	
+
 	//添加日志
 	private void addLogInfo(String msg,long time){
 		if (log.isInfoEnabled()) {
 			log.info(msg+"，耗时:"+(System.currentTimeMillis()-time)+"ms");
 		}
 	}
-	
+
 	//机构信息注册
 	private Map<String,String> registerValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
 		//字段校验
@@ -1391,7 +1717,7 @@ public class AheadUserController {
 		}
 		return errorMap;
 	}
-	
+
 	//验证机构用户名是否存在
 	private Map<String,String> userValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
 		Person p = aheadUserService.queryPersonInfo(user.getUserId());
@@ -1439,7 +1765,7 @@ public class AheadUserController {
 		}
 		return hashmap;
 	}
-	
+
 	//验证党建管理员
 	private Map<String,String> partyAdminValidate(InstitutionalUser com,Map<String,String> hashmap) throws Exception{
 		if (StringUtils.isEmpty(com.getPartyLimit())) {
@@ -1486,10 +1812,10 @@ public class AheadUserController {
 		}
 		return hashmap;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * 子账号导出功能
 	 */
@@ -1542,7 +1868,7 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/ins_sonaccount");
 		return view;
 	}
-	
+
 	/**
 	 *	个人用户管理管理 
 	 */
@@ -1552,13 +1878,13 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/per_manager");
 		return view;
 	}
-	
+
 	/**
-	* @Title: addDept
-	* @Description: TODO(返回修改页面) 
-	* @return String 返回类型 
-	* @author LiuYong 
-	* @date 10 Dis 2016 10:41:45 AM
+	 * @Title: addDept
+	 * @Description: TODO(返回修改页面) 
+	 * @return String 返回类型 
+	 * @author LiuYong 
+	 * @date 10 Dis 2016 10:41:45 AM
 	 */
 	@RequestMapping("updatePerson")
 	public ModelAndView updatePerson(String userId){
@@ -1568,8 +1894,8 @@ public class AheadUserController {
 		view.setViewName("/page/usermanager/update_person_manager");
 		return view;
 	}
-	
-	
+
+
 	/** 个人账号充值（修改） 
 	 * userId 用户id
 	 * turnover 充值金额
@@ -1578,7 +1904,7 @@ public class AheadUserController {
 	 */
 	@ResponseBody
 	@RequestMapping("doUpdatePerson")
-    public Map<String,Object> personCharge(String userId, String turnover, String reason, HttpServletRequest req, HttpServletResponse res) throws Exception {
+	public Map<String,Object> personCharge(String userId, String turnover, String reason, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Map<String,Object> m = new HashMap<String,Object>();
 		String adminId = CookieUtil.getCookie(req);
 		int i = aheadUserService.personCharge(userId, turnover, reason, adminId, res);
@@ -1588,8 +1914,8 @@ public class AheadUserController {
 			m.put("flag", "fail");
 		}
 		return m;
-    }
-	
+	}
+
 	/**
 	 * 根据机构名称获取管理员
 	 * @param response
@@ -1615,7 +1941,7 @@ public class AheadUserController {
 			log.error("管理员查询异常:", e);
 		}
 	}
-	
+
 	/**
 	 * 校验标准机构是否合法
 	 * @param userId
@@ -1626,7 +1952,7 @@ public class AheadUserController {
 	 */
 	@ResponseBody
 	@RequestMapping("findStandardUnit")
-    public Map<String,Object> findStandardUnit(String userId, String orgName, String companySimp) throws Exception {
+	public Map<String,Object> findStandardUnit(String userId, String orgName, String companySimp) throws Exception {
 		log.info("校验标准机构:userId="+userId+",orgName="+orgName+",companySimp="+companySimp);
 		Map<String, Object> m = new HashMap<String, Object>();
 		if(StringUtils.isEmpty(orgName)&&StringUtils.isEmpty(companySimp)){
@@ -1658,7 +1984,7 @@ public class AheadUserController {
 		m.put("result", "0");
 		return m;
 	}
-	
+
 	/**
 	 * 添加操作日志信息
 	 * @return
@@ -1684,7 +2010,7 @@ public class AheadUserController {
 								continue;
 							}
 						}
-						
+
 						OperationLogs op = new OperationLogs();
 						op.setUserId(com.getUserId());
 						op.setPerson(admin.getWangfang_admin_id());
@@ -1697,7 +2023,7 @@ public class AheadUserController {
 						}else{
 							op.setOpreation(flag);
 						}
-						
+
 						if (com.getRdlist() != null) {
 							JSONObject json=JSONObject.fromObject(dto);
 							op.setReason(json.toString());
@@ -1712,8 +2038,8 @@ public class AheadUserController {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 *	机构用户注册跳转
 	 */
@@ -1750,28 +2076,28 @@ public class AheadUserController {
 	}
 
 	private boolean sendMessage(String topic,String topicKey,Object obj){
-		
+
 		boolean result=false;
 		try {
 
 			String grpcServer=GrpcServer.getHost();
 			int grpcPort=GrpcServer.getPort();
-			
+
 			//1、创建channel
 			ManagedChannel channel = NettyChannelBuilder.forAddress(grpcServer, grpcPort)
-			                .negotiationType(NegotiationType.PLAINTEXT).build();
-			                
+					.negotiationType(NegotiationType.PLAINTEXT).build();
+
 			//2、创建连接实例
 			ProducerServiceGrpc.ProducerServiceBlockingStub blockingStub =ProducerServiceGrpc
-			                    .newBlockingStub(channel);
+					.newBlockingStub(channel);
 			//3、创建topic
 			SendRequest request=SendRequest.newBuilder().setTopic(topic).setKey(topicKey).setMessage(JsonHelper.serialize(obj)).build();
-	        SendResponse response = blockingStub.send(request);
-	        result = response.getResult();
-	        log.info(topicKey+"发送队列成功");
+			SendResponse response = blockingStub.send(request);
+			result = response.getResult();
+			log.info(topicKey+"发送队列成功");
 		} catch (Exception e) {
 			log.error(topicKey+"发送队列失败",e);
 		}
-        return result;
+		return result;
 	}
 }

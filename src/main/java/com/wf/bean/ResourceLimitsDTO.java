@@ -334,6 +334,7 @@ public class ResourceLimitsDTO {
 	public String toString() {
 		return "ResourceLimitsDTO [resourceid=" + resourceid + ", productid="
 				+ Arrays.toString(productid) + ", journalClc=" + journalClc
+				+", perioInfoClc=" + perioInfoClc
 				+ ", journalIdno=" + journalIdno + ", journal_startTime="
 				+ journal_startTime + ", journal_endTime=" + journal_endTime
 				+ ", degreeClc=" + degreeClc + ", degreeTypes="
