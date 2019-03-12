@@ -8,8 +8,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -28,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ecs.xhtml.map;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -227,6 +230,8 @@ public class AheadUserController {
 		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
 		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
 		List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
+		System.out.println("查询的冲突信息："+projectlist);
+		System.out.println("页面的信息："+userrdlist);
 		for(int i=0;i<projectlist.size();i++){
 			Map<String,Set<String>> errormap=new HashMap<>();
 			String name=(String) projectlist.get(i).get("name");
@@ -342,71 +347,71 @@ public class AheadUserController {
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
 			//先判断是自定义导入还是分类筛选
 			//存储的值
-			String[] table_gazetteers_id=null;
-			String[] table_item_id=null;
-			String table_gazetteers_area=null;
-			String[] table_gazetteers_album=null;
+			String[] tableGazetteersId=null;
+			String[] tableItemId=null;
+			String tableGazetteersArea=null;
+			String[] tableGazetteersAlbum=null;
 			//先取出页面上的值
-			String[] gazetteers_id=null;
-			String[] item_id=null;
-			String gazetteers_area=null;
-			String[] gazetteers_album=null;
+			String[] gazetteerId=null;
+			String[] itemId=null;
+			String gazetteersArea=null;
+			String[] gazetteersAlbum=null;
 			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
 				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
 					String json=(String) conlist.get(i).get("Value");
-					table_gazetteers_id=json.split(";");
-					gazetteers_id=rld.getGazetteersId().split(";");
+					tableGazetteersId=json.split(";");
+					gazetteerId=rld.getGazetteersId().split(";");
 
 				}
 				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
 					String json=(String) conlist.get(i).get("Value");
-					table_item_id=json.split(";");
-					item_id=rld.getItemId().split(";");
+					tableItemId=json.split(";");
+					itemId=rld.getItemId().split(";");
 				}
 
 				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
-					table_gazetteers_area=(String) conlist.get(i).get("Value");
-					gazetteers_area= rld.getGazetteersArea();
+					tableGazetteersArea=(String) conlist.get(i).get("Value");
+					gazetteersArea= rld.getGazetteersArea();
 
 				}
 				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
 					String json=rld.getGazetteersAlbum();
-					gazetteers_album=json.split(";");
+					gazetteersAlbum=json.split(";");
 					String jsona=(String) conlist.get(i).get("Value");
-					table_gazetteers_album=jsona.split(";");
+					tableGazetteersAlbum=jsona.split(";");
 				}
 			}
-			if(table_gazetteers_id!=null&&gazetteers_id!=null){
-				for(int y=0;y<table_gazetteers_id.length;y++){
-					for(int t=0;t<gazetteers_id.length;t++){
-						if(table_gazetteers_id[y].equals(gazetteers_id[t])){
+			if(tableGazetteersId!=null&&gazetteerId!=null){
+				for(int y=0;y<tableGazetteersId.length;y++){
+					for(int t=0;t<gazetteerId.length;t++){
+						if(tableGazetteersId[y].equals(gazetteerId[t])){
 							boo=true;
 							break;
 						}
 					}
 				}
 			}
-			if(table_item_id!=null&&item_id!=null){
-				for(int y=0;y<table_item_id.length;y++){
-					for(int t=0;t<item_id.length;t++){
-						if(table_item_id[y].equals((item_id[t]))){
+			if(tableItemId!=null&&itemId!=null){
+				for(int y=0;y<tableItemId.length;y++){
+					for(int t=0;t<itemId.length;t++){
+						if(tableItemId[y].equals((itemId[t]))){
 							boo=true;
 							break;
 						}
 					}
 				}
 			}
-			boolean a=StringUtils.isNotEmpty(table_gazetteers_area);
-			boolean b=StringUtils.isNotEmpty(gazetteers_area);
-			boolean c=table_gazetteers_area.equals(gazetteers_area);
+			boolean tga=StringUtils.isNotEmpty(tableGazetteersArea);
+			boolean ga=StringUtils.isNotEmpty(gazetteersArea);
+			boolean tgaeqga=tableGazetteersArea.equals(gazetteersArea);
 			//分类筛选  判断地区
-			if(a && b && c){
+			if(tga && ga && tgaeqga){
 				//分类筛选  判断专题分类
-				if(table_gazetteers_album.length>0 && gazetteers_album.length>0){
-					for(int y=0;y<table_gazetteers_album.length;y++){
-						for(int t=0;t<gazetteers_album.length;t++){
-							if(table_gazetteers_album[y].equals(gazetteers_album[t])){
+				if(tableGazetteersAlbum.length>0 && gazetteersAlbum.length>0){
+					for(int y=0;y<tableGazetteersAlbum.length;y++){
+						for(int t=0;t<gazetteersAlbum.length;t++){
+							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
 								boo=true;
 								break;
 							}
@@ -455,8 +460,89 @@ public class AheadUserController {
 		}
 		//TODO 标准
 		if(source.equals("DB_WFSD")){
-
-
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			//存放查询出来的值
+			String[] tableStandardTypes=null;
+			String[] tableFullIP=null;
+			String[] tableTime=null;
+			//存放页面比较值
+			String[] standardTypes=null;
+			String[] fullIP=null;
+			String startTime=null;
+			String endTime=null;
+			
+			for(int i=0;i<conlist.size();i++){
+				if(conlist.get(i).get("Field").equals("standard_types")&&rld.getStandardTypes().length>0){
+					JSONArray json=(JSONArray) conlist.get(i).get("Value");
+					tableStandardTypes=new String[json.size()];
+					for(int m=0;m<json.size();m++){
+						tableStandardTypes[m]=(String) json.get(m);
+					}
+					standardTypes=rld.getStandardTypes();
+				}
+				
+				if(conlist.get(i).get("Field").equals("full_IP_range")&&rld.getFullIpRange().length>0){
+					JSONArray json=(JSONArray) conlist.get(i).get("Value");
+					tableFullIP=new String[json.size()];
+					for(int m=0;m<json.size();m++){
+						tableFullIP[m]=(String) json.get(m);
+					}
+					fullIP=rld.getFullIpRange();
+				}
+				
+				if(conlist.get(i).get("Field").equals("limited_parcel_time")&&
+						StringUtils.isNoneEmpty(rld.getLimitedParcelEndtime())&&
+						StringUtils.isNoneEmpty(rld.getLimitedParcelStarttime())){
+					
+					JSONArray json=(JSONArray) conlist.get(i).get("Value");
+					tableTime=new String[json.size()];
+					for(int m=0;m<json.size();m++){
+						tableTime[m]=(String) json.get(m);
+					}
+					startTime=rld.getLimitedParcelStarttime();
+					endTime=rld.getLimitedParcelEndtime();
+				}
+			}
+			//判断行业标准是否冲突
+			for(int i=0;i<tableStandardTypes.length;i++){
+				if(tableStandardTypes[i].equals("WFLocal")){
+					for(int y=0;y<standardTypes.length;y++){
+						if(standardTypes[y].equals("WFLocal")){
+							boo=true;
+							break;
+						}
+					}
+				}
+			}
+			//TODO  ip查重
+			if(tableFullIP!=null && fullIP!=null){
+				long tableStartIp=Long.parseLong(String.valueOf(tableFullIP[0]));
+				long tableEndIp=Long.parseLong(String.valueOf(tableFullIP[1]));
+				long startIp=Long.parseLong(String.valueOf(fullIP[0]));
+				long endIp=Long.parseLong(String.valueOf(fullIP[1]));
+				if(startIp<=tableEndIp&&endIp>=tableStartIp){
+					boo=true;
+				}
+			}
+			if(tableTime!=null && startTime!=null && endTime!=null){
+				String tableStartTime=tableTime[0];
+				String tableEndTime=tableTime[0];
+				try {
+					SimpleDateFormat dts = new SimpleDateFormat("yyyy-MM-dd");
+					Date ddts=dts.parse(tableStartTime);
+					SimpleDateFormat dte = new SimpleDateFormat("yyyy-MM-dd");
+					Date ddte=dte.parse(tableEndTime);
+					SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
+					Date dds=ds.parse(startTime);	
+					SimpleDateFormat de = new SimpleDateFormat("yyyy-MM-dd");
+					Date dde=de.parse(endTime);
+					if(dds.getTime()<=ddte.getTime()&&dde.getTime()>=ddts.getTime()){
+						boo=true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		//专利
 		if(source.equals("DB_WFPD")){
