@@ -3029,7 +3029,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String endTime=null;
 			
 			for(int i=0;i<conlist.size();i++){
-				System.out.println("ddddd");
 				if(conlist.get(i).get("Field").equals("standard_types")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
 					tableStandardTypes=new String[json.size()];
@@ -3079,19 +3078,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			//TODO  ip查重
-			if(tableFullIP!=null && fullIP!=null){
-				long tableStartIp=Long.parseLong(String.valueOf(tableFullIP[0]));
-				long tableEndIp=Long.parseLong(String.valueOf(tableFullIP[1]));
-				long startIp=Long.parseLong(String.valueOf(fullIP[0]));
-				long endIp=Long.parseLong(String.valueOf(fullIP[1]));
-				if(startIp<=tableEndIp&&endIp>=tableStartIp){
-					boo=true;
-				}
-			}
+			
 			if(tableTime!=null && startTime!=null && endTime!=null){
 				String tableStartTime=tableTime[0];
-				String tableEndTime=tableTime[0];
+				String tableEndTime=tableTime[1];
 				try {
 					SimpleDateFormat dts = new SimpleDateFormat("yyyy-MM-dd");
 					Date ddts=dts.parse(tableStartTime);
@@ -3101,8 +3091,36 @@ public class AheadUserServiceImpl implements AheadUserService{
 					Date dds=ds.parse(startTime);	
 					SimpleDateFormat de = new SimpleDateFormat("yyyy-MM-dd");
 					Date dde=de.parse(endTime);
+						
 					if(dds.getTime()<=ddte.getTime()&&dde.getTime()>=ddts.getTime()){
-						boo=true;
+						
+						// ip查重
+						if(tableFullIP!=null && fullIP!=null){
+							for(int i=0;i<tableFullIP.length;i++){
+								for(int y=0;y<fullIP.length;y++){
+									String tableip=tableFullIP[i];
+									String ip=fullIP[y];
+									//开始ip
+									String tbeginIp = trans(tableip.substring(0, tableip.indexOf("-")));
+									//结束ip
+									String tendIp = trans(tableip.substring(tableip.indexOf("-")+1, tableip.length()));
+									
+									//开始ip
+									String beginIp = trans(ip.substring(0, ip.indexOf("-")));
+									//结束ip
+									String endIp = trans(ip.substring(ip.indexOf("-")+1, ip.length()));
+									
+									long ltbeginIp=IPConvertHelper.IPToNumber(tbeginIp);
+									long ltendIp=IPConvertHelper.IPToNumber(tendIp);
+									long lbeginIp=IPConvertHelper.IPToNumber(beginIp);
+									long lendIpIp=IPConvertHelper.IPToNumber(endIp);
+									if(lbeginIp<=ltendIp&&lendIpIp>=ltbeginIp){
+										boo=true;
+										break;
+									}
+								}
+							}
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -3141,6 +3159,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 			sb.append(c);
 		}
 
+		return sb.toString();
+	}
+	public static String trans(String param) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < param.length(); i++) {
+			char c = param.charAt(i);
+			if (c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'||c=='0') {
+				sb.append(c);
+			}
+		}
 		return sb.toString();
 	}
 }
