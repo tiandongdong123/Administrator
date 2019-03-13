@@ -1975,6 +1975,7 @@ function validateIpChange(data,object){
 					$('#IpErrorInfo').html('')
 					var msg="";
 					if(data.tableIP!=null){
+						errorIP=data.errorIP;
 						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>"
 						msg += "<font style='color:red'>相冲突购买项目</font></br><font style='color:#000000'>"+data.tableProject+"</font>";
 						$('#IpErrorInfo').append(msg)
