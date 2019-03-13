@@ -2886,28 +2886,38 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
+
+			if(StringUtils.isNoneEmpty(rld.getGazetteersId())){
+				gazetteerId=rld.getGazetteersId().split(";");
+			}
+			if(StringUtils.isNoneEmpty(rld.getItemId())){
+				itemId=rld.getItemId().split(";");
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersArea())){
+				gazetteersArea= rld.getGazetteersArea();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersAlbum())){
+				String json=rld.getGazetteersAlbum();
+				gazetteersAlbum=json.split(";");
+			}
+			if(gazetteerId==null&&itemId==null&&gazetteersArea==null&&gazetteersAlbum==null){
+				boo=true;
+			}
 			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
-				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
+				if(conlist.get(i).get("Field").equals("gazetteers_id")){
 					String json=(String) conlist.get(i).get("Value");
 					tableGazetteersId=json.split(";");
-					gazetteerId=rld.getGazetteersId().split(";");
-
 				}
-				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
+				if(conlist.get(i).get("Field").equals("item_id")){
 					String json=(String) conlist.get(i).get("Value");
 					tableItemId=json.split(";");
-					itemId=rld.getItemId().split(";");
 				}
-
-				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
+				if(conlist.get(i).get("Field").equals("gazetteers_area")){
 					tableGazetteersArea=(String) conlist.get(i).get("Value");
-					gazetteersArea= rld.getGazetteersArea();
-
 				}
-				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
-					String json=rld.getGazetteersAlbum();
-					gazetteersAlbum=json.split(";");
+				if(conlist.get(i).get("Field").equals("gazetteers_album")){
+					
 					String jsona=(String) conlist.get(i).get("Value");
 					tableGazetteersAlbum=jsona.split(";");
 				}
