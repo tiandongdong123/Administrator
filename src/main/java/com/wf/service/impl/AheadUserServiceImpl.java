@@ -2942,13 +2942,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			
 			boolean tga=StringUtils.isNotEmpty(tableGazetteersArea);
 			boolean ga=StringUtils.isNotEmpty(gazetteersArea);
-			boolean tgaeqga=tableGazetteersArea.equals(gazetteersArea);
 			//分类筛选  判断地区
-			if(tga && ga && tgaeqga){
+			if(tga && ga && tableGazetteersArea.equals(gazetteersArea)){
 				//分类筛选  判断专题分类
-				if(tableGazetteersAlbum.length>0 && gazetteersAlbum.length>0){
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
 					for(int y=0;y<tableGazetteersAlbum.length;y++){
 						for(int t=0;t<gazetteersAlbum.length;t++){
 							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
@@ -2959,6 +2959,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			if(tableGazetteersArea==null&&gazetteersArea==null){
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+					for(int y=0;y<tableGazetteersAlbum.length;y++){
+						for(int t=0;t<gazetteersAlbum.length;t++){
+							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			
+			
 		}
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
