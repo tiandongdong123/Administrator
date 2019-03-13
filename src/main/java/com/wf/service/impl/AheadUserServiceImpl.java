@@ -2759,6 +2759,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Map<String, Set<String>>> getProjectCheck(
 			InstitutionalUser user, String userid) {
+		
 		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
 		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
 		List<Map<String, Object>> projectlist=getProjectInfo(userid);
@@ -2826,7 +2827,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	private boolean Contrast(Map<String, Object> tableContract,ResourceLimitsDTO rld){
 		boolean boo=false;
-		String source=null;
+		String source="source";
 		if(tableContract.containsKey("productSourceCode")){
 			source=(String) tableContract.get("productSourceCode");
 		}
@@ -2990,6 +2991,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//TODO 标准
 		if(source.equals("DB_WFSD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			System.out.println("rld="+rld);
 			//存放查询出来的值
 			String[] tableStandardTypes=null;
 			String[] tableFullIP=null;
@@ -3001,24 +3003,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String endTime=null;
 			
 			for(int i=0;i<conlist.size();i++){
-				if(conlist.get(i).get("Field").equals("standard_types")&&rld.getStandardTypes().length>0){
+				System.out.println("ddddd");
+				if(conlist.get(i).get("Field").equals("standard_types")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
 					tableStandardTypes=new String[json.size()];
 					for(int m=0;m<json.size();m++){
 						tableStandardTypes[m]=(String) json.get(m);
 					}
+				}
+				if(StringUtils.isNoneEmpty(rld.getStandardTypes())){
 					standardTypes=rld.getStandardTypes();
 				}
 				
-				if(conlist.get(i).get("Field").equals("full_IP_range")&&rld.getFullIpRange().length>0){
+				if(conlist.get(i).get("Field").equals("full_IP_range")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
 					tableFullIP=new String[json.size()];
 					for(int m=0;m<json.size();m++){
 						tableFullIP[m]=(String) json.get(m);
 					}
+				}
+				if(StringUtils.isNoneEmpty(rld.getFullIpRange())){
 					fullIP=rld.getFullIpRange();
 				}
-				
 				if(conlist.get(i).get("Field").equals("limited_parcel_time")&&
 						StringUtils.isNoneEmpty(rld.getLimitedParcelEndtime())&&
 						StringUtils.isNoneEmpty(rld.getLimitedParcelStarttime())){
@@ -3034,6 +3040,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			//判断行业标准是否冲突
 			for(int i=0;i<tableStandardTypes.length;i++){
+				if(standardTypes==null){
+					boo=true;
+					break;
+				} 
 				if(tableStandardTypes[i].equals("WFLocal")){
 					for(int y=0;y<standardTypes.length;y++){
 						if(standardTypes[y].equals("WFLocal")){
