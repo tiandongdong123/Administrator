@@ -8,8 +8,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -28,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ecs.xhtml.map;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -176,7 +179,7 @@ public class AheadUserController {
 							//只要有交集的ip
 							if(src.getBeginIpAddressNumber()<=end&&src.getEndIpAddressNumber()>=begin){
 								//1.获取和重复ip的用户的购买资源。
-								List<Map<String, Set<String>>> projectCheck=getProjectCheck(institutionUser,userid);
+								List<Map<String, Set<String>>> projectCheck=aheadUserService.getProjectCheck(institutionUser,userid);
 								if(projectCheck.size()>0){
 									maps.put(IPConvertHelper.NumberToIP(src.getBeginIpAddressNumber())
 											+"-"+IPConvertHelper.NumberToIP(src.getEndIpAddressNumber())+"</br>", "");
@@ -222,264 +225,6 @@ public class AheadUserController {
 		}	
 		return sb;
 	}
-
-	private List<Map<String, Set<String>>> getProjectCheck( InstitutionalUser user,String userid) {
-		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
-		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
-		List<Map<String, Object>> projectlist=aheadUserService.getProjectInfo(userid);
-		for(int i=0;i<projectlist.size();i++){
-			Map<String,Set<String>> errormap=new HashMap<>();
-			String name=(String) projectlist.get(i).get("name");
-			if(projectlist.get(i).containsKey("plList")){
-				//获取重复ip用户的购买数据库信息
-				List<Map<String, Object>> tableplList=(List<Map<String, Object>>) projectlist.get(i).get("plList");
-				//用于存放冲突库信息
-				Set<String> errorSet=new HashSet();
-				for(int h=0;h<tableplList.size();h++){
-					//如果冲突用户选择了改数据库
-					if(tableplList.get(h).containsKey("checked")&&tableplList.get(h).get("checked").equals("checked")){
-						//获取注册用户的当前数据库是否选择
-						String tableproduct=(String)tableplList.get(h).get("productSourceCode");
-						for(int y=0;y<userrdlist.size();y++){
-							if(userrdlist.get(y).getProjectid()!=null&&userrdlist.get(y).getRldto()!=null){
-								List<ResourceLimitsDTO> listrld = userrdlist.get(y).getRldto();
-								for(int d=0;d<listrld.size();d++){
-									//判断冲突用户选择的数据库  注册用户有没有选择  如果选择
-									if(StringUtils.isNotEmpty(listrld.get(d).getResourceid()) && listrld.get(d).getResourceid().equals(tableproduct)){
-										//判断有没有选择详情  如果没有选择详情  则冲突   如果选择了详情  则判断详情是否冲突
-										if(tableplList.get(h).containsKey("contract")){
-											//判断详情是否冲突
-											boolean boo=Contrast(tableplList.get(h),listrld.get(d));
-											if(boo){
-												errorSet.add(tableplList.get(h).get("abbreviation")+"库详情设置");
-											}
-										}else{
-											errorSet.add(tableplList.get(h).get("abbreviation")+"库");
-										}
-									}
-								}
-								if(errorSet.size()>0){
-									errormap.put(name, errorSet);
-								}
-							}
-						}
-					}
-				}
-			}else{
-				//没有选择数据库的检测（万方检测 或者万方分析）
-				String payChannelid= (String) projectlist.get(i).get("payChannelid");
-				String projectname=(String) projectlist.get(i).get("name");
-				for(int y=0;y<userrdlist.size();y++){
-					Set<String> set=new HashSet<>();
-					if(userrdlist.get(y).getProjectid()!=null){
-						String projectid=userrdlist.get(y).getProjectid();
-						if(projectname.startsWith("万方分析")&&userrdlist.get(y).getProjectname().startsWith("万方分析")){
-							//万方分析冲突
-							errormap.put(projectname, set);
-						}else if(payChannelid.equals(projectid)||payChannelid.equals(projectid+"Count")||projectid.equals(payChannelid+"Count")){
-							//冲突
-							errormap.put(projectname, set);
-						}
-					}	
-				}
-			}
-			if(errormap.size()>0){
-				projectCheck.add(errormap);
-			}
-		}
-		return projectCheck;
-	}
-
-	private boolean Contrast(Map<String, Object> tableContract,ResourceLimitsDTO rld){
-		boolean boo=false;
-		String source=null;
-		if(tableContract.containsKey("productSourceCode")){
-			source=(String) tableContract.get("productSourceCode");
-		}
-		//学位详情
-		if(source.equals("DB_CDDB")){
-			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			for(int i=0;i<conlist.size();i++){ 
-				JSONArray json=(JSONArray) conlist.get(i).get("Value");
-				String[] value=new String[json.size()];
-				for(int m=0;m<json.size();m++){
-					value[m]=(String) json.get(m);
-				}
-				String[] resource=transfer(rld.getDegreeClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
-				for(int y=0;y<value.length;y++){
-					for(int t=0;t<resource.length;t++){
-						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-							boo=true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		//会议详情
-		if(source.equals("DB_CCPD")){
-			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			for(int i=0;i<conlist.size();i++){
-				JSONArray json=(JSONArray) conlist.get(i).get("Value");
-				String[] value=new String[json.size()];
-				for(int m=0;m<json.size();m++){
-					value[m]=(String) json.get(m);
-				}
-				String[] resource=transfer(rld.getConferenceClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
-				for(int y=0;y<value.length;y++){
-					for(int t=0;t<resource.length;t++){
-						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-							boo=true;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		//地方志
-		if(source.equals("DB_CLGD")){
-			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			//先判断是自定义导入还是分类筛选
-			//存储的值
-			String[] table_gazetteers_id=null;
-			String[] table_item_id=null;
-			String table_gazetteers_area=null;
-			String[] table_gazetteers_album=null;
-			//先取出页面上的值
-			String[] gazetteers_id=null;
-			String[] item_id=null;
-			String gazetteers_area=null;
-			String[] gazetteers_album=null;
-			for(int i=0;i<conlist.size();i++){
-				//自定义导入正本数据读取
-				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
-					String json=(String) conlist.get(i).get("Value");
-					table_gazetteers_id=json.split(";");
-					gazetteers_id=rld.getGazetteersId().split(";");
-
-				}
-				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
-					String json=(String) conlist.get(i).get("Value");
-					table_item_id=json.split(";");
-					item_id=rld.getItemId().split(";");
-				}
-
-				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
-					table_gazetteers_area=(String) conlist.get(i).get("Value");
-					gazetteers_area= rld.getGazetteersArea();
-
-				}
-				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
-					String json=rld.getGazetteersAlbum();
-					gazetteers_album=json.split(";");
-					String jsona=(String) conlist.get(i).get("Value");
-					table_gazetteers_album=jsona.split(";");
-				}
-			}
-			if(table_gazetteers_id!=null&&gazetteers_id!=null){
-				for(int y=0;y<table_gazetteers_id.length;y++){
-					for(int t=0;t<gazetteers_id.length;t++){
-						if(table_gazetteers_id[y].equals(gazetteers_id[t])){
-							boo=true;
-							break;
-						}
-					}
-				}
-			}
-			if(table_item_id!=null&&item_id!=null){
-				for(int y=0;y<table_item_id.length;y++){
-					for(int t=0;t<item_id.length;t++){
-						if(table_item_id[y].equals((item_id[t]))){
-							boo=true;
-							break;
-						}
-					}
-				}
-			}
-			boolean a=StringUtils.isNotEmpty(table_gazetteers_area);
-			boolean b=StringUtils.isNotEmpty(gazetteers_area);
-			boolean c=table_gazetteers_area.equals(gazetteers_area);
-			//分类筛选  判断地区
-			if(a && b && c){
-				//分类筛选  判断专题分类
-				if(table_gazetteers_album.length>0 && gazetteers_album.length>0){
-					for(int y=0;y<table_gazetteers_album.length;y++){
-						for(int t=0;t<gazetteers_album.length;t++){
-							if(table_gazetteers_album[y].equals(gazetteers_album[t])){
-								boo=true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		//期刊   需判断选刊还是选文献还是都选
-		if(source.equals("DB_CSPD")){
-			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			for(int i=0;i<conlist.size();i++){
-				if(conlist.get(i).get("Field").equals("perioInfo_CLC")){
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					String[] value=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						value[m]=(String) json.get(m);
-					}
-					String[] resource=transfer(rld.getPerioInfoClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
-					for(int y=0;y<value.length;y++){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
-							}
-						}
-					}
-				}
-				if(conlist.get(i).get("Field").equals("journal_CLC")){
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					String[] value=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						value[m]=(String) json.get(m);
-					}
-					String[] resource=transfer(rld.getJournalClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
-					for(int y=0;y<value.length;y++){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		//TODO 标准
-		if(source.equals("DB_WFSD")){
-
-
-		}
-		//专利
-		if(source.equals("DB_WFPD")){
-			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			for(int i=0;i<conlist.size();i++){
-				JSONArray json=(JSONArray) conlist.get(i).get("Value");
-				String[] value=new String[json.size()];
-				for(int m=0;m<json.size();m++){
-					value[m]=(String) json.get(m);
-				}
-				String[] resource=transfer(rld.getPatentIpc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
-				for(int y=0;y<value.length;y++){
-					for(int t=0;t<resource.length;t++){
-						if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-							boo=true;
-							break;
-						}
-					}
-				}
-			}
-		}
-		return boo;
-	}
 	public static String transfer(String param) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < param.length(); i++) {
@@ -492,6 +237,9 @@ public class AheadUserController {
 
 		return sb.toString();
 	}
+
+
+
 
 
 	/**
