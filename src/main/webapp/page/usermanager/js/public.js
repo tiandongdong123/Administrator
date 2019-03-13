@@ -1971,6 +1971,8 @@ function validateIpChange(data,object){
 			dataType : "json",
 			success: function(data){
 				if(data.flag=="true"){
+					bool = true;
+					$('#IpErrorInfo').html('')
 					var msg="";
 					if(data.tableIP!=null){
 						msg="<font style='color:red'>以下IP段存在冲突</font></br><font style='color:#000000'>"+data.errorIP+"</font><font style='color:red'>相冲突账号</font></br><font style='color:#000000'>"+data.tableIP+"</font>"
@@ -1988,8 +1990,10 @@ function validateIpChange(data,object){
 						closeBtn :1,
 						time: 0
 					});
+					bool = false;
 				}else if (data.flag === 'fail') {
 					layer.msg(data.fail, {icon: 2});
+					bool = false;
 					}
 				}
 		});
