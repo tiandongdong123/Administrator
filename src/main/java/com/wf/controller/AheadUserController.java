@@ -131,13 +131,13 @@ public class AheadUserController {
 		StringBuffer sbt = new StringBuffer();
 		StringBuffer sbf = new StringBuffer();
 		Map<String,String> maps = new LinkedHashMap<String,String>();
-		String [] str = ipSegment.split("\n");	
+		String [] str = ipSegment.split("\n");
 		List<UserIp> list=new ArrayList<UserIp>();
 		for(int i = 0; i < str.length; i++){	
 			//开始ip
-			String beginIp = str[i].substring(0, str[i].indexOf("-"));
+			String beginIp = trans(str[i].substring(0, str[i].indexOf("-")));
 			//结束ip
-			String endIp = str[i].substring(str[i].indexOf("-")+1, str[i].length());
+			String endIp = trans(str[i].substring(str[i].indexOf("-")+1, str[i].length()));
 			long begin=IPConvertHelper.IPToNumber(beginIp);
 			long end=IPConvertHelper.IPToNumber(endIp);
 			if(begin>end){
@@ -214,7 +214,16 @@ public class AheadUserController {
 		System.out.println("map:"+map);
 		return map;
 	}
-
+	public static String trans(String param) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < param.length(); i++) {
+			char c = param.charAt(i);
+			if (c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'||c=='0') {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
 	private StringBuffer getData(List<Map<String, Set<String>>> projectCheck,int count,String userid) {
 		StringBuffer sb=new StringBuffer();
 		sb.append("("+count+") "+userid+"， ");
