@@ -1955,7 +1955,7 @@ function validateIp(ip,userId,object){
 	}
 }
 
-function validateIpChange(data,object){
+function validateIpChange(data,ip,object){
 	var loginMode = $("#loginMode").val();
 	errorIP="";
 	if(loginMode==0){
@@ -1967,7 +1967,7 @@ function validateIpChange(data,object){
 	        processData: false,
 	        contentType: false,
 			url : "../auser/validateip.do",
-			data:data,
+			data:{userData:data,ip:ip},
 			dataType : "json",
 			success: function(data){
 				if(data.flag=="true"){
@@ -2218,7 +2218,7 @@ function checkIPError () {
 		});
 		return;
 	}
-    validateIpChange(data,"#checkIp");
+    validateIpChange(data,ip,"#checkIp");
 }
 
 // 剔除冲突ip
