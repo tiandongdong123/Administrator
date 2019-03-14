@@ -2976,46 +2976,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}else{
+				//判断是否有冲突
+				boolean zyfl=false;
+				boolean dq=bao;
+				boolean sjfl=false;
+				boolean zjfl=false;
 				if(tableGazetteersType==null||gazetteersType==null){
-					boo=true;
-				}else if(tableGazetteersType.equals(gazetteersType)){
-					if(tableGazetteersArea==null||gazetteersArea==null){
-						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-							for(int y=0;y<tableGazetteersAlbum.length;y++){
-								for(int t=0;t<gazetteersAlbum.length;t++){
-									if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-										boo=true;
-										break;
-									}
-								}
+					zyfl=true;
+				}
+				if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.equals(gazetteersType)){
+					zyfl=true;
+				}
+				
+				if(tableGazetteersLevel.equals(gazetteersLevel)){
+					sjfl=true;
+				}
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+					for(int y=0;y<tableGazetteersAlbum.length;y++){
+						for(int t=0;t<gazetteersAlbum.length;t++){
+							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+								zjfl=true;
+								break;
 							}
-						}else if(tableGazetteersAlbum==null&&gazetteersAlbum==null&&tableGazetteersLevel.equals(gazetteersLevel)){
-							boo=true;
-						}
-					}else if(bao && tableGazetteersLevel.equals(gazetteersLevel)){
-						//判断专辑是否冲突
-						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-							for(int y=0;y<tableGazetteersAlbum.length;y++){
-								for(int t=0;t<gazetteersAlbum.length;t++){
-									if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-										boo=true;
-										break;
-									}
-								}
-							}
-						}else{
-							boo=true;
 						}
 					}
-					if(tableGazetteersArea==null&&gazetteersArea==null&&tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-						for(int y=0;y<tableGazetteersAlbum.length;y++){
-							for(int t=0;t<gazetteersAlbum.length;t++){
-								if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-									boo=true;
-									break;
-								}
-							}
-						}
+				}
+				if(tableGazetteersArea==null || gazetteersArea==null){
+					dq=true;
+				}
+				
+				if(zyfl&&dq&&sjfl&&zjfl){
+					boo=true;
+				}
+				if(tableGazetteersAlbum==null||gazetteersAlbum==null){
+					if(zyfl&&dq&&sjfl){
+						boo=true;
 					}
 				}
 			}
