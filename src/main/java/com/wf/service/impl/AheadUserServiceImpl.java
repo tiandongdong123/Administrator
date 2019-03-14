@@ -2875,18 +2875,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//地方志
 		if(source.equals("DB_CLGD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
-			//先判断是自定义导入还是分类筛选
 			//存储的值
 			String[] tableGazetteersId=null;
 			String[] tableItemId=null;
 			String tableGazetteersArea=null;
 			String[] tableGazetteersAlbum=null;
-			//先取出页面上的值
+			String tableGazetteersType=null;
+			String tableGazetteersLevel=null;
+			//页面上的值
+			String gazetteersType=null;
+			String gazetteersLevel=null;
 			String[] gazetteerId=null;
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
-
+			
+			if(StringUtils.isNoneEmpty(rld.getGazetteersType())){
+				gazetteersType=rld.getGazetteersType();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersLevel())){
+				gazetteersLevel=rld.getGazetteersLevel();
+			}
 			if(StringUtils.isNoneEmpty(rld.getGazetteersId())){
 				gazetteerId=rld.getGazetteersId().split(";");
 			}
@@ -2900,7 +2909,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				String json=rld.getGazetteersAlbum();
 				gazetteersAlbum=json.split(";");
 			}
-			if(gazetteerId==null&&itemId==null&&gazetteersArea==null&&gazetteersAlbum==null){
+			if(gazetteersType==null||gazetteerId==null&&itemId==null&&gazetteersArea==null&&gazetteersAlbum==null){
 				boo=true;
 			}
 			for(int i=0;i<conlist.size();i++){
@@ -2913,6 +2922,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					String json=(String) conlist.get(i).get("Value");
 					tableItemId=json.split(";");
 				}
+				if(conlist.get(i).get("Field").equals("gazetteers_type")){
+					tableGazetteersType=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_level")){
+					tableGazetteersLevel=(String) conlist.get(i).get("Value");
+				}
 				if(conlist.get(i).get("Field").equals("gazetteers_area")){
 					tableGazetteersArea=(String) conlist.get(i).get("Value");
 				}
@@ -2922,6 +2937,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 					tableGazetteersAlbum=jsona.split(";");
 				}
 			}
+			if(tableGazetteersType==null||gazetteersType==null){
+				boo=true;
+			}
+			if(tableGazetteersArea!=null&&gazetteersArea!=null&&tableGazetteersArea.equals(gazetteersArea)){
+				if(tableGazetteersLevel!=null&&gazetteersLevel!=null&&tableGazetteersLevel.equals(gazetteersLevel)){
+					//判断专辑是否冲突
+					if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+						for(int y=0;y<tableGazetteersAlbum.length;y++){
+							for(int t=0;t<gazetteersAlbum.length;t++){
+								if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+									boo=true;
+									break;
+								}
+							}
+						}
+					}
+					if(tableGazetteersAlbum==null||gazetteersAlbum==null){
+						boo=true;
+					}
+				}	
+			}
+			
 			if(tableGazetteersId!=null&&gazetteerId!=null){
 				for(int y=0;y<tableGazetteersId.length;y++){
 					for(int t=0;t<gazetteerId.length;t++){
@@ -2942,39 +2979,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			
-			boolean tga=StringUtils.isNotEmpty(tableGazetteersArea);
-			boolean ga=StringUtils.isNotEmpty(gazetteersArea);
-			//分类筛选  判断地区
-			if(tga && ga && tableGazetteersArea.equals(gazetteersArea)){
-				//分类筛选  判断专题分类
-				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-					for(int y=0;y<tableGazetteersAlbum.length;y++){
-						for(int t=0;t<gazetteersAlbum.length;t++){
-							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-								boo=true;
-								break;
-							}
+			if(tableGazetteersArea==null&&gazetteersArea==null&&tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+				for(int y=0;y<tableGazetteersAlbum.length;y++){
+					for(int t=0;t<gazetteersAlbum.length;t++){
+						if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+							boo=true;
+							break;
 						}
 					}
 				}
-			}
-			if(tableGazetteersArea==null&&gazetteersArea==null){
-				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-					for(int y=0;y<tableGazetteersAlbum.length;y++){
-						for(int t=0;t<gazetteersAlbum.length;t++){
-							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-								boo=true;
-								break;
-							}
-						}
-					}
-				}
-			}
-			
-			
-			
-			
+			}	
 		}
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
