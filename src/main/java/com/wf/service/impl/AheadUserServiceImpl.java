@@ -3023,6 +3023,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			if(StringUtils.isBlank(rld.getPerioInfoClc())&&StringUtils.isBlank(rld.getJournalClc())){
+				boo=true;
+			}
 			for(int i=0;i<conlist.size();i++){
 				if(conlist.get(i).get("Field").equals("perioInfo_CLC")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
@@ -3030,12 +3033,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 					for(int m=0;m<json.size();m++){
 						value[m]=(String) json.get(m);
 					}
-					String[] resource=transfer(rld.getPerioInfoClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					String[] resource=null;
+					if(StringUtils.isNotBlank(rld.getPerioInfoClc())){
+						resource=transfer(rld.getPerioInfoClc()).split(",");
+					}
+					//注册用户数据库详情去除特殊字符  转换成数组
 					for(int y=0;y<value.length;y++){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
+						if(resource!=null){
+							for(int t=0;t<resource.length;t++){
+								if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+									boo=true;
+									break;
+								}
 							}
 						}
 					}
@@ -3046,13 +3055,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 					for(int m=0;m<json.size();m++){
 						value[m]=(String) json.get(m);
 					}
-					String[] resource=transfer(rld.getJournalClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					String[] resource=null;
+					if(StringUtils.isNotBlank(rld.getJournalClc())){
+						resource=transfer(rld.getJournalClc()).split(",");
+					}
 					for(int y=0;y<value.length;y++){
+						if(resource!=null){
 						for(int t=0;t<resource.length;t++){
 							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
 								boo=true;
 								break;
 							}
+						}
 						}
 					}
 				}
