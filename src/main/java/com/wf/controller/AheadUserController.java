@@ -125,6 +125,8 @@ public class AheadUserController {
 	@RequestMapping("validateip")
 	@ResponseBody
 	public JSONObject validateIp(InstitutionalUser institutionUser,String ipSegment,String userId){
+		
+		List<ResourceDetailedDTO> rdlist = institutionUser.getRdlist();
 		long time=System.currentTimeMillis();
 		JSONObject map = new JSONObject();
 		StringBuffer sb = new StringBuffer();
@@ -152,10 +154,25 @@ public class AheadUserController {
 			list.add(user);
 			}
 		}
-		if(institutionUser.getRdlist()==null){
-			map.put("flag", "fail");
-			map.put("fail","购买项目不能为空，请选择购买项目");
-		}
+		if(map.size()==0&&rdlist==null){
+				map.put("flag", "fail");
+				map.put("fail","购买项目不能为空，请选择购买项目");
+		}else if(map.size()==0){
+				List<ResourceDetailedDTO> lis=new ArrayList<ResourceDetailedDTO>();
+				Map<String,String> hashmap = new HashMap<String, String>();
+				for (ResourceDetailedDTO dto : rdlist) {
+					if (!StringUtils.isEmpty(dto.getProjectname())) {
+						lis.add(dto);
+					}
+				}
+				for (ResourceDetailedDTO dto : lis) {
+					hashmap = InstitutionUtils.getProectValidate(institutionUser,dto, true);
+					if (hashmap.size() > 0) {
+						map.put("flag", "fail");
+						map.put("fail",hashmap.get("fail"));
+					}
+				}
+			}
 		if(map.size()==0){
 			List<Map<String,Object>> bool = aheadUserService.validateIp(list);
 			if(bool.size()>0){
