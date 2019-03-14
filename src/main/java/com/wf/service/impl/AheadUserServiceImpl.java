@@ -2772,9 +2772,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				//用于存放冲突库信息
 				Set<String> errorSet=new HashSet();
 				for(int h=0;h<tableplList.size();h++){
-					//如果冲突用户选择了改数据库
 					if(tableplList.get(h).containsKey("checked")&&tableplList.get(h).get("checked").equals("checked")){
-						//获取注册用户的当前数据库是否选择
 						String tableproduct=(String)tableplList.get(h).get("productSourceCode");
 						for(int y=0;y<userrdlist.size();y++){
 							if(userrdlist.get(y).getProjectid()!=null&&userrdlist.get(y).getRldto()!=null){
@@ -2782,7 +2780,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 								for(int d=0;d<listrld.size();d++){
 									//判断冲突用户选择的数据库  注册用户有没有选择  如果选择
 									if(StringUtils.isNotEmpty(listrld.get(d).getResourceid()) && listrld.get(d).getResourceid().equals(tableproduct)){
-										//判断有没有选择详情  如果没有选择详情  则冲突   如果选择了详情  则判断详情是否冲突
 										if(tableplList.get(h).containsKey("contract")){
 											//判断详情是否冲突
 											boolean boo=Contrast(tableplList.get(h),listrld.get(d));

@@ -159,14 +159,14 @@ public class AheadUserController {
 				map.put("fail","购买项目不能为空，请选择购买项目");
 		}else if(map.size()==0){
 				List<ResourceDetailedDTO> lis=new ArrayList<ResourceDetailedDTO>();
-				Map<String,String> hashmap = new HashMap<String, String>();
+				Map<String,Object> hashmap = new HashMap<String, Object>();
 				for (ResourceDetailedDTO dto : rdlist) {
 					if (!StringUtils.isEmpty(dto.getProjectname())) {
 						lis.add(dto);
 					}
 				}
 				for (ResourceDetailedDTO dto : lis) {
-					hashmap = InstitutionUtils.getProectValidate(institutionUser,dto, true);
+					hashmap = InstitutionUtils.getBatchProectValidate(institutionUser,dto, true);
 					if (hashmap.size() > 0) {
 						map.put("flag", "fail");
 						map.put("fail",hashmap.get("fail"));
@@ -222,7 +222,6 @@ public class AheadUserController {
 					map.put("errorIP", sbf.toString());
 					map.put("tableIP", sb.toString());
 					map.put("tableProject", sbt.toString());
-					System.out.println("-----有冲突-----："+sbt.toString());
 				}
 			}
 		}
@@ -230,7 +229,6 @@ public class AheadUserController {
 			map.put("flag", "false");
 		}
 		log.info("IP校验："+userId+" "+ipSegment.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
-		System.out.println("map:"+map);
 		return map;
 	}
 	public static String trans(String param) {
