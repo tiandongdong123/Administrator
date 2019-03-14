@@ -2980,7 +2980,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 					boo=true;
 				}else if(tableGazetteersType.equals(gazetteersType)){
 					if(tableGazetteersArea==null||gazetteersArea==null){
-						boo=true;
+						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+							for(int y=0;y<tableGazetteersAlbum.length;y++){
+								for(int t=0;t<gazetteersAlbum.length;t++){
+									if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+										boo=true;
+										break;
+									}
+								}
+							}
+						}
 					}else if(bao && tableGazetteersLevel.equals(gazetteersLevel)){
 						//判断专辑是否冲突
 						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
