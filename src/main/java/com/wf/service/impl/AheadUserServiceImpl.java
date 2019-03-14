@@ -2759,6 +2759,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Map<String, Set<String>>> getProjectCheck(
 			InstitutionalUser user, String userid) {
+		
 		List<Map<String, Set<String>>> projectCheck=new ArrayList<Map<String, Set<String>>>();
 		List<ResourceDetailedDTO> userrdlist=user.getRdlist();
 		List<Map<String, Object>> projectlist=getProjectInfo(userid);
@@ -2826,7 +2827,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 	private boolean Contrast(Map<String, Object> tableContract,ResourceLimitsDTO rld){
 		boolean boo=false;
-		String source=null;
+		String source="source";
 		if(tableContract.containsKey("productSourceCode")){
 			source=(String) tableContract.get("productSourceCode");
 		}
@@ -2885,28 +2886,38 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
+
+			if(StringUtils.isNoneEmpty(rld.getGazetteersId())){
+				gazetteerId=rld.getGazetteersId().split(";");
+			}
+			if(StringUtils.isNoneEmpty(rld.getItemId())){
+				itemId=rld.getItemId().split(";");
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersArea())){
+				gazetteersArea= rld.getGazetteersArea();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersAlbum())){
+				String json=rld.getGazetteersAlbum();
+				gazetteersAlbum=json.split(";");
+			}
+			if(gazetteerId==null&&itemId==null&&gazetteersArea==null&&gazetteersAlbum==null){
+				boo=true;
+			}
 			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
-				if(conlist.get(i).get("Field").equals("gazetteers_id")&&rld.getGazetteersId().length()>0){
+				if(conlist.get(i).get("Field").equals("gazetteers_id")){
 					String json=(String) conlist.get(i).get("Value");
 					tableGazetteersId=json.split(";");
-					gazetteerId=rld.getGazetteersId().split(";");
-
 				}
-				if(conlist.get(i).get("Field").equals("item_id")&&rld.getItemId().length()>0){
+				if(conlist.get(i).get("Field").equals("item_id")){
 					String json=(String) conlist.get(i).get("Value");
 					tableItemId=json.split(";");
-					itemId=rld.getItemId().split(";");
 				}
-
-				if(conlist.get(i).get("Field").equals("gazetteers_area")&&rld.getGazetteersArea().length()>0){
+				if(conlist.get(i).get("Field").equals("gazetteers_area")){
 					tableGazetteersArea=(String) conlist.get(i).get("Value");
-					gazetteersArea= rld.getGazetteersArea();
-
 				}
-				if(conlist.get(i).get("Field").equals("gazetteers_album")&&rld.getGazetteersAlbum().length()>0){
-					String json=rld.getGazetteersAlbum();
-					gazetteersAlbum=json.split(";");
+				if(conlist.get(i).get("Field").equals("gazetteers_album")){
+					
 					String jsona=(String) conlist.get(i).get("Value");
 					tableGazetteersAlbum=jsona.split(";");
 				}
@@ -2931,13 +2942,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			
 			boolean tga=StringUtils.isNotEmpty(tableGazetteersArea);
 			boolean ga=StringUtils.isNotEmpty(gazetteersArea);
-			boolean tgaeqga=tableGazetteersArea.equals(gazetteersArea);
 			//分类筛选  判断地区
-			if(tga && ga && tgaeqga){
+			if(tga && ga && tableGazetteersArea.equals(gazetteersArea)){
 				//分类筛选  判断专题分类
-				if(tableGazetteersAlbum.length>0 && gazetteersAlbum.length>0){
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
 					for(int y=0;y<tableGazetteersAlbum.length;y++){
 						for(int t=0;t<gazetteersAlbum.length;t++){
 							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
@@ -2948,6 +2959,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
+			if(tableGazetteersArea==null&&gazetteersArea==null){
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+					for(int y=0;y<tableGazetteersAlbum.length;y++){
+						for(int t=0;t<gazetteersAlbum.length;t++){
+							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+								boo=true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			
+			
 		}
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
@@ -2990,6 +3017,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//TODO 标准
 		if(source.equals("DB_WFSD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			System.out.println("rld="+rld);
 			//存放查询出来的值
 			String[] tableStandardTypes=null;
 			String[] tableFullIP=null;
@@ -3001,24 +3029,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String endTime=null;
 			
 			for(int i=0;i<conlist.size();i++){
-				if(conlist.get(i).get("Field").equals("standard_types")&&rld.getStandardTypes().length>0){
+				if(conlist.get(i).get("Field").equals("standard_types")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
 					tableStandardTypes=new String[json.size()];
 					for(int m=0;m<json.size();m++){
 						tableStandardTypes[m]=(String) json.get(m);
 					}
+				}
+				if(StringUtils.isNoneEmpty(rld.getStandardTypes())){
 					standardTypes=rld.getStandardTypes();
 				}
 				
-				if(conlist.get(i).get("Field").equals("full_IP_range")&&rld.getFullIpRange().length>0){
+				if(conlist.get(i).get("Field").equals("full_IP_range")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
 					tableFullIP=new String[json.size()];
 					for(int m=0;m<json.size();m++){
 						tableFullIP[m]=(String) json.get(m);
 					}
+				}
+				if(StringUtils.isNoneEmpty(rld.getFullIpRange())){
 					fullIP=rld.getFullIpRange();
 				}
-				
 				if(conlist.get(i).get("Field").equals("limited_parcel_time")&&
 						StringUtils.isNoneEmpty(rld.getLimitedParcelEndtime())&&
 						StringUtils.isNoneEmpty(rld.getLimitedParcelStarttime())){
@@ -3034,6 +3065,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			//判断行业标准是否冲突
 			for(int i=0;i<tableStandardTypes.length;i++){
+				if(standardTypes==null){
+					boo=true;
+					break;
+				} 
 				if(tableStandardTypes[i].equals("WFLocal")){
 					for(int y=0;y<standardTypes.length;y++){
 						if(standardTypes[y].equals("WFLocal")){
@@ -3043,19 +3078,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}
-			//TODO  ip查重
-			if(tableFullIP!=null && fullIP!=null){
-				long tableStartIp=Long.parseLong(String.valueOf(tableFullIP[0]));
-				long tableEndIp=Long.parseLong(String.valueOf(tableFullIP[1]));
-				long startIp=Long.parseLong(String.valueOf(fullIP[0]));
-				long endIp=Long.parseLong(String.valueOf(fullIP[1]));
-				if(startIp<=tableEndIp&&endIp>=tableStartIp){
-					boo=true;
-				}
-			}
+			
 			if(tableTime!=null && startTime!=null && endTime!=null){
 				String tableStartTime=tableTime[0];
-				String tableEndTime=tableTime[0];
+				String tableEndTime=tableTime[1];
 				try {
 					SimpleDateFormat dts = new SimpleDateFormat("yyyy-MM-dd");
 					Date ddts=dts.parse(tableStartTime);
@@ -3065,8 +3091,36 @@ public class AheadUserServiceImpl implements AheadUserService{
 					Date dds=ds.parse(startTime);	
 					SimpleDateFormat de = new SimpleDateFormat("yyyy-MM-dd");
 					Date dde=de.parse(endTime);
+						
 					if(dds.getTime()<=ddte.getTime()&&dde.getTime()>=ddts.getTime()){
-						boo=true;
+						
+						// ip查重
+						if(tableFullIP!=null && fullIP!=null){
+							for(int i=0;i<tableFullIP.length;i++){
+								for(int y=0;y<fullIP.length;y++){
+									String tableip=tableFullIP[i];
+									String ip=fullIP[y];
+									//开始ip
+									String tbeginIp = trans(tableip.substring(0, tableip.indexOf("-")));
+									//结束ip
+									String tendIp = trans(tableip.substring(tableip.indexOf("-")+1, tableip.length()));
+									
+									//开始ip
+									String beginIp = trans(ip.substring(0, ip.indexOf("-")));
+									//结束ip
+									String endIp = trans(ip.substring(ip.indexOf("-")+1, ip.length()));
+									
+									long ltbeginIp=IPConvertHelper.IPToNumber(tbeginIp);
+									long ltendIp=IPConvertHelper.IPToNumber(tendIp);
+									long lbeginIp=IPConvertHelper.IPToNumber(beginIp);
+									long lendIpIp=IPConvertHelper.IPToNumber(endIp);
+									if(lbeginIp<=ltendIp&&lendIpIp>=ltbeginIp){
+										boo=true;
+										break;
+									}
+								}
+							}
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -3105,6 +3159,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 			sb.append(c);
 		}
 
+		return sb.toString();
+	}
+	public static String trans(String param) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < param.length(); i++) {
+			char c = param.charAt(i);
+			if (c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'||c=='0') {
+				sb.append(c);
+			}
+		}
 		return sb.toString();
 	}
 }

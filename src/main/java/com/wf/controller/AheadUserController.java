@@ -134,6 +134,7 @@ public class AheadUserController {
 		String [] str = ipSegment.split("\n");
 		List<UserIp> list=new ArrayList<UserIp>();
 		for(int i = 0; i < str.length; i++){	
+			if(StringUtils.isNotBlank(str[i])){
 			//开始ip
 			String beginIp = trans(str[i].substring(0, str[i].indexOf("-")));
 			//结束ip
@@ -149,6 +150,7 @@ public class AheadUserController {
 			user.setBeginIpAddressNumber(begin);
 			user.setEndIpAddressNumber(end);
 			list.add(user);
+			}
 		}
 		if(institutionUser.getRdlist()==null){
 			map.put("flag", "fail");
