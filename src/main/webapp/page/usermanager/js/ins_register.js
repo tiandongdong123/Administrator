@@ -88,6 +88,7 @@ function submitForm(type){
 	        contentType: false  
 	    }).done(function(data){
 	    	if(data.flag=="success"){
+	    		$('#IpErrorInfo').html('')
 	    		layer.alert("注册成功", {
 	    			icon: 1,
 	    		    skin: 'layui-layer-molv',

@@ -226,6 +226,7 @@ function updateUser(){
 		contentType: false
 	}).done(function(data){
 		if(data.flag=="success"){
+			$('#IpErrorInfo').html('')
     		layer.alert("更新成功", {
     			icon: 1,
     		    skin: 'layui-layer-molv',

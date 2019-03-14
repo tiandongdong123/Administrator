@@ -2168,6 +2168,7 @@ function checkMoney(obj,num){
 //校验ip
 function validateIPS(obj){
 	obj.value=obj.value.replace(/[^.0-9\r\n-]/g,'')
+	layer.closeAll();
 }
 //批量展示错误信息
 function showError(data){
@@ -2261,4 +2262,7 @@ function deleteIPError() {
 		}
 	}
 	$("#ipSegment").val(ipHtml);
+}
+function closeLayer () {
+	layer.closeAll();
 }
