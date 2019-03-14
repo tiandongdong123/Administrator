@@ -2989,7 +2989,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 									}
 								}
 							}
-						}else{
+						}else if(tableGazetteersAlbum==null&&gazetteersAlbum==null&&tableGazetteersLevel.equals(gazetteersLevel)){
 							boo=true;
 						}
 					}else if(bao && tableGazetteersLevel.equals(gazetteersLevel)){
