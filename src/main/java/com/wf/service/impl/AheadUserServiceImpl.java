@@ -2907,14 +2907,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 				gazetteersAlbum=json.split(";");
 			}
 			if(gazetteersType==null&&
-					gazetteersLevel==null&&
 					gazetteerId==null&&
 					itemId==null&&
 					gazetteersArea==null&&
 					gazetteersAlbum==null){
 				boo=true;
 			}
-
 			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
 				if(conlist.get(i).get("Field").equals("gazetteers_id")){
