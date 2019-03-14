@@ -2989,6 +2989,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 									}
 								}
 							}
+						}else{
+							boo=true;
 						}
 					}else if(bao && tableGazetteersLevel.equals(gazetteersLevel)){
 						//判断专辑是否冲突
