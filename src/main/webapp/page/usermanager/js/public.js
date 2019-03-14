@@ -2185,6 +2185,7 @@ function showError(data){
 // 检测ip冲突
 function checkIPError () {
 	layer.closeAll();
+	$('#IpErrorInfo').html('')
 	var data = new FormData($('#fromList')[0]);
     var openBindStart = data.get('openBindStart');
     var openBindEnd = data.get('openBindEnd');
