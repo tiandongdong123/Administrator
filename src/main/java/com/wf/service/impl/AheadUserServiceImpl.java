@@ -2907,14 +2907,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 				gazetteersAlbum=json.split(";");
 			}
 			if(gazetteersType==null&&
-					gazetteersLevel==null&&
 					gazetteerId==null&&
 					itemId==null&&
 					gazetteersArea==null&&
 					gazetteersAlbum==null){
 				boo=true;
 			}
-
 			for(int i=0;i<conlist.size();i++){
 				//自定义导入正本数据读取
 				if(conlist.get(i).get("Field").equals("gazetteers_id")){
@@ -2976,46 +2974,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 			}else{
+				//判断是否有冲突
+				boolean zyfl=false;
+				boolean dq=bao;
+				boolean sjfl=false;
+				boolean zjfl=false;
 				if(tableGazetteersType==null||gazetteersType==null){
-					boo=true;
-				}else if(tableGazetteersType.equals(gazetteersType)){
-					if(tableGazetteersArea==null||gazetteersArea==null){
-						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-							for(int y=0;y<tableGazetteersAlbum.length;y++){
-								for(int t=0;t<gazetteersAlbum.length;t++){
-									if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-										boo=true;
-										break;
-									}
-								}
+					zyfl=true;
+				}
+				if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.equals(gazetteersType)){
+					zyfl=true;
+				}
+				
+				if(tableGazetteersLevel.equals(gazetteersLevel)){
+					sjfl=true;
+				}
+				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+					for(int y=0;y<tableGazetteersAlbum.length;y++){
+						for(int t=0;t<gazetteersAlbum.length;t++){
+							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
+								zjfl=true;
+								break;
 							}
-						}else if(tableGazetteersAlbum==null&&gazetteersAlbum==null&&tableGazetteersLevel.equals(gazetteersLevel)){
-							boo=true;
-						}
-					}else if(bao && tableGazetteersLevel.equals(gazetteersLevel)){
-						//判断专辑是否冲突
-						if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-							for(int y=0;y<tableGazetteersAlbum.length;y++){
-								for(int t=0;t<gazetteersAlbum.length;t++){
-									if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-										boo=true;
-										break;
-									}
-								}
-							}
-						}else{
-							boo=true;
 						}
 					}
-					if(tableGazetteersArea==null&&gazetteersArea==null&&tableGazetteersAlbum!=null && gazetteersAlbum!=null){
-						for(int y=0;y<tableGazetteersAlbum.length;y++){
-							for(int t=0;t<gazetteersAlbum.length;t++){
-								if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
-									boo=true;
-									break;
-								}
-							}
-						}
+				}
+				if(tableGazetteersArea==null || gazetteersArea==null){
+					dq=true;
+				}
+				
+				if(zyfl&&dq&&sjfl&&zjfl){
+					boo=true;
+				}
+				if(tableGazetteersAlbum==null||gazetteersAlbum==null){
+					if(zyfl&&dq&&sjfl){
+						boo=true;
 					}
 				}
 			}
@@ -3023,6 +3016,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//期刊   需判断选刊还是选文献还是都选
 		if(source.equals("DB_CSPD")){
 			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			if(StringUtils.isBlank(rld.getPerioInfoClc())&&StringUtils.isBlank(rld.getJournalClc())){
+				boo=true;
+			}
 			for(int i=0;i<conlist.size();i++){
 				if(conlist.get(i).get("Field").equals("perioInfo_CLC")){
 					JSONArray json=(JSONArray) conlist.get(i).get("Value");
@@ -3030,12 +3026,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 					for(int m=0;m<json.size();m++){
 						value[m]=(String) json.get(m);
 					}
-					String[] resource=transfer(rld.getPerioInfoClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					String[] resource=null;
+					if(StringUtils.isNotBlank(rld.getPerioInfoClc())){
+						resource=transfer(rld.getPerioInfoClc()).split(",");
+					}
+					//注册用户数据库详情去除特殊字符  转换成数组
 					for(int y=0;y<value.length;y++){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
+						if(resource!=null){
+							for(int t=0;t<resource.length;t++){
+								if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+									boo=true;
+									break;
+								}
 							}
 						}
 					}
@@ -3046,13 +3048,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 					for(int m=0;m<json.size();m++){
 						value[m]=(String) json.get(m);
 					}
-					String[] resource=transfer(rld.getJournalClc()).split(",");//注册用户数据库详情去除特殊字符  转换成数组
+					String[] resource=null;
+					if(StringUtils.isNotBlank(rld.getJournalClc())){
+						resource=transfer(rld.getJournalClc()).split(",");
+					}
 					for(int y=0;y<value.length;y++){
+						if(resource!=null){
 						for(int t=0;t<resource.length;t++){
 							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
 								boo=true;
 								break;
 							}
+						}
 						}
 					}
 				}
