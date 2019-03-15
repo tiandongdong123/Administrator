@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.redis.RedisUtil;
+import com.redis.UserRedisUtil;
 import com.utils.CookieUtil;
 import com.wf.bean.PageList;
 import com.wf.bean.Wfadmin;
@@ -28,7 +29,8 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private RoleMapper role;
 	
-	private RedisUtil redis = new RedisUtil();
+	//private RedisUtil redis = new RedisUtil();
+	private UserRedisUtil redis = new UserRedisUtil();
 	private SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Override
