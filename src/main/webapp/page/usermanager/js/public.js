@@ -1972,7 +1972,8 @@ function validateIpChange(data,object){
 			success: function(data){
 				if(data.flag=="true"){
 					bool = true;
-					$('#IpErrorInfo').html('')
+					$('#IpErrorInfo').html('');
+					layer.closeAll();
 					var msg="";
 					if(data.tableIP!=null){
 						errorIP=data.errorIP;
