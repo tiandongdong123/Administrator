@@ -135,23 +135,32 @@ public class AheadUserController {
 		Map<String,String> maps = new LinkedHashMap<String,String>();
 		String [] str = ipSegment.split("\n");
 		List<UserIp> list=new ArrayList<UserIp>();
-		for(int i = 0; i < str.length; i++){	
+		for(int i = 0; i < str.length; i++){
 			if(StringUtils.isNotBlank(str[i])){
-			//开始ip
-			String beginIp = trans(str[i].substring(0, str[i].indexOf("-")));
-			//结束ip
-			String endIp = trans(str[i].substring(str[i].indexOf("-")+1, str[i].length()));
-			long begin=IPConvertHelper.IPToNumber(beginIp);
-			long end=IPConvertHelper.IPToNumber(endIp);
-			if(begin>end){
-				map.put("flag", "true");
-				map.put("errorIP", beginIp+"-"+endIp+" 开始IP大于结束IP");
+				boolean validateIp=IPConvertHelper.validateIp(trans(str[i]));
+				if(!validateIp){
+					String errorIP=str[i]+"</br>";
+					sbf.append(errorIP);
+					map.put("flag", "true");
+					map.put("errorIP", trans(sbf.toString()));
+				}
 			}
-			UserIp user=new UserIp();
-			user.setUserId(userId);
-			user.setBeginIpAddressNumber(begin);
-			user.setEndIpAddressNumber(end);
-			list.add(user);
+		}
+		if(map.size()==0){
+			for(int i = 0; i < str.length; i++){
+				if(StringUtils.isNotBlank(str[i])){
+				//开始ip
+				String beginIp = trans(str[i].substring(0, str[i].indexOf("-")));
+				//结束ip
+				String endIp = trans(str[i].substring(str[i].indexOf("-")+1, str[i].length()));
+				long begin=IPConvertHelper.IPToNumber(beginIp);
+				long end=IPConvertHelper.IPToNumber(endIp);
+				UserIp user=new UserIp();
+				user.setUserId(userId);
+				user.setBeginIpAddressNumber(begin);
+				user.setEndIpAddressNumber(end);
+				list.add(user);
+				}
 			}
 		}
 		if(map.size()==0&&rdlist==null){
@@ -231,25 +240,32 @@ public class AheadUserController {
 		log.info("IP校验："+userId+" "+ipSegment.replace("\n", ",")+"耗时"+(System.currentTimeMillis()-time)+"ms");
 		return map;
 	}
+	
+	private StringBuffer getData(List<Map<String, Set<String>>> projectCheck,int count,String userid) {
+		StringBuffer sb=new StringBuffer();
+			int ct=1;
+			sb.append("("+count+") ");
+			for (Map<String, Set<String>> map : projectCheck) {
+				for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+					if(ct==1){
+						sb.append(userid+"， "+entry.getKey()+" : "+transfer(entry.getValue().toString())+"</br>"); 
+						ct++;
+					}else{
+						sb.append("&emsp;&nbsp&nbsp"+userid+"， "+entry.getKey()+" : "+transfer(entry.getValue().toString())+"</br>"); 
+					}
+				}
+			}
+		return sb;
+	}
 	public static String trans(String param) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < param.length(); i++) {
 			char c = param.charAt(i);
-			if (c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'||c=='0') {
+			if (c=='0'||c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9'||c=='.'||c=='-') {
 				sb.append(c);
 			}
 		}
 		return sb.toString();
-	}
-	private StringBuffer getData(List<Map<String, Set<String>>> projectCheck,int count,String userid) {
-		StringBuffer sb=new StringBuffer();
-		sb.append("("+count+") "+userid+"， ");
-		for (Map<String, Set<String>> map : projectCheck) {
-			for (Map.Entry<String, Set<String>> entry : map.entrySet()) { 
-				sb.append(entry.getKey()+" : "+transfer(entry.getValue().toString())+"</br>");  
-			}
-		}	
-		return sb;
 	}
 	public static String transfer(String param) {
 		StringBuilder sb = new StringBuilder();
@@ -1819,7 +1835,7 @@ public class AheadUserController {
 			//1、创建channel
 			ManagedChannel channel = NettyChannelBuilder.forAddress(grpcServer, grpcPort)
 					.negotiationType(NegotiationType.PLAINTEXT).build();
-
+  
 			//2、创建连接实例
 			ProducerServiceGrpc.ProducerServiceBlockingStub blockingStub =ProducerServiceGrpc
 					.newBlockingStub(channel);

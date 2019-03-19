@@ -1729,7 +1729,7 @@ public class UserRedisUtil {
 	}
 	
 	public static void main(String[] args) {
-		RedisUtil r = new RedisUtil();
+		UserRedisUtil r = new UserRedisUtil();
 		System.out.println(r.get("CLCDic",1));
 		/*Map<String, String> s=  r.hgetall("admin");
 		String map= r.hget("admin","10.215.4.130");
