@@ -2049,7 +2049,7 @@ function checkIP(){
 		return;
 	}
 	if(!IpFormat(ip)){
-		var  msg="<font style='color:red''>IP段格式错误：</font>";
+		var  msg="<font style='color:red''>IP格式错误：</font>";
 		for(var ar in IpArray){
 			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
 		}
@@ -2212,7 +2212,7 @@ function checkIPError () {
 		return;
 	}
 	if(!IpFormat(ip)){
-		var  msg="<font style='color:red''>IP段格式错误：</font>";
+		var  msg="<font style='color:red''>IP格式错误：</font>";
 		for(var ar in IpArray){
 			msg+="<br><font style='color:#000000'>"+IpArray[ar]+"</font>";
 		}
