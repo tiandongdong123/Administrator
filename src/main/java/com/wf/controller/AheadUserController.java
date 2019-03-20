@@ -139,10 +139,10 @@ public class AheadUserController {
 			if(StringUtils.isNotBlank(str[i])){
 				boolean validateIp=IPConvertHelper.validateIp(trans(str[i]));
 				if(!validateIp){
-					String errorIP=str[i]+"</br>";
+					String errorIP=trans(str[i])+"</br>";
 					sbf.append(errorIP);
 					map.put("flag", "true");
-					map.put("errorIP", trans(sbf.toString()));
+					map.put("errorIP", sbf.toString());
 				}
 			}
 		}
