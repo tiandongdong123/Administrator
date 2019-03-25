@@ -672,4 +672,6 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 
 .front_apan{margin-left: 20px;font-size: 13px;}
 
-
+#IpErrorInfo {
+	margin-left: 19%;
+}

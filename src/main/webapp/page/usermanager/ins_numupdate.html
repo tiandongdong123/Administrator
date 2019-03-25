@@ -88,11 +88,11 @@
              </div>
              <div class="form-group input_block" id="ipvalue" <?if(map.loginMode!=1){?>style="display: black;"<?}else{?>style="display: none;"<?}?>>
                <label  class="input_name">账号IP段</label>
-               <textarea class="form-control input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
-				<span>
+               <textarea class="form-control input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onfocus="closeLayer()" onafterpaste="validateIPS(this);"><? if(!isEmpty(map.list_ip)){ var g=0; for(lip in map.list_ip){ g++;?>${lip.beginIpAddressNumber}-${lip.endIpAddressNumber}<?if(g<map.list_ip.~size){?>&#13;&#10;<?}?><?}?><?}?></textarea>
+				<!-- <span>
 				<button type="button" onclick="checkIP();" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
 				<button type="button" onclick="deleteIP();" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP</button>
-				</span>
+				</span> -->
              </div>
             </div>
 			<div class="form-group input_block">
@@ -872,9 +872,12 @@
 		</form>
 		<input type="hidden" id="count" value="${i}">
 		<div class="box-footer block_left">
+			<button type="button" onclick="checkIPError();" class="btn btn-primary" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
+			<button type="button" onclick="deleteIPError();" class="btn btn-primary" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP段</button>
 			<button type="button" class="btn btn-primary" id="submit" onclick="submitForm();">保存</button>
 			<button type="button" class="btn btn-primary" id="submit1" onclick="javascript:history.back(-1)">取消</button>
 		</div>
+		<div id="IpErrorInfo"></div>
        </div>
       </div>
     </div>

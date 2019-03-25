@@ -3,6 +3,7 @@ package com.wf.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -272,4 +273,9 @@ public interface AheadUserService {
 	 * @return
 	 */
 	List<String> findUserIdByIp(long start,long end,String userId);
+	
+	/**
+	 * 获取冲突ip的冲突购买资源
+	 */
+	List<Map<String, Set<String>>> getProjectCheck( InstitutionalUser user,String userid);
 }

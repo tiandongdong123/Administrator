@@ -79,11 +79,11 @@
 				</div>
 				<div class="form-group input_block" id="ipvalue" style="display: none;">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>账号IP段</label>
-					<textarea class="input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onafterpaste="validateIPS(this);"></textarea>
-					<span>
+					<textarea class="input_time" rows="3" name="ipSegment" id="ipSegment" onkeyup="validateIPS(this);" onfocus="closeLayer()" onafterpaste="validateIPS(this);"></textarea>
+					<!-- <span>
 					<button type="button" onclick="checkIP();" id="checkIp">检查IP冲突</button>
 					<button type="button" onclick="deleteIP();" id="deleteIp">剔除冲突IP</button>
-					</span>
+					</span> -->
 				</div>
 				</div>
                 <div class="form-group input_block">
@@ -224,9 +224,12 @@
                	</div>
 				<div class="box-footer block_left">
 					<!-- <button type="button" class="btn btn-primary" id="submit1" onclick="submitForm(0);">保存并新增</button> -->
+					<button type="button" class="btn btn-primary" class="IPAutomatic" onclick="checkIPError();" id="checkIp" style="display:none">检查IP冲突</button>
+					<button type="button" class="btn btn-primary" class="IPAutomatic" onclick="deleteIPError();" id="deleteIp" style="display:none">剔除冲突IP段</button>
 					<button type="button" class="btn btn-primary" id="submit2" onclick="submitForm(1);">保存</button>
 					<button type="reset" class="btn btn-primary" id="submit3" onclick="location=location;">取消</button>
 				</div>
+				<div id="IpErrorInfo"></div>
               </div>
 			  <!-- 详情 -->
               <div id="detail_0"></div>
