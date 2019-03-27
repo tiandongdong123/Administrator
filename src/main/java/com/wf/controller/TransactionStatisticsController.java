@@ -22,4 +22,16 @@ public class TransactionStatisticsController {
         view.setViewName("/page/statistics/person_statistics");
         return view;
     }
+
+    /**
+     * 后台充值统计
+     *
+     * @return
+     */
+    @RequestMapping("backChargeStatistics")
+    public ModelAndView backChargeStatistics() {
+        ModelAndView view = new ModelAndView();
+        view.setViewName("/page/statistics/back_charge_statistics");
+        return view;
+    }
 }
