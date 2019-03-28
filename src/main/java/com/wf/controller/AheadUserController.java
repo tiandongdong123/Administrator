@@ -428,7 +428,7 @@ public class AheadUserController {
 	@RequestMapping("findpatent")
 	@ResponseBody
 	public Map<String,Object> findPatent(String num){
-		String str = GetDetails.PATENT_IPC;
+		String str = GetDetails.PATENT_IPC==null ? GetDetails.getPatentIpc() : GetDetails.PATENT_IPC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -455,11 +455,11 @@ public class AheadUserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String gazetter = "";
 		if ("0".equals(pid)) {
-			gazetter = GetDetails.GAZETTEER_TYPE_DIC;// 专辑分类
+			gazetter = GetDetails.GAZETTEER_TYPE_DIC==null ? GetDetails.getGazetteerTypeDic():GetDetails.GAZETTEER_TYPE_DIC;// 专辑分类
 			map.put("arrayGazetter", JSONArray.fromObject(gazetter));
 		}
 		JSONArray arrayArea = new JSONArray();
-		String reg = GetDetails.REGION;// 省级区域
+		String reg = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(reg);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -502,7 +502,7 @@ public class AheadUserController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONArray arrayArea = new JSONArray();
-		String area = GetDetails.REGION;// 省级区域
+		String area = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(area);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -520,7 +520,7 @@ public class AheadUserController {
 	@RequestMapping("findPerioSubject")
 	@ResponseBody
 	public Map<String,Object> findPerioSubject(String num){
-		String str = GetDetails.PERIOINFO_DIC;
+		String str = GetDetails.PERIOINFO_DIC==null ? GetDetails.getPerioInfoDic() : GetDetails.PERIOINFO_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -542,8 +542,7 @@ public class AheadUserController {
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
-//		String str = redis.get("CLCDic",0);
-		String str = GetDetails.CLC_DIC;
+		String str = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);

@@ -21,7 +21,6 @@ public class GetDetails {
 		PATENT_IPC=getPatentIpc();
 		PERIOINFO_DIC=getPerioInfoDic();
 	}
-
 	public static String getCLCDic(){
 		String clcdic=null;
 		long lasting = System.currentTimeMillis();   

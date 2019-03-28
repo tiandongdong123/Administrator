@@ -448,8 +448,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		boolean success = false;
 		try {
 			RedisUtil util = new RedisUtil();
-//			val  =util.get("CLCDic",0);
-			val = GetDetails.CLC_DIC;
+			val = GetDetails.CLC_DIC==null ? GetDetails.getCLCDic() : GetDetails.CLC_DIC;
 			json = JSONArray.fromObject(val);
 			success =true;
 		} catch (Exception e) {
