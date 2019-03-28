@@ -15,8 +15,6 @@ public interface AdminService {
 	
 	boolean openAdmin(String[] ids);
 	
-	List<Object> getDept();
-	
 	List<Object> getRole();
 	
 	boolean checkAdminId(String id);

@@ -132,9 +132,7 @@ public class AdminController {
 	 */
 	@RequestMapping("addadmin")
 	public String addAdmin(Map<String,Object> map){
-		List<Object> deptname = this.admin.getDept();
 		List<Object> rolename = this.admin.getRole();
-		map.put("deptname", deptname);
 		map.put("rolename", rolename);
 		return "/page/systemmanager/add_admin";
 	}
@@ -175,11 +173,9 @@ public class AdminController {
 	 */
 	@RequestMapping("updateadmin")
 	public String updateAdmin(Map<String,Object> map,String id,Integer pagenum){
-		List<Object> deptname = this.admin.getDept();
 		List<Object> rolename = this.admin.getRole();
 		Wfadmin admin = this.admin.getAdminById(id);
 		map.put("admin", admin);
-		map.put("deptname", deptname);
 		map.put("rolename", rolename);
 		map.put("pagenum",pagenum);
 		return "/page/systemmanager/update_admin";

@@ -106,16 +106,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return re;
 	}
-	@Override
-	public List<Object> getDept() {
-		List<Object> deptname = new ArrayList<Object>();
-		try {
-			deptname = this.dept.getAllDept();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return deptname;
-	}
+	
 	@Override
 	public List<Object> getRole() {
 		List<Object> rolename = new ArrayList<Object>();

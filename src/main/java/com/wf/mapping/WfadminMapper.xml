@@ -99,17 +99,8 @@
       <if test="is_male != null" >
         is_male,
       </if>
-      <if test="mobile_phone != null" >
-        mobile_phone,
-      </if>
-      <if test="tel_phone != null" >
-        tel_phone,
-      </if>
       <if test="department != null" >
         department,
-      </if>
-      <if test="email != null" >
-        email,
       </if>
       <if test="role_id != null" >
         role_id,
