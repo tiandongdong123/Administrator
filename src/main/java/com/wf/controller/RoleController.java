@@ -36,7 +36,7 @@ public class RoleController {
 	LogService logService;
 	
 	/**
-	 * 查询管理员
+	 * 查询角色
 	 * @return
 	 * @throws Exception 
 	 */
@@ -119,6 +119,12 @@ public class RoleController {
 		return rt ;
 	}
 	
+	/**
+	 * 删除角色
+	 * @param id
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("deleterole")
 	@ResponseBody
 	public boolean deleteRole(String id,HttpServletRequest request){

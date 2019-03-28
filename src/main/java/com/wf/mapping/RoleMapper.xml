@@ -36,9 +36,6 @@
       <if test="description != null">
         description,
       </if>
-      <if test="department != null">
-        department,
-      </if>
       <if test="purview != null">
         purview,
       </if>
@@ -52,9 +49,6 @@
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="department != null">
-        #{department,jdbcType=VARCHAR},
       </if>
       <if test="purview != null">
         #{purview,jdbcType=LONGVARCHAR},
@@ -74,9 +68,6 @@
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="department != null">
-        department = #{department,jdbcType=VARCHAR},
       </if>
       <if test="purview != null">
         purview = #{purview,jdbcType=LONGVARCHAR},
