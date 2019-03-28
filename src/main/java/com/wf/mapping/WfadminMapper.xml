@@ -27,12 +27,12 @@
   
   <select id="getAdmin" resultMap="BaseResultMap">
 	  select 
-	  	a.id,a.wangfang_admin_id,a.user_realname,c.dept_name,a.mobile_phone,a.tel_phone,a.email,b.role_name, a.status 
+	  	a.id,a.wangfang_admin_id,a.user_realname,a.department,b.role_name, a.status 
 	  from 
-	  	wfadmin a left join role b on a.role_id=b.role_id left join department c on a.department=c.id
+	  	wfadmin a left join role b on a.role_id=b.role_id
 	  	where 1=1
 		  <if test="param1!=null and param1!=''">
-		  and b.role_name like #{param1}  or c.dept_name like #{param2} or a.user_realname like #{param3} or a.wangfang_admin_id like #{param4}
+		  and b.role_name like #{param1}  or a.department like #{param2} or a.user_realname like #{param3} or a.wangfang_admin_id like #{param4}
 		  </if>
 	  order by registration_time desc
 	  limit #{pagenum},#{pagesize}
