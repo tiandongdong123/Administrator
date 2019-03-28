@@ -175,17 +175,8 @@
       <if test="is_male != null" >
         is_male = #{is_male,jdbcType=TINYINT},
       </if>
-      <if test="mobile_phone != null" >
-        mobile_phone = #{mobile_phone,jdbcType=VARCHAR},
-      </if>
-      <if test="tel_phone != null" >
-        tel_phone = #{tel_phone,jdbcType=VARCHAR},
-      </if>
       <if test="department != null" >
         department = #{department,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
       </if>
       <if test="role_id != null" >
         role_id = #{role_id,jdbcType=VARCHAR},
