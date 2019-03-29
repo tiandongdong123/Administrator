@@ -1445,7 +1445,7 @@ public class ContentController {
         JSONArray jsons = new JSONArray();
         JSONArray ajsons = new JSONArray();
         RedisUtil r = new RedisUtil();
-        String subject = r.get("CLCDic", 0);
+        String subject = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
         jsons = JSONArray.fromObject(subject);
         for (int i = 0; i < jsons.size(); i++) {
             JSONObject json = jsons.getJSONObject(i);
