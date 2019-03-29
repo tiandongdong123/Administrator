@@ -223,9 +223,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("roleadd")
-	public String addRole(Map<String,Object> map){
-		List<Object> rt =this.role.getAllDept();
-		map.put("rlmap", rt);
+	public String addRole(){
 		return "/page/systemmanager/add_role";
 	}
 	/**
@@ -237,8 +235,6 @@ public class AdminController {
 	@RequestMapping("rolemodify")
 	public String updateRole(String id,Map<String,Object> map){
 		Role rl = this.role.getRoleById(id);
-		List<Object> rt =this.role.getAllDept();
-		map.put("rlmap", rt);
 		map.put("role", rl);
 		return "/page/systemmanager/update_role";
 	}
