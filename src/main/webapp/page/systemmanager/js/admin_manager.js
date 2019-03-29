@@ -94,12 +94,12 @@ function changeadmin(obj,id){
 	var title="";
 	var a = btnname.indexOf("冻结");
 	if(a>0){
-		msg="确定要冻结机构账户吗？";
-		title="冻结机构账号";
+		msg="确定要冻结管理员账号吗？";
+		title="冻结";
 		url="../admin/closeadmin.do";
 	}else{
-		msg="确定要解冻机构账户吗？";
-		title="解冻机构账号";
+		msg="确定要解冻管理员账号吗？";
+		title="解冻";
 		url="../admin/openadmin.do";
 	}
 	

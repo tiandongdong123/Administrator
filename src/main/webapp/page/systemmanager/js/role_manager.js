@@ -13,7 +13,6 @@ function rolepage(curr){
     for(var i =0;res.pageRow[i];i++){
     	id = 10*(curr-1)+i+1;
     	html+="<tr><td>"+id+"</td>" +
-    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].deptName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>" +
@@ -71,20 +70,30 @@ function updaterole(id){
 }
 
 function deleterole(id){
-	$.ajax( {  
-		type : "POST",  
-		url : "../role/deleterole.do",
-			data : {
-				'id' : id,
-			},
-			dataType : "json",
-			success : function(data) {
-				if(data){
-					layer.msg("删除成功");
-					rolepage($(".laypage_curr").text());
-				}else{
-					layer.msg("该角色下有管理员不能删除");
-				}
-			}
-		});
+	var msg="确定要删除该角色吗";
+	var title="";
+	layer.alert(msg,{
+		icon: 1,
+		title : [title, true],
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({  
+	    		type : "POST",  
+	    		url : "../role/deleterole.do",
+	    			data : {
+	    				'id' : id,
+	    			},
+	    			dataType : "json",
+	    			success : function(data) {
+	    				if(data){
+	    					layer.msg("删除成功");
+	    					rolepage($(".laypage_curr").text());
+	    				}else{
+	    					layer.msg("该角色下有管理员不能删除");
+	    				}
+	    			}
+	    		});
+	    }
+	});
 }
