@@ -14,7 +14,7 @@ function adminpage(curr){
     }, function(res){
     	html="";
     	if(res.pageNum>1) {
-    		var pageNumber = res.pageNum-*10    		
+    		var pageNumber = res.pageNum*10    		
     	} else {
     		var pageNumber = 0
     	}

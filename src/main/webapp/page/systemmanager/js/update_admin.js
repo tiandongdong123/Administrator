@@ -3,10 +3,8 @@ function doupdateadmin(){
 		var id=$("#userid").val();
 		var password = $("#password").val();
 		var username=$("#realname").val();
-		var deptname=$("#deptname").find("option:selected").val();
+		var deptname=$("#deptname").val();
 		var roleid=$("#rolename").find("option:selected").val();
-		var mphone = $("#mphone").val();
-		var email=$("#email").val();
 		
 		if(password==null||password==''){
 			$("#chcekpassword").text("请输入密码");
@@ -16,37 +14,13 @@ function doupdateadmin(){
 			$("#checkpassword").text("");
 		}
 		
-		if(mphone!=null&&mphone!=''){
-			var cm = checkMobile(mphone);
-			if(cm==false){
-				$("#mphone").focus();
-				$("#chcekmphone").text("该手机号无效");
-				return;
-			}else{
-				$("#chcekmphone").text("");
-			}
-		}
-		var telphone=$("#telphone").val();
-		if(telphone!=null&&telphone!=''){
-			var ctel = checkPhone(telphone);
-			if(ctel==false){
-				$("#telphone").focus();
-				$("#checktelphone").text("该固话号码无效");
-				return;
-			}else{
-				$("#checktelphone").text("");
-			}
-		}
-		
-		if(email!=null&&email!=''){
-			var cemail = checkemail(email);
-			if(cemail==false){
-				$("#email").focus();
-				$("#checkemail").text("该邮箱无效");
-				return;
-			}else{
-				$("#checkemail").text("");
-			}
+		var deptname=$("#deptname").val();
+		if(deptname==null||deptname==''){
+			$("#checkpassword").text("请填写部门名称");
+			$("#deptname").focus();
+			return;
+		}else{
+			$("#checkpassword").text("");
 		}
 		
 		$.ajax({  
@@ -55,9 +29,6 @@ function doupdateadmin(){
 				data : {
 					'password': password,
 					'user_realname':username,
-					'mobile_phone':mphone,
-					'tel_phone':telphone,
-					'email':email,
 					'department':deptname,
 					'role_id':roleid,
 					"id":id

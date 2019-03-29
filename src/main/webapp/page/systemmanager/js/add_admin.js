@@ -44,48 +44,20 @@ function doaddadmin(){
 			$("#checkpassword").text("");
 		}
 		
-		
-		
 		var name = $("#name").val();
 		
+		var deptname=$("#deptname").val();
+		if(deptname==null||deptname==''){
+			$("#checkpassword").text("请填写部门名称");
+			$("#deptname").focus();
+			return;
+		}else{
+			$("#checkpassword").text("");
+		}
 		
-		var deptname=$("#deptname").find("option:selected").val();
 		var roleid=$("#rolename").find("option:selected").val();
 		
-		
-		var mphone = $("#mphone").val();
-		if(mphone!=null&&mphone!=''){
-			var cm = checkMobile(mphone);
-			if(cm==false){
-				$("#mphone").focus();
-				$("#chcekmphone").text("该手机号无效");
-				return;
-			}else{
-				$("#chcekmphone").text("");
-			}
-		}
-		var telphone=$("#telphone").val();
-		if(telphone!=null&&telphone!=''){
-			var ctel = checkPhone(telphone);
-			if(ctel==false){
-				$("#telphone").focus();
-				$("#checktelphone").text("该固话号码无效");
-				return;
-			}else{
-				$("#checktelphone").text("");
-			}
-		}
-		var email = $("#email").val();
-		if(email!=null&&email!=''){
-			var cemail = checkemail(email);
-			if(cemail==false){
-				$("#email").focus();
-				$("#checkemail").text("该邮箱无效");
-				return;
-			}else{
-				$("#checkemail").text("");
-			}
-		}
+
 		$.ajax( {  
 			type : "POST",  
 			url : "../admin/doaddadmin.do",
@@ -93,11 +65,8 @@ function doaddadmin(){
 					'wangfang_admin_id' : adminid,
 					'user_realname':name,
 					'password': password,
-					'mobile_phone':mphone,
-					'tel_phone':telphone,
 					'department':deptname,
 					'role_id':roleid,
-					'email':email
 				},
 				dataType : "json",
 				success : function(data) {
