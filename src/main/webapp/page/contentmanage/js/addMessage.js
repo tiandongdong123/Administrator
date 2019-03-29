@@ -180,7 +180,7 @@ function addMark(){
                 if ($('#addMark').val().trim() != '') {
                     $.ajax({
                         type: "post",
-                        url: "../content/checkForBiddenWord1.do",
+                        url: "../content/returnForBiddenWord.do",
                         data: {
                             word: $('#addMark').val()
                         },
@@ -895,7 +895,7 @@ function checkCheet(){
 function checkSensitive(word,obj,sensitiveItem,sensitiveList){
     $.ajax({
         type:"post",
-        url:"../content/checkForBiddenWord1.do",
+        url:"../content/returnForBiddenWord.do",
         data:{
             word:word
         },
