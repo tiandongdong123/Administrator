@@ -90,24 +90,39 @@ function changeadmin(obj,id){
 	if(id!=null){
 		ids.push(id);
 	}
+	var msg="";
+	var title="";
 	var a = btnname.indexOf("冻结");
 	if(a>0){
+		msg="确定要冻结机构账户吗？";
+		title="冻结机构账号";
 		url="../admin/closeadmin.do";
 	}else{
+		msg="确定要解冻机构账户吗？";
+		title="解冻机构账号";
 		url="../admin/openadmin.do";
 	}
-	$.ajax( {  
-		type : "POST",  
-		url : url,
-			data : {
-				'ids' : ids
-			},
-			dataType : "json",
-			success : function(data) {
-				layer.msg("修改成功");
-				adminpage($(".laypage_curr").text());
-			}
-		});
+	
+	layer.alert(msg,{
+		icon: 1,
+		title : [title, true],
+	    skin: 'layui-layer-molv',
+	    btn: ['确定','取消'],
+	    yes: function(){
+	    	$.ajax({  
+	    		type : "POST",  
+	    		url : url,
+	    			data : {
+	    				'ids' : ids
+	    			},
+	    			dataType : "json",
+	    			success : function(data) {
+	    				layer.msg("修改成功");
+	    				adminpage($(".laypage_curr").text());
+	    			}
+	    		});
+	    }
+	});
 }
 
 function checkedids(){
