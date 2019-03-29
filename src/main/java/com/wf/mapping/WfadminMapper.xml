@@ -7,10 +7,7 @@
     <result column="user_realname" property="user_realname" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="is_male" property="is_male" jdbcType="INTEGER" />
-    <result column="mobile_phone" property="mobile_phone" jdbcType="VARCHAR" />
-    <result column="tel_phone" property="tel_phone" jdbcType="VARCHAR" />
     <result column="department" property="department" jdbcType="VARCHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="role_id" property="role_id" jdbcType="VARCHAR" />
     <result column="registration_time" property="registration_time" jdbcType="TIMESTAMP" />
     <result column="registrant" property="registrant" jdbcType="VARCHAR" />
@@ -128,17 +125,8 @@
       <if test="is_male != null" >
         #{is_male,jdbcType=INTEGER},
       </if>
-      <if test="mobile_phone != null" >
-        #{mobile_phone,jdbcType=VARCHAR},
-      </if>
-      <if test="tel_phone != null" >
-        #{tel_phone,jdbcType=VARCHAR},
-      </if>
       <if test="department != null" >
         #{department,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
-        #{email,jdbcType=VARCHAR},
       </if>
       <if test="role_id != null" >
         #{role_id,jdbcType=VARCHAR},
