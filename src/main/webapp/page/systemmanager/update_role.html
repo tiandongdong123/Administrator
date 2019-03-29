@@ -30,20 +30,6 @@
           <!-- general form elements -->
           <div class="box box-primary">
           <form>
-          <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name">部门名称：</label>
-                 	<select id="deptname">
-                 	<?if(rlmap.~size>0){?>
-                 	<?for(var a in rlmap){?>
-                 	<?if(a.deptName==role.deptName){?>
-                 	<option selected="selected" value="${a.id}">${a.deptName}</option>
-                 	<?}else{?>
-                 		<option value="${a.id}">${a.deptName}</option>
-                 	<?}?>
-                 	<?}?>
-                 	<?}?>
-                 	</select>
-                </div>
 					<div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name">角色名称：</label><span style="color: red">*</span>
                   <input type="text" id="rolename" class="form-control input_width" onblur="checkrolename(this.value)" value="${role.roleName}"><span id="checkrolename"></span>

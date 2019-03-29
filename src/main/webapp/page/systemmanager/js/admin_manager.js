@@ -32,7 +32,7 @@ function adminpage(curr){
     	html+=" <tr><td>"+(pageNumber+i+1)+"</td>" +
     			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>" +
     			/*"<td>"+res.pageRow[i].dept.deptName+"</td>" +*/
-    			"<td>"+res.pageRow[i].department+"</td>"+status+"<td><button type='button' class='btn btn-primary' onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</button>" +
+    			"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</button>" +
     			"<button type='button' class='btn btn-primary' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></td></tr>";    	
     }
     
@@ -56,7 +56,7 @@ function adminpage(curr){
         	groups=pages;
         }
         //显示分页
-        if (res.totalRow/pageSize>1) {
+        if (totalRow/pageSize>1) {
         	laypage({
         		cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
         		pages: pages, //通过后台拿到的总页数

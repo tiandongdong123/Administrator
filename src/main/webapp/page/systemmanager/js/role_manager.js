@@ -7,11 +7,12 @@ $(function(){
 function rolepage(curr){
     $.getJSON('../role/getrole.do', {
         pagenum: curr,//向服务端传的参数
-        pagesize :10
+        pagesize :20
     }, function(res){
     	html="";
+    	
     for(var i =0;res.pageRow[i];i++){
-    	id = 10*(curr-1)+i+1;
+    	id = 20*(curr-1)+i+1;
     	html+="<tr><td>"+id+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
@@ -40,6 +41,7 @@ function rolepage(curr){
         	groups=pages;
         }
         //显示分页
+        if (totalRow/pageSize>1) {
         laypage({
         	cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
             pages: pages, //通过后台拿到的总页数
@@ -58,6 +60,7 @@ function rolepage(curr){
                 }
             }
         });
+        }
     });
 };
 
