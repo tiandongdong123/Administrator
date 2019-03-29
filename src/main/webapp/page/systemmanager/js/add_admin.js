@@ -158,3 +158,22 @@ function checkemail(str){
 	}
 }
 
+// 输入框内容空值校验
+function checkValue(type,str) {
+	let typeObj = {
+			"pwd": "请填写密码",
+			"name":"请填写真实姓名",
+			"department": "请填写部门名称"
+	}
+	var typeClass = "#"+type+"Str"
+	if(str===''){
+		$(typeClass).text(typeObj[type])
+	}else {
+		$(typeClass).text('')
+	}
+}
+// 取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
+}

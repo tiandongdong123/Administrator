@@ -675,3 +675,9 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 #IpErrorInfo {
 	margin-left: 19%;
 }
+
+.voidName {
+	color: red;
+	margin-left: 20px;
+	font-size: 12px;
+}
