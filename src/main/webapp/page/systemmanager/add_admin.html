@@ -10,15 +10,15 @@
         <div class="col-md-6">
           <!-- general form elements -->
           <div class="box box-primary">
-          <form>
+          <form  autocomplete="off">
 			<div id="addadmin">
 			<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>用户名：</label>
-             <input type="text" id="username" maxlength="16"  class="form-control input_width" onfocus="showvalue()" onblur="checkadminid(this.value)"><span class="voidName" id="checkadminid"></span>
+             <input type="text" id="usernameAdmin" autocomplete="off" maxlength="16"  class="form-control input_width" onfocus="showvalue()" onblur="checkadminid(this.value)"><span class="voidName" id="checkadminid"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码：</label>
-             <input type="password" id="password"  class="form-control input_width" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
+             <input type="text" id="passwordAdmin" autocomplete="off" autoComplete="new-password" class="form-control input_width" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称：</label>
@@ -30,7 +30,7 @@
          	</div>
          	 <div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色 ：</label>
-             <select id="rolename">
+             <select id="rolename" style="width:45%;height: 34px;">
              <?for(var role in rolename){?>
              <option value="${role.roleId}">${role.roleName}</option>
              <?}?>

@@ -89,7 +89,7 @@ function checkrolename(name){
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入角色名");
+		$("#checkrolename").text("请填写角色名称");
 	}
 	
 }

@@ -13,32 +13,34 @@ function checkadminid(id){
 							$("#checkadminid").text("名称重复，请重新输入");
 					}else{
 							$("#cname").val("Y")
-							$("#checkadminid").text("一旦注册成功不能修改");
+							if($("#usernameAdmin")[0].value.length>6) {
+								$("#checkadminid").text("一旦注册成功不能修改");								
+							} 
 					}
 				}
 			});
 	}else{
-		$("#checkadminid").text("请输入角色名");
+		$("#checkadminid").text("请填写用户名");
 	}
 }
 function doaddadmin(){
 	var cname=$("#cname").val();
 	if(cname=="Y"){
-		var adminid=$("#username").val();
+		var adminid=$("#usernameAdmin").val();
 		if(adminid.length<6){
-			$("#username").focus();
+			$("#usernameAdmin").focus();
 			return;
 		}
 		var cid = checkId(adminid);
 		if(cid==false){
-			$("#username").focus();
+			$("#usernameAdmin").focus();
 			$("#checkadminid").text("用户名限定为字母、数字或下划线的组合");
 			return;
 		}
-		var password = $("#password").val();
+		var password = $("#passwordAdmin").val();
 		if(password==null||password==''){
 			$("#checkpassword").text("请输入密码");
-			$("#password").focus();
+			$("#passwordAdmin").focus();
 			return;
 		}else{
 			$("#checkpassword").text("");
