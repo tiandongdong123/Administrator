@@ -25,6 +25,7 @@ import com.redis.RedisUtil;
 import com.redis.UserRedisUtil;
 import com.utils.CookieUtil;
 import com.utils.GetUuid;
+import com.utils.MenuXml;
 import com.wf.bean.Department;
 import com.wf.bean.Remind;
 import com.wf.bean.Role;
@@ -163,8 +164,7 @@ public class UserController {
 		String[] menuIds=rl.getPurview().split(",");
 		List<String> menus=new ArrayList<String>();
 		for(int i = 0; i < menuIds.length; i++){
-			SystemMenu sm=service.findPurviewById(menuIds[i]);
-			String purview=sm.getMenuName();
+			String purview=MenuXml.getMenuName().get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){
 				menus.add(purview);
 			}

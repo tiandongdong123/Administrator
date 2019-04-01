@@ -11,8 +11,6 @@ public interface RoleService {
 
 	PageList getRole(Integer pagenum,Integer pagesize);
 	
-	JSONArray getPurview(); 
-	
 	boolean checkRoleName(String name);
 	
 	boolean doAddRole(Role role);

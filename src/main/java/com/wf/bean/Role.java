@@ -7,8 +7,6 @@ public class Role {
 
     private String description;
 
-    private String department;
-
     private String purview;
     
     private String deptName;
@@ -45,13 +43,6 @@ public class Role {
         this.description = description == null ? null : description.trim();
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department == null ? null : department.trim();
-    }
 
     public String getPurview() {
         return purview;
@@ -64,7 +55,7 @@ public class Role {
 	@Override
 	public String toString() {
 		return "Role [roleId=" + roleId + ", roleName=" + roleName
-				+ ", description=" + description + ", department=" + department
+				+ ", description=" + description 
 				+ ", purview=" + purview + ", deptName=" + deptName + "]";
 	}
     

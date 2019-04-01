@@ -13,7 +13,7 @@
   </resultMap>
   
   <select id="getRole" resultMap="BaseResultMap">
-  select b.dept_name,a.role_name,a.description,a.role_name,a.purview,a.role_id from role a left join department b on a.department=b.id ORDER BY a.create_time desc limit #{pagenum},#{pagesize}
+  select role_name,description,role_name,purview,role_id from role ORDER BY create_time desc limit #{pagenum},#{pagesize}
   </select>
   
   <select id="getRoleNum" resultType="int">
@@ -57,7 +57,7 @@
   </insert>
   
   <select id="getRoleById" resultMap="BaseResultMap">
-  select * from role a left join department b on a.department=b.id  where a.role_id=#{id}  
+  select * from role where role_id=#{id}  
   </select>
   
   <update id="doUpdateRole" parameterType="com.wf.bean.Role">

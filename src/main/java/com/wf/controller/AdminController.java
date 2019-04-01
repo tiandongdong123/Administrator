@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.xhtml.object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,6 +65,10 @@ public class AdminController {
 		//记录日志
 		Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
 		logService.addLog(log);
+		List<Object> list=pl.getPageRow();
+		for (Object object : list) {
+			System.out.println("---:"+object.toString());
+		}
 		
 		return pl;
 	}
@@ -157,12 +162,22 @@ public class AdminController {
 	@RequestMapping("doaddadmin")
 	@ResponseBody
 	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request){
-		boolean rt = this.admin.doAddAdmin(admin);
+		boolean rt=false;
+		boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
+		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
 		
-		//记录日志
-		Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
-		logService.addLog(log);
+		if(wfAdminId && password && realName && department && role){
+			rt = this.admin.doAddAdmin(admin);
+			
+			//记录日志
+			Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
+			logService.addLog(log);
+		}
 		
+
 		return rt;
 	}
 	/**

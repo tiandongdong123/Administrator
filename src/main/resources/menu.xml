@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Node Id="A" Name="用户管理" HasChild="true">
+		<Node Id="A1" Name="机构用户" HasChild="true">
+			<Node Id="A11" Name="机构账号注册" HasChild="false" />
+			<Node Id="A12" Name="批量机构账号注册" HasChild="false" />
+			<Node Id="A13" Name="批量机构账号修改" HasChild="false" />
+			<Node Id="A14" Name="机构账号信息管理" HasChild="true">
+				<Node Id="A141" Name="账号修改" HasChild="false" />
+				<Node Id="A142" Name="添加/移除机构管理员" HasChild="false" />
+				<Node Id="A143" Name="冻结/解冻" HasChild="false" />
+			</Node>
+			<Node Id="A15" Name="机构子账号信息管理" HasChild="true">
+				<Node Id="A151" Name="子账号导出" HasChild="false" />
+			</Node>
+			<Node Id="A16" Name="个人绑定机构信息管理" HasChild="true">
+				<Node Id="A161" Name="个人绑定机构权限设置修改" HasChild="false" />
+			</Node>
+			<Node Id="A17" Name="批量账号冻结/解冻" HasChild="false" />
+			<Node Id="A18" Name="机构账号预警设置" HasChild="false" />
+			<Node Id="A19" Name="机构账号solr发布" HasChild="false" />
+		</Node>
+		<Node Id="A2" Name="个人用户管理" HasChild="true">
+			<Node Id="A21" Name="个人基本信息" HasChild="true">
+				<Node Id="A211" Name="账号修改" HasChild="false" />
+				<Node Id="A212" Name="冻结/解冻" HasChild="false" />
+			</Node>
+			<Node Id="A22" Name="个人充值记录" HasChild="false" />
+			<Node Id="A23" Name="个人订单记录" HasChild="false" />
+			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" />
+		</Node>
+	</Node>
+	<Node Id="B" Name="交易管理" HasChild="true">
+		<Node Id="B1" Name="个人交易管理" HasChild="true">
+			<Node Id="B11" Name="个人订单记录" HasChild="true">
+				<Node Id="B111" Name="后台退款" HasChild="false" />
+				<Node Id="B112" Name="线下退款" HasChild="false" />
+				<Node Id="B113" Name="修改订单状态" HasChild="false" />
+			</Node>
+			<Node Id="B12" Name="个人充值记录" HasChild="true">
+				<Node Id="B121" Name="待处理" HasChild="false" />
+			</Node>
+			<Node Id="B13" Name="万方卡绑定记录" HasChild="false" />
+		</Node>
+		<Node Id="B2" Name="机构交易管理" HasChild="true">
+			<Node Id="B21" Name="个人充值记录" HasChild="true">
+				<Node Id="B211" Name="待处理" HasChild="false" />
+			</Node>
+			<Node Id="B22" Name="机构订单记录" HasChild="true">
+				<Node Id="B221" Name="机构订单记录导出" HasChild="false" />
+				<Node Id="B222" Name="导出并发送邮箱" HasChild="false" />
+			</Node>
+			<Node Id="B23" Name="机构充值记录" HasChild="true">
+				<Node Id="B231" Name="导出" HasChild="false" />
+			</Node>
+		</Node>
+	</Node>
+	<Node Id="C" Name="内容管理" HasChild="true">
+		<Node Id="C1" Name="资讯管理" HasChild="true">
+			<Node Id="C11" Name="发布资讯管理" HasChild="true">
+				<Node Id="C111" Name="添加资讯" HasChild="false" />
+				<Node Id="C112" Name="修改资讯" HasChild="false" />
+				<Node Id="C113" Name="发布/下撤资讯" HasChild="false" />
+				<Node Id="C114" Name="置顶/撤销置顶资讯" HasChild="false" />
+				<Node Id="C115" Name="批量发布" HasChild="false" />
+				<Node Id="C116" Name="批量下撤" HasChild="false" />
+				<Node Id="C117" Name="批量删除" HasChild="false" />
+			</Node>
+			<Node Id="C12" Name="资讯标签管理" HasChild="true">
+				<Node Id="C121" Name="添加标签" HasChild="false" />
+				<Node Id="C122" Name="修改标签" HasChild="false" />
+				<Node Id="C123" Name="删除标签" HasChild="false" />
+				<Node Id="C124" Name="批量删除标签" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="C2" Name="广告管理" HasChild="true">
+			<Node Id="C21" Name="广告页面管理" HasChild="true">
+				<Node Id="C211" Name="修改" HasChild="false" />
+			</Node>
+			<Node Id="C22" Name="广告位管理" HasChild="true">
+				<Node Id="C221" Name="修改" HasChild="false" />
+			</Node>
+			<Node Id="C23" Name="发布广告管理" HasChild="true">
+				<Node Id="C231" Name="添加广告" HasChild="false" />
+				<Node Id="C232" Name="添加悬浮窗广告" HasChild="false" />
+				<Node Id="C233" Name="修改广告" HasChild="false" />
+				<Node Id="C234" Name="置顶/撤销置顶广告" HasChild="false" />
+				<Node Id="C235" Name="发布/下撤广告" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="C3" Name="热搜词管理" HasChild="true">
+			<Node Id="C31" Name="热搜词发布设置" HasChild="true">
+				<Node Id="C311" Name="添加手动发布设置" HasChild="false" />
+				<Node Id="C312" Name="添加自动发布设置" HasChild="false" />
+				<Node Id="C313" Name="修改手动发布设置" HasChild="false" />
+				<Node Id="C314" Name="修改自动发布设置" HasChild="false" />
+				<Node Id="C315" Name="应用" HasChild="false" />
+			</Node>
+			<Node Id="C32" Name="热搜词管理" HasChild="true">
+				<Node Id="C321" Name="添加热搜词" HasChild="false" />
+				<Node Id="C322" Name="修改热搜词" HasChild="false" />
+				<Node Id="C323" Name="发布/下撤热搜词" HasChild="false" />
+				<Node Id="C324" Name="批量发布" HasChild="false" />
+				<Node Id="C325" Name="批量下撤" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="C4" Name="知识组织管理" HasChild="true">
+			<Node Id="C41" Name="学科分类管理" HasChild="false" />
+			<Node Id="C42" Name="资源类型管理" HasChild="false" />
+		</Node>
+		<Node Id="C5" Name="模板管理" HasChild="true">
+			<Node Id="C51" Name="分享模板管理" HasChild="false" />
+		</Node>
+		<Node Id="C6" Name="文辑管理" HasChild="false" />
+		<Node Id="C7" Name="期刊点评审核管理" HasChild="false" />
+		<Node Id="C8" Name="笔记审核管理" HasChild="false" />
+	</Node>
+	<Node Id="D" Name="其他管理" HasChild="true">
+		<Node Id="D1" Name="万方卡管理" HasChild="true">
+			<Node Id="D11" Name="管理实体卡" HasChild="true">
+				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" />
+				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" />
+				<Node Id="D113" Name="导出实体卡" HasChild="false" />
+				<Node Id="D114" Name="领取实体卡" HasChild="false" />
+				<Node Id="D115" Name="实体卡详情页添加附件" HasChild="false" />
+				<Node Id="D116" Name="实体卡详情页删除附件" HasChild="false" />
+				<Node Id="D117" Name="万方卡冻结/解冻" HasChild="false" />
+			</Node>
+			<Node Id="D12" Name="生成实体卡" HasChild="false" />
+			<Node Id="D13" Name="审核实体卡" HasChild="true">
+				<Node Id="D131" Name="审核" HasChild="false" />
+				<Node Id="D132" Name="下载附件" HasChild="false" />
+			</Node>
+			<Node Id="D14" Name="实体卡设置管理" HasChild="true">
+				<Node Id="D141" Name="添加" HasChild="false" />
+				<Node Id="D142" Name="修改" HasChild="false" />
+				<Node Id="D143" Name="导出" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="D2" Name="充值码管理" HasChild="true">
+			<Node Id="D21" Name="生成充值码" HasChild="false" />
+			<Node Id="D22" Name="充值码批次查询" HasChild="true">
+				<Node Id="D221" Name="导出" HasChild="false" />
+			</Node>
+			<Node Id="D23" Name="充值码信息查询" HasChild="true">
+				<Node Id="D231" Name="冻结/解冻" HasChild="false" />
+			</Node>
+		</Node>
+	</Node>
+	<Node Id="E" Name="统计分析" HasChild="true">
+		<Node Id="E1" Name="用户统计" HasChild="true">
+			<Node Id="E11" Name="用户统计" HasChild="true">
+				<Node Id="E111" Name="保存分析图" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="E2" Name="分析管理" HasChild="true">
+			<Node Id="E21" Name="分析页面管理" HasChild="false" />
+			<Node Id="E22" Name="功能模块管理" HasChild="false" />
+		</Node>
+		<Node Id="E3" Name="资源统计" HasChild="true">
+			<Node Id="E31" Name="数据库使用分析" HasChild="false" />
+			<Node Id="E32" Name="资源类型使用统计" HasChild="false" />
+		</Node>
+		<Node Id="E4" Name="网站概况" HasChild="false" />
+		<Node Id="E5" Name="来源分析" HasChild="false" />
+		<Node Id="E6" Name="功能模块分析" HasChild="false" />
+		<Node Id="E7" Name="页面分析" HasChild="false" />
+		<Node Id="E8" Name="功能概况" HasChild="false" />
+	</Node>
+	<Node Id="F" Name="系统管理" HasChild="true">
+		<Node Id="F1" Name="管理员管理" HasChild="true">
+			<Node Id="F11" Name="管理员管理" HasChild="true">
+				<Node Id="F112" Name="添加" HasChild="false" />
+				<Node Id="F113" Name="修改" HasChild="false" />
+				<Node Id="F114" Name="冻结/解冻" HasChild="false" />
+			</Node>
+			<Node Id="F12" Name="角色管理" HasChild="true">
+				<Node Id="F121" Name="添加" HasChild="false" />
+				<Node Id="F122" Name="修改" HasChild="false" />
+				<Node Id="F123" Name="删除" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="F2" Name="配置管理" HasChild="true">
+			<Node Id="F21" Name="数据库配置管理" HasChild="true">
+				<Node Id="F211" Name="添加" HasChild="false" />
+				<Node Id="F212" Name="修改" HasChild="false" />
+				<Node Id="F213" Name="冻结/解冻" HasChild="false" />
+				<Node Id="F214" Name="发布/下撤" HasChild="false" />
+				<Node Id="F215" Name="导出" HasChild="false" />
+				<Node Id="F216" Name="排序" HasChild="false" />
+			</Node>
+			<Node Id="F22" Name="资源单价配置管理" HasChild="true">
+				<Node Id="F221" Name="添加" HasChild="false" />
+				<Node Id="F222" Name="修改" HasChild="false" />
+				<Node Id="F223" Name="删除" HasChild="false" />
+				<Node Id="F224" Name="批量删除" HasChild="false" />
+			</Node>
+			<Node Id="F23" Name="产品类型设置" HasChild="true">
+				<Node Id="F231" Name="添加" HasChild="false" />
+				<Node Id="F232" Name="修改" HasChild="false" />
+				<Node Id="F233" Name="删除" HasChild="false" />
+				<Node Id="F234" Name="批量删除" HasChild="false" />
+			</Node>
+			<Node Id="F24" Name="平台配置管理" HasChild="true">
+				<Node Id="F241" Name="添加" HasChild="false" />
+				<Node Id="F242" Name="修改" HasChild="false" />
+				<Node Id="F243" Name="删除" HasChild="false" />
+			</Node>
+			<Node Id="F25" Name="单位设置" HasChild="true">
+				<Node Id="F251" Name="添加" HasChild="false" />
+				<Node Id="F252" Name="修改" HasChild="false" />
+				<Node Id="F253" Name="删除" HasChild="false" />
+			</Node>
+		</Node>
+		<Node Id="F3" Name="网站监控管理" HasChild="false" />
+		<Node Id="F4" Name="系统配置" HasChild="false" />
+		<Node Id="F5" Name="后台日志管理" HasChild="false" />
+	</Node>
+	<Node Id="G" Name="原文发现管理" HasChild="true">
+		<Node Id="G1" Name="已授权列表" HasChild="false" />
+		<Node Id="G2" Name="资源配置" HasChild="false" />
+		<Node Id="G3" Name="资源授权" HasChild="false" />
+	</Node>
+	<Node Id="H" Name="solr下撤管理" HasChild="true">
+		<Node Id="H1" Name="solr下撤" HasChild="false" />
+		<Node Id="H2" Name="solr黑名单查询" HasChild="false" />
+	</Node>
+</Node>

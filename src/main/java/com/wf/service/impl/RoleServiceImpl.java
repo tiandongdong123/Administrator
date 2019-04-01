@@ -4,6 +4,7 @@ package com.wf.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.sf.json.JSONArray;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.utils.MenuXml;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
 import com.wf.bean.SystemMenu;
@@ -48,12 +50,12 @@ public class RoleServiceImpl implements RoleService{
 				if(StringUtils.isNoneBlank(roles)){
 					List<String> list=Arrays.asList(roles.split(","));
 					String sys1="";
+					Map<String,String> map=MenuXml.getMenuName();
 					for(int j=0;j<list.size();j++){
-						SystemMenu sys=menu.findPurviewById(list.get(j));
 						if(j==0){
-							sys1=sys.getMenuName();
+							sys1=map.get(list.get(j));
 						}else{
-							sys1=sys1+","+sys.getMenuName();
+							sys1=sys1+","+map.get(list.get(j));
 						}
 					}
 					((Role)rl.get(i)).setPurview(sys1);
@@ -67,18 +69,6 @@ public class RoleServiceImpl implements RoleService{
 			e.printStackTrace();
 		}
 		return pl;
-	}
-	@Override
-	public JSONArray getPurview() {
-		List<SystemMenu> rl= new ArrayList<SystemMenu>();
-		JSONArray  json = new JSONArray();
-		try {
-			rl = this.menu.getPurview();
-			json = JSONArray.fromObject(rl);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return json;
 	}
 	@Override
 	public boolean checkRoleName(String name) {

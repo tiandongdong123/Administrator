@@ -31,12 +31,11 @@ function purviewtree(json){
 		
 		data: {
 			simpleData: {
-				idKey:"menuId",
-				pIdKey:"pid",
+				idKey:"id",
 				enable: true
 			},
 			key: {
-				name: "menuName"
+				name: "name"
 			}
 		},
 		callback: {
@@ -56,7 +55,7 @@ function purviewtree(json){
 		var checknodesNum=0;
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 			 if(a[i].level==0){
 				   checknodesNum++;
 			   }
@@ -89,7 +88,7 @@ function checkrolename(name){
 				}
 			});
 	}else{
-		$("#checkrolename").text("请填写角色名称");
+		$("#checkrolename").text("请输入角色名");
 	}
 	
 }
@@ -133,7 +132,7 @@ function checkrole(obj){//全选
 		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);

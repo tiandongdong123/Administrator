@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utils.CookieUtil;
 import com.utils.DateTools;
+import com.utils.MenuXml;
 import com.wf.bean.Log;
+import com.wf.bean.Menu;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
 import com.wf.service.LogService;
@@ -60,13 +62,8 @@ public class RoleController {
 	@RequestMapping("getpurview")
 	@ResponseBody
 	public JSONArray getPurview(){
-		JSONArray array = this.role.getPurview();
-		for(int i = 0; i < array.size();i++){
-			JSONObject  obj = array.getJSONObject(i);
-			String name = obj.getString("menuName");
-			String id = obj.getString("menuId");
-			obj.element("menuName",id+"_"+name);
-		}
+		List<Menu> liseMenu=MenuXml.getListMenu();
+		JSONArray array = JSONArray.fromObject(liseMenu);
 		return array;
 	}
 	/**

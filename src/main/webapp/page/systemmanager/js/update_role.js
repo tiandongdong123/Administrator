@@ -25,7 +25,7 @@ function checktree(ids){
 	ids = treeids.split(",");
 	zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
 	for(var i=0;i<ids.length;i++){
-		zTree_Menu.checkNode(zTree_Menu.getNodeByParam("menuId",ids[i]), true ); 
+		zTree_Menu.checkNode(zTree_Menu.getNodeByParam("id",ids[i]), true ); 
 	}
 	
 	var nodes = zTree_Menu.getNodes();
@@ -55,12 +55,12 @@ function purviewtree(json){
 		
 		data: {
 			simpleData: {
-				idKey:"menuId",
+				idKey:"id",
 				pIdKey:"pid",
 				enable: true
 			},
 			key: {
-				name: "menuName"
+				name: "name"
 			}
 		},
 		callback: {
@@ -79,7 +79,7 @@ function purviewtree(json){
 		var tree="";
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
@@ -156,7 +156,7 @@ function checkrole(obj){
 		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
