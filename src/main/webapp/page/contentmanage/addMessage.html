@@ -63,14 +63,26 @@
 						<input id="title" class="b"  style="width: 400px;" type="text" name="name" value="${message.title!}"/>
 						<input type="hidden" value="${message.title!}" id="titleHidden">
                         <span class="error_mark title_error" style="padding-left: 27px;">请填写标题！</span>
-                        <span class="error_mark title_sensitive_error" style="padding-left: 27px;">输入的标题存在敏感词，请重新输入！</span>
+                        <span class="error_mark title_sensitive_error" style="padding-left: 27px;">输入的标题存在<span class="title_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="title_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                         <span class="error_mark title_exist" style="padding-left: 27px;">标题已存在，请填写别的标题！</span>
                     </td>
         		</tr>
         		<tr>
 	        		<td class="tdl">摘要</td>
 					<td class="tdr"><textarea class="b" maxlength="151"  placeholder="摘要控制在150字以内"  id="abstracts" style="overflow:scroll;overflow-x:hidden; width: 615px;height: 150px;" rows="5" cols="96">${message.abstracts!}</textarea>
-                        <span class="error_mark text_sensitive_error" style="padding-left: 27px;line-height: 140px;">输入的摘要存在敏感词，请重新输入！</span>
+                        <span class="error_mark text_sensitive_error" style="padding-left: 27px;line-height: 140px;">输入的摘要存在<span class="text_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="text_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                         <span class="error_mark text_beyond_error" style="padding-left: 27px;line-height: 140px;">摘要控制在150字以内！</span>
                     </td>
         		</tr>
@@ -87,7 +99,13 @@
 					</td>
                     <td class="tdl">
                         <span class="error_mark content_error" style="padding-left: 27px;">请填写内容！</span>
-                        <span class="error_mark content_sensitive_error" style="padding-left: 27px;">输入的内容存在敏感词，请重新输入！</span>
+                        <span class="error_mark content_sensitive_error" style="padding-left: 27px;">输入的内容存在 <span class="content_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="content_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                     </td>
         		</tr>
         		<tr>
@@ -114,24 +132,43 @@
         		<tr>
 	        		<td class="tdl">作者</td>
 	        		<td class="tdr"><input id="author"   name="author" class="b" type="text" value="${message.author!}"/>
-                        <span class="error_mark author_sensitive_error" style="padding-left: 27px;">输入的作者存在敏感词，请重新输入！</span>
+                        <span class="error_mark author_sensitive_error" style="padding-left: 27px;">输入的作者存在<span class="author_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="author_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                     </td>
 
         		</tr>
         		<tr>
 	        		<td class="tdl">转载平台</td>
 	        		<td class="tdr"><input id="organName" name="organName" class="b" type="text" value="${message.organName!}"/>
-                        <span class="error_mark platform_sensitive_error" style="padding-left: 27px;">输入的转载平台存在敏感词，请重新输入！</span>
+                        <span class="error_mark platform_sensitive_error" style="padding-left: 27px;">输入的转载平台存在<span class="platform_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="platform_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                     </td>
 
         		</tr>
 				<tr>
+
 					<td class="tdl">标签</td>
 					<td class="tdr" style="position: relative;">
 						<input id="addMark"  name="mark" class="lm" type="text" />
                         <input type="hidden" id="labelHidden" value="${message.label!}">
 						<button type="button" class="btn btn-default btn-sm add_label_btn" style="float: none;">添加</button>
-                        <span class="error_mark mark_sensitive_error" style="padding-left: 27px;">输入的标签存在敏感词，请重新输入！</span>
+                        <span class="error_mark mark_sensitive_error" style="padding-left: 27px;">输入的标签存在<span class="mark_sensitive_words" style="color:blue;cursor: pointer">敏感词</span>，请重新输入！
+						 <div class="sensitive_wrap">
+							 <ul class="mark_sensitive_list">
+
+							 </ul>
+						 </div>
+						</span>
                          <div  class="add_mark_list">
                              <ul>
                              </ul>

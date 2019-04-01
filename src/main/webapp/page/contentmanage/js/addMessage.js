@@ -13,11 +13,8 @@ $(function(){
     addOrUpdateFile();//判断是添加还是修改的图片上传
     commonMark();
     getMark();
-    blurEvent($("#abstracts"),$(".text_sensitive_error"));//摘要敏感词
-    blurEvent($("#author"),$(".author_sensitive_error"));//作者敏感词
-    blurEvent($("#organName"),$(".platform_sensitive_error"));//转载平台敏感词
-    blurEvent($("#addMark"),$(".mark_sensitive_error"));//标签敏感词
-    otherSpace();//点击空白
+    allBlur();  //失去焦点的校验
+    blankSpace($(".add_mark_list"));//点击空白
 //详情页面编译器为不可编译&非详情页面栏目,标签回显
     if($("#informationHidden").val()=="information"){
         ues.ready(function(){
@@ -51,12 +48,13 @@ $(function(){
     UE.getEditor('content').addListener('blur',function(editor){
         if(ues.getContent()){
             $(".content_error").hide();
-            checkSensitive(ues.getContent(),$(".content_sensitive_error"))
+            checkSensitive(ues.getContent(),$(".content_sensitive_error"),$(".content_sensitive_list li"),$(".content_sensitive_list"))
         }else{
             $(".content_sensitive_error").hide();
             $(".content_error").show();
         }
     });
+
     $("#abstracts").on("input propertychange",function(){
         if( $("#abstracts").val().length > 150){
            $(".text_beyond_error").show();
@@ -69,18 +67,44 @@ $(function(){
         $(this).click(function(){
            $(".colum_error").hide();
         })
-    })
-
-});
-
-//点击空白
-function otherSpace(){
-    $(document).on("click",function(e){
-        var target = $(e.target);
-        if(target.closest(".add_mark_list").length == 0){
-            $(".add_mark_list").hide();
-        }
     });
+    allSensitive();
+    blankSpace( $(".sensitive_wrap"));
+});
+//点击空白
+function blankSpace(obj){
+    $(document).on("click", function (e) {
+        var target = $(e.target);
+        if (target.closest(obj).length == 0) {
+            obj.hide();
+        }
+    })
+}
+function showSensitive(obj){
+    //敏感词的显示
+    obj.click(function(e){
+        e = e || window.event;
+        e.stopPropagation();
+        $(".sensitive_wrap").hide();
+        obj.siblings(".sensitive_wrap").toggle();
+    });
+}
+function allSensitive(){
+    showSensitive($(".mark_sensitive_words"));
+    showSensitive($(".platform_sensitive_words"));
+    showSensitive($(".author_sensitive_words"));
+    showSensitive($(".content_sensitive_words"));
+    showSensitive($(".text_sensitive_words"));
+    showSensitive($(".title_sensitive_words"));
+}
+//失去焦点的校验
+
+function allBlur(){
+    blurEvent($("#abstracts"),$(".text_sensitive_error"),$(".text_sensitive_list li"),$(".text_sensitive_list"));//摘要敏感词
+    blurEvent($("#author"),$(".author_sensitive_error"),$(".author_sensitive_list li"),$(".author_sensitive_list"));//作者敏感词
+    blurEvent($("#organName"),$(".platform_sensitive_error"),$(".platform_sensitive_list li"),$(".platform_sensitive_list"));//转载平台敏感词
+
+    blurEvent($("#addMark"),$(".mark_sensitive_error"),$(".mark_sensitive_list li"),$(".mark_sensitive_list"));//标签敏感词
 }
 //上传图片的展示
 function fileshow(){
@@ -145,7 +169,7 @@ function verificationPicFile(file) {
 //点击添加标签
 function addMark(){
     $(".add_label_btn").click(function () {
-        blurEvent($("#addMark"),$(".mark_sensitive_error"));
+        blurEvent($("#addMark"),$(".mark_sensitive_error"),$(".mark_sensitive_list li"),$(".mark_sensitive_list"));
         if($(".mark_sensitive_error").css("display") !="inline"){
             corporateMark();
         }
@@ -156,7 +180,7 @@ function addMark(){
                 if ($('#addMark').val().trim() != '') {
                     $.ajax({
                         type: "post",
-                        url: "../content/checkForBiddenWord.do",
+                        url: "../content/returnForBiddenWord.do",
                         data: {
                             word: $('#addMark').val()
                         },
@@ -656,7 +680,6 @@ function selectValue(id,val){
             }
         }
     }
-
 }
 function imageShow(statu){
 	if(statu=="upload"){
@@ -676,7 +699,6 @@ function imageShow(statu){
 		$("#fileDiv").hide();
 	}
 }
-
 //----------------------------------检测url地址的js-----------------------------------------
 function IsURL(str_url){
 	var reg=/(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/;
@@ -708,7 +730,7 @@ function checkImgType(){
     }
     return true;
 }
- 
+
 /* 
  * 判断图片大小 
  *  
@@ -719,8 +741,7 @@ function checkImgType(){
  * @param height 
  *          需要符合的高 
  * @return true-符合要求,false-不符合 
- */ 
-
+ */
 function checkImgPX(ths, width, height) {
 	var img = null;
 	img = document.createElement("img");
@@ -735,7 +756,6 @@ function checkImgPX(ths, width, height) {
 		return false;
 	}
 	return true;
-
 }
 //获取常用标签
  function commonMark(){
@@ -764,7 +784,6 @@ function checkImgPX(ths, width, height) {
              }else{
                  $(".mark_common_wrap").hide();
              }
-
          }
      });
  }
@@ -833,7 +852,7 @@ function checkTitle(flag){
                             titleExist.show();
                         }else{
                             titleExist.hide();
-                            checkSensitive(titleVal,$(".title_sensitive_error"))
+                            checkSensitive(titleVal,$(".title_sensitive_error"),$(".title_sensitive_list li"),$(".title_sensitive_list"))
                         }
                     }
                 })
@@ -850,18 +869,16 @@ function checkTitle(flag){
                             titleExist.show();
                         }else{
                             titleExist.hide();
-                            checkSensitive(titleVal,$(".title_sensitive_error"))
+                            checkSensitive(titleVal,$(".title_sensitive_error"),$(".title_sensitive_list li"),$(".title_sensitive_list"))
                         }
                     }
                 })
             }
-
         }
     }else{
         $(".title_error").siblings("span").hide();
         $(".title_error").show()
     }
-
 }
 //校验内容
 function checkCheet(){
@@ -871,31 +888,37 @@ function checkCheet(){
     	$(".content_error").show();
 	}else{
         $(".content_error").hide();
-        checkSensitive(content,$(".content_sensitive_error"))
+        checkSensitive(content,$(".content_sensitive_error"),$(".content_sensitive_list li"),$(".content_sensitive_list"))
 	}
 }
 //敏感词校验
-function checkSensitive(word,obj){
+function checkSensitive(word,obj,sensitiveItem,sensitiveList){
     $.ajax({
         type:"post",
-        url:"../content/checkForBiddenWord.do",
+        url:"../content/returnForBiddenWord.do",
         data:{
             word:word
         },
         success:function(data){
-            if(!data){
+            if(data.length<1){
                 obj.hide();
             }else{
                 obj.siblings("span").hide();
                 obj.show();
+                sensitiveItem.remove()
+                var html = '';
+               for(var i = 0;i<data.length;i++){
+                   html = html + '<li>'+data[i] +'</li>';
+                }
+                sensitiveList.append(html)
 			}
         }
     })
 }
-function blurEvent(that,obj){
+function blurEvent(that,obj,item,list){
    that.blur(function(){
        if(that.val() !=''){
-           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj): obj.hide();
+           (that.val().trim() !='')?checkSensitive(that.val().trim(),obj,item,list): obj.hide();
        }else{
            obj.hide();
        }

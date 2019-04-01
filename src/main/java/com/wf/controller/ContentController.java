@@ -7,15 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2303,6 +2295,24 @@ public class ContentController {
     @ResponseBody
     public boolean checkForBiddenWord(String word) {
         return forbiddenService.CheckForBiddenWord(word) > 0;
+    }
+
+    /**
+     * 返回敏感词
+     *
+     * @param word
+     * @return
+     */
+    @RequestMapping("/returnForBiddenWord")
+    @ResponseBody
+    public Set<String> returnForBiddenWord(String word) {
+        try {
+            Set<String> sensitiveWord = forbiddenService.getSensitiveWord(word);
+            return sensitiveWord;
+        } catch (Exception e) {
+            log.error("查询敏感词出错！word：" + word, e);
+            throw e;
+        }
     }
 
 

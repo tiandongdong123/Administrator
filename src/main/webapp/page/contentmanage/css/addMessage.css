@@ -96,6 +96,47 @@ td{
     display: none;
     color: red;
     padding-left:100px;
+    position: relative;
+}
+.error_mark .sensitive_wrap{
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    z-index: 9999;
+    background: #fff;
+    width: 218px;
+    margin-left: 28px;
+}
+.error_mark .sensitive_wrap ul{
+    height: 218px;
+    width: 230px;
+    overflow-x: auto;
+}
+
+/*滚动条样式*/
+::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.2);
+}
+::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
+
+.error_mark .sensitive_wrap ul li{
+    color: #000;
+    text-align: left;
+    text-indent: 10px;
+    border: 1px dashed #ccc;
+}
+.error_mark .sensitive_wrap ul li:not(:first-child){
+    border-top: none;
 }
 .all_file_url{
     position: absolute;
