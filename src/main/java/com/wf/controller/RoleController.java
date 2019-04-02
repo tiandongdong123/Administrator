@@ -136,7 +136,6 @@ public class RoleController {
 			}
 			String purviews=StringUtils.join(menus, "|");
 			session.setAttribute("purviews", purviews);
-			CookieUtil.addPrivilegeCookie(purviews, response);
 		}
 		return rt ;
 	}
