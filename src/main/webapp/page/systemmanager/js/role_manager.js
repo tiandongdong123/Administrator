@@ -17,8 +17,8 @@ function rolepage(curr){
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>" +
-    			  "<td><button type='button' class='btn btn-primary' onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</button>" +
-    			  "<button type='button' class='btn btn-primary' onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</button></td>" +
+    			  "<td><span class=\"buttonSpan\" onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</span>" +
+    			  "<span class=\"buttonSpan\" onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</span></td>" +
     			  "</tr>";   	
     }
         document.getElementById('rolebody').innerHTML = html;

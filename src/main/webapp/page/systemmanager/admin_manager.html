@@ -25,8 +25,8 @@
           <div class="box box-primary">
             <!-- form start -->
             <form role="form">
-              <div class="box-body">
-                <div class="form-group">
+              <div class="box-body" style="padding-left: 23px;">
+                <div class="form-group" style="margin-left: -15px;">
                   	<div class="col-sm-4">
                     <input type="text"  class="form-control" id="inputEmail3" placeholder="请输入检索词">
                   	</div>
@@ -34,7 +34,7 @@
                 </div>
             </form>
              <button  <?if(!strutil.contain(session.purviews,"F112")){?>style="display:none"<?}?> type='button' class='btn btn-primary' onclick="addadmin()">添加管理员</button>
-            <table style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
+            <table style="table-layout:fixed;margin-top: 15px;" id="example1" class="table table-bordered table-striped">
                 <thead class="adminBody">
                 <tr>
                   <th style="width: 60px;">序号</th>

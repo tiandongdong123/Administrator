@@ -687,3 +687,8 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 .rolebody tr th, #rolebody tr td {
 	text-align: center;
 }
+.buttonSpan {
+	color: #417dc9;
+	margin-right: 20px;
+	cursor: pointer;
+}

@@ -1,6 +1,8 @@
 var pageindex=1;
 $(function(){
 	adminpage();
+	//cookie
+//	console.log($.cookie('purview'))
 });
 
 //分页显示
@@ -35,8 +37,8 @@ function adminpage(curr){
     	html+=" <tr><td>"+(pageNumber+i+1)+"</td>" +
     			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>" +
     			/*"<td>"+res.pageRow[i].dept.deptName+"</td>" +*/
-    			"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</button>" +
-    			"<button type='button' class='btn btn-primary' style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></td></tr>";    	
+    			"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><span class=\"buttonSpan\" onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</span>" +
+    			"<span class=\"buttonSpan\" style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</span></td></tr>";    	
     }
     
         $('#adminbody').html(html);
