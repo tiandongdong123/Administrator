@@ -25,7 +25,8 @@ function checkadminid(id){
 }
 function doaddadmin(){
 	var cname=$("#cname").val();
-	if(cname=="N"){
+	$("#usernameAdmin").focus();
+	if(cname=="Y"){
 		var adminid=$("#usernameAdmin").val();
 		if(adminid.length<6){
 			$("#usernameAdmin").focus();
