@@ -198,12 +198,11 @@ public class AdminController {
 	@ResponseBody
 	public boolean doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
 		boolean rt=false;
-		boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
 		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
 		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
 		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-		if(wfAdminId && password && realName && department && role){
+		if(password && realName && department && role){
 			//记录日志
 			Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
 			logService.addLog(log);
