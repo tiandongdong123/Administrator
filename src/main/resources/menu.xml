@@ -25,33 +25,28 @@
 				<Node Id="A211" Name="账号修改" HasChild="false" />
 				<Node Id="A212" Name="冻结/解冻" HasChild="false" />
 			</Node>
-			<Node Id="A22" Name="个人充值记录" HasChild="false" />
-			<Node Id="A23" Name="个人订单记录" HasChild="false" />
+			<Node Id="A22" Name="个人充值记录" HasChild="true" >
+				<Node Id="A221" Name="待处理" HasChild="false" />
+			</Node>
+			<Node Id="A23" Name="个人订单记录" HasChild="true" >
+				<Node Id="A231" Name="后台退款" HasChild="false" />
+				<Node Id="A232" Name="线下退款" HasChild="false" />
+				<Node Id="A233" Name="修改订单状态" HasChild="false" />
+			</Node>
 			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" />
 		</Node>
 	</Node>
-	<Node Id="B" Name="交易管理" HasChild="true">
-		<Node Id="B1" Name="个人交易管理" HasChild="true">
-			<Node Id="B11" Name="个人订单记录" HasChild="true">
-				<Node Id="B111" Name="后台退款" HasChild="false" />
-				<Node Id="B112" Name="线下退款" HasChild="false" />
-				<Node Id="B113" Name="修改订单状态" HasChild="false" />
+	<Node Id="B" Name="充值管理" HasChild="true">
+		<Node Id="B1" Name="机构交易管理" HasChild="true">
+			<Node Id="B11" Name="个人充值记录" HasChild="true">
+				<Node Id="B111" Name="待处理" HasChild="false" />
 			</Node>
-			<Node Id="B12" Name="个人充值记录" HasChild="true">
-				<Node Id="B121" Name="待处理" HasChild="false" />
+			<Node Id="B12" Name="机构订单记录" HasChild="true">
+				<Node Id="B121" Name="机构订单记录导出" HasChild="false" />
+				<Node Id="B122" Name="导出并发送邮箱" HasChild="false" />
 			</Node>
-			<Node Id="B13" Name="万方卡绑定记录" HasChild="false" />
-		</Node>
-		<Node Id="B2" Name="机构交易管理" HasChild="true">
-			<Node Id="B21" Name="个人充值记录" HasChild="true">
-				<Node Id="B211" Name="待处理" HasChild="false" />
-			</Node>
-			<Node Id="B22" Name="机构订单记录" HasChild="true">
-				<Node Id="B221" Name="机构订单记录导出" HasChild="false" />
-				<Node Id="B222" Name="导出并发送邮箱" HasChild="false" />
-			</Node>
-			<Node Id="B23" Name="机构充值记录" HasChild="true">
-				<Node Id="B231" Name="导出" HasChild="false" />
+			<Node Id="B13" Name="机构充值记录" HasChild="true">
+				<Node Id="B131" Name="导出" HasChild="false" />
 			</Node>
 		</Node>
 	</Node>
@@ -117,7 +112,7 @@
 	</Node>
 	<Node Id="D" Name="其他管理" HasChild="true">
 		<Node Id="D1" Name="万方卡管理" HasChild="true">
-			<Node Id="D11" Name="管理实体卡" HasChild="true">
+			<Node Id="D11" Name="管理赠送万方卡" HasChild="true">
 				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" />
 				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" />
 				<Node Id="D113" Name="导出实体卡" HasChild="false" />
@@ -126,12 +121,12 @@
 				<Node Id="D116" Name="实体卡详情页删除附件" HasChild="false" />
 				<Node Id="D117" Name="万方卡冻结/解冻" HasChild="false" />
 			</Node>
-			<Node Id="D12" Name="生成实体卡" HasChild="false" />
-			<Node Id="D13" Name="审核实体卡" HasChild="true">
+			<Node Id="D12" Name="生成赠送万方卡" HasChild="false" />
+			<Node Id="D13" Name="审核赠送万方卡" HasChild="true">
 				<Node Id="D131" Name="审核" HasChild="false" />
 				<Node Id="D132" Name="下载附件" HasChild="false" />
 			</Node>
-			<Node Id="D14" Name="实体卡设置管理" HasChild="true">
+			<Node Id="D14" Name="设置赠送万方卡" HasChild="true">
 				<Node Id="D141" Name="添加" HasChild="false" />
 				<Node Id="D142" Name="修改" HasChild="false" />
 				<Node Id="D143" Name="导出" HasChild="false" />

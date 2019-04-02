@@ -163,6 +163,11 @@ public class UserController {
 		Role rl=rs.getRoleById(admin.getRole_id());
 		String[] menuIds=rl.getPurview().split(",");
 		List<String> menus=new ArrayList<String>();
+		for (String menuId : menuIds) {
+			menus.add(menuId);
+		}
+		String purviewsPlay=StringUtils.join(menus, "|");
+		CookieUtil.addPrivilegeCookie(purviewsPlay, res);
 		for(int i = 0; i < menuIds.length; i++){
 			String purview=MenuXml.getMenuName().get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){

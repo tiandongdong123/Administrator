@@ -37,19 +37,19 @@ import com.wf.service.RoleService;
 public class AdminController {
 	@Autowired
 	private ResourcePriceService rps;
-	
+
 	@Autowired
 	private DataManagerService data;
-	
+
 	@Autowired
 	private RoleService role;
 
 	@Autowired
 	private AdminService admin;
-	
+
 	@Autowired
 	LogService logService;
-	
+
 	/**查询管理员
 	 * @throws UnknownHostException 
 	 * 
@@ -61,25 +61,21 @@ public class AdminController {
 			@RequestParam(value="pagesize",required=false) Integer pagesize,
 			@RequestParam(value="adminname",required=false) String adminname){
 		PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
-		
+
 		//记录日志
 		Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
 		logService.addLog(log);
-		List<Object> list=pl.getPageRow();
-		for (Object object : list) {
-			System.out.println("---:"+object.toString());
-		}
 		
 		return pl;
 	}
-	
+
 	@RequestMapping("serach")
 	@ResponseBody
 	public object serach(@RequestParam(value="word",required=false)String word) {
-	
+
 		return null;
 	}
-	
+
 	/**
 	 * 删除管理员
 	 * @param request 
@@ -89,10 +85,10 @@ public class AdminController {
 	@ResponseBody
 	public boolean deleteAdmin(@RequestParam(value="ids[]",required=false) String[] ids, HttpServletRequest request){
 		boolean rt = this.admin.deleteAdmin(ids);
-		
+
 		Log log=new Log("管理员管理","删除","删除管理员ID:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
-		
+
 		return rt;
 	}
 	/**
@@ -105,11 +101,11 @@ public class AdminController {
 	@ResponseBody
 	public boolean closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		boolean rt = this.admin.closeAdmin(ids);
-		
+
 		//记录日志
 		Log log=new Log("管理员管理","冻结","冻结账号:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
-		
+
 		return rt;
 	}
 	/**
@@ -122,14 +118,14 @@ public class AdminController {
 	@ResponseBody
 	public boolean openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		boolean rt = this.admin.openAdmin(ids);
-		
+
 		//记录日志
 		Log log=new Log("管理员管理","冻结","解冻账号:"+(ids==null?"":Arrays.asList(ids)),request);
 		logService.addLog(log);
-		
+
 		return rt;
 	}
-	
+
 	/**
 	 * 添加管理员页面
 	 * @param map
@@ -152,7 +148,7 @@ public class AdminController {
 		boolean rt = this.admin.checkAdminId(id);
 		return rt;
 	}
-	
+
 	/**
 	 * 添加管理员
 	 * @param admin
@@ -168,16 +164,13 @@ public class AdminController {
 		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
 		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-		
+
 		if(wfAdminId && password && realName && department && role){
 			rt = this.admin.doAddAdmin(admin);
-			
 			//记录日志
 			Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
 			logService.addLog(log);
 		}
-		
-
 		return rt;
 	}
 	/**
@@ -195,7 +188,7 @@ public class AdminController {
 		map.put("pagenum",pagenum);
 		return "/page/systemmanager/update_admin";
 	}
-	
+
 	/**
 	 * 修改管理员
 	 * @param admin
@@ -204,12 +197,17 @@ public class AdminController {
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
 	public boolean doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-		
-		//记录日志
-		Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
-		logService.addLog(log);
-		
-		boolean rt = this.admin.doUpdateAdmin(admin);
+		boolean rt=false;
+		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
+		if(password && realName && department && role){
+			//记录日志
+			Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
+			logService.addLog(log);
+			rt = this.admin.doUpdateAdmin(admin);
+		}
 		return rt;
 	}
 	/**
@@ -273,8 +271,8 @@ public class AdminController {
 		mav.setViewName("/page/systemmanager/data_manager");
 		return mav;
 	}
-	
-	
+
+
 	/**
 	 * 添加数据页
 	 * @return
@@ -299,7 +297,7 @@ public class AdminController {
 		map.put("rlmap", mm);
 		return "/page/systemmanager/update_data";
 	}
-	
+
 	/**
 	 * 资源单价配置管理
 	 * @return
@@ -310,18 +308,18 @@ public class AdminController {
 		mav.setViewName("/page/systemmanager/resource_price_manager");
 		return mav;
 	}
-	
+
 	/**
 	 * 修改定价
 	 * @return
 	 */
 	@RequestMapping("/pricemodify")
 	public String updatePrice(String rid,Map<String,Object> map){
-		 Map<String,Object> resultmap = this.rps.getRP(rid);
+		Map<String,Object> resultmap = this.rps.getRP(rid);
 		map.put("rlmap", resultmap);
 		return "/page/systemmanager/update_price";
 	}
-	
+
 	/**
 	 * 添加定价
 	 * @return
@@ -342,7 +340,7 @@ public class AdminController {
 		mav.setViewName("/page/systemmanager/product_type");
 		return mav;
 	}
-	
+
 
 	/**
 	 * 子系统设置
@@ -354,7 +352,7 @@ public class AdminController {
 		mav.setViewName("/page/systemmanager/son_system");
 		return mav;
 	}
-	
+
 	/**
 	 * 网站监控
 	 * @return
@@ -365,7 +363,7 @@ public class AdminController {
 		mav.setViewName("/page/systemmanager/control");
 		return mav;
 	}
-	
+
 	/**
 	 * 单位设置
 	 * @return
@@ -391,7 +389,7 @@ public class AdminController {
 	 */
 	@RequestMapping("logmanage")
 	public String getLog(Map<String, Object> model) {
-		
+
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());

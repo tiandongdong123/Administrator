@@ -54,7 +54,7 @@
         <div class="col-md-6">
           <!-- general form elements -->
           <div class="box box-primary">
-            <button type="button" class="btn btn-primary" onclick="addunit()">新增单位</button>
+            <button <?if(!strutil.contain(session.purviews,"F251")){?>style="display:none"<?}?> type="button" class="btn btn-primary" onclick="addunit()">新增单位</button>
             <?if(goback=="goback"){?>
             	<button type="button" class="btn btn-primary" onclick="goback()">返回</button>
             <?}?>

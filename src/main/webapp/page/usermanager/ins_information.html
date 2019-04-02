@@ -92,7 +92,7 @@
           <span class="time"><?if(list.OrderType=='crm'){?>CRM工单号：<?}?><?if(list.OrderType=='inner'){?>申请部门：<?}?>${list.OrderContent!}</span>
       </div>
      <div class="info_box_right">
-      	<a href="../group/modify.do?userId=${list.Id}" class="add_admin">账号修改</a>
+      	<a <?if(!strutil.contain(session.purviews,"A141")){?>style="display:none"<?}?> href="../group/modify.do?userId=${list.Id}" class="add_admin">账号修改</a>
         <div class="btn-group">
 			<a href="javascript:void(0);" onclick="btnBlack(this);" class="add_admin">账户管理<span class="caret"></span></a>
 			<ul class="dropdown-menu" role="menu">
@@ -100,11 +100,11 @@
 			<li><a href="../group/childquery.do?userId=${list.Id}&isBack=true" class="add_admin">子账号列表</a></li>
 			<li><a href="../group/order.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
 			<li><a href="../group/personbind.do?userId=${list.Id}" class="add_admin">个人绑定机构列表</a></li>
-			<li><?if(!isEmpty(list.ParentId)){?><a href="javascript:void(0);" onclick="delAdmin('${list.Id}');" class="add_admin">移除机构管理员</a>
-				<?}else{?><a href="javascript:void(0);" onclick="setAdmin('${list.Id}','${list.ParentId}','${list.Institution}');" class="add_admin">添加机构管理员</a><?}?></li>
+			<li><?if(!isEmpty(list.ParentId)){?><a <?if(!strutil.contain(session.purviews,"A142")){?>style="display:none"<?}?> href="javascript:void(0);" onclick="delAdmin('${list.Id}');" class="add_admin">移除机构管理员</a>
+				<?}else{?><a <?if(!strutil.contain(session.purviews,"A142")){?>style="display:none"<?}?> href="javascript:void(0);" onclick="setAdmin('${list.Id}','${list.ParentId}','${list.Institution}');" class="add_admin">添加机构管理员</a><?}?></li>
 			</ul>
 		</div>
-		<a href="javascript:void(0);">
+		<a <?if(!strutil.contain(session.purviews,"A143")){?>style="display:none"<?}?> href="javascript:void(0);">
         <?if(list.IsFreeze==false){?>
           <i onclick="setfreeze(1,this,'${list.Id}');" class="icon_lock icon_open"></i>
 		<?}else{?>
