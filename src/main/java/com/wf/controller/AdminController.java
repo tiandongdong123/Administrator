@@ -164,8 +164,8 @@ public class AdminController {
 		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
 		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-
-		if(wfAdminId && password && realName && department && role){
+		boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+		if(wfAdminId && password && realName && department && role && !isRepeat){
 			rt = this.admin.doAddAdmin(admin);
 			//记录日志
 			Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
