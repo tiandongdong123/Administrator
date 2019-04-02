@@ -48,12 +48,17 @@ function doaddadmin(){
 		}
 		
 		var deptname=$("#deptname").val();
+		var patrn= /^[\u4E00-\u9FA5]+$/i;
 		if(deptname==null||deptname==''){
 			$("#checkpassword").text("请填写部门名称");
 			$("#deptname").focus();
 			return;
+		}else if(!patrn.test(deptname)){
+			$("#departmentStr").text("部门必须为中文");
+			$("#deptname").focus();
+			return;
 		}else{
-			$("#checkpassword").text("");
+			$("#departmentStr").text("");
 		}
 		
 		var name = $("#name").val();
