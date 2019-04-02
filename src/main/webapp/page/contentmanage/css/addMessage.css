@@ -104,13 +104,11 @@ td{
     left: 0px;
     z-index: 9999;
     background: #fff;
-    width: 218px;
+    width: 230px;
     margin-left: 28px;
 }
 .error_mark .sensitive_wrap ul{
-    height: 218px;
     width: 230px;
-    overflow-x: auto;
 }
 
 /*滚动条样式*/
