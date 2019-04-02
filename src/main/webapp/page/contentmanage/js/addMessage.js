@@ -69,7 +69,6 @@ $(function(){
         })
     });
     allSensitive();
-    blankSpace( $(".sensitive_wrap"));
 });
 //点击空白
 function blankSpace(obj){
@@ -85,7 +84,6 @@ function showSensitive(obj){
     obj.click(function(e){
         e = e || window.event;
         e.stopPropagation();
-        $(".sensitive_wrap").hide();
         obj.siblings(".sensitive_wrap").toggle();
     });
 }
@@ -905,12 +903,14 @@ function checkSensitive(word,obj,sensitiveItem,sensitiveList){
             }else{
                 obj.siblings("span").hide();
                 obj.show();
-                sensitiveItem.remove()
+                sensitiveList.empty();
                 var html = '';
                for(var i = 0;i<data.length;i++){
                    html = html + '<li>'+data[i] +'</li>';
                 }
-                sensitiveList.append(html)
+                sensitiveList.append(html);
+               obj.find('.sensitive_wrap').show();
+
 			}
         }
     })
