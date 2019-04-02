@@ -92,7 +92,13 @@ public class RoleController {
 	@RequestMapping("doaddrole")
 	@ResponseBody
 	public boolean doAddRole(@ModelAttribute Role role,HttpServletRequest request){
-		boolean rt = this.role.doAddRole(role);
+		boolean rt=false;
+		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
+		boolean purview=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
+		if(roleName && purview){
+			rt = this.role.doAddRole(role);
+		}
+		
 		
 		//记录日志
 		Log log=new Log("角色管理","增加",role.toString(),request);
@@ -112,8 +118,12 @@ public class RoleController {
 	@RequestMapping("doupdaterole")
 	@ResponseBody
 	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request,HttpSession session,HttpServletResponse response){
-		boolean rt = this.role.doUpdateRole(role);
-		
+		boolean rt=false;
+		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
+		boolean purviewIsNull=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
+		if(roleName && purviewIsNull){
+			rt = this.role.doUpdateRole(role);
+		}
 		//记录日志
 		Log log=new Log("角色管理","修改",role.toString(),request);
 		logService.addLog(log);
