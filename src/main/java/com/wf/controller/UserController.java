@@ -166,6 +166,8 @@ public class UserController {
 		for (String menuId : menuIds) {
 			menus.add(menuId);
 		}
+		String purviewsPlay=StringUtils.join(menus, "|");
+		CookieUtil.addPrivilegeCookie(purviewsPlay, res);
 		for(int i = 0; i < menuIds.length; i++){
 			String purview=MenuXml.getMenuName().get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){
@@ -177,7 +179,6 @@ public class UserController {
 		session.setAttribute("purviews", purviews);
 		session.setAttribute("userName", userId);
 		session.setAttribute("department", deptName);
-		CookieUtil.addPrivilegeCookie(purviews, res);
 		//放入redis
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("purviews", purviews);
