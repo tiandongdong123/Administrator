@@ -2,14 +2,18 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +27,7 @@ import com.wf.bean.Log;
 import com.wf.bean.Menu;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
+import com.wf.bean.Wfadmin;
 import com.wf.service.LogService;
 import com.wf.service.RoleService;
 
@@ -106,13 +111,31 @@ public class RoleController {
 	 */
 	@RequestMapping("doupdaterole")
 	@ResponseBody
-	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request){
+	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request,HttpSession session,HttpServletResponse response){
 		boolean rt = this.role.doUpdateRole(role);
 		
 		//记录日志
 		Log log=new Log("角色管理","修改",role.toString(),request);
 		logService.addLog(log);
 
+		if(rt){
+			Wfadmin admin = CookieUtil.getWfadmin(request);
+			Role rl=this.role.getRoleById(admin.getRole_id());
+			String[] menuIds=rl.getPurview().split(",");
+			List<String> menus=new ArrayList<String>();
+			for (String menuId : menuIds) {
+				menus.add(menuId);
+			}
+			for(int i = 0; i < menuIds.length; i++){
+				String purview=MenuXml.getMenuName().get(menuIds[i]);
+				if(purview!=null&&!"".equals(purview)){
+					menus.add(purview);
+				}
+			}
+			String purviews=StringUtils.join(menus, "|");
+			session.setAttribute("purviews", purviews);
+			CookieUtil.addPrivilegeCookie(purviews, response);
+		}
 		return rt ;
 	}
 	

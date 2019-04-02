@@ -95,6 +95,25 @@ public class CookieUtil {
 	
 	/**
 	 * 添加cookie
+	 * @param token
+	 * @param response
+	 */
+	public static void addPrivilegeCookie(String token, HttpServletResponse response) {
+		try {
+			Cookie cookie = new Cookie("purview", token);
+			cookie.setMaxAge(3600);
+			cookie.setDomain(domain);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	/**
+	 * 添加cookie
 	 * @param user
 	 * @param response
 	 * @throws Exception

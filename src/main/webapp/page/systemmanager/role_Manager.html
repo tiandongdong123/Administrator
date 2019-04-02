@@ -22,7 +22,7 @@
           <div class="box box-primary">
             <form role="form">
             </form>
-            <button type="button" style="margin-top: 5px;margin-left: 10px;" class="btn btn-primary" onclick="addrole()">添加角色</button>
+            <button <?if(!strutil.contain(session.purviews,"F121")){?>style="display:none"<?}?> type="button" style="margin-top: 5px;margin-left: 10px;" class="btn btn-primary" onclick="addrole()">添加角色</button>
             <table  style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
                 <thead class="rolebody">
                 <tr>

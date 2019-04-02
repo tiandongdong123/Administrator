@@ -163,6 +163,9 @@ public class UserController {
 		Role rl=rs.getRoleById(admin.getRole_id());
 		String[] menuIds=rl.getPurview().split(",");
 		List<String> menus=new ArrayList<String>();
+		for (String menuId : menuIds) {
+			menus.add(menuId);
+		}
 		for(int i = 0; i < menuIds.length; i++){
 			String purview=MenuXml.getMenuName().get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){
@@ -174,6 +177,7 @@ public class UserController {
 		session.setAttribute("purviews", purviews);
 		session.setAttribute("userName", userId);
 		session.setAttribute("department", deptName);
+		CookieUtil.addPrivilegeCookie(purviews, res);
 		//放入redis
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("purviews", purviews);
