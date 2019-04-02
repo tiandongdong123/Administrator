@@ -22,18 +22,21 @@ function adminpage(curr){
     	//id = 10*(curr-1)+i+1;
     	var status="";
     	var buttonname="";
+    	var color = "";
     	if(res.pageRow[i].status==1){
     		status="<td>解冻</td>";
     		buttonname="冻结";
+    		color = "red"
     	}else{
     		status="<td>冻结</td>";
     		buttonname="解冻";
+    		color = "green"
     	}
     	html+=" <tr><td>"+(pageNumber+i+1)+"</td>" +
     			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>" +
     			/*"<td>"+res.pageRow[i].dept.deptName+"</td>" +*/
     			"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</button>" +
-    			"<button type='button' class='btn btn-primary' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></td></tr>";    	
+    			"<button type='button' class='btn btn-primary' style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</button></td></tr>";    	
     }
     
         $('#adminbody').html(html);

@@ -13,7 +13,7 @@ function checkadminid(id){
 							$("#checkadminid").text("名称重复，请重新输入");
 					}else{
 							$("#cname").val("Y")
-							if($("#usernameAdmin")[0].value.length>6) {
+							if($("#usernameAdmin")[0].value.length>=6) {
 								$("#checkadminid").text("一旦注册成功不能修改");								
 							} 
 					}
@@ -25,7 +25,7 @@ function checkadminid(id){
 }
 function doaddadmin(){
 	var cname=$("#cname").val();
-	if(cname=="Y"){
+	if(cname=="N"){
 		var adminid=$("#usernameAdmin").val();
 		if(adminid.length<6){
 			$("#usernameAdmin").focus();
@@ -46,12 +46,19 @@ function doaddadmin(){
 			$("#checkpassword").text("");
 		}
 		
-		var name = $("#name").val();
-		
 		var deptname=$("#deptname").val();
 		if(deptname==null||deptname==''){
 			$("#checkpassword").text("请填写部门名称");
 			$("#deptname").focus();
+			return;
+		}else{
+			$("#checkpassword").text("");
+		}
+		
+		var name = $("#name").val();
+		if(name==null||name==''){
+			$("#checkpassword").text("请填写真实姓名");
+			$("#name").focus();
 			return;
 		}else{
 			$("#checkpassword").text("");

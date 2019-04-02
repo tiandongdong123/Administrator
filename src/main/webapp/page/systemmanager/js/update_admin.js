@@ -7,11 +7,11 @@ function doupdateadmin(){
 		var roleid=$("#rolename").find("option:selected").val();
 		
 		if(password==null||password==''){
-			$("#chcekpassword").text("请输入密码");
+			$("#pwdStr").text("请填写密码");
 			$("#password").focus();
 			return;
 		}else{
-			$("#checkpassword").text("");
+			$("#pwdStr").text("");
 		}
 		
 		var deptname=$("#deptname").val();
