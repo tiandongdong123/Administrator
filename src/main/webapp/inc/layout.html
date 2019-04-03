@@ -181,6 +181,12 @@
             <li <?if(!strutil.contain(session.purviews,"功能模块分析")){?>style="display:none"<?}?>><a href="../modelanalysis/modelanalysis.do"><i class="fa fa-circle-o"></i> 功能模块分析</a></li>
             <li <?if(!strutil.contain(session.purviews,"页面分析")){?>style="display:none"<?}?>><a href="../pageAnalysis/pageAnalysis.do"><i class="fa fa-circle-o"></i> 页面分析</a></li>
 		    <li <?if(!strutil.contain(session.purviews,"功能概况")){?>style="display:none"<?}?>><a href="../functionProfile/functionProfile.do"><i class="fa fa-circle-o"></i> 功能概况</a></li>
+                <li <?if(!strutil.contain(session.purviews,"功能统计")){?>style="display:none"<?}?>>
+                <a href="#"><i class="fa fa-circle-o"></i>功能统计<i class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu menu-open" style="display: block;">
+                    <li <?if(!strutil.contain(session.purviews,"广告统计")){?>style="display:none"<?}?><?if(session.menu_first=="ad_Statistics.do"){ ?>class="active"<?}?>><a href="../functionStatistics/adStatistics.do"><i class="fa fa-circle-o"></i>广告统计</a></li>
+                </ul>
+                </li>
           </ul>
         </li>
           <!-- 交易管理-->
