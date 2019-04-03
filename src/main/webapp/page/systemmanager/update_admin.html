@@ -15,25 +15,25 @@
           	<form>
 			<div id="addadmin">
 			<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">用户名：</label>
+             <label for="exampleInputEmail1" class="input_name">用户名</label>
              <span id="username">${admin.wangfang_admin_id}</span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码：</label>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码</label>
              <input type="text" id="password" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" value="${admin.password}" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
              <span id="chcekpassword"></span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称：</label>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称</label>
              <input type="text" id="deptname" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" onblur="checkValue('department',this.value)"><span class="voidName" id="departmentStr"></span>
          	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>真实姓名：</label>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>真实姓名</label>
              <input type="text" id="realname" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" value="${admin.user_realname}"  onblur="checkValue('name',this.value)"><span class="voidName" id="nameStr"></span>
              <span id="chcekrealname"></span>
          	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色 ：</label>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色 </label>
              <select id="rolename" style="width:45%;height: 34px;">
             <?for(var role in rolename){?>
             <?if(role.roleId==admin.role_id){?>

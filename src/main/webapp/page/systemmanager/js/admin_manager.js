@@ -65,6 +65,7 @@ function adminpage(curr){
         }
         //显示分页
         if (totalRow/pageSize>1) {
+        	$("#page").show()
         	laypage({
         		cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
         		pages: pages, //通过后台拿到的总页数
@@ -83,7 +84,9 @@ function adminpage(curr){
         			}
         		}
         	});        	
-        } 
+        } else {
+        	$("#page").hide()
+        }
     });
 };
 
@@ -102,11 +105,11 @@ function changeadmin(obj,id){
 	var title="";
 	var a = btnname.indexOf("冻结");
 	if(a>0){
-		msg="确定要冻结管理员账号吗？";
+		msg="确定要冻结该管理员账号吗？";
 		title="冻结";
 		url="../admin/closeadmin.do";
 	}else{
-		msg="确定要解冻管理员账号吗？";
+		msg="确定要解冻该管理员账号吗？";
 		title="解冻";
 		url="../admin/openadmin.do";
 	}

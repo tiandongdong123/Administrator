@@ -73,8 +73,8 @@ function updaterole(id){
 }
 
 function deleterole(id){
-	var msg="确定要删除该角色吗";
-	var title="";
+	var msg="确定要删除该角色吗?";
+	var title="删除";
 	layer.alert(msg,{
 		icon: 1,
 		title : [title, true],
@@ -91,7 +91,7 @@ function deleterole(id){
 	    			success : function(data) {
 	    				if(data){
 	    					layer.msg("删除成功");
-	    					rolepage($(".laypage_curr").text());
+	    					rolepage($(".laypage_curr").text()||1);
 	    				}else{
 	    					layer.msg("该角色下有管理员不能删除");
 	    				}

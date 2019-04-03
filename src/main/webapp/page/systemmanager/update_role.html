@@ -31,15 +31,15 @@
           <div class="box box-primary">
           <form>
 					<div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name">角色名称：</label><span style="color: red">*</span>
+                  <label for="exampleInputEmail1" class="input_name">角色名称</label><span style="color: red">*</span>
                   <input type="text" id="rolename" class="form-control input_width" onblur="checkrolename(this.value)" value="${role.roleName}"><span id="checkrolename"></span>
                 </div>
       			 <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name"  >角色描述：</label>
+                  <label for="exampleInputEmail1" class="input_name"  >角色描述</label>
                    <textarea class="form-control input_width" rows="3" name="ipSegment" id="roledescribe" >${role.description}</textarea>
                 </div>
                 <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name"  >权限配置：</label>
+                  <label for="exampleInputEmail1" class="input_name"  >权限配置</label>
                   全选：<input type="checkbox" id="checkall" onclick="checkrole(this)">
                   
                  	 <ul id="treeDemo" class="ztree"></ul>
