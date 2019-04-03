@@ -221,6 +221,9 @@ public class AdminController {
 			Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
 			logService.addLog(log);
 		}
+		if(map.size()==0){
+			map.put("flag", false);
+		}
 		return map;
 	}
 	/**
