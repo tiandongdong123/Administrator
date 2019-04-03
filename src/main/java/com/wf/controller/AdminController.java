@@ -205,13 +205,19 @@ public class AdminController {
 		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
 		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
 		if(password && realName && department && role){
+			Wfadmin adminStatus = this.admin.getAdminById(admin.getId());
+			if(adminStatus.getStatus()==0){
+				map.put("flag", "fail");
+				map.put("fail","冻结账户不可修改");
+				return map;
+			}
 			//判断是否自己修改自己角色
 			Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
 			if(wfAdmin.getId().equals(admin.getId()) && (!wfAdmin.getRole_id().equals(admin.getRole_id())  
 					|| !wfAdmin.getDepartment().equals(admin.getDepartment()) 
 					|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
 				map.put("flag", "fail");
-				map.put("fail","管理员只能修改自己的密码");
+				map.put("fail","管理员自己只能修改自己的密码");
 					return map;
 			}else{
 				boolean rt = this.admin.doUpdateAdmin(admin);
