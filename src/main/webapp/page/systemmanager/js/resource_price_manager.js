@@ -7,6 +7,7 @@ $(function(){
 //分页显示
 function pricepage(curr){
 	var name=$("#inputEmail3").val();
+	var purview=$.cookie('purview');
     $.getJSON('../resourceprice/getprice.do', {
         pagenum: curr,//向服务端传的参数
         pagesize :10,
@@ -34,8 +35,18 @@ function pricepage(curr){
     			"<td>"+res.pageRow[i].unitCode+"</td>" +
     			"<td>"+res.pageRow[i].price+"元</td>" +
     			"<td>"+res.pageRow[i].sonCode+"</td>" +
-    			"<td>"+usertype+"</td>"+
-    			"<td><button type='button' class='btn btn-primary' onclick=\"updateprice('"+res.pageRow[i].rid+"')\">修改</button><button type='button' class='btn btn-primary' onclick=\"deletePrice('"+res.pageRow[i].rid+"')\">删除</button></td></tr>";    	
+    			"<td>"+usertype+"</td>";
+    	if(purview.indexOf("F222")!=-1){
+    	html+="<td><button type='button' class='btn btn-primary' onclick=\"updateprice('"+res.pageRow[i].rid+"')\">修改</button>";    	
+    	}else{
+    	html+="<td><button style='display:none' type='button' class='btn btn-primary' onclick=\"updateprice('"+res.pageRow[i].rid+"')\">修改</button>"; 
+    	}
+    	if(purview.indexOf("F223")!=-1){
+        html+="<button type='button' class='btn btn-primary' onclick=\"deletePrice('"+res.pageRow[i].rid+"')\">删除</button></td></tr>";    	
+        }else{
+        html+="<button style='display:none' type='button' class='btn btn-primary' onclick=\"deletePrice('"+res.pageRow[i].rid+"')\">删除</button></td></tr>"; 
+        }
+    	
     }
         document.getElementById('ttab').innerHTML = html;
         var totalRow = res.pageTotal;

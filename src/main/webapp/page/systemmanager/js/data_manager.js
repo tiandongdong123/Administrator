@@ -39,6 +39,7 @@ function paging(curr){
 function datapage(res){
 		var pageNum = res.pageNum;
 		var pageTotal = res.pageTotal;
+		var purview=$.cookie('purview');
 		$("#pageNum").val(pageNum);
 		$("#pageTotal").val(pageTotal);
 		var html="";
@@ -76,10 +77,24 @@ function datapage(res){
 				"<td>"+res.pageRow[i].resType+"</td>"+
 				"<td>"+res.pageRow[i].language+"</td>"+
 				"<td>"+(res.pageRow[i].customPolicy==null?"":res.pageRow[i].customPolicy)+"</td>"+
-				state +
-				"<td><button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button></br>" +
-				"<button type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonOne+"</button></br>" +
-				"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"PushData(this,'"+res.pageRow[i].id+"')\">"+buttonTwo+"</button></br>";
+				state;
+			if(purview.indexOf("F212")!=-1){
+				html+=	"<td><button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button></br>";
+			}else{
+				html+=	"<td><button style='display:none' type='button' style='width: 100px;' class='btn btn-primary' onclick=\"doupdatedata('"+res.pageRow[i].id+"')\">修改</button></br>";
+			}
+			if(purview.indexOf("F213")!=-1){
+				html+=	"<button type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonOne+"</button></br>";
+			}else{
+				html+=	"<button style='display:none' type='button' style='width: 100px;'  class='btn btn-primary' onclick=\"changedata(this,'"+res.pageRow[i].id+"')\">"+buttonOne+"</button></br>";
+			}
+			if(purview.indexOf("F214")!=-1){
+				html+=	"<button type='button' style='width: 100px;' class='btn btn-primary' onclick=\"PushData(this,'"+res.pageRow[i].id+"')\">"+buttonTwo+"</button></br>";
+			}else{
+				html+=	"<button style='display:none' type='button' style='width: 100px;' class='btn btn-primary' onclick=\"PushData(this,'"+res.pageRow[i].id+"')\">"+buttonTwo+"</button></br>";
+			}
+		
+				
 		}
 		document.getElementById('databody').innerHTML = html;
 		var groups;

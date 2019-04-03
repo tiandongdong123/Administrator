@@ -10,16 +10,25 @@ function rolepage(curr){
         pagesize :20
     }, function(res){
     	html="";
-    	
+    	var purview=$.cookie('purview');
     for(var i =0;res.pageRow[i];i++){
     	id = 20*(curr-1)+i+1;
     	html+="<tr><td>"+id+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
-    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>" +
-    			  "<td><span class=\"buttonSpan\" onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</span>" +
-    			  "<span class=\"buttonSpan\" onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</span></td>" +
-    			  "</tr>";   	
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>";
+    	if(purview.indexOf("F122")!=-1){
+    		html+= "<td><span class=\"buttonSpan\" onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</span>";
+    	}else{
+    		html+= "<td><span style='display:none' class=\"buttonSpan\" onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</span>";
+    	}  
+    	if(purview.indexOf("F123")!=-1){
+    		html+= "<span class=\"buttonSpan\" onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</span></td>" +
+			  "</tr>"; 
+    	}else{
+    		html+= "<span style='display:none' class=\"buttonSpan\" onclick=\"deleterole('"+res.pageRow[i].roleId+"')\">删除</span></td>" +
+			  "</tr>";
+    	}	   	
     }
         document.getElementById('rolebody').innerHTML = html;
         var totalRow = res.pageTotal;

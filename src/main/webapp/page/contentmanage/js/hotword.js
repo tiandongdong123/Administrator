@@ -633,6 +633,7 @@ function serachdataManual(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
+		var purview=$.cookie('purview');
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+pageNum;
 			var rows = pageRow[i];
@@ -668,10 +669,19 @@ function serachdataManual(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
-			"<td class='mailbox-name' style='width:280px;'><div>"+
-			"<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
-          "</tr>";
+			"<td class='mailbox-name' style='width:280px;'><div>"
+			if(purview.indexOf("C323")!=-1){
+				resHtml+="<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;"; 
+			}
+			if(purview.indexOf("C322")!=-1){
+				resHtml+="<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}
 		}
 	}
 	resHtml+="</tbody>";
