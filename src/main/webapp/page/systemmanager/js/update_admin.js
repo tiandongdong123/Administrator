@@ -47,12 +47,12 @@ function doupdateadmin(){
 		},
 		dataType : "json",
 		success : function(data) {
-			if(data===true){
+			if(data.flag===true){
 				var index = parent.layer.getFrameIndex(window.name);
 				parent.layer.msg('修改成功');
 				window.parent.adminpage(pagenum);
 				parent.layer.close(index);
-			}else if(data===false){
+			}else if(data.flag===false){
 				var index = parent.layer.getFrameIndex(window.name);
 				parent.layer.msg('修改失败');
 				parent.layer.close(index); 
