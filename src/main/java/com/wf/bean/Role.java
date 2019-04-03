@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import net.sf.json.JSONArray;
+
 public class Role {
     private String roleId;
 
@@ -10,8 +12,19 @@ public class Role {
     private String purview;
     
     private String deptName;
+    
+    private JSONArray purviewTree;
 
-    public String getDeptName() {
+    
+    public JSONArray getPurviewTree() {
+		return purviewTree;
+	}
+
+	public void setPurviewTree(JSONArray purviewTree) {
+		this.purviewTree = purviewTree;
+	}
+
+	public String getDeptName() {
 		return deptName;
 	}
 

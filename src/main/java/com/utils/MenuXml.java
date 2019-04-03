@@ -35,6 +35,56 @@ public class MenuXml {
 		}
 		return listMenu;
 	}
+	public static List<Menu> getPurviewsListMenu(List<String> list){
+		List<Menu> listMenu=new ArrayList<Menu>();
+		try {
+			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+			File f = new File(url.getFile());   
+			SAXReader reader = new SAXReader();   
+			Document doc = reader.read(f);   
+			Element root = doc.getRootElement();
+			List<Element> listElements=root.elements();//所有一级子节点的list
+			for (Element element : listElements) {
+				String s=element.attributeValue("Id");
+				if(list.contains(s)){
+					listMenu.add(getPurviewsNodes(element,list));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return listMenu;
+	}
+	public static Menu getPurviewsNodes(Element node,List<String> list){
+		Menu m=new Menu();
+		//当前节点的名称、文本内容和属性
+		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
+		for(Attribute attr:listAttr){//遍历当前节点的所有属性
+			String name=attr.getName();//属性名称
+			String value=attr.getValue();//属性的值
+			if(name.equals("Id")){
+				m.setId(value);
+			}
+			if(name.equals("Name")){
+				m.setName(value);
+			}
+			if(name.equals("HasChild")){
+				m.setHaschild(value.equals("true"));
+			}
+			if(m.getHaschild()){
+				List<Menu> listMenu=new ArrayList();
+				//递归遍历当前节点所有的子节点
+				List<Element> listElement=node.elements();//所有一级子节点的list
+				for(Element e:listElement){//遍历所有一级子节点
+					if(list.contains(e.attributeValue("Id"))){
+						listMenu.add(getPurviewsNodes(e,list));//递归
+					}
+				}
+				m.setChildren(listMenu);
+			}
+		}
+		return m;
+	}
 	public static Map<String,String> getMenuName(){
 		menuName=new HashMap<String, String>();
 		try {

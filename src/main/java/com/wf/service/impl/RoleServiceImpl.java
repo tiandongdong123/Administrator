@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.utils.MenuXml;
+import com.wf.bean.Menu;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
 import com.wf.bean.SystemMenu;
@@ -49,6 +50,9 @@ public class RoleServiceImpl implements RoleService{
 				
 				if(StringUtils.isNoneBlank(roles)){
 					List<String> list=Arrays.asList(roles.split(","));
+					List<Menu> listMENU=MenuXml.getPurviewsListMenu(list);
+					JSONArray array = JSONArray.fromObject(listMENU);
+					((Role)rl.get(i)).setPurviewTree(array);
 					String sys1="";
 					Map<String,String> map=MenuXml.getMenuName();
 					for(int j=0;j<list.size();j++){
