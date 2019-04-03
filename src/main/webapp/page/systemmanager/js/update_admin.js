@@ -1,9 +1,9 @@
 function doupdateadmin(){
 	var pagenum=$("#pagenum").val();
 	var id=$("#userid").val();
-	var password = $("#password").val();
-	var username=$("#realname").val();
-	var deptname=$("#deptname").val();
+	var password = $.trim($("#password").val());
+	var username=$.trim($("#realname").val());
+	var deptname=$.trim($("#deptname").val());
 	var roleid=$("#rolename").find("option:selected").val();
 
 	if(password==null||password==''){
@@ -13,8 +13,15 @@ function doupdateadmin(){
 	}else{
 		$("#pwdStr").text("");
 	}
+	
+	if(username==null||username==''){
+		$("#nameStr").text("请填写真实姓名");
+		$("#realname").focus();
+		return;
+	}else{
+		$("#nameStr").text("");
+	}
 
-	var deptname=$("#deptname").val();
 	var patrn= /^[\u4E00-\u9FA5]+$/i;
 	if(deptname==null||deptname==''){
 		$("#checkpassword").text("请填写部门名称");
@@ -40,14 +47,18 @@ function doupdateadmin(){
 		},
 		dataType : "json",
 		success : function(data) {
-			if(data){
+			if(data===true){
 				var index = parent.layer.getFrameIndex(window.name);
 				parent.layer.msg('修改成功');
 				window.parent.adminpage(pagenum);
 				parent.layer.close(index);
-			}else{
+			}else if(data===false){
 				var index = parent.layer.getFrameIndex(window.name);
 				parent.layer.msg('修改失败');
+				parent.layer.close(index); 
+			}else if(data.flag==="fail") {
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.msg(data.fail);
 				parent.layer.close(index); 
 			}
 		}

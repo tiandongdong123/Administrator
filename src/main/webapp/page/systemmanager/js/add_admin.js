@@ -27,7 +27,7 @@ function doaddadmin(){
 	var cname=$("#cname").val();
 	$("#usernameAdmin").focus();
 	if(cname=="Y"){
-		var adminid=$("#usernameAdmin").val();
+		var adminid=$.trim($("#usernameAdmin").val());
 		if(adminid.length<6){
 			$("#usernameAdmin").focus();
 			return;
@@ -38,7 +38,7 @@ function doaddadmin(){
 			$("#checkadminid").text("用户名限定为字母、数字或下划线的组合");
 			return;
 		}
-		var password = $("#passwordAdmin").val();
+		var password = $.trim($("#passwordAdmin").val());
 		if(password==null||password==''){
 			$("#checkpassword").text("请输入密码");
 			$("#passwordAdmin").focus();
@@ -47,7 +47,7 @@ function doaddadmin(){
 			$("#checkpassword").text("");
 		}
 		
-		var deptname=$("#deptname").val();
+		var deptname=$.trim($("#deptname").val());
 		var patrn= /^[\u4E00-\u9FA5]+$/i;
 		if(deptname==null||deptname==''){
 			$("#checkpassword").text("请填写部门名称");
@@ -61,7 +61,7 @@ function doaddadmin(){
 			$("#departmentStr").text("");
 		}
 		
-		var name = $("#name").val();
+		var name = $.trim($("#name").val());
 		if(name==null||name==''){
 			$("#checkpassword").text("请填写真实姓名");
 			$("#name").focus();

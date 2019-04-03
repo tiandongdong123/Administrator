@@ -1,14 +1,17 @@
 var pageindex=1;
 $(function(){
 	adminpage();
-	//cookie
-//	console.log($.cookie('purview'))
+	$("#inputEmail3").keydown(function(e){
+		if(e.keyCode==13 && $(this).val!=""){
+			adminpage(1)
+		}
+	});
 });
 
 //分页显示
 function adminpage(curr){
 	pageindex = curr || 1;
-	var adminname = $("#inputEmail3").val();
+	var adminname = $.trim($("#inputEmail3").val());
     $.post('../admin/getadmin.do', {
         pagenum: curr || 1,//向服务端传的参数
         pagesize :20,
@@ -32,7 +35,7 @@ function adminpage(curr){
     	}else{
     		status="<td>冻结</td>";
     		buttonname="解冻";
-    		color = "green"
+    		color = "#417dc9"
     	}
     	html+=" <tr><td>"+(pageNumber+i+1)+"</td>" +
     			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>" +
