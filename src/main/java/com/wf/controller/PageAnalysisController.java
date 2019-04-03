@@ -43,25 +43,30 @@ import com.wf.service.impl.PageAnalysisServiceImpl;
 @RequestMapping("pageAnalysis") 
 public class PageAnalysisController {
 
-//	@Autowired
-//	private AdminService admin;
+	//	@Autowired
+	//	private AdminService admin;
 	@Autowired
 	private PageManagerService pageManagerService;
 	@Autowired
 	private PageAnalysisService pageAnalysisService;
 	@Autowired
 	private LogService logService;
-	
+
 	@RequestMapping("pageAnalysis")
-	public String pageAnalysis(){
-		
-		return "/page/othermanager/page_analysis";
+	public String pageAnalysis(HttpServletRequest request){
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E7")!=-1){
+			return "/page/othermanager/page_analysis";
+		}else{
+			return null;
+		}
+
 	}
-	
+
 	@RequestMapping("getline")
 	@ResponseBody
 	public Object list_data(HttpServletRequest request) {
-	
+
 		String age=request.getParameter("age");
 		String title=request.getParameter("title");
 		String exlevel=request.getParameter("exlevel");
@@ -74,7 +79,7 @@ public class PageAnalysisController {
 		Integer property=Integer.valueOf(request.getParameter("property"));
 		return pageAnalysisService.foemat(age, title, exlevel, reserchdomain, pageName, datetype, type, starttime, endtime,property);
 	}
-	
+
 	@RequestMapping("getdataSource")
 	@ResponseBody
 	public PageList datasource(Integer pagesize,Integer pagenum,String title,
@@ -82,39 +87,39 @@ public class PageAnalysisController {
 			String starttime,String pageName,
 			String endtime,String domain,Integer property, 
 			HttpServletRequest request){
-		
+
 		PageList pageList= pageAnalysisService.getdatasource(pagesize,pagenum,title, age, exlevel, datetype, domain, pageName, starttime, endtime, property);
-		
-		
+
+
 		//记录日志
 		Log log=new Log("页面分析","查询","",request);
 		logService.addLog(log);
-		
+
 		return pageList;
 	}
-	
+
 	@RequestMapping("head_word")
 	@ResponseBody
 	public Object head_word(HttpServletRequest request) {
 		String head_word=request.getParameter("head_word");
-		
+
 		String regEx="[\\s~·`!！@#￥$%^……&*（()）\\-——\\-_=+【\\[\\]】｛{}｝\\|、\\\\；;：:‘'“”\"，,《<。.》>、/？?]";  
-        Pattern p = Pattern.compile(regEx);  
-        Matcher m = p.matcher(head_word);	
+		Pattern p = Pattern.compile(regEx);  
+		Matcher m = p.matcher(head_word);	
 		List<String> list=pageAnalysisService.getAllTopic(m.replaceAll(""));
-		
+
 		return list;
 	}
-	
+
 
 	@RequestMapping("html_word")
 	@ResponseBody
 	public Object html_word(HttpServletRequest request) {
 		String html_word=request.getParameter("html_word");
 		String regEx="[\\s~·`!！@#￥$%^……&*（()）\\-——\\-_=+【\\[\\]】｛{}｝\\|、\\\\；;：:‘'“”\"，,《<。.》>、/？?]";  
-        Pattern p = Pattern.compile(regEx);  
-        Matcher m = p.matcher(html_word);  
-        List<Object> list=pageManagerService.getKeyWord(m.replaceAll(""));
-        return list;
+		Pattern p = Pattern.compile(regEx);  
+		Matcher m = p.matcher(html_word);  
+		List<Object> list=pageManagerService.getKeyWord(m.replaceAll(""));
+		return list;
 	}
 }

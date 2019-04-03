@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.utils.AuthorityLimit;
+import com.utils.CookieUtil;
 import com.utils.DateUtil;
 import com.utils.InstitutionUtils;
 import com.utils.Organization;
@@ -50,19 +51,19 @@ public class GroupController {
 	private PersonService personservice;
 	@Autowired
 	private OpreationLogsService opreationLogs;
-	
+
 	private static Logger log = Logger.getLogger(GroupController.class);
 	//二维码邮箱是否勾选
 	private static String DEFAULT = "default";
 	private static String UNSELECT = "unselect";
 	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
-	
+
 	/**
 	 *	机构用户信息管理查询
 	 */
 	@RequestMapping("index")
 	public ModelAndView toInformation(String userId,String ipSegment,String institution,String adminname,
-			String adminIP,String pageNum,String pageSize,String start_time,String end_time){
+			String adminIP,String pageNum,String pageSize,String start_time,String end_time,HttpServletRequest req){
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("userId", userId);
@@ -87,7 +88,13 @@ public class GroupController {
 		view.addObject("Authority", AuthorityLimit.values());//权限
 		view.addObject("msg", "0");	
 		view.setViewName("/page/usermanager/ins_information");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(req);
+		if(purview.indexOf("A14")!=-1){
+			return view;
+		}else{
+			return null;
+		}
+
 	}
 	/**
 	 *	机构用户信息管理列表
@@ -127,8 +134,8 @@ public class GroupController {
 				}
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
-			
-			
+
+
 			pageList.setPageNum(Integer.parseInt(map.get("pageNum").toString())+1);//当前页
 			pageList.setPageSize(Integer.parseInt(map.get("pageSize").toString()));//每页显示的数量
 			if(!StringUtil.isEmpty(query.getIpSegment())){
@@ -152,14 +159,19 @@ public class GroupController {
 	 *	机构用户注册跳转
 	 */
 	@RequestMapping("register")
-	public ModelAndView register(HttpServletResponse httpResponse){
+	public ModelAndView register(HttpServletResponse httpResponse,HttpServletRequest req){
 		ModelAndView view = new ModelAndView();
 		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_register");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(req);
+		if(purview.indexOf("A11")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
-	
+
 	/**
 	 *	账号修改页面返显
 	 */
@@ -219,91 +231,107 @@ public class GroupController {
 		return view;
 	}
 	//获取机构用户权限表1
-		private void getWfksAccountidLimit(String userId,ModelAndView view){
-			WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountidLimit(userId, "Limit");
-			Map<String, WfksAccountidMapping> map = new HashMap<String, WfksAccountidMapping>();
-			for (WfksAccountidMapping wfks : mapping) {
-				if (!"Limit".equals(wfks.getIdAccounttype())) {
-					continue;
-				}
-				if ("trical".equals(wfks.getRelatedidAccounttype())) {
-					continue;
-				}
-				if (wfks.getBegintime() != null) {
-					wfks.setBegin(DateUtil.dateToString2(wfks.getBegintime()));
-				}
-				if (wfks.getEndtime() != null) {
-					wfks.setEnd(DateUtil.dateToString2(wfks.getEndtime()));
-				}
-				if ("openWeChat".equals(wfks.getRelatedidAccounttype())) {
-					WfksUserSetting[] setting = aheadUserService.getUserSetting(userId, "WeChat");
-					for (WfksUserSetting wf : setting) {
-						view.addObject(wf.getPropertyName(), wf.getPropertyValue());
-						break;
-					}
-				}
-				map.put(wfks.getRelatedidAccounttype(), wfks);
+	private void getWfksAccountidLimit(String userId,ModelAndView view){
+		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountidLimit(userId, "Limit");
+		Map<String, WfksAccountidMapping> map = new HashMap<String, WfksAccountidMapping>();
+		for (WfksAccountidMapping wfks : mapping) {
+			if (!"Limit".equals(wfks.getIdAccounttype())) {
+				continue;
 			}
-			view.addObject("limit", map);
+			if ("trical".equals(wfks.getRelatedidAccounttype())) {
+				continue;
+			}
+			if (wfks.getBegintime() != null) {
+				wfks.setBegin(DateUtil.dateToString2(wfks.getBegintime()));
+			}
+			if (wfks.getEndtime() != null) {
+				wfks.setEnd(DateUtil.dateToString2(wfks.getEndtime()));
+			}
+			if ("openWeChat".equals(wfks.getRelatedidAccounttype())) {
+				WfksUserSetting[] setting = aheadUserService.getUserSetting(userId, "WeChat");
+				for (WfksUserSetting wf : setting) {
+					view.addObject(wf.getPropertyName(), wf.getPropertyValue());
+					break;
+				}
+			}
+			map.put(wfks.getRelatedidAccounttype(), wfks);
 		}
-		//获得党建信息
-		private void getPartyAdmin(String userId, ModelAndView view) {
-			WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId, "PartyAdminTime");
-			if(mapping==null||mapping.length==0){
-				return;
-			}
-			Authority author=new Authority();
-			Person per = personservice.findById(mapping[0].getRelatedidKey());
-			if(per==null){
-				return;
-			}
-			author.setPartyAdmin(per.getUserId());
-			author.setBegintime(DateUtil.dateToString2(mapping[0].getBegintime()));
-			author.setEndtime(DateUtil.dateToString2(mapping[0].getEndtime()));
-			try {
-				author.setPassword(PasswordHelper.decryptPassword(per.getPassword()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			String json = String.valueOf(per.getExtend());
-			if(!StringUtils.isEmpty(json)){
-				JSONObject obj = JSONObject.fromObject(json);
-				String id=String.valueOf(obj.get("RelatedGroupId"));
-				author.setUserId(id);
-				author.setTrial(obj.getBoolean("IsTrialPartyAdminTime"));
-			}
-			view.addObject("party",author);
-		
+		view.addObject("limit", map);
+	}
+	//获得党建信息
+	private void getPartyAdmin(String userId, ModelAndView view) {
+		WfksAccountidMapping[] mapping = aheadUserService.getWfksAccountid(userId, "PartyAdminTime");
+		if(mapping==null||mapping.length==0){
+			return;
 		}
-		//余额转限时，限时转余额
-		private void limitChange(List<Map<String, Object>> proList,ModelAndView view){
-			Map<String,String> changeMap=new HashMap<String,String>();
-			changeMap.put(channelid[0], channelid[0]);
-			changeMap.put(channelid[1], channelid[1]);
-			for(Map<String, Object> map:proList){
-				String payChannelid=String.valueOf(map.get("payChannelid"));
-				for(String str:channelid){
-					if(str.equals(payChannelid)){
-						changeMap.remove(payChannelid);
-					}
+		Authority author=new Authority();
+		Person per = personservice.findById(mapping[0].getRelatedidKey());
+		if(per==null){
+			return;
+		}
+		author.setPartyAdmin(per.getUserId());
+		author.setBegintime(DateUtil.dateToString2(mapping[0].getBegintime()));
+		author.setEndtime(DateUtil.dateToString2(mapping[0].getEndtime()));
+		try {
+			author.setPassword(PasswordHelper.decryptPassword(per.getPassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String json = String.valueOf(per.getExtend());
+		if(!StringUtils.isEmpty(json)){
+			JSONObject obj = JSONObject.fromObject(json);
+			String id=String.valueOf(obj.get("RelatedGroupId"));
+			author.setUserId(id);
+			author.setTrial(obj.getBoolean("IsTrialPartyAdminTime"));
+		}
+		view.addObject("party",author);
+
+	}
+	//余额转限时，限时转余额
+	private void limitChange(List<Map<String, Object>> proList,ModelAndView view){
+		Map<String,String> changeMap=new HashMap<String,String>();
+		changeMap.put(channelid[0], channelid[0]);
+		changeMap.put(channelid[1], channelid[1]);
+		for(Map<String, Object> map:proList){
+			String payChannelid=String.valueOf(map.get("payChannelid"));
+			for(String str:channelid){
+				if(str.equals(payChannelid)){
+					changeMap.remove(payChannelid);
 				}
 			}
-			view.addObject("changeMap",changeMap);
 		}
-		/**
-		 *	子账号列表页跳转
-		 */
-		@RequestMapping("childquery")
-		public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
-				String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage,String pid) {
-			ModelAndView view = new ModelAndView();
-			Map<String,Object> map=new HashMap<String,Object>();
-			map.put("start_time",start_time);
-			map.put("end_time",end_time);
-			map.put("institution",institution);
-			if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
-					&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
-				view.addObject("map", map);
+		view.addObject("changeMap",changeMap);
+	}
+	/**
+	 *	子账号列表页跳转
+	 */
+	@RequestMapping("childquery")
+	public ModelAndView tosonaccount(HttpServletRequest req, String userId, String institution,
+			String start_time, String end_time, String pageNum, String pageSize,String isBack,String goPage,String pid) {
+		ModelAndView view = new ModelAndView();
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("start_time",start_time);
+		map.put("end_time",end_time);
+		map.put("institution",institution);
+		if (StringUtils.isEmpty(userId) && StringUtils.isEmpty(institution)
+				&& StringUtil.isEmpty(start_time) && StringUtil.isEmpty(end_time)) {
+			view.addObject("map", map);
+			map.put("userId",userId);
+			map.put("isBack", isBack);
+			if ("true".equals(isBack)) {
+				map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
+			}
+			view.setViewName("/page/usermanager/ins_sonaccount");
+			return view;
+		}else if(StringUtils.isEmpty(goPage)){
+			pageNum=null;
+			pageSize=null;
+		}
+		if(!StringUtils.isEmpty(userId)){
+			Person person=aheadUserService.queryPersonInfo(userId);
+			if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
+				view.addObject("map",map);
+				view.addObject("msg", "0");
 				map.put("userId",userId);
 				map.put("isBack", isBack);
 				if ("true".equals(isBack)) {
@@ -311,179 +339,199 @@ public class GroupController {
 				}
 				view.setViewName("/page/usermanager/ins_sonaccount");
 				return view;
-			}else if(StringUtils.isEmpty(goPage)){
-				pageNum=null;
-				pageSize=null;
+			}else if(person.getUsertype()==3){
+				map.put("pid","");
+				map.put("userId",userId);
+			}else if(person.getUsertype()==2){
+				map.put("pid",userId);
+				map.put("userId","");
 			}
-			if(!StringUtils.isEmpty(userId)){
-				Person person=aheadUserService.queryPersonInfo(userId);
-				if(person==null||(person.getUsertype()!=3&&person.getUsertype()!=2)){
-					view.addObject("map",map);
-					view.addObject("msg", "0");
-					map.put("userId",userId);
-					map.put("isBack", isBack);
-					if ("true".equals(isBack)) {
-						map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
-					}
-					view.setViewName("/page/usermanager/ins_sonaccount");
-					return view;
-				}else if(person.getUsertype()==3){
-					map.put("pid","");
-					map.put("userId",userId);
-				}else if(person.getUsertype()==2){
-					map.put("pid",userId);
-					map.put("userId","");
-				}
-			}
-			map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
-			map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
-			PageList pageList = aheadUserService.getSonaccount(map);
-			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
-			pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
-			map.put("pageList", pageList);
-			map.put("userId",userId);
-			map.put("isBack", isBack);
-			if ("true".equals(isBack)) {
-				map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
-			}
-			view.addObject("map",map);
-			view.addObject("msg", "0");
-			view.setViewName("/page/usermanager/ins_sonaccount");
-			return view;
 		}
-		/**
-		 *	机构用户订单跳转
-		 */
-		@RequestMapping("order")
-		public ModelAndView groupOrder(String userId){
-			ModelAndView view = new ModelAndView();
-			view.addObject("userId", userId);
-			view.setViewName("/page/usermanager/group_pay_order");
-			return view;
+		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+		map.put("pageSize", Integer.parseInt(pageSize==null?"20":pageSize));
+		PageList pageList = aheadUserService.getSonaccount(map);
+		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
+		pageList.setPageSize(Integer.parseInt(pageSize==null?"20":pageSize));//每页显示的数量
+		map.put("pageList", pageList);
+		map.put("userId",userId);
+		map.put("isBack", isBack);
+		if ("true".equals(isBack)) {
+			map.put("pid", !StringUtils.isEmpty(pid) ? pid : userId);
 		}
-		  /**
-	     * 跳转机构子账号信息管理页面
-	     *
-	     * @param userId 用户Id（此参数用于判断是否由信息管理页面跳转而来）
-	     * @param model
-	     * @return
-	     */
-	    @RequestMapping("/personbind")
-	    public String toBindInfoManagement(String userId, Model model) {
+		view.addObject("map",map);
+		view.addObject("msg", "0");
+		view.setViewName("/page/usermanager/ins_sonaccount");
+		String purview=CookieUtil.getCookiePurviews(req);
+		if(purview.indexOf("A15")!=-1){
+			return view;
+		}else{
+			return null;
+		}
+	}
+	/**
+	 *	机构用户订单跳转
+	 */
+	@RequestMapping("order")
+	public ModelAndView groupOrder(String userId){
+		ModelAndView view = new ModelAndView();
+		view.addObject("userId", userId);
+		view.setViewName("/page/usermanager/group_pay_order");
+		return view;
+	}
+	/**
+	 * 跳转机构子账号信息管理页面
+	 *
+	 * @param userId 用户Id（此参数用于判断是否由信息管理页面跳转而来）
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/personbind")
+	public String toBindInfoManagement(HttpServletRequest req,String userId, Model model) {
 
-	        if (userId != null && !"".equals(userId)) {
-	            model.addAttribute("userId", userId);
-	            model.addAttribute("upPage", true);
-	        } else {
-	            model.addAttribute("upPage", null);
-	        }
-	        model.addAttribute("pager", null);
-	        return "/page/usermanager/user_binding_manager";
-	    }
-	    /**
-		 *	机构用户批量注册跳转
-		 */
-		@RequestMapping("batchregister")
-		public ModelAndView batchRegister(HttpServletRequest request){
-			ModelAndView view = new ModelAndView();
-			view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
-			view.addObject("org", Organization.values());//机构账户类型
-			view.setViewName("/page/usermanager/ins_batchregister");
-			return view;
+		if (userId != null && !"".equals(userId)) {
+			model.addAttribute("userId", userId);
+			model.addAttribute("upPage", true);
+		} else {
+			model.addAttribute("upPage", null);
+		}
+		model.addAttribute("pager", null);
+		String purview=CookieUtil.getCookiePurviews(req);
+		if(purview.indexOf("A16")!=-1){
+			return "/page/usermanager/user_binding_manager";
+		}else{
+			return null;
 		}
 
-		/**
-		 *	机构用户批量修改
-		 */
-		@RequestMapping("batchmodify")
-		public ModelAndView batchUpdate(){
-			ModelAndView view = new ModelAndView();
-			view.addObject("org", Organization.values());//机构账户类型
-			view.setViewName("/page/usermanager/ins_batchupdate");
+	}
+	/**
+	 *	机构用户批量注册跳转
+	 */
+	@RequestMapping("batchregister")
+	public ModelAndView batchRegister(HttpServletRequest request){
+		ModelAndView view = new ModelAndView();
+		view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
+		view.addObject("org", Organization.values());//机构账户类型
+		view.setViewName("/page/usermanager/ins_batchregister");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A11")!=-1){
 			return view;
+		}else{
+			return null;
 		}
-		/**
-		 *	批量冻结和解冻跳转
-		 */
-		@RequestMapping("batchblock")
-		public ModelAndView batchblock(){
-			ModelAndView view = new ModelAndView();
-			view.setViewName("/page/usermanager/ins_batchblock");
+	}
+
+	/**
+	 *	机构用户批量修改
+	 */
+	@RequestMapping("batchmodify")
+	public ModelAndView batchUpdate(HttpServletRequest request){
+		ModelAndView view = new ModelAndView();
+		view.addObject("org", Organization.values());//机构账户类型
+		view.setViewName("/page/usermanager/ins_batchupdate");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A13")!=-1){
 			return view;
+		}else{
+			return null;
 		}
-		/**
-		 *	操作记录
-		 */
-		@RequestMapping("operatelog")
-		public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
-				String userId, String person, String projectId) {
-			ModelAndView view = new ModelAndView();
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
-			map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
-			if(!StringUtils.isEmpty(startTime)){
-				map.put("startTime", startTime);
-			}
-			if(!StringUtils.isEmpty(endTime)){
-				map.put("endTime", endTime);
-			}
-			if(!StringUtils.isEmpty(person)){
-				map.put("person", person);
-			}
-			if(!StringUtils.isEmpty(userId)){
-				map.put("userId", userId);	
-			}
-			if(!StringUtils.isEmpty(projectId)){
-				map.put("projectId", projectId);
-			}
-			PageList pageList = opreationLogs.selectOperationLogs(map);
-			pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
-			pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
-			map.put("pageList", pageList);
-			view.addObject("map", map);
-			if(pageList.getTotalRow()>0){
-				for(Object obj:pageList.getPageRow()){
-					Map<String,Object> mm=(Map<String, Object>) obj;
-					String str=String.valueOf(mm.get("reason"));
-					JSONObject json = JSONObject.fromObject(str);
-					String type=String.valueOf(json.get("projectType"));
-					if(type.equals("balance")){
-						mm.put("projectType", "余额");
-						mm.put("totalMoney", json.get("totalMoney"));
-					}else if(type.equals("count")){
-						mm.put("projectType", "次数");
-						mm.put("purchaseNumber", json.get("purchaseNumber"));
-					}else if(type.equals("time")){
-						mm.put("projectType", "限时");
-					}
-					mm.put("validityEndtime", json.get("validityEndtime"));
-					mm.put("validityStarttime", json.get("validityStarttime"));
-					mm.put("projectname", json.get("projectname"));
+	}
+	/**
+	 *	批量冻结和解冻跳转
+	 */
+	@RequestMapping("batchblock")
+	public ModelAndView batchblock(HttpServletRequest request){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/usermanager/ins_batchblock");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A17")!=-1){
+			return view;
+		}else{
+			return null;
+		}
+	}
+	/**
+	 *	操作记录
+	 */
+	@RequestMapping("operatelog")
+	public ModelAndView opration(String pageNum, String pageSize, String startTime, String endTime,
+			String userId, String person, String projectId) {
+		ModelAndView view = new ModelAndView();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pageNum", (Integer.parseInt(pageNum==null?"1":pageNum)-1)*Integer.parseInt((pageSize==null?"1":pageSize)));
+		map.put("pageSize", Integer.parseInt(pageSize==null?"10":pageSize));
+		if(!StringUtils.isEmpty(startTime)){
+			map.put("startTime", startTime);
+		}
+		if(!StringUtils.isEmpty(endTime)){
+			map.put("endTime", endTime);
+		}
+		if(!StringUtils.isEmpty(person)){
+			map.put("person", person);
+		}
+		if(!StringUtils.isEmpty(userId)){
+			map.put("userId", userId);	
+		}
+		if(!StringUtils.isEmpty(projectId)){
+			map.put("projectId", projectId);
+		}
+		PageList pageList = opreationLogs.selectOperationLogs(map);
+		pageList.setPageNum(Integer.parseInt(pageNum==null?"1":pageNum));//当前页
+		pageList.setPageSize(Integer.parseInt(pageSize==null?"10":pageSize));//每页显示的数量
+		map.put("pageList", pageList);
+		view.addObject("map", map);
+		if(pageList.getTotalRow()>0){
+			for(Object obj:pageList.getPageRow()){
+				Map<String,Object> mm=(Map<String, Object>) obj;
+				String str=String.valueOf(mm.get("reason"));
+				JSONObject json = JSONObject.fromObject(str);
+				String type=String.valueOf(json.get("projectType"));
+				if(type.equals("balance")){
+					mm.put("projectType", "余额");
+					mm.put("totalMoney", json.get("totalMoney"));
+				}else if(type.equals("count")){
+					mm.put("projectType", "次数");
+					mm.put("purchaseNumber", json.get("purchaseNumber"));
+				}else if(type.equals("time")){
+					mm.put("projectType", "限时");
 				}
+				mm.put("validityEndtime", json.get("validityEndtime"));
+				mm.put("validityStarttime", json.get("validityStarttime"));
+				mm.put("projectname", json.get("projectname"));
 			}
-			List<Map<String,String>> project=opreationLogs.getProjectByUserId(userId);
-			view.addObject("project", project);//获取用户购买项目
-			view.setViewName("/page/usermanager/ins_oprationrecord");
-			return view;
 		}
-		/**
-		 *	机构用户预警设置
-		 */
-		@RequestMapping("warn")
-		public ModelAndView warning(){
-			ModelAndView view = new ModelAndView();
-			WarningInfo war = aheadUserService.findWarning();
-			view.addObject("war",war);
-			view.setViewName("/page/usermanager/ins_warning");
+		List<Map<String,String>> project=opreationLogs.getProjectByUserId(userId);
+		view.addObject("project", project);//获取用户购买项目
+		view.setViewName("/page/usermanager/ins_oprationrecord");
+		return view;
+	}
+	/**
+	 *	机构用户预警设置
+	 */
+	@RequestMapping("warn")
+	public ModelAndView warning(HttpServletRequest request){
+		ModelAndView view = new ModelAndView();
+		WarningInfo war = aheadUserService.findWarning();
+		view.addObject("war",war);
+		view.setViewName("/page/usermanager/ins_warning");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A18")!=-1){
 			return view;
+		}else{
+			return null;
 		}
-		
-		/**
-		 *	跳转到机构数据solr发布界面
-		 */
-		@RequestMapping("solrsync")
-		public ModelAndView toSolrData(ModelAndView view){
-			view.setViewName("/page/usermanager/toSolrData");
+	}
+
+	/**
+	 *	跳转到机构数据solr发布界面
+	 */
+	@RequestMapping("solrsync")
+	public ModelAndView toSolrData(ModelAndView view,HttpServletRequest request){
+		view.setViewName("/page/usermanager/toSolrData");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A19")!=-1){
 			return view;
+		}else{
+			return null;
 		}
+	}
 }

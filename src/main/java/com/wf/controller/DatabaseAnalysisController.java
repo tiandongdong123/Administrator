@@ -69,7 +69,7 @@ public class DatabaseAnalysisController {
 	* @date 12 Dis 2016 4:44:32 PM
 	 */
 	@RequestMapping("databaseAnalysis")
-	public String databaseAnalysis(Map<String,Object> map){
+	public String databaseAnalysis(Map<String,Object> map,HttpServletRequest request){
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
@@ -78,7 +78,13 @@ public class DatabaseAnalysisController {
 		map.put("allData",dataManagerService.selectAll());
 		//所有数据来源
 		map.put("allDataSource",db_SourceService.selectAll());
-		return "/page/othermanager/data_use_manager";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E31")!=-1){
+			return "/page/othermanager/data_use_manager";
+				 }else{
+					 return null;
+				 }
+		
 		}
 	
 	@ResponseBody

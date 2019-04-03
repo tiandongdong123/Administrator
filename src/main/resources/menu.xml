@@ -153,7 +153,7 @@
 			<Node Id="E22" Name="功能模块管理" HasChild="false" />
 		</Node>
 		<Node Id="E3" Name="资源统计" HasChild="true">
-			<Node Id="E31" Name="数据库使用分析" HasChild="false" />
+			<Node Id="E31" Name="数据库使用统计" HasChild="false" />
 			<Node Id="E32" Name="资源类型使用统计" HasChild="false" />
 		</Node>
 		<Node Id="E4" Name="网站概况" HasChild="false" />

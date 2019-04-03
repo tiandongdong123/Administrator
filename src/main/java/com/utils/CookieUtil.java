@@ -49,6 +49,24 @@ public class CookieUtil {
 	}
 	
 	/**
+	 * 检验cookie
+	 * @param req
+	 * @return
+	 */
+	public static String getCookiePurviews(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		String castgc = null;
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie ck : cookies) {
+				if (ck.getName().equals("purview")) {
+					castgc = ck.getValue();
+					break;
+				}
+			}
+		}
+		return castgc;
+	}
+	/**
 	 * 获取cookie中存的用户信息
 	 * @param req
 	 * @return

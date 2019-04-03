@@ -231,20 +231,30 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/administrator")
-	public ModelAndView adminManager(){
+	public ModelAndView adminManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/admin_manager");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F1")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 角色管理
 	 * @return
 	 */
 	@RequestMapping("/rolemanager")
-	public ModelAndView roleManager(){
+	public ModelAndView roleManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/role_Manager");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F12")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}	
 	/**
 	 * 角色添加页面
@@ -282,10 +292,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/dbconfig")
-	public ModelAndView dataManager(){
+	public ModelAndView dataManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/data_manager");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F21")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 
@@ -319,10 +334,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/pricemanage")
-	public ModelAndView resourceManager(){
+	public ModelAndView resourceManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/resource_price_manager");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F22")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -351,10 +371,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/productoption")
-	public ModelAndView prductType(){
+	public ModelAndView prductType(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/product_type");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F23")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 
@@ -363,10 +388,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/platoption")
-	public ModelAndView sonSystem(){
+	public ModelAndView sonSystem(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/son_system");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F24")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -374,10 +404,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/monitormanage")
-	public ModelAndView controlManager(){
+	public ModelAndView controlManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/control");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F3")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -385,18 +420,28 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/unitoption")
-	public ModelAndView unitSystem(String id){
+	public ModelAndView unitSystem(String id,HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("goback",id);
 		mav.setViewName("/page/systemmanager/unit_set");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F25")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 	// 跳转到 系统配置
 	@RequestMapping("systemconfig")
-	public ModelAndView settingManager() {
+	public ModelAndView settingManager(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/systemmanager/setting_Manager");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F4")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -404,13 +449,19 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping("logmanage")
-	public String getLog(Map<String, Object> model) {
+	public String getLog(Map<String, Object> model,HttpServletRequest request) {
 
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		model.put("yesterday", yesterday);
 		model.put("getAllModel", logService.getAllLogModel());
-		return "/page/systemmanager/log";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F5")!=-1){
+			return "/page/systemmanager/log";
+		}else{
+			return null;
+		}
+		
 	}
 }

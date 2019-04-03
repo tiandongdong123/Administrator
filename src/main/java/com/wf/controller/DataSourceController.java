@@ -827,26 +827,41 @@ public class DataSourceController {
 
 	// 期刊资源配置页面
 	@RequestMapping("qikan-ziyuanpeizhi")
-	public ModelAndView qikanZiyuanpeizhi() {
+	public ModelAndView qikanZiyuanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_ziyuanpeizhi");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("G2")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 
 	// 资源授权配置页面
 	@RequestMapping("qikan-shouquanpeizhi")
-	public ModelAndView qikanShouquanpeizhi() {
+	public ModelAndView qikanShouquanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_shouquanpeizhi");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("G3")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 
 	// 资源授权列表页面
 	@RequestMapping("qikan-jigouList")
-	public ModelAndView qikanjigouList() {
+	public ModelAndView qikanjigouList(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_jigouList");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("G1")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 
 	// 资源授权列表页面

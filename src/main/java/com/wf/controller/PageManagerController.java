@@ -46,10 +46,15 @@ public class PageManagerController {
 	 * @return
 	 */
 	@RequestMapping("pageManager")
-	public ModelAndView pageManager(){
+	public ModelAndView pageManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/page_manager");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E21")!=-1){
+					 return mav;
+				 }else{
+					 return null;
+				 }
 	}
 	
 	/**

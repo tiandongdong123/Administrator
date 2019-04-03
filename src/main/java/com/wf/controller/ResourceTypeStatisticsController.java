@@ -49,12 +49,12 @@ public class ResourceTypeStatisticsController {
 
 	@Autowired
 	private DataManagerService dataManagerService;
-	
+
 	@Autowired
 	private LogService logService;
 
 	@RequestMapping("resourceTypeStatistics")
-	public String resourceTypeStatistics(Map<String,Object> map){
+	public String resourceTypeStatistics(Map<String,Object> map,HttpServletRequest request){
 		List<ResourceType> li = this.resource.getResourceType();
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,   -1);
@@ -64,26 +64,32 @@ public class ResourceTypeStatisticsController {
 		map.put("allDataSource",db_SourceService.selectAll());
 		map.put("yesterday", yesterday);
 		map.put("resourcetype", li);
-		return "/page/othermanager/res_use_manager";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E32")!=-1){
+			return "/page/othermanager/res_use_manager";
+		}else{
+			return null;
+		}
+
 	}
-	
+
 	@RequestMapping("getline")
 	@ResponseBody
 	public Map<String,Object> getLine(String starttime,String endtime,@ModelAttribute ResourceStatistics res,
-									  @RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore,
-									  @RequestParam(value="database_name[]",required=false) String[] database_name){
+			@RequestParam(value="urls[]",required=false) Integer[] urls,Integer singmore,
+			@RequestParam(value="database_name[]",required=false) String[] database_name){
 		Map<String,Object> map = new HashMap<String, Object>();
 		map =this.resource.getAllLine(starttime,endtime,res,urls,singmore,database_name);
 		return map;
 	}
-	
+
 	@RequestMapping("gettable")
 	@ResponseBody
 	public Map getTable(Integer num,Integer pagenum,Integer pagesize,String starttime,String endtime,@ModelAttribute ResourceStatistics res, HttpServletRequest request){
 		Map map  = this.resource.gettable(num,starttime,endtime, res,pagenum, pagesize);
 		return map;
 	}
-	
+
 	@RequestMapping(value="exportresourceType",produces="text/html;charset=UTF-8")
 	public void exportresourceType(HttpServletRequest request,HttpServletResponse response,Integer num,Integer pagenum,String starttime,String endtime,@ModelAttribute ResourceStatistics res) throws UnsupportedEncodingException{
 		List<ResourceStatisticsHour> list=new ArrayList<ResourceStatisticsHour>();
@@ -94,7 +100,7 @@ public class ResourceTypeStatisticsController {
 
 		list= this.resource.exportresourceType(num,starttime,endtime, res);
 		JSONArray array=JSONArray.fromObject(list);
-		
+
 		List<String> names=new ArrayList<String>();
 		names.add("序号");
 		names.add("资源类型");
@@ -115,7 +121,7 @@ public class ResourceTypeStatisticsController {
 		names.add("笔记数");
 		names.add("分享数");
 		names.add("导出数");
-		
+
 		List<String> paramter=new ArrayList<String>();
 		String name="degree".equals(restype)?res.getSourceName():res.getInstitutionName();
 		if(StringUtils.isNotBlank(name)){
@@ -124,7 +130,7 @@ public class ResourceTypeStatisticsController {
 		if(StringUtils.isNotBlank(res.getUserId())){
 			paramter.add("用户ID："+res.getUserId());
 		}
-		
+
 		if(null!=res.getDate()&&!"".equals(res.getDate())){
 			paramter.add("统计日期："+res.getDate());
 		}else{
@@ -139,7 +145,7 @@ public class ResourceTypeStatisticsController {
 
 		ExportExcel excel=new ExportExcel();
 		excel.exportresourceType(response, array, names, restype,paramter);
-		
+
 	}
 
 }

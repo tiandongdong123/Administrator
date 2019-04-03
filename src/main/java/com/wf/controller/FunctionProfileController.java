@@ -24,42 +24,47 @@ public class FunctionProfileController {
 
 	@Autowired
 	private FunctionProfileService function;
-	
+
 	@Autowired
 	private LogService logService;
-	
+
 	@RequestMapping("functionProfile")
-	public String functionProfile(){
-		
-		return "/page/othermanager/function_profile";
+	public String functionProfile(HttpServletRequest request){
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E8")!=-1){
+			return "/page/othermanager/function_profile";
+		}else{
+			return null;
+		}
+
 	}
-	
+
 	@RequestMapping("getline")
 	@ResponseBody
 	public Map<String,Object> getline(String title,String age,String exlevel,String datetype,String type,String starttime,String endtime,String domain,Integer property){
 		return this.function.getline(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
 	}
-	
+
 	@RequestMapping("indexanalysis")
 	@ResponseBody
 	public Map<String,Object> indexanalysis(String title,String age,String exlevel,String datetype,String type,String starttime,String endtime,String domain,Integer property){
 		Map<String,Object> map  = this.function.indexanalysis(title, age, exlevel, datetype, type, starttime, endtime, domain, property);
 		return null;
 	}
-	
+
 	@RequestMapping("gettable")
 	@ResponseBody
 	public PageList gettable(Integer pagesize,Integer pagenum,String title,String age,String exlevel,String datetype,Integer type,String starttime,String endtime,String domain,Integer property, HttpServletRequest request){
-		
+
 		PageList rs = this.function.gettable(pagesize,pagenum,title, age, exlevel, datetype, type, starttime, endtime, domain, property);
-		
+
 		//记录日志
 		Log log=new Log("功能概况","查询","",request);
 		logService.addLog(log);
-		
+
 		return rs;
 	}
-	
-	
-	
+
+
+
 }
