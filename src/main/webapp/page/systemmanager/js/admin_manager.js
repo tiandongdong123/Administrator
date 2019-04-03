@@ -11,6 +11,7 @@ $(function(){
 //分页显示
 function adminpage(curr){
 	pageindex = curr || 1;
+	var purview=$.cookie('purview');
 	var adminname = $.trim($("#inputEmail3").val());
     $.post('../admin/getadmin.do', {
         pagenum: curr || 1,//向服务端传的参数
@@ -38,10 +39,18 @@ function adminpage(curr){
     		color = "#417dc9"
     	}
     	html+=" <tr><td>"+(pageNumber+i+1)+"</td>" +
-    			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>" +
+    			"<td>"+res.pageRow[i].wangfang_admin_id+"</td><td>"+res.pageRow[i].user_realname+"</td>";
     			/*"<td>"+res.pageRow[i].dept.deptName+"</td>" +*/
-    			"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><span class=\"buttonSpan\" onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</span>" +
-    			"<span class=\"buttonSpan\" style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</span></td></tr>";    	
+    			if(purview.indexOf("F113")!=-1){
+    	    		html+=	"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><span class=\"buttonSpan\" onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</span>";
+    	    	 }else{
+    	    		html+=	"<td>"+res.pageRow[i].department+"</td><td>"+res.pageRow[i].role.roleName+"</td><td><span style='display:none' class=\"buttonSpan\" onclick=\"updateadmin('"+res.pageRow[i].id+"')\">修改</span>";
+    	    	 }
+    	    	if(purview.indexOf("F114")!=-1){
+    	    		html+=  "<span class=\"buttonSpan\" style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</span></td></tr>";
+    	    	}else{
+    	    		html+=  "<span style='display:none' class=\"buttonSpan\" style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</span></td></tr>";
+    	    	}
     }
     
         $('#adminbody').html(html);

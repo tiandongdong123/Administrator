@@ -5,6 +5,7 @@ $(function(){
 
 
 function productpage(curr){
+	var purview=$.cookie('purview');
 	 $.getJSON('../product/getproduct.do', {
 	        pagenum: curr,//向服务端传的参数
 	        pagesize :10
@@ -13,9 +14,19 @@ function productpage(curr){
 	    for(var i =0;res.pageRow[i];i++){
 	    	id = 10*(curr-1)+i+1;
 	    	html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].resourceTypeCode+" ></td> <td>"+id+"</td><td>"+res.pageRow[i].resourceTypeName
-	    	+"</td><td>"+res.pageRow[i].resourceTypeCode+"</td><td>"+res.pageRow[i].productResourceCode
-	    	+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateproduct('"+res.pageRow[i].resourceTypeName+"','"+res.pageRow[i].resourceTypeCode+"','"
-	    	+res.pageRow[i].productResourceCode+"')\">修改</button><button type='button' class='btn btn-primary' onclick=\"deleteproduct('"+res.pageRow[i].resourceTypeCode+"')\">删除</button></td></tr>";   	
+	    	+"</td><td>"+res.pageRow[i].resourceTypeCode+"</td><td>"+res.pageRow[i].productResourceCode;
+	    	if(purview.indexOf("F232")!=-1){
+	    	html+="</td><td><button type='button' class='btn btn-primary' onclick=\"updateproduct('"+res.pageRow[i].resourceTypeName+"','"+res.pageRow[i].resourceTypeCode+"','"
+	    	+res.pageRow[i].productResourceCode+"')\">修改</button>";
+	    	}else{
+	    		html+="</td><td><button style='display:none' type='button' class='btn btn-primary' onclick=\"updateproduct('"+res.pageRow[i].resourceTypeName+"','"+res.pageRow[i].resourceTypeCode+"','"
+		    	+res.pageRow[i].productResourceCode+"')\">修改</button>";
+	    	}
+	    	if(purview.indexOf("F233")!=-1){
+	    		html+="<button type='button' class='btn btn-primary' onclick=\"deleteproduct('"+res.pageRow[i].resourceTypeCode+"')\">删除</button></td></tr>";   	
+	    	}else{
+	    		html+="<button style='display:none' type='button' class='btn btn-primary' onclick=\"deleteproduct('"+res.pageRow[i].resourceTypeCode+"')\">删除</button></td></tr>";   	
+	    	}
 	    }
 	    document.getElementById('ttab').innerHTML = html;
         var totalRow = res.pageTotal;

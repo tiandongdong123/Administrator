@@ -59,6 +59,7 @@ function serachdata(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
+		var purview=$.cookie('purview');
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+20*(pageNum-1);
 			var rows = pageRow[i];
@@ -101,13 +102,30 @@ function serachdata(curr,data){
             "<td class='mailbox-date'><div title='"+is_sueState+"'>"+is_sueState+"<div></td>"+
 			"<td class='mailbox-name' style='width:353px;'><div>";
             if(is_top == 0){
-                resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
+            	if(purview.indexOf("C114")!=-1){
+            		resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
+            	}else{
+            		 resHtml+="<button  style='display:none' type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',1)\" class='btn btn-primary top_btn'>置顶</button>&nbsp;";
+            	}
             }else {
-                resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
+            	if(purview.indexOf("C114")!=-1){
+            		resHtml+="<button type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
+            	}else{
+                    resHtml+="<button style='display:none' type='button' onclick=\"stick(this,'"+rows.id+"','"+rows.colums+"',0)\" class='btn btn-primary top_btn' >撤销置顶</button>&nbsp;";
+            	}
 			}
-			resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary second_btn'>"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
-          "</tr>";
+            if(purview.indexOf("C113")!=-1){
+            	resHtml+="<button type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary second_btn'>"+issue+"</button>&nbsp;";
+            }else{
+            	resHtml+="<button style='display:none' type='button' onclick=\"publish(this,'"+rows.id+"','"+rows.colums+"',"+issueNum+")\" class='btn btn-primary second_btn'>"+issue+"</button>&nbsp;";
+            }
+			if(purview.indexOf("C112")!=-1){
+				resHtml+="<button type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
+		          "</tr>";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"updateMessage('"+rows.id+"',"+rows.issueState+")\" class='btn btn-primary'>修改</button></div></td>" +
+		          "</tr>";
+			}
 		}
 	}
 	resHtml+="</tbody>";
