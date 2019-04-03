@@ -32,6 +32,8 @@ import com.wf.service.LogService;
 import com.wf.service.ResourcePriceService;
 import com.wf.service.RoleService;
 
+import net.sf.json.JSONObject;
+
 @Controller
 @RequestMapping("admin")
 public class AdminController {
@@ -196,19 +198,30 @@ public class AdminController {
 	 */
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
-	public boolean doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-		boolean rt=false;
+	public JSONObject doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
+		JSONObject map = new JSONObject();
 		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
 		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
 		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
 		if(password && realName && department && role){
+			//判断是否自己修改自己角色
+			Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+			if(wfAdmin.getId().equals(admin.getId()) && (!wfAdmin.getRole_id().equals(admin.getRole_id())  
+					|| !wfAdmin.getDepartment().equals(admin.getDepartment()) 
+					|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
+				map.put("flag", "fail");
+				map.put("fail","管理员只能修改自己的密码");
+					return map;
+			}else{
+				boolean rt = this.admin.doUpdateAdmin(admin);
+				map.put("flag", rt);
+			}
 			//记录日志
 			Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
 			logService.addLog(log);
-			rt = this.admin.doUpdateAdmin(admin);
 		}
-		return rt;
+		return map;
 	}
 	/**
 	 * 管理员管理
