@@ -126,6 +126,10 @@ function doupdaterole(){
 		var ids = $("#treeids").val();
 		var deptname=$("#deptname").find("option:selected").val();
 		var roleid = $("#roleid").val();
+		if(ids.length===0) {
+			$("#ruleName").text('请选择角色权限')
+			return
+		}
 		$.ajax( {  
 			type : "POST",  
 			url : "../role/doupdaterole.do",
@@ -141,17 +145,12 @@ function doupdaterole(){
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改成功",{icon: 1});
-						setTimeout(() => {
-							parent.location.reload(index);
-					    }, 500);
+						window.parent.rolepage(1);
 						parent.layer.close(index);						    
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改失败",{icon: 2});
-						setTimeout(() => {
-							parent.location.reload(index);
-					    }, 500);
-						parent.layer.close(index);
+						parent.layer.close(1);
 					}
 				}
 			});

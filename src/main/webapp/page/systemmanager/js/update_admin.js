@@ -10,6 +10,14 @@ function doupdateadmin(){
 		$("#pwdStr").text("请填写密码");
 		$("#password").focus();
 		return;
+	}else if (password.length<6) {
+		$("#pwdStr").text("由6-16个字符组成");
+		$("#password").focus();
+		return;
+	}else if (!checkId(password)){
+		$("#pwdStr").text('密码不能包含中文');
+		$("#password").focus();
+		return;
 	}else{
 		$("#pwdStr").text("");
 	}
@@ -106,9 +114,24 @@ function checkValue(type,str) {
 	}else {
 		$(typeClass).text('')
 	}
+	if (type==='pwd') {
+		if(str.length<6) {
+			$(typeClass).text('由6-16个字符组成')
+		}else if (!checkId(str)) {
+			$(typeClass).text('密码不能包含中文')
+		}
+	}
 }
 //取消按钮
 function closeWindow() {
 	var index = parent.layer.getFrameIndex(window.name);
 	parent.layer.close(index);
+}
+function checkId(str) {
+    var reg = /^\w+$/;
+    if(reg.test(str)){
+    	return true;
+    }else{
+    	return  false;
+    }
 }

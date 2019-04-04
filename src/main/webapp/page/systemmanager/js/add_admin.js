@@ -43,6 +43,14 @@ function doaddadmin(){
 			$("#checkpassword").text("请输入密码");
 			$("#passwordAdmin").focus();
 			return;
+		}else if (password.length<6) {
+			$("#checkpassword").text("由6-16个字符组成");
+			$("#passwordAdmin").focus();
+			return;
+		}else if (!checkId(password)){
+			$("#checkpassword").text('密码不能包含中文');
+			$("#passwordAdmin").focus();
+			return;
 		}else{
 			$("#checkpassword").text("");
 		}
@@ -99,8 +107,10 @@ function doaddadmin(){
 	}
 }
 
-function showvalue(){
-	$("#checkadminid").text("由6-16个字符组成");
+function showvalue(str){
+	if(str.length<6) {
+		$("#checkadminid").text("由6-16个字符组成");		
+	}
 }
 
 function checkMobile(str) {
@@ -154,6 +164,13 @@ function checkValue(type,str) {
 		$(typeClass).text(typeObj[type])
 	}else {
 		$(typeClass).text('')
+	}
+	if (type==='pwd') {
+		if(str.length<6) {
+			$(typeClass).text('由6-16个字符组成')
+		}else if (!checkId(str)) {
+			$(typeClass).text('密码不能包含中文')
+		}
 	}
 }
 // 取消按钮

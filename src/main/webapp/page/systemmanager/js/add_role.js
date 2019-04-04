@@ -66,7 +66,6 @@ function purviewtree(json){
 		$("#treeids").val(tree);
 		var nodes = zTree_Menu.getNodes();
 		$("#checkall").prop("checked",checknodesNum==nodes.length);
-		
 	}
 }
 
@@ -90,7 +89,7 @@ function checkrolename(name){
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入角色名");
+		$("#checkrolename").text("请输入角色名称");
 	}
 	
 }
@@ -102,6 +101,11 @@ function doaddrole(){
 		var roledescribe = $("#roledescribe").val();
 		var ids = $("#treeids").val();
 		var deptname=$("#deptname").find("option:selected").val();
+		if(ids.length===0) {
+			$("#ruleName").text('请选择角色权限')
+			return
+		}
+		console.log($('#treeids').length)
 		$.ajax({  
 			type : "POST",  
 			url : "../role/doaddrole.do",
@@ -116,22 +120,16 @@ function doaddrole(){
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("添加成功",{icon: 1});
-						setTimeout(() => {
-							parent.location.reload(index);
-					    }, 500);
+						window.parent.rolepage(1);
 						parent.layer.close(index);
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("添加失败",{icon: 2});
-						setTimeout(() => {
-							parent.location.reload(index);
-					    }, 500);
+						window.parent.rolepage(1);
 						parent.layer.close(index);
 					}
 				}
 			});
-	}else{
-		$("#checkrolename").text("请输入角色名");
 	}
 }
 

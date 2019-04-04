@@ -14,11 +14,11 @@
 			<div id="addadmin">
 			<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>用户名</label>
-             <input type="text" id="usernameAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" maxlength="16"  class="form-control input_width" onfocus="showvalue()" onblur="checkadminid(this.value)"><span class="voidName" id="checkadminid"></span>
+             <input type="text" id="usernameAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" maxlength="16"  class="form-control input_width" onfocus="showvalue(this.value)" onblur="checkadminid(this.value)"><span class="voidName" id="checkadminid"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码</label>
-             <input type="text" id="passwordAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" autoComplete="new-password" class="form-control input_width" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
+             <input type="text" id="passwordAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" maxlength="16" autoComplete="new-password" class="form-control input_width" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
          	</div>
          	<div class="form-group input_block">
              <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称</label>
