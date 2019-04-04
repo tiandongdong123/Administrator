@@ -1,17 +1,13 @@
-<? directive dynamic rlmap;?>
-<?
-	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
-?>
+	<?
+	  include("/inc/header.html") {}
+    ?>
 <script  type="text/javascript"  src="../page/systemmanager/js/add_role.js"> </script>
 <input type="hidden" value="N" id="cname">
 <input type="hidden"  id="treeids">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="margin-left: 0;">
     <!-- Content Header (Page header) -->
    <section class="content-header">
-      <h1>
-       	角色添加
-      </h1>
      <!--   <ol class="breadcrumb">
         <li><a href="../user/toIndex.do" onclick="javascript:void(0)"><i class="fa fa-dashboard"></i>首页</a></li>
         <li><a href="javascript:void(0)">系统管理</a></li>
@@ -38,12 +34,12 @@
                 <div class="form-group input_block">
                   <label for="exampleInputEmail1" class="input_name"  ><b style="color: #FF0000;margin-right: 5px;">*</b>权限配置：</label>
 				全选：<input type="checkbox" id="checkall" onclick="checkrole(this)">
-                 	 <ul id="treeDemo" class="ztree"></ul>
+                 	 <ul id="treeDemo" class="ztree" style="margin-left: 172px;"></ul>
                 </div>
                 
              	 <div class="box-footer" style="text-align:center;">
                 <button type="button" onclick="doaddrole()"  class="btn btn-primary">保存</button>
-                <button type="reset"   class="btn btn-primary" onclick="javascript:window.location.href='../admin/rolemanager.do'">返回</button>
+                <button type="reset"   class="btn btn-primary" onclick="closeWindow()">取消</button>
               </div>
               </form>
             </div>
@@ -52,4 +48,3 @@
       </div>
     </section>
   </div>
-<?}?>

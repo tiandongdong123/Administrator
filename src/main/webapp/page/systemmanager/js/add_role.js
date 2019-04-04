@@ -21,7 +21,8 @@ function purviewtree(json){
 		view: {
 			showLine: true,
 			selectedMulti: false,
-			dblClickExpand: false
+			dblClickExpand: false,
+			showTitle: false,
 		},
 		check: {
 			enable: true,
@@ -35,7 +36,8 @@ function purviewtree(json){
 				enable: true
 			},
 			key: {
-				name: "name"
+				name: "name",
+				title: "name"
 			}
 		},
 		callback: {
@@ -112,15 +114,18 @@ function doaddrole(){
 				dataType : "json",
 				success : function(data) {
 					if(data){
+						var index = parent.layer.getFrameIndex(window.name);
 						layer.msg("添加成功",{icon: 1});
-						window.location.href="../admin/rolemanager.do";
+						parent.location.reload(index);
 					}else{
+						var index = parent.layer.getFrameIndex(window.name);
 						layer.msg("添加失败",{icon: 2});
+						parent.location.reload(index);
 					}
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入或修改角色名");
+		$("#checkrolename").text("请输入角色名");
 	}
 }
 
@@ -144,4 +149,10 @@ function checkrole(obj){//全选
 
 function resttree(){
 	purview();
+}
+
+//取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
 }

@@ -16,7 +16,8 @@ function rolepage(curr){
     	html+="<tr><td>"+id+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].roleName+"</td>" +
     			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].description+"</td>" +
-    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>";
+//    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\">"+res.pageRow[i].purview+"</td>";
+    			  "<td style=\"word-wrap:break-word;\" width=\"160px;\"><ul id=\"treeDemo"+i+"\" class=\"ztree\"></ul></td>";
     	if(purview.indexOf("F122")!=-1){
     		html+= "<td><span class=\"buttonSpan\" onclick=\"updaterole('"+res.pageRow[i].roleId+"')\">修改</span>";
     	}else{
@@ -31,6 +32,9 @@ function rolepage(curr){
     	}	   	
     }
         document.getElementById('rolebody').innerHTML = html;
+        for(var i =0;res.pageRow[i];i++){
+        	purviewtree(res.pageRow[i].purviewTree,i)        	
+        }
         var totalRow = res.pageTotal;
         var pageSize = res.pageSize;
         var pages;
@@ -73,12 +77,41 @@ function rolepage(curr){
     });
 };
 
+// 树形结构
+function purviewtree(json,i){
+	var curMenu = null, zTree_Menu = null;
+	var setting = {
+		
+	};
+
+	var zNodes =json;
+	$(document).ready(function(){
+		$.fn.zTree.init($("#treeDemo"+i), setting, zNodes);
+		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo"+i);
+		//zTree_Menu.expandNode(zTree_Menu.getNodes()[0],true);
+	});
+}
+
 function addrole(){
-	window.location.href="../admin/roleadd.do";
+	layer.open({
+	    type: 2, //page层 1div，2页面
+	    area: ['50%', '70%'],
+	    title: '添加角色',
+	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+	    content: "../admin/roleadd.do",
+	}); 
+//	window.location.href="../admin/roleadd.do";
 }
 
 function updaterole(id){
-	window.location.href="../admin/rolemodify.do?id="+id;
+	layer.open({
+	    type: 2, //page层 1div，2页面
+	    area: ['50%', '70%'],
+	    title: '修改角色',
+	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+	    content: "../admin/rolemodify.do?id="+id,
+	}); 
+//	window.location.href="../admin/rolemodify.do?id="+id;
 }
 
 function deleterole(id){

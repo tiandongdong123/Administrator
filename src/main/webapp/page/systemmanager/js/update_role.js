@@ -45,7 +45,8 @@ function purviewtree(json){
 		view: {
 			showLine: true,
 			selectedMulti: false,
-			dblClickExpand: false
+			dblClickExpand: false,
+			showTitle: false
 		},
 		check: {
 			enable: true,
@@ -138,10 +139,13 @@ function doupdaterole(){
 				dataType : "json",
 				success : function(data) {
 					if(data){
+						var index = parent.layer.getFrameIndex(window.name);
 						layer.msg("修改成功");
-						window.location.href="../admin/rolemanager.do";
+						parent.location.reload(index);
 					}else{
+						var index = parent.layer.getFrameIndex(window.name);
 						layer.msg("修改失败");
+						parent.location.reload(index);
 					}
 				}
 			});

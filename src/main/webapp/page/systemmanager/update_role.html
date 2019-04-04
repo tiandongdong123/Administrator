@@ -1,7 +1,6 @@
-<? directive dynamic rlmap;?>
-<?
-	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
-?>
+	<?
+	  include("/inc/header.html") {}
+    ?>
 <script  type="text/javascript"  src="../page/systemmanager/js/update_role.js"> </script>
 <input type="hidden" value="Y" id="cname">
 <input type="hidden"  id="treeids" value="${role.purview}">
@@ -9,12 +8,9 @@
 <input type="hidden"  id="srolename" value="${role.roleName}">
 <input type="hidden"  id="roleid" value="${role.roleId}">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="margin-left: 0;">
     <!-- Content Header (Page header) -->
    <section class="content-header">
-      <h1>
-       	角色修改
-      </h1>
      <!--   <ol class="breadcrumb">
         <li><a href="../user/toIndex.do"><i class="fa fa-dashboard"></i>首页</a></li>
         <li><a href="javascript:void(0)">系统管理</a></li>
@@ -42,7 +38,7 @@
                   <label for="exampleInputEmail1" class="input_name"  >权限配置</label>
                   全选：<input type="checkbox" id="checkall" onclick="checkrole(this)">
                   
-                 	 <ul id="treeDemo" class="ztree"></ul>
+                 	 <ul id="treeDemo" class="ztree" style="margin-left: 172px;"></ul>
                 </div>
                 
              	 <div class="box-footer" style="text-align:center;">
@@ -56,4 +52,3 @@
       </div>
     </section>
   </div>
-<?}?>
