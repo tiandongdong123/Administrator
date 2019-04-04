@@ -115,12 +115,18 @@ function doaddrole(){
 				success : function(data) {
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
-						layer.msg("添加成功",{icon: 1});
-						parent.location.reload(index);
+						parent.layer.msg("添加成功",{icon: 1});
+						setTimeout(() => {
+							parent.location.reload(index);
+					    }, 500);
+						parent.layer.close(index);
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
-						layer.msg("添加失败",{icon: 2});
-						parent.location.reload(index);
+						parent.layer.msg("添加失败",{icon: 2});
+						setTimeout(() => {
+							parent.location.reload(index);
+					    }, 500);
+						parent.layer.close(index);
 					}
 				}
 			});

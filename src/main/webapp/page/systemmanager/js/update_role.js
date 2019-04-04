@@ -109,7 +109,7 @@ function checkrolename(name){
 					}
 				});
 		}else{
-			$("#checkrolename").text("名字不能为空");
+			$("#checkrolename").text("请填写角色名称");
 			$("#cname").val("N");
 		}
 		
@@ -140,12 +140,18 @@ function doupdaterole(){
 				success : function(data) {
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
-						layer.msg("修改成功");
-						parent.location.reload(index);
+						parent.layer.msg("修改成功",{icon: 1});
+						setTimeout(() => {
+							parent.location.reload(index);
+					    }, 500);
+						parent.layer.close(index);						    
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
-						layer.msg("修改失败");
-						parent.location.reload(index);
+						parent.layer.msg("修改失败",{icon: 2});
+						setTimeout(() => {
+							parent.location.reload(index);
+					    }, 500);
+						parent.layer.close(index);
 					}
 				}
 			});
@@ -170,7 +176,8 @@ function checkrole(obj){
 	}
 }
 
-function resttree(){
-	var ids = $("#treeidstart").val();
-	purview(ids);
+//取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
 }
