@@ -26,6 +26,8 @@ function checkadminid(id){
 function doaddadmin(){
 	var cname=$("#cname").val();
 	$("#usernameAdmin").focus();
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
+	var patt1 = new RegExp(/\s+/g);
 	if(cname=="Y"){
 		var adminid=$.trim($("#usernameAdmin").val());
 		if(adminid.length<6){
@@ -47,6 +49,10 @@ function doaddadmin(){
 			$("#checkpassword").text("由6-16个字符组成");
 			$("#passwordAdmin").focus();
 			return;
+		}else if (patt1.test(password)) {
+			$("#checkpassword").text('密码不能包含空格');
+			$("#passwordAdmin").focus();
+			return;
 		}else if (!checkId(password)){
 			$("#checkpassword").text('密码不能包含中文');
 			$("#passwordAdmin").focus();
@@ -56,9 +62,13 @@ function doaddadmin(){
 		}
 		
 		var deptname=$.trim($("#deptname").val());
-		var patrn= /^[\u4E00-\u9FA5]+$/i;
+		
 		if(deptname==null||deptname==''){
 			$("#checkpassword").text("请填写部门名称");
+			$("#deptname").focus();
+			return;
+		}else if (patt1.test(deptname)) {
+			$("departmentStr").text('部门名称不能包含空格');
 			$("#deptname").focus();
 			return;
 		}else if(!patrn.test(deptname)){
@@ -160,7 +170,7 @@ function checkValue(type,str) {
 			"department": "请填写部门名称"
 	}
 	var patt1 = new RegExp(/\s+/g);
-	
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
 	var typeClass = "#"+type+"Str"
 	if(str===''){
 		$(typeClass).text(typeObj[type])
@@ -174,6 +184,16 @@ function checkValue(type,str) {
 			$(typeClass).text('密码不能包含空格')
 		}else if (!checkId(str)) {
 			$(typeClass).text('密码不能包含中文')
+		}
+	}
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
+	if (type==='department') {
+		if (patt1.test(str)) {
+			$(typeClass).text('部门名称不能包含空格')
+		}else if (!patrn.test(str)) {
+			$(typeClass).text('部门必须为中文')
+		}else {
+			$(typeClass).text('')
 		}
 	}
 }
