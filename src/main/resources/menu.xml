@@ -128,6 +128,9 @@
 	</Node>
 	<Node Id="D" Name="其他管理" HasChild="true">
 		<Node Id="D1" Name="万方卡管理" HasChild="true">
+		    <Node Id="D15" Name="生成万方卡" HasChild="false" />
+			<Node Id="D16" Name="审核万方卡" HasChild="false" />
+			<Node Id="D17" Name="管理万方卡" HasChild="false" />
 			<Node Id="D11" Name="管理赠送万方卡" HasChild="true">
 				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" />
 				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" />
