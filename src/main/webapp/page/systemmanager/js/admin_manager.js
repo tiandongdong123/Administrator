@@ -24,6 +24,7 @@ function adminpage(curr){
     	} else {
     		var pageNumber = 0
     	}
+    	
     for(var i =0;res.pageRow[i];i++){
     	//id = 10*(curr-1)+i+1;
     	var status="";
@@ -52,7 +53,9 @@ function adminpage(curr){
     	    		html+=  "<span style='display:none' class=\"buttonSpan\" style='color:"+color+"' onclick=\"changeadmin(this,'"+res.pageRow[i].id+"')\">"+buttonname+"</span></td></tr>";
     	    	}
     }
-    
+    if(res.pageRow.length==0){
+		html+="<tr><td></td><td></td><td><span style=\"color:red\">查询无结果</span></td></tr>";
+	}
         $('#adminbody').html(html);
         var totalRow = res.pageTotal;
         var pageSize = res.pageSize;
