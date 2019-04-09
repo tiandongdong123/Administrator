@@ -89,6 +89,7 @@ function paging(curr){
 function serachdata(data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
+	var purview=$.cookie('purview');
 	$("#pageNum").val(pageNum);
 	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
@@ -109,11 +110,20 @@ function serachdata(data){
 					"<td class='mailbox-name'>"+rows.level+"</td>" +
 					"<td class='mailbox-subject'>"+rows.classNum+"</td>" +
 					"<td class='mailbox-attachment' style='text-align: left;'>"+rows.className+"</td>" +
-					"<td class='mailbox-date'>" +
-						"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"updateSub('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>" +
-						"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"removee('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div><td>"+
-//						"<div class='col-md-3 col-sm-4'><a href='#' onclick=\"publish('"+rows.type+"')\">发布</a></div></td>"+
-                  "</tr>";
+					"<td class='mailbox-date'>";
+			if(purview.indexOf("C417")!=-1){
+			resHtml+="<div class='col-md-3 col-sm-4'><a href='#' onclick=\"updateSub('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>";
+			}else{
+			resHtml+="<div class='col-md-3 col-sm-4'><a style='display:none' href='#' onclick=\"updateSub('"+rows.id+"')\"><i class='fa fa-fw fa-pencil-square-o'></i></a></div>";
+			}
+			if(purview.indexOf("C412")!=-1){
+			resHtml+="<div class='col-md-3 col-sm-4'><a href='#' onclick=\"removee('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div><td>"+
+            "</tr>";
+			}else{
+			resHtml+="<div class='col-md-3 col-sm-4'><a style='display:none' href='#' onclick=\"removee('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div><td>"+
+	        "</tr>";	
+			}		
+						
 		}
 	}
 	resHtml+="</tbody>";

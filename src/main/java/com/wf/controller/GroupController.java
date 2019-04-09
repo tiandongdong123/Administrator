@@ -153,7 +153,12 @@ public class GroupController {
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
-		return view;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("A14")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 	/**
 	 *	机构用户注册跳转
@@ -176,7 +181,7 @@ public class GroupController {
 	 *	账号修改页面返显
 	 */
 	@RequestMapping("modify")
-	public ModelAndView numUpdate(String userId) throws Exception{
+	public ModelAndView numUpdate(String userId,HttpServletRequest req) throws Exception{
 		ModelAndView view = new ModelAndView();
 		Map<String, Object> map = aheadUserService.findListInfoById(userId);
 		if(map.get("pid")!=null&&StringUtils.isNoneBlank(map.get("pid").toString())){  
@@ -228,7 +233,12 @@ public class GroupController {
 		for (Map<String, Object> entry : gmxmlist) {
 			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
-		return view;
+		String purview=CookieUtil.getCookiePurviews(req);
+		if(purview.indexOf("A141")!=-1){
+			return view;
+		}else{
+			return null;
+		}
 	}
 	//获取机构用户权限表1
 	private void getWfksAccountidLimit(String userId,ModelAndView view){
@@ -413,7 +423,7 @@ public class GroupController {
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchregister");
 		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A11")!=-1){
+		if(purview.indexOf("A12")!=-1){
 			return view;
 		}else{
 			return null;

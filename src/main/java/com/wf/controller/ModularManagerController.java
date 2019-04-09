@@ -66,9 +66,13 @@ public class ModularManagerController {
 	 * @return
 	 */
 	@RequestMapping("addModular")
-	public String addModular(){
-
-		return "/page/othermanager/add_modular";
+	public String addModular(HttpServletRequest request){
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E22")!=-1){
+			return "/page/othermanager/add_modular";
+		}else{
+			return null;
+		}	
 	}
 
 	@RequestMapping("doAddModular")

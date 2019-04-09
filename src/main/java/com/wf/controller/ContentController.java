@@ -220,9 +220,14 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/subjectadd")
-	public String addSubject(Model model) {
+	public String addSubject(Model model, HttpServletRequest request) {
 		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addSubjectType";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C413")!=-1){
+			return "/page/contentmanage/addSubjectType";
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -259,7 +264,12 @@ public class ContentController {
 		Subject subject = subjectService.findSubject(id);
 		model.addAttribute("addupdate", "update");
 		model.addAttribute("subject", subject);
-		return "/page/contentmanage/addSubjectType";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C417")!=-1){
+			return "/page/contentmanage/addSubjectType";
+		}else{
+			return null;
+		}
 	}
 
 	@RequestMapping("showMessage")
@@ -313,9 +323,14 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public String addMessage(Model model) {
+	public String addMessage(Model model, HttpServletRequest request) {
 		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addMessage";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C111")!=-1){
+			return "/page/contentmanage/addMessage";
+		}else{
+			return null;
+		}
 	}
 
 
@@ -460,7 +475,13 @@ public class ContentController {
 		Message message = messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("url", "http://" + ip);
-		return "/page/contentmanage/messageDetail";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C11")!=-1){
+			return "/page/contentmanage/messageDetail";
+		}else{
+			return null;
+		}
+		
 	}
 
 
@@ -499,7 +520,12 @@ public class ContentController {
 		Message message = messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("addupdate", "update");
-		return "/page/contentmanage/addMessage";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C112")!=-1){
+			return "/page/contentmanage/addMessage";
+		}else{
+			return null;
+		}
 	}
 
 	@RequestMapping("/updateMessageJson")
@@ -639,9 +665,14 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/resourceadd")
-	public String addResource(Model model) {
+	public String addResource(Model model,HttpServletRequest request) {
 		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addResource";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C422")!=-1){
+			return "/page/contentmanage/addResource";
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -875,11 +906,16 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/templateadd")
-	public String addShareTemplate(Model model) {
+	public String addShareTemplate(Model model,HttpServletRequest request) {
 		List<ShareTtemplateNames> names = shareTemplateNamesService.getAllShareTemplateNames();
 		model.addAttribute("names", names);
 		model.addAttribute("addupdate", "add");
-		return "/page/contentmanage/addShareTemplate";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C51")!=-1){
+			return "/page/contentmanage/addShareTemplate";
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -1297,7 +1333,12 @@ public class ContentController {
 		mav.addObject("volume", volume);
 		mav.addObject("publishPerson", publishPerson);
 		mav.setViewName("/page/contentmanage/volume/step_one");
-		return mav;
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("C6")!=-1){
+			return mav;
+		}else{
+			return null;
+		}
 	}
 
 	/**
