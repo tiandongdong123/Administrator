@@ -144,16 +144,18 @@ function doupdaterole(){
 				success : function(data) {
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
-						parent.layer.msg("修改成功",{icon: 1});
+						parent.layer.msg("修改成功");
 						window.parent.rolepage(1);
 						parent.layer.close(index);						    
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
-						parent.layer.msg("修改失败",{icon: 2});
+						parent.layer.msg("修改失败");
 						parent.layer.close(1);
 					}
 				}
 			});
+	}else{
+		$("#checkrolename").text("请输入角色名称");
 	}
 }
 
@@ -172,6 +174,7 @@ function checkrole(obj){
 	}else{
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(false);
+		$("#treeids").val('');
 	}
 }
 

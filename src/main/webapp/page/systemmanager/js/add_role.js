@@ -119,17 +119,19 @@ function doaddrole(){
 				success : function(data) {
 					if(data){
 						var index = parent.layer.getFrameIndex(window.name);
-						parent.layer.msg("添加成功",{icon: 1});
+						parent.layer.msg("添加成功");
 						window.parent.rolepage(1);
 						parent.layer.close(index);
 					}else{
 						var index = parent.layer.getFrameIndex(window.name);
-						parent.layer.msg("添加失败",{icon: 2});
+						parent.layer.msg("添加失败");
 						window.parent.rolepage(1);
 						parent.layer.close(index);
 					}
 				}
 			});
+	}else{
+		$("#checkrolename").text("请输入角色名称");
 	}
 }
 
@@ -148,6 +150,7 @@ function checkrole(obj){//全选
 	}else{
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(false);
+		$("#treeids").val('');
 	}
 }
 

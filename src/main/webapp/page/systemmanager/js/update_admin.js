@@ -103,11 +103,13 @@ function checkemail(str){
 
 //输入框内容空值校验
 function checkValue(type,str) {
-	let typeObj = {
+	var typeObj = {
 			"pwd": "请填写密码",
 			"name":"请填写真实姓名",
 			"department": "请填写部门名称"
 	}
+	var patt1 = new RegExp(/\s+/g);
+	
 	var typeClass = "#"+type+"Str"
 	if(str===''){
 		$(typeClass).text(typeObj[type])
@@ -117,6 +119,8 @@ function checkValue(type,str) {
 	if (type==='pwd') {
 		if(str.length<6) {
 			$(typeClass).text('由6-16个字符组成')
+		}else if (patt1.test(str)) {
+			$(typeClass).text('密码不能包含空格')
 		}else if (!checkId(str)) {
 			$(typeClass).text('密码不能包含中文')
 		}
