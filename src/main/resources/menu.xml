@@ -37,7 +37,7 @@
 		</Node>
 	</Node> 
 	<Node Id="B" Name="充值管理" HasChild="true">
-		<Node Id="B1" Name="机构交易管理" HasChild="true">
+		<Node Id="B1" Name="充值管理" HasChild="true">
 			<Node Id="B11" Name="个人充值记录" HasChild="true">
 				<Node Id="B111" Name="待处理" HasChild="false" />
 			</Node>
@@ -180,6 +180,10 @@
 		<Node Id="E6" Name="功能模块分析" HasChild="false" />
 		<Node Id="E7" Name="页面分析" HasChild="false" />
 		<Node Id="E8" Name="功能概况" HasChild="false" />
+		<Node Id="E9" Name="交易统计" HasChild="true">
+			<Node Id="E91" Name="个人现金交易统计" HasChild="false" />
+			<Node Id="E92" Name="后台充值统计" HasChild="false" />
+		</Node>
 	</Node>
 	<Node Id="F" Name="系统管理" HasChild="true">
 		<Node Id="F1" Name="管理员管理" HasChild="true">
