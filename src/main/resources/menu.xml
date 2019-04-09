@@ -180,7 +180,7 @@
 	</Node>
 	<Node Id="F" Name="系统管理" HasChild="true">
 		<Node Id="F1" Name="管理员管理" HasChild="true">
-			<Node Id="F11" Name="管理员管理" HasChild="true">
+			<Node Id="F11" Name="管理员管理 " HasChild="true">
 				<Node Id="F112" Name="添加" HasChild="false" />
 				<Node Id="F113" Name="修改" HasChild="false" />
 				<Node Id="F114" Name="冻结/解冻" HasChild="false" />
