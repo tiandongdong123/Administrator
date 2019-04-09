@@ -9,6 +9,14 @@
         <param-name>contextConfigLocation</param-name>  
         <param-value>classpath:spring.xml</param-value>  
     </context-param>
+      <filter>
+    	<filter-name>SecurityFilter</filter-name>
+    	<filter-class>com.utils.SecurityFilter</filter-class>
+	</filter>
+	<filter-mapping>
+    	<filter-name>SecurityFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+	</filter-mapping>
     <!-- 编码过滤器 -->  
     <filter>  
         <filter-name>encodingFilter</filter-name>  
@@ -51,6 +59,7 @@
     <welcome-file-list>  
         <welcome-file>/index.jsp</welcome-file>  
     </welcome-file-list>  
+  
   
   
   	<!-- 错误页面 -->
