@@ -78,12 +78,18 @@ function purviewtree(json){
 	
 	function onCheck(){
 		var tree="";
+		var checknodesNum=0;
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
 			tree+= a[i].id+",";
+			 if(a[i].level==0){
+				   checknodesNum++;
+			   }
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
+		var nodes = zTree_Menu.getNodes();
+		$("#checkall").prop("checked",checknodesNum==nodes.length);
 	}
 }
 
