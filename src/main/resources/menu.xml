@@ -35,7 +35,7 @@
 			</Node>
 			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" />
 		</Node>
-	</Node>
+	</Node> 
 	<Node Id="B" Name="充值管理" HasChild="true">
 		<Node Id="B1" Name="机构交易管理" HasChild="true">
 			<Node Id="B11" Name="个人充值记录" HasChild="true">

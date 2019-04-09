@@ -15,7 +15,7 @@ function findOne(){
 	$("#pagenum").val(1);
 	showPage(1);
 }
-
+ 
 function showPage(curr){
 	word_nature=$("#word_nature").find("option:selected").val();
 	status=$("#status").find("option:selected").val();
