@@ -132,10 +132,15 @@ public class PageManagerController {
 	* @date 29 Nov 2016 8:58:44 AM
 	 */
 	@RequestMapping("addPageManager")
-	public String addPageManager(Map<String,Object> map){	
+	public String addPageManager(Map<String,Object> map, HttpServletRequest request){	
 		List<Object> modularList = modularService.getModularList();
 		map.put("modularList", modularList);
-		return "/page/othermanager/add_page_manager";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("E21")!=-1){
+			return "/page/othermanager/add_page_manager";
+		}else{
+			return null;
+		}
 	}
 	
 	/**

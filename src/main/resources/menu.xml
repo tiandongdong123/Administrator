@@ -100,8 +100,24 @@
 			</Node>
 		</Node>
 		<Node Id="C4" Name="知识组织管理" HasChild="true">
-			<Node Id="C41" Name="学科分类管理" HasChild="false" />
-			<Node Id="C42" Name="资源类型管理" HasChild="false" />
+			<Node Id="C41" Name="学科分类管理" HasChild="true" >
+				<Node Id="C411" Name="批量删除" HasChild="false" />
+				<Node Id="C412" Name="删除" HasChild="false" />
+				<Node Id="C413" Name="添加" HasChild="false" />
+				<Node Id="C414" Name="发布" HasChild="false" />
+				<Node Id="C415" Name="导出" HasChild="false" />
+				<Node Id="C416" Name="刷新" HasChild="false" />
+				<Node Id="C417" Name="修改" HasChild="false" />
+			</Node>
+			<Node Id="C42" Name="资源类型管理" HasChild="true" >
+				<Node Id="C421" Name="批量删除" HasChild="false" />
+				<Node Id="C422" Name="添加资源类型" HasChild="false" />
+				<Node Id="C423" Name="上移/下移" HasChild="false" />
+				<Node Id="C424" Name="导出" HasChild="false" />
+				<Node Id="C425" Name="修改" HasChild="false" />
+				<Node Id="C426" Name="删除" HasChild="false" />
+				<Node Id="C427" Name="发布/下撤/再发布" HasChild="false" />
+			</Node>
 		</Node>
 		<Node Id="C5" Name="模板管理" HasChild="true">
 			<Node Id="C51" Name="分享模板管理" HasChild="false" />
@@ -112,6 +128,9 @@
 	</Node>
 	<Node Id="D" Name="其他管理" HasChild="true">
 		<Node Id="D1" Name="万方卡管理" HasChild="true">
+		    <Node Id="D15" Name="生成万方卡" HasChild="false" />
+			<Node Id="D16" Name="审核万方卡" HasChild="false" />
+			<Node Id="D17" Name="管理万方卡" HasChild="false" />
 			<Node Id="D11" Name="管理赠送万方卡" HasChild="true">
 				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" />
 				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" />
@@ -164,7 +183,7 @@
 	</Node>
 	<Node Id="F" Name="系统管理" HasChild="true">
 		<Node Id="F1" Name="管理员管理" HasChild="true">
-			<Node Id="F11" Name="管理员管理" HasChild="true">
+			<Node Id="F11" Name="管理员管理 " HasChild="true">
 				<Node Id="F112" Name="添加" HasChild="false" />
 				<Node Id="F113" Name="修改" HasChild="false" />
 				<Node Id="F114" Name="冻结/解冻" HasChild="false" />

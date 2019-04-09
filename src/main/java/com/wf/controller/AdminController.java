@@ -62,13 +62,18 @@ public class AdminController {
 			@RequestParam(value="pagenum",required=false) Integer pagenum,
 			@RequestParam(value="pagesize",required=false) Integer pagesize,
 			@RequestParam(value="adminname",required=false) String adminname){
-		PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F11")!=-1){
+			PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
 
-		//记录日志
-		Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
-		logService.addLog(log);
-		
-		return pl;
+			//记录日志
+			Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
+			logService.addLog(log);
+			
+			return pl;
+		}else{
+			return null;
+		}
 	}
 
 	@RequestMapping("serach")
@@ -102,13 +107,18 @@ public class AdminController {
 	@RequestMapping("closeadmin")
 	@ResponseBody
 	public boolean closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
-		boolean rt = this.admin.closeAdmin(ids);
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F114")!=-1){
+			boolean rt = this.admin.closeAdmin(ids);
 
-		//记录日志
-		Log log=new Log("管理员管理","冻结","冻结账号:"+(ids==null?"":Arrays.asList(ids)),request);
-		logService.addLog(log);
+			//记录日志
+			Log log=new Log("管理员管理","冻结","冻结账号:"+(ids==null?"":Arrays.asList(ids)),request);
+			logService.addLog(log);
 
-		return rt;
+			return rt;
+		}else{
+			return false;
+		}
 	}
 	/**
 	 * 解冻账号
@@ -119,13 +129,18 @@ public class AdminController {
 	@RequestMapping("openadmin")
 	@ResponseBody
 	public boolean openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
-		boolean rt = this.admin.openAdmin(ids);
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F114")!=-1){
+			boolean rt = this.admin.openAdmin(ids);
 
-		//记录日志
-		Log log=new Log("管理员管理","冻结","解冻账号:"+(ids==null?"":Arrays.asList(ids)),request);
-		logService.addLog(log);
+			//记录日志
+			Log log=new Log("管理员管理","冻结","解冻账号:"+(ids==null?"":Arrays.asList(ids)),request);
+			logService.addLog(log);
 
-		return rt;
+			return rt;
+		}else{
+			return false;
+		}
 	}
 
 	/**
@@ -134,10 +149,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("addadmin")
-	public String addAdmin(Map<String,Object> map){
+	public String addAdmin(Map<String,Object> map,HttpServletRequest request){
 		List<Object> rolename = this.admin.getRole();
 		map.put("rolename", rolename);
-		return "/page/systemmanager/add_admin";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F112")!=-1){
+			return "/page/systemmanager/add_admin";
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 判断用户名是否重复
@@ -160,20 +180,25 @@ public class AdminController {
 	@RequestMapping("doaddadmin")
 	@ResponseBody
 	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request){
-		boolean rt=false;
-		boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
-		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
-		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
-		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
-		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-		boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
-		if(wfAdminId && password && realName && department && role && !isRepeat){
-			rt = this.admin.doAddAdmin(admin);
-			//记录日志
-			Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
-			logService.addLog(log);
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F112")!=-1){
+			boolean rt=false;
+			boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
+			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+			boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
+			boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+			if(wfAdminId && password && realName && department && role && !isRepeat){
+				rt = this.admin.doAddAdmin(admin);
+				//记录日志
+				Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
+				logService.addLog(log);
+			}
+			return rt;
+		}else{
+			return false;
 		}
-		return rt;
 	}
 	/**
 	 * 修改管理员页面
@@ -182,13 +207,18 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("updateadmin")
-	public String updateAdmin(Map<String,Object> map,String id,Integer pagenum){
+	public String updateAdmin(Map<String,Object> map,String id,Integer pagenum,HttpServletRequest request){
 		List<Object> rolename = this.admin.getRole();
 		Wfadmin admin = this.admin.getAdminById(id);
 		map.put("admin", admin);
 		map.put("rolename", rolename);
 		map.put("pagenum",pagenum);
-		return "/page/systemmanager/update_admin";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F113")!=-1){
+			return "/page/systemmanager/update_admin";
+		}else{
+			return null;
+		}	
 	}
 
 	/**
@@ -199,38 +229,43 @@ public class AdminController {
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
 	public JSONObject doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-		JSONObject map = new JSONObject();
-		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
-		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
-		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
-		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-		if(password && realName && department && role){
-			Wfadmin adminStatus = this.admin.getAdminById(admin.getId());
-			if(adminStatus.getStatus()==0){
-				map.put("flag", "fail");
-				map.put("fail","冻结账户不可修改");
-				return map;
-			}
-			//判断是否自己修改自己角色
-			Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
-			if(wfAdmin.getId().equals(admin.getId()) && (!wfAdmin.getRole_id().equals(admin.getRole_id())  
-					|| !wfAdmin.getDepartment().equals(admin.getDepartment()) 
-					|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
-				map.put("flag", "fail");
-				map.put("fail","管理员自己只能修改自己的密码");
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F113")!=-1){
+			JSONObject map = new JSONObject();
+			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+			boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
+			if(password && realName && department && role){
+				Wfadmin adminStatus = this.admin.getAdminById(admin.getId());
+				if(adminStatus.getStatus()==0){
+					map.put("flag", "fail");
+					map.put("fail","冻结账户不可修改");
 					return map;
-			}else{
-				boolean rt = this.admin.doUpdateAdmin(admin);
-				map.put("flag", rt);
+				}
+				//判断是否自己修改自己角色
+				Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+				if(wfAdmin.getId().equals(admin.getId()) && (!wfAdmin.getRole_id().equals(admin.getRole_id())  
+						|| !wfAdmin.getDepartment().equals(admin.getDepartment()) 
+						|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
+					map.put("flag", "fail");
+					map.put("fail","管理员自己只能修改自己的密码");
+						return map;
+				}else{
+					boolean rt = this.admin.doUpdateAdmin(admin);
+					map.put("flag", rt);
+				}
+				//记录日志
+				Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
+				logService.addLog(log);
 			}
-			//记录日志
-			Log log=new Log("管理员管理","修改","修改后管理员信息:"+admin.toString(),request);
-			logService.addLog(log);
+			if(map.size()==0){
+				map.put("flag", false);
+			}
+			return map;
+		}else{
+			return null;
 		}
-		if(map.size()==0){
-			map.put("flag", false);
-		}
-		return map;
 	}
 	/**
 	 * 管理员管理
@@ -315,10 +350,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("dbadd")
-	public String addData(Map<String, Object> map){
+	public String addData(Map<String, Object> map,HttpServletRequest request){
 		Map<String,Object> mm = this.data.getResource();
 		map.put("rlmap", mm);
-		return "/page/systemmanager/add_data";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F211")!=-1){
+			return "/page/systemmanager/add_data";
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 数据库修改页面
@@ -327,12 +367,17 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("dbmodify")
-	public String doUpdateData(String id,Map<String, Object> map){
+	public String doUpdateData(String id,Map<String, Object> map,HttpServletRequest request){
 		Map<String,Object> mm = this.data.getResource();
 		Map<String,Object> check = this.data.getCheck(id);
 		mm.putAll(check);
 		map.put("rlmap", mm);
-		return "/page/systemmanager/update_data";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F212")!=-1){
+			return "/page/systemmanager/update_data";
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -356,10 +401,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/pricemodify")
-	public String updatePrice(String rid,Map<String,Object> map){
+	public String updatePrice(String rid,Map<String,Object> map,HttpServletRequest request){
 		Map<String,Object> resultmap = this.rps.getRP(rid);
 		map.put("rlmap", resultmap);
-		return "/page/systemmanager/update_price";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F222")!=-1){
+			return "/page/systemmanager/update_price";
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -367,10 +417,15 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/priceadd")
-	public String addPrice(Map<String,Object> map){
+	public String addPrice(Map<String,Object> map,HttpServletRequest request){
 		Map<String,Object> resultmap = this.rps.getResource();
 		map.put("rlmap", resultmap);
-		return "/page/systemmanager/add_price";
+		String purview=CookieUtil.getCookiePurviews(request);
+		if(purview.indexOf("F221")!=-1){
+			return "/page/systemmanager/add_price";
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 产品类型设置

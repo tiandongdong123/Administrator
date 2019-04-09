@@ -270,7 +270,7 @@
             <li <?if(!strutil.contain(session.purviews,"管理员管理")){?>style="display:none"<?}?>>
 	           	<a href="#"><i class="fa fa-circle-o"></i>管理员管理<i class="fa fa-angle-left pull-right"></i></a>
 	           	<ul class="treeview-menu menu-open" style="display: block;">
-            		<li <?if(!strutil.contain(session.purviews,"管理员管理")){?>style="display:none"<?}?> <? if(session.menu_first=="adminManager.do"){ ?>class="active"<?}?>><a href="../admin/administrator.do"><i class="fa fa-circle-o"></i> 管理员管理</a></li>
+            		<li <?if(!strutil.contain(session.purviews,"管理员管理 ")){?>style="display:none"<?}?> <? if(session.menu_first=="adminManager.do"){ ?>class="active"<?}?>><a href="../admin/administrator.do"><i class="fa fa-circle-o"></i> 管理员管理</a></li>
             		<li <?if(!strutil.contain(session.purviews,"角色管理")){?>style="display:none"<?}?> <? if(session.menu_first=="roleManager.do"){ ?>class="active"<?}?>><a href="../admin/rolemanager.do"><i class="fa fa-circle-o"></i> 角色管理</a></li>
             		<li <?if(!strutil.contain(session.purviews,"部门管理")){?>style="display:none"<?}?> <? if(session.menu_first=="deptManager.do"){ ?>class="active"<?}?>><a href="../admin/department.do"><i class="fa fa-circle-o"></i> 部门管理</a></li>
 	         	</ul>
@@ -280,15 +280,15 @@
 	           	<ul class="treeview-menu menu-open" style="display: block;">
 		            <li <?if(!strutil.contain(session.purviews,"数据库配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="dataManager.do"){ ?>class="active"<?}?>><a href="../admin/dbconfig.do"><i class="fa fa-circle-o"></i> 数据库配置管理</a></li>
 			        <li <?if(!strutil.contain(session.purviews,"资源单价配置管理")){?>style="display:none"<?}?><? if(session.menu_first=="resourceManager.do"){ ?>class="active"<?}?>><a href="../admin/pricemanage.do"><i class="fa fa-circle-o"></i> 资源单价配置管理</a></li>
-            		<li <?if(!strutil.contain(session.purviews,"产品类型设置")){?>style="display:block"<?}?> <? if(session.menu_first=="prductType.do"){ ?>class="active"<?}?>><a href="../admin/productoption.do"><i class="fa fa-circle-o"></i> 产品类型设置</a>
-            		<li <?if(!strutil.contain(session.purviews,"平台配置管理")){?>style="display:block"<?}?> <? if(session.menu_first=="sonSystem.do"){ ?>class="active"<?}?>><a href="../admin/platoption.do"><i class="fa fa-circle-o"></i> 平台配置管理</a>
-            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:block"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../admin/unitoption.do"><i class="fa fa-circle-o"></i> 单位设置</a>
+            		<li <?if(!strutil.contain(session.purviews,"产品类型设置")){?>style="display:none"<?}?> <? if(session.menu_first=="prductType.do"){ ?>class="active"<?}?>><a href="../admin/productoption.do"><i class="fa fa-circle-o"></i> 产品类型设置</a>
+            		<li <?if(!strutil.contain(session.purviews,"平台配置管理")){?>style="display:none"<?}?> <? if(session.menu_first=="sonSystem.do"){ ?>class="active"<?}?>><a href="../admin/platoption.do"><i class="fa fa-circle-o"></i> 平台配置管理</a>
+            		<li <?if(!strutil.contain(session.purviews,"单位设置")){?>style="display:none"<?}?> <? if(session.menu_first=="unitSystem.do"){ ?>class="active"<?}?>><a href="../admin/unitoption.do"><i class="fa fa-circle-o"></i> 单位设置</a>
 	         	</ul>
             </li>
            <!--  <li <?if(!strutil.contain(session.purviews,"日志记录管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../system/logManager.do"><i class="fa fa-circle-o"></i>日志记录管理</a></li> -->
             <li <?if(!strutil.contain(session.purviews,"网站监控管理")){?>style="display:none"<?}?> <? if(session.menu_first=="logManager.do"){ ?>class="active"<?}?>><a href="../admin/monitormanage.do"><i class="fa fa-circle-o"></i>网站监控管理</a></li>
-            <li <? if(session.menu_first=="setting-Manager.do"){ ?>class="active"<?}?>><a href="../admin/systemconfig.do"><i class="fa fa-circle-o"></i>系统配置</a></li>
-          	<li><a href="../admin/logmanage.do"><i class="fa fa-circle-o"></i>后台日志管理</a></li>
+            <li <?if(!strutil.contain(session.purviews,"系统配置")){?>style="display:none"<?}?> <? if(session.menu_first=="setting-Manager.do"){ ?>class="active"<?}?>><a href="../admin/systemconfig.do"><i class="fa fa-circle-o"></i>系统配置</a></li>
+          	<li <?if(!strutil.contain(session.purviews,"后台日志管理")){?>style="display:none"<?}?>><a href="../admin/logmanage.do"><i class="fa fa-circle-o"></i>后台日志管理</a></li>
           </ul>
         </li>
 
@@ -312,7 +312,7 @@
             <i class="fa fa-angle-left pull-right"></i>
           </a>
           <ul class="treeview-menu menu-open" style="display: block;">
-            <li <?if(!strutil.contain(session.purviews,"solr下撤")){?>style="display:none"<?}?><? if(session.menu_first=="solrManager.do"){ ?>class="active"<?}?>><a href="../solr/withdraw.do"><i class="fa fa-circle-o"></i>solr下撤</a></li>
+            <li <?if(!strutil.contain(session.purviews,"solr下撤|")){?>style="display:none"<?}?><? if(session.menu_first=="solrManager.do"){ ?>class="active"<?}?>><a href="../solr/withdraw.do"><i class="fa fa-circle-o"></i>solr下撤</a></li>
             <li <?if(!strutil.contain(session.purviews,"solr黑名单查询")){?>style="display:none"<?}?><? if(session.menu_first=="solrQuery.do"){ ?>class="active"<?}?>><a href="../solr/blacklist.do"><i class="fa fa-circle-o"></i>solr黑名单查询</a></li>
           </ul>
         </li>
