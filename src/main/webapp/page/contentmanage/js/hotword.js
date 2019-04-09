@@ -950,7 +950,6 @@ function enterUpdateWordManual(){
 
 function publishManual(that,obj,issueState){
 	var purview=$.cookie('purview');
-	alert(purview);
 	if(issueState!='3' && checkCount()>=20){
     	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
