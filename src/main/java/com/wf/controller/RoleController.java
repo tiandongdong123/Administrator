@@ -95,7 +95,8 @@ public class RoleController {
 		boolean rt=false;
 		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
 		boolean purview=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
-		if(roleName && purview){
+		boolean roleRt = this.role.checkRoleName(role.getRoleName());
+		if(roleName && purview &&!roleRt){
 			rt = this.role.doAddRole(role);
 		}
 		
@@ -117,12 +118,19 @@ public class RoleController {
 	 */
 	@RequestMapping("doupdaterole")
 	@ResponseBody
-	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request,HttpSession session,HttpServletResponse response){
+	public JSONObject doUpdateRole(@ModelAttribute Role role,HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		JSONObject map = new JSONObject();
 		boolean rt=false;
 		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
 		boolean purviewIsNull=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
+		if(role.getRoleName().equals("admin")){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不可以被修改");
+				return map;
+		}
 		if(roleName && purviewIsNull){
 			rt = this.role.doUpdateRole(role);
+			map.put("flag", rt);
 		}
 		//记录日志
 		Log log=new Log("角色管理","修改",role.toString(),request);
@@ -147,7 +155,7 @@ public class RoleController {
 			String purviews=StringUtils.join(menus, "|");
 			session.setAttribute("purviews", purviews);
 		}
-		return rt ;
+		return map ;
 	}
 	
 	/**

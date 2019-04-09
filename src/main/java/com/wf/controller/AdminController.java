@@ -106,18 +106,26 @@ public class AdminController {
 	 */
 	@RequestMapping("closeadmin")
 	@ResponseBody
-	public boolean closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
+	public JSONObject closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
+		JSONObject map = new JSONObject();
+		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+		if(ids[0].equals(wfAdmin.getId())){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不可以被修改");
+				return map;
+		}
+		
 		String purview=CookieUtil.getCookiePurviews(request);
 		if(purview.indexOf("F114")!=-1){
 			boolean rt = this.admin.closeAdmin(ids);
-
+			map.put("flag", rt);
 			//记录日志
 			Log log=new Log("管理员管理","冻结","冻结账号:"+(ids==null?"":Arrays.asList(ids)),request);
 			logService.addLog(log);
 
-			return rt;
+			return map;
 		}else{
-			return false;
+			return null;
 		}
 	}
 	/**
@@ -128,18 +136,25 @@ public class AdminController {
 	 */
 	@RequestMapping("openadmin")
 	@ResponseBody
-	public boolean openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
+	public JSONObject openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
+		JSONObject map = new JSONObject();
+		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+		if(ids[0].equals(wfAdmin.getId())){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不可以被修改");
+				return map;
+		}
 		String purview=CookieUtil.getCookiePurviews(request);
 		if(purview.indexOf("F114")!=-1){
 			boolean rt = this.admin.openAdmin(ids);
-
+			map.put("flag", rt);
 			//记录日志
 			Log log=new Log("管理员管理","冻结","解冻账号:"+(ids==null?"":Arrays.asList(ids)),request);
 			logService.addLog(log);
 
-			return rt;
+			return map;
 		}else{
-			return false;
+			return null;
 		}
 	}
 
@@ -238,6 +253,11 @@ public class AdminController {
 			boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
 			if(password && realName && department && role){
 				Wfadmin adminStatus = this.admin.getAdminById(admin.getId());
+				if(adminStatus.getWangfang_admin_id().equals("admin")){
+					map.put("flag", "fail");
+					map.put("fail","超级管理员账号不可被修改");
+					return map;
+				}
 				if(adminStatus.getStatus()==0){
 					map.put("flag", "fail");
 					map.put("fail","冻结账户不可修改");
