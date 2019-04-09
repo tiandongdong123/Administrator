@@ -91,7 +91,7 @@
 				<Node Id="C314" Name="修改自动发布设置" HasChild="false" />
 				<Node Id="C315" Name="应用" HasChild="false" />
 			</Node>
-			<Node Id="C32" Name="热搜词管理" HasChild="true">
+			<Node Id="C32" Name="热搜词管理 " HasChild="true">
 				<Node Id="C321" Name="添加热搜词" HasChild="false" />
 				<Node Id="C322" Name="修改热搜词" HasChild="false" />
 				<Node Id="C323" Name="发布/下撤热搜词" HasChild="false" />
