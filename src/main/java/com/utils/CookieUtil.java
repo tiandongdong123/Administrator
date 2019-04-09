@@ -15,8 +15,6 @@ import com.wf.bean.Wfadmin;
 
 public class CookieUtil {
 	
-	//public static RedisUtil redis = new RedisUtil();
-	public static UserRedisUtil redis=new UserRedisUtil();
 	
 	public static final String LOGIN_URL = "/user/toLogin.do";
 	public static final String REMIND="/user/getRemind.do";
@@ -26,7 +24,7 @@ public class CookieUtil {
 	private static String domain=Getproperties.getPros("validateOldUser.properties").getProperty("domain");
 
 	public static String getCache(String key) {
-		return redis.get(key, 0);
+		return UserRedisUtil.get(key, 0);
 	}
 
 	/**
@@ -120,7 +118,7 @@ public class CookieUtil {
 	 * @return
 	 */
 	public static boolean exists(String key, String userId) {
-		String value = redis.hget(key, "Admin." + userId, 0);
+		String value = UserRedisUtil.hget(key, "Admin." + userId, 0);
 		if (value != null && !"".equals(value)) {
 			return true;
 		}
