@@ -209,4 +209,13 @@ public class UserController {
 		boolean flag = remindService.update();
 		return flag;
 	}
+	/**
+	 *	跳转无权限页面
+	 */
+	@RequestMapping("topurview")
+	public ModelAndView topurview(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/purview/purview");
+		return view;
+	}
 }

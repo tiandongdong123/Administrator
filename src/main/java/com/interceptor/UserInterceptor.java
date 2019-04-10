@@ -88,8 +88,7 @@ public class UserInterceptor implements HandlerInterceptor {
 			List<String> list=Arrays.asList(s.split(","));
 			List<String> adminUrl=MenuXml.getPurviewsListUrl(list);
 			if(!adminUrl.contains(url)){
-				System.out.println("没有访问"+url+"页面的权限");
-				res.sendRedirect("");
+				res.sendRedirect("/user/topurview.do");
 				return false;
 			}
 		}
