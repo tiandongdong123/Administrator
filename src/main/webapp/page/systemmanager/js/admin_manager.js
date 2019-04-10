@@ -54,7 +54,10 @@ function adminpage(curr){
     	    	}
     }
     if(res.pageRow.length==0){
-		html+="<tr><td></td><td></td><td><span style=\"color:red\">查询无结果</span></td></tr>";
+    	$('#errorInfo').text('查询无结果')
+//		html+="<tr><td><span style=\"color:red\">查询无结果</span></td></tr>";
+	}else {
+		$('#errorInfo').text('')
 	}
         $('#adminbody').html(html);
         var totalRow = res.pageTotal;

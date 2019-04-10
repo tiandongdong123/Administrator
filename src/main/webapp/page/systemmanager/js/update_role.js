@@ -89,7 +89,9 @@ function purviewtree(json){
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 		var nodes = zTree_Menu.getNodes();
-		$("#checkall").prop("checked",checknodesNum==nodes.length);
+		var beforNum = $('#treeidstart').val().split(',').length
+		var number = tree.split(',').length
+		$("#checkall").prop("checked",beforNum==number);
 	}
 }
 
@@ -148,20 +150,24 @@ function doupdaterole(){
 				},
 				dataType : "json",
 				success : function(data) {
-					if(data){
+					if(data.flag===true){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改成功");
 						window.parent.rolepage(1);
-						parent.layer.close(index);						    
-					}else{
+						parent.layer.close(1);						    
+					}else if(data.flag===false){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改失败");
 						parent.layer.close(1);
+						}else if(data.flag==="fail") {
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg(data.fail);
+						parent.layer.close(1); 
 					}
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入角色名称");
+		checkrolename($('#rolename').val())
 	}
 }
 

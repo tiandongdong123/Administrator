@@ -51,7 +51,7 @@ function purviewtree(json){
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
 		//zTree_Menu.expandNode(zTree_Menu.getNodes()[0],true);
 	});
-	
+	let allNodes = zTree_Menu.getCheckedNodes(false).length
 	function onCheck(){
 		var tree="";
 		var checknodesNum=0;
@@ -65,7 +65,8 @@ function purviewtree(json){
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 		var nodes = zTree_Menu.getNodes();
-		$("#checkall").prop("checked",checknodesNum==nodes.length);
+		var beforNum = $('#treeids').val().split(',').length
+		$("#checkall").prop("checked",beforNum==allNodes);
 	}
 }
 
