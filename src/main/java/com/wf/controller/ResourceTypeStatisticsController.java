@@ -64,13 +64,7 @@ public class ResourceTypeStatisticsController {
 		map.put("allDataSource",db_SourceService.selectAll());
 		map.put("yesterday", yesterday);
 		map.put("resourcetype", li);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E32")!=-1){
 			return "/page/othermanager/res_use_manager";
-		}else{
-			return null;
-		}
-
 	}
 
 	@RequestMapping("getline")

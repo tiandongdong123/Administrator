@@ -35,14 +35,8 @@ public class SourceAnalysisController {
 	 * @date 12 Dis 2016 4:44:32 PM
 	 */
 	@RequestMapping("sourceAnalysis")
-	public String sourceAnalysis(HttpServletRequest request){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E5")!=-1){
+	public String sourceAnalysis(){
 			return "/page/othermanager/sourceAnalysis";
-		}else{
-			return null;
-		}
-
 	}
 
 	/**

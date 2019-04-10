@@ -88,12 +88,7 @@ public class GroupController {
 		view.addObject("Authority", AuthorityLimit.values());//权限
 		view.addObject("msg", "0");	
 		view.setViewName("/page/usermanager/ins_information");
-		String purview=CookieUtil.getCookiePurviews(req);
-		if(purview.indexOf("A14")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 
 	}
 	/**
@@ -153,12 +148,7 @@ public class GroupController {
 		view.addObject("timelimit",DateUtil.getTimeLimit());
 		log.info("本地查询机构用户信息耗时："+(System.currentTimeMillis()-time)+"ms");
 		view.setViewName("/page/usermanager/ins_information");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A14")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 *	机构用户注册跳转
@@ -169,12 +159,7 @@ public class GroupController {
 		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_register");
-		String purview=CookieUtil.getCookiePurviews(req);
-		if(purview.indexOf("A11")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -233,12 +218,7 @@ public class GroupController {
 		for (Map<String, Object> entry : gmxmlist) {
 			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
-		String purview=CookieUtil.getCookiePurviews(req);
-		if(purview.indexOf("A141")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	//获取机构用户权限表1
 	private void getWfksAccountidLimit(String userId,ModelAndView view){
@@ -371,12 +351,7 @@ public class GroupController {
 		view.addObject("map",map);
 		view.addObject("msg", "0");
 		view.setViewName("/page/usermanager/ins_sonaccount");
-		String purview=CookieUtil.getCookiePurviews(req);
-		if(purview.indexOf("A15")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 *	机构用户订单跳转
@@ -405,13 +380,7 @@ public class GroupController {
 			model.addAttribute("upPage", null);
 		}
 		model.addAttribute("pager", null);
-		String purview=CookieUtil.getCookiePurviews(req);
-		if(purview.indexOf("A16")!=-1){
 			return "/page/usermanager/user_binding_manager";
-		}else{
-			return null;
-		}
-
 	}
 	/**
 	 *	机构用户批量注册跳转
@@ -422,12 +391,7 @@ public class GroupController {
 		view.addObject("arrayArea", SettingUtil.getRegionCode());//区域
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchregister");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A12")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -438,12 +402,7 @@ public class GroupController {
 		ModelAndView view = new ModelAndView();
 		view.addObject("org", Organization.values());//机构账户类型
 		view.setViewName("/page/usermanager/ins_batchupdate");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A13")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 *	批量冻结和解冻跳转
@@ -452,12 +411,7 @@ public class GroupController {
 	public ModelAndView batchblock(HttpServletRequest request){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/ins_batchblock");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A17")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 *	操作记录
@@ -523,12 +477,7 @@ public class GroupController {
 		WarningInfo war = aheadUserService.findWarning();
 		view.addObject("war",war);
 		view.setViewName("/page/usermanager/ins_warning");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A18")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -537,11 +486,6 @@ public class GroupController {
 	@RequestMapping("solrsync")
 	public ModelAndView toSolrData(ModelAndView view,HttpServletRequest request){
 		view.setViewName("/page/usermanager/toSolrData");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A19")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 }

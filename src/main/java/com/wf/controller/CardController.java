@@ -591,58 +591,38 @@ public class CardController {
 	 *	管理赠送万方卡
 	 */
 	@RequestMapping("wfcardmanage")
-	public ModelAndView manage_card(HttpServletRequest request){
+	public ModelAndView manage_card(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/manage_card");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("D11")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 *	生成赠送万方卡
 	 */
 	@RequestMapping("wfcardcreate")
-	public ModelAndView creat_wfcard_view(HttpServletRequest request){
+	public ModelAndView creat_wfcard_view(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/creat_wfcard_view");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("D12")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	
 	/**
 	 *	审核赠送万方卡
 	 */
 	@RequestMapping("wfcardcentor")
-	public ModelAndView check_card(HttpServletRequest request){
+	public ModelAndView check_card(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/check_card");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("D13")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 	
 	/**
 	 *	设置赠送万方卡
 	 */
 	@RequestMapping("wfcardoption")
-	public ModelAndView wfcard_type(HttpServletRequest request){
+	public ModelAndView wfcard_type(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/wfcard_type");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("D14")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 }

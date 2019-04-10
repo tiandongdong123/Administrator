@@ -21,42 +21,27 @@ public class PersonController {
 		view.addObject("roles2", "null");
 		view.addObject("roles3", "null");
 		view.setViewName("/page/usermanager/per_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A21")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
 	 *	个人充值记录
 	 */
 	@RequestMapping("charge")
-	public ModelAndView perAward(HttpServletRequest request){
+	public ModelAndView perAward(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/charge_order");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A22")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
 	 *	 个人订单记录
 	 */
 	@RequestMapping("order")
-	public ModelAndView order(HttpServletRequest request){
+	public ModelAndView order(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/pay_order");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A23")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -66,11 +51,6 @@ public class PersonController {
 	public ModelAndView wfcard_bind(HttpServletRequest request){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/wfcard_bind");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("A24")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 }

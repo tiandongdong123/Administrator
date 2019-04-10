@@ -31,17 +31,11 @@ public class ModelAnalysisController {
 	private LogService logService;
 
 	@RequestMapping("modelanalysis")
-	public String getModel(Map<String,Object> model,HttpServletRequest request){
+	public String getModel(Map<String,Object> model){
 		//Map<String,Object> map = this.model.getline();
 		List<String> namelist = this.model.getmodular();
 		model.put("namelist", namelist);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E6")!=-1){
 			return "/page/othermanager/model_use_manager";
-		}else{
-			return null;
-		}
-
 	}
 
 	@RequestMapping("getline")

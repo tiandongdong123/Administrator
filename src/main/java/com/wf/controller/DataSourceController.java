@@ -830,12 +830,7 @@ public class DataSourceController {
 	public ModelAndView qikanZiyuanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_ziyuanpeizhi");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("G2")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	// 资源授权配置页面
@@ -843,12 +838,7 @@ public class DataSourceController {
 	public ModelAndView qikanShouquanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_shouquanpeizhi");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("G3")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	// 资源授权列表页面
@@ -856,12 +846,7 @@ public class DataSourceController {
 	public ModelAndView qikanjigouList(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_jigouList");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("G1")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	// 资源授权列表页面

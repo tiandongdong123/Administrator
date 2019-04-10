@@ -71,16 +71,11 @@ public class SolrManagerController {
 	 * @return
 	 */
 	@RequestMapping("withdraw")
-	public ModelAndView solrManager(Map<String,Object> model,HttpServletRequest request){
+	public ModelAndView solrManager(Map<String,Object> model){
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());
 		mav.setViewName("/page/solrmanager/solr_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("H1")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 	
 	/**
@@ -89,16 +84,11 @@ public class SolrManagerController {
 	 * @return
 	 */
 	@RequestMapping("blacklist")
-	public ModelAndView solrQuery(Map<String, Object> model,HttpServletRequest request) {
+	public ModelAndView solrQuery(Map<String, Object> model) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());
 		mav.setViewName("/page/solrmanager/solr_query");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("H2")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 	
 	/**

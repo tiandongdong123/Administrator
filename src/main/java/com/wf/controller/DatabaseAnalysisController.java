@@ -78,13 +78,7 @@ public class DatabaseAnalysisController {
 		map.put("allData",dataManagerService.selectAll());
 		//所有数据来源
 		map.put("allDataSource",db_SourceService.selectAll());
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E31")!=-1){
 			return "/page/othermanager/data_use_manager";
-				 }else{
-					 return null;
-				 }
-		
 		}
 	
 	@ResponseBody

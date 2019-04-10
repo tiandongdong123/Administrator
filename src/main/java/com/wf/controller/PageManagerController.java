@@ -46,15 +46,10 @@ public class PageManagerController {
 	 * @return
 	 */
 	@RequestMapping("pageManager")
-	public ModelAndView pageManager(HttpServletRequest request){
+	public ModelAndView pageManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/page_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E21")!=-1){
 					 return mav;
-				 }else{
-					 return null;
-				 }
 	}
 	
 	/**
@@ -132,15 +127,10 @@ public class PageManagerController {
 	* @date 29 Nov 2016 8:58:44 AM
 	 */
 	@RequestMapping("addPageManager")
-	public String addPageManager(Map<String,Object> map, HttpServletRequest request){	
+	public String addPageManager(Map<String,Object> map){	
 		List<Object> modularList = modularService.getModularList();
 		map.put("modularList", modularList);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E21")!=-1){
 			return "/page/othermanager/add_page_manager";
-		}else{
-			return null;
-		}
 	}
 	
 	/**

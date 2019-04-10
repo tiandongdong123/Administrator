@@ -47,15 +47,10 @@ public class ModularManagerController {
 	 * @return
 	 */
 	@RequestMapping("modularManager")
-	public ModelAndView modularManager(HttpServletRequest request){
+	public ModelAndView modularManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/modular_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E22")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 
@@ -66,13 +61,8 @@ public class ModularManagerController {
 	 * @return
 	 */
 	@RequestMapping("addModular")
-	public String addModular(HttpServletRequest request){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E22")!=-1){
+	public String addModular(){
 			return "/page/othermanager/add_modular";
-		}else{
-			return null;
-		}	
 	}
 
 	@RequestMapping("doAddModular")
