@@ -7,8 +7,7 @@ public class getClcFromRedis {
 	
 public String  getClcName(String clc) {
 		
-		RedisUtil redis=new RedisUtil();
-		String clcdic=redis.get("CLCDic", 0);
+		String clcdic=RedisUtil.get("CLCDic", 0);
 		JSONArray json=JSONArray.fromObject(clcdic);
 		String name=null;
 		for(int i=0;i<json.size();i++){

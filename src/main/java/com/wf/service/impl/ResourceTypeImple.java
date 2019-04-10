@@ -133,11 +133,10 @@ public class ResourceTypeImple implements ResourceTypeService {
 	@Override
 	public boolean resourcePublish() {
 		//清空redis中对应的key
-		RedisUtil redis = new RedisUtil();
-		redis.del(1,"resources");
+		RedisUtil.del(1,"resources");
 		List<Object> list= dao.find();
 		JSONArray jsonArr = JSONArray.fromObject(list);
-		redis.set("resources", jsonArr.toString(),1);
+		RedisUtil.set("resources", jsonArr.toString(),1);
 		return false;
 	}
 	@Override
