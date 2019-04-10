@@ -41,12 +41,7 @@ public class SiteProfileController {
 	public ModelAndView qikanaddMatrixLiterature(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/othermanager/site_profile");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E4")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**

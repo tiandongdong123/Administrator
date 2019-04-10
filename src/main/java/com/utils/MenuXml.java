@@ -18,6 +18,25 @@ import com.wf.bean.Menu;
 public class MenuXml {
 
 	public static Map<String,String> menuName;
+	public static List<String> MENU_ALL_URL;
+	public static List<String> MENU_PURVIEW_URL;
+	static{
+		//获取所有权限url
+		MENU_ALL_URL=new ArrayList<String>();
+		try {
+			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+			File f = new File(url.getFile());   
+			SAXReader reader = new SAXReader();   
+			Document doc = reader.read(f);   
+			Element root = doc.getRootElement();
+			List<Element> listElements=root.elements();//所有一级子节点的list
+			for (Element element : listElements) {
+				getNodesUrl(element);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static List<Menu> getListMenu(){
 		List<Menu> listMenu=new ArrayList<Menu>();
 		try {
@@ -35,6 +54,7 @@ public class MenuXml {
 		}
 		return listMenu;
 	}
+
 	public static List<Menu> getPurviewsListMenu(List<String> list){
 		List<Menu> listMenu=new ArrayList<Menu>();
 		try {
@@ -55,7 +75,7 @@ public class MenuXml {
 		}
 		return listMenu;
 	}
-	public static Menu getPurviewsNodes(Element node,List<String> list){
+	private static Menu getPurviewsNodes(Element node,List<String> list){
 		Menu m=new Menu();
 		//当前节点的名称、文本内容和属性
 		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
@@ -71,6 +91,9 @@ public class MenuXml {
 			if(name.equals("HasChild")){
 				m.setHaschild(value.equals("true"));
 			}
+			if(name.equals("Url")&&value!=""){
+				m.setUrl(value);
+			}
 			if(m.getHaschild()){
 				List<Menu> listMenu=new ArrayList();
 				//递归遍历当前节点所有的子节点
@@ -85,6 +108,64 @@ public class MenuXml {
 		}
 		return m;
 	}
+	
+	//获取所有权限url
+	private static void getNodesUrl(Element node){
+		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
+		for(Attribute attr:listAttr){//遍历当前节点的所有属性
+			String name=attr.getName();//属性名称
+			String value=attr.getValue();//属性的值
+			if(name.equals("Url")&&value!=""){
+				MENU_ALL_URL.add(value);
+			}
+		}
+		//递归遍历当前节点所有的子节点
+		List<Element> listElement=node.elements();//所有一级子节点的list
+		for(Element e:listElement){//遍历所有一级子节点
+			getNodesUrl(e);//递归
+		}
+	}
+
+	//根据id查询url
+	public static List<String> getPurviewsListUrl(List<String> list){
+		MENU_PURVIEW_URL=new ArrayList<String>();
+		try {
+			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+			File f = new File(url.getFile());   
+			SAXReader reader = new SAXReader();   
+			Document doc = reader.read(f);   
+			Element root = doc.getRootElement();
+			List<Element> listElements=root.elements();//所有一级子节点的list
+			for (Element element : listElements) {
+				String s=element.attributeValue("Id");
+				if(list.contains(s)){
+					getPurviewsListUrlById(element,list);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return MENU_PURVIEW_URL;
+	}
+
+	private static void getPurviewsListUrlById(Element element, List<String> list) {
+		List<Attribute> listAttr=element.attributes();//当前节点的所有属性的list
+		for(Attribute attr:listAttr){//遍历当前节点的所有属性
+			String name=attr.getName();//属性名称
+			String value=attr.getValue();//属性的值
+			if(name.equals("Url")&&value!=""){
+				MENU_PURVIEW_URL.add(value);
+			}
+		}
+		List<Element> listElement=element.elements();//所有一级子节点的list
+		for(Element e:listElement){//遍历所有一级子节点
+			if(list.contains(e.attributeValue("Id"))){
+				getPurviewsListUrlById(e,list);//递归
+			}
+		}
+	}
+
+	
 	public static Map<String,String> getMenuName(){
 		menuName=new HashMap<String, String>();
 		try {
@@ -99,7 +180,7 @@ public class MenuXml {
 		}
        return menuName;
 	}
-	public static void getNodesName(Element node){
+	private static void getNodesName(Element node){
 		//当前节点的名称、文本内容和属性
 		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
 		String id=null;
@@ -123,7 +204,7 @@ public class MenuXml {
 			getNodesName(e);//递归
 		}
 	}
-	public static Menu getNodes(Element node){
+	private static Menu getNodes(Element node){
 		Menu m=new Menu();
 		//当前节点的名称、文本内容和属性
 		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
@@ -138,6 +219,9 @@ public class MenuXml {
 			}
 			if(name.equals("HasChild")){
 				m.setHaschild(value.equals("true"));
+			}
+			if(name.equals("Url")&&value!=""){
+				m.setUrl(value);
 			}
 			if(m.getHaschild()){
 				List<Menu> listMenu=new ArrayList();

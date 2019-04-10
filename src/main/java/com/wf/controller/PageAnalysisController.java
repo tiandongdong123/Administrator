@@ -53,13 +53,8 @@ public class PageAnalysisController {
 	private LogService logService;
 
 	@RequestMapping("pageAnalysis")
-	public String pageAnalysis(HttpServletRequest request){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E7")!=-1){
+	public String pageAnalysis(){
 			return "/page/othermanager/page_analysis";
-		}else{
-			return null;
-		}
 
 	}
 

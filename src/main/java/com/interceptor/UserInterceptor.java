@@ -1,16 +1,22 @@
 package com.interceptor;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.CookieUtil;
+import com.utils.MenuXml;
 import com.wf.bean.Wfadmin;
+import com.wf.dao.RoleMapper;
 
 /**
  * 拦截器
@@ -20,7 +26,8 @@ import com.wf.bean.Wfadmin;
  */
 public class UserInterceptor implements HandlerInterceptor {
 
-	
+	@Autowired
+	private RoleMapper role;
 	//完成后
 	@Override
 	public void afterCompletion(HttpServletRequest arg0,
@@ -72,8 +79,21 @@ public class UserInterceptor implements HandlerInterceptor {
 				session.setAttribute("department", obj.get("department"));
 			}
 		}
+		//获取所有需要权限判断的url
+		List<String> menuAllUrl=MenuXml.MENU_ALL_URL;
+		//判断当前访问url是否需要进行权限判断
+		if(menuAllUrl.contains(url)){
+			//进行权限判断 查看当前用户是否有该权限
+			String s=role.getRoleById(admin.getRole_id()).getPurview();
+			List<String> list=Arrays.asList(s.split(","));
+			List<String> adminUrl=MenuXml.getPurviewsListUrl(list);
+			if(!adminUrl.contains(url)){
+				System.out.println("没有访问"+url+"页面的权限");
+				res.sendRedirect("");
+				return false;
+			}
+		}
 		session.setAttribute("menu_first", url.split("/")[url.split("/").length - 1]);
 		return true;
-	}
-	
+	}	
 } 

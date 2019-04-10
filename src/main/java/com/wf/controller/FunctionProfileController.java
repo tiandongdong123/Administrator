@@ -29,14 +29,8 @@ public class FunctionProfileController {
 	private LogService logService;
 
 	@RequestMapping("functionProfile")
-	public String functionProfile(HttpServletRequest request){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("E8")!=-1){
+	public String functionProfile(){
 			return "/page/othermanager/function_profile";
-		}else{
-			return null;
-		}
-
 	}
 
 	@RequestMapping("getline")

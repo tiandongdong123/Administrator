@@ -62,18 +62,13 @@ public class AdminController {
 			@RequestParam(value="pagenum",required=false) Integer pagenum,
 			@RequestParam(value="pagesize",required=false) Integer pagesize,
 			@RequestParam(value="adminname",required=false) String adminname){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F11")!=-1){
+
 			PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
 
 			//记录日志
 			Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
 			logService.addLog(log);
-			
 			return pl;
-		}else{
-			return null;
-		}
 	}
 
 	@RequestMapping("serach")
@@ -115,8 +110,6 @@ public class AdminController {
 				return map;
 		}
 		
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F114")!=-1){
 			boolean rt = this.admin.closeAdmin(ids);
 			map.put("flag", rt);
 			//记录日志
@@ -124,9 +117,6 @@ public class AdminController {
 			logService.addLog(log);
 
 			return map;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 解冻账号
@@ -144,8 +134,7 @@ public class AdminController {
 			map.put("fail","超级管理员信息不可以被修改");
 				return map;
 		}
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F114")!=-1){
+
 			boolean rt = this.admin.openAdmin(ids);
 			map.put("flag", rt);
 			//记录日志
@@ -153,9 +142,6 @@ public class AdminController {
 			logService.addLog(log);
 
 			return map;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -167,12 +153,7 @@ public class AdminController {
 	public String addAdmin(Map<String,Object> map,HttpServletRequest request){
 		List<Object> rolename = this.admin.getRole();
 		map.put("rolename", rolename);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F112")!=-1){
 			return "/page/systemmanager/add_admin";
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 判断用户名是否重复
@@ -195,8 +176,7 @@ public class AdminController {
 	@RequestMapping("doaddadmin")
 	@ResponseBody
 	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F112")!=-1){
+
 			boolean rt=false;
 			boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
 			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
@@ -211,9 +191,6 @@ public class AdminController {
 				logService.addLog(log);
 			}
 			return rt;
-		}else{
-			return false;
-		}
 	}
 	/**
 	 * 修改管理员页面
@@ -228,12 +205,7 @@ public class AdminController {
 		map.put("admin", admin);
 		map.put("rolename", rolename);
 		map.put("pagenum",pagenum);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F113")!=-1){
 			return "/page/systemmanager/update_admin";
-		}else{
-			return null;
-		}	
 	}
 
 	/**
@@ -244,8 +216,6 @@ public class AdminController {
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
 	public JSONObject doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F113")!=-1){
 			JSONObject map = new JSONObject();
 			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
 			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
@@ -283,9 +253,6 @@ public class AdminController {
 				map.put("flag", false);
 			}
 			return map;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 管理员管理
@@ -295,27 +262,17 @@ public class AdminController {
 	public ModelAndView adminManager(HttpServletRequest request){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/admin_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F1")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 角色管理
 	 * @return
 	 */
 	@RequestMapping("/rolemanager")
-	public ModelAndView roleManager(HttpServletRequest request){
+	public ModelAndView roleManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/role_Manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F12")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}	
 	/**
 	 * 角色添加页面
@@ -353,15 +310,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/dbconfig")
-	public ModelAndView dataManager(HttpServletRequest request){
+	public ModelAndView dataManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/data_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F21")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 
@@ -370,15 +322,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("dbadd")
-	public String addData(Map<String, Object> map,HttpServletRequest request){
+	public String addData(Map<String, Object> map){
 		Map<String,Object> mm = this.data.getResource();
 		map.put("rlmap", mm);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F211")!=-1){
 			return "/page/systemmanager/add_data";
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 数据库修改页面
@@ -392,12 +339,7 @@ public class AdminController {
 		Map<String,Object> check = this.data.getCheck(id);
 		mm.putAll(check);
 		map.put("rlmap", mm);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F212")!=-1){
 			return "/page/systemmanager/update_data";
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -405,15 +347,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/pricemanage")
-	public ModelAndView resourceManager(HttpServletRequest request){
+	public ModelAndView resourceManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/resource_price_manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F22")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -421,15 +358,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/pricemodify")
-	public String updatePrice(String rid,Map<String,Object> map,HttpServletRequest request){
+	public String updatePrice(String rid,Map<String,Object> map){
 		Map<String,Object> resultmap = this.rps.getRP(rid);
 		map.put("rlmap", resultmap);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F222")!=-1){
 			return "/page/systemmanager/update_price";
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -440,27 +372,17 @@ public class AdminController {
 	public String addPrice(Map<String,Object> map,HttpServletRequest request){
 		Map<String,Object> resultmap = this.rps.getResource();
 		map.put("rlmap", resultmap);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F221")!=-1){
 			return "/page/systemmanager/add_price";
-		}else{
-			return null;
-		}
 	}
 	/**
 	 * 产品类型设置
 	 * @return
 	 */
 	@RequestMapping("/productoption")
-	public ModelAndView prductType(HttpServletRequest request){
+	public ModelAndView prductType(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/product_type");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F23")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 
@@ -469,15 +391,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/platoption")
-	public ModelAndView sonSystem(HttpServletRequest request){
+	public ModelAndView sonSystem(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/son_system");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F24")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -485,15 +402,10 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/monitormanage")
-	public ModelAndView controlManager(HttpServletRequest request){
+	public ModelAndView controlManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/systemmanager/control");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F3")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -501,28 +413,18 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("/unitoption")
-	public ModelAndView unitSystem(String id,HttpServletRequest request){
+	public ModelAndView unitSystem(String id){
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("goback",id);
 		mav.setViewName("/page/systemmanager/unit_set");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F25")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 	// 跳转到 系统配置
 	@RequestMapping("systemconfig")
-	public ModelAndView settingManager(HttpServletRequest request) {
+	public ModelAndView settingManager() {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/systemmanager/setting_Manager");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F4")!=-1){
 			return view;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -530,19 +432,13 @@ public class AdminController {
 	 * 
 	 */
 	@RequestMapping("logmanage")
-	public String getLog(Map<String, Object> model,HttpServletRequest request) {
+	public String getLog(Map<String, Object> model) {
 
 		Calendar   cal   =   Calendar.getInstance();
 		cal.add(Calendar.DATE,-1);
 		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
 		model.put("yesterday", yesterday);
 		model.put("getAllModel", logService.getAllLogModel());
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("F5")!=-1){
 			return "/page/systemmanager/log";
-		}else{
-			return null;
-		}
-		
 	}
 }

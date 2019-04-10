@@ -162,13 +162,7 @@ public class ContentController {
 		//记录日志
 		Log log = new Log("学科分类管理", "查询", "查询条件:级别:" + level + ",分类号:" + classNum + ",分类名称:" + className, request);
 		logService.addLog(log);
-
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C41")!=-1){
 			return "/page/contentmanage/subject";
-		}else{
-			return null;
-		}
 
 	}
 
@@ -220,14 +214,9 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/subjectadd")
-	public String addSubject(Model model, HttpServletRequest request) {
+	public String addSubject(Model model) {
 		model.addAttribute("addupdate", "add");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C413")!=-1){
 			return "/page/contentmanage/addSubjectType";
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -264,12 +253,7 @@ public class ContentController {
 		Subject subject = subjectService.findSubject(id);
 		model.addAttribute("addupdate", "update");
 		model.addAttribute("subject", subject);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C417")!=-1){
 			return "/page/contentmanage/addSubjectType";
-		}else{
-			return null;
-		}
 	}
 
 	@RequestMapping("showMessage")
@@ -323,14 +307,9 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/add")
-	public String addMessage(Model model, HttpServletRequest request) {
+	public String addMessage(Model model) {
 		model.addAttribute("addupdate", "add");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C111")!=-1){
 			return "/page/contentmanage/addMessage";
-		}else{
-			return null;
-		}
 	}
 
 
@@ -391,12 +370,7 @@ public class ContentController {
 			deptList.add(((Department) department).getDeptName());
 		}
 		model.addAttribute("deptList", deptList);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C11")!=-1){
 			return "/page/contentmanage/message";
-		}else{
-			return null;
-		}
 
 	}
 
@@ -475,13 +449,7 @@ public class ContentController {
 		Message message = messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("url", "http://" + ip);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C11")!=-1){
 			return "/page/contentmanage/messageDetail";
-		}else{
-			return null;
-		}
-		
 	}
 
 
@@ -520,12 +488,7 @@ public class ContentController {
 		Message message = messageService.findMessage(id);
 		model.addAttribute("message", message);
 		model.addAttribute("addupdate", "update");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C112")!=-1){
 			return "/page/contentmanage/addMessage";
-		}else{
-			return null;
-		}
 	}
 
 	@RequestMapping("/updateMessageJson")
@@ -598,13 +561,7 @@ public class ContentController {
 		int pageSize = 10;
 		PageList p = resourceTypeService.getResourceType(pageNum, pageSize);
 		model.addAttribute("pageList", p);
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C42")!=-1){
 			return "/page/contentmanage/resourceManage";
-		}else{
-			return null;
-		}
-
 	}
 
 	/**
@@ -665,14 +622,9 @@ public class ContentController {
 	 * @return
 	 */
 	@RequestMapping("/resourceadd")
-	public String addResource(Model model,HttpServletRequest request) {
+	public String addResource(Model model) {
 		model.addAttribute("addupdate", "add");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C422")!=-1){
 			return "/page/contentmanage/addResource";
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -868,12 +820,7 @@ public class ContentController {
 		Log log = new Log("分享模板管理", "查询", "查询条件:分享类型:" + shareType, request);
 		logService.addLog(log);
 
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C51")!=-1){
 			return "/page/contentmanage/shareTemplate";
-		}else{
-			return null;
-		}
 
 	}
 
@@ -910,12 +857,7 @@ public class ContentController {
 		List<ShareTtemplateNames> names = shareTemplateNamesService.getAllShareTemplateNames();
 		model.addAttribute("names", names);
 		model.addAttribute("addupdate", "add");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C51")!=-1){
 			return "/page/contentmanage/addShareTemplate";
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -1014,13 +956,7 @@ public class ContentController {
 		PageList pageList = notesService.getNotes(pageNum, pageSize, null, null, null, null, null, null, null, null, null, null);
 		model.addAttribute("pageList", pageList);
 		model.addAttribute("res", resourceTypeService.getAll());
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C8")!=-1){
 			return "/page/contentmanage/notes";
-		}else{
-			return null;
-		}
-
 	}
 
 	@RequestMapping("noteShow")
@@ -1181,12 +1117,7 @@ public class ContentController {
 	public ModelAndView volumeDocu(HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/contentmanage/volume/volume_docu");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C6")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -1332,12 +1263,7 @@ public class ContentController {
 		mav.addObject("volume", volume);
 		mav.addObject("publishPerson", publishPerson);
 		mav.setViewName("/page/contentmanage/volume/step_one");
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C6")!=-1){
 			return mav;
-		}else{
-			return null;
-		}
 	}
 
 	/**
@@ -2007,24 +1933,12 @@ public class ContentController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C32")!=-1){
 			return "/page/contentmanage/hotword";
-		}else{
-			return null;
-		}
-		
 	}
 
 	@RequestMapping("/hotwordpublish")
-	public String hotWordPublish(HttpServletRequest request) {
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C31")!=-1){
-			return "/page/contentmanage/hotwordPublish";
-		}else{
-			return null;
-		}
-		
+	public String hotWordPublish() {
+			return "/page/contentmanage/hotwordPublish";	
 	}
 
 	@RequestMapping("/addWordSetting")
@@ -2554,14 +2468,8 @@ public class ContentController {
 	}
 
 	@RequestMapping("periodicalcomment")
-	public String PerioComment(HttpServletRequest request) {
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C7")!=-1){
+	public String PerioComment() {
 			return "/page/contentmanage/periocomment";
-		}else{
-			return null;
-		}
-
 	}
 
 	/**
@@ -2571,14 +2479,8 @@ public class ContentController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/informationLabel")
-	public String InformationLabel(HttpServletRequest request) throws Exception {
-		String purview=CookieUtil.getCookiePurviews(request);
-		if(purview.indexOf("C12")!=-1){
+	public String InformationLabel() throws Exception {
 			return "/page/contentmanage/informationLabel";
-		}else{
-			return null;
-		}
-
 	}
 
 	/**

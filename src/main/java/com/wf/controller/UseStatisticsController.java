@@ -36,12 +36,7 @@ public class UseStatisticsController {
     public ModelAndView statisticsInformation(HttpServletRequest request) {
         ModelAndView view = new ModelAndView();
         view.setViewName("/page/usermanager/user_statistics");
-        String purview=CookieUtil.getCookiePurviews(request);
-        if(purview.indexOf("E1")!=-1){
         			 return view;
-        		 }else{
-        			 return null;
-        		 }
     }
 
 
