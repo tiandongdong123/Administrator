@@ -91,6 +91,7 @@ function checkrolename(name){
 			});
 	}else{
 		$("#checkrolename").text("请输入角色名称");
+		$("#cname").val("N");
 	}
 	
 }
@@ -132,7 +133,7 @@ function doaddrole(){
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入角色名称");
+		checkrolename($('#rolename').val())
 	}
 }
 

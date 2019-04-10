@@ -154,15 +154,15 @@ function doupdaterole(){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改成功");
 						window.parent.rolepage(1);
-						parent.layer.close(1);						    
+						parent.layer.close(index);						    
 					}else if(data.flag===false){
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg("修改失败");
-						parent.layer.close(1);
+						parent.layer.close(index);
 						}else if(data.flag==="fail") {
 						var index = parent.layer.getFrameIndex(window.name);
 						parent.layer.msg(data.fail);
-						parent.layer.close(1); 
+						parent.layer.close(index); 
 					}
 				}
 			});
