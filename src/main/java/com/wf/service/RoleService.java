@@ -22,4 +22,6 @@ public interface RoleService {
 	boolean doUpdateRole(Role role);
 	
 	boolean deleteRole(String id);
+	
+	Role getRoleByName(String name);
 }

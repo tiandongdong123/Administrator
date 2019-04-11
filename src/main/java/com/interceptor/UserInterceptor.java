@@ -92,7 +92,7 @@ public class UserInterceptor implements HandlerInterceptor {
 				return false;
 			}
 		}
-		session.setAttribute("menu_first", url.split("/")[url.split("/").length - 1]);
+		session.setAttribute("menu_first", url);
 		return true;
 	}	
 } 

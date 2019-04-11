@@ -127,7 +127,9 @@ public class RoleController {
 		boolean rt=false;
 		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
 		boolean purviewIsNull=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
-		if(role.getRoleName().equals("超级管理员")){
+		//根据超级管理员  查找超级管理员id
+		Role r=this.role.getRoleByName("超级管理员");
+		if(r!=null&&role.getRoleId().equals(r.getRoleId())){
 			map.put("flag", "fail");
 			map.put("fail","超级管理员信息不可以被修改");
 				return map;

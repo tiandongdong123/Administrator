@@ -157,4 +157,16 @@ public class RoleServiceImpl implements RoleService{
 		return rt;
 	}
 
+	@Override
+	public Role getRoleByName(String name) {
+		List<Object> li = new ArrayList<Object>();
+		try {
+			li = this.role.checkRoleName(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return (Role)li.get(0);
+	}
+	
 }

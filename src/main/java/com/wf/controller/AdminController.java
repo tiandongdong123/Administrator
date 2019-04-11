@@ -64,7 +64,7 @@ public class AdminController {
 			@RequestParam(value="adminname",required=false) String adminname){
 
 			PageList pl = this.admin.getAdmin(adminname, pagenum, pagesize);
-
+			List<Object> list=pl.getPageRow();
 			//记录日志
 			Log log=new Log("管理员管理","查询","检索词:"+adminname,request);
 			logService.addLog(log);
