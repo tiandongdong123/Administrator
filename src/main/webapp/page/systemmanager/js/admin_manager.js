@@ -143,8 +143,16 @@ function changeadmin(obj,id){
 	    			},
 	    			dataType : "json",
 	    			success : function(data) {
-	    				layer.msg("修改成功");
-	    				adminpage($(".laypage_curr").text());
+	    				if(data.flag===true){
+	    					layer.msg("修改成功");
+		    				adminpage($(".laypage_curr").text());						    
+						}else if(data.flag===false){
+							layer.msg("修改失败");
+							parent.layer.close(index);
+						}else if(data.flag==="fail") {
+							layer.msg(data.fail); 
+						}
+	    				
 	    			}
 	    		});
 	    }
