@@ -123,11 +123,19 @@ public class RoleController {
 		boolean rt=false;
 		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
 		boolean purviewIsNull=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
-		if(role.getRoleName().equals("admin")){
+		if(role.getRoleName().equals("超级管理员")){
 			map.put("flag", "fail");
 			map.put("fail","超级管理员信息不可以被修改");
 				return map;
 		}
+		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+		String roleId=wfAdmin.getRole_id();
+		if(role.getRoleId().equals(roleId)){
+			map.put("flag", "fail");
+			map.put("fail","管理员不能自己修改自己的角色");
+				return map;
+		}
+		
 		if(roleName && purviewIsNull){
 			rt = this.role.doUpdateRole(role);
 			map.put("flag", rt);
