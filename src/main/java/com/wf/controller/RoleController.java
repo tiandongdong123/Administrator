@@ -3,6 +3,7 @@ package com.wf.controller;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +68,11 @@ public class RoleController {
 	@RequestMapping("getpurview")
 	@ResponseBody
 	public JSONArray getPurview(){
-		List<Menu> liseMenu=MenuXml.getListMenu();
+		List<Menu> liseMenu=MenuXml.LIST_MENU;
 		JSONArray array = JSONArray.fromObject(liseMenu);
+		Map<String,Integer> map=new HashMap<String, Integer>();
+		map.put("menuNum", MenuXml.MENU_NAME.size());
+		array.add(map);
 		return array;
 	}
 	/**
@@ -155,7 +159,7 @@ public class RoleController {
 			String purviewsPlay=StringUtils.join(menus, "|");
 			CookieUtil.addPrivilegeCookie(purviewsPlay, response);
 			for(int i = 0; i < menuIds.length; i++){
-				String purview=MenuXml.getMenuName().get(menuIds[i]);
+				String purview=MenuXml.MENU_NAME.get(menuIds[i]);
 				if(purview!=null&&!"".equals(purview)){
 					menus.add(purview);
 				}

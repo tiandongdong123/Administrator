@@ -170,7 +170,7 @@ public class UserController {
 		String purviewsPlay=StringUtils.join(menus, "|");
 		CookieUtil.addPrivilegeCookie(purviewsPlay, res);
 		for(int i = 0; i < menuIds.length; i++){
-			String purview=MenuXml.getMenuName().get(menuIds[i]);
+			String purview=MenuXml.MENU_NAME.get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){
 				menus.add(purview);
 			}

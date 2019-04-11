@@ -17,44 +17,64 @@ import com.wf.bean.Menu;
 
 public class MenuXml {
 
-	public static Map<String,String> menuName;
+	public static Map<String,String> MENU_NAME;
+	
 	public static List<String> MENU_ALL_URL;
+	
 	public static List<String> MENU_PURVIEW_URL;
+	
+	public static List<Menu> LIST_MENU;
+	
+	public static int NODE_NUM;
+	
 	static{
-		//获取所有权限url
-		MENU_ALL_URL=new ArrayList<String>();
-		try {
-			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
-			File f = new File(url.getFile());   
-			SAXReader reader = new SAXReader();   
-			Document doc = reader.read(f);   
-			Element root = doc.getRootElement();
-			List<Element> listElements=root.elements();//所有一级子节点的list
-			for (Element element : listElements) {
-				getNodesUrl(element);
+		if(MENU_ALL_URL==null){
+			//获取所有权限url
+			MENU_ALL_URL=new ArrayList<String>();
+			try {
+				URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+				File f = new File(url.getFile());   
+				SAXReader reader = new SAXReader();   
+				Document doc = reader.read(f);   
+				Element root = doc.getRootElement();
+				List<Element> listElements=root.elements();//所有一级子节点的list
+				for (Element element : listElements) {
+					getNodesUrl(element);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		if(LIST_MENU==null){
+			try {
+				LIST_MENU=new ArrayList<Menu>();
+				URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+				File f = new File(url.getFile());   
+				SAXReader reader = new SAXReader();   
+				Document doc = reader.read(f);   
+				Element root = doc.getRootElement();
+				List<Element> listElements=root.elements();//所有一级子节点的list
+				for (Element element : listElements) {
+					LIST_MENU.add(getNodes(element));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(MENU_NAME==null){
+			MENU_NAME=new HashMap<String, String>();
+			try {
+				URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
+				File f = new File(url.getFile());   
+				SAXReader reader = new SAXReader();   
+				Document doc = reader.read(f);   
+				Element root = doc.getRootElement();
+				getNodesName(root);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
-	public static List<Menu> getListMenu(){
-		List<Menu> listMenu=new ArrayList<Menu>();
-		try {
-			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
-			File f = new File(url.getFile());   
-			SAXReader reader = new SAXReader();   
-			Document doc = reader.read(f);   
-			Element root = doc.getRootElement();
-			List<Element> listElements=root.elements();//所有一级子节点的list
-			for (Element element : listElements) {
-				listMenu.add(getNodes(element));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return listMenu;
-	}
-
 	public static List<Menu> getPurviewsListMenu(List<String> list){
 		List<Menu> listMenu=new ArrayList<Menu>();
 		try {
@@ -166,20 +186,6 @@ public class MenuXml {
 	}
 
 	
-	public static Map<String,String> getMenuName(){
-		menuName=new HashMap<String, String>();
-		try {
-			URL url = MenuXml.class.getClassLoader().getResource("menu.xml");
-			File f = new File(url.getFile());   
-			SAXReader reader = new SAXReader();   
-			Document doc = reader.read(f);   
-			Element root = doc.getRootElement();
-			getNodesName(root);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-       return menuName;
-	}
 	private static void getNodesName(Element node){
 		//当前节点的名称、文本内容和属性
 		List<Attribute> listAttr=node.attributes();//当前节点的所有属性的list
@@ -196,7 +202,7 @@ public class MenuXml {
 			}
 		}
 		if(id!=null&&na!=null){
-			menuName.put(id, na);
+			MENU_NAME.put(id, na);
 		}
 		//递归遍历当前节点所有的子节点
 		List<Element> listElement=node.elements();//所有一级子节点的list

@@ -54,7 +54,7 @@ public class RoleServiceImpl implements RoleService{
 					JSONArray array = JSONArray.fromObject(listMENU);
 					((Role)rl.get(i)).setPurviewTree(array);
 					String sys1="";
-					Map<String,String> map=MenuXml.getMenuName();
+					Map<String,String> map=MenuXml.MENU_NAME;
 					for(int j=0;j<list.size();j++){
 						if(j==0){
 							sys1=map.get(list.get(j));
