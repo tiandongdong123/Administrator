@@ -67,13 +67,13 @@ public class RoleController {
 	 */
 	@RequestMapping("getpurview")
 	@ResponseBody
-	public JSONArray getPurview(){
+	public JSONObject getPurview(){
 		List<Menu> liseMenu=MenuXml.LIST_MENU;
 		JSONArray array = JSONArray.fromObject(liseMenu);
-		Map<String,Integer> map=new HashMap<String, Integer>();
-		map.put("menuNum", MenuXml.MENU_NAME.size());
-		array.add(map);
-		return array;
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("purview", array);
+		jsonObject.put("menuNum", MenuXml.MENU_NAME.size());
+		return jsonObject;
 	}
 	/**
 	 * 查询角色名称是否重复

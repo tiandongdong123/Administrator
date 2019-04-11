@@ -104,15 +104,15 @@ public class AdminController {
 	public JSONObject closeAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		JSONObject map = new JSONObject();
 		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
-		if(ids[0].equals(wfAdmin.getId())){
-			map.put("flag", "fail");
-			map.put("fail","管理员不能自己冻结自己的账号");
-				return map;
-		}
 		String id=this.admin.getAdminIdByName("admin");
 		if(id!=null&&ids[0].equals(id)){
 			map.put("flag", "fail");
 			map.put("fail","超级管理员信息不能被修改");
+				return map;
+		}
+		if(ids[0].equals(wfAdmin.getId())){
+			map.put("flag", "fail");
+			map.put("fail","管理员不能自己冻结自己的账号");
 				return map;
 		}
 			boolean rt = this.admin.closeAdmin(ids);
@@ -134,16 +134,16 @@ public class AdminController {
 	public JSONObject openAdmin(@RequestParam(value="ids[]",required=false) String[] ids,HttpServletRequest request){
 		JSONObject map = new JSONObject();
 		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
-		if(ids[0].equals(wfAdmin.getId())){
-			map.put("flag", "fail");
-			map.put("fail","管理员不能自己冻结自己的账号");
-				return map;
-		}
 		//查询超级管理员id
 		String id=this.admin.getAdminIdByName("admin");
 		if(id!=null&&ids[0].equals(id)){
 			map.put("flag", "fail");
 			map.put("fail","超级管理员信息不能被修改");
+				return map;
+		}
+		if(ids[0].equals(wfAdmin.getId())){
+			map.put("flag", "fail");
+			map.put("fail","管理员不能自己冻结自己的账号");
 				return map;
 		}
 			boolean rt = this.admin.openAdmin(ids);
