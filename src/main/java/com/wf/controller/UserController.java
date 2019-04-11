@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +49,6 @@ public class UserController {
 	@Autowired
 	RemindService remindService;
 	
-	//private RedisUtil redis = new RedisUtil();
 	private UserRedisUtil redis=new UserRedisUtil();
 	private static Logger log = Logger.getLogger(UserController.class);
 	

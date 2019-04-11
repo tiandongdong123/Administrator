@@ -53,7 +53,16 @@ function serachAutodata(curr,data,id){
 		$("#pages").show();
 	}
 	if(pageRow.length>0){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		if(purview.indexOf("C314")!=-1){
 			for(var i = 0;i<pageRow.length;i++){
 				var index = 1+pageNum++;
@@ -435,7 +444,16 @@ function compareGetTime(id){
 function  divShow(id,status){
 	var html="";
 	if(status==2){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		if(purview.indexOf("C315")!=-1){
 			html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
 		}else{
@@ -491,7 +509,16 @@ function serachManualdata(curr,data,id){
 		$("#pages_manual").show();
 	}
 	if(pageRow.length>0){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		if(purview.indexOf("C313")!=-1){
 			for(var i = 0;i<pageRow.length;i++){
 				var index = 1+pageNum++;
@@ -679,7 +706,16 @@ function updateManualSetting(id,status){
 function  divManualShow(id,status){
 	var html="";
 	if(status==2){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		if(purview.indexOf("C315")!=-1){
 			html="<button type='button' onclick=\"publishManual('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
 		}else{

@@ -10,7 +10,16 @@ function rolepage(curr){
         pagesize :20
     }, function(res){
     	html="";
-    	var purview=$.cookie('purview');
+    	var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
     for(var i =0;res.pageRow[i];i++){
     	id = 20*(curr-1)+i+1;
     	html+="<tr><td>"+id+"</td>" +

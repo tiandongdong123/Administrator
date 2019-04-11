@@ -39,7 +39,16 @@ function paging(curr){
 function datapage(res){
 		var pageNum = res.pageNum;
 		var pageTotal = res.pageTotal;
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		$("#pageNum").val(pageNum);
 		$("#pageTotal").val(pageTotal);
 		var html="";
