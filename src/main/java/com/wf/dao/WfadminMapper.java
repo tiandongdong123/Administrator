@@ -1,6 +1,7 @@
 package com.wf.dao;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -32,5 +33,7 @@ public interface WfadminMapper {
 	int doUpdateAdmin(Wfadmin admin);
 	
 	List<String> getAdminByAdminIds(@Param("ids")String[] ids);
+
+	List<String> getAdminNames(@Param("name")String name);
 
 }
