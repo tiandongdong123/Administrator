@@ -67,7 +67,16 @@ function serachdata(data){
 	$("#pageNum").val(pageNum);
 	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	$("#tbody").remove();
 	var resHtml = "";
 	resHtml += "<tbody id='tbody'><tr style='text-align: center;'>";

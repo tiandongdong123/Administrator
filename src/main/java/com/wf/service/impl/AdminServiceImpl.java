@@ -174,4 +174,10 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return rt;
 	}
+	@Override
+	public String getAdminIdByName(String name) {
+		List<Object> ad = this.admin.checkAdminId(name);
+		Wfadmin admin=(Wfadmin)ad.get(0);
+		return admin.getId();
+	}
 }

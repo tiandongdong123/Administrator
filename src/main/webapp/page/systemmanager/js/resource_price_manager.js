@@ -7,7 +7,16 @@ $(function(){
 //分页显示
 function pricepage(curr){
 	var name=$("#inputEmail3").val();
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
     $.getJSON('../resourceprice/getprice.do', {
         pagenum: curr,//向服务端传的参数
         pagesize :10,

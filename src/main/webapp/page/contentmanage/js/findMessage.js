@@ -59,7 +59,16 @@ function serachdata(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+20*(pageNum-1);
 			var rows = pageRow[i];

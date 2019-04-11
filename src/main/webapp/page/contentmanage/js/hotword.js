@@ -74,7 +74,16 @@ function serachdata(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+pageNum;
 			var rows = pageRow[i];
@@ -298,6 +307,7 @@ function add_word(){
 	dataType : "json",
 	data : {"word_content" :word_content},
 		success : function (data){
+			alert(data);
 			success=data;
 		}
   });
@@ -643,7 +653,16 @@ function serachdataManual(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
-		var purview=$.cookie('purview');
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+pageNum;
 			var rows = pageRow[i];
@@ -949,7 +968,16 @@ function enterUpdateWordManual(){
 }
 
 function publishManual(that,obj,issueState){
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	if(issueState!='3' && checkCount()>=20){
     	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;

@@ -106,10 +106,15 @@ public class AdminController {
 		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
 		if(ids[0].equals(wfAdmin.getId())){
 			map.put("flag", "fail");
-			map.put("fail","超级管理员信息不可以被修改");
+			map.put("fail","管理员不能自己冻结自己的账号");
 				return map;
 		}
-		
+		String id=this.admin.getAdminIdByName("admin");
+		if(id!=null&&ids[0].equals(id)){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不能被修改");
+				return map;
+		}
 			boolean rt = this.admin.closeAdmin(ids);
 			map.put("flag", rt);
 			//记录日志
@@ -131,10 +136,16 @@ public class AdminController {
 		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
 		if(ids[0].equals(wfAdmin.getId())){
 			map.put("flag", "fail");
-			map.put("fail","超级管理员信息不可以被修改");
+			map.put("fail","管理员不能自己冻结自己的账号");
 				return map;
 		}
-
+		//查询超级管理员id
+		String id=this.admin.getAdminIdByName("admin");
+		if(id!=null&&ids[0].equals(id)){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不能被修改");
+				return map;
+		}
 			boolean rt = this.admin.openAdmin(ids);
 			map.put("flag", rt);
 			//记录日志

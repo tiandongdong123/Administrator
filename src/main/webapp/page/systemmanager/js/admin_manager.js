@@ -11,7 +11,16 @@ $(function(){
 //分页显示
 function adminpage(curr){
 	pageindex = curr || 1;
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	var adminname = $.trim($("#inputEmail3").val());
     $.post('../admin/getadmin.do', {
         pagenum: curr || 1,//向服务端传的参数

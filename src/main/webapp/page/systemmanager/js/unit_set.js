@@ -5,7 +5,16 @@ $(function(){
 
 //分页显示
 function unitpage(curr){
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
     $.getJSON('../unit/getunit.do', {
         pagenum: curr,//向服务端传的参数
         pagesize :10

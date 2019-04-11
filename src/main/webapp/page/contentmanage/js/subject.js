@@ -89,7 +89,16 @@ function paging(curr){
 function serachdata(data){
 	var pageNum = data.pageNum;
 	var pageTotal = data.pageTotal;
-	var purview=$.cookie('purview');
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	$("#pageNum").val(pageNum);
 	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
