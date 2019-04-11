@@ -64,7 +64,7 @@ function doaddadmin(){
 		var deptname=$.trim($("#deptname").val());
 		
 		if(deptname==null||deptname==''){
-			$("#checkpassword").text("请填写部门名称");
+			$("#departmentStr").text("请填写部门名称");
 			$("#deptname").focus();
 			return;
 		}else if (patt1.test(deptname)) {
@@ -188,7 +188,9 @@ function checkValue(type,str) {
 	}
 	var patrn= /^[\u4E00-\u9FA5]+$/i;
 	if (type==='department') {
-		if (patt1.test(str)) {
+		if (str==''||str==null) {
+			$(typeClass).text('请填写部门名称')
+		}else if (patt1.test(str)) {
 			$(typeClass).text('部门名称不能包含空格')
 		}else if (!patrn.test(str)) {
 			$(typeClass).text('部门必须为中文')

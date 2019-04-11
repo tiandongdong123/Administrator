@@ -51,7 +51,7 @@ function purviewtree(json){
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
 		//zTree_Menu.expandNode(zTree_Menu.getNodes()[0],true);
 	});
-	let allNodes = zTree_Menu.getCheckedNodes(false).length
+	var allNodes = zTree_Menu.getCheckedNodes(false).length
 	function onCheck(){
 		var tree="";
 		var checknodesNum=0;
