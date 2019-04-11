@@ -45,7 +45,7 @@ function purviewtree(json){
 		}
 	};
 
-	var zNodes =json;
+	var zNodes =json.purview;
 	$(document).ready(function(){
 		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
@@ -107,7 +107,6 @@ function doaddrole(){
 			$("#ruleName").text('请选择角色权限')
 			return
 		}
-		console.log($('#treeids').length)
 		$.ajax({  
 			type : "POST",  
 			url : "../role/doaddrole.do",

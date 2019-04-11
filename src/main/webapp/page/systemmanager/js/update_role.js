@@ -9,12 +9,13 @@ function purview(ids){
 	    dataType: "json",
 	    success : function(data) {  
 	    	purviewtree(data);
-	    	checktree(ids);
+	    	checktree(ids,data);
 	    },  
 	});  
 }
 
-function checktree(ids){
+function checktree(ids,data){
+	var number = data.menuNum
 	var treeids = "";
 	if(ids==null||ids==''){
 		treeids =$("#treeids").val();
@@ -36,7 +37,7 @@ function checktree(ids){
 		   checknodesNum++;
 	   }
 	} 	
-	$("#checkall").attr("checked",checknodesNum==nodes.length);
+	$("#checkall").attr("checked",checkNodes.length==number);
 }
 
 function purviewtree(json){
@@ -69,7 +70,7 @@ function purviewtree(json){
 		}
 	};
 
-	var zNodes =json;
+	var zNodes =json.purview;
 	$(document).ready(function(){
 		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
@@ -89,8 +90,9 @@ function purviewtree(json){
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 		var nodes = zTree_Menu.getNodes();
-		var beforNum = $('#treeidstart').val().split(',').length
-		var number = tree.split(',').length
+		var beforNum = $('#treeids').val().split(',').length
+//		var number = tree.split(',').length
+		var number = json.menuNum
 		$("#checkall").prop("checked",beforNum==number);
 	}
 }
