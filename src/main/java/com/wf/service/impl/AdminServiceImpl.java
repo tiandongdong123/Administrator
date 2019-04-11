@@ -40,8 +40,8 @@ public class AdminServiceImpl implements AdminService {
 		int pnum = (pagenum-1) * pagesize;
 		String param = null;
 		if(StringUtils.isNotBlank(adminname)){
-			adminname=adminname.replace("_", "[_]");
-			adminname=adminname.replace("%", "[%]");
+			adminname=adminname.replace("_", "\\_");
+			adminname=adminname.replace("%", "\\%");
 			param = "%"+adminname+"%";
 		}
 		try {
