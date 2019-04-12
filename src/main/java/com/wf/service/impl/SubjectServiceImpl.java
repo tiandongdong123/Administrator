@@ -21,7 +21,6 @@ import com.wf.service.SubjectService;
 public class SubjectServiceImpl implements SubjectService {
 	@Autowired
 	SubjectMapper dao;
-	RedisUtil redis = new RedisUtil();
 	@Override
 	public PageList getSubject(int pageNum,int pageSize,String level,String classNum,String className) {
 		if(StringUtils.isEmpty(level)) level=null;
@@ -53,9 +52,8 @@ public class SubjectServiceImpl implements SubjectService {
 	
 	@Override
 	public Boolean insertSubjects() {
-		RedisUtil r = new RedisUtil();
 //		学科分类1:CLCDic,2:PeriodicalSubject,3:video_subject,4:PatentIPC,5:CstadSubject,6:Standard
-		String s = r.get("CstadSubject",0);
+		String s = RedisUtil.get("CstadSubject",0);
 		JSONArray jsonArry = new JSONArray();
 		jsonArry = JSONArray.fromObject(s);
 		for (int i = 0; i < jsonArry.size(); i++) {
@@ -111,10 +109,10 @@ public class SubjectServiceImpl implements SubjectService {
 		//清空redis中对应的key
 		int type=7;
 		for(int i=1;i<7;i++){
-			redis.del(1,"subjects"+type);
+			RedisUtil.del(1,"subjects"+type);
 			List<Object> list= dao.find(type+"");
 			JSONArray jsonArr = JSONArray.fromObject(list);
-			redis.set("subjects"+type, jsonArr.toString(),1);
+			RedisUtil.set("subjects"+type, jsonArr.toString(),1);
 		}
 		return false;
 	}

@@ -49,7 +49,6 @@ public class UserController {
 	@Autowired
 	RemindService remindService;
 	
-	private UserRedisUtil redis=new UserRedisUtil();
 	private static Logger log = Logger.getLogger(UserController.class);
 	
 	/**
@@ -123,8 +122,8 @@ public class UserController {
 				JSONObject json = JSONObject.fromObject(p);
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				json.put("registration_time", formatter.format(m.get("registration_time")));
-				redis.hset(token, "Admin." + user.getWangfang_admin_id(), json.toString(),0);
-				redis.expire(token, 3600,0);
+				UserRedisUtil.hset(token, "Admin." + user.getWangfang_admin_id(), json.toString(),0);
+				UserRedisUtil.expire(token, 3600,0);
 				req.getSession();
 				map.put("flag", "true");
 			}
@@ -142,7 +141,7 @@ public class UserController {
 	public ModelAndView logout(HttpServletRequest req,HttpServletResponse res){
 		String token=CookieUtil.getCookie(req);
 		if (token != null) {
-			redis.del(0, token);
+			UserRedisUtil.del(0, token);
 		}
 		return new ModelAndView("redirect:/user/toLogin.do");
 	}
@@ -183,8 +182,8 @@ public class UserController {
 		map.put("purviews", purviews);
 		map.put("userName", userId);
 		map.put("department", deptName);
-		redis.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(),0);
-		redis.expire(CookieUtil.LAYOUT+userId, 3600,0); //设置超时时间
+		UserRedisUtil.set(CookieUtil.LAYOUT+userId,JSONObject.fromObject(map).toString(),0);
+		UserRedisUtil.expire(CookieUtil.LAYOUT+userId, 3600,0); //设置超时时间
 		view.setViewName("/page/index");
 		log.info(admin.getWangfang_admin_id()+"跳转页面耗时："+(System.currentTimeMillis()-time)+"ms");
 		return view;

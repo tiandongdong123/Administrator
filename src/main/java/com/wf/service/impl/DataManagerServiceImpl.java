@@ -447,7 +447,6 @@ public class DataManagerServiceImpl implements DataManagerService {
 		JSONArray  json = new JSONArray();
 		boolean success = false;
 		try {
-			RedisUtil util = new RedisUtil();
 			val = GetDetails.CLC_DIC==null ? GetDetails.getCLCDic() : GetDetails.CLC_DIC;
 			json = JSONArray.fromObject(val);
 			success =true;
@@ -726,9 +725,8 @@ public class DataManagerServiceImpl implements DataManagerService {
 	public void selectZY() {
 		// TODO Auto-generated method stub
 		JSONArray list = dbConfig.selectSitateFoOne();
-		RedisUtil redis= new RedisUtil();
-		redis.del("datamanager");
-		redis.set("datamanager", list.toString(), 6);
+		RedisUtil.del("datamanager");
+		RedisUtil.set("datamanager", list.toString(), 6);
 	}
 	@Override
 	public List<Object> exportData(String dataname) {

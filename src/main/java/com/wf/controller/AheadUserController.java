@@ -113,8 +113,6 @@ public class AheadUserController {
 	@Autowired
 	private BindAccountChannel bindAccountChannel;
 
-	private RedisUtil redis = new RedisUtil();
-
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 
 
@@ -339,11 +337,11 @@ public class AheadUserController {
 		int uuf = aheadUserService.updateUserFreeze(aid, flag);
 		if (uuf > 0) {
 			if ("1".equals(flag)) { //冻结
-				redis.set(aid, "true", 12);
-				redis.expire(aid, 3600 * 24, 12); //设置超时时间
+				RedisUtil.set(aid, "true", 12);
+				RedisUtil.expire(aid, 3600 * 24, 12); //设置超时时间
 				HttpClientUtil.updateUserData(aid, "1");
 			} else if ("2".equals(flag)) { //解冻
-				redis.del(12, aid);
+				RedisUtil.del(12, aid);
 				HttpClientUtil.updateUserData(aid, "0");
 			}
 			SolrThread.setFreeze(aid,flag);
@@ -428,6 +426,7 @@ public class AheadUserController {
 	@RequestMapping("findpatent")
 	@ResponseBody
 	public Map<String,Object> findPatent(String num){
+
 		String str = GetDetails.PATENT_IPC==null ? GetDetails.getPatentIpc() : GetDetails.PATENT_IPC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
@@ -502,6 +501,7 @@ public class AheadUserController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONArray arrayArea = new JSONArray();
+
 		String area = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(area);
 		for (int i = 0; i < region.size(); i++) {
@@ -542,6 +542,7 @@ public class AheadUserController {
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
+
 		String str = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
@@ -1057,11 +1058,11 @@ public class AheadUserController {
 				int i = aheadUserService.updateUserFreeze(str,radio);
 				if(i>0){
 					if ("1".equals(radio)) { //冻结
-						redis.set(str, "true", 12);
-						redis.expire(str, 3600 * 24, 12); //设置超时时间
+						RedisUtil.set(str, "true", 12);
+						RedisUtil.expire(str, 3600 * 24, 12); //设置超时时间
 						HttpClientUtil.updateUserData(str, "1");
 					} else if ("2".equals(radio)) { //解冻
-						redis.del(12, str);
+						RedisUtil.del(12, str);
 						HttpClientUtil.updateUserData(str, "0");
 					}
 					SolrThread.setFreeze(str, radio);

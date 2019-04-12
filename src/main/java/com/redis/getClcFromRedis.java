@@ -9,7 +9,6 @@ public class getClcFromRedis {
 	
 public String  getClcName(String clc) {
 		
-		RedisUtil redis=new RedisUtil();
 		String clcdic=GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		JSONArray json=JSONArray.fromObject(clcdic);
 		String name=null;

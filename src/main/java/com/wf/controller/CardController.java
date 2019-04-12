@@ -396,17 +396,16 @@ public class CardController {
 	public String updateCheckState(HttpServletRequest request, String batchId)
 			throws UnknownHostException {
 	
-		RedisUtil redis = new RedisUtil();
 		String key = "updateCheckState" + batchId;
-		String str = redis.get(key, 0);
+		String str = RedisUtil.get(key, 0);
 		if (!StringUtils.isEmpty(str)) {
 			return "-1";
 		}
-		redis.set(key, "0", 0);
-		redis.expire(key, 3600, 0);
+		RedisUtil.set(key, "0", 0);
+		RedisUtil.expire(key, 3600, 0);
 		Wfadmin admin=CookieUtil.getWfadmin(request);
 		boolean flag =cardBatchService.updateCheckState(admin, batchId);// 审核状态改变
-		redis.del(key);
+		RedisUtil.del(key);
 		if (flag) {
 			// 记录日志
 			Log log = new Log("审核万方卡", "审核", "万方卡卡号:" + batchId, request);

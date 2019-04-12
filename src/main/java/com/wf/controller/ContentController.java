@@ -7,15 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -132,7 +124,6 @@ public class ContentController {
 	@Autowired
 	InformationLabelService informationLabelService;
 
-	RedisUtil redis = new RedisUtil();
 
 	/**
 	 * 学科分类信息查询
@@ -658,8 +649,8 @@ public class ContentController {
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
-		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);
+		RedisUtil.del("sourcetype");
+		RedisUtil.set("sourcetype", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, result);
 
 		//记录日志
@@ -679,8 +670,8 @@ public class ContentController {
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = resourceTypeService.getAll1();
-		redis.del("sourcetype");
-		redis.set("sourcetype", list.toString(), 6);
+		RedisUtil.del("sourcetype");
+		RedisUtil.set("sourcetype", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, result);
 
 		//记录日志
@@ -1445,7 +1436,6 @@ public class ContentController {
 	public JSONArray getsubject(HttpServletResponse response) {
 		JSONArray jsons = new JSONArray();
 		JSONArray ajsons = new JSONArray();
-		RedisUtil r = new RedisUtil();
 		String subject = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		jsons = JSONArray.fromObject(subject);
 		for (int i = 0; i < jsons.size(); i++) {
@@ -1635,8 +1625,8 @@ public class ContentController {
 		JSONArray list = resourceTypeService.getAll1();
 		boolean b = false;
 		if (result > 0) {
-			redis.del("sourcetype");
-			redis.set("sourcetype", list.toString(), 6);
+			RedisUtil.del("sourcetype");
+			RedisUtil.set("sourcetype", list.toString(), 6);
 			b = true;
 		}
 		return b;
@@ -2061,7 +2051,7 @@ public class ContentController {
 		if (set != null) {
 			//判断是否是首次执行
 			if (set.getIs_first().equals("0")) {
-				redis.del(11, "theme");
+				RedisUtil.del(11, "theme");
 			}
 		}
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
@@ -2132,7 +2122,7 @@ public class ContentController {
 		//判断是否是首次执行
 		if (set != null) {
 			if (set.getIs_first().equals("0")) {
-				redis.del(11, "theme");
+				RedisUtil.del(11, "theme");
 			}
 		}
 		if (status == 1) {

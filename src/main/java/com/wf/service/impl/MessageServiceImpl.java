@@ -28,7 +28,6 @@ public class MessageServiceImpl implements MessageService {
 	@Autowired
 	MessageMapper dao;
 
-	RedisUtil redis = new RedisUtil();
 	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
 
 	@Override
@@ -141,8 +140,7 @@ public class MessageServiceImpl implements MessageService {
 			Message message=dao.findMessage(id);
 			deployInformation("information",type,message);
 		}else if(issue==3){//下撤
-			RedisUtil redisUtil = new RedisUtil();
-			String collection = redisUtil.get("information", 3);
+			String collection = RedisUtil.get("information", 3);
 			SolrService.getInstance(hosts+"/"+collection);
 			SolrService.deleteIndex(id);
 		}
@@ -176,8 +174,8 @@ public class MessageServiceImpl implements MessageService {
         map.put("size", 3);
         if("专题聚焦".equals(colums)){
             //清空redis中对应的key
-            redis.del("ztID");
-            redis.del("special");
+        	RedisUtil.del("ztID");
+        	RedisUtil.del("special");
             if(topSize<3){
                 map.put("size", 10-topSize);
                 List<Object> ls = dao.selectBycolums(map);//获取发布未置顶状态资讯
@@ -187,12 +185,12 @@ public class MessageServiceImpl implements MessageService {
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
-                redis.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
-                redis.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
+                RedisUtil.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
+                RedisUtil.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
             }
         }else if("科技动态".equals(colums)){
-            redis.del("hyID");
-            redis.del("conference");
+        	RedisUtil.del("hyID");
+        	RedisUtil.del("conference");
             if(topSize<3){
                 map.put("size", 3-topSize);
                 List<Object> ls = dao.selectBycolums(map);
@@ -202,12 +200,12 @@ public class MessageServiceImpl implements MessageService {
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
-                redis.zadd("hyID", i, m.getId());
-                redis.hset("conference", m.getId(), object);
+                RedisUtil.zadd("hyID", i, m.getId());
+                RedisUtil.hset("conference", m.getId(), object);
             }
         }else if("会议速递".equals(colums) || "基金申报".equals(colums)){
-            redis.del("jjID");
-            redis.del("fund");
+        	RedisUtil.del("jjID");
+            RedisUtil.del("fund");
             if(topSize<3){
                 map.put("size", 3-topSize);
                 List<Object> ls = dao.selectBycolums2(map);
@@ -217,12 +215,12 @@ public class MessageServiceImpl implements MessageService {
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
-                redis.zadd("jjID", i, m.getId());
-                redis.hset("fund", m.getId(), object);
+                RedisUtil.zadd("jjID", i, m.getId());
+                RedisUtil.hset("fund", m.getId(), object);
             }
         }else if("万方资讯".equals(colums)){
-            redis.del("kkID");
-            redis.del("activity");
+        	RedisUtil.del("kkID");
+        	RedisUtil.del("activity");
             if(topSize<3){
                 map.put("size", 3-topSize);
                 List<Object> ls = dao.selectBycolums(map);
@@ -232,8 +230,8 @@ public class MessageServiceImpl implements MessageService {
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
-                redis.zadd("kkID", i, m.getId());
-                redis.hset("activity", m.getId(), object);
+                RedisUtil.zadd("kkID", i, m.getId());
+                RedisUtil.hset("activity", m.getId(), object);
             }
         }
 
@@ -287,8 +285,7 @@ public class MessageServiceImpl implements MessageService {
 		newMap.put("stringIS_isTop", isTop);
 		newMap.put("longIS_sort", this.getLongSort(isTop, stick, createTime));
 		list.add(newMap);
-		RedisUtil redisUtil = new RedisUtil();
-		String collection = redisUtil.get(core, 3);
+		String collection = RedisUtil.get(core, 3);
 		SolrService.getInstance(hosts+"/"+collection);
 		SolrService.createIndexFound(list);
 	}
@@ -340,8 +337,7 @@ public class MessageServiceImpl implements MessageService {
 		setRedis("科技动态");
 		setRedis("基金会议");
 		setRedis("万方资讯");
-		RedisUtil redisUtil = new RedisUtil();
-		String collection = redisUtil.get("information", 3);
+		String collection = RedisUtil.get("information", 3);
 		SolrService.getInstance(hosts+"/"+collection);
 		List<Map<String,Object>> indexList=new ArrayList<Map<String,Object>>();
 		for(Object obj:list){
