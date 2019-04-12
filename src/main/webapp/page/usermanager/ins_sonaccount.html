@@ -38,7 +38,7 @@
 		<div style="overflow-y :auto;position:relative">
 			<div  class="box-body no-padding">
 				<div class="mailbox-controls">
-                	<?if(!isEmpty(map.pageList)&&map.pageList.totalRow>0){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button><?}?>
+                	<?if(!isEmpty(map.pageList)&&map.pageList.totalRow>0){?><button <?if(!strutil.contain(session.purviews,"A151")){?>style="display:none"<?}?> type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="exportexecl()">导出</button><?}?>
                 	<?if(!isEmpty(map.isBack)){?><button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="goInformation('${map.pid}');">返回</button><?}?>
 				</div>
 				<div>

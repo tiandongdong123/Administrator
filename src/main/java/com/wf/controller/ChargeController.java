@@ -1,8 +1,12 @@
 package com.wf.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.utils.CookieUtil;
 /**
  * 充值管理模块
  * @author wangguosheng
@@ -19,7 +23,7 @@ public class ChargeController {
 	public ModelAndView pay(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/pay_manager");
-		return view;
+			return view;
 	}
 	/**
 	 *	生成充值码
@@ -28,7 +32,7 @@ public class ChargeController {
 	public ModelAndView create_ChargeCode(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/create_chargeCode");
-		return view;
+			return view;
 	}
 	/**
 	 *	充值码批次查询
@@ -37,7 +41,7 @@ public class ChargeController {
 	public ModelAndView search_ChargeCode_Batch(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/search_chargeCode_Batch");
-		return view;
+			return view;
 	}
 	/**
 	 *	充值码信息查询
@@ -46,7 +50,7 @@ public class ChargeController {
 	public ModelAndView search_ChargeCode(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/search_chargeCode");
-		return view;
+			return view;
 	}
 
 }

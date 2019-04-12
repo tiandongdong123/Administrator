@@ -15,7 +15,7 @@ function findOne(){
 	$("#pagenum").val(1);
 	showPage(1);
 }
-
+ 
 function showPage(curr){
 	word_nature=$("#word_nature").find("option:selected").val();
 	status=$("#status").find("option:selected").val();
@@ -74,6 +74,16 @@ function serachdata(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+pageNum;
 			var rows = pageRow[i];
@@ -109,10 +119,19 @@ function serachdata(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' id=\""+rows.id+"_user\">"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
-			"<td class='mailbox-name' style='width:280px;'><div>"+
-			"<button type='button' onclick=\"publish(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"update('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
-          "</tr>";
+			"<td class='mailbox-name' style='width:280px;'><div>";
+			if(purview.indexOf("C323")!=-1){
+				resHtml+="<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;"; 
+			}
+			if(purview.indexOf("C322")!=-1){
+				resHtml+="<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}
 		}
 	}
 	resHtml+="</tbody>";
@@ -288,6 +307,7 @@ function add_word(){
 	dataType : "json",
 	data : {"word_content" :word_content},
 		success : function (data){
+			alert(data);
 			success=data;
 		}
   });
@@ -469,10 +489,10 @@ function publish(that,obj,issueState){
 	    				clearManual()
 	    				if (issueState=='3') {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'2\')" class="btn btn-primary" id="update_one">修1改</button>'
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publish(this,'+"'"+obj+"'"+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="update('+"'"+obj+"'"+',\'1\')" class="btn btn-primary" id="update_one">修2改</button>'
 	    				}
 //	    				console.log($(that)[0].parentNode.innerHTML)
 //	    				showPage(1);
@@ -633,6 +653,16 @@ function serachdataManual(curr,data){
     "<td class=\"mailbox-name\">操作</td>"+
     "</tr>";
 	if(pageRow.length>0){
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
 		for(var i = 0;i<pageRow.length;i++){
 			var index = 1+i+pageNum;
 			var rows = pageRow[i];
@@ -668,10 +698,19 @@ function serachdataManual(curr,data){
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operationTime==null?"":rows.operationTime.substr(0,rows.operationTime.length-2))+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+(rows.operation==null?"":rows.operation)+"</td>"+
             "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+word_status+"</td>"+
-			"<td class='mailbox-name' style='width:280px;'><div>"+
-			"<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;" +
-			"<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>" +
-          "</tr>";
+			"<td class='mailbox-name' style='width:280px;'><div>"
+			if(purview.indexOf("C323")!=-1){
+				resHtml+="<button type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"publishManual(this,'"+rows.id+"',"+issueNum+")\" class='btn btn-primary' id=\"update_issue\">"+issue+"</button>&nbsp;"; 
+			}
+			if(purview.indexOf("C322")!=-1){
+				resHtml+="<button type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}else{
+				resHtml+="<button style='display:none' type='button' onclick=\"updateManual('"+rows.id+"','"+rows.wordStatus+"')\" class='btn btn-primary' id=\"update_one\">修改</button></div></td>"+
+				"</tr>";
+			}
 		}
 	}
 	resHtml+="</tbody>";
@@ -929,6 +968,16 @@ function enterUpdateWordManual(){
 }
 
 function publishManual(that,obj,issueState){
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	if(issueState!='3' && checkCount()>=20){
     	layer.msg("<div style=\"color:#8B0000;\">热搜词已满20条,请下撤后发布!</div>",{icon: 2});
     	return;
@@ -979,10 +1028,18 @@ var ids=new Array();
 	    				clearManual()
 	    				if (issueState=='3') {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已下撤'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						if(purview.indexOf("C322")!=-1){
+	    							$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						}else{
+	    							$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',1)" class="btn btn-primary" id="update_issue">发布</button>&nbsp;<button style="display:none" type="button" onclick="updateManual('+obj+',\'2\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						}
 	    				} else {
 	    					$(that).parent().parent().prev().children()[0].textContent = '已发布'
-	    					$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						if(purview.indexOf("C322")!=-1){
+	    							$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						}else{
+	    							$(that)[0].parentNode.innerHTML = '<button type="button" onclick="publishManual(this,'+obj+',3)" class="btn btn-primary" id="update_issue">下撤</button>&nbsp;<button style="display:none" type="button" onclick="updateManual('+obj+',\'1\')" class="btn btn-primary" id="update_one">修改</button>'
+	    						}	
 	    				}
 	    			}else{
 	    				layer.msg("<div style=\"color:#8B0000;\">"+value+"失败!</div>",{icon: 2});

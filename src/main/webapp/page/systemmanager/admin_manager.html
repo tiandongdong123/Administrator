@@ -25,30 +25,24 @@
           <div class="box box-primary">
             <!-- form start -->
             <form role="form">
-              <div class="box-body">
-                <div class="form-group">
+            <input id="hiddenText" type="text" style="display:none" />  
+              <div class="box-body" style="padding-left: 23px;">
+                <div class="form-group" style="margin-left: -15px;">
                   	<div class="col-sm-4">
-                    <input type="email"  class="form-control" id="inputEmail3" placeholder="请输入检索词">
+                    <input type="text"  class="form-control" id="inputEmail3" placeholder="请输入检索词">
                   	</div>
                   <button type="button" class="btn btn-primary" onclick="adminpage(1)">搜索</button>
                 </div>
             </form>
-            <button type='button' class='btn btn-primary' onclick="changeadmin(this)">批量冻结</button>&nbsp;&nbsp;&nbsp;
-             <button type='button' class='btn btn-primary' onclick="changeadmin(this)">批量解冻</button>&nbsp;&nbsp;&nbsp;
-             <button type='button' class='btn btn-primary' onclick="addadmin()">添加管理员</button>
-            <table style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">
-                <thead>
+             <button  <?if(!strutil.contain(session.purviews,"F112")){?>style="display:none"<?}?> type='button' class='btn btn-primary' onclick="addadmin()">添加管理员</button>
+            <table style="table-layout:fixed;margin-top: 15px;" id="example1" class="table table-bordered table-striped">
+                <thead class="adminBody">
                 <tr>
-               	  <th style="width: 20px;"><input type="checkbox" id="num" onclick="checkedids()" name=""></th>
-                 <!--  <th>序号</th> -->
+                  <th style="width: 60px;">序号</th>
                   <th>用户名</th>
-                  <th>姓名</th>
-                  <th>部门</th>
-                  <th>手机号码</th>
-                  <th>固定电话</th>
-                  <th style="width: 140px;">E-Mail</th>
+                  <th>真实姓名</th>
+                  <th>部门名称</th>
                   <th>角色</th>
-                  <th>状态</th>
                   <th>操作</th>
                 </tr>
                 </thead>
@@ -56,6 +50,7 @@
                
                 </tbody>
               </table>
+              	<div id="errorInfo"></div>
                <div id="page"></div>
           </div>
           <!-- /.box -->

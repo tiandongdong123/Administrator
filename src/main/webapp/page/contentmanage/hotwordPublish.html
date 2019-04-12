@@ -18,7 +18,7 @@
 </ul>
     <!-- Main content -->
 <section class="content" id="manual_content">
-		<button type='button' class='btn btn-primary' onclick="addWordManualSetting();" id="addWordManualSet">添加手动发布设置</button>
+		<button <?if(!strutil.contain(session.purviews,"C311")){?>style="display:none"<?}?> type='button' class='btn btn-primary' onclick="addWordManualSetting();" id="addWordManualSet">添加手动发布设置</button>
           <div style="width: 100%;overflow-x: auto;">
             <table style="table-layout:fixed;width:1400px;" id="example1" class="table table-bordered table-striped">
                 <thead>
@@ -93,7 +93,7 @@
 </section>
 
 <section class="content" id="auto_content" style="display:none">
-		<button type='button' class='btn btn-primary' onclick="addWordSetting();" id="addWordSet">添加自动发布设置</button>
+		<button <?if(!strutil.contain(session.purviews,"C312")){?>style="display:none"<?}?> type='button' class='btn btn-primary' onclick="addWordSetting();" id="addWordSet">添加自动发布设置</button>
           <div style="width: 100%;overflow-x: auto;">
             <table style="table-layout:fixed;width:1400px;" id="example1" class="table table-bordered table-striped">
                 <thead>

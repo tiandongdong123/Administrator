@@ -49,7 +49,7 @@ public class PageManagerController {
 	public ModelAndView pageManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/page_manager");
-		return mav;
+					 return mav;
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class PageManagerController {
 	public String addPageManager(Map<String,Object> map){	
 		List<Object> modularList = modularService.getModularList();
 		map.put("modularList", modularList);
-		return "/page/othermanager/add_page_manager";
+			return "/page/othermanager/add_page_manager";
 	}
 	
 	/**

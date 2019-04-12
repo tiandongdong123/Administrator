@@ -75,7 +75,7 @@ public class SolrManagerController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());
 		mav.setViewName("/page/solrmanager/solr_manager");
-		return mav;
+			return mav;
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class SolrManagerController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("typeList", deleteArticle.getTypeList());
 		mav.setViewName("/page/solrmanager/solr_query");
-		return mav;
+			return mav;
 	}
 	
 	/**

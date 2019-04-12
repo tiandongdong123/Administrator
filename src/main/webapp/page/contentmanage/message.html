@@ -75,11 +75,10 @@
           <div class="box box-primary">
             <div  class="box-body no-padding">
              <div class="mailbox-controls">
-				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,2)">批量发布</button>
-
-				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,3)">批量下撤</button>
-				<button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="deleteMore()">批量删除</button>
-                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
+				<button <?if(!strutil.contain(session.purviews,"C115")){?>style="display:none"<?}?> type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,2)">批量发布</button>
+				<button <?if(!strutil.contain(session.purviews,"C116")){?>style="display:none"<?}?> type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="publishMore(this,3)">批量下撤</button>
+				<button <?if(!strutil.contain(session.purviews,"C117")){?>style="display:none"<?}?> type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="deleteMore()">批量删除</button>
+                <button <?if(!strutil.contain(session.purviews,"C111")){?>style="display:none"<?}?> type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addMessage()">添加资讯</button>
              </div>
 			<div class="table-responsive mailbox-messages">
                <table class="table table-bordered table-striped" id="list"></table></div>

@@ -593,7 +593,7 @@ public class CardController {
 	public ModelAndView manage_card(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/manage_card");
-		return view;
+			return view;
 	}
 	/**
 	 *	生成赠送万方卡
@@ -602,7 +602,7 @@ public class CardController {
 	public ModelAndView creat_wfcard_view(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/creat_wfcard_view");
-		return view;
+			return view;
 	}
 	
 	/**
@@ -612,7 +612,7 @@ public class CardController {
 	public ModelAndView check_card(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/check_card");
-		return view;
+			return view;
 	}
 	
 	/**
@@ -622,6 +622,6 @@ public class CardController {
 	public ModelAndView wfcard_type(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/wfcard_type");
-		return view;
+			return view;
 	}
 }

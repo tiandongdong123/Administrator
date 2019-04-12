@@ -32,11 +32,11 @@
                 </div>
             </form>
             <div >
-            	 <button type="button" class="btn btn-primary" onclick="adddata()">添加数据库</button>
-                 <button type="button" onclick="moveDown()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-down"></i></button>
-                 <button type="button" onclick="moveUp()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-up"></i></button>
+            	 <button <?if(!strutil.contain(session.purviews,"F211")){?>style="display:none"<?}?> type="button" class="btn btn-primary" onclick="adddata()">添加数据库</button>
+                 <button <?if(!strutil.contain(session.purviews,"F216")){?>style="display:none"<?}?> type="button" onclick="moveDown()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-down"></i></button>
+                 <button <?if(!strutil.contain(session.purviews,"F216")){?>style="display:none"<?}?> type="button" onclick="moveUp()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-up"></i></button>
             	 <div style="margin-left: 800px;">
-	            	 <button style="float: right;margin-right: 5px;"  type="button" class="btn btn-primary" onclick="exportData();">导出</button>
+	            	 <button <?if(!strutil.contain(session.purviews,"F215")){?>style="display:none"<?}?> style="float: right;margin-right: 5px;"  type="button" class="btn btn-primary" onclick="exportData();">导出</button>
             	 </div>
             </div>
             <table   style="table-layout:fixed;" id="example1" class="table table-bordered table-striped">

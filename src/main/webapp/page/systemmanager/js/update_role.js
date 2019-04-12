@@ -9,12 +9,13 @@ function purview(ids){
 	    dataType: "json",
 	    success : function(data) {  
 	    	purviewtree(data);
-	    	checktree(ids);
+	    	checktree(ids,data);
 	    },  
 	});  
 }
 
-function checktree(ids){
+function checktree(ids,data){
+	var number = data.menuNum
 	var treeids = "";
 	if(ids==null||ids==''){
 		treeids =$("#treeids").val();
@@ -25,7 +26,7 @@ function checktree(ids){
 	ids = treeids.split(",");
 	zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
 	for(var i=0;i<ids.length;i++){
-		zTree_Menu.checkNode(zTree_Menu.getNodeByParam("menuId",ids[i]), true ); 
+		zTree_Menu.checkNode(zTree_Menu.getNodeByParam("id",ids[i]), true ); 
 	}
 	
 	var nodes = zTree_Menu.getNodes();
@@ -36,7 +37,7 @@ function checktree(ids){
 		   checknodesNum++;
 	   }
 	} 	
-	$("#checkall").attr("checked",checknodesNum==nodes.length);
+	$("#checkall").attr("checked",checkNodes.length==number);
 }
 
 function purviewtree(json){
@@ -45,7 +46,8 @@ function purviewtree(json){
 		view: {
 			showLine: true,
 			selectedMulti: false,
-			dblClickExpand: false
+			dblClickExpand: false,
+			showTitle: false
 		},
 		check: {
 			enable: true,
@@ -55,12 +57,12 @@ function purviewtree(json){
 		
 		data: {
 			simpleData: {
-				idKey:"menuId",
+				idKey:"id",
 				pIdKey:"pid",
 				enable: true
 			},
 			key: {
-				name: "menuName"
+				name: "name"
 			}
 		},
 		callback: {
@@ -68,7 +70,7 @@ function purviewtree(json){
 		}
 	};
 
-	var zNodes =json;
+	var zNodes =json.purview;
 	$(document).ready(function(){
 		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
@@ -77,12 +79,21 @@ function purviewtree(json){
 	
 	function onCheck(){
 		var tree="";
+		var checknodesNum=0;
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
+			 if(a[i].level==0){
+				   checknodesNum++;
+			   }
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
+		var nodes = zTree_Menu.getNodes();
+		var beforNum = $('#treeids').val().split(',').length
+//		var number = tree.split(',').length
+		var number = json.menuNum
+		$("#checkall").prop("checked",beforNum==number);
 	}
 }
 
@@ -108,7 +119,7 @@ function checkrolename(name){
 					}
 				});
 		}else{
-			$("#checkrolename").text("名字不能为空");
+			$("#checkrolename").text("请填写角色名称");
 			$("#cname").val("N");
 		}
 		
@@ -125,6 +136,10 @@ function doupdaterole(){
 		var ids = $("#treeids").val();
 		var deptname=$("#deptname").find("option:selected").val();
 		var roleid = $("#roleid").val();
+		if(ids.length===0) {
+			$("#ruleName").text('请选择角色权限')
+			return
+		}
 		$.ajax( {  
 			type : "POST",  
 			url : "../role/doupdaterole.do",
@@ -137,14 +152,24 @@ function doupdaterole(){
 				},
 				dataType : "json",
 				success : function(data) {
-					if(data){
-						layer.msg("修改成功");
-						window.location.href="../admin/rolemanager.do";
-					}else{
-						layer.msg("修改失败");
+					if(data.flag===true){
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg("修改成功");
+						window.parent.rolepage(1);
+						parent.layer.close(index);						    
+					}else if(data.flag===false){
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg("修改失败");
+						parent.layer.close(index);
+						}else if(data.flag==="fail") {
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg(data.fail);
+						parent.layer.close(index); 
 					}
 				}
 			});
+	}else{
+		checkrolename($('#rolename').val())
 	}
 }
 
@@ -156,17 +181,19 @@ function checkrole(obj){
 		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 	}else{
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(false);
+		$("#treeids").val('');
 	}
 }
 
-function resttree(){
-	var ids = $("#treeidstart").val();
-	purview(ids);
+//取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
 }
