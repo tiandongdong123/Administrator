@@ -1103,6 +1103,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gArea = dto.getGazetteersArea();
 		String gAlbum = dto.getGazetteersAlbum();
 		String gLevel = dto.getGazetteersLevel();
+		String gStartTime=dto.getGazetteersStartTime();
+		String gEndTime=dto.getGazetteersEndTime();
 		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
 				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
 				|| StringUtils.isNotEmpty(gLevel)) {
@@ -1126,6 +1128,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gType))) {
 					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gStartTime)) {
+					addStringToTerms("gazetteers_startTime", "Equal", gStartTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gEndTime)) {
+					addStringToTerms("gazetteers_endTime", "Equal", gEndTime, Terms, "String");
 				}
 			}
 		}
