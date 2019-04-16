@@ -59,8 +59,44 @@ public class ResourceLimitsDTO {
 	private String gazetteersStartTime;
 	private String gazetteersEndTime;
 	private String itemId;
-
+	private String gazetteersOldType;
+	private String gazetteersOldArea;
+	private String gazetteersOldStartTime;
+	private String gazetteersOldEndTime;
 	
+	
+	public String getGazetteersOldType() {
+		return gazetteersOldType;
+	}
+
+	public void setGazetteersOldType(String gazetteersOldType) {
+		this.gazetteersOldType = gazetteersOldType;
+	}
+
+	public String getGazetteersOldArea() {
+		return gazetteersOldArea;
+	}
+
+	public void setGazetteersOldArea(String gazetteersOldArea) {
+		this.gazetteersOldArea = gazetteersOldArea;
+	}
+
+	public String getGazetteersOldStartTime() {
+		return gazetteersOldStartTime;
+	}
+
+	public void setGazetteersOldStartTime(String gazetteersOldStartTime) {
+		this.gazetteersOldStartTime = gazetteersOldStartTime;
+	}
+
+	public String getGazetteersOldEndTime() {
+		return gazetteersOldEndTime;
+	}
+
+	public void setGazetteersOldEndTime(String gazetteersOldEndTime) {
+		this.gazetteersOldEndTime = gazetteersOldEndTime;
+	}
+
 	public String getGazetteersStartTime() {
 		return gazetteersStartTime;
 	}
@@ -365,8 +401,11 @@ public class ResourceLimitsDTO {
 				+ ", gazetteersId=" + gazetteersId + ", gazetteersType=" + gazetteersType + ", gazetteersLevel="
 				+ gazetteersLevel + ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum=" + gazetteersAlbum
 				+ ", gazetteersStartTime=" + gazetteersStartTime + ", gazetteersEndTime=" + gazetteersEndTime
-				+ ", itemId=" + itemId + "]";
+				+ ", itemId=" + itemId + ", gazetteersOldType=" + gazetteersOldType + ", gazetteersOldArea="
+				+ gazetteersOldArea + ", gazetteersOldStartTime=" + gazetteersOldStartTime + ", gazetteersOldEndTime="
+				+ gazetteersOldEndTime + "]";
 	}
 
+	
 	
 }
