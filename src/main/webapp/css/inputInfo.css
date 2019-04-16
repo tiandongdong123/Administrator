@@ -727,8 +727,17 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	margin-right: 13px;
 	margin-left: 10px;
 }
-.limit #changeSelect #errorTime {
+.limit .errorTime {
 	color: red;
 	font-size: 12px;
 	margin-left: 20px;
+}
+.limit .errorOldTime {
+	color: red;
+	font-size: 12px;
+	margin-left: 20px;
+}
+.limit .noChecked {
+	background: #F8F8F8;
+	cursor: not-allowed;
 }
