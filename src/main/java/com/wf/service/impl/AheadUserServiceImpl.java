@@ -1100,11 +1100,24 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 		String gId = formatId(dto.getGazetteersId());
 		String itemId = formatId(dto.getItemId());
+		String gNType = dto.getGazetteersType();
 		String gArea = dto.getGazetteersArea();
 		String gAlbum = dto.getGazetteersAlbum();
 		String gLevel = dto.getGazetteersLevel();
 		String gStartTime=dto.getGazetteersStartTime();
 		String gEndTime=dto.getGazetteersEndTime();
+		String gOType=dto.getGazetteersOldType();
+		String gOArea=dto.getGazetteersOldArea();
+		String gOStartTime=dto.getGazetteersOldStartTime();
+		String gOEndTime=dto.getGazetteersOldEndTime();
+		String gType=null;
+		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
+			if(StringUtils.isEmpty(gNType)){
+				gType=gOType;
+			}else{
+				gType=gNType;
+			}
+		}
 		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
 				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
 				|| StringUtils.isNotEmpty(gLevel)) {
@@ -1122,7 +1135,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gArea)) {
 					addStringToTerms("gazetteers_area", "Equal", gArea, Terms, "String");
 				}
-				String gType = dto.getGazetteersType();
+				
 				if (StringUtils.isNotEmpty(gType)) {
 					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
 				}
@@ -1134,6 +1147,15 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				if (StringUtils.isNotEmpty(gEndTime)) {
 					addStringToTerms("gazetteers_endTime", "Equal", gEndTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOArea)) {
+					addStringToTerms("gazetteers_old_area", "Equal", gOArea, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOStartTime)) {
+					addStringToTerms("gazetteers_old_startTime", "Equal", gOStartTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOEndTime)) {
+					addStringToTerms("gazetteers_old_endTime", "Equal", gOEndTime, Terms, "String");
 				}
 			}
 		}
