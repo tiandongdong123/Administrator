@@ -973,7 +973,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<span><input type="radio" name="fzlx" value="1" onclick="getSxdr(1,'+count+','+i+')" checked/>分类筛选</span>';
 		text += '<span class="export"><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,'+count+','+i+')"/>自定义导入</span>';
 		text += '</div>';
-		text += '<div id="changeSelect" style="display:none">'
+		text += '<div id="changeSelect_'+count+"_"+i+'" style="display:none">'
 		text += '<div class="newSelect">';
 		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_New" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>新方志';
 		text += '<div class="newTime"><span>资源更新时间</span>'
@@ -1004,7 +1004,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<span class="locationCounty">县</span><select id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')"><option value="">全部</option></select></div>'
 		text += '</div>'
 		text += '</div>'
-		text += '<div id="changeTextarea" style="display:none">'
+		text += '<div id="changeTextarea_'+count+'_'+i+'" style="display:none">'
 		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3"  name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
 		text += '<div>条目 （以;分隔）<textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].itemId" id="itemId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
 		text += '</div>'
@@ -1012,7 +1012,6 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'">';
 		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/>'
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldArea" id="gazetteersOldArea_'+count+'_'+i+'">';
-		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldAlbum" id="gazetteersOldAlbum_'+count+'_'+i+'">';
 		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersOldLevel" id="gazetteersOldLevel_'+count+'_'+i+'"/>'
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersStartTime" id="gazetteersStartTime_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersEndTime" id="gazetteersEndTime_'+count+'_'+i+'">';
@@ -1228,8 +1227,8 @@ function findShaiXuan(count,i){
 //	$("#xian_"+count+"_"+i).attr("disabled",false);
 //	$("#checkfz_"+count+"_"+i).attr("disabled",false);
 	//自定义导入的禁用
-	$('#changeSelect').show()
-	$('#changeTextarea').hide()
+	$("#changeSelect_"+count+"_"+i).show()
+	$("#changeTextarea_"+count+"_"+i).hide()
 	$("#gazetteersId_"+count+"_"+i).attr("disabled",true);
 	$("#itemId_"+count+"_"+i).attr("disabled",true);
 }
@@ -1245,8 +1244,8 @@ function findSeftDefine(count,i){
 //	$("#xian_"+count+"_"+i).attr("disabled",true);
 //	$("#checkfz_"+count+"_"+i).attr("disabled",true);
 	//自定义导入的开放
-	$('#changeSelect').hide()
-	$('#changeTextarea').show()
+	$("#changeSelect_"+count+"_"+i).hide()
+	$("#changeTextarea_"+count+"_"+i).show()
 	$("#gazetteersId_"+count+"_"+i).attr("disabled",false);
 	$("#itemId_"+count+"_"+i).attr("disabled",false);
 }
