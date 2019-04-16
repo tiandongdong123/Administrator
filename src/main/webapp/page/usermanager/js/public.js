@@ -993,7 +993,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<div id="new_class_code_'+count+'_'+i+'" style="width: 475px;margin-left: 120px;"></div><div id="item_class_code_'+count+'_'+i+'" style="display:none;width: 475px;margin-left: 120px;"></div>'
 		text += '</div>'
 		text += '<div class="oldSelect">'
-		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_Old" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>旧方志'
+		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_Old" name="rdlist['+count+'].rldto['+i+'].gazetteersOldType"/>旧方志'
 		text += '<div class="oldTime"><span>资源更新时间</span>'
 		text += '<div class="oldSelectTime"><select disabled class="noChecked" onchange="findStartTime(this.value,1,'+count+','+i+',\'old\')"><option>不限</option>'+selectText+'</select><span style="vertical-align: top;"> ——— </span>'
 		text += '<select disabled class="noChecked" onchange="findEndTime(this.value,2,'+count+','+i+',\'old\')"><option value="">不限</option>'+selectText+'</select><span class="errorOldTime"></span></div>'
