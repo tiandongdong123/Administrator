@@ -628,6 +628,38 @@ function openPurchaseItems(count,i,type){
 		    	}
 		    }
 		});
+	}else if(type.indexOf("local")>-1){
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '地方志限定',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(){
+				if($("#gazetteersEndTime_0_2").val()<$("#gazetteersStartTime_0_2").val()) {
+					if($("#gazetteersEndTime_0_2").val()==''||$("#gazetteersStartTime_0_2").val()=='') {
+						
+					}else {
+						$('#errorTime').text('结束时间不能小于开始时间');
+					}
+				} else {
+					$('#errorTime').text('');
+				}
+				if($("#gazetteersOldEndTime_0_2").val()<$("#gazetteersOldStartTime_0_2").val()) {
+					if($("#gazetteersOldEndTime_0_2").val()==''||$("#gazetteersOldStartTime_0_2").val()=='') {
+						
+					}else {
+						$('#errorOldTime').text('结束时间不能小于开始时间');	
+					}
+				}else {
+					$('#errorOldTime').text('');
+				}
+				if($('#errorTime').text()==''&$('#errorOldTime').text()=='') {
+					layer.closeAll();					
+				}
+		    },
+		});
 	}else{
 		layer.open({
 		    type: 1, //page层 1div，2页面
@@ -847,9 +879,9 @@ function createDetail(count,i,resourceid,type){
 	if(type.indexOf("standard")>-1){
 		text += '<li><a href="#standard_'+count+'_'+i+'" data-toggle="tab">标准限定</a></li>';
 	}
-	if(type.indexOf("local chronicles")>-1){
+	/*if(type.indexOf("local chronicles")>-1){
 		text += '<li><a href="#localchronicles_'+count+'_'+i+'" data-toggle="tab">地方志限定</a></li>';
-	}
+	}*/
 	text += '</ul><div class="tab-content">';
 	if(type.indexOf("perio")>-1){
 		text += '<div class="tab-pane" id="perio_'+count+'_'+i+'">';
@@ -927,33 +959,70 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="form-group" style="width:60%;"><label><b>*</b>质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"';
 		text += ' onkeyup="this.value=this.value.replace(/[^.0-9\\n\\r-]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^.0-9\\n\\r-]/g,\'\')"></textarea></div></div></div>';
 	}
+	
 	if(type.indexOf("local chronicles")>-1){
+		var selectText = ''
+			var d = new Date()
+		var year = d.getFullYear()
+		for(var j = 2012;j<=year;j++) {
+			selectText += '<option value="'+j+'">'+j+'</option>'
+		}
 		text += '<div class="tab-pane" id="localchronicles_'+count+'_'+i+'">';
-		text += '<div style="height:400px;border:1px solid #C6C6C6;">';
-		text += '<table align=center height="100%" width="100%" border="0"><tr height="60%" align=center><td width="15%"><input type="radio" name="fzlx" value="1" onclick="getSxdr(1,'+count+','+i+')" checked/>分类筛选</td>';
-		text += '<td style="border:1px solid #C6C6C6;width:85%"><table align=center height="100%" width="100%" border="0">';
-		text += '<tr><td align=right width="10%">资源分类</td><td style="align:left;width:90%;padding-left:20px;">';
-		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="radio" value="" name="rdlist['+count+'].rldto['+i+'].gazetteersType" checked/>全部&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="radio" value="FZ_New" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>新方志&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="radio" value="FZ_Old" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>旧方志</td></tr>'
-		text += '<tr><td align=right width="10%">地区</td><td style="align:left;width:90%;padding-left:20px;">省 <select id="sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+')"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '市 <select id="shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+')"><option value="">全部</option></select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '县 <select id="xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+')"><option value="">全部</option></select></td></tr>';
-		text += '<tr><td align=right width="10%">数据分类</td><td style="align:left;width:90%;padding-left:20px;"><input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].drtm" checked/> 整本&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		text += '<input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicleItem" name="rdlist['+count+'].rldto['+i+'].drtm"/> 条目</td></tr>';
-		text += '<tr><td align=right width="10%"><span id="zjfl_'+count+'_'+i+'">专辑分类</span></td><td style="align:left;width:90%;padding-left:20px;"><a href="javascript:;" onclick="checkfzAll(this,'+count+','+i+')" id="checkfz_'+count+'_'+i+'">全选</span></td></tr>';
-		text += '<tr><td></td><td style="align:left;width:90%;padding-left:20px;height:40%">';
-		text += '<div id="new_class_code_'+count+'_'+i+'"></div><div id="item_class_code_'+count+'_'+i+'" style="display:none"></div></td></tr></table></td>';
-		text += '</tr><tr height="40%"><td align=center><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,'+count+','+i+')"/>自定义导入</td>';
-		text += '<td style="align:left;border:1px solid #C6C6C6;padding-left:5px;">';
-		text += '<table><tr><td align=right width="20%">整本 （以;分隔）</td><td style="align:left;width:80%;padding-left:20px;"><textarea class="form-control" rows="3"  name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteersId_'+count+'_'+i+'" style="width:100%;" disabled></textarea></td></tr>';
-		text += '<tr><td align=right width="20%">条目 （以;分隔）</td><td style="align:left;width:80%;padding-left:20px;"><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].itemId" id="itemId_'+count+'_'+i+'" style="width:100%;" disabled></textarea></td></tr>';
-		text += '</table></td></tr></table>';
+		text += '<div class="limit">';
+		text += '<div class="limitTab">';
+		text += '<span><input type="radio" name="fzlx" value="1" onclick="getSxdr(1,'+count+','+i+')" checked/>分类筛选</span>';
+		text += '<span class="export"><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,'+count+','+i+')"/>自定义导入</span>';
+		text += '</div>';
+		text += '<div id="changeSelect" style="display:none">'
+		text += '<div class="newSelect">';
+		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_New" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>新方志';
+		text += '<div class="newTime"><span>资源更新时间</span>'
+		text += '<div class="newSelectTime"><select onchange="findStartTime(this.value,1,'+count+','+i+',\'new\')"><option value="">不限</option>'+selectText+'</select><span style="vertical-align: top;"> ——— </span>'
+		text += '<select onchange="findEndTime(this.value,2,'+count+','+i+',\'new\')"><option value="">不限</option>'+selectText+'</select><span id="errorTime"></span></div>'
+		text += '</div>'
+		text += '<div class="newLocation"><span>地区</span><span class="newLocationSelect"><span class="locationPrev">省</span><span>'
+		text += '<select id="sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+',\'new\')"><option value="">全部</option></select>'
+		text += '<span class="locationCity">市</span><select id="shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+',\'new\')"><option value="">全部</option></select>'
+		text += '<span class="locationCounty">县</span><select id="xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'new\')"><option value="">全部</option></select></div>'
+		text += '<div class="newDate"><span>数据分类</span>'
+		text += '<div class="newDateSelect"><input onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].drtm" checked/> 整本'
+		text += '<input style="margin-left: 50px;" onclick="getDataType(this.value,'+count+','+i+')" type="radio" value="WFLocalChronicleItem" name="rdlist['+count+'].rldto['+i+'].drtm"/> 条目</div>'
+		text +=	'</div>';
+		text += '<div class="newClassify"><span id="zjfl_'+count+'_'+i+'">专辑分类</span><a style="margin-left: 20px;" href="javascript:;" onclick="checkfzAll(this,'+count+','+i+')" id="checkfz_'+count+'_'+i+'">全选</a>'
+		text +=	'</div>';
+		text += '<div id="new_class_code_'+count+'_'+i+'" style="width: 475px;margin-left: 120px;"></div><div id="item_class_code_'+count+'_'+i+'" style="display:none;width: 475px;margin-left: 120px;"></div>'
+		text += '</div>'
+		text += '<div class="oldSelect">'
+		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_Old" name="rdlist['+count+'].rldto['+i+'].gazetteersOldType"/>旧方志'
+		text += '<div class="oldTime"><span>资源更新时间</span>'
+		text += '<div class="oldSelectTime"><select onchange="findStartTime(this.value,1,'+count+','+i+',\'old\')"><option>不限</option>'+selectText+'</select><span style="vertical-align: top;"> ——— </span>'
+		text += '<select onchange="findEndTime(this.value,2,'+count+','+i+',\'old\')"><option>不限</option>'+selectText+'</select><span id="errorOldTime"></span></div>'
+		text += '</div>'
+		text += '<div class="oldLocation"><span>地区</span><span class="oldLocationSelect"><span class="locationPrev">省</span><span>'
+		text += '<select id="o_sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+',\'old\')"><option value="">全部</option></select>'
+		text += '<span class="locationCity">市</span><select id="o_shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+',\'old\')"><option value="">全部</option></select>'
+		text += '<span class="locationCounty">县</span><select id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')"><option value="">全部</option></select></div>'
+		text += '</div>'
+		text += '</div>'
+		text += '<div id="changeTextarea" style="display:none">'
+		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3"  name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
+		text += '<div>条目 （以;分隔）<textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].itemId" id="itemId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
+		text += '</div>'
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersArea" id="gazetteersArea_'+count+'_'+i+'">';
-		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'"></div></div>';
-		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/></div></div>';
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'">';
+		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersLevel" id="gazetteersLevel_'+count+'_'+i+'"/>'
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldArea" id="gazetteersOldArea_'+count+'_'+i+'">';
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldAlbum" id="gazetteersOldAlbum_'+count+'_'+i+'">';
+		text += '<input type="hidden" value="WFLocalChronicle" name="rdlist['+count+'].rldto['+i+'].gazetteersOldLevel" id="gazetteersOldLevel_'+count+'_'+i+'"/>'
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersStartTime" id="gazetteersStartTime_'+count+'_'+i+'">';
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersEndTime" id="gazetteersEndTime_'+count+'_'+i+'">';
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldStartTime" id="gazetteersOldStartTime_'+count+'_'+i+'">';
+		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldEndTime" id="gazetteersOldEndTime_'+count+'_'+i+'">';
+		text +=	'</div>'
 	}
 	text += '</div></div>';
+	
+	
 	$("#detail_0").append(text);
 	if(type.indexOf("perio")>-1||type.indexOf("degree")>-1||type.indexOf("conf")>-1||type.indexOf("books")>-1){
 		findSubject(count,i);
@@ -1010,23 +1079,23 @@ function getSxdr(value,count,i){
 
 //选择大类
 function gazetteerType(val,count,i){
-	if(val=="FZ_New" || val==""){//新方志
-		//datatype放开
-		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",false); 
-		});
-		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",false); 
-		});
-	}else if(val=="FZ_Old"){//旧方志
-		//datatype禁用
-		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",true); 
-		});
-		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
-			$(this).attr("disabled",true); 
-		});
-	}
+//	if(val=="FZ_New" || val==""){//新方志
+//		//datatype放开
+//		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
+//			$(this).attr("disabled",false); 
+//		});
+//		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
+//			$(this).attr("disabled",false); 
+//		});
+//	}else if(val=="FZ_Old"){//旧方志
+//		//datatype禁用
+//		$("input[name='classCode_"+count+"_"+i+"']").each(function(){
+//			$(this).attr("disabled",true); 
+//		});
+//		$("input[name='classCode2_"+count+"_"+i+"']").each(function(){
+//			$(this).attr("disabled",true); 
+//		});
+//	}
 }
 
 //地方志
@@ -1072,6 +1141,7 @@ function initGazetteer(count,index){
 				area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
 			}
 			$("#sheng_"+count+"_"+index).html(area);
+			$("#o_sheng_"+count+"_"+index).html(area);
 			//地区填值
 			var sheng=data.sheng;
 			if(sheng!=null){
@@ -1142,96 +1212,214 @@ function setGazetteers(count,index){
 
 //点击筛选的样式
 function findShaiXuan(count,i){
-	$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']").attr("disabled",false);
-	var gazetteersType=$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']:checked").val();
-	if(gazetteersType=="FZ_New"|| gazetteersType==""){
-		$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",false);
-		$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",false);
-	}else{
-		$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",true);
-		$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
-	}
-	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",false);
-	
-	$("#sheng_"+count+"_"+i).attr("disabled",false);
-	$("#shi_"+count+"_"+i).attr("disabled",false);
-	$("#xian_"+count+"_"+i).attr("disabled",false);
-	$("#checkfz_"+count+"_"+i).attr("disabled",false);
+//	$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']").attr("disabled",false);
+//	var gazetteersType=$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']:checked").val();
+//	if(gazetteersType=="FZ_New"|| gazetteersType==""){
+//		$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",false);
+//		$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",false);
+//	}else{
+//		$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",true);
+//		$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
+//	}
+//	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",false);
+//	
+//	$("#sheng_"+count+"_"+i).attr("disabled",false);
+//	$("#shi_"+count+"_"+i).attr("disabled",false);
+//	$("#xian_"+count+"_"+i).attr("disabled",false);
+//	$("#checkfz_"+count+"_"+i).attr("disabled",false);
 	//自定义导入的禁用
+	$('#changeSelect').show()
+	$('#changeTextarea').hide()
 	$("#gazetteersId_"+count+"_"+i).attr("disabled",true);
 	$("#itemId_"+count+"_"+i).attr("disabled",true);
 }
 //点击自定义的样式
 function findSeftDefine(count,i){
-	$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']").attr("disabled",true);
-	$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",true);
-	$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
-	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",true);
-	
-	$("#sheng_"+count+"_"+i).attr("disabled",true);
-	$("#shi_"+count+"_"+i).attr("disabled",true);
-	$("#xian_"+count+"_"+i).attr("disabled",true);
-	$("#checkfz_"+count+"_"+i).attr("disabled",true);
+//	$("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']").attr("disabled",true);
+//	$("input[name='classCode_"+count+"_"+i+"']").attr("disabled",true);
+//	$("input[name='classCode2_"+count+"_"+i+"']").attr("disabled",true);
+//	$("input[name='rdlist["+count+"].rldto["+i+"].drtm']").attr("disabled",true);
+//	
+//	$("#sheng_"+count+"_"+i).attr("disabled",true);
+//	$("#shi_"+count+"_"+i).attr("disabled",true);
+//	$("#xian_"+count+"_"+i).attr("disabled",true);
+//	$("#checkfz_"+count+"_"+i).attr("disabled",true);
 	//自定义导入的开放
+	$('#changeSelect').hide()
+	$('#changeTextarea').show()
 	$("#gazetteersId_"+count+"_"+i).attr("disabled",false);
 	$("#itemId_"+count+"_"+i).attr("disabled",false);
 }
 
-//地方志查询区域
-function findArea(value,index,count,num){
-	if(index=="1"){
-		$("#xian_"+count+"_"+num).html('<option value="">全部</option>');
+
+// 开始时间
+function findStartTime(value,index,count,number,type) {
+	if (type=='new') {
+		$("#gazetteersStartTime_"+count+"_"+number).val(value);		
+	}else if(type=='old') {
+		$("#gazetteersOldStartTime_"+count+"_"+number).val(value);
 	}
-	$.ajax({
-		type : "post",
-		data : {pid:value},
-		async:false,
-		url : "../auser/findArea.do",
-		dataType : "json",
-		beforeSend : function(XMLHttpRequest) {},
-		success:function(data){
-			var area='<option value="">全部</option>';
-			var arrayArea=data.arrayArea;
-			for(var i=0;i<arrayArea.length;i++){
-				area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
-			}
-			if(index=="1"){
-				$("#shi_"+count+"_"+num).html(area);
-			}else if(index=="2"){
-				$("#xian_"+count+"_"+num).html(area);
-			}
-			saveArea(count,num);
+	
+	if($("#gazetteersEndTime_"+count+"_"+number).val()<$("#gazetteersStartTime_"+count+"_"+number).val()) {
+		if($("#gazetteersEndTime_"+count+"_"+number).val()==''||$("#gazetteersStartTime_"+count+"_"+number).val()=='') {
+			$('#errorTime').text('');
+		}else {
+			$('#errorTime').text('结束时间不能小于开始时间');		
 		}
-	});
+	}else {
+		$('#errorTime').text('');
+	}
+	
+	if($("#gazetteersOldEndTime_"+count+"_"+number).val()<$("#gazetteersOldStartTime_"+count+"_"+number).val()) {
+		if($("#gazetteersOldEndTime_"+count+"_"+number).val()==''||$("#gazetteersOldStartTime_"+count+"_"+number).val()=='') {
+			$('#errorTime').text('');
+		}else {
+			$('#errorOldTime').text('结束时间不能小于开始时间');		
+		}
+	}else {
+		$('#errorOldTime').text('');
+	}
+}
+
+//开始时间
+function findEndTime(value,index,count,number,type) {
+	if (type=='new') {
+		$("#gazetteersEndTime_"+count+"_"+number).val(value);		
+	}else if(type=='old') {
+		$("#gazetteersOldEndTime_"+count+"_"+number).val(value);
+	}
+	
+	if($("#gazetteersEndTime_"+count+"_"+number).val()<$("#gazetteersStartTime_"+count+"_"+number).val()) {
+		if($("#gazetteersEndTime_"+count+"_"+number).val()==''||$("#gazetteersStartTime_"+count+"_"+number).val()=='') {
+			$('#errorTime').text('');
+		}else {
+			$('#errorTime').text('结束时间不能小于开始时间');
+		}
+	}else {
+		$('#errorTime').text('');
+	}
+	
+	if($("#gazetteersOldEndTime_"+count+"_"+number).val()<$("#gazetteersOldStartTime_"+count+"_"+number).val()) {
+		if($("#gazetteersOldEndTime_"+count+"_"+number).val()==''||$("#gazetteersOldStartTime_"+count+"_"+number).val()=='') {
+			$('#errorTime').text('');
+		}else {
+			$('#errorOldTime').text('结束时间不能小于开始时间');	
+		}
+	}else {
+		$('#errorOldTime').text('');
+	}
+}
+
+//地方志查询区域
+function findArea(value,index,count,num,type){
+	if(type==='new') {
+		if(index=="1"){
+			$("#xian_"+count+"_"+num).html('<option value="">全部</option>');
+		}
+		$.ajax({
+			type : "post",
+			data : {pid:value},
+			async:false,
+			url : "../auser/findArea.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				var area='<option value="">全部</option>';
+				var arrayArea=data.arrayArea;
+				for(var i=0;i<arrayArea.length;i++){
+					area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
+				}
+				if(index=="1"){
+					$("#shi_"+count+"_"+num).html(area);
+				}else if(index=="2"){
+					$("#xian_"+count+"_"+num).html(area);
+				}
+				saveArea(count,num,type);
+			}
+		});		
+	}else if (type==='old') {
+		if(index=="1"){
+			$("#xian_"+count+"_"+num).html('<option value="">全部</option>');
+		}
+		$.ajax({
+			type : "post",
+			data : {pid:value},
+			async:false,
+			url : "../auser/findArea.do",
+			dataType : "json",
+			beforeSend : function(XMLHttpRequest) {},
+			success:function(data){
+				var area='<option value="">全部</option>';
+				var arrayArea=data.arrayArea;
+				for(var i=0;i<arrayArea.length;i++){
+					area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
+				}
+				if(index=="1"){
+					$("#o_shi_"+count+"_"+num).html(area);
+				}else if(index=="2"){
+					$("#o_xian_"+count+"_"+num).html(area);
+				}
+				saveArea(count,num,type);
+			}
+		});		
+	}
 }
 
 //保存区域
-function saveArea(count,i){
-	var sheng=$("#sheng_"+count+"_"+i).find("option:selected").text();
-	if(sheng=="全部"){
-		sheng="";
+function saveArea(count,i,type){
+	if(type==='new') {
+		var sheng=$("#sheng_"+count+"_"+i).find("option:selected").text();
+		if(sheng=="全部"){
+			sheng="";
+		}
+		if(sheng==null||sheng==""){
+			$("#gazetteersArea_"+count+"_"+i).val("");
+			return;
+		}
+		var shi=$("#shi_"+count+"_"+i).find("option:selected").text();
+		if(shi=="全部"){
+			shi="";
+		}
+		if(shi==null||shi==""){
+			$("#gazetteersArea_"+count+"_"+i).val(sheng);
+			return;
+		}
+		var xian=$("#xian_"+count+"_"+i).find("option:selected").text();
+		if(xian=="全部"){
+			xian="";
+		}
+		if(xian==null||xian==""){
+			$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi);
+			return;
+		}
+		$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi+"_"+xian);	
+	}else if (type==='old') {
+		var sheng=$("#o_sheng_"+count+"_"+i).find("option:selected").text();
+		if(sheng=="全部"){
+			sheng="";
+		}
+		if(sheng==null||sheng==""){
+			$("#gazetteersOldArea_"+count+"_"+i).val("");
+			return;
+		}
+		var shi=$("#o_shi_"+count+"_"+i).find("option:selected").text();
+		if(shi=="全部"){
+			shi="";
+		}
+		if(shi==null||shi==""){
+			$("#gazetteersOldArea_"+count+"_"+i).val(sheng);
+			return;
+		}
+		var xian=$("#o_xian_"+count+"_"+i).find("option:selected").text();
+		if(xian=="全部"){
+			xian="";
+		}
+		if(xian==null||xian==""){
+			$("#gazetteersOldArea_"+count+"_"+i).val(sheng+"_"+shi);
+			return;
+		}
+		$("#gazetteersOldArea_"+count+"_"+i).val(sheng+"_"+shi+"_"+xian);	
 	}
-	if(sheng==null||sheng==""){
-		$("#gazetteersArea_"+count+"_"+i).val("");
-		return;
-	}
-	var shi=$("#shi_"+count+"_"+i).find("option:selected").text();
-	if(shi=="全部"){
-		shi="";
-	}
-	if(shi==null||shi==""){
-		$("#gazetteersArea_"+count+"_"+i).val(sheng);
-		return;
-	}
-	var xian=$("#xian_"+count+"_"+i).find("option:selected").text();
-	if(xian=="全部"){
-		xian="";
-	}
-	if(xian==null||xian==""){
-		$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi);
-		return;
-	}
-	$("#gazetteersArea_"+count+"_"+i).val(sheng+"_"+shi+"_"+xian);
 }
 //添加checkbox值
 function findBox(count,i){
