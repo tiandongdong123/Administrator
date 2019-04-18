@@ -383,6 +383,18 @@ function openItems(count,i,type){
 		    	}
 		    }
 		});
+	}else if(type.indexOf("local")>-1){
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '地方志限定',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+			yes: function(){
+				layer.closeAll();
+		    },
+		});
 	}else{
 		layer.open({
 		    type: 1, //page层 1div，2页面

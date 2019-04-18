@@ -973,7 +973,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<span><input type="radio" name="fzlx" value="1" onclick="getSxdr(1,'+count+','+i+')" checked/>分类筛选</span>';
 		text += '<span class="export"><input type="radio" name="fzlx" value="0" onclick="getSxdr(0,'+count+','+i+')"/>自定义导入</span>';
 		text += '</div>';
-		text += '<div id="changeSelect_'+count+"_"+i+'" style="display:none">'
+		text += '<div id="changeSelect_'+count+"_"+i+'">'
 		text += '<div class="newSelect">';
 		text += '<input onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_New" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>新方志';
 		text += '<div class="newTime"><span>资源更新时间</span>'
@@ -1455,7 +1455,7 @@ function findBox(count,i){
 }
 //全选和全不选
 function checkfzAll(obj,count,i){
-	if (!$($(event.target).parent().parent()[0].firstChild).is(':checked')) {
+	if (!$($(event.target).parent().parent()[0].firstElementChild).is(':checked')) {
 		return
 	} else {
 		if($("input[name='rdlist["+count+"].rldto["+i+"].gazetteersType']:checked").val()=="FZ_Old"){
