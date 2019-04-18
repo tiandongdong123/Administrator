@@ -625,6 +625,14 @@ function isEmpty(value){
 	return false;
 }
 
-
+function changExport(type,count,num) {
+	if(type===1) {
+		$("#changeSelect_"+count+"_"+num).show()
+		$("#changeTextarea_"+count+"_"+num).hide()
+	}else {
+		$("#changeSelect_"+count+"_"+num).hide()
+		$("#changeTextarea_"+count+"_"+num).show()
+	}
+}
 
 

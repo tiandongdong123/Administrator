@@ -551,7 +551,7 @@
                                     </div>
                                     <div class="oldLocation">
                                       <span>地区</span>
-                                      <span class="newLocationSelect"><span class="locationPrev">省</span>
+                                      <span class="oldLocationSelect"><span class="locationPrev">省</span>
                                         <select disabled class="noChecked" id="sheng_old_${i}_${j}"
                                           onchange="findArea(this.value,1,${i},${j})">
                                           <option value="">全部</option>
@@ -568,6 +568,16 @@
                                         </select>
                                       </span>
                                     </div>
+                                  </div>
+                                </div>
+                                <div id="changeTextarea_${i}_${j}" style="display:none">
+                                  <div>整本 （以;分隔）
+                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].gazetteersId"
+                                      id="gazetteersId_${i}_${j}">${gazetteers_id.Value!}</textarea>
+                                  </div>
+                                  <div>条目 （以;分隔
+                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].itemId"
+                                      id="itemId_${i}_${j}">${item_id.Value!}</textarea>
                                   </div>
                                 </div>
                               </div>
@@ -956,6 +966,14 @@
                                         </select>
                                       </span>
                                     </div>
+                                  </div>
+                                </div>
+                                <div id="changeTextarea_${i}_${j}" style="display:none">
+                                  <div>整本 （以;分隔）
+                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}">${gazetteers_id.Value!}</textarea>
+                                  </div>
+                                  <div>条目 （以;分隔
+                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].itemId" id="itemId_${i}_${j}">${item_id.Value!}</textarea>
                                   </div>
                                 </div>
                               </div>
