@@ -1025,12 +1025,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 						}
 					}
 				}else{//网络包库调用接口
-					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
-					if(msg==1){
-						log.info(com.getUserId()+"包库接口调用成功");
-					}else{
-						log.info(com.getUserId()+"包库更新失败");
-					}
+//					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
+//					if(msg==1){
+//						log.info(com.getUserId()+"包库接口调用成功");
+//					}else{
+//						log.info(com.getUserId()+"包库更新失败");
+//					}
 				}
 				//wfks_user_setting表添加标准配置参数
 				WfksUserSetting setting=new WfksUserSetting();
