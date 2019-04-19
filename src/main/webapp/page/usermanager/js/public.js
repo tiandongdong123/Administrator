@@ -391,35 +391,6 @@ function degreeYear(value,count,i){
 function validStandard(count,i){
 	//1、时间不能为空，而且还是时间要小于等于结束时间
 	var isBK=$("#isBK_"+count+"_"+i).is(':checked');
-	if (isBK) {
-		var startTime=$("#limitedParcelStarttime_"+count+"_"+i).val();
-		var endTime=$("#limitedParcelEndtime_"+count+"_"+i).val();
-		if(startTime==null||startTime==""){
-			layer.msg("开始时间不能为空",{icon: 2,time: 2000});
-			return false;
-		}
-		if(endTime==null||endTime==""){
-			layer.msg("结束时间不能为空",{icon: 2,time: 2000});
-			return false;
-		}
-		var d1 = new Date(startTime.replace(/\-/g, "\/"));
-		var d2 = new Date(endTime.replace(/\-/g, "\/"));
-		if(d1>d2){
-			layer.msg("开始时间不能大于结束时间",{icon: 2,time: 2000});
-			return false;
-		}
-		var readingPrint=$("#readingPrint_"+count+"_"+i).val();
-		if(readingPrint==null||readingPrint==""){
-			layer.msg("版权阅读打印不能为空",{icon: 2,time: 2000});
-			return false;
-		}
-		//3、ip不能为空
-		var fullIpRange=$("#fullIpRange_"+count+"_"+i).val();
-		if(fullIpRange==null||fullIpRange==""){
-			layer.msg("ip段必须填写",{icon: 2,time: 2000});
-			return false;
-		}
-	}
 	return true;
 }
 //字符串转化为日期
@@ -948,16 +919,6 @@ function createDetail(count,i,resourceid,type){
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" value="WFLocal">行业标准</label>';
 		text += '<label><input type="checkbox" name="rdlist['+count+'].rldto['+i+'].standardTypes" id="isBK_'+count+'_'+i+'" onclick="standardShow('+count+','+i+',\'isBK\');" value="质检出版社">网络包库(质检)</label></div>'
 		text += '<div style="display:none;" id="stand_div_'+count+'_'+i+'">';
-		text += '<div class="form-group input_block"><label><b>*</b>限定时间：</label><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelStarttime" id="limitedParcelStarttime_'+count+'_'+i+'" onclick="WdatePicker()" type="text">';
-		text += '<span class="to">至</span><input class="Wdate" name="rdlist['+count+'].rldto['+i+'].limitedParcelEndtime" id="limitedParcelEndtime_'+count+'_'+i+'" onclick="WdatePicker()" type="text"></div>';
-		text += '<div id="isBK"><div class="form-group input_block"><label><b>*</b>版权阅读打印：</label><select class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].readingPrint" id="readingPrint_'+count+'_'+i+'">';
-		text += '<option value="3" checked>授权阅读打印</option><option value="1">授权阅读</option><option value="2">授权打印</option><option value="0">未阅读</option></select></div>';
-		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;在线用户数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].onlineVisitor" id="onlineVisitor_'+count+'_'+i+'" value="-1"><span>-1表示不限制</span><br></div>';
-		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;副本数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].copyNo" id="copyNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
-		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;打印总份数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].totalPrintNo" id="totalPrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div>';
-		text += '<div class="form-group input_block"><label>&nbsp;&nbsp;单标准打印数：</label><input type="text" class="form-control input_width" name="rdlist['+count+'].rldto['+i+'].singlePrintNo" id="singlePrintNo_'+count+'_'+i+'" value="-1">-1表示不限制<br></div></div>';
-		text += '<div class="form-group" style="width:60%;"><label><b>*</b>质检出版社标准全文IP范围：</label><textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].fullIpRange" id="fullIpRange_'+count+'_'+i+'"';
-		text += ' onkeyup="this.value=this.value.replace(/[^.0-9\\n\\r-]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^.0-9\\n\\r-]/g,\'\')"></textarea></div></div></div>';
 	}
 	
 	if(type.indexOf("local chronicles")>-1){
