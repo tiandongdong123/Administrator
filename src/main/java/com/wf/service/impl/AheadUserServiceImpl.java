@@ -1176,7 +1176,7 @@ public class AheadUserServiceImpl implements AheadUserService{
        if(dto.getStandardTypes()==null){
     	   String [] str=new String[]{"WFLocal","质检出版社"};
 			dto.setStandardTypes(str);
-		}
+		} 
 		String standardtypes =Arrays.toString(dto.getStandardTypes());
 		
 		if(StringUtils.isNoneBlank(standardtypes)){
