@@ -608,8 +608,8 @@ function openPurchaseItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 			yes: function(){
-				if($("#gazetteersEndTime_0_2").val()<$("#gazetteersStartTime_0_2").val()) {
-					if($("#gazetteersEndTime_0_2").val()==''||$("#gazetteersStartTime_0_2").val()=='') {
+				if($("#gazetteersEndTime_"+count+"_"+i).val()<$("#gazetteersStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersEndTime_"+count+"_"+i).val()==''||$("#gazetteersStartTime_"+count+"_"+i).val()=='') {
 						$('.errorTime').text('');
 					}else {
 						$('.errorTime').text('结束时间不能小于开始时间');
@@ -617,8 +617,8 @@ function openPurchaseItems(count,i,type){
 				} else {
 					$('.errorTime').text('');
 				}
-				if($("#gazetteersOldEndTime_0_2").val()<$("#gazetteersOldStartTime_0_2").val()) {
-					if($("#gazetteersOldEndTime_0_2").val()==''||$("#gazetteersOldStartTime_0_2").val()=='') {
+				if($("#gazetteersOldEndTime_"+count+"_"+i).val()<$("#gazetteersOldStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersOldEndTime_"+count+"_"+i).val()==''||$("#gazetteersOldStartTime_"+count+"_"+i).val()=='') {
 						$('.errorOldTime').text('');
 					}else {
 						$('.errorOldTime').text('结束时间不能小于开始时间');	
@@ -630,6 +630,31 @@ function openPurchaseItems(count,i,type){
 					layer.closeAll();					
 				}
 		    },
+		    cancel: function() {
+		    	if($("#gazetteersEndTime_"+count+"_"+i).val()<$("#gazetteersStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersEndTime_"+count+"_"+i).val()==''||$("#gazetteersStartTime_"+count+"_"+i).val()=='') {
+						$('.errorTime').text('');
+					}else {
+						$('.errorTime').text('结束时间不能小于开始时间');
+						return false
+					}
+				} else {
+					$('.errorTime').text('');
+				}
+				if($("#gazetteersOldEndTime_"+count+"_"+i).val()<$("#gazetteersOldStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersOldEndTime_"+count+"_"+i).val()==''||$("#gazetteersOldStartTime_"+count+"_"+i).val()=='') {
+						$('.errorOldTime').text('');
+					}else {
+						$('.errorOldTime').text('结束时间不能小于开始时间');	
+						return false
+					}
+				}else {
+					$('.errorOldTime').text('');
+				}
+				if($('.errorTime').text()==''&$('.errorOldTime').text()=='') {
+					layer.closeAll();					
+				}
+		    }
 		});
 	}else{
 		layer.open({
@@ -1077,9 +1102,10 @@ function gazetteerType(val,count,i){
 //地方志
 function initGazetteer(count,index){
 	var area=$("#gazetteersArea_"+count+"_"+index).val();
+	var oldArea = $("#gazetteersOldArea_"+count+"_"+index).val();
 	$.ajax({
 		type : "post",
-		data : {pid:0,area:area},
+		data : {pid:0,area:area,oldArea:oldArea},
 		async:false,
 		url : "../auser/findGazetteer.do",
 		dataType : "json",
@@ -1140,6 +1166,50 @@ function initGazetteer(count,index){
 						$("#xian_"+count+"_"+index).html('<option value="'+xian.id+'">'+xian.name+'</option>');
 					}
 				}
+			}
+			// 旧地方志
+			var publicTemp = count+'_'+index
+			var oldArea = $("#gazetteersOldArea_"+publicTemp).val();
+			if(oldArea!=null){
+				var oldAreas=oldArea.split("_");
+				if(oldAreas.length>=1){
+					$("#o_sheng_"+publicTemp).val(oldAreas[0])
+				}
+				if(oldAreas.length>=2){
+					$("#o_shi_"+publicTemp).val(oldAreas[1])
+				}
+				if(oldAreas.length>=3){
+					$("#o_xian_"+publicTemp).val(oldAreas[2])
+				}
+			}
+			// 新方志开始时间
+			var newStartTime = $('#gazetteersStartTime_'+publicTemp).val()
+			if(newStartTime!=null&&newStartTime!=''){
+				$('#startTime_'+publicTemp).val(newStartTime)
+			}else {
+				$('#newStartTime_'+publicTemp).val('')
+			}
+			// 结束时间
+			var newEndTime = $('#gazetteersEndTime_'+publicTemp).val()
+			if(newEndTime!=null&&newEndTime!=''){
+				$('#endTime_'+publicTemp).val(newEndTime)
+			}else {
+				$('#endTime_'+publicTemp).val('')
+			}
+			// 旧方志开始时间
+			var oldStartTime = $('#gazetteersOldStartTime_'+publicTemp).val()
+			if(oldStartTime!=null&&oldStartTime!=''){
+				$('#old_startTime_'+publicTemp).val(oldStartTime)
+			}else {
+				$('#old_startTime_'+publicTemp).val('')
+			}
+			
+			// 旧方志结束时间
+			var oldEndTime = $('#gazetteersOldEndTime_'+publicTemp).val()
+			if(oldEndTime!=null&&oldEndTime!=''){
+				$('#old_endTime_'+publicTemp).val(oldEndTime)
+			}else {
+				$('#old_endTime_'+publicTemp).val('')
 			}
 			setGazetteers(count,index);
 		}

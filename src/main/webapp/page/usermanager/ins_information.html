@@ -388,9 +388,9 @@
 							<input type="checkbox" value="FZ_New" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_New"){?>checked="checked"<?}?>/>新方志
 							<div class="newTime"><span>资源更新时间</span>
 								<div class="newSelectTime">
-									<span>123</span>
+									<span id="newStartTime_${list.Id}_${payid}_${pscode}"></span>
 									<span style="vertical-align: top;"> ——— </span>
-									<span>123</span>
+									<span id="newEndTime_${list.Id}_${payid}_${pscode}"></span>
 								</div>
 							</div>
 							<div class="newLocation">
@@ -421,9 +421,9 @@
 							<input type="checkbox" value="FZ_Old" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_Old"){?>checked="checked"<?}?>/>旧方志
 							<div class="oldTime"><span>资源更新时间</span>
 								<div class="oldSelectTime">
-									<span>123</span>
+									<span id="oldStartTime_${list.Id}_${payid}_${pscode}"></span>
 									<span style="vertical-align: top;"> ——— </span>
-									<span>123</span>
+									<span id="oldEndTime_${list.Id}_${payid}_${pscode}"></span>
 								</div>
 							</div>
 							<div class="oldLocation">
