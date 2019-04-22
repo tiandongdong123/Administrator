@@ -1111,6 +1111,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gOStartTime=dto.getGazetteersOldStartTime();
 		String gOEndTime=dto.getGazetteersOldEndTime();
 		String gType=null;
+		int igst=StringUtils.isBlank(gStartTime)?0:Integer.parseInt(gStartTime);
+		int iget=StringUtils.isBlank(gEndTime)?0:Integer.parseInt(gEndTime);
+		int igost=StringUtils.isBlank(gOStartTime)?0:Integer.parseInt(gOStartTime);
+		int igoet=StringUtils.isBlank(gOEndTime)?0:Integer.parseInt(gOEndTime);
+		if(igst > 0 && iget > 0 && (igst > iget)){
+			return null;
+		}
+		if(igost > 0 && igoet > 0 && (igost>igoet)){
+			return null;
+		}
 		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
 			if(StringUtils.isEmpty(gNType)){
 				gType=gOType;
@@ -1173,7 +1183,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param Terms
 	 */
 	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
-		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
+       if(dto.getStandardTypes()==null){
+    	   String [] str=new String[]{"WFLocal","质检出版社"};
+			dto.setStandardTypes(str);
+		} 
+		String standardtypes =Arrays.toString(dto.getStandardTypes());
+		
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
 			if(standardtypes.contains("质检出版社")){
