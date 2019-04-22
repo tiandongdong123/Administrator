@@ -1116,6 +1116,16 @@ function initGazetteer(count,index){
 			for(var i=0;i<arrayArea.length;i++){
 				area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
 			}
+			var startTime='<option value="">不限</option>'
+				var d = new Date()
+			var year = d.getFullYear()
+			for(var j = 2012;j<=year;j++) {
+				startTime += '<option value="'+j+'">'+j+'</option>'
+			}
+			$("#startTime_"+count+"_"+index).html(startTime)
+			$("#endTime_"+count+"_"+index).html(startTime)
+			$("#old_startTime_"+count+"_"+index).html(startTime)
+			$("#old_endTime_"+count+"_"+index).html(startTime)
 			$("#sheng_"+count+"_"+index).html(area);
 			$("#o_sheng_"+count+"_"+index).html(area);
 			//地区填值

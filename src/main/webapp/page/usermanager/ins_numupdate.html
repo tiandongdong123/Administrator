@@ -484,15 +484,15 @@
                                 </div>
                                 <div id="changeSelect_${i}_${j}" style="">
                                   <div class="newSelect">
-                                    <input onclick="gazetteerType(this.value,${i},${j})" type="checkbox" value="FZ_New"
-                                      name="rdlist[${i}].rldto[${j}].gazetteersType" />新方志
+                                    <input onclick="gazetteerType(this.value,${i},${j})" class="checkType" type="checkbox" value="FZ_New"
+                                      name="rdlist[${i}].rldto[${j}].gazetteersType"/>新方志
                                     <div class="newTime"><span>资源更新时间</span>
                                       <div class="newSelectTime">
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="startTime_${i}_${j}"
                                           onchange="findStartTime(this.value,1,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span style="vertical-align: top;"> ——— </span>
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="endTime_${i}_${j}"
                                           onchange="findEndTime(this.value,2,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span class="errorTime"></span>
@@ -502,17 +502,17 @@
                                       <span>地区</span>
                                       <span class="newLocationSelect"><span class="locationPrev">省</span>
                                         <select disabled class="noChecked" id="sheng_${i}_${j}"
-                                          onchange="findArea(this.value,1,${i},${j})">
+                                          onchange="findArea(this.value,1,${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCity">市</span>
                                         <select disabled class="noChecked" id="shi_${i}_${j}"
-                                          onchange="findArea(this.value,2,${i},${j})">
+                                          onchange="findArea(this.value,2,${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCounty">县</span>
                                         <select disabled class="noChecked" id="xian_${i}_${j}"
-                                          onchange="saveArea(${i},${j})">
+                                          onchange="saveArea(${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                       </span>
@@ -535,15 +535,15 @@
                                       style="display:none;width: 475px;margin-left: 120px"></div>
                                   </div>
                                   <div class="oldSelect">
-                                    <input onclick="gazetteerType(this.value,${i},${j})" type="checkbox" value="FZ_Old"
+                                    <input onclick="gazetteerType(this.value,${i},${j})" class="checkType" type="checkbox" value="FZ_Old"
                                       name="rdlist[${i}].rldto[${j}].gazetteersType" />旧方志
                                     <div class="oldTime"><span>资源更新时间</span>
                                       <div class="oldSelectTime">
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="old_startTime_${i}_${j}"
                                           onchange="findStartTime(this.value,1,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span style="vertical-align: top;"> ——— </span>
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="old_endTime_${i}_${j}"
                                           onchange="findEndTime(this.value,2,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span class="errorTime"></span>
@@ -552,18 +552,18 @@
                                     <div class="oldLocation">
                                       <span>地区</span>
                                       <span class="oldLocationSelect"><span class="locationPrev">省</span>
-                                        <select disabled class="noChecked" id="sheng_old_${i}_${j}"
-                                          onchange="findArea(this.value,1,${i},${j})">
+                                        <select disabled class="noChecked" id="o_sheng_${i}_${j}"
+                                          onchange="findArea(this.value,1,${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCity">市</span>
-                                        <select disabled class="noChecked" id="shi_old_${i}_${j}"
-                                          onchange="findArea(this.value,2,${i},${j})">
+                                        <select disabled class="noChecked" id="o_shi_${i}_${j}"
+                                          onchange="findArea(this.value,2,${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCounty">县</span>
-                                        <select disabled class="noChecked" id="xian_old_${i}_${j}"
-                                          onchange="saveArea(${i},${j})">
+                                        <select disabled class="noChecked" id="o_xian_${i}_${j}"
+                                          onchange="saveArea(${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                       </span>
@@ -806,15 +806,15 @@
                                 </div>
                                 <div id="changeSelect_${i}_${j}" style="">
                                   <div class="newSelect">
-                                    <input onclick="gazetteerType(this.value,${i},${j})" type="checkbox" value="FZ_New"
+                                    <input onclick="gazetteerType(this.value,${i},${j})" class="checkType" type="checkbox" value="FZ_New"
                                       name="rdlist[${i}].rldto[${j}].gazetteersType" />新方志
                                     <div class="newTime"><span>资源更新时间</span>
                                       <div class="newSelectTime">
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="startTime_${i}_${j}"
                                           onchange="findStartTime(this.value,1,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span style="vertical-align: top;"> ——— </span>
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="endTime_${i}_${j}"
                                           onchange="findEndTime(this.value,2,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span class="errorTime"></span>
@@ -824,17 +824,17 @@
                                       <span>地区</span>
                                       <span class="newLocationSelect"><span class="locationPrev">省</span>
                                         <select disabled class="noChecked" id="sheng_${i}_${j}"
-                                          onchange="findArea(this.value,1,${i},${j})">
+                                          onchange="findArea(this.value,1,${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCity">市</span>
                                         <select disabled class="noChecked" id="shi_${i}_${j}"
-                                          onchange="findArea(this.value,2,${i},${j})">
+                                          onchange="findArea(this.value,2,${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCounty">县</span>
                                         <select disabled class="noChecked" id="xian_${i}_${j}"
-                                          onchange="saveArea(${i},${j})">
+                                          onchange="saveArea(${i},${j},'new')">
                                           <option value="">全部</option>
                                         </select>
                                       </span>
@@ -857,15 +857,15 @@
                                       style="display:none;width: 475px;margin-left: 120px"></div>
                                   </div>
                                   <div class="oldSelect">
-                                    <input onclick="gazetteerType(this.value,${i},${j})" type="checkbox" value="FZ_Old"
+                                    <input onclick="gazetteerType(this.value,${i},${j})" class="checkType" type="checkbox" value="FZ_Old"
                                       name="rdlist[${i}].rldto[${j}].gazetteersType" />旧方志
                                     <div class="oldTime"><span>资源更新时间</span>
                                       <div class="oldSelectTime">
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="old_startTime_${i}_${j}"
                                           onchange="findStartTime(this.value,1,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span style="vertical-align: top;"> ——— </span>
-                                        <select disabled class="noChecked"
+                                        <select disabled class="noChecked" id="old_endTime_${i}_${j}"
                                           onchange="findEndTime(this.value,2,${i},${j},'old')">
                                           <option value="">不限</option>
                                         </select><span class="errorTime"></span>
@@ -873,19 +873,19 @@
                                     </div>
                                     <div class="oldLocation">
                                       <span>地区</span>
-                                      <span class="newLocationSelect"><span class="locationPrev">省</span>
-                                        <select disabled class="noChecked" id="sheng_old_${i}_${j}"
-                                          onchange="findArea(this.value,1,${i},${j})">
+                                      <span class="oldLocationSelect"><span class="locationPrev">省</span>
+                                        <select disabled class="noChecked" id="o_sheng_${i}_${j}"
+                                          onchange="findArea(this.value,1,${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCity">市</span>
-                                        <select disabled class="noChecked" id="shi_old_${i}_${j}"
-                                          onchange="findArea(this.value,2,${i},${j})">
+                                        <select disabled class="noChecked" id="o_shi_${i}_${j}"
+                                          onchange="findArea(this.value,2,${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                         <span class="locationCounty">县</span>
-                                        <select disabled class="noChecked" id="xian_old_${i}_${j}"
-                                          onchange="saveArea(${i},${j})">
+                                        <select disabled class="noChecked" id="o_xian_${i}_${j}"
+                                          onchange="saveArea(${i},${j},'old')">
                                           <option value="">全部</option>
                                         </select>
                                       </span>

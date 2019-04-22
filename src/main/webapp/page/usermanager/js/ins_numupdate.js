@@ -280,6 +280,7 @@ function openItems(count,i,type){
 		$("a[href='#standard_"+count+"_"+i+"']").parent().addClass("active");
 		$("#standard_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 	}else if(type.indexOf("local chronicles")>-1){
+		$('.checkType').prop('checked',false)
 		$("a[href='#localchronicles_"+count+"_"+i+"']").parent().addClass("active");
 		$("#localchronicles_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 		initGazetteer(count,i);
