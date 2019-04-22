@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,17 +32,16 @@ public class JsonpController {
     @ResponseBody
     public void getOperatorUser(String name, String callback,HttpServletResponse response){
         String code = null;
-        Object[] userName = new String[10];
+        List<String> res = new ArrayList<>();
         Map<String,Object> result = new HashMap<>();
         if(StringUtils.isEmpty(name)){
             code = "400";
         }else {
             code = "200";
-            List<String> res = adminService.getAdminNames(name);
-            userName = res.toArray();
+            res = adminService.getAdminNames(name);
         }
         result.put("code",code);
-        result.put("data",userName);
+        result.put("data",res.toArray());
         String json = callback + "(" + JSONObject.toJSONString(result)+ ")";
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = null;

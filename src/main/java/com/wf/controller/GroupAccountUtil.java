@@ -1,6 +1,7 @@
 package com.wf.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.utils.StringUtil;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
@@ -44,6 +45,10 @@ public class GroupAccountUtil {
      */
     private static final String END_DATE_TIME_KEY = "enddatetime";
     /**
+     *  转换前的项目
+     */
+    private static final String PAYTAG_STRING_KEY = "payTag";
+    /**
      * 操作机构名称
      */
     public static final String ORGANNAME_KEY = "organname";
@@ -79,7 +84,7 @@ public class GroupAccountUtil {
      * @param end       有效期结束时间
      * @return
      */
-    private Map<String, String> createExtraData(String organName, Date begin, Date end) {
+    private Map<String, String> createExtraData(String organName, Date begin, Date end, String beforeConversion) {
         Map<String, String> extraData = new HashMap<String, String>();
         extraData.put(ORGANNAME_KEY, organName);
         //对生效时间和失效时间进行格式化"yyyy-MM-dd HH:mm:ss"
@@ -87,6 +92,9 @@ public class GroupAccountUtil {
         String end_date_time = format.format(end);
         extraData.put(BEGIN_DATE_TIME_KEY, begin_date_time);
         extraData.put(END_DATE_TIME_KEY, end_date_time);
+        if(StringUtil.isNotEmpty(beforeConversion)){
+            extraData.put(PAYTAG_STRING_KEY,beforeConversion);
+        }
         return extraData;
     }
 
@@ -124,7 +132,7 @@ public class GroupAccountUtil {
      * @throws IOException
      */
     public TransactionRequest createTransactionRequest(UserAccount account, Long count,
-                                                              String userIP, String authToken, String updateKey) throws IOException {
+                                                              String userIP, String authToken, String updateKey,String beforeConversion) throws IOException {
         TransactionRequest request = new TransactionRequest();
         request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
         request.setUserIP(userIP);
@@ -135,7 +143,7 @@ public class GroupAccountUtil {
         transferOut.put(new AccountId("Operational", "Manual"), null);
         request.setTransferOut(transferOut);
         
-        Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime());
+        Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime(),beforeConversion);
         extraData.put(OPERATE_KEY, updateKey);
         request.setExtraData(extraData);
 
@@ -179,11 +187,11 @@ public class GroupAccountUtil {
      * @return 交易是否成功
      * @throws Exception
      */
-    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset) throws Exception {
+    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset,String beforeConversion) throws Exception {
 
         validate(before, after);
 
-        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY);
+        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,beforeConversion);
 
         //request.setTurnover(after.getBalance());        	
     	
@@ -200,11 +208,11 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给机构限时账户
      */
-    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken) throws Exception {
+    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,String beforeConversion) throws Exception {
 
         validate(null, account);
 
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,beforeConversion);
         request.setTurnover(BigDecimal.ZERO);
         return submitRequest(request, account.getPayChannelId(), UPDATE_KEY);
     }
@@ -223,7 +231,7 @@ public class GroupAccountUtil {
         	count = after.getBalance();
         }
         
-        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY);
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,null);
         request.setTurnover(BigDecimal.valueOf(count));
 
         return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
@@ -234,7 +242,7 @@ public class GroupAccountUtil {
      */
     public boolean deleteAccount(UserAccount account, String userIP, String authToken) throws Exception {
         //创建交易request
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,null);
         BigDecimal turnover = getAccountCountOrBalance(account.getPayChannelId(), account.getUserId());
         request.setTurnover(new BigDecimal(BigInteger.ZERO).subtract(turnover));
         return submitRequest(request, account.getPayChannelId(), DELETE_KEY);

@@ -661,7 +661,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
-	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
+	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId,String beforeConversion){
 		int flag = 0;
 		try{
 			if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
@@ -682,7 +682,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			// String authToken = "Admin."+adminId;
 			// 调用添加注册余额限时账户方法
 			// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-			boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId);//提交注册或充值请求
+			boolean isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,beforeConversion);//提交注册或充值请求
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -750,7 +750,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * 为机构余额账户充值
 	 */
 	@Override
-	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
+	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId, String beforeConversion){
 
 		if (NumberUtils.toDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
@@ -791,7 +791,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					resetMoney = true;
 				}
 			}
-			boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney);
+			boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,beforeConversion);
 			if (isSuccess) {
 				flag = 1;
 				log.info("id为："+com.getUserId()+" 的用户，购买项目:"+dto.getProjectname()+"  充值成功！");
@@ -2463,12 +2463,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
 							dto.setTotalMoney("0.0");
-							this.chargeProjectBalance(com, dto, adminId);
+							this.chargeProjectBalance(com, dto, adminId,null);
 						}
 					}else if(dto.getProjectType().equals("time")){
 						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							this.addProjectDeadline(com, dto,adminId);
+							this.addProjectDeadline(com, dto,adminId,null);
 						}
 					}else if(dto.getProjectType().equals("count")){
 						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
