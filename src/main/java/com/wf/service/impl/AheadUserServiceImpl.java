@@ -1111,6 +1111,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gOStartTime=dto.getGazetteersOldStartTime();
 		String gOEndTime=dto.getGazetteersOldEndTime();
 		String gType=null;
+		int igst=StringUtils.isBlank(gStartTime)?0:Integer.parseInt(gStartTime);
+		int iget=StringUtils.isBlank(gEndTime)?0:Integer.parseInt(gEndTime);
+		int igost=StringUtils.isBlank(gOStartTime)?0:Integer.parseInt(gOStartTime);
+		int igoet=StringUtils.isBlank(gOEndTime)?0:Integer.parseInt(gOEndTime);
+		if(igst > 0 && iget > 0 && (igst > iget)){
+			return null;
+		}
+		if(igost > 0 && igoet > 0 && (igost>igoet)){
+			return null;
+		}
 		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
 			if(StringUtils.isEmpty(gNType)){
 				gType=gOType;
