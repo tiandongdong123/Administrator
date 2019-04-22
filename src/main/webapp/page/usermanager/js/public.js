@@ -1053,8 +1053,6 @@ function setDateList(count,i,type){
 //筛选导入
 function getSxdr(value,count,i){
 	if(value==1){//分类筛选
-		$("#gazetteersId_"+count+"_"+i).val("");
-		$("#itemId_"+count+"_"+i).val("");
 		findShaiXuan(count,i);
 	}else if(value==0){//自定义导入
 		findSeftDefine(count,i);
@@ -1169,17 +1167,16 @@ function initGazetteer(count,index){
 			}
 			// 旧地方志
 			var publicTemp = count+'_'+index
-			var oldArea = $("#gazetteersOldArea_"+publicTemp).val();
-			if(oldArea!=null){
-				var oldAreas=oldArea.split("_");
-				if(oldAreas.length>=1){
-					$("#o_sheng_"+publicTemp).val(oldAreas[0])
-				}
-				if(oldAreas.length>=2){
-					$("#o_shi_"+publicTemp).val(oldAreas[1])
-				}
-				if(oldAreas.length>=3){
-					$("#o_xian_"+publicTemp).val(oldAreas[2])
+			var old_sheng=data.old_sheng;
+			if(old_sheng!=null){
+				$("#o_sheng_"+count+"_"+index).val(old_sheng.id);
+				var old_shi=data.old_shi;
+				if(old_shi!=null){
+					$("#o_shi_"+count+"_"+index).html('<option value="'+old_shi.id+'">'+old_shi.name+'</option>');
+					var old_xian=data.old_xian;
+					if(old_xian!=null){
+						$("#o_xian_"+count+"_"+index).html('<option value="'+old_xian.id+'">'+old_xian.name+'</option>');
+					}
 				}
 			}
 			// 新方志开始时间

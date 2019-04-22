@@ -412,7 +412,10 @@ function openItems(count,i,type){
 					$('.errorOldTime').text('');
 				}
 				if($('.errorTime').text()==''&$('.errorOldTime').text()=='') {
-					layer.closeAll();					
+					layer.closeAll();	
+					$('.newSelect select').addClass("noChecked"); 
+					$('.newSelect select').attr("disabled",true); 
+					$('.newSelect div input').attr("disabled",true);
 				}
 		    },
 		    cancel: function() {
@@ -437,7 +440,10 @@ function openItems(count,i,type){
 					$('.errorOldTime').text('');
 				}
 				if($('.errorTime').text()==''&$('.errorOldTime').text()=='') {
-					layer.closeAll();					
+					layer.closeAll();	
+					$('.newSelect select').addClass("noChecked"); 
+					$('.newSelect select').attr("disabled",true); 
+					$('.newSelect div input').attr("disabled",true);
 				}
 		    }
 		});
