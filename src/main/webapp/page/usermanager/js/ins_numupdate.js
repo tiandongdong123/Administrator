@@ -392,9 +392,54 @@ function openItems(count,i,type){
 		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
-			yes: function(){
-				layer.closeAll();
+		    yes: function(){
+				if($("#gazetteersEndTime_"+count+"_"+i).val()<$("#gazetteersStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersEndTime_"+count+"_"+i).val()==''||$("#gazetteersStartTime_"+count+"_"+i).val()=='') {
+						$('.errorTime').text('');
+					}else {
+						$('.errorTime').text('结束时间不能小于开始时间');
+					}
+				} else {
+					$('.errorTime').text('');
+				}
+				if($("#gazetteersOldEndTime_"+count+"_"+i).val()<$("#gazetteersOldStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersOldEndTime_"+count+"_"+i).val()==''||$("#gazetteersOldStartTime_"+count+"_"+i).val()=='') {
+						$('.errorOldTime').text('');
+					}else {
+						$('.errorOldTime').text('结束时间不能小于开始时间');	
+					}
+				}else {
+					$('.errorOldTime').text('');
+				}
+				if($('.errorTime').text()==''&$('.errorOldTime').text()=='') {
+					layer.closeAll();					
+				}
 		    },
+		    cancel: function() {
+		    	if($("#gazetteersEndTime_"+count+"_"+i).val()<$("#gazetteersStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersEndTime_"+count+"_"+i).val()==''||$("#gazetteersStartTime_"+count+"_"+i).val()=='') {
+						$('.errorTime').text('');
+					}else {
+						$('.errorTime').text('结束时间不能小于开始时间');
+						return false
+					}
+				} else {
+					$('.errorTime').text('');
+				}
+				if($("#gazetteersOldEndTime_"+count+"_"+i).val()<$("#gazetteersOldStartTime_"+count+"_"+i).val()) {
+					if($("#gazetteersOldEndTime_"+count+"_"+i).val()==''||$("#gazetteersOldStartTime_"+count+"_"+i).val()=='') {
+						$('.errorOldTime').text('');
+					}else {
+						$('.errorOldTime').text('结束时间不能小于开始时间');	
+						return false
+					}
+				}else {
+					$('.errorOldTime').text('');
+				}
+				if($('.errorTime').text()==''&$('.errorOldTime').text()=='') {
+					layer.closeAll();					
+				}
+		    }
 		});
 	}else{
 		layer.open({
