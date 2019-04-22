@@ -445,7 +445,7 @@ public class AheadUserController {
 	 */
 	@RequestMapping("findGazetteer")
 	@ResponseBody
-	public Map<String, Object> findGazetteer(String pid,String area) {
+	public Map<String, Object> findGazetteer(String pid,String area,String oldArea) {
 		if (pid == null || "".equals(pid)) {
 			pid = "0";
 		}
@@ -479,6 +479,26 @@ public class AheadUserController {
 							map.put("shi", json);
 						} else if (s == 2) {
 							map.put("xian", json);
+						}
+					}
+				}
+			}
+		}
+		if (oldArea != null && !"".equals(oldArea)) {
+			String[] city = oldArea.split("_");
+			for (int s = 0; s < city.length; s++) {
+				for (int i = 0; i < region.size(); i++) {
+					JSONObject obj = region.getJSONObject(i);
+					if (obj.get("name").equals(city[s])) {
+						JSONObject json = new JSONObject();
+						json.put("id", obj.getString("id"));
+						json.put("name", obj.getString("name"));
+						if (s == 0) {
+							map.put("old_sheng", json);
+						} else if (s == 1) {
+							map.put("old_shi", json);
+						} else if (s == 2) {
+							map.put("old_xian", json);
 						}
 					}
 				}
