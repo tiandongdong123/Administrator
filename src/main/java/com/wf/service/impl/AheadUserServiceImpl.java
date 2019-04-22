@@ -1173,7 +1173,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param Terms
 	 */
 	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
-		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
+       if(dto.getStandardTypes()==null){
+    	   String [] str=new String[]{"WFLocal","质检出版社"};
+			dto.setStandardTypes(str);
+		}
+		String standardtypes =Arrays.toString(dto.getStandardTypes());
+		
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
 			if(standardtypes.contains("质检出版社")){
