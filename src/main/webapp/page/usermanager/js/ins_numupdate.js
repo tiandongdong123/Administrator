@@ -281,6 +281,7 @@ function openItems(count,i,type){
 		$("#standard_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 	}else if(type.indexOf("local chronicles")>-1){
 		$('.checkType').prop('checked',false)
+		$('.limitTab span:first-child input').prop('checked',true)
 		$("a[href='#localchronicles_"+count+"_"+i+"']").parent().addClass("active");
 		$("#localchronicles_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 		initGazetteer(count,i);
