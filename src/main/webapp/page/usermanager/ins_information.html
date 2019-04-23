@@ -385,7 +385,7 @@
 					</div>
 					<div id="changeSelect_${list.Id}_${payid}" style="">
 						<div class="newSelect">
-							<input type="checkbox" value="FZ_New" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_New"){?>checked="checked"<?}?>/>新方志
+							<input type="checkbox" value="FZ_New" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&(strutil.contain(gazetteers_type.Value,"FZ_New"))){?>checked="checked"<?}?>/>新方志
 							<div class="newTime"><span>资源更新时间</span>
 								<div class="newSelectTime">
 									<span id="newStartTime_${list.Id}_${payid}_${pscode}"></span>
@@ -418,7 +418,7 @@
 							</div>
 						</div>
 						<div class="oldSelect">
-							<input type="checkbox" value="FZ_Old" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&gazetteers_type.Value=="FZ_Old"){?>checked="checked"<?}?>/>旧方志
+							<input type="checkbox" value="FZ_Old" name="gazetteersType" <?if(!isEmpty(gazetteers_type)&&(strutil.contain(gazetteers_type.Value,"FZ_Old"))){?>checked="checked"<?}?>/>旧方志
 							<div class="oldTime"><span>资源更新时间</span>
 								<div class="oldSelectTime">
 									<span id="oldStartTime_${list.Id}_${payid}_${pscode}"></span>
@@ -448,6 +448,7 @@
 					</div>
 				</div>
 				<input type="hidden" id="gazetteers_area_${list.Id}_${payid}_${pscode}" value="${gazetteers_area.Value!}">
+				<input type="hidden" id="gazetteers_type_${list.Id}_${payid}_${pscode}" value="${gazetteers_type.Value!}">
 				<input type="hidden" id="gazetteers_album_${list.Id}_${payid}_${pscode}" value="${gazetteers_album.Value!}">
 				<input type="hidden" id="gazetteers_startTime_${list.Id}_${payid}_${pscode}" value="${gazetteers_startTime.Value!}">
 				<input type="hidden" id="gazetteers_endTime_${list.Id}_${payid}_${pscode}" value="${gazetteers_endTime.Value!}">

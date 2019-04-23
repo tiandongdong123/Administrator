@@ -1025,12 +1025,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 						}
 					}
 				}else{//网络包库调用接口
-//					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
-//					if(msg==1){
-//						log.info(com.getUserId()+"包库接口调用成功");
-//					}else{
-//						log.info(com.getUserId()+"包库更新失败");
-//					}
+					//					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
+					//					if(msg==1){
+					//						log.info(com.getUserId()+"包库接口调用成功");
+					//					}else{
+					//						log.info(com.getUserId()+"包库更新失败");
+					//					}
 				}
 				//wfks_user_setting表添加标准配置参数
 				WfksUserSetting setting=new WfksUserSetting();
@@ -1145,7 +1145,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gArea)) {
 					addStringToTerms("gazetteers_area", "Equal", gArea, Terms, "String");
 				}
-				
+
 				if (StringUtils.isNotEmpty(gType)) {
 					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
 				}
@@ -1183,12 +1183,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param Terms
 	 */
 	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
-       if(dto.getStandardTypes()==null){
-    	   String [] str=new String[]{"WFLocal","质检出版社"};
+		if(dto.getStandardTypes()==null){
+			String [] str=new String[]{"WFLocal","质检出版社"};
 			dto.setStandardTypes(str);
 		} 
 		String standardtypes =Arrays.toString(dto.getStandardTypes());
-		
+
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
 			if(standardtypes.contains("质检出版社")){
@@ -1672,7 +1672,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			return list;
 		}
-		
+
 		//循环Set集合查询资源库信息
 		for(String se : set){
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
@@ -1823,6 +1823,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
+				int count=0;
+				for (Map<String, Object> map2 : plList) {
+					if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")){
+						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
+						for (JSONObject jsonObject : conlist) {
+							if(jsonObject.get("Field").equals("standard_types")){
+								count++;
+							}
+						}
+						if(count==0){
+							JSONObject json=new JSONObject();
+							json.put("Field", "gazetteers_type");
+							json.put("Logic", "AND");
+							json.put("Value", "FZ_New;FZ_Old");
+							json.put("ValueType", "String");
+							json.put("Verb", "Equal");
+							conlist.add(json);
+							JSONObject json1=new JSONObject();
+							json1.put("Terms", conlist);
+							map2.put("contract", json1);
+						}
+					}
+				}
 				List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库
 				if(plList.size()>0){
 					for(Map<String, Object> d : data){
@@ -2963,7 +2986,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] tableGazetteersAlbum=null;
 			String tableGazetteersType=null;
 			String tableGazetteersLevel=null;
-			
+
 			String tableGazetteersStartTime=null;
 			String tableGazetteersEndTime=null;
 			String tableGazetteersOldArea=null;
@@ -2976,14 +2999,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
-			
+
 			String gazetteersOldType=null;
 			String gazetteersStartTime=null;
 			String gazetteersEndTime=null;
 			String gazetteersOldArea=null;
 			String gazetteersOldStartTime=null;
 			String gazetteersOldEndTime=null;
-			
+
 			if(StringUtils.isNoneEmpty(rld.getGazetteersType())){
 				gazetteersType=rld.getGazetteersType();
 			}
@@ -3078,7 +3101,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(conlist.get(i).get("Field").equals("gazetteers_old_endTime")){
 					tableGazetteersOldEndTime=(String) conlist.get(i).get("Value");
 				}
-				
+
 			}
 			boolean bao=false;
 			//新方志地区对比
@@ -3157,7 +3180,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(igoet>=itgost&&igost<=itgoet){
 					zygxsj=true;
 				}
-				
+
 				if(tableGazetteersLevel.equals(gazetteersLevel)){
 					sjfl=true;
 					if(tableGazetteersAlbum==null||gazetteersAlbum==null){
@@ -3223,12 +3246,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 					for(int y=0;y<value.length;y++){
 						if(resource!=null){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
+							for(int t=0;t<resource.length;t++){
+								if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+									boo=true;
+									break;
+								}
 							}
-						}
 						}
 					}
 				}
