@@ -1143,8 +1143,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
 				|| StringUtils.isNotEmpty(gLevel)|| StringUtils.isNotEmpty(gStartTime)
 				|| StringUtils.isNotEmpty(gEndTime)|| StringUtils.isNotEmpty(gOStartTime)
-				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOStartTime)) {
-			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(gOArea)) {
+				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOArea)) {
+			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
 				if (StringUtils.isNotEmpty(gId)) {
 					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
 				}
