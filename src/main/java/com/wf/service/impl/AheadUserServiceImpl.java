@@ -2963,6 +2963,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] tableGazetteersAlbum=null;
 			String tableGazetteersType=null;
 			String tableGazetteersLevel=null;
+			
+			String tableGazetteersStartTime=null;
+			String tableGazetteersEndTime=null;
+			String tableGazetteersOldArea=null;
+			String tableGazetteersOldStartTime=null;
+			String tableGazetteersOldEndTime=null;
 			//页面上的值
 			String gazetteersType=null;
 			String gazetteersLevel=null;
@@ -2970,7 +2976,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
-
+			
+			String gazetteersOldType=null;
+			String gazetteersStartTime=null;
+			String gazetteersEndTime=null;
+			String gazetteersOldArea=null;
+			String gazetteersOldStartTime=null;
+			String gazetteersOldEndTime=null;
+			
 			if(StringUtils.isNoneEmpty(rld.getGazetteersType())){
 				gazetteersType=rld.getGazetteersType();
 			}
@@ -2990,11 +3003,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 				String json=rld.getGazetteersAlbum();
 				gazetteersAlbum=json.split(";");
 			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldType())){
+				gazetteersOldType=rld.getGazetteersOldType();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersStartTime())){
+				gazetteersStartTime=rld.getGazetteersStartTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersEndTime())){
+				gazetteersEndTime=rld.getGazetteersEndTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldArea())){
+				gazetteersOldArea=rld.getGazetteersOldArea();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldStartTime())){
+				gazetteersOldStartTime=rld.getGazetteersOldStartTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldEndTime())){
+				gazetteersOldEndTime=rld.getGazetteersOldEndTime();
+			}
+			if(gazetteersType!=null&&gazetteersOldType!=null){
+				gazetteersType=null;
+			}else if(gazetteersType==null&&gazetteersOldType!=null){
+				gazetteersType=gazetteersOldType;
+			}
 			if(gazetteersType==null&&
 					gazetteerId==null&&
 					itemId==null&&
 					gazetteersArea==null&&
-					gazetteersAlbum==null){
+					gazetteersAlbum==null&&
+					gazetteersStartTime==null&&
+					gazetteersEndTime==null&&
+					gazetteersOldArea==null&&
+					gazetteersOldType==null&&
+					gazetteersOldStartTime==null&&
+					gazetteersOldEndTime==null
+					){
 				boo=true;
 			}
 			for(int i=0;i<conlist.size();i++){
@@ -3017,12 +3060,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 					tableGazetteersArea=(String) conlist.get(i).get("Value");
 				}
 				if(conlist.get(i).get("Field").equals("gazetteers_album")){
-
 					String jsona=(String) conlist.get(i).get("Value");
 					tableGazetteersAlbum=jsona.split(";");
 				}
+				if(conlist.get(i).get("Field").equals("gazetteers_startTime")){
+					tableGazetteersStartTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_endTime")){
+					tableGazetteersEndTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_area")){
+					tableGazetteersOldArea=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_startTime")){
+					tableGazetteersOldStartTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_endTime")){
+					tableGazetteersOldEndTime=(String) conlist.get(i).get("Value");
+				}
+				
 			}
 			boolean bao=false;
+			//新方志地区对比
 			if(tableGazetteersArea!=null && gazetteersArea!=null){
 				String[] tableArea=tableGazetteersArea.split("_");
 				String[] area=gazetteersArea.split("_");
@@ -3031,6 +3090,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 						bao=area[area.length-1].equals(tableArea[area.length-1]);
 					}else{
 						bao=area[tableArea.length-1].equals(tableArea[tableArea.length-1]);
+					}
+				}
+			}
+			//旧方志地区对比  
+			if(tableGazetteersOldArea!=null && gazetteersOldArea!=null){
+				String[] tableOldArea=tableGazetteersOldArea.split("_");
+				String[] oldArea=gazetteersOldArea.split("_");
+				if(tableOldArea[0].equals(oldArea[0])){
+					if(tableOldArea.length>=oldArea.length){
+						bao=oldArea[oldArea.length-1].equals(tableOldArea[oldArea.length-1]);
+					}else{
+						bao=oldArea[tableOldArea.length-1].equals(tableOldArea[tableOldArea.length-1]);
 					}
 				}
 			}
@@ -3059,21 +3130,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}else{
 				//判断是否有冲突
-				boolean zyfl=false;
-				boolean dq=bao;
-				boolean sjfl=false;
-				boolean zjfl=false;
+				boolean zyfl=false;  //资源分类
+				boolean dq=bao;      //地区
+				boolean sjfl=false;  //数据分类
+				boolean zjfl=false;  //专辑分类
+				boolean zygxsj=false; //资源更新时间
 				if(tableGazetteersType==null||gazetteersType==null){
 					zyfl=true;
 				}
 				if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.equals(gazetteersType)){
 					zyfl=true;
 				}
+				//判断新方志时间是否冲突
+				int itgst=StringUtils.isBlank(tableGazetteersStartTime)?0:Integer.parseInt(tableGazetteersStartTime);
+				int itget=StringUtils.isBlank(tableGazetteersEndTime)?9999:Integer.parseInt(tableGazetteersEndTime);
+				int igst=StringUtils.isBlank(gazetteersStartTime)?0:Integer.parseInt(gazetteersStartTime);
+				int iget=StringUtils.isBlank(gazetteersEndTime)?9999:Integer.parseInt(gazetteersEndTime);
+				if(iget>=itgst&&igst<=itget){
+					zygxsj=true;
+				}
+				//判断旧方志时间是否冲突
+				int itgost=StringUtils.isBlank(tableGazetteersOldStartTime)?0:Integer.parseInt(tableGazetteersOldStartTime);
+				int itgoet=StringUtils.isBlank(tableGazetteersOldEndTime)?9999:Integer.parseInt(tableGazetteersOldEndTime);
+				int igost=StringUtils.isBlank(gazetteersOldStartTime)?0:Integer.parseInt(gazetteersOldStartTime);
+				int igoet=StringUtils.isBlank(gazetteersOldEndTime)?9999:Integer.parseInt(gazetteersOldEndTime);
+				if(igoet>=itgost&&igost<=itgoet){
+					zygxsj=true;
+				}
 				
 				if(tableGazetteersLevel.equals(gazetteersLevel)){
 					sjfl=true;
+					if(tableGazetteersAlbum==null||gazetteersAlbum==null){
+						zjfl=true;
+					}
 				}
-				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+				if(sjfl&&tableGazetteersAlbum!=null && gazetteersAlbum!=null){
 					for(int y=0;y<tableGazetteersAlbum.length;y++){
 						for(int t=0;t<gazetteersAlbum.length;t++){
 							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
@@ -3086,14 +3177,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(tableGazetteersArea==null || gazetteersArea==null){
 					dq=true;
 				}
-				
-				if(zyfl&&dq&&sjfl&&zjfl){
+				if(zygxsj||dq||zjfl){
 					boo=true;
-				}
-				if(tableGazetteersAlbum==null||gazetteersAlbum==null){
-					if(zyfl&&dq&&sjfl){
-						boo=true;
-					}
 				}
 			}
 		}
@@ -3155,13 +3240,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			System.out.println("rld="+rld);
 			//存放查询出来的值
 			String[] tableStandardTypes=null;
-			String[] tableFullIP=null;
-			String[] tableTime=null;
 			//存放页面比较值
 			String[] standardTypes=null;
-			String[] fullIP=null;
-			String startTime=null;
-			String endTime=null;
 
 			for(int i=0;i<conlist.size();i++){
 				if(conlist.get(i).get("Field").equals("standard_types")){
@@ -3173,30 +3253,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				if(StringUtils.isNoneEmpty(rld.getStandardTypes())){
 					standardTypes=rld.getStandardTypes();
-				}
-
-				if(conlist.get(i).get("Field").equals("full_IP_range")){
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					tableFullIP=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						tableFullIP[m]=(String) json.get(m);
+					if(standardTypes.length==0){
+						String[] str=new String[]{"WFLocal","质检出版社"};
+						standardTypes=str;
+					}
+					for (String string : standardTypes) {
+						for (int j = 0; j < tableStandardTypes.length; j++) {
+							if(tableStandardTypes[j].equals(string)){
+								boo=true;
+								break;
+							}
+						}
 					}
 				}
-				if(StringUtils.isNoneEmpty(rld.getFullIpRange())){
-					fullIP=rld.getFullIpRange();
-				}
-				if(conlist.get(i).get("Field").equals("limited_parcel_time")&&
-						StringUtils.isNoneEmpty(rld.getLimitedParcelEndtime())&&
-						StringUtils.isNoneEmpty(rld.getLimitedParcelStarttime())){
 
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					tableTime=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						tableTime[m]=(String) json.get(m);
-					}
-					startTime=rld.getLimitedParcelStarttime();
-					endTime=rld.getLimitedParcelEndtime();
-				}
 			}
 			//判断行业标准是否冲突
 			for(int i=0;i<tableStandardTypes.length;i++){
@@ -3211,54 +3281,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 							break;
 						}
 					}
-				}
-			}
-
-			if(tableTime!=null && startTime!=null && endTime!=null){
-				String tableStartTime=tableTime[0];
-				String tableEndTime=tableTime[1];
-				try {
-					SimpleDateFormat dts = new SimpleDateFormat("yyyy-MM-dd");
-					Date ddts=dts.parse(tableStartTime);
-					SimpleDateFormat dte = new SimpleDateFormat("yyyy-MM-dd");
-					Date ddte=dte.parse(tableEndTime);
-					SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-					Date dds=ds.parse(startTime);	
-					SimpleDateFormat de = new SimpleDateFormat("yyyy-MM-dd");
-					Date dde=de.parse(endTime);
-
-					if(dds.getTime()<=ddte.getTime()&&dde.getTime()>=ddts.getTime()){
-
-						// ip查重
-						if(tableFullIP!=null && fullIP!=null){
-							for(int i=0;i<tableFullIP.length;i++){
-								for(int y=0;y<fullIP.length;y++){
-									String tableip=tableFullIP[i];
-									String ip=fullIP[y];
-									//开始ip
-									String tbeginIp = trans(tableip.substring(0, tableip.indexOf("-")));
-									//结束ip
-									String tendIp = trans(tableip.substring(tableip.indexOf("-")+1, tableip.length()));
-
-									//开始ip
-									String beginIp = trans(ip.substring(0, ip.indexOf("-")));
-									//结束ip
-									String endIp = trans(ip.substring(ip.indexOf("-")+1, ip.length()));
-
-									long ltbeginIp=IPConvertHelper.IPToNumber(tbeginIp);
-									long ltendIp=IPConvertHelper.IPToNumber(tendIp);
-									long lbeginIp=IPConvertHelper.IPToNumber(beginIp);
-									long lendIpIp=IPConvertHelper.IPToNumber(endIp);
-									if(lbeginIp<=ltendIp&&lendIpIp>=ltbeginIp){
-										boo=true;
-										break;
-									}
-								}
-							}
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		}
