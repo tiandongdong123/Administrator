@@ -2253,6 +2253,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
+			int count=0;
+			for (Map<String, Object> map2 : plList) {
+				if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")){
+					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
+					for (JSONObject jsonObject : conlist) {
+						if(jsonObject.get("Field").equals("gazetteers_type")){
+							count++;
+						}
+					}
+					if(count==0){
+						JSONObject json=new JSONObject();
+						json.put("Field", "gazetteers_type");
+						json.put("Logic", "AND");
+						json.put("Value", "FZ_New;FZ_Old");
+						json.put("ValueType", "String");
+						json.put("Verb", "Equal");
+						conlist.add(json);
+						JSONObject json1=new JSONObject();
+						json1.put("Terms", conlist);
+						map2.put("contract", json1);
+					}
+				}
+			}
 			List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库 
 			if(plList.size()>0){				
 				for(Map<String, Object> d : data){
