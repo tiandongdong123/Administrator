@@ -1828,7 +1828,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")){
 						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 						for (JSONObject jsonObject : conlist) {
-							if(jsonObject.get("Field").equals("standard_types")){
+							if(jsonObject.get("Field").equals("gazetteers_type")){
 								count++;
 							}
 						}
