@@ -1111,6 +1111,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gOStartTime=dto.getGazetteersOldStartTime();
 		String gOEndTime=dto.getGazetteersOldEndTime();
 		String gType=null;
+		if(StringUtils.isBlank(gNType)){
+			gStartTime=null;
+			gEndTime=null;
+			gArea=null;
+			gAlbum=null;
+		}
+		if(StringUtils.isBlank(gOType)){
+			gOStartTime=null;
+			gOEndTime=null;
+			gOArea=null;
+		}
 		int igst=StringUtils.isBlank(gStartTime)?0:Integer.parseInt(gStartTime);
 		int iget=StringUtils.isBlank(gEndTime)?0:Integer.parseInt(gEndTime);
 		int igost=StringUtils.isBlank(gOStartTime)?0:Integer.parseInt(gOStartTime);
@@ -1149,7 +1160,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gType)) {
 					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
 				}
-				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gType))) {
+				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gNType))) {
 					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
 				}
 				if (StringUtils.isNotEmpty(gStartTime)) {
