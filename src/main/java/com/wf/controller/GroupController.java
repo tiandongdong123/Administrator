@@ -1,8 +1,11 @@
 package com.wf.controller;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +59,22 @@ public class GroupController {
 	private static String DEFAULT = "default";
 	private static String UNSELECT = "unselect";
 	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
+	private static Properties pro;
+	static{
+		try {
+			if(pro==null){
+				pro=new Properties();
+				InputStream in = null;
+		    	String path = Thread.currentThread().getContextClassLoader().getResource("").getFile() + "enterpriseUrl.properties";
+		    	path = java.net.URLDecoder.decode(path, "UTF-8");
+				in = new FileInputStream(path);
+				pro.load(in);
+				}
+		} catch (Exception e) {
+			log.error("无法加载配置文件enterpriseUrl.properties", e);
+    		throw new IllegalStateException("无法加载配置文件enterpriseUrl.properties");
+		}
+	}
 	
 	/**
 	 *	机构用户信息管理查询
@@ -151,9 +170,16 @@ public class GroupController {
 	 */
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
+		Map<String,String> map=new HashMap<String, String>();
+		map.put("hy", pro.getProperty("hy"));
+		map.put("bj", pro.getProperty("bj"));
+		map.put("zl", pro.getProperty("zl"));
+		map.put("cg", pro.getProperty("cg"));
+		map.put("nj", pro.getProperty("nj"));
 		ModelAndView view = new ModelAndView();
 		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());//机构账户类型
+		view.addObject("enterpriseUrl",map);
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
 	}
@@ -214,6 +240,13 @@ public class GroupController {
 		for (Map<String, Object> entry : gmxmlist) {
 			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
+		Map<String,String> enterpriseUrl=new HashMap<String, String>();
+		enterpriseUrl.put("hy", pro.getProperty("hy"));
+		enterpriseUrl.put("bj", pro.getProperty("bj"));
+		enterpriseUrl.put("zl", pro.getProperty("zl"));
+		enterpriseUrl.put("cg", pro.getProperty("cg"));
+		enterpriseUrl.put("nj", pro.getProperty("nj"));
+		view.addObject("enterpriseUrl",enterpriseUrl);
 		return view;
 	}
 	//获取机构用户权限表1
