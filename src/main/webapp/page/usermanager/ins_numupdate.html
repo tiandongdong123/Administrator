@@ -632,8 +632,8 @@
                                   <?}?>>行业标准</label>
                                 <!-- <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes" id="isZJ_${i}_${j}" onclick="standardShow('${i}',${j},'isZJ');" value="质检出版社" <?if(!isEmpty(org_name.Value)){?>checked="checked"<?}?>>元数据+全文(质检)</label> -->
                                 <label><input type="checkbox" name="rdlist[${i}].rldto[${j}].standardTypes"
-                                    id="isBK_${i}_${j}" onclick="standardShow('${i}',${j},'isBK');" value="质检出版社"
-                                    <?if(!isEmpty(online_visitor.Value)){?>checked="checked"
+                                     value="质检出版社"
+                                    <?if(array.contain(standard_types.Value,"质检出版社")){?>checked="checked"
                                   <?}?>>网络包库(质检)</label>
                               </div>
                               
