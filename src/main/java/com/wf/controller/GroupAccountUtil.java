@@ -131,8 +131,12 @@ public class GroupAccountUtil {
      * @return 交易请求
      * @throws IOException
      */
+
+    private final static String CHANGE_BEGIN_TIME = "changeBeginTime";
+    private final static String CHANGE_END_TIME = "changeEndTime";
+    private final static String CHANGE_BALANCE = "balance";
     public TransactionRequest createTransactionRequest(UserAccount account, Long count,
-                                                              String userIP, String authToken, String updateKey,String beforeConversion) throws IOException {
+                                                              String userIP, String authToken, String updateKey,String beforeConversion,Map<String,Object> changeFront) throws IOException {
         TransactionRequest request = new TransactionRequest();
         request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
         request.setUserIP(userIP);
@@ -145,6 +149,13 @@ public class GroupAccountUtil {
         
         Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime(),beforeConversion);
         extraData.put(OPERATE_KEY, updateKey);
+        if(changeFront != null && changeFront.size() > 1){
+            extraData.put(CHANGE_BEGIN_TIME,format.format(changeFront.get("beginDateTime")));
+            extraData.put(CHANGE_END_TIME,format.format(changeFront.get("endDateTime")));
+            if(changeFront.get("balance") != null){
+                extraData.put(CHANGE_BALANCE, String.valueOf(changeFront.get("balance")));
+            }
+        }
         request.setExtraData(extraData);
 
         request.setProductDetail(createProductDetail(count, account.getBeginDateTime(), account.getEndDateTime()));
@@ -187,11 +198,11 @@ public class GroupAccountUtil {
      * @return 交易是否成功
      * @throws Exception
      */
-    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset,String beforeConversion) throws Exception {
+    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset,String beforeConversion,Map<String,Object> changeFront) throws Exception {
 
         validate(before, after);
 
-        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,beforeConversion);
+        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,beforeConversion,changeFront);
 
         //request.setTurnover(after.getBalance());        	
     	
@@ -208,11 +219,11 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给机构限时账户
      */
-    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,String beforeConversion) throws Exception {
+    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,String beforeConversion,Map<String,Object> changeFront) throws Exception {
 
         validate(null, account);
 
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,beforeConversion);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,beforeConversion,changeFront);
         request.setTurnover(BigDecimal.ZERO);
         return submitRequest(request, account.getPayChannelId(), UPDATE_KEY);
     }
@@ -231,7 +242,7 @@ public class GroupAccountUtil {
         	count = after.getBalance();
         }
         
-        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,null);
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,null,new HashMap<String, Object>());
         request.setTurnover(BigDecimal.valueOf(count));
 
         return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
@@ -242,7 +253,7 @@ public class GroupAccountUtil {
      */
     public boolean deleteAccount(UserAccount account, String userIP, String authToken) throws Exception {
         //创建交易request
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,null);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,null,new HashMap<String, Object>());
         BigDecimal turnover = getAccountCountOrBalance(account.getPayChannelId(), account.getUserId());
         request.setTurnover(new BigDecimal(BigInteger.ZERO).subtract(turnover));
         return submitRequest(request, account.getPayChannelId(), DELETE_KEY);

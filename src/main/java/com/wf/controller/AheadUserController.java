@@ -1254,7 +1254,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				//增加余额信息
-				if(aheadUserService.chargeProjectBalance(user, dto,adminId,null) > 0){
+				if(aheadUserService.chargeProjectBalance(user, dto,adminId,null,new HashMap<String, Object>()) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
@@ -1262,7 +1262,7 @@ public class AheadUserController {
 				}
 			}else if(dto.getProjectType().equals("time")){
 				//增加限时信息
-				if(aheadUserService.addProjectDeadline(user, dto,adminId,null) > 0){
+				if(aheadUserService.addProjectDeadline(user, dto,adminId,null,new HashMap<String, Object>()) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
@@ -1350,9 +1350,11 @@ public class AheadUserController {
 			this.removeproject(req, delList);
 		}
 		//删除转换前的订单
+		Map<String,Object> changeFront = new HashMap<>();
 		if (StringUtils.equals(com.getChangeFront(), "GTimeLimit")
 				|| StringUtils.equals(com.getChangeFront(), "GBalanceLimit")) {
-			if (aheadUserService.deleteChangeAccount(com, adminId) > 0) {
+			changeFront = aheadUserService.deleteChangeAccount(com, adminId);
+			if ((int)changeFront.get("isSuccess") > 0) {
 				aheadUserService.deleteResources(com.getUserId(), com.getChangeFront());
 			}
 		}
@@ -1361,7 +1363,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
-					if(aheadUserService.chargeProjectBalance(com, dto, adminId,OLD_TIME)>0){
+					if(aheadUserService.chargeProjectBalance(com, dto, adminId,OLD_TIME,changeFront)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
 						right.append(dto.getProjectname()+"添加成功</br>");
@@ -1370,7 +1372,7 @@ public class AheadUserController {
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
-					if(aheadUserService.addProjectDeadline(com, dto,adminId,OLD_BALAB)>0){
+					if(aheadUserService.addProjectDeadline(com, dto,adminId,OLD_BALAB,changeFront)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
 						right.append(dto.getProjectname()+"添加成功</br>");
