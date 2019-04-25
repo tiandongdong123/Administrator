@@ -1143,7 +1143,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
 				|| StringUtils.isNotEmpty(gLevel)|| StringUtils.isNotEmpty(gStartTime)
 				|| StringUtils.isNotEmpty(gEndTime)|| StringUtils.isNotEmpty(gOStartTime)
-				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOArea)) {
+				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOArea)
+				|| StringUtils.isNotEmpty(gType)) {
 			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
 				if (StringUtils.isNotEmpty(gId)) {
 					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
@@ -1196,12 +1197,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * @param Terms
 	 */
 	private static void formatStandard(ResourceLimitsDTO dto,JSONArray Terms){
-		if(dto.getStandardTypes()==null){
-			String [] str=new String[]{"WFLocal","质检出版社"};
-			dto.setStandardTypes(str);
-		} 
-		String standardtypes =Arrays.toString(dto.getStandardTypes());
-
+		String standardtypes = dto.getStandardTypes()==null?"":Arrays.toString(dto.getStandardTypes());
 		if(StringUtils.isNoneBlank(standardtypes)){
 			addStringToTerms("standard_types", "In", standardtypes, Terms, "String[]");
 			if(standardtypes.contains("质检出版社")){
@@ -1838,7 +1834,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
 				int count=0;
 				for (Map<String, Object> map2 : plList) {
-					if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+					if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 						for (JSONObject jsonObject : conlist) {
 							if(jsonObject.get("Field").equals("gazetteers_type")){
@@ -2268,7 +2264,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
 			int count=0;
 			for (Map<String, Object> map2 : plList) {
-				if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+				if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 					for (JSONObject jsonObject : conlist) {
 						if(jsonObject.get("Field").equals("gazetteers_type")){
