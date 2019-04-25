@@ -1833,7 +1833,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
 				int count=0;
 				for (Map<String, Object> map2 : plList) {
-					if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+					if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 						for (JSONObject jsonObject : conlist) {
 							if(jsonObject.get("Field").equals("gazetteers_type")){
@@ -2263,7 +2263,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
 			int count=0;
 			for (Map<String, Object> map2 : plList) {
-				if(map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+				if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 					for (JSONObject jsonObject : conlist) {
 						if(jsonObject.get("Field").equals("gazetteers_type")){
