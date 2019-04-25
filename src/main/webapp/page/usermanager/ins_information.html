@@ -376,12 +376,8 @@
 			<div class="tab-pane active" id="localchronicles_${list.Id}_${payid}_${pscode}">
 				<div class="limit">
 					<div class="limitTab">
-						<span><input type="radio" value="1" onclick="changExport(1,'${list.Id}','${payid}')" name="fzlx"
-								<?if(isEmpty(gazetteers_id)&&isEmpty(item_id)){?>checked="checked"
-							<?}?>/>分类筛选</span>
-						<span class="export"><input type="radio" onclick="changExport(2,'${list.Id}','${payid}')" name="fzlx" value="0"
-								<?if(!isEmpty(gazetteers_id)||!isEmpty(item_id)){?>checked="checked"
-							<?}?>/>自定义导入</span>
+						<span class="selectType"><input type="radio" value="1" onclick="changExport(1,'${list.Id}','${payid}')" checked="checked" name="fzlx"/>分类筛选</span>
+						<span class="export"><input type="radio" onclick="changExport(2,'${list.Id}','${payid}')" name="fzlx" value="0"/>自定义导入</span>
 					</div>
 					<div id="changeSelect_${list.Id}_${payid}" style="">
 						<div class="newSelect">
