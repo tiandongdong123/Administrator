@@ -1002,12 +1002,7 @@ function createDetail(count,i,resourceid,type){
 	}
 	
 	if(type.indexOf("local chronicles")>-1){
-		var selectText = ''
-			var d = new Date()
-		var year = d.getFullYear()
-		for(var j = 2012;j<=year;j++) {
-			selectText += '<option value="'+j+'">'+j+'</option>'
-		}
+		var selectText =''
 		text += '<div class="tab-pane" id="localchronicles_'+count+'_'+i+'">';
 		text += '<div class="limit">';
 		text += '<div class="limitTab">';
@@ -1018,8 +1013,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="newSelect">';
 		text += '<input id="newLocalType_'+count+'_'+i+'" data-newtype="" onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_New" name="rdlist['+count+'].rldto['+i+'].gazetteersType"/>新方志';
 		text += '<div class="newTime"><span>资源更新时间</span>'
-		text += '<div class="newSelectTime"><select class="noChecked" onchange="findStartTime(this.value,1,'+count+','+i+',\'new\')" id="startTime_'+count+'_'+i+'" data-startTime=""><option value="">不限</option>'+selectText+'</select><span style="vertical-align: top;"> ——— </span>'
-		text += '<select class="noChecked" onchange="findEndTime(this.value,2,'+count+','+i+',\'new\')" id="endTime_'+count+'_'+i+'" data-endTime=""><option value="">不限</option>'+selectText+'</select><span id="errorTime_'+count+'_'+i+'" class="errorTime"></span></div>'
+		text += '<div class="newSelectTime"><select class="noChecked" onchange="findStartTime(this.value,1,'+count+','+i+',\'new\')" id="startTime_'+count+'_'+i+'" data-startTime=""><option value="">不限</option></select><span style="vertical-align: top;"> ——— </span>'
+		text += '<select class="noChecked" onchange="findEndTime(this.value,2,'+count+','+i+',\'new\')" id="endTime_'+count+'_'+i+'" data-endTime=""><option value="">不限</option></select><span id="errorTime_'+count+'_'+i+'" class="errorTime"></span></div>'
 		text += '</div>'
 		text += '<div class="newLocation"><span>地区</span><span class="newLocationSelect"><span class="locationPrev">省</span><span>'
 		text += '<select class="noChecked" id="sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+',\'new\')" data-prev=""><option value="">全部</option></select>'
@@ -1036,8 +1031,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<div class="oldSelect">'
 		text += '<input id="oldLocalType_'+count+'_'+i+'" data-oldtype="" onclick="gazetteerType(this.value,'+count+','+i+')" type="checkbox" value="FZ_Old" name="rdlist['+count+'].rldto['+i+'].gazetteersOldType"/>旧方志'
 		text += '<div class="oldTime"><span>资源更新时间</span>'
-		text += '<div class="oldSelectTime"><select class="noChecked" onchange="findStartTime(this.value,1,'+count+','+i+',\'old\')" id="old_startTime_'+count+'_'+i+'" data-oldStartTime=""><option>不限</option>'+selectText+'</select><span style="vertical-align: top;"> ——— </span>'
-		text += '<select class="noChecked" onchange="findEndTime(this.value,2,'+count+','+i+',\'old\')" id="old_endTime_'+count+'_'+i+'" data-oldEndTime=""><option value="">不限</option>'+selectText+'</select><span id="errorOldTime_'+count+'_'+i+'" class="errorOldTime"></span></div>'
+		text += '<div class="oldSelectTime"><select class="noChecked" onchange="findStartTime(this.value,1,'+count+','+i+',\'old\')" id="old_startTime_'+count+'_'+i+'" data-oldStartTime=""><option>不限</option></select><span style="vertical-align: top;"> ——— </span>'
+		text += '<select class="noChecked" onchange="findEndTime(this.value,2,'+count+','+i+',\'old\')" id="old_endTime_'+count+'_'+i+'" data-oldEndTime=""><option value="">不限</option></select><span id="errorOldTime_'+count+'_'+i+'" class="errorOldTime"></span></div>'
 		text += '</div>'
 		text += '<div class="oldLocation"><span>地区</span><span class="oldLocationSelect"><span class="locationPrev">省</span><span>'
 		text += '<select class="noChecked" id="o_sheng_'+count+'_'+i+'" onchange="findArea(this.value,1,'+count+','+i+',\'old\')" data-oldprev=""><option value="">全部</option></select>'
@@ -1194,6 +1189,25 @@ function initGazetteer(count,index){
 	var oldArea = $("#gazetteersOldArea_"+count+"_"+index).val();
 	$.ajax({
 		type : "post",
+		async:false,
+		url : "../auser/getlocalDate.do",
+		dataType : "json",
+		
+		success:function(data){
+			var startTime='<option value="">不限</option>'
+				var d = data.data
+			var year = d.length
+			for(var j = 0;j<year;j++) {
+				startTime += '<option value="'+d[j]+'">'+d[j]+'</option>'
+			}
+			$("#startTime_"+count+"_"+index).html(startTime)
+			$("#endTime_"+count+"_"+index).html(startTime)
+			$("#old_startTime_"+count+"_"+index).html(startTime)
+			$("#old_endTime_"+count+"_"+index).html(startTime)
+		}
+	})
+	$.ajax({
+		type : "post",
 		data : {pid:0,area:area,oldArea:oldArea},
 		async:false,
 		url : "../auser/findGazetteer.do",
@@ -1231,16 +1245,16 @@ function initGazetteer(count,index){
 			for(var i=0;i<arrayArea.length;i++){
 				area+='<option value="'+arrayArea[i].id+'">'+arrayArea[i].name+'</option>';
 			}
-			var startTime='<option value="">不限</option>'
-				var d = new Date()
-			var year = d.getFullYear()
-			for(var j = 2012;j<=year;j++) {
-				startTime += '<option value="'+j+'">'+j+'</option>'
-			}
-			$("#startTime_"+count+"_"+index).html(startTime)
-			$("#endTime_"+count+"_"+index).html(startTime)
-			$("#old_startTime_"+count+"_"+index).html(startTime)
-			$("#old_endTime_"+count+"_"+index).html(startTime)
+//			var startTime='<option value="">不限</option>'
+//				var d = new Date()
+//			var year = d.getFullYear()
+//			for(var j = 2012;j<=year;j++) {
+//				startTime += '<option value="'+j+'">'+j+'</option>'
+//			}
+//			$("#startTime_"+count+"_"+index).html(startTime)
+//			$("#endTime_"+count+"_"+index).html(startTime)
+//			$("#old_startTime_"+count+"_"+index).html(startTime)
+//			$("#old_endTime_"+count+"_"+index).html(startTime)
 			$("#sheng_"+count+"_"+index).html(area);
 			$("#o_sheng_"+count+"_"+index).html(area);
 			//地区填值
