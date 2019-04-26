@@ -589,7 +589,7 @@
                               <input type="hidden" value="${gazetteers_old_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldArea" id="gazetteersOldArea_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
-                              <input type="hidden" value="${gazetteers_type.Value!}" id="gazetteers_type_${i}_${j}"/>
+                              <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}"/>
                             </div>
                             <?}?>
                             <?if(strutil.contain(rt,"patent")){?>
@@ -920,7 +920,7 @@
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}"
                                 name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime"
                                 id="gazetteersOldEndTime_${i}_${j}" />
-                              <input type="hidden" value="${gazetteers_type.Value!}" id="gazetteers_type_${i}_${j}" />
+                              <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}" />
                             </div>
                             <?}?>
                             <?if(strutil.contain(rt,"standard")){?>

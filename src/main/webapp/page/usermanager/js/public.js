@@ -632,7 +632,7 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteersArea_'+count+"_"+i).val(Area) // 新方志地区
 						$('#gazetteersAlbum_'+count+"_"+i).val(dataClassify) // 新方志专辑分类
 						$('#gazetteersLevel_'+count+"_"+i).val(dataType) // 新方志数据分类
-						$('gazetteers_type_'+count+"_"+i).val('FZ_New')
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_New')
 					}else {
 						gazetteerType('FZ_New',count,i)
 						$('#gazetteers_type_'+count+"_"+i).val('')
@@ -655,7 +655,7 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteersOldArea_'+count+"_"+i).val(oldArea) // 旧方志地区
 						$('#gazetteersOldStartTime_'+count+"_"+i).val(oldStartTime) // 旧方志开始时间
 						$('#gazetteersOldEndTime_'+count+"_"+i).val(oldEndTime) // 旧方志结束时间
-						$('gazetteers_type_'+count+"_"+i).val('FZ_Old')
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_Old')
 					}else {
 						gazetteerType('FZ_Old',count,i)
 						$('#gazetteers_type_'+count+"_"+i).val('')
@@ -1057,7 +1057,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersEndTime" id="gazetteersEndTime_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldStartTime" id="gazetteersOldStartTime_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldEndTime" id="gazetteersOldEndTime_'+count+'_'+i+'">';
-		text += '<input type="hidden" value="" id="gazetteers_type_'+count+'_'+i+'">'
+		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].localType" id="gazetteers_type_'+count+'_'+i+'">'
 		text +=	'</div>'
 	}
 	text += '</div></div>';

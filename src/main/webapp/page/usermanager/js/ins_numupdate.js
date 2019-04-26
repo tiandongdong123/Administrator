@@ -64,7 +64,7 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
-	
+//	console.log(count,index)
 	var data = new FormData($('#fromList')[0]);
     var openBindStart = data.get('openBindStart');
     var openBindEnd = data.get('openBindEnd');
@@ -418,7 +418,7 @@ function openItems(count,i,type){
 						$('#gazetteersArea_'+count+"_"+i).val(Area) // 新方志地区
 						$('#gazetteersAlbum_'+count+"_"+i).val(dataClassify) // 新方志专辑分类
 						$('#gazetteersLevel_'+count+"_"+i).val(dataType) // 新方志数据分类
-						$('gazetteers_type_'+count+"_"+i).val('FZ_New')
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_New')
 					}else {
 						gazetteerType('FZ_New',count,i)
 						$('#gazetteers_type_'+count+"_"+i).val('')
@@ -441,7 +441,7 @@ function openItems(count,i,type){
 						$('#gazetteersOldArea_'+count+"_"+i).val(oldArea) // 旧方志地区
 						$('#gazetteersOldStartTime_'+count+"_"+i).val(oldStartTime) // 旧方志开始时间
 						$('#gazetteersOldEndTime_'+count+"_"+i).val(oldEndTime) // 旧方志结束时间
-						$('gazetteers_type_'+count+"_"+i).val('FZ_Old')
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_Old')
 					}else {
 						gazetteerType('FZ_Old',count,i)
 						$('#gazetteers_type_'+count+"_"+i).val('')
