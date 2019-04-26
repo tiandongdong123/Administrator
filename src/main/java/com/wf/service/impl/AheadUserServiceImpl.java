@@ -1110,7 +1110,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gOArea=dto.getGazetteersOldArea();
 		String gOStartTime=dto.getGazetteersOldStartTime();
 		String gOEndTime=dto.getGazetteersOldEndTime();
-		String gType=null;
+		String gType=null; 
 		String localType=dto.getLocalType();
 		if(StringUtils.isNoneEmpty(localType)){
 			if(localType.contains("FZ_New")&&StringUtils.isEmpty(gNType)){

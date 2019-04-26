@@ -60,7 +60,7 @@ public class ResourceLimitsDTO {
 	private String gazetteersStartTime;
 	private String gazetteersEndTime;
 	private String itemId;
-	private String gazetteersOldType;
+	private String gazetteersOldType; 
 	private String gazetteersOldArea;
 	private String gazetteersOldStartTime;
 	private String gazetteersOldEndTime;
