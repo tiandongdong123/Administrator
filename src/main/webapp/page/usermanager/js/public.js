@@ -601,6 +601,14 @@ function openPurchaseItems(count,i,type){
 		});
 	}else if(type.indexOf("local")>-1){
 		initGazetteer(count,i);
+		if($('#changeTextarea_'+count+'_'+i +' div .form-control').val()!='') {
+			$('#changeSelect_'+count+'_'+i).hide()
+			$('#changeTextarea_'+count+'_'+i).show()
+			$('#localchronicles_'+count+'_'+i+ ' .selectType input').prop('checked',false)
+			$('#localchronicles_'+count+'_'+i+ ' .export input').prop('checked',true)
+		}else {
+			$('#localchronicles_'+count+'_'+i+ ' .selectType input').prop('checked',true)
+		}
 		layer.open({
 		    type: 1, //page层 1div，2页面
 		    area: ['40%', '90%'],
@@ -702,12 +710,24 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteersOldEndTime_'+count+'_'+i).val('')
 					}
 					
+					if($("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+						$('#gazetteersId_'+count+'_'+i).val('')
+						$('#gazetteersId_'+count+'_'+i).text('')
+						$('#itemId_'+count+'_'+i).val('')
+						$('#itemId_'+count+'_'+i).text('')
+					}
+					
 					layer.closeAll();				
+				}
+				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+					layer.closeAll();	
 				}
 		    },
 		    cancel: function() {
 		    	$('#errorTime_'+count+'_'+i).html('')
 				$('#errorOldTime_'+count+'_'+i).html('')
+				$('#gazetteersId_'+count+'_'+i).val('')
+				$('#itemId_'+count+'_'+i).val('')
 				layer.closeAll();					
 		    }
 		});

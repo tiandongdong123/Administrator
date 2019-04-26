@@ -285,6 +285,12 @@ function openItems(count,i,type){
 		$("a[href='#localchronicles_"+count+"_"+i+"']").parent().addClass("active");
 		$("#localchronicles_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 		initGazetteer(count,i);
+		if($('#changeTextarea_'+count+'_'+i +' div .form-control').val()!='') {
+			$('#changeSelect_'+count+'_'+i).hide()
+			$('#changeTextarea_'+count+'_'+i).show()
+			$('.selectType input').prop('checked',false)
+			$('.export input').prop('checked',true)
+		}
 	}
 	if(type.indexOf("local chronicles")==-1){
 		//Ztree 返显
@@ -394,7 +400,6 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 		    yes: function(){
-				
 				if($('#errorTime_'+count+"_"+i).text()==''&$('#errorOldTime_'+count+"_"+i).text()=='') {
 					if($('#newLocalType_'+count+"_"+i).is(':checked')) {
 						var startTime = $('#startTime_'+count+"_"+i).attr('data-starttime'),
@@ -487,15 +492,23 @@ function openItems(count,i,type){
 						$('#gazetteersOldStartTime_'+count+'_'+i).val('')
 						$('#gazetteersOldEndTime_'+count+'_'+i).val('')
 					}
-					
+					if($("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+						$('#gazetteersId_'+count+'_'+i).val('')
+						$('#gazetteersId_'+count+'_'+i).text('')
+						$('#itemId_'+count+'_'+i).val('')
+						$('#itemId_'+count+'_'+i).text('')
+					}
+					layer.closeAll();	
+				}
+				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
 					layer.closeAll();	
 				}
 		    },
 		    cancel: function() {
+		    	$('.newSelect select').addClass("noChecked"); 
+		    	$('#errorTime_'+count+'_'+i).html('')
+		    	$('#errorOldTime_'+count+'_'+i).html('')
 				layer.closeAll();	
-				$('.newSelect select').addClass("noChecked"); 
-				$('#errorTime_'+count+'_'+i).html('')
-				$('#errorOldTime_'+count+'_'+i).html('')
 		    }
 		});
 	}else{

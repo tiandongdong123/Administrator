@@ -400,6 +400,12 @@ function showGazetteers(userId,payid,pscode){
 	}else {
 		$('#oldEndTime_'+temp).html('不限')
 	}
+	if($('#changeTextarea_'+userId+'_'+payid +' div .form-control').text()!='') {
+		$('#changeSelect_'+userId+'_'+payid).hide()
+		$('#changeTextarea_'+userId+'_'+payid).show()
+		$('.selectType input').prop('checked',false)
+		$('.export input').prop('checked',true)
+	}
 }
 
 //服务权限设置隐藏/显示
