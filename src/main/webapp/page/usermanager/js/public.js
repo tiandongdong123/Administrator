@@ -2423,7 +2423,7 @@ function validateIpChange(data,object){
 					bool = false;
 				}else if (data.flag === 'fail') {
 					layer.msg(data.fail, {icon: 2});
-					bool = true;
+					bool = false;
 					}
 				}
 		});
