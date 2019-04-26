@@ -1837,10 +1837,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 					if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 						for (JSONObject jsonObject : conlist) {
-							if(jsonObject.get("Field").equals("gazetteers_type")){
+							if(jsonObject.get("Field").equals("gazetteers_type")
+							 ||jsonObject.get("Field").equals("gazetteers_id")
+							 ||jsonObject.get("Field").equals("item_id")){
 								count++;
 							}
 						}
+						//判断gazetteers_id和item_id都为空的情况下
 						if(count==0){
 							JSONObject json=new JSONObject();
 							json.put("Field", "gazetteers_type");
@@ -2267,7 +2270,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
 					for (JSONObject jsonObject : conlist) {
-						if(jsonObject.get("Field").equals("gazetteers_type")){
+						if(jsonObject.get("Field").equals("gazetteers_type")
+						 ||jsonObject.get("Field").equals("gazetteers_id")
+						 ||jsonObject.get("Field").equals("item_id")){
 							count++;
 						}
 					}
