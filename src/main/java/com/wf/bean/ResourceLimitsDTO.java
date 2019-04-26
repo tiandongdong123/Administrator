@@ -51,6 +51,7 @@ public class ResourceLimitsDTO {
 	private Integer totalPrintNo;
 	private Integer singlePrintNo;
 	//方志
+	private String localType;
 	private String gazetteersId;
 	private String gazetteersType;
 	private String gazetteersLevel;
@@ -65,6 +66,15 @@ public class ResourceLimitsDTO {
 	private String gazetteersOldEndTime;
 	
 	
+	
+	public String getLocalType() {
+		return localType;
+	}
+
+	public void setLocalType(String localType) {
+		this.localType = localType;
+	}
+
 	public String getGazetteersOldType() {
 		return gazetteersOldType;
 	}
