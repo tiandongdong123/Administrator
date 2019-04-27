@@ -601,7 +601,9 @@ function openPurchaseItems(count,i,type){
 		});
 	}else if(type.indexOf("local")>-1){
 		initGazetteer(count,i);
-		if($('#changeTextarea_'+count+'_'+i +' div .form-control').val()!='') {
+		$('#gazetteersId_'+count+'_'+i).val($('#gazetteers_TopId_'+count+'_'+i).val())
+		$('#itemId_'+count+'_'+i).val($('#gazetteers_BottomItem_'+count+'_'+i).val())
+		if($('#gazetteersId_'+count+'_'+i).val()!=''||$('#itemId_'+count+'_'+i).val()!='') {
 			$('#changeSelect_'+count+'_'+i).hide()
 			$('#changeTextarea_'+count+'_'+i).show()
 			$('#localchronicles_'+count+'_'+i+ ' .selectType input').prop('checked',false)
@@ -715,11 +717,18 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteersId_'+count+'_'+i).text('')
 						$('#itemId_'+count+'_'+i).val('')
 						$('#itemId_'+count+'_'+i).text('')
+						$('#gazetteers_TopId_'+count+'_'+i).val('')
+						$('#gazetteers_BottomItem_'+count+'_'+i).val('')
+					}else {
+						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
+						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
 					
 					layer.closeAll();				
 				}
 				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+					$('#errorTime_'+count+'_'+i).text('')
+					$('#errorOldTime_'+count+'_'+i).text('')
 					layer.closeAll();	
 				}
 		    },
@@ -1061,8 +1070,8 @@ function createDetail(count,i,resourceid,type){
 		text += '</div>'
 		text += '</div>'
 		text += '<div id="changeTextarea_'+count+'_'+i+'" style="display:none">'
-		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3"  name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
-		text += '<div>条目 （以;分隔）<textarea class="form-control" rows="3" name="rdlist['+count+'].rldto['+i+'].itemId" id="itemId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
+		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
+		text += '<div>条目 （以;分隔）<textarea class="form-control" rows="3" id="itemId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
 		text += '</div>'
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersArea" id="gazetteersArea_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersAlbum" id="gazetteersAlbum_'+count+'_'+i+'">';
@@ -1073,6 +1082,8 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldStartTime" id="gazetteersOldStartTime_'+count+'_'+i+'">';
 		text += '<input type="hidden" name="rdlist['+count+'].rldto['+i+'].gazetteersOldEndTime" id="gazetteersOldEndTime_'+count+'_'+i+'">';
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].localType" id="gazetteers_type_'+count+'_'+i+'">'
+		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteers_TopId_'+count+'_'+i+'">'
+		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].itemId" id="gazetteers_BottomItem_'+count+'_'+i+'">'
 		text +=	'</div>'
 	}
 	text += '</div></div>';

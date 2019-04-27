@@ -572,11 +572,11 @@
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">
                                   <div>整本 （以;分隔）
-                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].gazetteersId"
+                                    <textarea class="form-control" rows="3" 
                                       id="gazetteersId_${i}_${j}">${gazetteers_id.Value!}</textarea>
                                   </div>
                                   <div>条目 （以;分隔）
-                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].itemId"
+                                    <textarea class="form-control" rows="3"
                                       id="itemId_${i}_${j}">${item_id.Value!}</textarea>
                                   </div>
                                 </div>
@@ -590,6 +590,8 @@
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}"/>
+                              <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
+                              <input type="hidden" value="${item_id.Value!}" name="rdlist[${i}].rldto[${j}].itemId" id="gazetteers_BottomItem_${i}_${j}" />
                             </div>
                             <?}?>
                             <?if(strutil.contain(rt,"patent")){?>
@@ -894,10 +896,10 @@
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">
                                   <div>整本 （以;分隔）
-                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteersId_${i}_${j}">${gazetteers_id.Value!}</textarea>
+                                    <textarea class="form-control" rows="3"  id="gazetteersId_${i}_${j}">${gazetteers_id.Value!}</textarea>
                                   </div>
                                   <div>条目 （以;分隔）
-                                    <textarea class="form-control" rows="3" name="rdlist[${i}].rldto[${j}].itemId" id="itemId_${i}_${j}">${item_id.Value!}</textarea>
+                                    <textarea class="form-control" rows="3" id="itemId_${i}_${j}">${item_id.Value!}</textarea>
                                   </div>
                                 </div>
                               </div>
@@ -921,6 +923,8 @@
                                 name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime"
                                 id="gazetteersOldEndTime_${i}_${j}" />
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}" />
+                              <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
+                              <input type="hidden" value="${item_id.Value!}" name="rdlist[${i}].rldto[${j}].itemId" id="gazetteers_BottomItem_${i}_${j}" />
                             </div>
                             <?}?>
                             <?if(strutil.contain(rt,"standard")){?>
