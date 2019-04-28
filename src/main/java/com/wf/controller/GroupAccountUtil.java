@@ -252,9 +252,9 @@ public class GroupAccountUtil {
     /**
      * 删除账户信息
      */
-    public boolean deleteAccount(UserAccount account, String userIP, String authToken) throws Exception {
+    public boolean deleteAccount(UserAccount account, String userIP, String authToken,List<String> change) throws Exception {
         //创建交易request
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,null,new HashMap<String, Object>());
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,change,new HashMap<String, Object>());
         BigDecimal turnover = getAccountCountOrBalance(account.getPayChannelId(), account.getUserId());
         request.setTurnover(new BigDecimal(BigInteger.ZERO).subtract(turnover));
         return submitRequest(request, account.getPayChannelId(), DELETE_KEY);
@@ -361,6 +361,7 @@ public class GroupAccountUtil {
 
     }
     private final static String OLD_FORMAL = "OF";
+    private final static String OLD_TRICAL = "OR";
     public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id,List<String> change) {
         Account account = getAccount(payChannelId, user_id);
         if (UPDATE_KEY.equals(updateKey)) {
@@ -374,9 +375,9 @@ public class GroupAccountUtil {
         }
         String title = request.getProductTitle();
         StringBuffer rule = new StringBuffer();
-        if(change.contains(OLD_FORMAL)){
+        if(change != null && change.contains(OLD_FORMAL)){
             rule.append("(trial)");
-        }else{
+        }else if(change != null && change.contains(OLD_TRICAL)) {
             rule.append("(formal)");
         }
         title += rule.toString();
