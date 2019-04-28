@@ -1,7 +1,7 @@
 package com.wf.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.utils.StringUtil;
 import com.wanfangdata.model.BalanceLimitAccount;
 import com.wanfangdata.model.CountLimitAccount;
 import com.wanfangdata.model.TimeLimitAccount;
@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,7 +48,7 @@ public class GroupAccountUtil {
     /**
      *  转换前的项目
      */
-    private static final String PAYTAG_STRING_KEY = "payTag";
+    private static final String PAYTAG_STRING_KEY = "solr_payTag";
     /**
      * 操作机构名称
      */
@@ -84,7 +85,7 @@ public class GroupAccountUtil {
      * @param end       有效期结束时间
      * @return
      */
-    private Map<String, String> createExtraData(String organName, Date begin, Date end, String beforeConversion) {
+    private Map<String, String> createExtraData(String organName, Date begin, Date end, List<String> change) {
         Map<String, String> extraData = new HashMap<String, String>();
         extraData.put(ORGANNAME_KEY, organName);
         //对生效时间和失效时间进行格式化"yyyy-MM-dd HH:mm:ss"
@@ -92,8 +93,8 @@ public class GroupAccountUtil {
         String end_date_time = format.format(end);
         extraData.put(BEGIN_DATE_TIME_KEY, begin_date_time);
         extraData.put(END_DATE_TIME_KEY, end_date_time);
-        if(StringUtil.isNotEmpty(beforeConversion)){
-            extraData.put(PAYTAG_STRING_KEY,beforeConversion);
+        if(change != null && change.size() > 0){
+            extraData.put(PAYTAG_STRING_KEY, JSONObject.toJSONString(change));
         }
         return extraData;
     }
@@ -136,7 +137,7 @@ public class GroupAccountUtil {
     private final static String CHANGE_END_TIME = "changeEndTime";
     private final static String CHANGE_BALANCE = "balance";
     public TransactionRequest createTransactionRequest(UserAccount account, Long count,
-                                                              String userIP, String authToken, String updateKey,String beforeConversion,Map<String,Object> changeFront) throws IOException {
+                                                              String userIP, String authToken, String updateKey,List<String> change,Map<String,Object> changeFront) throws IOException {
         TransactionRequest request = new TransactionRequest();
         request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
         request.setUserIP(userIP);
@@ -147,7 +148,7 @@ public class GroupAccountUtil {
         transferOut.put(new AccountId("Operational", "Manual"), null);
         request.setTransferOut(transferOut);
         
-        Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime(),beforeConversion);
+        Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime(),change);
         extraData.put(OPERATE_KEY, updateKey);
         if(changeFront != null && changeFront.size() > 1){
             extraData.put(CHANGE_BEGIN_TIME,format.format(changeFront.get("beginDateTime")));
@@ -159,7 +160,7 @@ public class GroupAccountUtil {
         request.setExtraData(extraData);
 
         request.setProductDetail(createProductDetail(count, account.getBeginDateTime(), account.getEndDateTime()));
-        setTransactionRequestProductTitle(request, updateKey, account.getPayChannelId(), account.getUserId());
+        setTransactionRequestProductTitle(request, updateKey, account.getPayChannelId(), account.getUserId(),change);
         return request;
     }
 
@@ -198,11 +199,11 @@ public class GroupAccountUtil {
      * @return 交易是否成功
      * @throws Exception
      */
-    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken,boolean reset,String beforeConversion,Map<String,Object> changeFront) throws Exception {
+    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken, boolean reset, List<String> change, Map<String,Object> changeFront) throws Exception {
 
         validate(before, after);
 
-        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,beforeConversion,changeFront);
+        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,change,changeFront);
 
         //request.setTurnover(after.getBalance());        	
     	
@@ -219,11 +220,11 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给机构限时账户
      */
-    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,String beforeConversion,Map<String,Object> changeFront) throws Exception {
+    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,List<String> change,Map<String,Object> changeFront) throws Exception {
 
         validate(null, account);
 
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,beforeConversion,changeFront);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,change,changeFront);
         request.setTurnover(BigDecimal.ZERO);
         return submitRequest(request, account.getPayChannelId(), UPDATE_KEY);
     }
@@ -231,7 +232,7 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给次数计费用户
      */
-    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken,boolean reset) throws Exception {
+    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken, List<String> change,boolean reset) throws Exception {
 
         validate(before, after);
 
@@ -242,7 +243,7 @@ public class GroupAccountUtil {
         	count = after.getBalance();
         }
         
-        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,null,new HashMap<String, Object>());
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,change,new HashMap<String, Object>());
         request.setTurnover(BigDecimal.valueOf(count));
 
         return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
@@ -359,8 +360,8 @@ public class GroupAccountUtil {
         }
 
     }
-    
-    public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id) {
+    private final static String OLD_FORMAL = "OF";
+    public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id,List<String> change) {
         Account account = getAccount(payChannelId, user_id);
         if (UPDATE_KEY.equals(updateKey)) {
             if (account == null) {
@@ -371,5 +372,14 @@ public class GroupAccountUtil {
         } else if (DELETE_KEY.equals(updateKey)) {
             request.setProductTitle(GROUPACCOUNT_BEHAVIOR_DELETE);
         }
+        String title = request.getProductTitle();
+        StringBuffer rule = new StringBuffer();
+        if(change.contains(OLD_FORMAL)){
+            rule.append("(trial)");
+        }else{
+            rule.append("(formal)");
+        }
+        title += rule.toString();
+        request.setProductTitle(title);
     }
 }

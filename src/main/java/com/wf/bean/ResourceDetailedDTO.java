@@ -28,7 +28,9 @@ public class ResourceDetailedDTO {
 	private String validityEndtime2;
 	// 是否试用 trical--试用，formal--正常
 	private String mode;
-	
+
+	private String beforeMode;
+
 	private List<ResourceLimitsDTO> rldto;
 	
 	public String getProjectid() {
@@ -125,6 +127,14 @@ public class ResourceDetailedDTO {
 
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+
+	public String getBeforeMode() {
+		return beforeMode;
+	}
+
+	public void setBeforeMode(String beforeMode) {
+		this.beforeMode = beforeMode;
 	}
 
 	public List<ResourceLimitsDTO> getRldto() {

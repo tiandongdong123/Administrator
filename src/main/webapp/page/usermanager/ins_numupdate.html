@@ -113,7 +113,7 @@
           	<div class="balance_block" name="full_div">
            	<div class="resources_title">
            		<span name="proname" id="proname${i}">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
-				<input type="hidden" name="rdlist[${i}].beforeMode" value="${pro.beforeMode!}">
+				<input type="hidden" name="rdlist[${i}].beforeMode" value="${pro.mode!}">
            		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
            		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
