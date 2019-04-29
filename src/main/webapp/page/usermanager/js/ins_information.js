@@ -338,6 +338,10 @@ function showGazetteers(userId,payid,pscode){
 		if(areas.length>=3){
 			$("#xian_"+temp).html(areas[2])
 		}
+		if(areas=='') {
+			$('.newLocationSelect').html('<span style="margin-left:10px;">全部</span>')
+			$('.oldLocationSelect').html('<span style="margin-left: 10px">全部</span>')
+		}
 	}
 	var type=$("#gazetteers_type_"+temp).val();
 	if(type!=null){
@@ -380,13 +384,16 @@ function showGazetteers(userId,payid,pscode){
 	if(newStartTime!=null&&newStartTime!=''){
 		$('#newStartTime_'+temp).html(newStartTime)
 	}else {
-		$('#newStartTime_'+temp).html('不限')
+		$('#newSelectTime'+temp).html('不限')
 	}
 	var newEndTime = $('#gazetteers_endTime_'+temp).val()
 	if(newEndTime!=null&&newEndTime!=''){
 		$('#newEndTime_'+temp).html(newEndTime)
 	}else {
 		$('#newEndTime_'+temp).html('不限')
+	}
+	if(newEndTime==''&&newStartTime=='') {
+		$('.newSelectTime').html('<span>不限</span>')
 	}
 	var oldStartTime = $('#gazetteers_old_startTime_'+temp).val()
 	if(oldStartTime!=null&&oldStartTime!=''){
@@ -399,6 +406,9 @@ function showGazetteers(userId,payid,pscode){
 		$('#oldEndTime_'+temp).html(oldEndTime)
 	}else {
 		$('#oldEndTime_'+temp).html('不限')
+	}
+	if(oldStartTime==''&&oldEndTime=='') {
+		$('.oldSelectTime').html('<span>不限</span>')
 	}
 	if($('#changeTextarea_'+userId+'_'+payid +' div .form-control').text()!='') {
 		$('#changeSelect_'+userId+'_'+payid).hide()
