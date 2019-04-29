@@ -1872,7 +1872,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 					for(Map<String, Object> d : data){
 						for(Map<String, Object> plmap : plList){
 							if(d.get("productSourceCode").equals(plmap.get("productSourceCode"))){
-								d.put("checked", "checked");
+								if(plmap.get("productSourceCode").equals("DB_WFSD")){
+									//判断标准是否选择了详情
+									if(plmap.containsKey("contract")){
+										d.put("checked", "checked");
+									}
+								}else{
+									d.put("checked", "checked");
+								}
 								if(plmap.get("contract")!=null && plmap.get("contract")!=""){
 									d.put("contract", JSONObject.fromObject(plmap.get("contract")).getJSONArray("Terms"));
 								}
@@ -2304,7 +2311,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 				for(Map<String, Object> d : data){
 					for(Map<String, Object> plmap : plList){
 						if(d.get("productSourceCode").equals(plmap.get("productSourceCode"))){
+							if(plmap.get("productSourceCode").equals("DB_WFSD")){
+								//判断标准是否选择了详情
+								if(plmap.containsKey("contract")){
+									d.put("checked", "checked");
+								}
+							}else{
 							d.put("checked", "checked");
+							}
 							if(plmap.get("contract")!=null && plmap.get("contract")!=""){
 								d.put("contract", JSONObject.fromObject(plmap.get("contract")).getJSONArray("Terms"));
 							}
