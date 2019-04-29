@@ -2315,7 +2315,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 								//判断标准是否选择了详情
 								if(plmap.containsKey("contract")){
 									d.put("checked", "checked");
-								}
+								} 
 							}else{
 							d.put("checked", "checked");
 							}
