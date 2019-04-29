@@ -2304,7 +2304,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						json1.put("Terms", conlist);
 						map2.put("contract", json1);
 					}
-				}  
+				}   
 			}
 			List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库 
 			if(plList.size()>0){				
