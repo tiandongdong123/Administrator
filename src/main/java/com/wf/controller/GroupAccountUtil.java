@@ -48,7 +48,7 @@ public class GroupAccountUtil {
     /**
      *  转换前的项目
      */
-    private static final String PAYTAG_STRING_KEY = "solr_payTag";
+    private static final String PAYTAG_STRING_KEY = "payTag";
     /**
      * 操作机构名称
      */
@@ -94,7 +94,14 @@ public class GroupAccountUtil {
         extraData.put(BEGIN_DATE_TIME_KEY, begin_date_time);
         extraData.put(END_DATE_TIME_KEY, end_date_time);
         if(change != null && change.size() > 0){
-            extraData.put(PAYTAG_STRING_KEY, JSONObject.toJSONString(change));
+            StringBuffer payTagString = new StringBuffer();
+            for(int i = 0; i < change.size(); i ++){
+                payTagString.append(change.get(i));
+                if(i != change.size() - 1){
+                    payTagString.append(",");
+                }
+            }
+            extraData.put(PAYTAG_STRING_KEY, payTagString.toString());
         }
         return extraData;
     }
@@ -136,6 +143,9 @@ public class GroupAccountUtil {
     private final static String CHANGE_BEGIN_TIME = "changeBeginTime";
     private final static String CHANGE_END_TIME = "changeEndTime";
     private final static String CHANGE_BALANCE = "balance";
+    private final static String BEFORE_TOTALMONEY = "beforeTotalMoney";
+    private final static String BEFORE_COUNT = "beforePurchaseNumber";
+
     public TransactionRequest createTransactionRequest(UserAccount account, Long count,
                                                               String userIP, String authToken, String updateKey,List<String> change,Map<String,Object> changeFront) throws IOException {
         TransactionRequest request = new TransactionRequest();
@@ -150,11 +160,21 @@ public class GroupAccountUtil {
         
         Map<String, String> extraData = createExtraData(account.getOrganName(), account.getBeginDateTime(), account.getEndDateTime(),change);
         extraData.put(OPERATE_KEY, updateKey);
-        if(changeFront != null && changeFront.size() > 1){
-            extraData.put(CHANGE_BEGIN_TIME,format.format(changeFront.get("beginDateTime")));
-            extraData.put(CHANGE_END_TIME,format.format(changeFront.get("endDateTime")));
-            if(changeFront.get("balance") != null){
+        if(changeFront != null && changeFront.size() > 0){
+            if(changeFront.containsKey("beginDateTime")){
+                extraData.put(CHANGE_BEGIN_TIME,format.format(changeFront.get("beginDateTime")));
+            }
+            if(changeFront.containsKey("endDateTime")){
+                extraData.put(CHANGE_END_TIME,format.format(changeFront.get("endDateTime")));
+            }
+            if(changeFront.containsKey("balance")){
                 extraData.put(CHANGE_BALANCE, String.valueOf(changeFront.get("balance")));
+            }
+            if(changeFront.containsKey("beforeTotalMoney")){
+                extraData.put(BEFORE_TOTALMONEY, String.valueOf(changeFront.get("beforeTotalMoney")));
+            }
+            if(changeFront.containsKey("beforePurchaseNumber")){
+                extraData.put(BEFORE_COUNT, String.valueOf(changeFront.get("beforePurchaseNumber")));
             }
         }
         request.setExtraData(extraData);
@@ -232,7 +252,7 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给次数计费用户
      */
-    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken, List<String> change,boolean reset) throws Exception {
+    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken, List<String> change,boolean reset,Map<String,Object> changeFront) throws Exception {
 
         validate(before, after);
 
@@ -243,7 +263,7 @@ public class GroupAccountUtil {
         	count = after.getBalance();
         }
         
-        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,change,new HashMap<String, Object>());
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,change,changeFront);
         request.setTurnover(BigDecimal.valueOf(count));
 
         return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
@@ -360,8 +380,8 @@ public class GroupAccountUtil {
         }
 
     }
-    private final static String OLD_FORMAL = "OF";
-    private final static String OLD_TRICAL = "OR";
+    private final static String OLD_FORMAL = "OLD_FORMAL";
+    private final static String OLD_TRICAL = "OLD_TRICAL";
     public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id,List<String> change) {
         Account account = getAccount(payChannelId, user_id);
         if (UPDATE_KEY.equals(updateKey)) {

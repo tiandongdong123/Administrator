@@ -18,10 +18,14 @@ public class ResourceDetailedDTO {
 	private String validityEndtime;
 	
 	private String totalMoney;
+
+	private String beforeTotalMoney;
 	
 	private String relatedIdAccountType;;
 	
 	private String purchaseNumber;
+
+	private String beforePurchaseNumber;
 	
 	private String validityStarttime2;
 	
@@ -145,16 +149,41 @@ public class ResourceDetailedDTO {
 		this.rldto = rldto;
 	}
 
+	public String getBeforeTotalMoney() {
+		return beforeTotalMoney;
+	}
+
+	public void setBeforeTotalMoney(String beforeTotalMoney) {
+		this.beforeTotalMoney = beforeTotalMoney;
+	}
+
+	public String getBeforePurchaseNumber() {
+		return beforePurchaseNumber;
+	}
+
+	public void setBeforePurchaseNumber(String beforePurchaseNumber) {
+		this.beforePurchaseNumber = beforePurchaseNumber;
+	}
+
 	@Override
 	public String toString() {
-		return "ResourceDetailedDTO [projectid=" + projectid + ", projectname="
-				+ projectname + ", projectType=" + projectType
-				+ ", resourceType=" + resourceType + ", validityStarttime="
-				+ validityStarttime + ", validityEndtime=" + validityEndtime
-				+ ", totalMoney=" + totalMoney + ", relatedIdAccountType="
-				+ relatedIdAccountType + ", purchaseNumber=" + purchaseNumber
-				+ ", validityStarttime2=" + validityStarttime2
-				+ ", validityEndtime2=" + validityEndtime2
-				+ ", mode=" + mode + ", rldto=" + rldto+"]";
+		return "ResourceDetailedDTO{" +
+				"projectid='" + projectid + '\'' +
+				", projectname='" + projectname + '\'' +
+				", projectType='" + projectType + '\'' +
+				", resourceType='" + resourceType + '\'' +
+				", validityStarttime='" + validityStarttime + '\'' +
+				", validityEndtime='" + validityEndtime + '\'' +
+				", totalMoney='" + totalMoney + '\'' +
+				", beforeTotalMoney='" + beforeTotalMoney + '\'' +
+				", relatedIdAccountType='" + relatedIdAccountType + '\'' +
+				", purchaseNumber='" + purchaseNumber + '\'' +
+				", beforePurchaseNumber='" + beforePurchaseNumber + '\'' +
+				", validityStarttime2='" + validityStarttime2 + '\'' +
+				", validityEndtime2='" + validityEndtime2 + '\'' +
+				", mode='" + mode + '\'' +
+				", beforeMode='" + beforeMode + '\'' +
+				", rldto=" + rldto +
+				'}';
 	}
 }

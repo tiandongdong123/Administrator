@@ -141,10 +141,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
 	private static String ORGCODE=XxlConfClient.get("wf-admin.orgcode",null);
 	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
-    private final static String OLD_TIME = "OT";
-    private final static String OLD_BALAB = "OB";
-    private final static String OLD_FORMAL = "OF";
-    private final static String OLD_TRICAL = "OR";
+    private final static String OLD_TIME = "OLD_TIME";
+    private final static String OLD_BALAB = "OLD_BALAB";
+    private final static String OLD_FORMAL = "OLD_FORMAL";
+    private final static String OLD_TRICAL = "OLD_TRICAL";
 
 	private SimpleDateFormat sdfSimp = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -793,15 +793,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
             List<String> change = new ArrayList<>();
-
+			Map<String,Object> changeFront = new HashMap<>();
 			if(isChange){
+				changeFront.put("beforePurchaseNumber",dto.getBeforePurchaseNumber());
                 if("trical".equals(dto.getMode())){
                     change.add(OLD_FORMAL);
                 }else{
                     change.add(OLD_TRICAL);
                 }
             }
-			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId,change, resetCount);
+			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId,change, resetCount,changeFront);
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -863,6 +864,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//检测是否存在正式试用转化
             List<String> change = new ArrayList<>();
             if(isChange){
+            	changeFront.put("beforeTotalMoney",dto.getBeforeTotalMoney());
                 if("trical".equals(dto.getMode())){
                     change.add(OLD_FORMAL);
                 }else{
