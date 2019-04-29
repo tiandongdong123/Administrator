@@ -624,11 +624,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
 
         List change = new ArrayList();
-        if(StringUtils.isNotEmpty(dto.getBeforeMode())){
-            change.add(OLD_FORMAL);
-        }else {
-            change.add(OLD_TRICAL);
-        }
 		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,change);
 		int flag = 0;
 		if (isSuccess) {
@@ -645,7 +640,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String channelId=com.getChangeFront();
 		Date beginDateTime=null;
 		Date endDateTime=null;
-		List<String> change = new ArrayList<>();
 		if ("GBalanceLimit".equals(channelId)) {
 			wfks.accounting.handler.entity.BalanceLimitAccount infer = (wfks.accounting.handler.entity.BalanceLimitAccount)
 					accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
@@ -658,15 +652,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			changeFront.put("beginDateTime",beginDateTime);
 			changeFront.put("endDateTime",endDateTime);
 			changeFront.put("balance",infer.getBalance());
-			for(ResourceDetailedDTO obj : com.getRdlist()){
-			    if("GTimeLimit".equals(obj.getProjectid())){
-			        if("trical".equals(obj.getBeforeMode())){
-                        change.add(OLD_TRICAL);
-                    }else {
-                        change.add(OLD_FORMAL);
-                    }
-                }
-            }
 		} else if ("GTimeLimit".equals(channelId)) {
 			wfks.accounting.handler.entity.TimeLimitAccount infer = (wfks.accounting.handler.entity.TimeLimitAccount)
 					accountDao.get(new AccountId(channelId,com.getUserId()), new HashMap<String,String>());
@@ -678,15 +663,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 			endDateTime=infer.getEndDateTime();
 			changeFront.put("beginDateTime",beginDateTime);
 			changeFront.put("endDateTime",endDateTime);
-            for(ResourceDetailedDTO obj : com.getRdlist()){
-                if("GBalanceLimit".equals(obj.getProjectid())){
-                    if("trical".equals(obj.getBeforeMode())){
-                        change.add(OLD_TRICAL);
-                    }else {
-                        change.add(OLD_FORMAL);
-                    }
-                }
-            }
 		}
 		UserAccount account = new UserAccount();
 		account.setUserId(com.getUserId());
@@ -694,7 +670,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setOrganName(com.getInstitution());
 		account.setBeginDateTime(beginDateTime);
 		account.setEndDateTime(endDateTime);
-		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,change);
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,new ArrayList<String>());
 		changeFront.put("isSuccess",isSuccess?1:0);
 		return changeFront;
 	}
@@ -727,6 +703,8 @@ public class AheadUserServiceImpl implements AheadUserService{
             List<String> change = new ArrayList<>();
 
 			if(isChange){
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
                 if("trical".equals(dto.getMode())){
                     change.add(OLD_FORMAL);
                 }else{
@@ -795,7 +773,13 @@ public class AheadUserServiceImpl implements AheadUserService{
             List<String> change = new ArrayList<>();
 			Map<String,Object> changeFront = new HashMap<>();
 			if(isChange){
-				changeFront.put("beforePurchaseNumber",dto.getBeforePurchaseNumber());
+				if(StringUtils.isNotEmpty(dto.getBeforePurchaseNumber())){
+					changeFront.put("beforePurchaseNumber",dto.getBeforePurchaseNumber());
+				}else {
+					changeFront.put("beforePurchaseNumber",0);
+				}
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
                 if("trical".equals(dto.getMode())){
                     change.add(OLD_FORMAL);
                 }else{
@@ -864,7 +848,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//检测是否存在正式试用转化
             List<String> change = new ArrayList<>();
             if(isChange){
-            	changeFront.put("beforeTotalMoney",dto.getBeforeTotalMoney());
+            	if(StringUtils.isNotEmpty(dto.getBeforeTotalMoney())){
+					changeFront.put("beforeTotalMoney",dto.getBeforeTotalMoney());
+				}else {
+					changeFront.put("beforeTotalMoney",0);
+				}
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
                 if("trical".equals(dto.getMode())){
                     change.add(OLD_FORMAL);
                 }else{

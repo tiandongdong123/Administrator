@@ -176,6 +176,12 @@ public class GroupAccountUtil {
             if(changeFront.containsKey("beforePurchaseNumber")){
                 extraData.put(BEFORE_COUNT, String.valueOf(changeFront.get("beforePurchaseNumber")));
             }
+            if(changeFront.containsKey("valStartTime")){
+                extraData.put("valStartTime", String.valueOf(changeFront.get("valStartTime")));
+            }
+            if(changeFront.containsKey("valEndTime")){
+                extraData.put("valEndTime", String.valueOf(changeFront.get("valEndTime")));
+            }
         }
         request.setExtraData(extraData);
 
