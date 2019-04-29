@@ -2437,7 +2437,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				i = personMapper.updateRegisterAdmin(per);
 			} else {
 				i = personMapper.addRegisterAdmin(per);
-			}
+			} 
 		}
 		return i;
 	}
