@@ -309,7 +309,7 @@ function openItems(count,i,type){
 		if(gazetteersLevel=="WFLocalChronicle"){
 			class_code="input[name='classCode_"+count+"_"+i+"']";
 			$("#new_class_code_"+count+"_"+i).show();
-			if($("#new_class_code_"+count+"_"+i+' input').length==albums.length) {
+			if($("#new_class_code_"+count+"_"+i+' input').length==albums.length-1) {
 				$('#checkfz_'+count+'_'+i).prop('checked',true)
 			}else {
 				$('#checkfz_'+count+'_'+i).prop('checked',false)
@@ -319,7 +319,7 @@ function openItems(count,i,type){
 			class_code="input[name='classCode2_"+count+"_"+i+"']";
 			$("#new_class_code_"+count+"_"+i).hide();
 			$("#item_class_code_"+count+"_"+i).show();
-			if($("#item_class_code_"+count+"_"+i +' input').length==albums.length) {
+			if($("#item_class_code_"+count+"_"+i +' input').length==albums.length-1) {
 				$('#checkfz_'+count+'_'+i).prop('checked',true)
 			}else {
 				$('#checkfz_'+count+'_'+i).prop('checked',false)

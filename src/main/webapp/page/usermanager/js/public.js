@@ -1139,6 +1139,7 @@ function getSxdr(value,count,i){
 	$('.checkType_'+count+'_'+i).text('')
 	if(value==1){//分类筛选
 		findShaiXuan(count,i);
+		$('.checkType_'+count+'_'+i).text('')
 	}else if(value==0){//自定义导入
 		findSeftDefine(count,i);
 	}
@@ -1161,6 +1162,11 @@ function gazetteerType(val,count,i){
 				$(this).prop('disabled',false)
 			})
 			$('#checkfz_'+count+'_'+i).prop('checked',true)
+			var itemValue=''
+			$('#new_class_code_'+count+'_'+i+' input').each(function(){
+				itemValue+= $(this).val()+';'
+			})
+			$('.newClassify_'+count+'_'+i).attr('data-classify',itemValue)
 		}else {
 			$('#changeSelect_'+count+'_'+i+ ' .newSelectTime select').prop('disabled',true)
 			$('#changeSelect_'+count+'_'+i+ ' .newLocationSelect select').prop('disabled',true)
@@ -1184,7 +1190,7 @@ function gazetteerType(val,count,i){
 			$('#new_class_code_'+count+'_'+i+' input').each(function(){
 				itemValue+= $(this).val()+';'
 			})
-			$('#newClassify_'+count+'_'+i).attr('data-classify',itemValue)
+			$('.newClassify_'+count+'_'+i).attr('data-classify',itemValue)
 			$('#startTime_'+count+'_'+i).attr('data-starttime','')
 			$('#startTime_'+count+'_'+i).val('')
 			$('#endTime_'+count+'_'+i).attr('data-endtime','')
