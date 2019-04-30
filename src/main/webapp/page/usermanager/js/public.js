@@ -726,6 +726,7 @@ function openPurchaseItems(count,i,type){
 					
 					layer.closeAll();				
 				}
+//				$('.checkType_'+count+'_'+i).text('')
 				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
 					$('#errorTime_'+count+'_'+i).text('')
 					$('#errorOldTime_'+count+'_'+i).text('')
@@ -1135,6 +1136,7 @@ function setDateList(count,i,type){
 /***************方志代码 开始************************/
 //筛选导入
 function getSxdr(value,count,i){
+	$('.checkType_'+count+'_'+i).text('')
 	if(value==1){//分类筛选
 		findShaiXuan(count,i);
 	}else if(value==0){//自定义导入
@@ -1552,6 +1554,19 @@ function findShaiXuan(count,i){
 //	$("#xian_"+count+"_"+i).attr("disabled",false);
 //	$("#checkfz_"+count+"_"+i).attr("disabled",false);
 	//自定义导入的禁用
+	if($('#dataTypeFirst_'+count+'_'+i).is(':checked')){
+		if($('.newClassify_'+count+'_'+i).attr('data-classify')=='') {
+			$('.checkType_'+count+'_'+i).text('至少选择选择一项专辑分类')
+		}else {
+			$('.checkType_'+count+'_'+i).text('')			
+		}
+	}else {
+		if($('.newClassify_'+count+'_'+i).attr('data-classify')=='') {
+			$('.checkType_'+count+'_'+i).text('至少选择选择一项专题分类')
+		}else {
+			$('.checkType_'+count+'_'+i).text('')			
+		}
+	}
 	$("#changeSelect_"+count+"_"+i).show()
 	$("#changeTextarea_"+count+"_"+i).hide()
 }

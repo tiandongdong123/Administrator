@@ -507,6 +507,7 @@ function openItems(count,i,type){
 					}
 					layer.closeAll();	
 				}
+//				$('.checkType_'+count+'_'+i).text('')
 				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
 					$('#errorTime_'+count+'_'+i).text('')
 					$('#errorOldTime_'+count+'_'+i).text('')
@@ -519,6 +520,7 @@ function openItems(count,i,type){
 		    	$('#errorOldTime_'+count+'_'+i).html('')
 		    	$('#gazetteersId_'+count+'_'+i).val('')
 		    	$('#itemId_'+count+'_'+i).val('')
+		    	$('.checkType_'+count+'_'+i).text('')
 				layer.closeAll();	
 		    }
 		});
