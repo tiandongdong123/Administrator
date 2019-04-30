@@ -293,6 +293,51 @@ function openItems(count,i,type){
 			$('.selectType input').prop('checked',false)
 			$('.export input').prop('checked',true)
 		}
+		$('.newClassify_'+count+'_'+i).attr('data-classify',$('#gazetteersAlbum_'+count+'_'+i).val())
+		
+		
+		
+		
+		
+		
+		var gazetteers_type=$("#gazetteers_type_"+count+"_"+i).val();
+		var gazetteersLevel=$("#gazetteersLevel_"+count+"_"+i).val();
+		//设置专辑分类和专题分类是否选中
+		var album=$("#gazetteersAlbum_"+count+"_"+i).val();
+		var albums=album.split(";");
+		var class_code="";
+		if(gazetteersLevel=="WFLocalChronicle"){
+			class_code="input[name='classCode_"+count+"_"+i+"']";
+			$("#new_class_code_"+count+"_"+i).show();
+			if($("#new_class_code_"+count+"_"+i+' input').length==albums.length) {
+				$('#checkfz_'+count+'_'+i).prop('checked',true)
+			}else {
+				$('#checkfz_'+count+'_'+i).prop('checked',false)
+			}
+			$("#item_class_code_"+count+"_"+i).hide();
+		}else if(gazetteersLevel=="WFLocalChronicleItem"){
+			class_code="input[name='classCode2_"+count+"_"+i+"']";
+			$("#new_class_code_"+count+"_"+i).hide();
+			$("#item_class_code_"+count+"_"+i).show();
+			if($("#item_class_code_"+count+"_"+i +' input').length==albums.length) {
+				$('#checkfz_'+count+'_'+i).prop('checked',true)
+			}else {
+				$('#checkfz_'+count+'_'+i).prop('checked',false)
+			}
+		}
+		$(class_code).each(function(){
+			$(this).prop('checked',false)
+			var val=$(this).val();
+			for(var c=0;c<albums.length;c++){
+				if(val==albums[c]){
+					$(this).prop("checked",true);
+					continue;
+				}
+			}
+		});
+		
+		
+		
 	}
 	if(type.indexOf("local chronicles")==-1){
 		//Ztree 返显
