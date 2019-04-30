@@ -402,7 +402,7 @@ function openItems(count,i,type){
 		    content: $("#tabs_custom_"+count+"_"+i),
 		    btn: ['确认'],
 		    yes: function(){
-				if($('#errorTime_'+count+"_"+i).text()==''&$('#errorOldTime_'+count+"_"+i).text()=='') {
+				if($('#errorTime_'+count+"_"+i).text()==''&&$('#errorOldTime_'+count+"_"+i).text()==''&&$('.checkType_'+count+'_'+i).text()=='') {
 					if($('#newLocalType_'+count+"_"+i).is(':checked')) {
 						var startTime = $('#startTime_'+count+"_"+i).attr('data-starttime'),
 							endTime = $('#endTime_'+count+"_"+i).attr('data-endtime'),
