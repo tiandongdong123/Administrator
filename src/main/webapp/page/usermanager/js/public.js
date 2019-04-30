@@ -1147,6 +1147,7 @@ function getSxdr(value,count,i){
 //选择大类
 function gazetteerType(val,count,i){
 	if(val=="FZ_New" || val==""){//新方志
+		$('.checkType_'+count+'_'+i).text('')
 		if ($(event.target).is(":checked")) {
 			$('#newLocalType_'+count+'_'+i).attr('data-newtype','FZ_New')
 			$('#changeSelect_'+count+'_'+i+ ' .newSelectTime select').prop('disabled',false)
@@ -1165,16 +1166,16 @@ function gazetteerType(val,count,i){
 			$('#changeSelect_'+count+'_'+i+ ' .newLocationSelect select').prop('disabled',true)
 			$('#changeSelect_'+count+'_'+i+ ' .newDateSelect input').prop('disabled',true)
 			$('#changeSelect_'+count+'_'+i+ ' .newClassify_'+count+'_'+i+' input').prop('disabled',true)
-			$('#new_class_code_'+count+'_'+i+' input').each(function(){
-				$(this).prop('disabled',true)
-			})
 			$('#item_class_code_'+count+'_'+i+' input').each(function(){
 				$(this).prop('disabled',true)
+				$(this).prop('checked',true)
 			})
 			$('#newLocalType_'+count+'_'+i).attr('data-newtype','')
 			$('#new_class_code_'+count+'_'+i+' input').each(function(){
 				$(this).prop('disabled',true)
+				$(this).prop('checked',true)
 			})
+			$('#checkfz_'+count+'_'+i).prop('checked',true)
 			$('#dataTypeFirst_'+count+'_'+i).prop('checked',true)
 			$('#zjfl_'+count+'_'+i).text('专辑分类')
 			$('#new_class_code_'+count+'_'+i).show()
