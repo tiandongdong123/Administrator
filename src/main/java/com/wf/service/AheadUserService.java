@@ -90,10 +90,10 @@ public interface AheadUserService {
 	UserAccountRestriction getAccountRestriction(String userId);
 	
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId,String beforeConversion,Map<String,Object> changeFront);
+	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId,Map<String,Object> changeFront);
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId,String beforeConversion,Map<String,Object> changeFront);
+	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId,Map<String,Object> changeFront);
 	
 	/** 更新系统次数信息 */
 	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);

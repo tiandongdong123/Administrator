@@ -141,6 +141,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 	private static String SALEAGTID=XxlConfClient.get("wf-admin.saleagtid",null);
 	private static String ORGCODE=XxlConfClient.get("wf-admin.orgcode",null);
 	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
+    private final static String OLD_TIME = "OLD_TIME";
+    private final static String OLD_BALAB = "OLD_BALAB";
+    private final static String OLD_FORMAL = "OLD_FORMAL";
+    private final static String OLD_TRICAL = "OLD_TRICAL";
 
 	private SimpleDateFormat sdfSimp = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -619,7 +623,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setBeginDateTime(sd.parse(dto.getValidityStarttime()));
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
 
-		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId);
+        List change = new ArrayList();
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,change);
 		int flag = 0;
 		if (isSuccess) {
 			flag = 1;
@@ -665,18 +670,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setOrganName(com.getInstitution());
 		account.setBeginDateTime(beginDateTime);
 		account.setEndDateTime(endDateTime);
-		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId);
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,new ArrayList<String>());
 		changeFront.put("isSuccess",isSuccess?1:0);
 		return changeFront;
 	}
 
 	@Override
-	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId,String beforeConversion,Map<String,Object> changeFront){
+	public int addProjectDeadline(InstitutionalUser com, ResourceDetailedDTO dto, String adminId,Map<String,Object> changeFront){
 		int flag = 0;
+		boolean isChange = (dto.getBeforeMode()!=null && !dto.getBeforeMode().equals(dto.getMode())) ||
+				(dto.getBeforeMode() == null && StringUtils.isNotEmpty(dto.getMode()));
 		try{
 			if (StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
 					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
-					&& StringUtils.isEmpty(com.getChangeFront())) {
+					&& StringUtils.isEmpty(com.getChangeFront())
+					&& !isChange) {
 				return 1;
 			}
 
@@ -692,12 +700,22 @@ public class AheadUserServiceImpl implements AheadUserService{
 			// String authToken = "Admin."+adminId;
 			// 调用添加注册余额限时账户方法
 			// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
-			boolean isSuccess = false;
-			if(StringUtils.isNotEmpty(com.getChangeFront())){
-				isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,beforeConversion,changeFront);//提交注册或充值请求
-			}else{
-				isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,null,changeFront);//提交注册或充值请求
-			}
+            List<String> change = new ArrayList<>();
+
+			if(isChange){
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
+                if("trical".equals(dto.getMode())){
+                    change.add(OLD_FORMAL);
+                }else{
+                    change.add(OLD_TRICAL);
+                }
+            }
+            if(StringUtils.isNotEmpty(com.getChangeFront())){
+                change.add(OLD_BALAB);
+            }
+            //提交注册或充值请求
+            boolean	isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,change,changeFront);
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -717,9 +735,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public int chargeCountLimitUser(InstitutionalUser com, ResourceDetailedDTO dto, String adminId){
 		int flag = 0;
+		boolean isChange = (dto.getBeforeMode()!=null && !dto.getBeforeMode().equals(dto.getMode())) ||
+				(dto.getBeforeMode() == null && StringUtils.isNotEmpty(dto.getMode()));
 		try{
 			if(NumberUtils.toInt(dto.getPurchaseNumber())==0&&StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())){
+					&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
+					&& !isChange){
 				return 1;
 			}
 			// 需要更新的数据
@@ -749,7 +770,23 @@ public class AheadUserServiceImpl implements AheadUserService{
 					resetCount = true;
 				}
 			}
-			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId, resetCount);
+            List<String> change = new ArrayList<>();
+			Map<String,Object> changeFront = new HashMap<>();
+			if(isChange){
+				if(StringUtils.isNotEmpty(dto.getBeforePurchaseNumber())){
+					changeFront.put("beforePurchaseNumber",dto.getBeforePurchaseNumber());
+				}else {
+					changeFront.put("beforePurchaseNumber",0);
+				}
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
+                if("trical".equals(dto.getMode())){
+                    change.add(OLD_FORMAL);
+                }else{
+                    change.add(OLD_TRICAL);
+                }
+            }
+			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId,change, resetCount,changeFront);
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -765,11 +802,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 	 * 为机构余额账户充值
 	 */
 	@Override
-	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId, String beforeConversion,Map<String,Object> changeFront){
-
+	public int chargeProjectBalance(InstitutionalUser com, ResourceDetailedDTO dto, String adminId,Map<String,Object> changeFront){
+		boolean isChange = (dto.getBeforeMode()!=null && !dto.getBeforeMode().equals(dto.getMode())) ||
+				(dto.getBeforeMode() == null && StringUtils.isNotEmpty(dto.getMode()));
 		if (NumberUtils.toDouble(dto.getTotalMoney()) == 0&&StringUtils.isEmpty(com.getChangeFront())
 				&& StringUtils.equals(dto.getValidityStarttime(), dto.getValidityStarttime2())
-				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())) {
+				&& StringUtils.equals(dto.getValidityEndtime(), dto.getValidityEndtime2())
+				&& !isChange) {
 			return 1;
 		}
 		int flag = 0;
@@ -806,12 +845,26 @@ public class AheadUserServiceImpl implements AheadUserService{
 					resetMoney = true;
 				}
 			}
-			boolean isSuccess = false;
-			if(StringUtils.isNotEmpty(com.getChangeFront())){
-				isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,beforeConversion,changeFront);
-			}else {
-				isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,null,changeFront);
-			}
+			//检测是否存在正式试用转化
+            List<String> change = new ArrayList<>();
+            if(isChange){
+            	if(StringUtils.isNotEmpty(dto.getBeforeTotalMoney())){
+					changeFront.put("beforeTotalMoney",dto.getBeforeTotalMoney());
+				}else {
+					changeFront.put("beforeTotalMoney",0);
+				}
+				changeFront.put("valStartTime",dto.getValidityStarttime2());
+				changeFront.put("valEndTime",dto.getValidityEndtime2());
+                if("trical".equals(dto.getMode())){
+                    change.add(OLD_FORMAL);
+                }else{
+                    change.add(OLD_TRICAL);
+                }
+            }
+            if(StringUtils.isNotEmpty(com.getChangeFront())){
+                change.add(OLD_TIME);
+            }
+            boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,change,changeFront);
 			if (isSuccess) {
 				flag = 1;
 				log.info("id为："+com.getUserId()+" 的用户，购买项目:"+dto.getProjectname()+"  充值成功！");
@@ -2483,12 +2536,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 						wfks.accounting.handler.entity.BalanceLimitAccount account = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
 							dto.setTotalMoney("0.0");
-							this.chargeProjectBalance(com, dto, adminId,null,new HashMap<String, Object>());
+							this.chargeProjectBalance(com, dto, adminId,new HashMap<String, Object>());
 						}
 					}else if(dto.getProjectType().equals("time")){
 						wfks.accounting.handler.entity.TimeLimitAccount account = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());
 						if(account!=null){
-							this.addProjectDeadline(com, dto,adminId,null,new HashMap<String, Object>());
+							this.addProjectDeadline(com, dto,adminId,new HashMap<String, Object>());
 						}
 					}else if(dto.getProjectType().equals("count")){
 						wfks.accounting.handler.entity.CountLimitAccount account = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(dto.getProjectid(),id), new HashMap<String,String>());

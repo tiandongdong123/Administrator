@@ -113,7 +113,7 @@
           	<div class="balance_block" name="full_div">
            	<div class="resources_title">
            		<span name="proname" id="proname${i}">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
-				<input type="hidden" name="rdlist[${i}].beforeMode" value="${pro.beforeMode!}">
+				<input type="hidden" name="rdlist[${i}].beforeMode" value="${pro.mode!}">
            		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
            		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
            		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
@@ -139,9 +139,13 @@
             	<div class="time_input time_money" id="time_money_${i}">
            		<?if(pro.type!='time'&&pro.type!='count'){?>
 					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0" onkeyup="checkMoney(this,1);" onafterpaste="checkMoney(this,1);"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
-            	<?}?>
+					<!-- 转换前余额-->
+					<input type="hidden" name="rdlist[${i}].beforeTotalMoney" value="${pro.balance}"/>
+				<?}?>
             	<?if(pro.type!='time'&&pro.type!='balance'){?>
 					<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0" onkeyup="checkNum(this,1);" onafterpaste="checkNum(this,1);"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
+					<!-- 转换前次数-->
+					<input type="hidden" name="rdlist[${i}].beforePurchaseNumber" value="${pro.balance}"/>
             	<?}?>
 				</div>
             	<?if(pro.payChannelid=='HistoryCheck'){?>
