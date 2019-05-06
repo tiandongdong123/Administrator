@@ -793,7 +793,8 @@ function showProduct(obj,falg){
 }
 
 //删除项目
-function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname,balance){
+function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname,balance,mode){
+	console.log(payChannelid);
 	layer.alert('确定删除该项目吗？',{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -803,8 +804,9 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 	    		if($("#multplediv div[name='full_div']").length < 2){
 	    			layer.msg('购买项目不可全部删除', {icon: 2});
 	    		}else{
+	    			console.log(payChannelid);
 					var json="{'payChannelid':'"+payChannelid+"','type':'"+type+"','beginDateTime':'"+beginDateTime;
-		    		json+="','endDateTime':'"+endDateTime+"','institution':'"+institution;
+		    		json+="','endDateTime':'"+endDateTime+"','institution':'"+institution+"','mode':'"+mode;
 		    		json+="','userId':'"+userId+"','balance':'"+balance+"','projectname':'"+projectname+"'}";
 		    		$(obj).parents(".balance_block").remove();
 		    		$("div[name='tabs_"+count+"']").remove();
