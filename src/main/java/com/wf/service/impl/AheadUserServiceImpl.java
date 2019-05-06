@@ -50,6 +50,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import wfks.accounting.account.Account;
 import wfks.accounting.account.AccountDao;
 import wfks.accounting.setting.PayChannelModel;
 import wfks.accounting.setting.SettingPayChannels;
@@ -702,7 +703,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			// 第二个参数起传递账户信息,userIP,auto_token,是否重置金额
             List<String> change = new ArrayList<>();
 
-			if(isChange){
+			boolean isAdd  = getAccount(account.getPayChannelId(), account.getUserId()) == null ? false : true;
+			if(isChange && isAdd){
 				changeFront.put("valStartTime",dto.getValidityStarttime2());
 				changeFront.put("valEndTime",dto.getValidityEndtime2());
                 if("trical".equals(dto.getMode())){
@@ -711,7 +713,7 @@ public class AheadUserServiceImpl implements AheadUserService{
                     change.add(OLD_TRICAL);
                 }
             }
-            if(StringUtils.isNotEmpty(com.getChangeFront())){
+            if(StringUtils.isNotEmpty(com.getChangeFront()) && ("GTimeLimit".equals(dto.getProjectid()) || "GBalanceLimit".equals(dto.getProjectid()))){
                 change.add(OLD_BALAB);
             }
             //提交注册或充值请求
@@ -770,9 +772,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					resetCount = true;
 				}
 			}
-            List<String> change = new ArrayList<>();
 			Map<String,Object> changeFront = new HashMap<>();
-			if(isChange){
+			List<String> change = new ArrayList<>();
+			boolean isAdd  = getAccount(dto.getProjectid(), com.getUserId()) == null ? false : true;
+			if(isChange && isAdd){
 				if(StringUtils.isNotEmpty(dto.getBeforePurchaseNumber())){
 					changeFront.put("beforePurchaseNumber",dto.getBeforePurchaseNumber());
 				}else {
@@ -847,7 +850,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			//检测是否存在正式试用转化
             List<String> change = new ArrayList<>();
-            if(isChange){
+			boolean isAdd  = getAccount(account.getPayChannelId(), account.getUserId()) == null ? false : true;
+            if(isChange && isAdd){
             	if(StringUtils.isNotEmpty(dto.getBeforeTotalMoney())){
 					changeFront.put("beforeTotalMoney",dto.getBeforeTotalMoney());
 				}else {
@@ -861,7 +865,7 @@ public class AheadUserServiceImpl implements AheadUserService{
                     change.add(OLD_TRICAL);
                 }
             }
-            if(StringUtils.isNotEmpty(com.getChangeFront())){
+            if(StringUtils.isNotEmpty(com.getChangeFront()) && ("GTimeLimit".equals(dto.getProjectid()) || "GBalanceLimit".equals(dto.getProjectid()))){
                 change.add(OLD_TIME);
             }
             boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,change,changeFront,dto.getMode());
@@ -876,6 +880,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 			log.error("异常：",e);
 		}
 		return flag;
+	}
+
+	public Account getAccount(String payChannelId, String user_id) {
+		try {
+			AccountId id = new AccountId(payChannelId, user_id);
+			Account account = accountDao.get(id, null);
+			return account;
+		} catch (Exception e) {
+			log.error("根据user_id获取机构账户失败", e);
+			throw e;
+		}
+
 	}
 
 	@Override
