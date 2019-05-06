@@ -123,7 +123,7 @@
 				<button type="button" class="btn btn-primary btn-sm" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>
 				<?}?>
            		<button type="button" class="btn btn-primary btn-sm"
-           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
+           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}','${pro.mode}');">删除</button>
            		</span>
            	</div>
            	<div class="time_block">
