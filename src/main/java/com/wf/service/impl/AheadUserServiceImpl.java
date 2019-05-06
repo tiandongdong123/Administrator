@@ -624,7 +624,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setEndDateTime(sd.parse(dto.getValidityEndtime()));
 
         List change = new ArrayList();
-		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,change);
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,change,dto.getMode());
 		int flag = 0;
 		if (isSuccess) {
 			flag = 1;
@@ -670,7 +670,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		account.setOrganName(com.getInstitution());
 		account.setBeginDateTime(beginDateTime);
 		account.setEndDateTime(endDateTime);
-		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,new ArrayList<String>());
+		boolean isSuccess = groupAccountUtil.deleteAccount(account, httpRequest.getRemoteAddr(),adminId,new ArrayList<String>(),com.getRdlist().get(0).getMode());
 		changeFront.put("isSuccess",isSuccess?1:0);
 		return changeFront;
 	}
@@ -715,7 +715,7 @@ public class AheadUserServiceImpl implements AheadUserService{
                 change.add(OLD_BALAB);
             }
             //提交注册或充值请求
-            boolean	isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,change,changeFront);
+            boolean	isSuccess = groupAccountUtil.addTimeLimitAccount(account, httpRequest.getRemoteAddr(), adminId,change,changeFront,dto.getMode());
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -786,7 +786,7 @@ public class AheadUserServiceImpl implements AheadUserService{
                     change.add(OLD_TRICAL);
                 }
             }
-			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId,change, resetCount,changeFront);
+			boolean isSuccess = groupAccountUtil.addCountLimitAccount(before, count, httpRequest.getRemoteAddr(), adminId,change, resetCount,changeFront,dto.getMode());
 			if (isSuccess) {
 				flag = 1;
 			} else {
@@ -864,7 +864,7 @@ public class AheadUserServiceImpl implements AheadUserService{
             if(StringUtils.isNotEmpty(com.getChangeFront())){
                 change.add(OLD_TIME);
             }
-            boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,change,changeFront);
+            boolean isSuccess = groupAccountUtil.addBalanceLimitAccount(before, account, httpRequest.getRemoteAddr(), adminId, resetMoney,change,changeFront,dto.getMode());
 			if (isSuccess) {
 				flag = 1;
 				log.info("id为："+com.getUserId()+" 的用户，购买项目:"+dto.getProjectname()+"  充值成功！");

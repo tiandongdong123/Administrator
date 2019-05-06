@@ -1423,6 +1423,7 @@ public class AheadUserController {
 			dto.setValidityEndtime(endDateTime);
 			dto.setProjectname(projectname);
 			dto.setProjectType(type);
+			dto.setMode((String) obj.get("mode"));
 			if ("balance".equals(type)) {
 				dto.setTotalMoney(balance.toString());
 			} else if ("count".equals(type)) {

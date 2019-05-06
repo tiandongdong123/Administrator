@@ -147,7 +147,7 @@ public class GroupAccountUtil {
     private final static String BEFORE_COUNT = "beforePurchaseNumber";
 
     public TransactionRequest createTransactionRequest(UserAccount account, Long count,
-                                                              String userIP, String authToken, String updateKey,List<String> change,Map<String,Object> changeFront) throws IOException {
+                                                              String userIP, String authToken, String updateKey,List<String> change,Map<String,Object> changeFront,String mode) throws IOException {
         TransactionRequest request = new TransactionRequest();
         request.setTransferIn(new AccountId(account.getPayChannelId(), account.getUserId()));
         request.setUserIP(userIP);
@@ -186,7 +186,7 @@ public class GroupAccountUtil {
         request.setExtraData(extraData);
 
         request.setProductDetail(createProductDetail(count, account.getBeginDateTime(), account.getEndDateTime()));
-        setTransactionRequestProductTitle(request, updateKey, account.getPayChannelId(), account.getUserId(),change);
+        setTransactionRequestProductTitle(request, updateKey, account.getPayChannelId(), account.getUserId(),mode);
         return request;
     }
 
@@ -225,11 +225,11 @@ public class GroupAccountUtil {
      * @return 交易是否成功
      * @throws Exception
      */
-    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken, boolean reset, List<String> change, Map<String,Object> changeFront) throws Exception {
+    public boolean addBalanceLimitAccount(BalanceLimitAccount before, BalanceLimitAccount after, String userIP, String authToken, boolean reset, List<String> change, Map<String,Object> changeFront,String mode) throws Exception {
 
         validate(before, after);
 
-        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,change,changeFront);
+        TransactionRequest request = createTransactionRequest(after, null, userIP, authToken, UPDATE_KEY,change,changeFront,mode);
 
         //request.setTurnover(after.getBalance());        	
     	
@@ -246,11 +246,11 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给机构限时账户
      */
-    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,List<String> change,Map<String,Object> changeFront) throws Exception {
+    public boolean addTimeLimitAccount(TimeLimitAccount account, String userIP, String authToken,List<String> change,Map<String,Object> changeFront,String mode) throws Exception {
 
         validate(null, account);
 
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,change,changeFront);
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, UPDATE_KEY,change,changeFront,mode);
         request.setTurnover(BigDecimal.ZERO);
         return submitRequest(request, account.getPayChannelId(), UPDATE_KEY);
     }
@@ -258,7 +258,7 @@ public class GroupAccountUtil {
     /**
      * 注册或充值给次数计费用户
      */
-    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken, List<String> change,boolean reset,Map<String,Object> changeFront) throws Exception {
+    public boolean addCountLimitAccount(CountLimitAccount before, CountLimitAccount after, String userIP, String authToken, List<String> change,boolean reset,Map<String,Object> changeFront,String mode) throws Exception {
 
         validate(before, after);
 
@@ -269,7 +269,7 @@ public class GroupAccountUtil {
         	count = after.getBalance();
         }
         
-        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,change,changeFront);
+        TransactionRequest request = createTransactionRequest(after, count, userIP, authToken, UPDATE_KEY,change,changeFront,mode);
         request.setTurnover(BigDecimal.valueOf(count));
 
         return submitRequest(request, after.getPayChannelId(), UPDATE_KEY);
@@ -278,9 +278,9 @@ public class GroupAccountUtil {
     /**
      * 删除账户信息
      */
-    public boolean deleteAccount(UserAccount account, String userIP, String authToken,List<String> change) throws Exception {
+    public boolean deleteAccount(UserAccount account, String userIP, String authToken,List<String> change,String mode) throws Exception {
         //创建交易request
-        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,change,new HashMap<String, Object>());
+        TransactionRequest request = createTransactionRequest(account, null, userIP, authToken, DELETE_KEY,change,new HashMap<String, Object>(),mode);
         BigDecimal turnover = getAccountCountOrBalance(account.getPayChannelId(), account.getUserId());
         request.setTurnover(new BigDecimal(BigInteger.ZERO).subtract(turnover));
         return submitRequest(request, account.getPayChannelId(), DELETE_KEY);
@@ -386,9 +386,8 @@ public class GroupAccountUtil {
         }
 
     }
-    private final static String OLD_FORMAL = "OLD_FORMAL";
-    private final static String OLD_TRICAL = "OLD_TRICAL";
-    public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id,List<String> change) {
+
+    public void setTransactionRequestProductTitle(TransactionRequest request, String updateKey, String payChannelId, String user_id,String mode) {
         Account account = getAccount(payChannelId, user_id);
         if (UPDATE_KEY.equals(updateKey)) {
             if (account == null) {
@@ -401,9 +400,9 @@ public class GroupAccountUtil {
         }
         String title = request.getProductTitle();
         StringBuffer rule = new StringBuffer();
-        if(change != null && change.contains(OLD_FORMAL)){
+        if("trical".equals(mode)){
             rule.append("(trial)");
-        }else if(change != null && change.contains(OLD_TRICAL)) {
+        }else{
             rule.append("(formal)");
         }
         title += rule.toString();
