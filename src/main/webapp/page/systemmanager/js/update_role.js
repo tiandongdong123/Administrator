@@ -52,7 +52,7 @@ function purviewtree(json){
 		check: {
 			enable: true,
 			chkStyle: "checkbox",
-		    chkboxType: { "Y" : "ps", "N" : "ps" }
+		    chkboxType: { "Y" : "ps", "N" : "s" }
 		},
 		
 		data: {
