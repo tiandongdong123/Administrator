@@ -210,6 +210,6 @@
   </update>
 
   <select id="getAdminNames" resultType="String">
-      SELECT user_realname FROM wfadmin where wangfang_admin_id LIKE CONCAT(#{name},'%')
+      SELECT wangfang_admin_id FROM wfadmin where wangfang_admin_id LIKE CONCAT('%',#{name},'%')
   </select>
 </mapper>
