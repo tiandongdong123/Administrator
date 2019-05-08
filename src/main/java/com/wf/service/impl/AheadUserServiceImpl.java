@@ -1589,6 +1589,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 				set.add(map.get("sourceCode").toString());
 			}
 		}
+		if(set.contains("DB.IsticPeriodical,DB_PEDB")&&set.contains("DB_CSPD,DB_PEDB")){
+			set.remove("DB.IsticPeriodical,DB_PEDB");
+			set.remove("DB_CSPD,DB_PEDB");
+			set.add("DB_PEDB");
+			set.add("DB_CSPD");
+		}
+		if(set.contains("DB.IsticPeriodical,DB_PEDB")&&!set.contains("DB_CSPD,DB_PEDB")){
+			set.remove("DB.IsticPeriodical,DB_PEDB");
+			set.add("DB.IsticPeriodical");
+		}
 		//循环Set集合查询资源库信息
 		for(String se : set){
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
