@@ -31,8 +31,6 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private RoleMapper role;
 	
-	//private RedisUtil redis = new RedisUtil();
-	private UserRedisUtil redis = new UserRedisUtil();
 	private SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Override
@@ -83,7 +81,7 @@ public class AdminServiceImpl implements AdminService {
 					for (int i = 0; i < list.size(); i++) {
 						strs[i] = CookieUtil.LAYOUT + list.get(i);
 					}
-					redis.del(0, strs);
+					UserRedisUtil.del(0, strs);
 				}
 			}
 		} catch (Exception e) {

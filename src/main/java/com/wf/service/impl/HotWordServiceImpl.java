@@ -61,8 +61,7 @@ public class HotWordServiceImpl implements HotWordService{
 
 	@Override
 	public Integer checkRedisCount() {
-		RedisUtil redis=new RedisUtil();
-		String content=redis.get("theme",11);
+		String content=RedisUtil.get("theme",11);
 		JSONArray array=JSONArray.fromObject(content);
 		return array.size(); 
 	}
@@ -71,7 +70,6 @@ public class HotWordServiceImpl implements HotWordService{
 	public boolean publishToRedis() {
 		boolean success=true;
 		try {
-			RedisUtil redis=new RedisUtil();
 			//redis.del(11,"theme");
 			Map map=new HashMap();
 			map.put("status",1);
@@ -93,7 +91,7 @@ public class HotWordServiceImpl implements HotWordService{
 				json.put("createTime","");
 				array.add(json);
 			}
-			redis.set("theme",array.toString(),11);
+			RedisUtil.set("theme",array.toString(),11);
 			System.out.println("发布到ridis的数据:  "+array.toString());
 		} catch (Exception e) {
 			success=false;
