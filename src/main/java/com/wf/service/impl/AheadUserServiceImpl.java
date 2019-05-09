@@ -841,6 +841,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
@@ -1749,6 +1773,33 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
+				int count=0;
+				for (Map<String, Object> map1 : plList) {
+					if(map1.get("productSourceCode").equals("DB.IsticPeriodical")&&map1.get("payChannelid").equals("GBalanceLimit")){
+						plList.remove(map1);
+						HashMap<String, Object> m=new HashMap<String, Object>();
+						m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+						m.put("productSourceCode", "DB_PEDB");
+						m.put("tableName", "期刊增强库");
+						m.put("payChannelid", "GBalanceLimit");
+						plList.add(m);
+						count++;
+						break;
+					}
+				}
+				for (Map<String, Object> map2 : plList) {
+					if(map2.get("productSourceCode").equals("DB_CSPD")){
+						count++;
+					}
+				}
+				if(count>=2){
+					for (Map<String, Object> map3 : plList) {
+						if(map3.get("productSourceCode").equals("DB_CSPD")){
+							plList.remove(map3);
+							break;
+						}
+					}
+				}
 				List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库
 				if(plList.size()>0){
 					for(Map<String, Object> d : data){
@@ -2080,6 +2131,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Map<String, Object>> getProjectInfo(String userId){
 		//通过userId查询详情限定列表
+
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 		//判断项目ID是存在
 		List<PayChannelModel> list_ = this.purchaseProject();
@@ -2156,6 +2208,34 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
+			int count=0;
+			for (Map<String, Object> map : plList) {
+				if(map.get("productSourceCode").equals("DB.IsticPeriodical")&&map.get("payChannelid").equals("GBalanceLimit")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GBalanceLimit");
+					plList.add(m);
+					count++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.get("productSourceCode").equals("DB_CSPD")){
+					count++;
+				}
+			}
+			if(count>=2){
+				for (Map<String, Object> map : plList) {
+					if(map.get("productSourceCode").equals("DB_CSPD")){
+						plList.remove(map);
+						break;
+					}
+				}
+			}
+			
 			List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库 
 			if(plList.size()>0){				
 				for(Map<String, Object> d : data){
