@@ -916,6 +916,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
