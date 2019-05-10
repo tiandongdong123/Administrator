@@ -1,5 +1,6 @@
 package com.wf.service.impl;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wanfangdata.setting.Setting;
 import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
@@ -25,6 +27,12 @@ import com.wf.service.MessageService;
 import com.xxl.conf.core.XxlConfClient;
 @Service
 public class MessageServiceImpl implements MessageService {
+	private static final String UNSPECIAL = "<li><a href=\"/informationController/getDetails.do?type=${type}&amp;" +
+			"id=${id}\" target=\"_blank\" title=\"${title}\">\n" +
+			" ${showTitle}</a></li>";
+	private static final String SPECIAL = "<li><a href=\"${linkAddress}\" target=\"_blank\" title=\"${title}\">\n" +
+			" ${showTitle}</a></li>";
+
 	@Autowired
 	MessageMapper dao;
 
@@ -182,14 +190,33 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);//获取发布未置顶状态资讯
                 list.addAll(ls);//合并到发布置顶状态集合中
             }
+			StringBuffer specials = new StringBuffer();
+            String special = SPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
                 RedisUtil.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
+				// 存储资讯的id、title并且只获得3个用作展示
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						special.replace("${linkAddress}", m.getLinkAddress())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle());
+						specials.append(special);
+					}
+				}
             }
-        }else if("科技动态".equals(colums)){
+            // 专题聚焦存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (specials.length() > 0) {
+					Setting.set("Home/Subject", specials.toString());
+				}
+			} catch (IOException e) {
+			}
+
+		}else if("科技动态".equals(colums)){
         	RedisUtil.del("hyID");
         	RedisUtil.del("conference");
             if(topSize<3){
@@ -197,13 +224,31 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);
                 list.addAll(ls);
             }
+			StringBuffer conferences = new StringBuffer();
+            String conference = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("hyID", i, m.getId());
                 RedisUtil.hset("conference", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						conference.replace("${type}", "conference")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle());
+						conferences.append(conference);
+					}
+				}
             }
+			// 科技动态存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (conferences.length() > 0) {
+					Setting.set("Home/TechNews", conferences.toString());
+				}
+			} catch (IOException e) {
+			}
         }else if("会议速递".equals(colums) || "基金申报".equals(colums)){
         	RedisUtil.del("jjID");
             RedisUtil.del("fund");
@@ -212,13 +257,31 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums2(map);
                 list.addAll(ls);
             }
+			StringBuffer funds = new StringBuffer();
+            String fund = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("jjID", i, m.getId());
                 RedisUtil.hset("fund", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						fund.replace("${type}", "fund")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle());
+						funds.append(fund);
+					}
+				}
             }
+			// 会议速递存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (funds.length() > 0) {
+					Setting.set("Home/Fund", funds.toString());
+				}
+			} catch (IOException e) {
+			}
         }else if("万方资讯".equals(colums)){
         	RedisUtil.del("kkID");
         	RedisUtil.del("activity");
@@ -227,13 +290,31 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);
                 list.addAll(ls);
             }
+			StringBuffer activities = new StringBuffer();
+            String activity = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("kkID", i, m.getId());
                 RedisUtil.hset("activity", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						activity.replace("${type}", "activity")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle());
+						activities.append(activity);
+					}
+				}
             }
+			// 万方资讯存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (activities.length() > 0) {
+					Setting.set("Home/News", activities.toString());
+				}
+			} catch (IOException e) {
+			}
         }
 
 	}
