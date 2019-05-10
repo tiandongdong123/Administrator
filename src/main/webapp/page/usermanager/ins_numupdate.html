@@ -173,7 +173,9 @@
 			${data.tableName}
 		<?}?>
         <? if(!isEmpty(rt) && (strutil.contain(rt,"perio")||strutil.contain(rt,"degree")||strutil.contain(rt,"conf")||
-			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))){ ?>
+			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))
+			&&!(strutil.contain(da,"DB.IsticConference")||strutil.contain(da,"DB.IsticThesis")||strutil.contain(da,"DB.IsticPeriodicalEn")
+			  ||strutil.contain(da,"DB.IsticConferenceEn")||strutil.contain(da,"DB.IsticPeriodical")||strutil.contain(da,"DB.IsticThesisEn"))){ ?>
        			<a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
 				    <? if(!isEmpty(data.contract)){?>
 			    	<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
