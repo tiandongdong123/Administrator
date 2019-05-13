@@ -340,7 +340,6 @@ function showGazetteers(userId,payid,pscode){
 		}
 		if(areas=='') {
 			$('.newLocationSelect').html('<span style="margin-left:10px;">全部</span>')
-			$('.oldLocationSelect').html('<span style="margin-left: 10px">全部</span>')
 		}
 	}
 	var type=$("#gazetteers_type_"+temp).val();
@@ -368,7 +367,7 @@ function showGazetteers(userId,payid,pscode){
 		$("#new_class_code_"+temp).html(text);
 	}
 	var oldArea = $("#gazetteers_old_area_"+temp).val();
-	if(area!=null){
+	if(oldArea!=null){
 		var oldAreas=oldArea.split("_");
 		if(oldAreas.length>=1){
 			$("#sheng_old_"+temp).html(oldAreas[0])
@@ -378,6 +377,9 @@ function showGazetteers(userId,payid,pscode){
 		}
 		if(oldAreas.length>=3){
 			$("#xian_old_"+temp).html(oldAreas[2])
+		}
+		if(oldAreas=='') {
+			$('.oldLocationSelect').html('<span style="margin-left: 10px">全部</span>')
 		}
 	}
 	var newStartTime = $('#gazetteers_startTime_'+temp).val()
