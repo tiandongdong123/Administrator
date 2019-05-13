@@ -384,7 +384,7 @@ function showGazetteers(userId,payid,pscode){
 	if(newStartTime!=null&&newStartTime!=''){
 		$('#newStartTime_'+temp).html(newStartTime)
 	}else {
-		$('#newSelectTime'+temp).html('不限')
+		$('#newStartTime_'+temp).html('不限')
 	}
 	var newEndTime = $('#gazetteers_endTime_'+temp).val()
 	if(newEndTime!=null&&newEndTime!=''){
