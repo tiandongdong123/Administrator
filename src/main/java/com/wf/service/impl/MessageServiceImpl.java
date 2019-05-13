@@ -27,10 +27,10 @@ import com.wf.service.MessageService;
 import com.xxl.conf.core.XxlConfClient;
 @Service
 public class MessageServiceImpl implements MessageService {
-	private static final String UNSPECIAL = "<li><a href=\"/informationController/getDetails.do?type=${type}&amp;" +
+	private String UNSPECIAL = "<li><a href=\"/informationController/getDetails.do?type=${type}&amp;" +
 			"id=${id}\" target=\"_blank\" title=\"${title}\">\n" +
 			" ${showTitle}</a></li>";
-	private static final String SPECIAL = "<li><a href=\"${linkAddress}\" target=\"_blank\" title=\"${title}\">\n" +
+	private String SPECIAL = "<li><a href=\"${linkAddress}\" target=\"_blank\" title=\"${title}\">\n" +
 			" ${showTitle}</a></li>";
 
 	@Autowired
@@ -191,7 +191,6 @@ public class MessageServiceImpl implements MessageService {
                 list.addAll(ls);//合并到发布置顶状态集合中
             }
 			StringBuffer specials = new StringBuffer();
-            String special = SPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
@@ -201,10 +200,9 @@ public class MessageServiceImpl implements MessageService {
 				// 存储资讯的id、title并且只获得3个用作展示
 				if (i < 3) {
 					if (m.getLinkAddress() != null) {
-						special.replace("${linkAddress}", m.getLinkAddress())
+						specials.append(SPECIAL.replace("${linkAddress}", m.getLinkAddress())
 								.replace("${title}", m.getTitle())
-								.replace("${showTitle}", m.getTitle());
-						specials.append(special);
+								.replace("${showTitle}", m.getTitle()));
 					}
 				}
             }
@@ -225,7 +223,6 @@ public class MessageServiceImpl implements MessageService {
                 list.addAll(ls);
             }
 			StringBuffer conferences = new StringBuffer();
-            String conference = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
@@ -234,11 +231,10 @@ public class MessageServiceImpl implements MessageService {
                 RedisUtil.hset("conference", m.getId(), object);
 				if (i < 3) {
 					if (m.getLinkAddress() != null) {
-						conference.replace("${type}", "conference")
+						conferences.append(UNSPECIAL.replace("${type}", "conference")
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
-								.replace("${showTitle}", m.getTitle());
-						conferences.append(conference);
+								.replace("${showTitle}", m.getTitle()));
 					}
 				}
             }
@@ -267,11 +263,10 @@ public class MessageServiceImpl implements MessageService {
                 RedisUtil.hset("fund", m.getId(), object);
 				if (i < 3) {
 					if (m.getLinkAddress() != null) {
-						fund.replace("${type}", "fund")
+						funds.append(fund.replace("${type}", "fund")
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
-								.replace("${showTitle}", m.getTitle());
-						funds.append(fund);
+								.replace("${showTitle}", m.getTitle()));
 					}
 				}
             }
@@ -291,7 +286,6 @@ public class MessageServiceImpl implements MessageService {
                 list.addAll(ls);
             }
 			StringBuffer activities = new StringBuffer();
-            String activity = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
@@ -300,11 +294,10 @@ public class MessageServiceImpl implements MessageService {
                 RedisUtil.hset("activity", m.getId(), object);
 				if (i < 3) {
 					if (m.getLinkAddress() != null) {
-						activity.replace("${type}", "activity")
+						activities.append(UNSPECIAL.replace("${type}", "activity")
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
-								.replace("${showTitle}", m.getTitle());
-						activities.append(activity);
+								.replace("${showTitle}", m.getTitle()));
 					}
 				}
             }
