@@ -1858,7 +1858,7 @@ public class AheadUserController {
 		Calendar date = Calendar.getInstance();
 		String year = String.valueOf(date.get(Calendar.YEAR));
 		int iyear=Integer.parseInt(year);
-		for (int i = 2012; i <= iyear; i++) {
+		for (int i = 2010; i <= iyear; i++) {
 			json.add(i);
 		}
 		JSONObject obj=new JSONObject();
