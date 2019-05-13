@@ -1811,6 +1811,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 						break;
 					}
 				}
+				for (Map<String, Object> map1 : plList) {
+					if(map1.get("productSourceCode").equals("DB.IsticPeriodical")&&map1.get("payChannelid").equals("GTimeLimit")){
+						plList.remove(map1);
+						HashMap<String, Object> m=new HashMap<String, Object>();
+						m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+						m.put("productSourceCode", "DB_PEDB");
+						m.put("tableName", "期刊增强库");
+						m.put("payChannelid", "GTimeLimit");
+						plList.add(m);
+						count++;
+						break;
+					}
+				}
 				for (Map<String, Object> map2 : plList) {
 					if(map2.get("productSourceCode").equals("DB_CSPD")){
 						count++;
@@ -2241,6 +2254,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 					m.put("productSourceCode", "DB_PEDB");
 					m.put("tableName", "期刊增强库");
 					m.put("payChannelid", "GBalanceLimit");
+					plList.add(m);
+					count++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.get("productSourceCode").equals("DB.IsticPeriodical")&&map.get("payChannelid").equals("GTimeLimit")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GTimeLimit");
 					plList.add(m);
 					count++;
 					break;
