@@ -117,118 +117,92 @@
 				<button type="button" onclick="checkIP();" id="checkIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>检查IP冲突</button>
 				<button type="button" onclick="deleteIP();" id="deleteIp" <?if(map.loginMode!=0){ ?>style="display: none;"<?}?>>剔除冲突IP</button>
 				</span> -->
-                </div>
-              </div>
-              <div class="form-group input_block">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
-                <select class="form-control input_time" name="proType" id="proType" onchange="selectType(this);">
-                  <option value="">-请选择-</option>
-                  <option value="Limit">资源下载</option>
-                  <option value="Check">万方检测</option>
-                  <option value="WFStats">万方分析</option>
-                </select>
-                <select class="form-control input_time" name="resourcePurchaseType" id="resourcePurchaseType"
-                  onchange="selectProject(this,'1','checked');" style="display: none;">
-                  <option value="0">-请选择-</option>
-                </select>
-              </div>
-              <!-- 购买项目展示开始 -->
-              <div id="multplediv">
-                <? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
-                <div class="balance_block" name="full_div">
-                  <div class="resources_title">
-                    <span name="proname" id="proname${i}">${pro.name}</span><input type="hidden"
-                      name="rdlist[${i}].mode" value="${pro.mode}">
-                    <span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})"
-                        <?if(pro.mode=='trical' ){?>checked="checked"
-                      <?}?>>试用</span>
-                    <input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
-                    <input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
-                    <input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}"
-                      value="${pro.payChannelid}">
-                    <span style="float:right;margin-right:150px;">
-                      <?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){?>
-                      <button type="button" class="btn btn-primary btn-sm" onclick="changeLimit(this,'${i}');"
-                        id="buttonshow"><span id="buttonspan_${i}">
-                          <?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额
-                          <?}?>
-                          <?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时
-                          <?}?></span></button>
-                      <?}?>
-                      <button type="button" class="btn btn-primary btn-sm"
-                        onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
-                    </span>
-                  </div>
-                  <div class="time_block">
-                    <div class="time_input">
-                      <span><b>*</b>时限</span>
-                      <input type="text" class="Wdate" value="${pro.beginDateTime}"
-                        name="rdlist[${i}].validityStarttime" id="${pro.payChannelid}_st"
-                        onclick="WdatePicker({maxDate:'#F{$dp.$D(${pro.payChannelid}_et)}'})">
-                      <span class="to">至</span>
-                      <input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime"
-                        id="${pro.payChannelid}_et"
-                        onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
-                    </div>
-                    <input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
-                    <input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
-                    <input type="hidden" id="nextDay_${i}" value="${pro.nextDay!}">
-                    <div class="time_input time_money" id="time_money_${i}">
-                      <?if(pro.type!='time'&&pro.type!='count'){?>
-                      <span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0"
-                        onkeyup="checkMoney(this,1);" onafterpaste="checkMoney(this,1);"><span
-                        style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
-                      <?}?>
-                      <?if(pro.type!='time'&&pro.type!='balance'){?>
-                      <span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0"
-                        onkeyup="checkNum(this,1);" onafterpaste="checkNum(this,1);"><span
-                        style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
-                      <?}?>
-                    </div>
-                    <?if(pro.payChannelid=='HistoryCheck'){?>
-                    <p>
-                      <div class="time_input time_money"><span><b>*</b>查看交易信息</span>
-                        <input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='is'
-                          ){?>checked="checked"
-                        <?}?> type="radio" value="ViewHistoryCheck"/>可以
-                        <input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='not'
-                          ){?>checked="checked"
-                        <?}?> type="radio" value="not"/>不可以
-                      </div>
-                      <?}?>
-                  </div>
-                  <?if(pro.type!='count' && !isEmpty(pro.plList)){?>
-                  <div class="balance_list">
-                    <div class="checkbox_check">
-                      <div><b>*</b>选择数据库</div>
-                      <div><input type="checkbox" id="checkbox_id_${i}" onclick="checkedall(${i});">全选</div>
-                    </div>
-                    <ul class="checkbox_list">
-                      <? var j = 0; for(var m=0;m<pro.plList.~size;m++){ var data = pro.plList[m]; var da = data.productSourceCode; var rt = data.resType;?>
-                      <li><input type="checkbox" onclick="checkRes(${i},${j})" id="resourceid_${i}_${j}"
-                          class="rdlist[${i}].tableName" name="rdlist[${i}].rldto[${j}].resourceid" value="${da}"
-                          <?if(!isEmpty(data.checked)){?>checked="checked"
-                        <?}?>>
-                        <? if(!isEmpty(data.rp)){ ?>
-                        <i onclick="showProduct(this,1)" class="icon_minus"></i>
-                        <ul style="display: none;" class="checkbox_list subset_list">
-                          <? for(pd in data.rp){ ?>
-                          <li><input type="checkbox" class="rdlist[${i}].tableName"
-                              <?if(!isEmpty(data.product_id)&&(strutil.contain(data.product_id,pd.rid+"]")||strutil.contain(data.product_id,pd.rid+","))){?>checked="checked"
-                            <?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
-                          <?}?>
-                        </ul>
-                        <?}?>
-                        <? if(!isEmpty(data.abbreviation)){ ?>
-                        ${data.abbreviation}
-                        <?}else{?>
-                        ${data.tableName}
-                        <?}?>
-                        <? if(!isEmpty(rt) && (strutil.contain(rt,"perio")||strutil.contain(rt,"degree")||strutil.contain(rt,"conf")||
-			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))){ ?>
-                        <a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
-                        <? if(!isEmpty(data.contract)){?>
-                        <? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
+             </div>
+            </div>
+			<div class="form-group input_block">
+				<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>购买项目</label>
+				<select class="form-control input_time" name="proType" id="proType" onchange="selectType(this);">
+					<option value="">-请选择-</option>
+					<option value="Limit">资源下载</option>
+					<option value="Check">万方检测</option>
+					<option value="WFStats">万方分析</option>
+				</select>
+				<select class="form-control input_time" name="resourcePurchaseType" id="resourcePurchaseType" onchange="selectProject(this,'1','checked');" style="display: none;">
+				<option value="0">-请选择-</option>
+				</select>
+			</div>
+			<!-- 购买项目展示开始 -->
+          <div id="multplediv">
+          	<? var i = 0; if(!isEmpty(map.proList)){ for(pro in map.proList){ ?>
+          	<div class="balance_block" name="full_div">
+           	<div class="resources_title">
+           		<span name="proname" id="proname${i}">${pro.name}</span><input type="hidden" name="rdlist[${i}].mode" value="${pro.mode}">
+           		<span class="front_apan"><input type="checkbox" id="pro_mode_${i}" onclick="checkMode(${i})" <?if(pro.mode=='trical'){?>checked="checked"<?}?>>试用</span>
+           		<input type="hidden" name="rdlist[${i}].projectname" value="${pro.name}">
+           		<input type="hidden" name="rdlist[${i}].projectType" value="${pro.type}">
+           		<input type="hidden" name="rdlist[${i}].projectid" id="pro_${pro.payChannelid}" value="${pro.payChannelid}">
+           		<span style="float:right;margin-right:150px;">
+				<?if((pro.payChannelid=="GBalanceLimit"||pro.payChannelid=="GTimeLimit")&&!isEmpty(changeMap)){?>
+				<button type="button" class="btn btn-primary btn-sm" onclick="changeLimit(this,'${i}');" id="buttonshow"><span id="buttonspan_${i}"><?if(!isEmpty(changeMap.GBalanceLimit)){?>限时转余额<?}?><?if(!isEmpty(changeMap.GTimeLimit)){?>余额转限时<?}?></span></button>
+				<?}?>
+           		<button type="button" class="btn btn-primary btn-sm"
+           		onclick="delDiv(this,'${i}','2','${pro.payChannelid}','${pro.type}','${pro.beginDateTime}','${pro.endDateTime}','${map.institution}','${map.userId}','${pro.name}','${pro.balance}');">删除</button>
+           		</span>
+           	</div>
+           	<div class="time_block">
+            	<div class="time_input">
+            		<span><b>*</b>时限</span>
+            		<input type="text" class="Wdate" value="${pro.beginDateTime}" name="rdlist[${i}].validityStarttime" id="${pro.payChannelid}_st" onclick="WdatePicker({maxDate:'#F{$dp.$D(${pro.payChannelid}_et)}'})">
+            		<span class="to">至</span>
+            		<input type="text" class="Wdate" value="${pro.endDateTime}" name="rdlist[${i}].validityEndtime" id="${pro.payChannelid}_et" onclick="WdatePicker({minDate:'#F{$dp.$D(${pro.payChannelid}_st)}'})">
+            	</div>
+            	<input type="hidden" name="rdlist[${i}].validityEndtime2" value="${pro.endDateTime!}">
+            	<input type="hidden" name="rdlist[${i}].validityStarttime2" value="${pro.beginDateTime!}">
+            	<input type="hidden" id="nextDay_${i}" value="${pro.nextDay!}">
+            	<div class="time_input time_money" id="time_money_${i}">
+           		<?if(pro.type!='time'&&pro.type!='count'){?>
+					<span><b>*</b>金额</span><input name="rdlist[${i}].totalMoney" type="text" value="0" onkeyup="checkMoney(this,1);" onafterpaste="checkMoney(this,1);"><span style="margin-left:15px;color:#00B2FF;">项目余额：${pro.balance}元</span>
+            	<?}?>
+            	<?if(pro.type!='time'&&pro.type!='balance'){?>
+					<span><b>*</b>次数</span><input name="rdlist[${i}].purchaseNumber" type="text" value="0" onkeyup="checkNum(this,1);" onafterpaste="checkNum(this,1);"><span style="margin-left:15px;color:#00B2FF;">项目次数：${pro.balance}次</span>
+            	<?}?>
+				</div>
+            	<?if(pro.payChannelid=='HistoryCheck'){?>
+            		<p><div class="time_input time_money"><span><b>*</b>查看交易信息</span>
+            			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='is'){?>checked="checked"<?}?> type="radio" value="ViewHistoryCheck"/>可以
+            			<input name="rdlist[${i}].relatedIdAccountType" <?if(pro.ViewHistoryCheck=='not'){?>checked="checked"<?}?> type="radio" value="not"/>不可以
+            		</div>
+            	<?}?>
+           	</div>
+	<?if(pro.type!='count' && !isEmpty(pro.plList)){?>
+	<div class="balance_list">
+    <div class="checkbox_check">
+    	<div><b>*</b>选择数据库</div>
+    	<div><input type="checkbox" id="checkbox_id_${i}" onclick="checkedall(${i});">全选</div>
+   	</div>
+    <ul class="checkbox_list">
+     <? var j = 0; for(var m=0;m<pro.plList.~size;m++){ var data = pro.plList[m]; var da = data.productSourceCode; var rt = data.resType;?>
+       	<li><input type="checkbox" onclick="checkRes(${i},${j})" id="resourceid_${i}_${j}" class="rdlist[${i}].tableName" name="rdlist[${i}].rldto[${j}].resourceid" value="${da}" <?if(!isEmpty(data.checked)){?>checked="checked"<?}?>>
+		<? if(!isEmpty(data.rp)){ ?>
+       	<i onclick="showProduct(this,1)" class="icon_minus"></i>
+		<ul style="display: none;" class="checkbox_list subset_list">
+		 	<? for(pd in data.rp){ ?>
+				<li><input type="checkbox" class="rdlist[${i}].tableName" <?if(!isEmpty(data.product_id)&&(strutil.contain(data.product_id,pd.rid+"]")||strutil.contain(data.product_id,pd.rid+","))){?>checked="checked"<?}?> name="rdlist[${i}].rldto[${j}].productid" value="${pd.rid}"/>${pd.name}</li>
+		 	<?}?>
+		</ul>
+		<?}?>
+       	<? if(!isEmpty(data.abbreviation)){ ?>
+			${data.abbreviation}
+		<?}else{?>
+			${data.tableName}
+		<?}?>
+        <? if(!isEmpty(rt) && (strutil.contain(rt,"perio")||strutil.contain(rt,"degree")||strutil.contain(rt,"conf")||
+			strutil.contain(rt,"patent")||strutil.contain(rt,"books")||strutil.contain(rt,"standard")||strutil.contain(rt,"local chronicles"))
+			&&!(strutil.contain(da,"DB.IsticConference")||strutil.contain(da,"DB.IsticThesis")||strutil.contain(da,"DB.IsticPeriodicalEn")
+			  ||strutil.contain(da,"DB.IsticConferenceEn")||strutil.contain(da,"DB.IsticPeriodical")||strutil.contain(da,"DB.IsticThesisEn"))){ ?>
+       			<a href="javascript:void(0);" onclick="openItems('${i}','${j}','${rt}');">详情</a>
+				    <? if(!isEmpty(data.contract)){?>
+			    	<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 					books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_startTime,gazetteers_endTime,
 		gazetteers_old_area,gazetteers_old_startTime,gazetteers_old_endTime,gazetteers_album,item_id; 
