@@ -1637,21 +1637,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 				set.add(map.get("sourceCode").toString());
 			}
 		}
-		if(set.contains("DB.IsticPeriodical,DB_PEDB")&&set.contains("DB_CSPD,DB_PEDB")){
-			set.remove("DB.IsticPeriodical,DB_PEDB");
-			set.remove("DB_CSPD,DB_PEDB");
+		if(set.contains("DB.IsticPeriodical")&&set.contains("DB_CSPD")){
+			set.remove("DB.IsticPeriodical");
 			set.add("DB_PEDB");
-			set.add("DB_CSPD");
-		}
-		if(set.contains("DB.IsticPeriodical,DB_PEDB")&&!set.contains("DB_CSPD,DB_PEDB")){
-			set.remove("DB.IsticPeriodical,DB_PEDB");
-			set.add("DB.IsticPeriodical");
 		}
 		//循环Set集合查询资源库信息
 		for(String se : set){
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
 			if(m!=null && m.get("productSourceCode")!=""){
 				List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+				if(se.equals("DB_PEDB")){
+					List<Map<String,Object>> listDB =new ArrayList<Map<String,Object>>();
+					Map<String, Object> mapDB1=new HashMap<String, Object>();
+					Map<String, Object> mapDB2=new HashMap<String, Object>();
+					mapDB1.put("sourceCode", "DB.IsticPeriodical");
+					mapDB1.put("name", "中信所中文期刊");
+					mapDB1.put("rid", "Income.IsticPeriodical");
+					mapDB2.put("sourceCode", "DB_CSPD");
+					mapDB2.put("name", "万方期刊全文");
+					mapDB2.put("rid", "Income.PeriodicalFulltext");
+					listDB.add(mapDB1);
+					listDB.add(mapDB2);
+					rp=listDB;
+				}
 				if(m.get("resType")==null){
 					m.put("resType", "");
 				}
