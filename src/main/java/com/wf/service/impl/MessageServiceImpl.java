@@ -211,7 +211,7 @@ public class MessageServiceImpl implements MessageService {
                                 .replace("${title}", m.getTitle())
                                 .replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 specials.append(IMG);
                             }
                         } catch (ParseException e) {
@@ -251,7 +251,7 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 conferences.append(IMG);
                             }
                         } catch (ParseException e) {
@@ -291,7 +291,7 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 funds.append(IMG);
                             }
                         } catch (ParseException e) {
@@ -330,7 +330,7 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 activities.append(IMG);
                             }
                         } catch (ParseException e) {
