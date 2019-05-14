@@ -1,6 +1,7 @@
 package com.wf.service.impl;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,9 +30,12 @@ import com.xxl.conf.core.XxlConfClient;
 public class MessageServiceImpl implements MessageService {
 	private String UNSPECIAL = "<li><a href=\"/informationController/getDetails.do?type=${type}&amp;" +
 			"id=${id}\" target=\"_blank\" title=\"${title}\">\n" +
-			" ${showTitle}</a></li>";
+			" ${showTitle}</a>";
 	private String SPECIAL = "<li><a href=\"${linkAddress}\" target=\"_blank\" title=\"${title}\">\n" +
-			" ${showTitle}</a></li>";
+			" ${showTitle}</a>";
+	private String IMG = "<img style=\"margin-left: 10px;\" src=\"/page/images/new.gif\">";
+	private String LI = "</li>";
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Autowired
 	MessageMapper dao;
@@ -198,13 +202,20 @@ public class MessageServiceImpl implements MessageService {
                 RedisUtil.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
                 RedisUtil.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
 				// 存储资讯的id、title并且只获得3个用作展示
-				if (i < 3) {
-					if (m.getLinkAddress() != null) {
-						specials.append(SPECIAL.replace("${linkAddress}", m.getLinkAddress())
-								.replace("${title}", m.getTitle())
-								.replace("${showTitle}", m.getTitle()));
-					}
-				}
+                if (i < 3) {
+                    if (m.getLinkAddress() != null) {
+                        specials.append(SPECIAL.replace("${linkAddress}", m.getLinkAddress())
+                                .replace("${title}", m.getTitle())
+                                .replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                                specials.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                        }
+                        specials.append(LI);
+                    }
+                }
             }
             // 专题聚焦存储redis后修改zk用于智搜首页快看展示
 			try {
@@ -235,6 +246,13 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                                conferences.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                        }
+                        conferences.append(LI);
 					}
 				}
             }
@@ -267,6 +285,13 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                                funds.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                        }
+                        funds.append(LI);
 					}
 				}
             }
@@ -298,6 +323,13 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${id}",m.getId())
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                                activities.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                        }
+                        activities.append(LI);
 					}
 				}
             }
