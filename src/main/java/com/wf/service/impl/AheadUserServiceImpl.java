@@ -2255,7 +2255,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
 			int count=0;
 			for (Map<String, Object> map : plList) {
-				if(map.get("productSourceCode").equals("DB.IsticPeriodical")&&map.get("payChannelid").equals("GBalanceLimit")){
+				if(map.get("payChannelid").equals("GBalanceLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
 					plList.remove(map);
 					HashMap<String, Object> m=new HashMap<String, Object>();
 					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
@@ -2268,7 +2268,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			for (Map<String, Object> map : plList) {
-				if(map.get("productSourceCode").equals("DB.IsticPeriodical")&&map.get("payChannelid").equals("GTimeLimit")){
+				if(map.get("payChannelid").equals("GTimeLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
 					plList.remove(map);
 					HashMap<String, Object> m=new HashMap<String, Object>();
 					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
@@ -2281,7 +2281,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			for (Map<String, Object> map : plList) {
-				if(map.get("productSourceCode").equals("DB_CSPD")){
+				if(map.containsKey("productSourceCode")&&map.get("productSourceCode").equals("DB_CSPD")){
 					count++;
 				}
 			}
