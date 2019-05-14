@@ -1969,7 +1969,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						}
 						if(dbCount>=2){
 							for (Map<String, Object> map3 : plList) {
-								if(map3.get("productSourceCode").equals("DB_CSPD")){
+								if(map3.get("productSourceCode").equals("DB_CSPD")&&!map3.containsKey("contract")){
 									plList.remove(map3);
 									break;
 								}
@@ -2449,7 +2449,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			if(dbCount>=2){
 				for (Map<String, Object> map : plList) {
-					if(map.get("productSourceCode").equals("DB_CSPD")){
+					if(map.get("productSourceCode").equals("DB_CSPD")&&!map.containsKey("contract")){
 						plList.remove(map);
 						break;
 					}
