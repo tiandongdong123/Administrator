@@ -233,6 +233,11 @@ public class InstitutionUtils {
 				return hashmap;
 			}
 		}
+		if((dto.getProjectid().equals("IsticBalanceLimit")||dto.getProjectid().equals("GNstlBalanceLimit"))&&dto.getRldto()==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", projectname + "数据库不能为空，请选择数据库");
+			return hashmap;
+		}
 		return hashmap;
 	}
 	
