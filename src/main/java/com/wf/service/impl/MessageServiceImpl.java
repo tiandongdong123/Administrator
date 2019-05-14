@@ -16,6 +16,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.html.S;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,8 @@ public class MessageServiceImpl implements MessageService {
 	private String IMG = "<img style=\"margin-left: 10px;\" src=\"/page/images/new.gif\">";
 	private String LI = "</li>";
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final Logger log = Logger.getLogger(MessageServiceImpl.class);
+	private static final int SHOWIMAGE = 4;
 
 	@Autowired
 	MessageMapper dao;
@@ -208,10 +211,11 @@ public class MessageServiceImpl implements MessageService {
                                 .replace("${title}", m.getTitle())
                                 .replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 specials.append(IMG);
                             }
                         } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
                         }
                         specials.append(LI);
                     }
@@ -247,10 +251,11 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 conferences.append(IMG);
                             }
                         } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
                         }
                         conferences.append(LI);
 					}
@@ -286,10 +291,11 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 funds.append(IMG);
                             }
                         } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
                         }
                         funds.append(LI);
 					}
@@ -324,10 +330,11 @@ public class MessageServiceImpl implements MessageService {
 								.replace("${title}", m.getTitle())
 								.replace("${showTitle}", m.getTitle()));
                         try {
-                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) > 3) {
+                            if ((new Date().getTime() - sdf.parse(m.getStick()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
                                 activities.append(IMG);
                             }
                         } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
                         }
                         activities.append(LI);
 					}
@@ -339,6 +346,7 @@ public class MessageServiceImpl implements MessageService {
 					Setting.set("Home/News", activities.toString());
 				}
 			} catch (IOException e) {
+                log.error("更改Home/News出错！", e);
 			}
         }
 
