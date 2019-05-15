@@ -27,7 +27,7 @@
   <select id="getPriceBySourceCode" resultMap="BaseMap" parameterType="java.lang.String">
     select name,rid,source_code from resource_price where applyUserType != '0'
     <if test="sourceCode != null  and sourceCode != ''">
-    	and FIND_IN_SET(#{sourceCode},source_code)
+    	and source_code = #{sourceCode}
     </if>
   </select>
 
