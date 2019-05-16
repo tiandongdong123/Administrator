@@ -841,6 +841,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
@@ -892,6 +916,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
@@ -1652,45 +1700,64 @@ public class AheadUserServiceImpl implements AheadUserService{
 				set.add(map.get("sourceCode").toString());
 			}
 		} 
-		//对资源余额、限时数据库进行排序
-		if(set.contains("DB_CSPD")
-				&&set.contains("DB_CCPD")
-				&&set.contains("DB_CDDB")
-				&&set.contains("DB_WFSD")
-				&&set.contains("DB_WFPD")
-				&&set.contains("DB_CLRD")
-				&&set.contains("DB_CSTAD")
-				&&set.contains("DB_CLGD")
-				&&set.contains("DB_Video")
-				&&set.contains("InstitutionDigest")
-				&&set.contains("ExpertDigest")){
-			List<String> listDB=new ArrayList<String>();
-			listDB.add("DB_CSPD");
-			listDB.add("DB_CDDB");
-			listDB.add("DB_CCPD");
-			listDB.add("DB_WFPD");
-			listDB.add("DB_WFSD");
-			listDB.add("DB_CLRD");
-			listDB.add("DB_CLGD");
-			listDB.add("DB_CSTAD");
-			listDB.add("InstitutionDigest");
-			listDB.add("ExpertDigest");
-			listDB.add("DB_Video");
-			//循环Set集合查询资源库信息
-			for(String se : listDB){
-				Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
-				if(m!=null && m.get("productSourceCode")!=""){
-					List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
-					if(m.get("resType")==null){
-						m.put("resType", "");
-					}
-					m.put("rp", rp);
-					list.add(m);
-				}
-			}
-			return list;
+		if(set.contains("DB.IsticPeriodical")&&set.contains("DB_CSPD")){
+			set.remove("DB.IsticPeriodical");
+			set.add("DB_PEDB");
 		}
-
+		//对资源余额、限时数据库进行排序
+				if(set.contains("DB_CSPD")
+						&&set.contains("DB_CCPD")
+						&&set.contains("DB_CDDB")
+						&&set.contains("DB_WFSD")
+						&&set.contains("DB_WFPD")
+						&&set.contains("DB_CLRD")
+						&&set.contains("DB_CSTAD")
+						&&set.contains("DB_CLGD")
+						&&set.contains("DB_Video")
+						&&set.contains("DB_PEDB")
+						&&set.contains("InstitutionDigest")
+						&&set.contains("ExpertDigest")){
+					List<String> listDB=new ArrayList<String>();
+					listDB.add("DB_CSPD");
+					listDB.add("DB_PEDB");
+					listDB.add("DB_CDDB");
+					listDB.add("DB_CCPD");
+					listDB.add("DB_WFPD");
+					listDB.add("DB_WFSD");
+					listDB.add("DB_CLRD");
+					listDB.add("DB_CLGD");
+					listDB.add("DB_CSTAD");
+					listDB.add("InstitutionDigest");
+					listDB.add("ExpertDigest");
+					listDB.add("DB_Video");
+					//循环Set集合查询资源库信息
+					for(String se : listDB){
+						Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
+						if(m!=null && m.get("productSourceCode")!=""){
+							List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+							if(se.equals("DB_PEDB")){
+								List<Map<String,Object>> listdb =new ArrayList<Map<String,Object>>();
+								Map<String, Object> mapDB1=new HashMap<String, Object>();
+								Map<String, Object> mapDB2=new HashMap<String, Object>();
+								mapDB1.put("sourceCode", "DB.IsticPeriodical");
+								mapDB1.put("name", "中信所中文期刊");
+								mapDB1.put("rid", "Income.IsticPeriodical");
+								mapDB2.put("sourceCode", "DB_CSPD");
+								mapDB2.put("name", "万方期刊全文");
+								mapDB2.put("rid", "Income.PeriodicalFulltext");
+								listdb.add(mapDB1);
+								listdb.add(mapDB2);
+								rp=listdb;
+							}
+							if(m.get("resType")==null){
+								m.put("resType", "");
+							}
+							m.put("rp", rp);
+							list.add(m);
+						}
+					}
+					return list;
+				}
 		//循环Set集合查询资源库信息
 		for(String se : set){
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
@@ -1864,9 +1931,50 @@ public class AheadUserServiceImpl implements AheadUserService{
 							JSONObject json1=new JSONObject();
 							json1.put("Terms", conlist);
 							map2.put("contract", json1);
+
 						}
 					}
 				}
+				int dbCount=0;
+						for (Map<String, Object> map1 : plList) {
+							if(map1.get("payChannelid").equals("GBalanceLimit")&&map1.get("productSourceCode").equals("DB.IsticPeriodical")){
+								plList.remove(map1);
+								HashMap<String, Object> m=new HashMap<String, Object>();
+								m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+								m.put("productSourceCode", "DB_PEDB");
+								m.put("tableName", "期刊增强库");
+								m.put("payChannelid", "GBalanceLimit");
+								plList.add(m);
+								dbCount++;
+								break;
+							}
+						}
+						for (Map<String, Object> map1 : plList) {
+							if(map1.get("payChannelid").equals("GTimeLimit")&&map1.get("productSourceCode").equals("DB.IsticPeriodical")){
+								plList.remove(map1);
+								HashMap<String, Object> m=new HashMap<String, Object>();
+								m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+								m.put("productSourceCode", "DB_PEDB");
+								m.put("tableName", "期刊增强库");
+								m.put("payChannelid", "GTimeLimit");
+								plList.add(m);
+								dbCount++;
+								break;
+							}
+						}
+						for (Map<String, Object> map2 : plList) {
+							if(map2.containsKey("productSourceCode")&&map2.get("productSourceCode").equals("DB_CSPD")){
+								dbCount++;
+							}
+						}
+						if(dbCount>=2){
+							for (Map<String, Object> map3 : plList) {
+								if(map3.get("productSourceCode").equals("DB_CSPD")&&!map3.containsKey("contract")){
+									plList.remove(map3);
+									break;
+								}
+							}
+						}
 				List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库
 				if(plList.size()>0){
 					for(Map<String, Object> d : data){
@@ -2205,6 +2313,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Map<String, Object>> getProjectInfo(String userId){
 		//通过userId查询详情限定列表
+
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 		//判断项目ID是存在
 		List<PayChannelModel> list_ = this.purchaseProject();
@@ -2306,6 +2415,47 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}   
 			}
+			int dbCount=0;
+			for (Map<String, Object> map : plList) {
+				if(map.get("payChannelid").equals("GBalanceLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GBalanceLimit");
+					plList.add(m);
+					dbCount++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.get("payChannelid").equals("GTimeLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GTimeLimit");
+					plList.add(m);
+					dbCount++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.containsKey("productSourceCode")&&map.get("productSourceCode").equals("DB_CSPD")){
+					dbCount++;
+				}
+			}
+			if(dbCount>=2){
+				for (Map<String, Object> map : plList) {
+					if(map.get("productSourceCode").equals("DB_CSPD")&&!map.containsKey("contract")){
+						plList.remove(map);
+						break;
+					}
+				}
+			}
+			
 			List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库 
 			if(plList.size()>0){				
 				for(Map<String, Object> d : data){
