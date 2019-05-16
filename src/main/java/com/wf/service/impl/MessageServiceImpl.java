@@ -227,6 +227,7 @@ public class MessageServiceImpl implements MessageService {
 					Setting.set("Home/Subject", specials.toString());
 				}
 			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + specials.toString(), e);
 			}
 
 		}else if("科技动态".equals(colums)){
@@ -267,6 +268,7 @@ public class MessageServiceImpl implements MessageService {
 					Setting.set("Home/TechNews", conferences.toString());
 				}
 			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + conferences.toString(), e);
 			}
         }else if("会议速递".equals(colums) || "基金申报".equals(colums)){
         	RedisUtil.del("jjID");
@@ -307,6 +309,7 @@ public class MessageServiceImpl implements MessageService {
 					Setting.set("Home/Fund", funds.toString());
 				}
 			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + funds.toString(), e);
 			}
         }else if("万方资讯".equals(colums)){
         	RedisUtil.del("kkID");
@@ -346,7 +349,7 @@ public class MessageServiceImpl implements MessageService {
 					Setting.set("Home/News", activities.toString());
 				}
 			} catch (IOException e) {
-                log.error("更改Home/News出错！", e);
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + activities.toString(), e);
 			}
         }
 
