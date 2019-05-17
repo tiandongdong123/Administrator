@@ -127,7 +127,7 @@
 	                </div>
                 </div>
                 <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checkuser">开通机构管理员</label>
+                  <label><input <?if(!strutil.contain(session.purviews,"A142")){?>style="display:none"<?}?> type="checkbox" id="checkuser">开通机构管理员</label>
                 </div>
                 <div id="administrator" style="display: none;">
            	        <div class="form-group input_block">
