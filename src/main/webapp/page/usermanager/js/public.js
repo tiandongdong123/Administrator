@@ -2896,6 +2896,15 @@ function closeLayer () {
 
 function openEnterpriseLike(obj){
 	var userId = $("#userId").val();
+	if(userId==''){
+		alert('机构Id不能为空，请填写规范的机构Id');
+			return;
+	}
+	var reg=/^[A-Za-z0-9_]*$/;
+	if(!reg.test(userId)){
+		alert('格式不对，请填写规范的机构ID');
+		return;
+	}
 	$.ajax({
 		type:"post",
 		async: false,
