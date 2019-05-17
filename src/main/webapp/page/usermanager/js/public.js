@@ -2893,3 +2893,19 @@ function deleteIPError() {
 function closeLayer () {
 	layer.closeAll();
 }
+
+function openEnterpriseLike(obj){
+	var userId = $("#userId").val();
+	$.ajax({
+		type:"post",
+		async: false,
+		url:"../group/openEnterpriseLike.do",
+		data:{
+			  "userId":userId,
+			  "enterpriseType":obj,
+		},
+		success : function (data){
+			window.open(data);
+		}
+	});
+}
