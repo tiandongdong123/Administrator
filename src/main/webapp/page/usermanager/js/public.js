@@ -2902,7 +2902,7 @@ function openEnterpriseLike(obj){
 	}
 	var reg=/^[A-Za-z0-9_]*$/;
 	if(!reg.test(userId)){
-		alert('格式不对，请填写规范的机构ID');
+		alert('机构Id格式不对，请填写规范的机构Id');
 		return;
 	}
 	$.ajax({
