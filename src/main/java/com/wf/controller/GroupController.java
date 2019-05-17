@@ -1,7 +1,9 @@
 package com.wf.controller;
 
+import java.awt.Desktop;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.citrus.util.StringUtil;
+import com.sun.jndi.toolkit.url.Uri;
 import com.utils.AuthorityLimit;
 import com.utils.DateUtil;
 import com.utils.InstitutionUtils;
@@ -170,16 +174,9 @@ public class GroupController {
 	 */
 	@RequestMapping("register")
 	public ModelAndView register(HttpServletResponse httpResponse){
-		Map<String,String> map=new HashMap<String, String>();
-		map.put("hy", pro.getProperty("hy"));
-		map.put("bj", pro.getProperty("bj"));
-		map.put("zl", pro.getProperty("zl"));
-		map.put("cg", pro.getProperty("cg"));
-		map.put("nj", pro.getProperty("nj"));
 		ModelAndView view = new ModelAndView();
 		view.addObject("arrayArea", SettingUtil.getRegionCode());
 		view.addObject("org", Organization.values());//机构账户类型
-		view.addObject("enterpriseUrl",map);
 		view.setViewName("/page/usermanager/ins_register");
 		return view;
 	}
@@ -240,13 +237,6 @@ public class GroupController {
 		for (Map<String, Object> entry : gmxmlist) {
 			log.info(jgmap.get("userId")+" - '"+entry.get("name")+"'的余额为:"+entry.get("balance"));	
 		}
-		Map<String,String> enterpriseUrl=new HashMap<String, String>();
-		enterpriseUrl.put("hy", pro.getProperty("hy"));
-		enterpriseUrl.put("bj", pro.getProperty("bj"));
-		enterpriseUrl.put("zl", pro.getProperty("zl"));
-		enterpriseUrl.put("cg", pro.getProperty("cg"));
-		enterpriseUrl.put("nj", pro.getProperty("nj"));
-		view.addObject("enterpriseUrl",enterpriseUrl);
 		return view;
 	}
 	//获取机构用户权限表1
@@ -516,5 +506,15 @@ public class GroupController {
 		public ModelAndView toSolrData(ModelAndView view){
 			view.setViewName("/page/usermanager/toSolrData");
 			return view;
+		}
+		
+		/**
+		 * 企业设置跳转链接
+		 */
+		@RequestMapping("openEnterpriseLike")
+		@ResponseBody
+		public String openEnterpriseLike(String userId,String enterpriseType){
+			String uri=pro.getProperty(enterpriseType)+"?accountid=Group."+userId;
+			return uri;
 		}
 }
