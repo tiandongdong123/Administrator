@@ -585,7 +585,6 @@ public class DataSourceController {
 		return periodicalIdss.length;
 	}
 	public static void userRolePower(){
-		RedisUtil redis = new RedisUtil();
 		/*String url =Getproperties.getPros("jdbc.properties").getProperty("jdbc.url");
 		String userName = Getproperties.getPros("jdbc.properties").getProperty("jdbc.username");
 		String passWord = Getproperties.getPros("jdbc.properties").getProperty("jdbc.password");*/
@@ -640,7 +639,7 @@ public class DataSourceController {
 				JSONObject userPower = new JSONObject();
 				userPower.put("original_discovery",relations);
 				if(relations!=null && relations.size()>0){
-					redis.set(institution_id, userPower.toString(),2);
+					RedisUtil.set(institution_id, userPower.toString(),2);
 				}
 			}
 			}
@@ -653,7 +652,6 @@ public class DataSourceController {
 	
 	
 	public static void userRolePower_temp(){
-		RedisUtil r = new RedisUtil();
 		String url = Getproperties.getPros("jdbc.properties").getProperty("jdbc.url");
 		String userName = Getproperties.getPros("jdbc.properties").getProperty("jdbc.username");
 		String passWord = Getproperties.getPros("jdbc.properties").getProperty("jdbc.password");
@@ -759,7 +757,7 @@ public class DataSourceController {
 				//userPower.put("user_roles",roles);
 				userPower.put("original_discovery",relations);
 				if(relations!=null && relations.size()>0){
-					r.set(name, userPower.toString(),2);
+					RedisUtil.set(name, userPower.toString(),2);
 				}
 				
 			}

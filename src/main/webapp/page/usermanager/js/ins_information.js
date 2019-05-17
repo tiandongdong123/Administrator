@@ -338,6 +338,9 @@ function showGazetteers(userId,payid,pscode){
 		if(areas.length>=3){
 			$("#xian_"+temp).html(areas[2])
 		}
+		if(areas=='') {
+			$('.newLocationSelect').html('<span style="margin-left:10px;">全部</span>')
+		}
 	}
 	var type=$("#gazetteers_type_"+temp).val();
 	if(type!=null){
@@ -362,6 +365,58 @@ function showGazetteers(userId,payid,pscode){
 			text +='<input type="checkbox" value="'+name+'" name="classCode2_'+temp+'" checked/> '+albums[i]+' &nbsp;';
 		}
 		$("#new_class_code_"+temp).html(text);
+	}
+	var oldArea = $("#gazetteers_old_area_"+temp).val();
+	if(oldArea!=null){
+		var oldAreas=oldArea.split("_");
+		if(oldAreas.length>=1){
+			$("#sheng_old_"+temp).html(oldAreas[0])
+		}
+		if(oldAreas.length>=2){
+			$("#shi_old_"+temp).html(oldAreas[1])
+		}
+		if(oldAreas.length>=3){
+			$("#xian_old_"+temp).html(oldAreas[2])
+		}
+		if(oldAreas=='') {
+			$('.oldLocationSelect').html('<span style="margin-left: 10px">全部</span>')
+		}
+	}
+	var newStartTime = $('#gazetteers_startTime_'+temp).val()
+	if(newStartTime!=null&&newStartTime!=''){
+		$('#newStartTime_'+temp).html(newStartTime)
+	}else {
+		$('#newStartTime_'+temp).html('不限')
+	}
+	var newEndTime = $('#gazetteers_endTime_'+temp).val()
+	if(newEndTime!=null&&newEndTime!=''){
+		$('#newEndTime_'+temp).html(newEndTime)
+	}else {
+		$('#newEndTime_'+temp).html('不限')
+	}
+	if(newEndTime==''&&newStartTime=='') {
+		$('.newSelectTime').html('<span>不限</span>')
+	}
+	var oldStartTime = $('#gazetteers_old_startTime_'+temp).val()
+	if(oldStartTime!=null&&oldStartTime!=''){
+		$('#oldStartTime_'+temp).html(oldStartTime)
+	}else {
+		$('#oldStartTime_'+temp).html('不限')
+	}
+	var oldEndTime = $('#gazetteers_old_endTime_'+temp).val()
+	if(oldEndTime!=null&&oldEndTime!=''){
+		$('#oldEndTime_'+temp).html(oldEndTime)
+	}else {
+		$('#oldEndTime_'+temp).html('不限')
+	}
+	if(oldStartTime==''&&oldEndTime=='') {
+		$('.oldSelectTime').html('<span>不限</span>')
+	}
+	if($('#changeTextarea_'+userId+'_'+payid +' div .form-control').text()!='') {
+		$('#changeSelect_'+userId+'_'+payid).hide()
+		$('#changeTextarea_'+userId+'_'+payid).show()
+		$('.selectType input').prop('checked',false)
+		$('.export input').prop('checked',true)
 	}
 }
 
@@ -625,6 +680,14 @@ function isEmpty(value){
 	return false;
 }
 
-
+function changExport(type,count,num) {
+	if(type===1) {
+		$("#changeSelect_"+count+"_"+num).show()
+		$("#changeTextarea_"+count+"_"+num).hide()
+	}else {
+		$("#changeSelect_"+count+"_"+num).hide()
+		$("#changeTextarea_"+count+"_"+num).show()
+	}
+}
 
 

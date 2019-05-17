@@ -1,8 +1,13 @@
 package com.wf.controller;
 
+import java.awt.Desktop;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.citrus.util.StringUtil;
+import com.sun.jndi.toolkit.url.Uri;
 import com.utils.AuthorityLimit;
 import com.utils.DateUtil;
 import com.utils.InstitutionUtils;
@@ -56,6 +63,22 @@ public class GroupController {
 	private static String DEFAULT = "default";
 	private static String UNSELECT = "unselect";
 	private String[] channelid=new String[]{"GBalanceLimit","GTimeLimit"};
+	private static Properties pro;
+	static{
+		try {
+			if(pro==null){
+				pro=new Properties();
+				InputStream in = null;
+		    	String path = Thread.currentThread().getContextClassLoader().getResource("").getFile() + "enterpriseUrl.properties";
+		    	path = java.net.URLDecoder.decode(path, "UTF-8");
+				in = new FileInputStream(path);
+				pro.load(in);
+				}
+		} catch (Exception e) {
+			log.error("无法加载配置文件enterpriseUrl.properties", e);
+    		throw new IllegalStateException("无法加载配置文件enterpriseUrl.properties");
+		}
+	}
 	
 	/**
 	 *	机构用户信息管理查询
@@ -127,8 +150,6 @@ public class GroupController {
 				}
 			}
 			PageList pageList = aheadUserService.findListInfo(map);
-			
-			
 			pageList.setPageNum(Integer.parseInt(map.get("pageNum").toString())+1);//当前页
 			pageList.setPageSize(Integer.parseInt(map.get("pageSize").toString()));//每页显示的数量
 			if(!StringUtil.isEmpty(query.getIpSegment())){
@@ -485,5 +506,15 @@ public class GroupController {
 		public ModelAndView toSolrData(ModelAndView view){
 			view.setViewName("/page/usermanager/toSolrData");
 			return view;
+		}
+		
+		/**
+		 * 企业设置跳转链接
+		 */
+		@RequestMapping("openEnterpriseLike")
+		@ResponseBody
+		public String openEnterpriseLike(String userId,String enterpriseType){
+			String uri=pro.getProperty(enterpriseType)+"?accountid=Group."+userId;
+			return uri;
 		}
 }

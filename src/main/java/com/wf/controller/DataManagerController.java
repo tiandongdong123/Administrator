@@ -80,9 +80,8 @@ public class DataManagerController {
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
-		RedisUtil redis= new RedisUtil();
-		redis.del("datamanager");
-		redis.set("datamanager", list.toString(), 6);
+		RedisUtil.del("datamanager");
+		RedisUtil.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
 
 		//记录日志
@@ -101,9 +100,8 @@ public class DataManagerController {
 		//存到zookeeper后会有反应时间，sleep防止数据不能实时更新
 		Thread.sleep(100);
 		JSONArray list = dbConfig.selectSitateFoOne();
-		RedisUtil redis= new RedisUtil();
-		redis.del("datamanager");
-		redis.set("datamanager", list.toString(), 6);
+		RedisUtil.del("datamanager");
+		RedisUtil.set("datamanager", list.toString(), 6);
 		JsonUtil.toJsonHtml(response, b);
 		
 		//记录日志

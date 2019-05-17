@@ -1,8 +1,13 @@
 package com.redis;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.wanfangdata.commonconfigtools.setting.CommonConfigSetting;
 
@@ -14,46 +19,46 @@ import redis.clients.jedis.BinaryClient.LIST_POSITION;
 
 public class UserRedisUtil {
 
-	private JedisPool pool = null;
-	private String redisHost = CommonConfigSetting.get("wf-uias.redis.redisHost") != null ?
+	private static Logger log = Logger.getLogger(UserRedisUtil.class);
+	private static JedisPool pool = null;
+	private static String redisHost = CommonConfigSetting.get("wf-uias.redis.redisHost") != null ?
                                CommonConfigSetting.get("wf-uias.redis.redisHost") : "10.1.3.201";
-    private int redisPort = CommonConfigSetting.get("wf-uias.redis.redisPort") != null ?
+    private static int redisPort = CommonConfigSetting.get("wf-uias.redis.redisPort") != null ?
                             Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.redisPort")) : 6379;
-    private int maxActive = CommonConfigSetting.get("wf-uias.redis.maxActive") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.maxActive")) : 1;
-    private int maxIdle = CommonConfigSetting.get("wf-uias.redis.maxIdle") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.maxIdle")) : 1;
-    private int minIdle = CommonConfigSetting.get("wf-uias.redis.minIdle") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.minIdle")) : 1;
-    private boolean testOnBorrow = CommonConfigSetting.get("wf-uias.redis.testOnBorrow") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testOnBorrow")) : true;
-    private boolean testOnReturn = CommonConfigSetting.get("wf-uias.redis.testOnReturn") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testOnReturn")) : true;
-    private boolean testWhileIdle = CommonConfigSetting.get("wf-uias.redis.testWhileIdle") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testWhileIdle")) : true;
-    private int numTestsPerEvictionRun = CommonConfigSetting.get("wf-uias.redis.numTestsPerEvictionRun") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.numTestsPerEvictionRun")) : 1;
-    private long timeBetweenEvictionRunsMillis = CommonConfigSetting.get("wf-uias.redis.timeBetweenEvictionRunsMillis") != null ?
-            Long.parseLong(CommonConfigSetting.get("wf-uias.redis.timeBetweenEvictionRunsMillis")) : 60000L;
-    private long maxWait = CommonConfigSetting.get("wf-uias.redis.maxWait") != null ?
-            Long.parseLong(CommonConfigSetting.get("wf-uias.redis.maxWait")) : 3000L;
-    private String pass = CommonConfigSetting.get("wf-uias.redis.pass");
-    public UserRedisUtil() {
-        		if (pool == null) {
-        			JedisPoolConfig config = new JedisPoolConfig();
-        	        config.setMaxActive(maxActive);
-        	        config.setMaxIdle(maxIdle);
-        	        config.setMinIdle(minIdle);
-        	        config.setTestOnBorrow(testOnBorrow);
-        	        config.setTestOnReturn(testOnReturn);
-        	        config.setTestWhileIdle(testWhileIdle);
-        	        config.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
-        	        config.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        	        config.setMaxWait(maxWait);
-        	        pool = new JedisPool(config, redisHost, redisPort, 6000);
-        		}
-        }
-    public Jedis getJedis(){
+    private static String pass = CommonConfigSetting.get("wf-uias.redis.pass");
+    static {
+    	Properties pro = new Properties();
+    	InputStream in = null;
+    	String path = Thread.currentThread().getContextClassLoader().getResource("").getFile() + "redisConfig.properties";
+    	try {
+    		if (pool == null) {
+    			path = java.net.URLDecoder.decode(path, "UTF-8");
+    			in = new FileInputStream(path);
+    			pro.load(in);
+    			JedisPoolConfig config = new JedisPoolConfig();
+    			config.setMaxActive(new Integer(pro.getProperty("jedisConfig.maxActive")));
+    			config.setMaxIdle(new Integer(pro.getProperty("jedisConfig.maxIdle")));
+    			config.setMinIdle(new Integer(pro.getProperty("jedisConfig.minIdle")));
+    			config.setTestOnBorrow(new Boolean(pro.getProperty("jedisConfig.testOnBorrow")));
+    			config.setTestOnReturn(new Boolean(pro.getProperty("jedisConfig.testOnReturn")));
+    			config.setTestWhileIdle(new Boolean(pro.getProperty("jedisConfig.testWhileIdle")));
+    			config.setNumTestsPerEvictionRun(new Integer(pro.getProperty("jedisConfig.numTestsPerEvictionRun")));
+    			config.setTimeBetweenEvictionRunsMillis(new Integer(pro.getProperty("jedisConfig.timeBetweenEvictionRunsMillis")));
+    			config.setMaxWait(new Integer(pro.getProperty("jedisConfig.maxWait")));
+    			pool = new JedisPool(config, redisHost, redisPort, 6000);
+    		}
+    	} catch (Exception e) {
+    		log.error("无法加载配置文件redisConfig.properties", e);
+    		throw new IllegalStateException("无法加载配置文件redisConfig.properties");
+    	}finally {
+    		try {
+    			if (in != null)
+    				in.close();
+    		} catch (Exception e) {
+    		}
+    	}
+    }
+    public static Jedis getJedis(){
 		if(pool!=null) {
 			return pool.getResource();
 		}
@@ -65,7 +70,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return 成功返回value 失败返回null
 	 */
-	public String get(String key,int num){
+	public static String get(String key,int num){
 		Jedis jedis = null;
 		String value = null;
 		try {
@@ -86,7 +91,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return 成功返回value 失败返回null
 	 */
-	public byte[] get(byte[] key){
+	public static byte[] get(byte[] key){
 		Jedis jedis = null;
 		byte[] value = null;
 		try {
@@ -108,7 +113,7 @@ public class UserRedisUtil {
 	 * @param num
 	 * @return 成功返回value 失败返回null
 	 */
-	public Long expire(String key, int second,int... num){
+	public static Long expire(String key, int second,int... num){
 		Jedis jedis = null;
 		Long value = null;
 		try {
@@ -133,7 +138,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return 成功 返回OK 失败返回 0
 	 */
-	public String set(String key,String value,int... num){
+	public static String set(String key,String value,int... num){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -156,7 +161,7 @@ public class UserRedisUtil {
 	 * @param keys 一个key  也可以使 string 数组
 	 * @return 返回删除成功的个数 
 	 */
-	public Long del(String...keys){
+	public static Long del(String...keys){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -175,7 +180,7 @@ public class UserRedisUtil {
 	 * @param keys 一个key  也可以使 string 数组
 	 * @return 返回删除成功的个数 
 	 */
-	public Long del(int num,String...keys){
+	public static Long del(int num,String...keys){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -196,7 +201,7 @@ public class UserRedisUtil {
 	 * @param str 
 	 * @return 成功返回 添加后value的长度 失败 返回 添加的 value 的长度  异常返回0L
 	 */
-	public Long append(String key ,String str,int num){
+	public static Long append(String key ,String str,int num){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -218,7 +223,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return true OR false
 	 */
-	public Boolean exists(String key,int...num){
+	public static Boolean exists(String key,int...num){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -241,7 +246,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return 成功返回1 如果存在 和 发生异常 返回 0
 	 */
-	public Long setnx(String key ,String value){
+	public static Long setnx(String key ,String value){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -262,7 +267,7 @@ public class UserRedisUtil {
 	 * @param seconds 单位:秒
 	 * @return 成功返回OK 失败和异常返回null
 	 */
-	public String setex(String key,String value,int seconds){
+	public static String setex(String key,String value,int seconds){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -292,7 +297,7 @@ public class UserRedisUtil {
 	 * @param offset 下标位置
 	 * @return 返回替换后  value 的长度
 	 */
-	public Long setrange(String key,String str,int offset){
+	public static Long setrange(String key,String str,int offset){
 		Jedis jedis = null;
 		try {
 			jedis = pool.getResource();
@@ -313,7 +318,7 @@ public class UserRedisUtil {
 	 * @param keys string数组 也可以是一个key
 	 * @return 成功返回value的集合, 失败返回null的集合 ,异常返回空
 	 */
-	public List<String> mget(String...keys){
+	public static List<String> mget(String...keys){
 		Jedis jedis = null;
 		List<String> values = null;
 		try {
@@ -336,7 +341,7 @@ public class UserRedisUtil {
 	 * @return 成功返回OK 失败 异常 返回 null
 	 * 
 	 */
-	public String mset(String...keysvalues){
+	public static String mset(String...keysvalues){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -358,7 +363,7 @@ public class UserRedisUtil {
 	 * @param keysvalues 
 	 * @return 成功返回1 失败返回0 
 	 */
-	public Long msetnx(String...keysvalues){
+	public static Long msetnx(String...keysvalues){
 		Jedis jedis = null;
 		Long res = 0L;
 		try {
@@ -379,7 +384,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return 旧值 如果key不存在 则返回null
 	 */
-	public String getset(String key,String value){
+	public static String getset(String key,String value){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -401,7 +406,7 @@ public class UserRedisUtil {
 	 * @param endOffset 
 	 * @return 如果没有返回null 
 	 */
-	public String getrange(String key, int startOffset ,int endOffset){
+	public static String getrange(String key, int startOffset ,int endOffset){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -421,7 +426,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return 加值后的结果
 	 */
-	public Long incr(String key){
+	public static Long incr(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -437,7 +442,7 @@ public class UserRedisUtil {
 	}
 	
 	// 获得管道
-	public Pipeline pipelined(){
+	public static Pipeline pipelined(){
 		Jedis jedis = null;
 		Pipeline res = null;
 		try {
@@ -459,7 +464,7 @@ public class UserRedisUtil {
 	 * @param integer
 	 * @return
 	 */
-	public Long incrBy(String key,Long integer){
+	public static Long incrBy(String key,Long integer){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -479,7 +484,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Long decr(String key) {
+	public static Long decr(String key) {
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -500,7 +505,7 @@ public class UserRedisUtil {
 	 * @param integer
 	 * @return
 	 */
-	public Long decrBy(String key,Long integer){
+	public static Long decrBy(String key,Long integer){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -520,7 +525,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return 失败返回null 
 	 */
-	public Long serlen(String key){
+	public static Long serlen(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -542,7 +547,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return 如果存在返回0 异常返回null
 	 */
-	public Long hset(String key,String field,String value,int... num) {
+	public static Long hset(String key,String field,String value,int... num) {
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -567,7 +572,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return
 	 */
-	public Long hsetnx(String key,String field,String value){
+	public static Long hsetnx(String key,String field,String value){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -588,7 +593,7 @@ public class UserRedisUtil {
 	 * @param hash
 	 * @return 返回OK 异常返回null
 	 */
-	public String hmset(String key,Map<String, String> hash){
+	public static String hmset(String key,Map<String, String> hash){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -609,7 +614,7 @@ public class UserRedisUtil {
 	 * @param field
 	 * @return 没有返回null
 	 */
-	public String hget(String key, String field){
+	public static String hget(String key, String field){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -630,7 +635,7 @@ public class UserRedisUtil {
 	 * @param field
 	 * @return 没有返回null
 	 */
-	public String hget(String key, String field,int num){
+	public static String hget(String key, String field,int num){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -652,7 +657,7 @@ public class UserRedisUtil {
 	 * @param fields 可以使 一个String 也可以是 String数组
 	 * @return 
 	 */
-	public List<String> hmget(String key,String...fields){
+	public static List<String> hmget(String key,String...fields){
 		Jedis jedis = null;
 		List<String> res = null;
 		try {
@@ -674,7 +679,7 @@ public class UserRedisUtil {
 	 * @param value 
 	 * @return
 	 */
-	public Long hincrby(String key ,String field ,Long value){
+	public static Long hincrby(String key ,String field ,Long value){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -695,7 +700,7 @@ public class UserRedisUtil {
 	 * @param field
 	 * @return
 	 */
-	public Boolean hexists(String key , String field){
+	public static Boolean hexists(String key , String field){
 		Jedis jedis = null;
 		Boolean res = false;
 		try {
@@ -715,7 +720,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Long hlen(String key){
+	public static Long hlen(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -737,7 +742,7 @@ public class UserRedisUtil {
 	 * @param fields 可以是 一个 field 也可以是 一个数组
 	 * @return
 	 */
-	public Long hdel(int num,String key ,String...fields){
+	public static Long hdel(int num,String key ,String...fields){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -758,7 +763,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Set<String> hkeys(String key){
+	public static Set<String> hkeys(String key){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -778,7 +783,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public List<String> hvals(String key){
+	public static List<String> hvals(String key){
 		Jedis jedis = null;
 		List<String> res = null;
 		try {
@@ -798,7 +803,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Map<String, String> hgetall(String key,int... num){
+	public static Map<String, String> hgetall(String key,int... num){
 		Jedis jedis = null;
 		Map<String, String> res = null;
 		try {
@@ -822,7 +827,7 @@ public class UserRedisUtil {
 	 * @param strs 可以使一个string 也可以使string数组
 	 * @return 返回list的value个数
 	 */
-	public Long lpush(String key ,String...strs){
+	public static Long lpush(String key ,String...strs){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -843,7 +848,7 @@ public class UserRedisUtil {
 	 * @param strs 可以使一个string 也可以使string数组
 	 * @return 返回list的value个数
 	 */
-	public Long rpush(String key ,String...strs){
+	public static Long rpush(String key ,String...strs){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -866,7 +871,7 @@ public class UserRedisUtil {
 	 * @param value 添加的value
 	 * @return
 	 */
-	public Long linsert(String key, LIST_POSITION where,
+	public static Long linsert(String key, LIST_POSITION where,
 		    String pivot, String value){
 		Jedis jedis = null;
 		Long res = null;
@@ -890,7 +895,7 @@ public class UserRedisUtil {
 	 * @param value
 	 * @return 成功返回OK
 	 */
-	public String lset(String key ,Long index, String value){
+	public static String lset(String key ,Long index, String value){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -912,7 +917,7 @@ public class UserRedisUtil {
 	 * @param value 
 	 * @return 返回被删除的个数
 	 */
-	public Long lrem(String key,long count,String value){
+	public static Long lrem(String key,long count,String value){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -934,7 +939,7 @@ public class UserRedisUtil {
 	 * @param end
 	 * @return 成功返回OK
 	 */
-	public String ltrim(String key ,long start ,long end){
+	public static String ltrim(String key ,long start ,long end){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -954,7 +959,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return 
 	 */
-	public String lpop(String key){
+	public static String lpop(String key){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -974,7 +979,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String rpop(String key){
+	public static String rpop(String key){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -996,7 +1001,7 @@ public class UserRedisUtil {
 	 * @param dstkey
 	 * @return
 	 */
-	public String rpoplpush(String srckey, String dstkey){
+	public static String rpoplpush(String srckey, String dstkey){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -1017,7 +1022,7 @@ public class UserRedisUtil {
 	 * @param index
 	 * @return 如果没有返回null
 	 */
-	public String lindex(String key,long index){
+	public static String lindex(String key,long index){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -1037,7 +1042,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Long llen(String key){
+	public static Long llen(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1060,7 +1065,7 @@ public class UserRedisUtil {
 	 * @param end
 	 * @return
 	 */
-	public List<String> lrange(String key,long start,long end){
+	public static List<String> lrange(String key,long start,long end){
 		Jedis jedis = null;
 		List<String> res = null;
 		try {
@@ -1081,7 +1086,7 @@ public class UserRedisUtil {
 	 * @param members 可以是一个String 也可以是一个String数组
 	 * @return 添加成功的个数
 	 */
-	public Long sadd(String key,String...members){
+	public static Long sadd(String key,String...members){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1102,7 +1107,7 @@ public class UserRedisUtil {
 	 * @param members 可以是一个String 也可以是一个String数组
 	 * @return 删除的个数
 	 */
-	public Long srem(String key,String...members){
+	public static Long srem(String key,String...members){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1122,7 +1127,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String spop(String key){
+	public static String spop(String key){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -1143,7 +1148,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 则返回set中所有的value 也可以是string数组
 	 * @return 
 	 */
-	public Set<String> sdiff(String...keys){
+	public static Set<String> sdiff(String...keys){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1165,7 +1170,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 则返回set中所有的value 也可以是string数组
 	 * @return 
 	 */
-	public Long sdiffstore(String dstkey,String... keys){
+	public static Long sdiffstore(String dstkey,String... keys){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1185,7 +1190,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 也可以是一个string数组
 	 * @return
 	 */
-	public Set<String> sinter(String...keys){
+	public static Set<String> sinter(String...keys){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1206,7 +1211,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 也可以是一个string数组
 	 * @return
 	 */
-	public Long sinterstore(String dstkey,String...keys){
+	public static Long sinterstore(String dstkey,String...keys){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1226,7 +1231,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 也可以是一个string数组
 	 * @return
 	 */
-	public Set<String> sunion(String... keys){
+	public static Set<String> sunion(String... keys){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1247,7 +1252,7 @@ public class UserRedisUtil {
 	 * @param keys 可以使一个string 也可以是一个string数组
 	 * @return
 	 */
-	public Long sunionstore(String dstkey,String...keys){
+	public static Long sunionstore(String dstkey,String...keys){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1269,7 +1274,7 @@ public class UserRedisUtil {
 	 * @param member set中的value
 	 * @return
 	 */
-	public Long smove(String srckey, String dstkey, String member){
+	public static Long smove(String srckey, String dstkey, String member){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1289,7 +1294,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Long scard(String key){
+	public static Long scard(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1310,7 +1315,7 @@ public class UserRedisUtil {
 	 * @param member
 	 * @return
 	 */
-	public Boolean sismember(String key,String member){
+	public static Boolean sismember(String key,String member){
 		Jedis jedis = null;
 		Boolean res = null;
 		try {
@@ -1330,7 +1335,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String srandmember(String key){
+	public static String srandmember(String key){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -1350,7 +1355,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Set<String> smembers(String key){
+	public static Set<String> smembers(String key){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1372,7 +1377,7 @@ public class UserRedisUtil {
 	 * @param scoreMembers 
 	 * @return
 	 */
-	public Long zadd(String key,Map<Double, String> scoreMembers){
+	public static Long zadd(String key,Map<Double, String> scoreMembers){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1395,7 +1400,7 @@ public class UserRedisUtil {
 	 * @param member
 	 * @return
 	 */
-	public Long zadd(String key,double score,String member){
+	public static Long zadd(String key,double score,String member){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1416,7 +1421,7 @@ public class UserRedisUtil {
 	 * @param members 可以使一个string 也可以是一个string数组
 	 * @return
 	 */
-	public Long zrem(String key,String...members){
+	public static Long zrem(String key,String...members){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1438,7 +1443,7 @@ public class UserRedisUtil {
 	 * @param member 
 	 * @return
 	 */
-	public Double zincrby(String key ,double score ,String member){
+	public static Double zincrby(String key ,double score ,String member){
 		Jedis jedis = null;
 		Double res = null;
 		try {
@@ -1460,7 +1465,7 @@ public class UserRedisUtil {
 	 * @param member
 	 * @return
 	 */
-	public Long zrank(String key,String member){
+	public static Long zrank(String key,String member){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1482,7 +1487,7 @@ public class UserRedisUtil {
 	 * @param member
 	 * @return
 	 */
-	public Long zrevrank(String key,String member){
+	public static Long zrevrank(String key,String member){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1506,7 +1511,7 @@ public class UserRedisUtil {
 	 * @param end
 	 * @return
 	 */
-	public Set<String> zrevrange(String key ,long start ,long end){
+	public static Set<String> zrevrange(String key ,long start ,long end){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1528,7 +1533,7 @@ public class UserRedisUtil {
 	 * @param min 
 	 * @return
 	 */
-	public Set<String> zrangebyscore(String key,String max,String min){
+	public static Set<String> zrangebyscore(String key,String max,String min){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1550,7 +1555,7 @@ public class UserRedisUtil {
 	 * @param min 
 	 * @return
 	 */
-	public Set<String> zrangeByScore(String key ,double max,double min){
+	public static Set<String> zrangeByScore(String key ,double max,double min){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1572,7 +1577,7 @@ public class UserRedisUtil {
 	 * @param max
 	 * @return
 	 */
-	public Long zcount(String key,String min,String max){
+	public static Long zcount(String key,String min,String max){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1592,7 +1597,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public Long zcard(String key){
+	public static Long zcard(String key){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1613,7 +1618,7 @@ public class UserRedisUtil {
 	 * @param member
 	 * @return
 	 */
-	public Double zscore(String key,String member){
+	public static Double zscore(String key,String member){
 		Jedis jedis = null;
 		Double res = null;
 		try {
@@ -1635,7 +1640,7 @@ public class UserRedisUtil {
 	 * @param end
 	 * @return
 	 */
-	public Long zremrangeByRank(String key ,long start, long end){
+	public static Long zremrangeByRank(String key ,long start, long end){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1657,7 +1662,7 @@ public class UserRedisUtil {
 	 * @param end
 	 * @return
 	 */
-	public Long zremrangeByScore(String key,double start,double end){
+	public static Long zremrangeByScore(String key,double start,double end){
 		Jedis jedis = null;
 		Long res = null;
 		try {
@@ -1678,7 +1683,7 @@ public class UserRedisUtil {
 	 * @param pattern
 	 * @return
 	 */
-	public Set<String> keys(String pattern,int... num){
+	public static Set<String> keys(String pattern,int... num){
 		Jedis jedis = null;
 		Set<String> res = null;
 		try {
@@ -1701,7 +1706,7 @@ public class UserRedisUtil {
 	 * @param key
 	 * @return
 	 */
-	public String type(String key){
+	public static String type(String key){
 		Jedis jedis = null;
 		String res = null;
 		try {
@@ -1729,8 +1734,7 @@ public class UserRedisUtil {
 	}
 	
 	public static void main(String[] args) {
-		UserRedisUtil r = new UserRedisUtil();
-		System.out.println(r.get("CLCDic",1));
+		System.out.println(UserRedisUtil.get("CLCDic",1));
 		/*Map<String, String> s=  r.hgetall("admin");
 		String map= r.hget("admin","10.215.4.130");
 		System.out.println(map);

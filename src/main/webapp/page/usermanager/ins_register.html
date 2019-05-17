@@ -24,7 +24,7 @@
                   <input type="text" class="form-control input_time" name="userId" id="userId" onblur="validatePeron(this);" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')">
                 </div>
                 <div class="checkbox input_block block_left">
-                  <label><input type="checkbox" id="checkp">设置机构账号并发数（登录并发）</label>
+                  <label><input type="checkbox" id="checkp">设置机构账号 并发数（登录并发）</label>
                 </div>
                 <div style="display: none;" id="pconcurrent_div">
                     <div class="form-group input_block">
@@ -222,6 +222,21 @@
 					 	<input type="checkbox" id="sendMail" name="sendMail" value="0">发送链接
 	               	</div>
                	</div>
+               	<div class="checkbox input_block block_left">
+					<a href="javascript:void(0)" onclick="openEnterpriseLike('hy');" >企业行业权限</a>
+				</div>
+				<div class="checkbox input_block block_left">
+					<a href="javascript:void(0)" onclick="openEnterpriseLike('bz');" >企业标准权限</a>
+				</div>
+				<div class="checkbox input_block block_left">
+					<a href="javascript:void(0)" onclick="openEnterpriseLike('zl');" >企业专利权限</a>
+				</div>
+				<div class="checkbox input_block block_left">
+					<a href="javascript:void(0)" onclick="openEnterpriseLike('cg');" >企业成果权限</a>
+				</div>
+				<div class="checkbox input_block block_left">
+					<a href="javascript:void(0)" onclick="openEnterpriseLike('nj');" >企业内建权限</a>
+				</div>
 				<div class="box-footer block_left">
 					<!-- <button type="button" class="btn btn-primary" id="submit1" onclick="submitForm(0);">保存并新增</button> -->
 					<button type="button" class="btn btn-primary" class="IPAutomatic" onclick="checkIPError();" id="checkIp" style="display:none">检查IP冲突</button>
