@@ -102,6 +102,8 @@ public class GroupAccountUtil {
                 }
             }
             extraData.put(PAYTAG_STRING_KEY, payTagString.toString());
+        }else{
+            extraData.put(PAYTAG_STRING_KEY, "operator");
         }
         return extraData;
     }
