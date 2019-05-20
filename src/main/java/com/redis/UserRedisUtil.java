@@ -1,8 +1,13 @@
 package com.redis;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.wanfangdata.commonconfigtools.setting.CommonConfigSetting;
 
@@ -14,45 +19,45 @@ import redis.clients.jedis.BinaryClient.LIST_POSITION;
 
 public class UserRedisUtil {
 
+	private static Logger log = Logger.getLogger(UserRedisUtil.class);
 	private static JedisPool pool = null;
 	private static String redisHost = CommonConfigSetting.get("wf-uias.redis.redisHost") != null ?
                                CommonConfigSetting.get("wf-uias.redis.redisHost") : "10.1.3.201";
     private static int redisPort = CommonConfigSetting.get("wf-uias.redis.redisPort") != null ?
                             Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.redisPort")) : 6379;
-    private static int maxActive = CommonConfigSetting.get("wf-uias.redis.maxActive") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.maxActive")) : 1;
-    private static int maxIdle = CommonConfigSetting.get("wf-uias.redis.maxIdle") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.maxIdle")) : 1;
-    private static int minIdle = CommonConfigSetting.get("wf-uias.redis.minIdle") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.minIdle")) : 1;
-    private static boolean testOnBorrow = CommonConfigSetting.get("wf-uias.redis.testOnBorrow") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testOnBorrow")) : true;
-    private static boolean testOnReturn = CommonConfigSetting.get("wf-uias.redis.testOnReturn") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testOnReturn")) : true;
-    private static boolean testWhileIdle = CommonConfigSetting.get("wf-uias.redis.testWhileIdle") != null ?
-            new Boolean(CommonConfigSetting.get("wf-uias.redis.testWhileIdle")) : true;
-    private static int numTestsPerEvictionRun = CommonConfigSetting.get("wf-uias.redis.numTestsPerEvictionRun") != null ?
-            Integer.parseInt(CommonConfigSetting.get("wf-uias.redis.numTestsPerEvictionRun")) : 1;
-    private static long timeBetweenEvictionRunsMillis = CommonConfigSetting.get("wf-uias.redis.timeBetweenEvictionRunsMillis") != null ?
-            Long.parseLong(CommonConfigSetting.get("wf-uias.redis.timeBetweenEvictionRunsMillis")) : 60000L;
-    private static long maxWait = CommonConfigSetting.get("wf-uias.redis.maxWait") != null ?
-            Long.parseLong(CommonConfigSetting.get("wf-uias.redis.maxWait")) : 3000L;
     private static String pass = CommonConfigSetting.get("wf-uias.redis.pass");
     static {
-        	if (pool == null) {
-        		JedisPoolConfig config = new JedisPoolConfig();
-        	    config.setMaxActive(maxActive);
-        	    config.setMaxIdle(maxIdle);
-        	    config.setMinIdle(minIdle);
-        	    config.setTestOnBorrow(testOnBorrow);
-        	    config.setTestOnReturn(testOnReturn);
-        	    config.setTestWhileIdle(testWhileIdle);
-        	    config.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
-        	    config.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        	    config.setMaxWait(maxWait);
-        	    pool = new JedisPool(config, redisHost, redisPort, 6000);
-        	}
-        }
+    	Properties pro = new Properties();
+    	InputStream in = null;
+    	String path = Thread.currentThread().getContextClassLoader().getResource("").getFile() + "redisConfig.properties";
+    	try {
+    		if (pool == null) {
+    			path = java.net.URLDecoder.decode(path, "UTF-8");
+    			in = new FileInputStream(path);
+    			pro.load(in);
+    			JedisPoolConfig config = new JedisPoolConfig();
+    			config.setMaxActive(new Integer(pro.getProperty("jedisConfig.maxActive")));
+    			config.setMaxIdle(new Integer(pro.getProperty("jedisConfig.maxIdle")));
+    			config.setMinIdle(new Integer(pro.getProperty("jedisConfig.minIdle")));
+    			config.setTestOnBorrow(new Boolean(pro.getProperty("jedisConfig.testOnBorrow")));
+    			config.setTestOnReturn(new Boolean(pro.getProperty("jedisConfig.testOnReturn")));
+    			config.setTestWhileIdle(new Boolean(pro.getProperty("jedisConfig.testWhileIdle")));
+    			config.setNumTestsPerEvictionRun(new Integer(pro.getProperty("jedisConfig.numTestsPerEvictionRun")));
+    			config.setTimeBetweenEvictionRunsMillis(new Integer(pro.getProperty("jedisConfig.timeBetweenEvictionRunsMillis")));
+    			config.setMaxWait(new Integer(pro.getProperty("jedisConfig.maxWait")));
+    			pool = new JedisPool(config, redisHost, redisPort, 6000);
+    		}
+    	} catch (Exception e) {
+    		log.error("无法加载配置文件redisConfig.properties", e);
+    		throw new IllegalStateException("无法加载配置文件redisConfig.properties");
+    	}finally {
+    		try {
+    			if (in != null)
+    				in.close();
+    		} catch (Exception e) {
+    		}
+    	}
+    }
     public static Jedis getJedis(){
 		if(pool!=null) {
 			return pool.getResource();

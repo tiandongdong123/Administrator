@@ -64,7 +64,7 @@ $(document).ready(function(){
 });
 //提交事件
 function submitForm(){
-	
+//	console.log(count,index)
 	var data = new FormData($('#fromList')[0]);
     var openBindStart = data.get('openBindStart');
     var openBindEnd = data.get('openBindEnd');
@@ -280,9 +280,64 @@ function openItems(count,i,type){
 		$("a[href='#standard_"+count+"_"+i+"']").parent().addClass("active");
 		$("#standard_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 	}else if(type.indexOf("local chronicles")>-1){
+		$('.newClassify_'+count+"_"+i).attr("data-classify",($('#gazetteersAlbum_'+count+"_"+i).val()))
+		$('.checkType').prop('checked',false)
 		$("a[href='#localchronicles_"+count+"_"+i+"']").parent().addClass("active");
 		$("#localchronicles_"+count+"_"+i).addClass("active").siblings().removeClass("active");
 		initGazetteer(count,i);
+		$('#gazetteersId_'+count+'_'+i).val($('#gazetteers_TopId_'+count+'_'+i).val())
+		$('#itemId_'+count+'_'+i).val($('#gazetteers_BottomItem_'+count+'_'+i).val())
+		if($('#gazetteersId_'+count+'_'+i).val()!=''||$('#itemId_'+count+'_'+i).val()!='') {
+			$('#changeSelect_'+count+'_'+i).hide()
+			$('#changeTextarea_'+count+'_'+i).show()
+			$('.selectType input').prop('checked',false)
+			$('.export input').prop('checked',true)
+		}
+		$('.newClassify_'+count+'_'+i).attr('data-classify',$('#gazetteersAlbum_'+count+'_'+i).val())
+		
+		
+		
+		
+		
+		
+		var gazetteers_type=$("#gazetteers_type_"+count+"_"+i).val();
+		var gazetteersLevel=$("#gazetteersLevel_"+count+"_"+i).val();
+		//设置专辑分类和专题分类是否选中
+		var album=$("#gazetteersAlbum_"+count+"_"+i).val();
+		var albums=album.split(";");
+		var class_code="";
+		if(gazetteersLevel=="WFLocalChronicle"){
+			class_code="input[name='classCode_"+count+"_"+i+"']";
+			$("#new_class_code_"+count+"_"+i).show();
+			if($("#new_class_code_"+count+"_"+i+' input').length==albums.length-1) {
+				$('#checkfz_'+count+'_'+i).prop('checked',true)
+			}else {
+				$('#checkfz_'+count+'_'+i).prop('checked',false)
+			}
+			$("#item_class_code_"+count+"_"+i).hide();
+		}else if(gazetteersLevel=="WFLocalChronicleItem"){
+			class_code="input[name='classCode2_"+count+"_"+i+"']";
+			$("#new_class_code_"+count+"_"+i).hide();
+			$("#item_class_code_"+count+"_"+i).show();
+			if($("#item_class_code_"+count+"_"+i +' input').length==albums.length-1) {
+				$('#checkfz_'+count+'_'+i).prop('checked',true)
+			}else {
+				$('#checkfz_'+count+'_'+i).prop('checked',false)
+			}
+		}
+		$(class_code).each(function(){
+			$(this).prop('checked',false)
+			var val=$(this).val();
+			for(var c=0;c<albums.length;c++){
+				if(val==albums[c]){
+					$(this).prop("checked",true);
+					continue;
+				}
+			}
+		});
+		
+		
+		
 	}
 	if(type.indexOf("local chronicles")==-1){
 		//Ztree 返显
@@ -381,6 +436,137 @@ function openItems(count,i,type){
 		    	if(!validDegreeYear(count,i)){
 		    		return false;
 		    	}
+		    }
+		});
+	}else if(type.indexOf("local")>-1){
+		layer.open({
+		    type: 1, //page层 1div，2页面
+		    area: ['40%', '90%'],
+		    title: '地方志限定',
+		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
+		    content: $("#tabs_custom_"+count+"_"+i),
+		    btn: ['确认'],
+		    yes: function(){
+				if($('#errorTime_'+count+"_"+i).text()==''&&$('#errorOldTime_'+count+"_"+i).text()==''&&$('.checkType_'+count+'_'+i).text()=='') {
+					if($('#newLocalType_'+count+"_"+i).is(':checked')) {
+						var startTime = $('#startTime_'+count+"_"+i).attr('data-starttime'),
+							endTime = $('#endTime_'+count+"_"+i).attr('data-endtime'),
+							prev = $('#sheng_'+count+"_"+i).attr('data-prev'),
+							city = $('#shi_'+count+"_"+i).attr('data-city'),
+							county = $('#xian_'+count+"_"+i).attr('data-county'),
+							dataType = $('.newDateSelect').attr('data-select'),
+							dataClassify = $('.newClassify_'+count+"_"+i).attr('data-classify');
+							
+						dataType = (dataType=='')?'WFLocalChronicle':dataType;
+						prev = (prev=='')?'':prev+'_';
+						city = (city=='')?'':city+'_';
+						county = (county=='')?'':county+'_';
+						
+						var Area = prev+city+county;
+						Area = Area.substr(0,Area.length-1);
+						
+						$('#gazetteersStartTime_'+count+"_"+i).val(startTime) //新方志开始时间
+						$('#gazetteersEndTime_'+count+"_"+i).val(endTime) // 新方志结束时间
+						$('#gazetteersArea_'+count+"_"+i).val(Area) // 新方志地区
+						$('#gazetteersAlbum_'+count+"_"+i).val(dataClassify) // 新方志专辑分类
+						$('#gazetteersLevel_'+count+"_"+i).val(dataType) // 新方志数据分类
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_New')
+					}else {
+						gazetteerType('FZ_New',count,i)
+						$('#gazetteers_type_'+count+"_"+i).val('')
+						$('#gazetteersStartTime_'+count+'_'+i).val('')
+						$('#gazetteersEndTime_'+count+'_'+i).val('')
+						$('#gazetteersArea_'+count+'_'+i).val('')
+						$('#gazetteersAlbum_'+count+'_'+i).val('')
+					}
+					if($('#oldLocalType_'+count+"_"+i).is(':checked')) {
+						var oldStartTime = $('#old_startTime_'+count+"_"+i).attr('data-oldstarttime'),
+							oldEndTime = $('#old_endTime_'+count+"_"+i).attr('data-oldendtime'),
+							oldprev = $('#o_sheng_'+count+"_"+i).attr('data-oldprev'),
+							oldcity = $('#o_shi_'+count+"_"+i).attr('data-oldcity'),
+							oldcounty = $('#o_xian_'+count+"_"+i).attr('data-oldcounty');
+						oldprev = (oldprev=='')?'':oldprev+'_';
+						oldcity = (oldcity=='')?'':oldcity+'_';
+						oldcounty = (oldcounty=='')?'':oldcounty+'_';
+						var oldArea = oldprev+oldcity+oldcounty;
+						oldArea = oldArea.substr(0,oldArea.length-1);
+						$('#gazetteersOldArea_'+count+"_"+i).val(oldArea) // 旧方志地区
+						$('#gazetteersOldStartTime_'+count+"_"+i).val(oldStartTime) // 旧方志开始时间
+						$('#gazetteersOldEndTime_'+count+"_"+i).val(oldEndTime) // 旧方志结束时间
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_Old')
+					}else {
+						gazetteerType('FZ_Old',count,i)
+						$('#gazetteers_type_'+count+"_"+i).val('')
+						$('#gazetteersOldStartTime_'+count+'_'+i).val('')
+						$('#gazetteersOldEndTime_'+count+'_'+i).val('')
+						$('#gazetteersOldArea_'+count+'_'+i).val('')
+					}
+					
+					if($('#newLocalType_'+count+"_"+i).is(':checked')) {
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_New')
+					}
+					if ($('#oldLocalType_'+count+"_"+i).is(':checked')) {
+						$('#gazetteers_type_'+count+"_"+i).val('FZ_Old')
+					}
+					if($('#newLocalType_'+count+"_"+i).is(':checked')&&$('#oldLocalType_'+count+"_"+i).is(':checked')) {
+						var strVal = 'FZ_New;FZ_Old'
+						$('#gazetteers_type_'+count+"_"+i).val(strVal)
+						var oldStartTime = $('#old_startTime_'+count+"_"+i).attr('data-oldstarttime'),
+							oldEndTime = $('#old_endTime_'+count+"_"+i).attr('data-oldendtime'),
+							oldprev = $('#o_sheng_'+count+"_"+i).attr('data-oldprev'),
+							oldcity = $('#o_shi_'+count+"_"+i).attr('data-oldcity'),
+							oldcounty = $('#o_xian_'+count+"_"+i).attr('data-oldcounty');
+						oldprev = (oldprev=='')?'':oldprev+'_';
+						oldcity = (oldcity=='')?'':oldcity+'_';
+						oldcounty = (oldcounty=='')?'':oldcounty+'_';
+						var oldArea = oldprev+oldcity+oldcounty;
+						oldArea = oldArea.substr(0,oldArea.length-1);
+						$('#gazetteersOldArea_'+count+"_"+i).val(oldArea) // 旧方志地区
+						$('#gazetteersOldStartTime_'+count+"_"+i).val(oldStartTime) // 旧方志开始时间
+						$('#gazetteersOldEndTime_'+count+"_"+i).val(oldEndTime) // 旧方志结束时间
+					}
+					
+					if((!$('#newLocalType_'+count+"_"+i).is(':checked'))&&(!$('#oldLocalType_'+count+"_"+i).is(':checked'))) {
+						$('#gazetteers_type_'+count+"_"+i).val('')
+						gazetteerType('FZ_New',count,i)
+						gazetteerType('FZ_Old',count,i)
+						$('#gazetteersArea_'+count+'_'+i).val('')
+						$('#gazetteersAlbum_'+count+'_'+i).val('')
+						$('#gazetteersLevel_'+count+'_'+i).val('')
+						$('#gazetteersOldArea_'+count+'_'+i).val('')
+						$('#gazetteersStartTime_'+count+'_'+i).val('')
+						$('#gazetteersEndTime_'+count+'_'+i).val('')
+						$('#gazetteersOldStartTime_'+count+'_'+i).val('')
+						$('#gazetteersOldEndTime_'+count+'_'+i).val('')
+					}
+					if($("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+						$('#gazetteersId_'+count+'_'+i).val('')
+						$('#gazetteersId_'+count+'_'+i).text('')
+						$('#itemId_'+count+'_'+i).val('')
+						$('#itemId_'+count+'_'+i).text('')
+						$('#gazetteers_TopId_'+count+'_'+i).val('')
+						$('#gazetteers_BottomItem_'+count+'_'+i).val('')
+					}else {
+						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
+						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
+					}
+					layer.closeAll();	
+				}
+//				$('.checkType_'+count+'_'+i).text('')
+				if(!$("#localchronicles_"+count+"_"+i+" .selectType input").is(':checked')) {
+					$('#errorTime_'+count+'_'+i).text('')
+					$('#errorOldTime_'+count+'_'+i).text('')
+					layer.closeAll();	
+				}
+		    },
+		    cancel: function() {
+		    	$('.newSelect select').addClass("noChecked"); 
+		    	$('#errorTime_'+count+'_'+i).html('')
+		    	$('#errorOldTime_'+count+'_'+i).html('')
+		    	$('#gazetteersId_'+count+'_'+i).val('')
+		    	$('#itemId_'+count+'_'+i).val('')
+		    	$('.checkType_'+count+'_'+i).text('')
+				layer.closeAll();	
 		    }
 		});
 	}else{

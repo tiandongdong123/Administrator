@@ -1,5 +1,7 @@
 package com.wf.service.impl;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,12 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wanfangdata.setting.Setting;
 import com.wf.bean.JudgeMessageTitleParameter;
 import com.wf.bean.MessageSearchRequest;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.html.S;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,17 @@ import com.wf.service.MessageService;
 import com.xxl.conf.core.XxlConfClient;
 @Service
 public class MessageServiceImpl implements MessageService {
+	private String UNSPECIAL = "<li><a href=\"/informationController/getDetails.do?type=${type}&amp;" +
+			"id=${id}\" target=\"_blank\" title=\"${title}\">\n" +
+			" ${showTitle}</a>";
+	private String SPECIAL = "<li><a href=\"${linkAddress}\" target=\"_blank\" title=\"${title}\">\n" +
+			" ${showTitle}</a>";
+	private String IMG = "<img style=\"margin-left: 10px;\" src=\"/page/images/new.gif\">";
+	private String LI = "</li>";
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final Logger log = Logger.getLogger(MessageServiceImpl.class);
+	private static final int SHOWIMAGE = 4;
+
 	@Autowired
 	MessageMapper dao;
 
@@ -181,14 +196,40 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);//获取发布未置顶状态资讯
                 list.addAll(ls);//合并到发布置顶状态集合中
             }
+			StringBuffer specials = new StringBuffer();
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("ztID", i, m.getId());//发布到redis  根据i大小进行排列，i越大存储的m.getId()越在后面
                 RedisUtil.hset("special", m.getId(), object);//special中添加m.getId(), object键值对
+				// 存储资讯的id、title并且只获得3个用作展示
+                if (i < 3) {
+                    if (m.getLinkAddress() != null) {
+                        specials.append(SPECIAL.replace("${linkAddress}", m.getLinkAddress())
+                                .replace("${title}", m.getTitle())
+                                .replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                                specials.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
+                        }
+                        specials.append(LI);
+                    }
+                }
             }
-        }else if("科技动态".equals(colums)){
+            // 专题聚焦存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (specials.length() > 0) {
+					Setting.set("Home/Subject", specials.toString());
+				}
+			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + specials.toString(), e);
+			}
+
+		}else if("科技动态".equals(colums)){
         	RedisUtil.del("hyID");
         	RedisUtil.del("conference");
             if(topSize<3){
@@ -196,13 +237,38 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);
                 list.addAll(ls);
             }
+			StringBuffer conferences = new StringBuffer();
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("hyID", i, m.getId());
                 RedisUtil.hset("conference", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						conferences.append(UNSPECIAL.replace("${type}", "conference")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                                conferences.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
+                        }
+                        conferences.append(LI);
+					}
+				}
             }
+			// 科技动态存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (conferences.length() > 0) {
+					Setting.set("Home/TechNews", conferences.toString());
+				}
+			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + conferences.toString(), e);
+			}
         }else if("会议速递".equals(colums) || "基金申报".equals(colums)){
         	RedisUtil.del("jjID");
             RedisUtil.del("fund");
@@ -211,13 +277,39 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums2(map);
                 list.addAll(ls);
             }
+			StringBuffer funds = new StringBuffer();
+            String fund = UNSPECIAL;
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("jjID", i, m.getId());
                 RedisUtil.hset("fund", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						funds.append(fund.replace("${type}", "fund")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                                funds.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
+                        }
+                        funds.append(LI);
+					}
+				}
             }
+			// 会议速递存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (funds.length() > 0) {
+					Setting.set("Home/Fund", funds.toString());
+				}
+			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + funds.toString(), e);
+			}
         }else if("万方资讯".equals(colums)){
         	RedisUtil.del("kkID");
         	RedisUtil.del("activity");
@@ -226,13 +318,38 @@ public class MessageServiceImpl implements MessageService {
                 List<Object> ls = dao.selectBycolums(map);
                 list.addAll(ls);
             }
+			StringBuffer activities = new StringBuffer();
             for(int i = 0;i < list.size();i++){
                 Message m = (Message) list.get(i);
                 m.setContent("");
                 String object = JSONObject.fromObject(m).toString();
                 RedisUtil.zadd("kkID", i, m.getId());
                 RedisUtil.hset("activity", m.getId(), object);
+				if (i < 3) {
+					if (m.getLinkAddress() != null) {
+						activities.append(UNSPECIAL.replace("${type}", "activity")
+								.replace("${id}",m.getId())
+								.replace("${title}", m.getTitle())
+								.replace("${showTitle}", m.getTitle()));
+                        try {
+                            if ((new Date().getTime() - sdf.parse(m.getCreateTime()).getTime()) / (1000 * 3600 * 24) < SHOWIMAGE) {
+                                activities.append(IMG);
+                            }
+                        } catch (ParseException e) {
+                            log.error("更改资讯信息判断日期出错！出错资讯id：" + m.getId(), e);
+                        }
+                        activities.append(LI);
+					}
+				}
             }
+			// 万方资讯存储redis后修改zk用于智搜首页快看展示
+			try {
+				if (activities.length() > 0) {
+					Setting.set("Home/News", activities.toString());
+				}
+			} catch (IOException e) {
+				log.error("更改资讯信息判断日期出错！出错资讯zk：" + activities.toString(), e);
+			}
         }
 
 	}

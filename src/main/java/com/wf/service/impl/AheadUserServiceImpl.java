@@ -841,6 +841,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(rlDTO!=null && StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
@@ -892,6 +916,30 @@ public class AheadUserServiceImpl implements AheadUserService{
 			delUserSetting(dto,com);
 			for(ResourceLimitsDTO rlDTO : list){
 				if(StringUtils.isNotBlank(rlDTO.getResourceid())){
+					if(rlDTO.getResourceid().equals("DB_PEDB")){
+						ProjectResources pr1 = new ProjectResources();
+						pr1.setId(GetUuid.getId());
+						pr1.setUserId(com.getUserId());
+						pr1.setProjectId(dto.getProjectid());
+						pr1.setResourceId("DB_CSPD");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr1.setProductid(Arrays.toString(new String[]{"Income.PeriodicalFulltext"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr1);
+						addUserSetting(dto,rlDTO,com);
+						
+						ProjectResources pr2 = new ProjectResources();
+						pr2.setId(GetUuid.getId());
+						pr2.setUserId(com.getUserId());
+						pr2.setProjectId(dto.getProjectid());
+						pr2.setResourceId("DB.IsticPeriodical");
+						if(rlDTO.getProductid()!=null&&rlDTO.getProductid().length>0){					
+							pr2.setProductid(Arrays.toString(new String[]{"Income.IsticPeriodical"}));//rlDTO.getProductid()
+						}
+						projectResourcesMapper.insert(pr2);
+						addUserSetting(dto,rlDTO,com);
+						continue;
+					}
 					ProjectResources pr = new ProjectResources();
 					pr.setId(GetUuid.getId());
 					pr.setUserId(com.getUserId());
@@ -1025,12 +1073,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 						}
 					}
 				}else{//网络包库调用接口
-					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
-					if(msg==1){
-						log.info(com.getUserId()+"包库接口调用成功");
-					}else{
-						log.info(com.getUserId()+"包库更新失败");
-					}
+					//					int msg=WebServiceUtils.CreateNonAccountingUser(obj, 1);
+					//					if(msg==1){
+					//						log.info(com.getUserId()+"包库接口调用成功");
+					//					}else{
+					//						log.info(com.getUserId()+"包库更新失败");
+					//					}
 				}
 				//wfks_user_setting表添加标准配置参数
 				WfksUserSetting setting=new WfksUserSetting();
@@ -1100,12 +1148,60 @@ public class AheadUserServiceImpl implements AheadUserService{
 
 		String gId = formatId(dto.getGazetteersId());
 		String itemId = formatId(dto.getItemId());
+		String gNType = dto.getGazetteersType();
 		String gArea = dto.getGazetteersArea();
 		String gAlbum = dto.getGazetteersAlbum();
 		String gLevel = dto.getGazetteersLevel();
+		String gStartTime=dto.getGazetteersStartTime();
+		String gEndTime=dto.getGazetteersEndTime();
+		String gOType=dto.getGazetteersOldType();
+		String gOArea=dto.getGazetteersOldArea();
+		String gOStartTime=dto.getGazetteersOldStartTime();
+		String gOEndTime=dto.getGazetteersOldEndTime();
+		String gType=null; 
+		String localType=dto.getLocalType();
+		if(StringUtils.isNoneEmpty(localType)){
+			if(localType.contains("FZ_New")&&StringUtils.isEmpty(gNType)){
+				gNType="FZ_New";
+			}
+			if(localType.contains("FZ_Old")&&StringUtils.isEmpty(gOType)){
+				gOType="FZ_Old";
+			}
+		}
+		if(StringUtils.isBlank(gNType)){
+			gStartTime=null;
+			gEndTime=null;
+			gArea=null;
+			gAlbum=null;
+		}
+		if(StringUtils.isBlank(gOType)){
+			gOStartTime=null;
+			gOEndTime=null;
+			gOArea=null;
+		}
+		int igst=StringUtils.isBlank(gStartTime)?0:Integer.parseInt(gStartTime);
+		int iget=StringUtils.isBlank(gEndTime)?0:Integer.parseInt(gEndTime);
+		int igost=StringUtils.isBlank(gOStartTime)?0:Integer.parseInt(gOStartTime);
+		int igoet=StringUtils.isBlank(gOEndTime)?0:Integer.parseInt(gOEndTime);
+		if(igst > 0 && iget > 0 && (igst > iget)){
+			return null;
+		}
+		if(igost > 0 && igoet > 0 && (igost>igoet)){
+			return null;
+		}
+		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
+			if(StringUtils.isEmpty(gNType)){
+				gType=gOType;
+			}else{
+				gType=gNType;
+			}
+		}
 		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
 				|| StringUtils.isNotEmpty(gArea) || StringUtils.isNotEmpty(gAlbum)
-				|| StringUtils.isNotEmpty(gLevel)) {
+				|| StringUtils.isNotEmpty(gLevel)|| StringUtils.isNotEmpty(gStartTime)
+				|| StringUtils.isNotEmpty(gEndTime)|| StringUtils.isNotEmpty(gOStartTime)
+				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOArea)
+				|| StringUtils.isNotEmpty(gType)) {
 			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
 				if (StringUtils.isNotEmpty(gId)) {
 					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
@@ -1120,12 +1216,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gArea)) {
 					addStringToTerms("gazetteers_area", "Equal", gArea, Terms, "String");
 				}
-				String gType = dto.getGazetteersType();
+
 				if (StringUtils.isNotEmpty(gType)) {
 					addStringToTerms("gazetteers_type", "Equal", gType, Terms, "String");
 				}
-				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gType))) {
+				if (StringUtils.isNotEmpty(gLevel)&&(StringUtils.isNotEmpty(gArea)||StringUtils.isNotEmpty(gAlbum)||StringUtils.isNotEmpty(gNType))) {
 					addStringToTerms("gazetteers_level", "Equal", gLevel, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gStartTime)) {
+					addStringToTerms("gazetteers_startTime", "Equal", gStartTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gEndTime)) {
+					addStringToTerms("gazetteers_endTime", "Equal", gEndTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOArea)) {
+					addStringToTerms("gazetteers_old_area", "Equal", gOArea, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOStartTime)) {
+					addStringToTerms("gazetteers_old_startTime", "Equal", gOStartTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOEndTime)) {
+					addStringToTerms("gazetteers_old_endTime", "Equal", gOEndTime, Terms, "String");
 				}
 			}
 		}
@@ -1588,7 +1699,65 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(map!=null&&map.get("sourceCode")!=""){				
 				set.add(map.get("sourceCode").toString());
 			}
+		} 
+		if(set.contains("DB.IsticPeriodical")&&set.contains("DB_CSPD")){
+			set.remove("DB.IsticPeriodical");
+			set.add("DB_PEDB");
 		}
+		//对资源余额、限时数据库进行排序
+				if(set.contains("DB_CSPD")
+						&&set.contains("DB_CCPD")
+						&&set.contains("DB_CDDB")
+						&&set.contains("DB_WFSD")
+						&&set.contains("DB_WFPD")
+						&&set.contains("DB_CLRD")
+						&&set.contains("DB_CSTAD")
+						&&set.contains("DB_CLGD")
+						&&set.contains("DB_Video")
+						&&set.contains("DB_PEDB")
+						&&set.contains("InstitutionDigest")
+						&&set.contains("ExpertDigest")){
+					List<String> listDB=new ArrayList<String>();
+					listDB.add("DB_CSPD");
+					listDB.add("DB_PEDB");
+					listDB.add("DB_CDDB");
+					listDB.add("DB_CCPD");
+					listDB.add("DB_WFPD");
+					listDB.add("DB_WFSD");
+					listDB.add("DB_CLRD");
+					listDB.add("DB_CLGD");
+					listDB.add("DB_CSTAD");
+					listDB.add("InstitutionDigest");
+					listDB.add("ExpertDigest");
+					listDB.add("DB_Video");
+					//循环Set集合查询资源库信息
+					for(String se : listDB){
+						Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
+						if(m!=null && m.get("productSourceCode")!=""){
+							List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+							if(se.equals("DB_PEDB")){
+								List<Map<String,Object>> listdb =new ArrayList<Map<String,Object>>();
+								Map<String, Object> mapDB1=new HashMap<String, Object>();
+								Map<String, Object> mapDB2=new HashMap<String, Object>();
+								mapDB1.put("sourceCode", "DB.IsticPeriodical");
+								mapDB1.put("name", "中信所中文期刊");
+								mapDB1.put("rid", "Income.IsticPeriodical");
+								mapDB2.put("sourceCode", "DB_CSPD");
+								mapDB2.put("name", "万方期刊全文");
+								mapDB2.put("rid", "Income.PeriodicalFulltext");
+								listdb.add(mapDB1);
+								listdb.add(mapDB2);
+								rp=listdb;
+							}
+							if(m.get("resType")==null){
+								m.put("resType", "");
+							}
+							m.put("rp", rp);
+							list.add(m);
+						}
+					}
+					return list;
+				}
 		//循环Set集合查询资源库信息
 		for(String se : set){
 			Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
@@ -1739,12 +1908,86 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
+				int count=0;
+				for (Map<String, Object> map2 : plList) {
+					if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
+						for (JSONObject jsonObject : conlist) {
+							if(jsonObject.get("Field").equals("gazetteers_type")
+							 ||jsonObject.get("Field").equals("gazetteers_id")
+							 ||jsonObject.get("Field").equals("item_id")){
+								count++;
+							}
+						}
+						//判断gazetteers_id和item_id都为空的情况下
+						if(count==0){
+							JSONObject json=new JSONObject();
+							json.put("Field", "gazetteers_type");
+							json.put("Logic", "AND");
+							json.put("Value", "FZ_New;FZ_Old");
+							json.put("ValueType", "String");
+							json.put("Verb", "Equal");
+							conlist.add(json);
+							JSONObject json1=new JSONObject();
+							json1.put("Terms", conlist);
+							map2.put("contract", json1);
+
+						}
+					}
+				}
+				int dbCount=0;
+						for (Map<String, Object> map1 : plList) {
+							if(map1.get("payChannelid").equals("GBalanceLimit")&&map1.get("productSourceCode").equals("DB.IsticPeriodical")){
+								plList.remove(map1);
+								HashMap<String, Object> m=new HashMap<String, Object>();
+								m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+								m.put("productSourceCode", "DB_PEDB");
+								m.put("tableName", "期刊增强库");
+								m.put("payChannelid", "GBalanceLimit");
+								plList.add(m);
+								dbCount++;
+								break;
+							}
+						}
+						for (Map<String, Object> map1 : plList) {
+							if(map1.get("payChannelid").equals("GTimeLimit")&&map1.get("productSourceCode").equals("DB.IsticPeriodical")){
+								plList.remove(map1);
+								HashMap<String, Object> m=new HashMap<String, Object>();
+								m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+								m.put("productSourceCode", "DB_PEDB");
+								m.put("tableName", "期刊增强库");
+								m.put("payChannelid", "GTimeLimit");
+								plList.add(m);
+								dbCount++;
+								break;
+							}
+						}
+						for (Map<String, Object> map2 : plList) {
+							if(map2.containsKey("productSourceCode")&&map2.get("productSourceCode").equals("DB_CSPD")){
+								dbCount++;
+							}
+						}
+						if(dbCount>=2){
+							for (Map<String, Object> map3 : plList) {
+								if(map3.get("productSourceCode").equals("DB_CSPD")&&!map3.containsKey("contract")){
+									plList.remove(map3);
+									break;
+								}
+							}
+						}
 				List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库
 				if(plList.size()>0){
 					for(Map<String, Object> d : data){
 						for(Map<String, Object> plmap : plList){
 							if(d.get("productSourceCode").equals(plmap.get("productSourceCode"))){
-								d.put("checked", "checked");
+								if(plmap.get("productSourceCode").equals("DB_WFSD")){
+									//判断标准是否选择了详情
+									if(plmap.containsKey("contract")){
+										d.put("checked", "checked");
+									}
+								}else{
+									d.put("checked", "checked");
+								}
 								if(plmap.get("contract")!=null && plmap.get("contract")!=""){
 									d.put("contract", JSONObject.fromObject(plmap.get("contract")).getJSONArray("Terms"));
 								}
@@ -2070,6 +2313,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public List<Map<String, Object>> getProjectInfo(String userId){
 		//通过userId查询详情限定列表
+
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
 		//判断项目ID是存在
 		List<PayChannelModel> list_ = this.purchaseProject();
@@ -2146,12 +2390,85 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
+			int count=0;
+			for (Map<String, Object> map2 : plList) {
+				if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
+					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
+					for (JSONObject jsonObject : conlist) {
+						if(jsonObject.get("Field").equals("gazetteers_type")
+						 ||jsonObject.get("Field").equals("gazetteers_id")
+						 ||jsonObject.get("Field").equals("item_id")){
+							count++;
+						}
+					}
+					if(count==0){
+						JSONObject json=new JSONObject();
+						json.put("Field", "gazetteers_type");
+						json.put("Logic", "AND");
+						json.put("Value", "FZ_New;FZ_Old");
+						json.put("ValueType", "String");
+						json.put("Verb", "Equal");
+						conlist.add(json);
+						JSONObject json1=new JSONObject();
+						json1.put("Terms", conlist);
+						map2.put("contract", json1);
+					}
+				}   
+			}
+			int dbCount=0;
+			for (Map<String, Object> map : plList) {
+				if(map.get("payChannelid").equals("GBalanceLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GBalanceLimit");
+					plList.add(m);
+					dbCount++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.get("payChannelid").equals("GTimeLimit")&&map.get("productSourceCode").equals("DB.IsticPeriodical")){
+					plList.remove(map);
+					HashMap<String, Object> m=new HashMap<String, Object>();
+					m.put("product_id", Arrays.toString(new String[]{"Income.IsticPeriodical","Income.PeriodicalFulltext"}));
+					m.put("productSourceCode", "DB_PEDB");
+					m.put("tableName", "期刊增强库");
+					m.put("payChannelid", "GTimeLimit");
+					plList.add(m);
+					dbCount++;
+					break;
+				}
+			}
+			for (Map<String, Object> map : plList) {
+				if(map.containsKey("productSourceCode")&&map.get("productSourceCode").equals("DB_CSPD")){
+					dbCount++;
+				}
+			}
+			if(dbCount>=2){
+				for (Map<String, Object> map : plList) {
+					if(map.get("productSourceCode").equals("DB_CSPD")&&!map.containsKey("contract")){
+						plList.remove(map);
+						break;
+					}
+				}
+			}
+			
 			List<Map<String, Object>> data = this.selectListByRid(pay.getProductDetail());//通过产品id反查资源库 
 			if(plList.size()>0){				
 				for(Map<String, Object> d : data){
 					for(Map<String, Object> plmap : plList){
 						if(d.get("productSourceCode").equals(plmap.get("productSourceCode"))){
+							if(plmap.get("productSourceCode").equals("DB_WFSD")){
+								//判断标准是否选择了详情
+								if(plmap.containsKey("contract")){
+									d.put("checked", "checked");
+								} 
+							}else{
 							d.put("checked", "checked");
+							}
 							if(plmap.get("contract")!=null && plmap.get("contract")!=""){
 								d.put("contract", JSONObject.fromObject(plmap.get("contract")).getJSONArray("Terms"));
 							}
@@ -2270,7 +2587,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				i = personMapper.updateRegisterAdmin(per);
 			} else {
 				i = personMapper.addRegisterAdmin(per);
-			}
+			} 
 		}
 		return i;
 	}
@@ -2879,6 +3196,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] tableGazetteersAlbum=null;
 			String tableGazetteersType=null;
 			String tableGazetteersLevel=null;
+
+			String tableGazetteersStartTime=null;
+			String tableGazetteersEndTime=null;
+			String tableGazetteersOldArea=null;
+			String tableGazetteersOldStartTime=null;
+			String tableGazetteersOldEndTime=null;
 			//页面上的值
 			String gazetteersType=null;
 			String gazetteersLevel=null;
@@ -2886,6 +3209,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 			String[] itemId=null;
 			String gazetteersArea=null;
 			String[] gazetteersAlbum=null;
+
+			String gazetteersOldType=null;
+			String gazetteersStartTime=null;
+			String gazetteersEndTime=null;
+			String gazetteersOldArea=null;
+			String gazetteersOldStartTime=null;
+			String gazetteersOldEndTime=null;
 
 			if(StringUtils.isNoneEmpty(rld.getGazetteersType())){
 				gazetteersType=rld.getGazetteersType();
@@ -2906,11 +3236,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 				String json=rld.getGazetteersAlbum();
 				gazetteersAlbum=json.split(";");
 			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldType())){
+				gazetteersOldType=rld.getGazetteersOldType();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersStartTime())){
+				gazetteersStartTime=rld.getGazetteersStartTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersEndTime())){
+				gazetteersEndTime=rld.getGazetteersEndTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldArea())){
+				gazetteersOldArea=rld.getGazetteersOldArea();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldStartTime())){
+				gazetteersOldStartTime=rld.getGazetteersOldStartTime();
+			}
+			if(StringUtils.isNoneEmpty(rld.getGazetteersOldEndTime())){
+				gazetteersOldEndTime=rld.getGazetteersOldEndTime();
+			}
+			if(gazetteersType!=null&&gazetteersOldType!=null){
+				gazetteersType=null;
+			}else if(gazetteersType==null&&gazetteersOldType!=null){
+				gazetteersType=gazetteersOldType;
+			}
 			if(gazetteersType==null&&
 					gazetteerId==null&&
 					itemId==null&&
 					gazetteersArea==null&&
-					gazetteersAlbum==null){
+					gazetteersAlbum==null&&
+					gazetteersStartTime==null&&
+					gazetteersEndTime==null&&
+					gazetteersOldArea==null&&
+					gazetteersOldType==null&&
+					gazetteersOldStartTime==null&&
+					gazetteersOldEndTime==null
+					){
 				boo=true;
 			}
 			for(int i=0;i<conlist.size();i++){
@@ -2933,12 +3293,28 @@ public class AheadUserServiceImpl implements AheadUserService{
 					tableGazetteersArea=(String) conlist.get(i).get("Value");
 				}
 				if(conlist.get(i).get("Field").equals("gazetteers_album")){
-
 					String jsona=(String) conlist.get(i).get("Value");
 					tableGazetteersAlbum=jsona.split(";");
 				}
+				if(conlist.get(i).get("Field").equals("gazetteers_startTime")){
+					tableGazetteersStartTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_endTime")){
+					tableGazetteersEndTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_area")){
+					tableGazetteersOldArea=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_startTime")){
+					tableGazetteersOldStartTime=(String) conlist.get(i).get("Value");
+				}
+				if(conlist.get(i).get("Field").equals("gazetteers_old_endTime")){
+					tableGazetteersOldEndTime=(String) conlist.get(i).get("Value");
+				}
+
 			}
 			boolean bao=false;
+			//新方志地区对比
 			if(tableGazetteersArea!=null && gazetteersArea!=null){
 				String[] tableArea=tableGazetteersArea.split("_");
 				String[] area=gazetteersArea.split("_");
@@ -2947,6 +3323,18 @@ public class AheadUserServiceImpl implements AheadUserService{
 						bao=area[area.length-1].equals(tableArea[area.length-1]);
 					}else{
 						bao=area[tableArea.length-1].equals(tableArea[tableArea.length-1]);
+					}
+				}
+			}
+			//旧方志地区对比  
+			if(tableGazetteersOldArea!=null && gazetteersOldArea!=null){
+				String[] tableOldArea=tableGazetteersOldArea.split("_");
+				String[] oldArea=gazetteersOldArea.split("_");
+				if(tableOldArea[0].equals(oldArea[0])){
+					if(tableOldArea.length>=oldArea.length){
+						bao=oldArea[oldArea.length-1].equals(tableOldArea[oldArea.length-1]);
+					}else{
+						bao=oldArea[tableOldArea.length-1].equals(tableOldArea[tableOldArea.length-1]);
 					}
 				}
 			}
@@ -2975,21 +3363,41 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}else{
 				//判断是否有冲突
-				boolean zyfl=false;
-				boolean dq=bao;
-				boolean sjfl=false;
-				boolean zjfl=false;
+				boolean zyfl=false;  //资源分类
+				boolean dq=bao;      //地区
+				boolean sjfl=false;  //数据分类
+				boolean zjfl=false;  //专辑分类
+				boolean zygxsj=false; //资源更新时间
 				if(tableGazetteersType==null||gazetteersType==null){
 					zyfl=true;
 				}
 				if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.equals(gazetteersType)){
 					zyfl=true;
 				}
-				
+				//判断新方志时间是否冲突
+				int itgst=StringUtils.isBlank(tableGazetteersStartTime)?0:Integer.parseInt(tableGazetteersStartTime);
+				int itget=StringUtils.isBlank(tableGazetteersEndTime)?9999:Integer.parseInt(tableGazetteersEndTime);
+				int igst=StringUtils.isBlank(gazetteersStartTime)?0:Integer.parseInt(gazetteersStartTime);
+				int iget=StringUtils.isBlank(gazetteersEndTime)?9999:Integer.parseInt(gazetteersEndTime);
+				if(iget>=itgst&&igst<=itget){
+					zygxsj=true;
+				}
+				//判断旧方志时间是否冲突
+				int itgost=StringUtils.isBlank(tableGazetteersOldStartTime)?0:Integer.parseInt(tableGazetteersOldStartTime);
+				int itgoet=StringUtils.isBlank(tableGazetteersOldEndTime)?9999:Integer.parseInt(tableGazetteersOldEndTime);
+				int igost=StringUtils.isBlank(gazetteersOldStartTime)?0:Integer.parseInt(gazetteersOldStartTime);
+				int igoet=StringUtils.isBlank(gazetteersOldEndTime)?9999:Integer.parseInt(gazetteersOldEndTime);
+				if(igoet>=itgost&&igost<=itgoet){
+					zygxsj=true;
+				}
+
 				if(tableGazetteersLevel.equals(gazetteersLevel)){
 					sjfl=true;
+					if(tableGazetteersAlbum==null||gazetteersAlbum==null){
+						zjfl=true;
+					}
 				}
-				if(tableGazetteersAlbum!=null && gazetteersAlbum!=null){
+				if(sjfl&&tableGazetteersAlbum!=null && gazetteersAlbum!=null){
 					for(int y=0;y<tableGazetteersAlbum.length;y++){
 						for(int t=0;t<gazetteersAlbum.length;t++){
 							if(tableGazetteersAlbum[y].equals(gazetteersAlbum[t])){
@@ -3002,14 +3410,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(tableGazetteersArea==null || gazetteersArea==null){
 					dq=true;
 				}
-				
-				if(zyfl&&dq&&sjfl&&zjfl){
+				if(zygxsj||dq||zjfl){
 					boo=true;
-				}
-				if(tableGazetteersAlbum==null||gazetteersAlbum==null){
-					if(zyfl&&dq&&sjfl){
-						boo=true;
-					}
 				}
 			}
 		}
@@ -3054,12 +3456,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 					for(int y=0;y<value.length;y++){
 						if(resource!=null){
-						for(int t=0;t<resource.length;t++){
-							if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
-								boo=true;
-								break;
+							for(int t=0;t<resource.length;t++){
+								if(resource[t].startsWith(value[y])||value[y].startsWith(resource[t])){
+									boo=true;
+									break;
+								}
 							}
-						}
 						}
 					}
 				}
@@ -3071,13 +3473,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			System.out.println("rld="+rld);
 			//存放查询出来的值
 			String[] tableStandardTypes=null;
-			String[] tableFullIP=null;
-			String[] tableTime=null;
 			//存放页面比较值
 			String[] standardTypes=null;
-			String[] fullIP=null;
-			String startTime=null;
-			String endTime=null;
 
 			for(int i=0;i<conlist.size();i++){
 				if(conlist.get(i).get("Field").equals("standard_types")){
@@ -3089,30 +3486,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				if(StringUtils.isNoneEmpty(rld.getStandardTypes())){
 					standardTypes=rld.getStandardTypes();
-				}
-
-				if(conlist.get(i).get("Field").equals("full_IP_range")){
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					tableFullIP=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						tableFullIP[m]=(String) json.get(m);
+					if(standardTypes.length==0){
+						String[] str=new String[]{"WFLocal","质检出版社"};
+						standardTypes=str;
+					}
+					for (String string : standardTypes) {
+						for (int j = 0; j < tableStandardTypes.length; j++) {
+							if(tableStandardTypes[j].equals(string)){
+								boo=true;
+								break;
+							}
+						}
 					}
 				}
-				if(StringUtils.isNoneEmpty(rld.getFullIpRange())){
-					fullIP=rld.getFullIpRange();
-				}
-				if(conlist.get(i).get("Field").equals("limited_parcel_time")&&
-						StringUtils.isNoneEmpty(rld.getLimitedParcelEndtime())&&
-						StringUtils.isNoneEmpty(rld.getLimitedParcelStarttime())){
 
-					JSONArray json=(JSONArray) conlist.get(i).get("Value");
-					tableTime=new String[json.size()];
-					for(int m=0;m<json.size();m++){
-						tableTime[m]=(String) json.get(m);
-					}
-					startTime=rld.getLimitedParcelStarttime();
-					endTime=rld.getLimitedParcelEndtime();
-				}
 			}
 			//判断行业标准是否冲突
 			for(int i=0;i<tableStandardTypes.length;i++){
@@ -3127,54 +3514,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 							break;
 						}
 					}
-				}
-			}
-
-			if(tableTime!=null && startTime!=null && endTime!=null){
-				String tableStartTime=tableTime[0];
-				String tableEndTime=tableTime[1];
-				try {
-					SimpleDateFormat dts = new SimpleDateFormat("yyyy-MM-dd");
-					Date ddts=dts.parse(tableStartTime);
-					SimpleDateFormat dte = new SimpleDateFormat("yyyy-MM-dd");
-					Date ddte=dte.parse(tableEndTime);
-					SimpleDateFormat ds = new SimpleDateFormat("yyyy-MM-dd");
-					Date dds=ds.parse(startTime);	
-					SimpleDateFormat de = new SimpleDateFormat("yyyy-MM-dd");
-					Date dde=de.parse(endTime);
-
-					if(dds.getTime()<=ddte.getTime()&&dde.getTime()>=ddts.getTime()){
-
-						// ip查重
-						if(tableFullIP!=null && fullIP!=null){
-							for(int i=0;i<tableFullIP.length;i++){
-								for(int y=0;y<fullIP.length;y++){
-									String tableip=tableFullIP[i];
-									String ip=fullIP[y];
-									//开始ip
-									String tbeginIp = trans(tableip.substring(0, tableip.indexOf("-")));
-									//结束ip
-									String tendIp = trans(tableip.substring(tableip.indexOf("-")+1, tableip.length()));
-
-									//开始ip
-									String beginIp = trans(ip.substring(0, ip.indexOf("-")));
-									//结束ip
-									String endIp = trans(ip.substring(ip.indexOf("-")+1, ip.length()));
-
-									long ltbeginIp=IPConvertHelper.IPToNumber(tbeginIp);
-									long ltendIp=IPConvertHelper.IPToNumber(tendIp);
-									long lbeginIp=IPConvertHelper.IPToNumber(beginIp);
-									long lendIpIp=IPConvertHelper.IPToNumber(endIp);
-									if(lbeginIp<=ltendIp&&lendIpIp>=ltbeginIp){
-										boo=true;
-										break;
-									}
-								}
-							}
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		}
