@@ -5,6 +5,16 @@ $(function(){
 
 //分页显示
 function unitpage(curr){
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
     $.getJSON('../unit/getunit.do', {
         pagenum: curr,//向服务端传的参数
         pagesize :10
@@ -12,7 +22,16 @@ function unitpage(curr){
     	html="";
     for(var i =0;res.pageRow[i];i++){
     	id = 10*(curr-1)+i+1;
-    	html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].id+" ></td> <td>"+id+"</td><td>"+res.pageRow[i].unitName+"</td><td>"+res.pageRow[i].unitCode+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateunit("+res.pageRow[i].id+",'"+res.pageRow[i].unitName+"','"+res.pageRow[i].unitCode+"')\">修改</button><button type='button' class='btn btn-primary' onclick=\"deleteunit("+res.pageRow[i].id+")\">删除</button></td></tr>";   	
+    	if(purview.indexOf("F252")!=-1){
+    		html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].id+" ></td> <td>"+id+"</td><td>"+res.pageRow[i].unitName+"</td><td>"+res.pageRow[i].unitCode+"</td><td><button type='button' class='btn btn-primary' onclick=\"updateunit("+res.pageRow[i].id+",'"+res.pageRow[i].unitName+"','"+res.pageRow[i].unitCode+"')\">修改</button>";
+    	}else{
+    		html+="<tr><td><input type='checkbox' name='ids' value="+res.pageRow[i].id+" ></td> <td>"+id+"</td><td>"+res.pageRow[i].unitName+"</td><td>"+res.pageRow[i].unitCode+"</td><td><button style='display:none' type='button' class='btn btn-primary' onclick=\"updateunit("+res.pageRow[i].id+",'"+res.pageRow[i].unitName+"','"+res.pageRow[i].unitCode+"')\">修改</button>";
+    	}
+    	if(purview.indexOf("F253")!=-1){
+    		html+="<button type='button' class='btn btn-primary' onclick=\"deleteunit("+res.pageRow[i].id+")\">删除</button></td></tr>"; 
+    	}else{
+    		html+="<button style='display:none' type='button' class='btn btn-primary' onclick=\"deleteunit("+res.pageRow[i].id+")\">删除</button></td></tr>"; 
+    	}
     }
         document.getElementById('unitbody').innerHTML = html;
         var totalRow = res.pageTotal;

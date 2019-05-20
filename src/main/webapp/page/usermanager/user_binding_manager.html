@@ -112,7 +112,7 @@
                                         </label>
                                     </div>
                                     <div class="pop_button" style="margin-left: 26%;margin-bottom: 20px;">
-                                        <button type="button" class="btn btn-primary revise" style="margin-right: 40px" onclick="revise();">修改</button>
+                                        <button <?if(!strutil.contain(session.purviews,"A161")){?>style="display:none"<?}?> type="button" class="btn btn-primary revise" style="margin-right: 40px" onclick="revise();">修改</button>
                                         <button type="button" class="btn btn-primary" onclick="abolish();">取消</button>
                                     </div>
                                 </div>

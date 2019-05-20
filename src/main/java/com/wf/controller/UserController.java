@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +27,7 @@ import com.redis.RedisUtil;
 import com.redis.UserRedisUtil;
 import com.utils.CookieUtil;
 import com.utils.GetUuid;
+import com.utils.MenuXml;
 import com.wf.bean.Department;
 import com.wf.bean.Remind;
 import com.wf.bean.Role;
@@ -160,9 +163,11 @@ public class UserController {
 		Role rl=rs.getRoleById(admin.getRole_id());
 		String[] menuIds=rl.getPurview().split(",");
 		List<String> menus=new ArrayList<String>();
+		for (String menuId : menuIds) {
+			menus.add(menuId);
+		}
 		for(int i = 0; i < menuIds.length; i++){
-			SystemMenu sm=service.findPurviewById(menuIds[i]);
-			String purview=sm.getMenuName();
+			String purview=MenuXml.MENU_NAME.get(menuIds[i]);
 			if(purview!=null&&!"".equals(purview)){
 				menus.add(purview);
 			}
@@ -201,5 +206,14 @@ public class UserController {
 	public boolean updateRemind(){
 		boolean flag = remindService.update();
 		return flag;
+	}
+	/**
+	 *	跳转无权限页面
+	 */
+	@RequestMapping("topurview")
+	public ModelAndView topurview(){
+		ModelAndView view = new ModelAndView();
+		view.setViewName("/page/purview/purview");
+		return view;
 	}
 }
