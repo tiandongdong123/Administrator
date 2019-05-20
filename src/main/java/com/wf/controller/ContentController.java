@@ -487,7 +487,7 @@ public class ContentController {
 		Message findMessage = messageService.findMessage(message.getId());
 		Wfadmin admin = CookieUtil.getWfadmin(request);
 		message.setHuman(admin.getUser_realname());
-		message.setBranch(admin.getDept().getDeptName());
+		message.setBranch(admin.getDepartment());
 		boolean b = messageService.updateMessage(message);
 		LabelListModel changeMessageLabel = new LabelListModel();
 		if (findMessage.getLabel() != null && !"".equals(findMessage.getLabel())
