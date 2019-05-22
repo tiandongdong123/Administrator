@@ -21,4 +21,11 @@ public class TransactionController {
         view.setViewName("/page/usermanager/mechanism_recharge");
         return view;
     }
+
+    @RequestMapping("transaction")
+    public ModelAndView transaction(){
+        ModelAndView view = new ModelAndView();
+        view.setViewName("/page/usermanager/mechanism_transaction");
+        return view;
+    }
 }
