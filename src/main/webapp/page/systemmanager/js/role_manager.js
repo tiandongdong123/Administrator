@@ -104,7 +104,7 @@ function purviewtree(json,i){
 function addrole(){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['50%', '90%'],
 	    title: '添加角色',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../admin/roleadd.do",
@@ -115,7 +115,7 @@ function addrole(){
 function updaterole(id){
 	layer.open({
 	    type: 2, //page层 1div，2页面
-	    area: ['50%', '70%'],
+	    area: ['50%', '90%'],
 	    title: '修改角色',
 	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
 	    content: "../admin/rolemodify.do?id="+id,
