@@ -38,6 +38,8 @@ public class AdminServiceImpl implements AdminService {
 		int pnum = (pagenum-1) * pagesize;
 		String param = null;
 		if(StringUtils.isNotBlank(adminname)){
+			adminname=adminname.replace("_", "\\_");
+			adminname=adminname.replace("%", "\\%");
 			param = "%"+adminname+"%";
 		}
 		try {
@@ -104,16 +106,7 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return re;
 	}
-	@Override
-	public List<Object> getDept() {
-		List<Object> deptname = new ArrayList<Object>();
-		try {
-			deptname = this.dept.getAllDept();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return deptname;
-	}
+	
 	@Override
 	public List<Object> getRole() {
 		List<Object> rolename = new ArrayList<Object>();
@@ -180,5 +173,11 @@ public class AdminServiceImpl implements AdminService {
 			rt=true;
 		}
 		return rt;
+	}
+	@Override
+	public String getAdminIdByName(String name) {
+		List<Object> ad = this.admin.checkAdminId(name);
+		Wfadmin admin=(Wfadmin)ad.get(0);
+		return admin.getId();
 	}
 }

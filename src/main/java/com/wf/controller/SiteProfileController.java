@@ -38,10 +38,10 @@ public class SiteProfileController {
 	 * @return
 	 */
 	@RequestMapping("othermanager-siteProfile")
-	public ModelAndView qikanaddMatrixLiterature() {
+	public ModelAndView qikanaddMatrixLiterature(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/othermanager/site_profile");
-		return view;
+			return view;
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class SiteProfileController {
 	@ResponseBody
 	public PageList basicIndexNum(String dateType, Integer pagenum,
 			Integer pagesize, HttpServletRequest request) {
-		
+
 		//记录日志
 		Log log=new Log("网站概况","查询","按天查询",request);
 		logService.addLog(log);
@@ -143,7 +143,7 @@ public class SiteProfileController {
 		//记录日志
 		Log log=new Log("网站概况","查询","按小时查询",request);
 		logService.addLog(log);
-		
+
 		return webSiteHourlyService.basicIndexNumHourly(dateType, pagenum,
 				pagesize);
 	}

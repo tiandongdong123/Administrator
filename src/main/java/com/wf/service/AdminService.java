@@ -15,8 +15,6 @@ public interface AdminService {
 	
 	boolean openAdmin(String[] ids);
 	
-	List<Object> getDept();
-	
 	List<Object> getRole();
 	
 	boolean checkAdminId(String id);
@@ -26,4 +24,6 @@ public interface AdminService {
 	Wfadmin getAdminById(String id);
 	
 	boolean doUpdateAdmin(Wfadmin admin);
+	
+	String getAdminIdByName(String name);
 }

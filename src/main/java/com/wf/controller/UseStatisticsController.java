@@ -1,6 +1,7 @@
 package com.wf.controller;
 
 
+import com.utils.CookieUtil;
 import com.wanfangdata.model.PagerModel;
 import com.wf.bean.userStatistics.*;
 import com.wf.service.UserStatisticsService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.util.*;
@@ -31,10 +33,10 @@ public class UseStatisticsController {
      * @return
      */
     @RequestMapping("statisticsInfo")
-    public ModelAndView statisticsInformation() {
+    public ModelAndView statisticsInformation(HttpServletRequest request) {
         ModelAndView view = new ModelAndView();
         view.setViewName("/page/usermanager/user_statistics");
-        return view;
+        			 return view;
     }
 
 

@@ -1,15 +1,19 @@
 package com.wf.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.utils.CookieUtil;
 
 @Controller
 @RequestMapping("person")
 public class PersonController {
 
 	@RequestMapping("index")
-	public ModelAndView perManagers() {
+	public ModelAndView perManagers(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.addObject("PageList", "null");
 		view.addObject("person", "null");
@@ -17,9 +21,9 @@ public class PersonController {
 		view.addObject("roles2", "null");
 		view.addObject("roles3", "null");
 		view.setViewName("/page/usermanager/per_manager");
-		return view;
+			return view;
 	}
-	
+
 	/**
 	 *	个人充值记录
 	 */
@@ -27,9 +31,9 @@ public class PersonController {
 	public ModelAndView perAward(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/charge_order");
-		return view;
+			return view;
 	}
-	
+
 	/**
 	 *	 个人订单记录
 	 */
@@ -37,16 +41,16 @@ public class PersonController {
 	public ModelAndView order(){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/pay_order");
-		return view;
+			return view;
 	}
-	
+
 	/**
 	 *	万方卡绑定记录
 	 */
 	@RequestMapping("wfcardbind")
-	public ModelAndView wfcard_bind(){
+	public ModelAndView wfcard_bind(HttpServletRequest request){
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/usermanager/wfcard_bind");
-		return view;
+			return view;
 	}
 }
