@@ -108,7 +108,7 @@ function doaddrole(){
 			return
 		}
 		if((ids.indexOf("A11")!=-1||ids.indexOf("A12")!=-1||ids.indexOf("A13")!=-1||ids.indexOf("A141")!=-1)&&ids.indexOf("A142")==-1){
-			$("#ruleName").text('请选择"添加/移除机构管理员"')
+			$("#roleName").text('请选择"添加/移除机构管理员"权限')
 			return
 		}
 		$.ajax({  

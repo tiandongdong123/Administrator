@@ -130,8 +130,8 @@ function serachdata(data){
             "</tr>";
 			}else{
 			resHtml+="<div class='col-md-3 col-sm-4'><a style='display:none' href='#' onclick=\"removee('"+rows.id+"')\"><i class='fa fa-fw fa-trash-o'></i></a></div><td>"+
-	        "</tr>";	
-			}		
+	        "</tr>";
+			}
 						
 		}
 	}

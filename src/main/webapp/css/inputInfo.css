@@ -742,6 +742,12 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	margin-left: 20px;
 	font-size: 12px;
 }
+.selectPower {
+	color: red;
+	margin-left: 20px;
+	font-size: 12px;
+	text-align: center;
+}
 .adminBody tr th, #adminbody tr td {
 	text-align: center;
 }
