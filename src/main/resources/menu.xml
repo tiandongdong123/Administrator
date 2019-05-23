@@ -173,7 +173,7 @@
 		</Node>
 		<Node Id="E3" Name="资源统计" HasChild="true" Url="" >
 			<Node Id="E31" Name="数据库使用统计" HasChild="false" Url="/databaseAnalysis/databaseAnalysis.do" />
-			<Node Id="E32" Name="资源类型使用统计" HasChild="false" Url="/mechanism/transaction.do" />
+            <Node Id="E32" Name="资源类型使用统计" HasChild="false" Url="/resourceTypeStatistics/resourceTypeStatistics.do"/>
 		</Node>
 		<Node Id="E4" Name="网站概况" HasChild="false" Url="/siteProfile/othermanager-siteProfile.do" />
 		<Node Id="E5" Name="来源分析" HasChild="false" Url="/sourceAnalysis/sourceAnalysis.do" />
