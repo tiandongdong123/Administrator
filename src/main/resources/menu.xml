@@ -36,18 +36,11 @@
 			</Node>
 			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" Url="/person/wfcardbind.do" />
 		</Node>
-	</Node> 
+	</Node>
 	<Node Id="B" Name="充值管理" HasChild="true" Url="">
 		<Node Id="B1" Name="充值管理" HasChild="true" Url="/charge/manage.do">
 			<Node Id="B11" Name="个人充值记录" HasChild="true" Url="">
 				<Node Id="B111" Name="待处理" HasChild="false" Url="" />
-			</Node>
-			<Node Id="B12" Name="机构订单记录" HasChild="true" Url="">
-				<Node Id="B121" Name="机构订单记录导出" HasChild="false" Url="" />
-				<Node Id="B122" Name="导出并发送邮箱" HasChild="false" Url="" />
-			</Node>
-			<Node Id="B13" Name="机构充值记录" HasChild="true" Url="">
-				<Node Id="B131" Name="导出" HasChild="false" Url="" />
 			</Node>
 		</Node>
 	</Node>
@@ -135,6 +128,9 @@
 	</Node>
 	<Node Id="D" Name="其他管理" HasChild="true" Url="">
 		<Node Id="D1" Name="万方卡管理" HasChild="true" Url="">
+			<Node Id="D15" Name="生成万方卡" HasChild="false" Url="/card/createCard.do" />
+			<Node Id="D16" Name="审核万方卡" HasChild="false" Url="/card/cardCheck.do" />
+			<Node Id="D17" Name="管理万方卡" HasChild="false" Url="/card/cardManager.do" />
 			<Node Id="D11" Name="管理赠送万方卡" HasChild="true" Url="/card/wfcardmanage.do" >
 				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" Url="" />
 				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" Url="" />
@@ -177,7 +173,7 @@
 		</Node>
 		<Node Id="E3" Name="资源统计" HasChild="true" Url="" >
 			<Node Id="E31" Name="数据库使用统计" HasChild="false" Url="/databaseAnalysis/databaseAnalysis.do" />
-			<Node Id="E32" Name="资源类型使用统计" HasChild="false" Url="/resourceTypeStatistics/resourceTypeStatistics.do" />
+			<Node Id="E32" Name="资源类型使用统计" HasChild="false" Url="/mechanism/transaction.do" />
 		</Node>
 		<Node Id="E4" Name="网站概况" HasChild="false" Url="/siteProfile/othermanager-siteProfile.do" />
 		<Node Id="E5" Name="来源分析" HasChild="false" Url="/sourceAnalysis/sourceAnalysis.do" />
@@ -187,6 +183,7 @@
 		<Node Id="E9" Name="交易统计" HasChild="true" Url="" >
 			<Node Id="E91" Name="个人现金交易统计" HasChild="false" Url="/transactionStatistics/personStatistics.do" />
 			<Node Id="E92" Name="后台充值统计" HasChild="false" Url="/transactionStatistics/backChargeStatistics.do" />
+			<Node Id="E93" Name="机构交易统计" HasChild="false" Url="/mechanism/transaction.do" />
 		</Node>
 	</Node>
 	<Node Id="F" Name="系统管理" HasChild="true" Url="" >
@@ -246,5 +243,15 @@
 	<Node Id="H" Name="solr下撤管理" HasChild="true" Url="">
 		<Node Id="H1" Name="solr下撤" HasChild="false" Url="/solr/withdraw.do" />
 		<Node Id="H2" Name="solr黑名单查询" HasChild="false" Url="/solr/blacklist.do" />
+	</Node>
+	<Node Id="I" Name="交易管理" HasChild="true" Url="">
+		<Node Id="I1" Name="机构订单记录" HasChild="true" Url="/mechanism/mechanism_order.do">
+			<Node Id="I11" Name="机构订单记录导出并发送邮箱" HasChild="false" Url="/mechanismOrder/exportExcel" />
+		</Node>
+		<Node Id="I2" Name="机构充值记录" HasChild="true" Url="/mechanism/recharge.do">
+			<Node Id="I21" Name="导出" HasChild="false" Url="/mechanismRecharge/exportOperatorExcel" />
+			<Node Id="I22" Name="导出" HasChild="false" Url="/mechanismRecharge/exportBalanceExcel" />
+			<Node Id="I23" Name="导出" HasChild="false" Url="/mechanismRecharge/exportFormalExcel" />
+		</Node>
 	</Node>
 </Node>
