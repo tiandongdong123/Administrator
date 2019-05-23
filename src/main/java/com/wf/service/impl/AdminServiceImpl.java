@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import com.wf.dao.WfadminMapper;
 import com.wf.service.AdminService;
 @Service
 public class AdminServiceImpl implements AdminService {
+	private static final Logger log = Logger.getLogger(AdminServiceImpl.class);
 
 	@Autowired
 	private WfadminMapper admin;
@@ -106,7 +108,16 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return re;
 	}
-	
+	@Override
+	public List<Object> getDept() {
+		List<Object> deptname = new ArrayList<Object>();
+		try {
+			deptname = this.dept.getAllDept();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deptname;
+	}
 	@Override
 	public List<Object> getRole() {
 		List<Object> rolename = new ArrayList<Object>();
@@ -173,11 +184,5 @@ public class AdminServiceImpl implements AdminService {
 			rt=true;
 		}
 		return rt;
-	}
-	@Override
-	public String getAdminIdByName(String name) {
-		List<Object> ad = this.admin.checkAdminId(name);
-		Wfadmin admin=(Wfadmin)ad.get(0);
-		return admin.getId();
 	}
 }

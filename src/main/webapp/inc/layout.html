@@ -159,6 +159,7 @@
                 <ul class="treeview-menu menu-open" style="display: block;">
                     <li <?if(!strutil.contain(session.purviews,"个人现金交易统计")){?>style="display:none"<?}?> <?if(session.menu_first=="/transactionStatistics/personStatistics.do"){ ?>class="active"<?}?>><a href="../transactionStatistics/personStatistics.do"><i class="fa fa-circle-o"></i>个人现金交易统计</a></li>
                     <li <?if(!strutil.contain(session.purviews,"后台充值统计")){?>style="display:none"<?}?> <?if(session.menu_first=="/transactionStatistics/backChargeStatistics.do"){ ?>class="active"<?}?>><a href="../transactionStatistics/backChargeStatistics.do"><i class="fa fa-circle-o"></i>后台充值统计</a></li>
+                    <li <?if(!strutil.contain(session.purviews,"机构交易统计")){?>style="display:none"<?}?> <?if(session.menu_first=="transaction.do"){ ?>class="active"<?}?>><a href="../mechanism/transaction.do"><i class="fa fa-circle-o"></i>机构交易统计</a></li>
                 </ul>
                 </li>
 

@@ -90,10 +90,10 @@ public interface AheadUserService {
 	UserAccountRestriction getAccountRestriction(String userId);
 	
 	/** 添加/更新限时信息 */
-	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId);
+	int addProjectDeadline(InstitutionalUser user, ResourceDetailedDTO dto,String adminId,Map<String,Object> changeFront);
 
 	/** 更新余额信息 */
-	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
+	int chargeProjectBalance(InstitutionalUser user, ResourceDetailedDTO dto, String adminId,Map<String,Object> changeFront);
 	
 	/** 更新系统次数信息 */
 	int chargeCountLimitUser(InstitutionalUser user, ResourceDetailedDTO dto, String adminId);
@@ -163,7 +163,7 @@ public interface AheadUserService {
 	/** 删除购买项目（逻辑删除） */
 	int deleteAccount(InstitutionalUser user, ResourceDetailedDTO dto, String adminId) throws Exception;
 	/** 删除购买项目（逻辑删除） */
-	int deleteChangeAccount(InstitutionalUser user, String adminId) throws Exception;
+	Map<String,Object> deleteChangeAccount(InstitutionalUser user, String adminId) throws Exception;
 
     /** 调用接口验证老平台用户是否存在 */
 	String validateOldUser(String userName);
