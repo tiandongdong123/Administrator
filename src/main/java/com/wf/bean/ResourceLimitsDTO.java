@@ -51,12 +51,77 @@ public class ResourceLimitsDTO {
 	private Integer totalPrintNo;
 	private Integer singlePrintNo;
 	//方志
+	private String localType;
 	private String gazetteersId;
 	private String gazetteersType;
 	private String gazetteersLevel;
 	private String gazetteersArea;
 	private String gazetteersAlbum;
+	private String gazetteersStartTime;
+	private String gazetteersEndTime;
 	private String itemId;
+	private String gazetteersOldType; 
+	private String gazetteersOldArea;
+	private String gazetteersOldStartTime;
+	private String gazetteersOldEndTime;
+	
+	
+	
+	public String getLocalType() {
+		return localType;
+	}
+
+	public void setLocalType(String localType) {
+		this.localType = localType;
+	}
+
+	public String getGazetteersOldType() {
+		return gazetteersOldType;
+	}
+
+	public void setGazetteersOldType(String gazetteersOldType) {
+		this.gazetteersOldType = gazetteersOldType;
+	}
+
+	public String getGazetteersOldArea() {
+		return gazetteersOldArea;
+	}
+
+	public void setGazetteersOldArea(String gazetteersOldArea) {
+		this.gazetteersOldArea = gazetteersOldArea;
+	}
+
+	public String getGazetteersOldStartTime() {
+		return gazetteersOldStartTime;
+	}
+
+	public void setGazetteersOldStartTime(String gazetteersOldStartTime) {
+		this.gazetteersOldStartTime = gazetteersOldStartTime;
+	}
+
+	public String getGazetteersOldEndTime() {
+		return gazetteersOldEndTime;
+	}
+
+	public void setGazetteersOldEndTime(String gazetteersOldEndTime) {
+		this.gazetteersOldEndTime = gazetteersOldEndTime;
+	}
+
+	public String getGazetteersStartTime() {
+		return gazetteersStartTime;
+	}
+
+	public void setGazetteersStartTime(String gazetteersStartTime) {
+		this.gazetteersStartTime = gazetteersStartTime;
+	}
+
+	public String getGazetteersEndTime() {
+		return gazetteersEndTime;
+	}
+
+	public void setGazetteersEndTime(String gazetteersEndTime) {
+		this.gazetteersEndTime = gazetteersEndTime;
+	}
 
 	public String getResourceid() {
 		return resourceid;
@@ -332,29 +397,25 @@ public class ResourceLimitsDTO {
 
 	@Override
 	public String toString() {
-		return "ResourceLimitsDTO [resourceid=" + resourceid + ", productid="
-				+ Arrays.toString(productid) + ", journalClc=" + journalClc
-				+", perioInfoClc=" + perioInfoClc
-				+ ", journalIdno=" + journalIdno + ", journal_startTime="
-				+ journal_startTime + ", journal_endTime=" + journal_endTime
-				+ ", degreeClc=" + degreeClc + ", degreeTypes="
-				+ Arrays.toString(degreeTypes) + ", degreeStarttime="
-				+ degreeStarttime + ", degreeEndtime=" + degreeEndtime
-				+ ", conferenceClc=" + conferenceClc + ", conferenceNo="
-				+ conferenceNo + ", patentIpc=" + patentIpc + ", booksClc="
-				+ booksClc + ", booksIdno=" + booksIdno + ", standardTypes="
-				+ Arrays.toString(standardTypes) + ", company=" + company
-				+ ", orgName=" + orgName + ", companySimp=" + companySimp
-				+ ", fullIpRange=" + Arrays.toString(fullIpRange)
-				+ ", limitedParcelStarttime=" + limitedParcelStarttime
-				+ ", limitedParcelEndtime=" + limitedParcelEndtime
-				+ ", readingPrint=" + readingPrint + ", onlineVisitor="
-				+ onlineVisitor + ", copyNo=" + copyNo + ", totalPrintNo="
-				+ totalPrintNo + ", singlePrintNo=" + singlePrintNo
-				+ ", gazetteersId=" + gazetteersId + ", gazetteersType="
-				+ gazetteersType + ", gazetteersLevel=" + gazetteersLevel
-				+ ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum="
-				+ gazetteersAlbum + ", itemId=" + itemId + "]";
+		return "ResourceLimitsDTO [resourceid=" + resourceid + ", productid=" + Arrays.toString(productid)
+				+ ", journalClc=" + journalClc + ", perioInfoClc=" + perioInfoClc + ", journalIdno=" + journalIdno
+				+ ", journal_startTime=" + journal_startTime + ", journal_endTime=" + journal_endTime + ", degreeClc="
+				+ degreeClc + ", degreeTypes=" + Arrays.toString(degreeTypes) + ", degreeStarttime=" + degreeStarttime
+				+ ", degreeEndtime=" + degreeEndtime + ", conferenceClc=" + conferenceClc + ", conferenceNo="
+				+ conferenceNo + ", patentIpc=" + patentIpc + ", booksClc=" + booksClc + ", booksIdno=" + booksIdno
+				+ ", standardTypes=" + Arrays.toString(standardTypes) + ", company=" + company + ", orgName=" + orgName
+				+ ", companySimp=" + companySimp + ", fullIpRange=" + Arrays.toString(fullIpRange)
+				+ ", limitedParcelStarttime=" + limitedParcelStarttime + ", limitedParcelEndtime="
+				+ limitedParcelEndtime + ", readingPrint=" + readingPrint + ", onlineVisitor=" + onlineVisitor
+				+ ", copyNo=" + copyNo + ", totalPrintNo=" + totalPrintNo + ", singlePrintNo=" + singlePrintNo
+				+ ", gazetteersId=" + gazetteersId + ", gazetteersType=" + gazetteersType + ", gazetteersLevel="
+				+ gazetteersLevel + ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum=" + gazetteersAlbum
+				+ ", gazetteersStartTime=" + gazetteersStartTime + ", gazetteersEndTime=" + gazetteersEndTime
+				+ ", itemId=" + itemId + ", gazetteersOldType=" + gazetteersOldType + ", gazetteersOldArea="
+				+ gazetteersOldArea + ", gazetteersOldStartTime=" + gazetteersOldStartTime + ", gazetteersOldEndTime="
+				+ gazetteersOldEndTime + "]";
 	}
+
+	
 	
 }

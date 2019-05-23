@@ -35,13 +35,13 @@ import com.wf.service.PageManagerService;
 public class ModularManagerController {
 	@Autowired
 	ModularService modularService;
-	
+
 	@Autowired
 	PageManagerService managerService;
-	
+
 	@Autowired
 	LogService logService;
-	
+
 	/**
 	 * 功能模块管理页面
 	 * @return
@@ -50,65 +50,64 @@ public class ModularManagerController {
 	public ModelAndView modularManager(){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/page/othermanager/modular_manager");
-		return mav;
+			return mav;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * 模块添加页面
 	 * @return
 	 */
 	@RequestMapping("addModular")
 	public String addModular(){
-
-		return "/page/othermanager/add_modular";
+			return "/page/othermanager/add_modular";
 	}
-	
+
 	@RequestMapping("doAddModular")
 	@ResponseBody
 	public boolean doAddModular(@ModelAttribute Modular md, HttpServletRequest request){
 		boolean rt = modularService.doAddModular(md);
-		
+
 		//记录日志
 		Log log=new Log("功能模块管理","增加",md.toString(),request);
 		logService.addLog(log);
 
 		return rt;
 	}
-	
+
 	@RequestMapping("updateModular")
 	public String updateModularManager(String id,Map<String,Object> map){
 		Modular md = modularService.getModularById(id);
 		map.put("modular", md);
 		return "/page/othermanager/update_modular";
 	}
-	
+
 	@RequestMapping("doUpdateModular")
 	@ResponseBody
 	public boolean doUpdateModular(@ModelAttribute Modular md, HttpServletRequest request){
 		boolean bl = modularService.doUpdateModular(md);
-		
+
 		//记录日志
 		Log log=new Log("功能模块管理","修改",md.toString(),request);
 		logService.addLog(log);
-		
+
 		return bl;
 	}
-	
+
 	@RequestMapping("deleteModular")
 	@ResponseBody
 	public boolean deleteModular(String id, HttpServletRequest request){
 		boolean rt = modularService.deleteModular(id);
-		
+
 		//记录日志
 		Log log=new Log("功能模块管理","删除","删除功能模块ID:"+id,request);
 		logService.addLog(log);
 
 		return rt;
 	}
-	
+
 	/**
 	 * 获取数据库
 	 * @param dataname
@@ -120,7 +119,7 @@ public class ModularManagerController {
 		PageList pl = modularService.getModular(ids,pageNum,pageSize);
 		return pl;
 	}
-	
+
 	/**
 	 * 导出功能模块
 	 * @param response
@@ -131,31 +130,31 @@ public class ModularManagerController {
 	 */
 	@RequestMapping("exportmodular")
 	public void  exportmodular(HttpServletResponse response,String[] ids, HttpServletRequest request){
-			List<Object> list=new ArrayList<Object>();
-			
-			if(ids.length==0) ids=null;
-			
-			
-			list= modularService.exportmodular(ids);
-			JSONArray array=JSONArray.fromObject(list);
-					
-			List<String> names=Arrays.asList(new String[]{"序号","功能模块","URL地址"});
-			
-			ExportExcel excel=new ExportExcel();
-			excel.exportModular(response, array, names);
-		
-			//记录日志
-			Log log=new Log("功能模块管理","导出","导出条件:功能模块:"+ids.toString(),request);
-			logService.addLog(log);
+		List<Object> list=new ArrayList<Object>();
+
+		if(ids.length==0) ids=null;
+
+
+		list= modularService.exportmodular(ids);
+		JSONArray array=JSONArray.fromObject(list);
+
+		List<String> names=Arrays.asList(new String[]{"序号","功能模块","URL地址"});
+
+		ExportExcel excel=new ExportExcel();
+		excel.exportModular(response, array, names);
+
+		//记录日志
+		Log log=new Log("功能模块管理","导出","导出条件:功能模块:"+ids.toString(),request);
+		logService.addLog(log);
 
 	}
-	
-	
+
+
 	@RequestMapping("getCountBymodularId")
 	@ResponseBody
 	public boolean getCountBymodularId(String modularId){
 		return managerService.getCountBymodularId(modularId)>0;
- 	}
-	
-	
+	}
+
+
 }

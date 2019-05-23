@@ -2,14 +2,19 @@ package com.wf.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,9 +23,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utils.CookieUtil;
 import com.utils.DateTools;
+import com.utils.MenuXml;
 import com.wf.bean.Log;
+import com.wf.bean.Menu;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
+import com.wf.bean.Wfadmin;
 import com.wf.service.LogService;
 import com.wf.service.RoleService;
 
@@ -36,7 +44,7 @@ public class RoleController {
 	LogService logService;
 	
 	/**
-	 * 查询管理员
+	 * 查询角色
 	 * @return
 	 * @throws Exception 
 	 */
@@ -59,15 +67,13 @@ public class RoleController {
 	 */
 	@RequestMapping("getpurview")
 	@ResponseBody
-	public JSONArray getPurview(){
-		JSONArray array = this.role.getPurview();
-		for(int i = 0; i < array.size();i++){
-			JSONObject  obj = array.getJSONObject(i);
-			String name = obj.getString("menuName");
-			String id = obj.getString("menuId");
-			obj.element("menuName",id+"_"+name);
-		}
-		return array;
+	public JSONObject getPurview(){
+		List<Menu> liseMenu=MenuXml.LIST_MENU;
+		JSONArray array = JSONArray.fromObject(liseMenu);
+		JSONObject jsonObject=new JSONObject();
+		jsonObject.put("purview", array);
+		jsonObject.put("menuNum", MenuXml.MENU_NAME.size());
+		return jsonObject;
 	}
 	/**
 	 * 查询角色名称是否重复
@@ -90,7 +96,14 @@ public class RoleController {
 	@RequestMapping("doaddrole")
 	@ResponseBody
 	public boolean doAddRole(@ModelAttribute Role role,HttpServletRequest request){
-		boolean rt = this.role.doAddRole(role);
+		boolean rt=false;
+		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
+		boolean purview=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
+		boolean roleRt = this.role.checkRoleName(role.getRoleName());
+		if(roleName && purview &&!roleRt){
+			rt = this.role.doAddRole(role);
+		}
+		
 		
 		//记录日志
 		Log log=new Log("角色管理","增加",role.toString(),request);
@@ -109,16 +122,62 @@ public class RoleController {
 	 */
 	@RequestMapping("doupdaterole")
 	@ResponseBody
-	public boolean doUpdateRole(@ModelAttribute Role role,HttpServletRequest request){
-		boolean rt = this.role.doUpdateRole(role);
+	public JSONObject doUpdateRole(@ModelAttribute Role role,HttpServletRequest request,HttpSession session,HttpServletResponse response){
+		JSONObject map = new JSONObject();
+		boolean rt=false;
+		boolean roleName=role.getRoleName()!=null && StringUtils.isNotBlank(role.getRoleName());
+		boolean purviewIsNull=role.getPurview()!=null && StringUtils.isNotBlank(role.getPurview());
+		//根据超级管理员  查找超级管理员id
+		Role r=this.role.getRoleByName("超级管理员");
+		if(r!=null&&role.getRoleId().equals(r.getRoleId())){
+			map.put("flag", "fail");
+			map.put("fail","超级管理员信息不可以被修改");
+				return map;
+		}
+		Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+		String roleId=wfAdmin.getRole_id();
+		if(role.getRoleId().equals(roleId)){
+			map.put("flag", "fail");
+			map.put("fail","管理员不能自己修改自己的角色");
+				return map;
+		}
 		
+		if(roleName && purviewIsNull){
+			rt = this.role.doUpdateRole(role);
+			map.put("flag", rt);
+		}
 		//记录日志
 		Log log=new Log("角色管理","修改",role.toString(),request);
 		logService.addLog(log);
 
-		return rt ;
+		if(rt){
+			Wfadmin admin = CookieUtil.getWfadmin(request);
+			Role rl=this.role.getRoleById(admin.getRole_id());
+			String[] menuIds=rl.getPurview().split(",");
+			List<String> menus=new ArrayList<String>();
+			for (String menuId : menuIds) {
+				menus.add(menuId);
+			}
+			String purviewsPlay=StringUtils.join(menus, "|");
+			CookieUtil.addPrivilegeCookie(purviewsPlay, response);
+			for(int i = 0; i < menuIds.length; i++){
+				String purview=MenuXml.MENU_NAME.get(menuIds[i]);
+				if(purview!=null&&!"".equals(purview)){
+					menus.add(purview);
+				}
+			}
+			String purviews=StringUtils.join(menus, "|");
+			session.setAttribute("purviews", purviews);
+		}
+		return map ;
 	}
 	
+	/**
+	 * 删除角色
+	 * @param id
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("deleterole")
 	@ResponseBody
 	public boolean deleteRole(String id,HttpServletRequest request){

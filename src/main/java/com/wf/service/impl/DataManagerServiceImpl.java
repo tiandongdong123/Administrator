@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.redis.RedisUtil;
+import com.utils.GetDetails;
 import com.wf.bean.Custom;
 import com.wf.bean.DB_Source;
 import com.wf.bean.Datamanager;
@@ -446,7 +447,7 @@ public class DataManagerServiceImpl implements DataManagerService {
 		JSONArray  json = new JSONArray();
 		boolean success = false;
 		try {
-			val  =RedisUtil.get("CLCDic",0);
+			val = GetDetails.CLC_DIC==null ? GetDetails.getCLCDic() : GetDetails.CLC_DIC;
 			json = JSONArray.fromObject(val);
 			success =true;
 		} catch (Exception e) {

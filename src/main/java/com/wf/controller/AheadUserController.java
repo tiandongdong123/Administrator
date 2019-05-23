@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,10 +45,12 @@ import wfks.accounting.setting.PayChannelModel;
 
 import com.alibaba.citrus.util.StringUtil;
 import com.exportExcel.ExportExcel;
+import com.google.gson.JsonArray;
 import com.redis.RedisUtil;
 import com.utils.AuthorityLimit;
 import com.utils.CookieUtil;
 import com.utils.DateUtil;
+import com.utils.GetDetails;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.utils.InstitutionUtils;
@@ -425,7 +429,8 @@ public class AheadUserController {
 	@RequestMapping("findpatent")
 	@ResponseBody
 	public Map<String,Object> findPatent(String num){
-		String str = RedisUtil.get("PatentIPC",0);
+
+		String str = GetDetails.PATENT_IPC==null ? GetDetails.getPatentIpc() : GetDetails.PATENT_IPC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -445,18 +450,18 @@ public class AheadUserController {
 	 */
 	@RequestMapping("findGazetteer")
 	@ResponseBody
-	public Map<String, Object> findGazetteer(String pid,String area) {
+	public Map<String, Object> findGazetteer(String pid,String area,String oldArea) {
 		if (pid == null || "".equals(pid)) {
 			pid = "0";
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		String gazetter = "";
 		if ("0".equals(pid)) {
-			gazetter = RedisUtil.get("gazetteerTypeDIC", 13);// 专辑分类
+			gazetter = GetDetails.GAZETTEER_TYPE_DIC==null ? GetDetails.getGazetteerTypeDic():GetDetails.GAZETTEER_TYPE_DIC;// 专辑分类
 			map.put("arrayGazetter", JSONArray.fromObject(gazetter));
 		}
 		JSONArray arrayArea = new JSONArray();
-		String reg = RedisUtil.get("Region", 13);// 省级区域
+		String reg = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(reg);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -484,6 +489,26 @@ public class AheadUserController {
 				}
 			}
 		}
+		if (oldArea != null && !"".equals(oldArea)) {
+			String[] city = oldArea.split("_");
+			for (int s = 0; s < city.length; s++) {
+				for (int i = 0; i < region.size(); i++) {
+					JSONObject obj = region.getJSONObject(i);
+					if (obj.get("name").equals(city[s])) {
+						JSONObject json = new JSONObject();
+						json.put("id", obj.getString("id"));
+						json.put("name", obj.getString("name"));
+						if (s == 0) {
+							map.put("old_sheng", json);
+						} else if (s == 1) {
+							map.put("old_shi", json);
+						} else if (s == 2) {
+							map.put("old_xian", json);
+						}
+					}
+				}
+			}
+		}
 		map.put("arrayArea", arrayArea);
 		return map;
 	}
@@ -499,7 +524,8 @@ public class AheadUserController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONArray arrayArea = new JSONArray();
-		String area = RedisUtil.get("Region", 13);// 省级区域
+
+		String area = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(area);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -517,7 +543,7 @@ public class AheadUserController {
 	@RequestMapping("findPerioSubject")
 	@ResponseBody
 	public Map<String,Object> findPerioSubject(String num){
-		String str = RedisUtil.get("PerioInfoDic",13);
+		String str = GetDetails.PERIOINFO_DIC==null ? GetDetails.getPerioInfoDic() : GetDetails.PERIOINFO_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -539,7 +565,8 @@ public class AheadUserController {
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
-		String str = RedisUtil.get("CLCDic",0);
+
+		String str = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -1824,7 +1851,28 @@ public class AheadUserController {
 		}
 		return per.getUsertype();
 	}
-
+	/**
+	 * 获取注册用户地方志详情资源更新时间
+	 * @param topic
+	 * @param topicKey
+	 * @param obj
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("getlocalDate")
+	public JSONObject getlocalDate(){
+		JsonArray json=new JsonArray();
+		Calendar date = Calendar.getInstance();
+		String year = String.valueOf(date.get(Calendar.YEAR));
+		int iyear=Integer.parseInt(year);
+		for (int i = 2010; i <= iyear; i++) {
+			json.add(i);
+		}
+		JSONObject obj=new JSONObject();
+		obj.put("data", json.toString());
+		return obj;
+	}
+	
 	private boolean sendMessage(String topic,String topicKey,Object obj){
 
 		boolean result=false;

@@ -675,3 +675,92 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 #IpErrorInfo {
 	margin-left: 19%;
 }
+
+
+.limit .oldSelect, .limit .newSelect{
+	margin-top: 15px;
+}
+.limit .limitTab .export {
+	margin-left: 70px;
+}
+
+.limit .newSelect .newTime {
+	margin-left: 15px;
+	margin-top: 10px;
+}
+.limit .newSelect .newTime .newSelectTime {
+	display: inline-block;
+    margin-left: 20px;
+}
+.limit .newSelect .newLocation,.limit .oldSelect .oldLocation {
+	margin-left: 70px;
+	margin-top: 10px;
+}
+.limit .newSelect .newLocation .newLocationSelect, .limit .oldSelect .oldLocation .oldLocationSelect{
+    margin-left: 10px;
+}
+.limit .newSelect .newLocation .newLocationSelect .locationPrev,.limit .newSelect .newLocation .newLocationSelect .locationCity,.limit .newSelect .newLocation .newLocationSelect .locationCounty {
+	margin-right: 13px;
+	margin-left: 10px;
+}
+.limit .newSelect .newDate {
+	margin-left: 43px;
+	margin-top: 10px;
+}
+.limit .newSelect .newDate .newDateSelect {
+	display: inline-block;
+	margin-left: 20px;
+}
+.limit .newSelect .newClassify {
+	margin-left: 45px;
+	margin-top: 10px;
+}
+.limit .oldSelect .oldTime {
+	margin-left: 15px;
+	margin-top: 10px;
+}
+.limit .oldSelect .oldTime .oldSelectTime {
+	display: inline-block;
+    margin-left: 20px;
+}
+.limit .oldSelect .oldLocation .oldLocationSelect .locationPrev,.limit .oldSelect .oldLocation .oldLocationSelect .locationCity,.limit .oldSelect .oldLocation .oldLocationSelect .locationCounty {
+	margin-right: 13px;
+	margin-left: 10px;
+}
+.limit .errorTime {
+	color: red;
+	font-size: 12px;
+	margin-left: 20px;
+}
+.limit .errorOldTime {
+	color: red;
+	font-size: 12px;
+	margin-left: 20px;
+}
+.voidName {
+	color: red;
+	margin-left: 20px;
+	font-size: 12px;
+}
+.selectPower {
+	color: red;
+	margin-left: 20px;
+	font-size: 12px;
+	text-align: center;
+}
+.adminBody tr th, #adminbody tr td {
+	text-align: center;
+}
+.rolebody tr th, #rolebody tr td {
+	text-align: center;
+}
+.buttonSpan {
+	color: #417dc9;
+	margin-right: 20px;
+	cursor: pointer;
+}
+#errorInfo {
+   	text-align: center;
+    margin-top: 10px;
+    color: red;
+}

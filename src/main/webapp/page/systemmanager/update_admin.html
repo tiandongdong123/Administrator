@@ -15,45 +15,26 @@
           	<form>
 			<div id="addadmin">
 			<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">用户名：</label>
+             <label for="exampleInputEmail1" class="input_name">用户名</label>
              <span id="username">${admin.wangfang_admin_id}</span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码：</label>
-             <input type="text" id="password" class="form-control input_width" value="${admin.password}">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码</label>
+             <input type="text" id="password" maxlength="16" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" value="${admin.password}" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
              <span id="chcekpassword"></span>
          	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称</label>
+             <input type="text" id="deptname" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" value="${admin.department}" onblur="checkValue('department',this.value)"><span class="voidName" id="departmentStr"></span>
+         	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">姓名：</label>
-             <input type="text" id="realname" class="form-control input_width" value="${admin.user_realname}">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>真实姓名</label>
+             <input type="text" id="realname" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" value="${admin.user_realname}"  onblur="checkValue('name',this.value)"><span class="voidName" id="nameStr"></span>
              <span id="chcekrealname"></span>
          	</div>
-         	  <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">部门：</label>
-             <select id="deptname">
-             <?for(var dept in deptname){?>
-             <?if(dept.id==admin.department){?>
-             	<option value="${dept.id}" selected="selected">${dept.deptName}</option>
-             <?}else{?>
-             <option value="${dept.id}">${dept.deptName}</option>
-             <?}?>
-             <?}?>
-             </select>
-         	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">手机号码：</label>
-             <input type="text" id="mphone" maxlength="11" class="form-control input_width" value="${admin.mobile_phone}"><span id="chcekmphone"></span>
-         	</div>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">固定电话：</label>
-             <input type="text" id="telphone" maxlength="20" class="form-control input_width" value="${admin.tel_phone}"><span id="checktelphone"></span>
-         	</div>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">邮箱 ：</label>
-             <input type="text" id="email" maxlength="20" class="form-control input_width" value="${admin.email}"><span id="checkemail"></span>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">角色 ：</label>
-             <select id="rolename">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色 </label>
+             <select id="rolename" style="width:45%;height: 34px;">
             <?for(var role in rolename){?>
             <?if(role.roleId==admin.role_id){?>
             <option value="${role.roleId}" selected="selected">${role.roleName}</option>
@@ -65,8 +46,8 @@
          	</div>
          </div>		
               <div class="box-footer" style="text-align:center;">
-                <button type="button" onclick="doupdateadmin()"  class="btn btn-primary">修改注册信息</button>
-                 <button type="reset"   class="btn btn-primary">重置</button>
+                <button type="button" onclick="doupdateadmin()"  class="btn btn-primary">修改</button>
+                 <button type="reset" onclick="closeWindow()"  class="btn btn-primary">取消</button>
               </div>
               </form>
             </div>

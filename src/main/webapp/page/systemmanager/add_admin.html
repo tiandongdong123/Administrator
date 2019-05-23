@@ -10,42 +10,27 @@
         <div class="col-md-6">
           <!-- general form elements -->
           <div class="box box-primary">
-          <form>
+          <form  autocomplete="off">
 			<div id="addadmin">
 			<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>用户名：</label>
-             <input type="text" id="username" maxlength="16"  class="form-control input_width" onfocus="showvalue()" onblur="checkadminid(this.value)"><span id="checkadminid"></span>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>用户名</label>
+             <input type="text" id="usernameAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" maxlength="16"  class="form-control input_width" onfocus="showvalue(this.value)" onblur="checkadminid(this.value)"><span class="voidName" id="checkadminid"></span>
          	</div>
          	<div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码：</label>
-             <input type="password" id="password"  class="form-control input_width"><span id="checkpassword"></span>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>密码</label>
+             <input type="text" id="passwordAdmin" autocomplete="off" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" maxlength="16" autoComplete="new-password" class="form-control input_width" onblur="checkValue('pwd',this.value)"><span class="voidName" id="pwdStr"></span>
+         	</div>
+         	<div class="form-group input_block">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>部门名称</label>
+             <input type="text" id="deptname" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width" onblur="checkValue('department',this.value)"><span class="voidName" id="departmentStr"></span>
          	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">姓名：</label>
-             <input type="text" id="name" class="form-control input_width"  maxlength="6">
-         	</div>
-         	  <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">部门：</label>
-             <select id="deptname">
-             <?for(var dept in deptname){?>
-             <option value="${dept.id}">${dept.deptName}</option>
-             <?}?>
-             </select>
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>真实姓名</label>
+             <input type="text" id="name" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" class="form-control input_width"  maxlength="6" onblur="checkValue('name',this.value)"><span class="voidName" id="nameStr"></span>
          	</div>
          	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">手机号码：</label>
-             <input type="text" id="mphone"  maxlength="11" class="form-control input_width" ><span id="chcekmphone"></span>
-         	</div>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">固定电话：</label>
-             <input type="text" id="telphone" maxlength="20" class="form-control input_width" ><span id="checktelphone"></span>
-         	</div>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">邮箱 ：</label>
-             <input type="text" id="email" class="form-control input_width" ><span id="checkemail"></span>
-         	 <div class="form-group input_block">
-             <label for="exampleInputEmail1" class="input_name">角色 ：</label>
-             <select id="rolename">
+             <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色 </label>
+             <select id="rolename" style="width:45%;height: 34px;">
              <?for(var role in rolename){?>
              <option value="${role.roleId}">${role.roleName}</option>
              <?}?>
@@ -53,8 +38,8 @@
          	</div>
          </div>		
               <div class="box-footer" style="text-align:center;">
-               <button type="button" onclick="doaddadmin()"      class="btn btn-primary">提交注册信息</button>
-                <button type="reset"       class="btn btn-primary">重置</button>
+               <button type="button" onclick="doaddadmin()"      class="btn btn-primary">保存</button>
+                <button type="reset" onclick="closeWindow()"      class="btn btn-primary">取消</button>
               </div>
               </form>
             </div>

@@ -21,22 +21,23 @@ function purviewtree(json){
 		view: {
 			showLine: true,
 			selectedMulti: false,
-			dblClickExpand: false
+			dblClickExpand: false,
+			showTitle: false,
 		},
 		check: {
 			enable: true,
 			chkStyle: "checkbox",
-			chkboxType: { "Y" : "ps", "N" : "ps" }
+			chkboxType: { "Y" : "ps", "N" : "s" }
 		},
 		
 		data: {
 			simpleData: {
-				idKey:"menuId",
-				pIdKey:"pid",
+				idKey:"id",
 				enable: true
 			},
 			key: {
-				name: "menuName"
+				name: "name",
+				title: "name"
 			}
 		},
 		callback: {
@@ -44,19 +45,19 @@ function purviewtree(json){
 		}
 	};
 
-	var zNodes =json;
+	var zNodes =json.purview;
 	$(document).ready(function(){
 		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 		zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
 		//zTree_Menu.expandNode(zTree_Menu.getNodes()[0],true);
 	});
-	
+	var allNodes = zTree_Menu.getCheckedNodes(false).length
 	function onCheck(){
 		var tree="";
 		var checknodesNum=0;
 		var a = zTree_Menu.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 			 if(a[i].level==0){
 				   checknodesNum++;
 			   }
@@ -64,8 +65,8 @@ function purviewtree(json){
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 		var nodes = zTree_Menu.getNodes();
-		$("#checkall").prop("checked",checknodesNum==nodes.length);
-		
+		var beforNum = $('#treeids').val().split(',').length
+		$("#checkall").prop("checked",beforNum==allNodes);
 	}
 }
 
@@ -89,7 +90,8 @@ function checkrolename(name){
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入角色名");
+		$("#checkrolename").text("请输入角色名称");
+		$("#cname").val("N");
 	}
 	
 }
@@ -101,6 +103,14 @@ function doaddrole(){
 		var roledescribe = $("#roledescribe").val();
 		var ids = $("#treeids").val();
 		var deptname=$("#deptname").find("option:selected").val();
+		if(ids.length===0) {
+			$("#ruleName").text('请选择角色权限')
+			return
+		}
+		if((ids.indexOf("A11")!=-1||ids.indexOf("A12")!=-1||ids.indexOf("A13")!=-1||ids.indexOf("A141")!=-1)&&ids.indexOf("A142")==-1){
+			$("#roleName").text('请选择"添加/移除机构管理员"权限')
+			return
+		}
 		$.ajax({  
 			type : "POST",  
 			url : "../role/doaddrole.do",
@@ -113,15 +123,20 @@ function doaddrole(){
 				dataType : "json",
 				success : function(data) {
 					if(data){
-						layer.msg("添加成功",{icon: 1});
-						window.location.href="../admin/rolemanager.do";
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg("添加成功");
+						window.parent.rolepage(1);
+						parent.layer.close(index);
 					}else{
-						layer.msg("添加失败",{icon: 2});
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.msg("添加失败");
+						window.parent.rolepage(1);
+						parent.layer.close(index);
 					}
 				}
 			});
 	}else{
-		$("#checkrolename").text("请输入或修改角色名");
+		checkrolename($('#rolename').val())
 	}
 }
 
@@ -133,16 +148,23 @@ function checkrole(obj){//全选
 		var tree="";
 		var a = treeObj.getCheckedNodes(true);
 		for(var i=0;i<a.length;i++){
-			tree+= a[i].menuId+",";
+			tree+= a[i].id+",";
 		}
 		tree = tree.substring(0,tree.length-1);
 		$("#treeids").val(tree);
 	}else{
 		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
 		treeObj.checkAllNodes(false);
+		$("#treeids").val('');
 	}
 }
 
 function resttree(){
 	purview();
+}
+
+//取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
 }

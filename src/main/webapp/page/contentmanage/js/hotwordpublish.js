@@ -23,7 +23,7 @@ function showPage(curr,id){
 		data : {
 			"pageNum" : curr || 1,
 			"pageSize" : pageSize,
-			},
+		},
 		success : function (data){
 			serachAutodata(curr,data,id);
 		}
@@ -36,42 +36,73 @@ function serachAutodata(curr,data,id){
 	var pageTotal = data.pageTotal;
 	var resHtml ="";
 	var totalRow=data.totalRow;
-    var pageall;
-    if(totalRow%pageSize==0){
- 	   pageall=totalRow/pageSize;
-    }else{
- 	   pageall= parseInt(totalRow/pageSize)+1;
-    }
-    var maxLenght=(pageall+"").length;
-    $("#totalRow").text(totalRow);
-    $("#totalpage").text(pageall);
-    $("#pageTotal").val(pageTotal);
-    $("#pagenum").attr("maxlength",maxLenght); 
-    if(totalRow<=20){
-    	$("#pages").hide();
-    }else{
-    	$("#pages").show();
-    }
-	if(pageRow.length>0){
-		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+pageNum++;
-			var rows = pageRow[i];	
-			resHtml+=" <tr style='text-align: center;'>" +
-			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
-            "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
-			"<td class='mailbox-name' style='width:350px;'><div>"+
-			 divShow(rows.id,rows.status)+"&nbsp;" +
-			"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
-          "</tr>";
-		}
+	var pageall;
+	if(totalRow%pageSize==0){
+		pageall=totalRow/pageSize;
+	}else{
+		pageall= parseInt(totalRow/pageSize)+1;
 	}
-	
+	var maxLenght=(pageall+"").length;
+	$("#totalRow").text(totalRow);
+	$("#totalpage").text(pageall);
+	$("#pageTotal").val(pageTotal);
+	$("#pagenum").attr("maxlength",maxLenght); 
+	if(totalRow<=20){
+		$("#pages").hide();
+	}else{
+		$("#pages").show();
+	}
+	if(pageRow.length>0){
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
+		if(purview.indexOf("C314")!=-1){
+			for(var i = 0;i<pageRow.length;i++){
+				var index = 1+pageNum++;
+				var rows = pageRow[i];	
+				resHtml+=" <tr style='text-align: center;'>" +
+				"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
+				"<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
+				"<td class='mailbox-name' style='width:350px;'><div>"+
+				divShow(rows.id,rows.status)+"&nbsp;" +
+				"<button type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
+				"</tr>";
+			}
+		}else{
+			for(var i = 0;i<pageRow.length;i++){
+				var index = 1+pageNum++;
+				var rows = pageRow[i];	
+				resHtml+=" <tr style='text-align: center;'>" +
+				"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_cyc+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.publish_date+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
+				"<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
+				"<td class='mailbox-name' style='width:350px;'><div>"+
+				divShow(rows.id,rows.status)+"&nbsp;" +
+				"<button style='display:none' type='button' onclick=\"updateSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
+				"</tr>";
+			}
+		}
+
+	}
+
 	$('#'+id).html(resHtml);
 	layui.use(['laypage', 'layer'], function(){
 		var laypage = layui.laypage,layer = layui.layer;
@@ -85,9 +116,9 @@ function serachAutodata(curr,data,id){
 			limit: pageSize,
 			layout: ['count', 'prev', 'page', 'next', 'skip'],
 			jump: function (obj, first) {
-	            if(!first){
-	            	showPage(obj.curr);
-	            }
+				if(!first){
+					showPage(obj.curr);
+				}
 			}
 		});
 	});
@@ -159,11 +190,11 @@ function selectPage(){
 
 function addWordSetting(){
 	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['30%', '300px'],
-	    title: '添加自动发布设置',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/addWordSetting.do",
+		type: 2, //page层 1div，2页面
+		area: ['30%', '300px'],
+		title: '添加自动发布设置',
+		moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		content: "../content/addWordSetting.do",
 	}); 
 }
 
@@ -191,7 +222,7 @@ function doaddWordSetting(){
 	if(isFirst!="true"){
 		first_publish_time=$("#first_publish_time").val();
 	}
-	
+
 
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
@@ -206,7 +237,7 @@ function doaddWordSetting(){
 	}else{
 		$("#checktime_slot").text("");
 	}
-	
+
 	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
 		$("#checkpublish_date").text("请填写发布时间！");
 		return;
@@ -214,7 +245,7 @@ function doaddWordSetting(){
 		$("#checkpublish_date").text("");		
 	} 
 
-	
+
 	$.ajax({
 		type : "post",
 		async:false,
@@ -227,49 +258,49 @@ function doaddWordSetting(){
 			"publish_date" :publish_date,
 			"get_time" :get_time,
 			"isFirst":isFirst,
-			},
+		},
 		success : function (data){
 			issuccess=data;
 		}
 	});
-	
-	
+
+
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
 		setTimeout("parent.location.reload();",1000);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
 	}
-	
+
 }
 
 function updateSetting(id,status){
-	
-/*	if(status==1){
+
+	/*	if(status==1){
 		layer.msg("请下撤应用后修改！",{icon: 2});
 		return;
 	}*/
-	
-	
+
+
 	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['30%', '300px'],
-	    title: '修改自动发布设置',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/getHotWordSetting.do?id="+id,
+		type: 2, //page层 1div，2页面
+		area: ['30%', '300px'],
+		title: '修改自动发布设置',
+		moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		content: "../content/getHotWordSetting.do?id="+id,
 	}); 
 }
 
 
 function selectValue(id,val){
 	for(var i=0;i<document.getElementById(id).options.length;i++)
-    {
-        if(document.getElementById(id).options[i].value == val)
-        {
-            document.getElementById(id).options[i].selected=true;
-            break;
-        }
-    }
+	{
+		if(document.getElementById(id).options[i].value == val)
+		{
+			document.getElementById(id).options[i].selected=true;
+			break;
+		}
+	}
 }
 
 
@@ -283,11 +314,11 @@ function doupdateWordSetting(){
 	var id=$("#id").val();
 	var isFirst=$("#isFirst").val();	
 	var issuccess=false;
-	
+
 	if(publish_strategy=="手动发布"){
 		publish_date="";
 	}
-	
+
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
@@ -295,14 +326,14 @@ function doupdateWordSetting(){
 	}else{
 		$("#checkpublish_cyc").text("");
 	} 
-	
+
 	if(time_slot=='' || time_slot==null || time_slot==undefined){
 		$("#checktime_slot").text("请填写数据统计时间段！");
 		return;
 	}else{
 		$("#checktime_slot").text("");
 	} 
-	
+
 	if(get_time=='' || get_time==null || get_time==undefined){
 		$("#checkget_time").text("请填写发布时间！");
 		return;
@@ -310,7 +341,7 @@ function doupdateWordSetting(){
 		$("#checkget_time").text("");
 	} 
 
-	
+
 	if(publish_strategy!="手动发布" && (publish_date=='' || publish_date==null || publish_date==undefined)){
 		$("#checkpublish_date").text("请填写发布时间！");
 		return;
@@ -318,7 +349,7 @@ function doupdateWordSetting(){
 		$("#checkpublish_date").text("");
 	} 
 
-	
+
 	$.ajax({
 		type : "post",
 		async:false,
@@ -334,12 +365,12 @@ function doupdateWordSetting(){
 			"id":id,
 			"next_publish_time":$("#nextPublish").val(),
 			"isFirst":isFirst,
-			},
+		},
 		success : function (data){
 			issuccess=data;
 		}
 	});
-	
+
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		setTimeout("parent.location.reload();",1000);
@@ -350,44 +381,44 @@ function doupdateWordSetting(){
 }
 
 function publish(id,status){
-	
-/*	var issuccess=compareGetTime(id);
-	
+
+	/*	var issuccess=compareGetTime(id);
+
 	if(issuccess){
 		layer.msg("<div style=\"color:#8B0000;\">抓取时间大于发布时间,请修改后应用!</div>",{icon: 2});
 		return;
 	}
-*/	
-	
+	 */	
+
 	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
 		title: '添加自动发布设置',
 		icon: 1,
-	    skin: 'layui-layer-molv',
-	    btn: ['确定','取消'], //按钮
-	    yes: function(){
-	    	$.ajax({
-	    		type : "post",
-	    		async:false,
-	    		url : "../content/updateWordSettingStatus.do",
-	    		dataType : "json",
-	    		data : {
-	    			"id":id,
-	    			"status":status,
-	    			},
-	    		success : function (data){
-	    			issuccess=data;
-	    		}
-	    	});
-	    	
-	    	if(issuccess){
-	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
-	    		setTimeout("window.location.reload();",1000);
-	    	}else{
-	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
-	    	}
-	    }
-	
-	  });
+		skin: 'layui-layer-molv',
+		btn: ['确定','取消'], //按钮
+		yes: function(){
+			$.ajax({
+				type : "post",
+				async:false,
+				url : "../content/updateWordSettingStatus.do",
+				dataType : "json",
+				data : {
+					"id":id,
+					"status":status,
+				},
+				success : function (data){
+					issuccess=data;
+				}
+			});
+
+			if(issuccess){
+				layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
+				setTimeout("window.location.reload();",1000);
+			}else{
+				layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
+			}
+		}
+
+	});
 }
 
 function compareGetTime(id){
@@ -399,12 +430,12 @@ function compareGetTime(id){
 		dataType : "json",
 		data : {
 			"id":id,
-			},
+		},
 		success : function (data){
 			issuccess=data;
 		}
 	});
-	
+
 	return issuccess;
 
 }
@@ -413,18 +444,32 @@ function compareGetTime(id){
 function  divShow(id,status){
 	var html="";
 	if(status==2){
-		html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
+		if(purview.indexOf("C315")!=-1){
+			html="<button type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		}else{
+			html="<button style='display:none' type='button' onclick=\"publish('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		}
 	}
 	return html;
 }
 
 function cancel(){
-	 var index = parent.layer.getFrameIndex(window.name);  
+	var index = parent.layer.getFrameIndex(window.name);  
 	parent.layer.close(index);
 }
 
 
-// 获取手动发布设置内容
+//获取手动发布设置内容
 function showManualPage(curr,id){
 	$.ajax({
 		type : "post",
@@ -434,54 +479,84 @@ function showManualPage(curr,id){
 		data : {
 			"pageNum" : curr || 1,
 			"pageSize" : pageSize,
-			},
+		},
 		success : function (data){
 			serachManualdata(curr,data,id);
 		}
 	});
 }
-// 渲染手动发布内容
+//渲染手动发布内容
 function serachManualdata(curr,data,id){
 	var pageNum = data.pageNum;
 	var pageRow=data.pageRow;
 	var pageTotal = data.pageTotal;
 	var totalRow=data.totalRow;
 	var resHtml ="";
-    var pageall;
-    if(totalRow%pageSize==0){
- 	   pageall=totalRow/pageSize;
-    }else{
- 	   pageall= parseInt(totalRow/pageSize)+1;
-    }
-    var maxLenght=(pageall+"").length;
-    $("#totalRowManual").text(totalRow);
-    $("#totalpageManual").text(pageall);
-    $("#pageTotalManual").val(pageTotal);
-    $("#pagenum_manual").attr("maxlength",maxLenght); 
-    if(totalRow<=20){
-    	$("#pages_manual").hide();
-    }else{
-    	$("#pages_manual").show();
-    }
-	if(pageRow.length>0){
-		for(var i = 0;i<pageRow.length;i++){
-			var index = 1+pageNum++;
-			var rows = pageRow[i];	
-			resHtml+=" <tr style='text-align: center;'>" +
-			"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_cyc+"天"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
-			"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</div></td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
-            "<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
-            "<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
-			"<td class='mailbox-name' style='width:350px;'><div>"+
-			divManualShow(rows.id,rows.status)+"&nbsp;" +
-			"<button type='button' onclick=\"updateManualSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
-          "</tr>";
-		}
+	var pageall;
+	if(totalRow%pageSize==0){
+		pageall=totalRow/pageSize;
+	}else{
+		pageall= parseInt(totalRow/pageSize)+1;
 	}
-	
+	var maxLenght=(pageall+"").length;
+	$("#totalRowManual").text(totalRow);
+	$("#totalpageManual").text(pageall);
+	$("#pageTotalManual").val(pageTotal);
+	$("#pagenum_manual").attr("maxlength",maxLenght); 
+	if(totalRow<=20){
+		$("#pages_manual").hide();
+	}else{
+		$("#pages_manual").show();
+	}
+	if(pageRow.length>0){
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
+		if(purview.indexOf("C313")!=-1){
+			for(var i = 0;i<pageRow.length;i++){
+				var index = 1+pageNum++;
+				var rows = pageRow[i];	
+				resHtml+=" <tr style='text-align: center;'>" +
+				"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_cyc+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
+				"<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
+				"<td class='mailbox-name' style='width:350px;'><div>"+
+				divManualShow(rows.id,rows.status)+"&nbsp;" +
+				"<button type='button' onclick=\"updateManualSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
+				"</tr>";
+			}
+		}else{
+			for(var i = 0;i<pageRow.length;i++){
+				var index = 1+pageNum++;
+				var rows = pageRow[i];	
+				resHtml+=" <tr style='text-align: center;'>" +
+				"<td class='mailbox-star'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+index+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_cyc+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>近"+rows.time_slot+"天"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.get_time+"</div></td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation+"</td>"+
+				"<td class='mailbox-name'><div style='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"+rows.operation_date+"</td>"+
+				"<td class='mailbox-date'><div title=''>"+(rows.status==1?"已应用":"待应用")+"</td>"+
+				"<td class='mailbox-name' style='width:350px;'><div>"+
+				divManualShow(rows.id,rows.status)+"&nbsp;" +
+				"<button style='display:none' type='button' onclick=\"updateManualSetting('"+rows.id+"','"+rows.status+"')\" class='btn btn-primary' id=\"update"+id+"\">修改</button></div></td>" +
+				"</tr>";
+			}
+		}
+
+	}
+
 	$('#'+id).html(resHtml);
 	layui.use(['laypage', 'layer'], function(){
 		var laypage = layui.laypage,layer = layui.layer;
@@ -495,9 +570,9 @@ function serachManualdata(curr,data,id){
 			limit: pageSize,
 			layout: ['count', 'prev', 'page', 'next', 'skip'],
 			jump: function (obj, first) {
-	            if(!first){
-	            	showManualPage(obj.curr);
-	            }
+				if(!first){
+					showManualPage(obj.curr);
+				}
 			}
 		});
 	});
@@ -558,17 +633,17 @@ function selectPageManual(){
 		}
 	}
 }
-// 手动发布设置按钮弹窗
+//手动发布设置按钮弹窗
 function addWordManualSetting(){
 	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['30%', '300px'],
-	    title: '添加手动发布设置',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/addWordManualSetting.do",
+		type: 2, //page层 1div，2页面
+		area: ['30%', '300px'],
+		title: '添加手动发布设置',
+		moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		content: "../content/addWordManualSetting.do",
 	}); 
 }
-// 手动发布弹窗保存
+//手动发布弹窗保存
 function doaddWordManualSetting(){
 	var publish_cyc=$("#get_cycle").val();
 	var time_slot=$("#time_quantum").val();
@@ -578,7 +653,7 @@ function doaddWordManualSetting(){
 	var get_time=$("#get_time").val();
 	var issuccess=false;
 	var isFirst=$("#isFirst").val();
-	
+
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写抓取数据周期！");
@@ -592,8 +667,8 @@ function doaddWordManualSetting(){
 	}else{
 		$("#checktime_slot").text("");
 	}
-	
-	
+
+
 	$.ajax({
 		type : "post",
 		async:false,
@@ -602,36 +677,50 @@ function doaddWordManualSetting(){
 		data : {
 			"get_cyc" :publish_cyc,
 			"time_slot" :time_slot,
-			},
+		},
 		success : function (data){
 			issuccess=data;
 		}
 	});
-	
+
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">保存成功!</div>",{icon: 1});
 		setTimeout("parent.location.reload();",1000);
 	}else{
 		layer.msg("<div style=\"color:#8B0000;\">保存失败!</div>",{icon: 2});
 	}
-	
+
 }
-// 手动发布修改
+//手动发布修改
 function updateManualSetting(id,status){
 	layer.open({
-	    type: 2, //page层 1div，2页面
-	    area: ['30%', '300px'],
-	    title: '修改手动发布设置',
-	    moveType: 1, //拖拽风格，0是默认，1是传统拖动
-	    content: "../content/getHotWordManualSetting.do?id="+id,
+		type: 2, //page层 1div，2页面
+		area: ['30%', '300px'],
+		title: '修改手动发布设置',
+		moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		content: "../content/getHotWordManualSetting.do?id="+id,
 	}); 
 }
 
-// 手动发布应用
+//手动发布应用
 function  divManualShow(id,status){
 	var html="";
 	if(status==2){
-		html="<button type='button' onclick=\"publishManual('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		var purview="";
+		$.ajax({
+			type : "get",
+			cache: false,
+			async: false,
+			url : "../user/getadminpurview.do",
+			success : function (data){
+				purview=data.purview;
+			}
+		});
+		if(purview.indexOf("C315")!=-1){
+			html="<button type='button' onclick=\"publishManual('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		}else{
+			html="<button style='display:none' type='button' onclick=\"publishManual('"+id+"','1')\" class='btn btn-primary' id=\"application"+id+"\">应用</button>";
+		}
 	}
 	return html;
 }
@@ -639,31 +728,31 @@ function publishManual(id,status){
 	layer.alert("应用设置后立即生效，确定要应用此设置吗?",{
 		title: '添加手动发布设置',
 		icon: 1,
-	    skin: 'layui-layer-molv',
-	    btn: ['确定','取消'], //按钮
-	    yes: function(){
-	    	$.ajax({
-	    		type : "post",
-	    		async:false,
-	    		url : "../content/updateWordManualSettingStatus.do",
-	    		dataType : "json",
-	    		data : {
-	    			"id":id,
-	    			"status":status,
-	    			},
-	    		success : function (data){
-	    			issuccess=data;
-	    		}
-	    	});
-	    	if(issuccess){
-	    		layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
-	    		setTimeout("window.location.reload();",1000);
-	    	}else{
-	    		layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
-	    	}
-	    }
-	
-	  });
+		skin: 'layui-layer-molv',
+		btn: ['确定','取消'], //按钮
+		yes: function(){
+			$.ajax({
+				type : "post",
+				async:false,
+				url : "../content/updateWordManualSettingStatus.do",
+				dataType : "json",
+				data : {
+					"id":id,
+					"status":status,
+				},
+				success : function (data){
+					issuccess=data;
+				}
+			});
+			if(issuccess){
+				layer.msg("<div style=\"color:#0000FF;\">应用成功!</div>",{icon: 1});
+				setTimeout("window.location.reload();",1000);
+			}else{
+				layer.msg("<div style=\"color:#8B0000;\">应用失败!</div>",{icon: 2});
+			}
+		}
+
+	});
 }
 
 function doupdateWordSettingManual(){
@@ -676,11 +765,11 @@ function doupdateWordSettingManual(){
 	var isFirst=$("#isFirst").val();	
 	var id=$("#id").val();
 	var issuccess=false;
-	
+
 	if(publish_strategy=="手动发布"){
 		publish_date="";
 	}
-	
+
 
 	if(publish_cyc=='' || publish_cyc==null || publish_cyc==undefined){
 		$("#checkpublish_cyc").text("请填写发布周期！");
@@ -695,7 +784,7 @@ function doupdateWordSettingManual(){
 		$("#checktime_slot").text("");
 	}
 
-	
+
 	$.ajax({
 		type : "post",
 		async:false,
@@ -706,12 +795,12 @@ function doupdateWordSettingManual(){
 			"time_slot" :time_slot,
 			"id":id,
 			"isFirst":isFirst,
-			},
+		},
 		success : function (data){
 			issuccess=data;
 		}
 	});
-	
+
 	if(issuccess){
 		layer.msg("<div style=\"color:#0000FF;\">修改成功!</div>",{icon: 1});
 		setTimeout("parent.location.reload();",1000);

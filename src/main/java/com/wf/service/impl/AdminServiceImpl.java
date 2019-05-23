@@ -40,6 +40,8 @@ public class AdminServiceImpl implements AdminService {
 		int pnum = (pagenum-1) * pagesize;
 		String param = null;
 		if(StringUtils.isNotBlank(adminname)){
+			adminname=adminname.replace("_", "\\_");
+			adminname=adminname.replace("%", "\\%");
 			param = "%"+adminname+"%";
 		}
 		try {
@@ -182,16 +184,5 @@ public class AdminServiceImpl implements AdminService {
 			rt=true;
 		}
 		return rt;
-	}
-
-	@Override
-	public List<String> getAdminNames(String name) {
-		List<String> result = new ArrayList<>();
-		try{
-			result = admin.getAdminNames(name);
-		}catch (Exception e){
-			log.error("查询管理员姓名出错",e);
-		}
-		return result;
 	}
 }
