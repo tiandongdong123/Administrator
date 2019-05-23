@@ -185,4 +185,15 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return rt;
 	}
+
+	@Override
+	public List<String> getAdminNames(String name) {
+		List<String> result = new ArrayList<>();
+		try{
+			result = admin.getAdminNames(name);
+		}catch (Exception e){
+			log.error("查询管理员姓名出错",e);
+		}
+		return result;
+	}
 }
