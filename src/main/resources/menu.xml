@@ -128,9 +128,6 @@
 	</Node>
 	<Node Id="D" Name="其他管理" HasChild="true" Url="">
 		<Node Id="D1" Name="万方卡管理" HasChild="true" Url="">
-			<Node Id="D15" Name="生成万方卡" HasChild="false" Url="/card/createCard.do" />
-			<Node Id="D16" Name="审核万方卡" HasChild="false" Url="/card/cardCheck.do" />
-			<Node Id="D17" Name="管理万方卡" HasChild="false" Url="/card/cardManager.do" />
 			<Node Id="D11" Name="管理赠送万方卡" HasChild="true" Url="/card/wfcardmanage.do" >
 				<Node Id="D111" Name="导出所有批次的实体卡" HasChild="false" Url="" />
 				<Node Id="D112" Name="导出单批次的实体卡" HasChild="false" Url="" />
