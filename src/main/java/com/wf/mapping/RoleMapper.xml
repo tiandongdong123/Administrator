@@ -79,9 +79,7 @@
   <delete id="deleteRole">
   delete from role where role_id = #{id}
   </delete>
-  <delete id="deleteRoleByDepartment">
-  delete from role where department=#{department}
-  </delete>
+
   <select id="getAllRole" resultMap="BaseResultMap">
   select * from role
   </select>
