@@ -183,13 +183,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 						if(listlan.size()>0){
 							for(int j=0;j<listlan.size();j++){
-								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
-									Language lan=this.language.getOne(listlan.get(j));
-									if(j==0){
-										langude=lan.getLanguageName();
-									}else{
-										langude=langude+","+lan.getLanguageName();
-									}
+								if(j==0){
+								langude=listlan.get(j);
+								}else{
+									langude=langude+","+listlan.get(j);
 								}
 							}
 						}
@@ -203,9 +200,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 								if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
 									ResourceType reso=this.type.getOne(listtyp.get(j));
 									if(j==0){
-										sources=reso.getTypeName();
+										sources=reso==null?"":reso.getTypeName();
 									}else{
-										sources=sources+","+reso.getTypeName();
+										sources=sources+","+reso==null?"":reso.getTypeName();
 									}
 								}
 							}
@@ -270,15 +267,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 						if(listlan.size()>0){
 							for(int j=0;j<listlan.size();j++){
-								if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
-									Language lan=this.language.getOne(listlan.get(j));
-									if(j==0){
-										if(lan!=null){
-											langude=lan.getLanguageName();
-										}
-									}else{
-										langude=langude+","+lan.getLanguageName();
-									}
+								if(j==0){
+								langude=listlan.get(j);
+								}else{
+									langude=langude+","+listlan.get(j);
 								}
 							}
 						}
@@ -770,13 +762,10 @@ public class DataManagerServiceImpl implements DataManagerService {
 
 					if(listlan.size()>0){
 						for(int j=0;j<listlan.size();j++){
-							if(	listlan.get(j)!=null&&	listlan.get(j)!=""){
-								Language lan=this.language.getOne(listlan.get(j));
-								if(j==0){
-									langude=lan.getLanguageName();
-								}else{
-									langude=langude+","+lan.getLanguageName();
-								}
+							if(j==0){
+							langude=listlan.get(j);
+							}else{
+								langude=langude+","+listlan.get(j);
 							}
 						}
 					}
@@ -790,9 +779,9 @@ public class DataManagerServiceImpl implements DataManagerService {
 							if(listtyp.get(j)!=null&&listtyp.get(j)!=""){
 								ResourceType reso=this.type.getOne(listtyp.get(j));
 								if(j==0){
-									sources=reso.getTypeName();
+									sources=reso==null?"":reso.getTypeName();
 								}else{
-									sources=sources+","+reso.getTypeName();
+									sources=sources+","+reso==null?"":reso.getTypeName();
 								}
 							}
 						}
