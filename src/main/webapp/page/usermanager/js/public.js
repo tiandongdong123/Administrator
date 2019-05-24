@@ -2880,7 +2880,7 @@ function deleteIPError() {
 			if(array[ar]==""){
 				continue;
 			}
-			if (ips[ip]==array[ar]) {
+			if (ips[ip].indexOf(array[ar])>-1) {
 				flag = true;
 			}
 		}
