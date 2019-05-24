@@ -178,4 +178,8 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="getAdminNames" resultType="String">
+      SELECT wangfang_admin_id FROM wfadmin where wangfang_admin_id LIKE CONCAT('%',#{name},'%')
+  </select>
 </mapper>

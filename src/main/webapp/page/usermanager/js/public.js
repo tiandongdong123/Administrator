@@ -780,7 +780,7 @@ function selectProject(obj,flag,checked){
 			text += '<div class="balance_block" name="full_div">';
 			text += '<div class="resources_title"><input type="hidden" name="rdlist['+count+'].projectid" id="pro_'+projectid+'" value="'+projectid+'"><span>'+proname+'</span>';
 			text += '<input type="hidden" name="rdlist['+count+'].projectname" value="'+proname+'"><input type="hidden" name="rdlist['+count+'].projectType" value="'+$(obj).val()+'">';
-			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" value="formal"><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><span style="float:right;margin-right:150px;"><button type="button" class="btn btn-primary btn-sm" onclick="delDiv(this,\''+count+'\',1);">删除</button></span></div>';
+			text += '<span class="front_apan"><input type="hidden" name="rdlist['+count+'].mode" ><input type="checkbox" id="pro_mode_'+count+'" onclick="checkMode('+count+')">试用</span><span style="float:right;margin-right:150px;"><button type="button" class="btn btn-primary btn-sm" onclick="delDiv(this,\''+count+'\',1);">删除</button></span></div>';
 			text += '<div class="time_block"><div class="time_input">';
 			text += '<span><b>*</b>时限</span><input type="text" class="Wdate" value="'+getData()+'" name="rdlist['+count+'].validityStarttime" id="'+projectid+'_st" onclick="WdatePicker({maxDate:\'#F{$dp.$D('+projectid+'_et)}\'})"/>';
 			text += '<span class="to">至</span><input type="text" class="Wdate" name="rdlist['+count+'].validityEndtime" id="'+projectid+'_et" onclick="WdatePicker({minDate:\'#F{$dp.$D('+projectid+'_st)}\'})"></div>';
@@ -907,7 +907,7 @@ function showProduct(obj,falg){
 }
 
 //删除项目
-function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname,balance){
+function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,institution,userId,projectname,balance,mode){
 	layer.alert('确定删除该项目吗？',{
 		icon: 1,
 	    skin: 'layui-layer-molv',
@@ -918,7 +918,7 @@ function delDiv(obj,count,flag,payChannelid,type,beginDateTime,endDateTime,insti
 	    			layer.msg('购买项目不可全部删除', {icon: 2});
 	    		}else{
 					var json="{'payChannelid':'"+payChannelid+"','type':'"+type+"','beginDateTime':'"+beginDateTime;
-		    		json+="','endDateTime':'"+endDateTime+"','institution':'"+institution;
+		    		json+="','endDateTime':'"+endDateTime+"','institution':'"+institution+"','mode':'"+mode;
 		    		json+="','userId':'"+userId+"','balance':'"+balance+"','projectname':'"+projectname+"'}";
 		    		$(obj).parents(".balance_block").remove();
 		    		$("div[name='tabs_"+count+"']").remove();
