@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import com.wf.dao.WfadminMapper;
 import com.wf.service.AdminService;
 @Service
 public class AdminServiceImpl implements AdminService {
+	private static final Logger log = Logger.getLogger(AdminServiceImpl.class);
 
 	@Autowired
 	private WfadminMapper admin;
@@ -38,6 +40,8 @@ public class AdminServiceImpl implements AdminService {
 		int pnum = (pagenum-1) * pagesize;
 		String param = null;
 		if(StringUtils.isNotBlank(adminname)){
+			adminname=adminname.replace("_", "\\_");
+			adminname=adminname.replace("%", "\\%");
 			param = "%"+adminname+"%";
 		}
 		try {
@@ -181,4 +185,22 @@ public class AdminServiceImpl implements AdminService {
 		}
 		return rt;
 	}
+
+	@Override
+	public List<String> getAdminNames(String name) {
+		List<String> result = new ArrayList<>();
+		try{
+			result = admin.getAdminNames(name);
+		}catch (Exception e){
+			log.error("查询管理员姓名出错",e);
+		}
+		return result;
+	}
+
+	@Override
+    public String getAdminIdByName(String name) {
+        List<Object> ad = this.admin.checkAdminId(name);
+        Wfadmin admin=(Wfadmin)ad.get(0);
+        return admin.getId();
+    }
 }

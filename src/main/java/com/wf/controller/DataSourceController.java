@@ -825,26 +825,26 @@ public class DataSourceController {
 
 	// 期刊资源配置页面
 	@RequestMapping("qikan-ziyuanpeizhi")
-	public ModelAndView qikanZiyuanpeizhi() {
+	public ModelAndView qikanZiyuanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_ziyuanpeizhi");
-		return view;
+			return view;
 	}
 
 	// 资源授权配置页面
 	@RequestMapping("qikan-shouquanpeizhi")
-	public ModelAndView qikanShouquanpeizhi() {
+	public ModelAndView qikanShouquanpeizhi(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_shouquanpeizhi");
-		return view;
+			return view;
 	}
 
 	// 资源授权列表页面
 	@RequestMapping("qikan-jigouList")
-	public ModelAndView qikanjigouList() {
+	public ModelAndView qikanjigouList(HttpServletRequest request) {
 		ModelAndView view = new ModelAndView();
 		view.setViewName("/page/qikan/qikan_jigouList");
-		return view;
+			return view;
 	}
 
 	// 资源授权列表页面

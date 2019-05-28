@@ -13,79 +13,84 @@ function checkadminid(id){
 							$("#checkadminid").text("名称重复，请重新输入");
 					}else{
 							$("#cname").val("Y")
-							$("#checkadminid").text("一旦注册成功不能修改");
+							if($("#usernameAdmin")[0].value.length>=6) {
+								$("#checkadminid").text("一旦注册成功不能修改");								
+							} 
 					}
 				}
 			});
 	}else{
-		$("#checkadminid").text("请输入角色名");
+		$("#checkadminid").text("请填写用户名");
 	}
 }
 function doaddadmin(){
 	var cname=$("#cname").val();
+	$("#usernameAdmin").focus();
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
+	var patt1 = new RegExp(/\s+/g);
 	if(cname=="Y"){
-		var adminid=$("#username").val();
+		var adminid=$.trim($("#usernameAdmin").val());
 		if(adminid.length<6){
-			$("#username").focus();
+			$("#usernameAdmin").focus();
 			return;
 		}
 		var cid = checkId(adminid);
 		if(cid==false){
-			$("#username").focus();
+			$("#usernameAdmin").focus();
 			$("#checkadminid").text("用户名限定为字母、数字或下划线的组合");
 			return;
 		}
-		var password = $("#password").val();
+		var password = $.trim($("#passwordAdmin").val());
 		if(password==null||password==''){
 			$("#checkpassword").text("请输入密码");
-			$("#password").focus();
+			$("#passwordAdmin").focus();
+			return;
+		}else if (password.length<6) {
+			$("#checkpassword").text("由6-16个字符组成");
+			$("#passwordAdmin").focus();
+			return;
+		}else if (patt1.test(password)) {
+			$("#checkpassword").text('密码不能包含空格');
+			$("#passwordAdmin").focus();
+			return;
+		}else if (!checkId(password)){
+			$("#checkpassword").text('密码不能包含中文');
+			$("#passwordAdmin").focus();
 			return;
 		}else{
 			$("#checkpassword").text("");
 		}
 		
+		var deptname=$.trim($("#deptname").val());
 		
+		if(deptname==null||deptname==''){
+			$("#departmentStr").text("请填写部门名称");
+			$("#deptname").focus();
+			return;
+		}else if (patt1.test(deptname)) {
+			$("departmentStr").text('部门名称不能包含空格');
+			$("#deptname").focus();
+			return;
+		}else if(!patrn.test(deptname)){
+			$("#departmentStr").text("部门必须为中文");
+			$("#deptname").focus();
+			return;
+		}else{
+			$("#departmentStr").text("");
+		}
 		
-		var name = $("#name").val();
+		var name = $.trim($("#name").val());
+		if(name==null||name==''){
+			$("#checkpassword").text("请填写真实姓名");
+			$("#name").focus();
+			return;
+		}else{
+			$("#checkpassword").text("");
+		}
 		
-		
-		var deptname=$("#deptname").find("option:selected").val();
 		var roleid=$("#rolename").find("option:selected").val();
 		
-		
-		var mphone = $("#mphone").val();
-		if(mphone!=null&&mphone!=''){
-			var cm = checkMobile(mphone);
-			if(cm==false){
-				$("#mphone").focus();
-				$("#chcekmphone").text("该手机号无效");
-				return;
-			}else{
-				$("#chcekmphone").text("");
-			}
-		}
-		var telphone=$("#telphone").val();
-		if(telphone!=null&&telphone!=''){
-			var ctel = checkPhone(telphone);
-			if(ctel==false){
-				$("#telphone").focus();
-				$("#checktelphone").text("该固话号码无效");
-				return;
-			}else{
-				$("#checktelphone").text("");
-			}
-		}
-		var email = $("#email").val();
-		if(email!=null&&email!=''){
-			var cemail = checkemail(email);
-			if(cemail==false){
-				$("#email").focus();
-				$("#checkemail").text("该邮箱无效");
-				return;
-			}else{
-				$("#checkemail").text("");
-			}
-		}
+
 		$.ajax( {  
 			type : "POST",  
 			url : "../admin/doaddadmin.do",
@@ -93,11 +98,8 @@ function doaddadmin(){
 					'wangfang_admin_id' : adminid,
 					'user_realname':name,
 					'password': password,
-					'mobile_phone':mphone,
-					'tel_phone':telphone,
 					'department':deptname,
 					'role_id':roleid,
-					'email':email
 				},
 				dataType : "json",
 				success : function(data) {
@@ -115,8 +117,10 @@ function doaddadmin(){
 	}
 }
 
-function showvalue(){
-	$("#checkadminid").text("由6-16个字符组成");
+function showvalue(str){
+	if(str.length<6) {
+		$("#checkadminid").text("由6-16个字符组成");		
+	}
 }
 
 function checkMobile(str) {
@@ -158,3 +162,45 @@ function checkemail(str){
 	}
 }
 
+// 输入框内容空值校验
+function checkValue(type,str) {
+	var typeObj = {
+			"pwd": "请填写密码",
+			"name":"请填写真实姓名",
+			"department": "请填写部门名称"
+	}
+	var patt1 = new RegExp(/\s+/g);
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
+	var typeClass = "#"+type+"Str"
+	if(str===''){
+		$(typeClass).text(typeObj[type])
+	}else {
+		$(typeClass).text('')
+	}
+	if (type==='pwd') {
+		if(str.length<6) {
+			$(typeClass).text('由6-16个字符组成')
+		}else if (patt1.test(str)) {
+			$(typeClass).text('密码不能包含空格')
+		}else if (!checkId(str)) {
+			$(typeClass).text('密码不能包含中文')
+		}
+	}
+	var patrn= /^[\u4E00-\u9FA5]+$/i;
+	if (type==='department') {
+		if (str==''||str==null) {
+			$(typeClass).text('请填写部门名称')
+		}else if (patt1.test(str)) {
+			$(typeClass).text('部门名称不能包含空格')
+		}else if (!patrn.test(str)) {
+			$(typeClass).text('部门必须为中文')
+		}else {
+			$(typeClass).text('')
+		}
+	}
+}
+// 取消按钮
+function closeWindow() {
+	var index = parent.layer.getFrameIndex(window.name);
+	parent.layer.close(index);
+}

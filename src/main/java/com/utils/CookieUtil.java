@@ -47,6 +47,41 @@ public class CookieUtil {
 	}
 	
 	/**
+	 * 检验cookie
+	 * @param req
+	 * @return
+	 */
+	public static String getCookiePurviews(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		String castgc = null;
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie ck : cookies) {
+				if (ck.getName().equals("purview")) {
+					castgc = ck.getValue();
+					break;
+				}
+			}
+		}
+		return castgc;
+	}
+	/**
+	 * 添加cookie
+	 * @param token
+	 * @param response
+	 */
+	public static void addPrivilegeCookie(String token, HttpServletResponse response) {
+		try {
+			Cookie cookie = new Cookie("purview", token);
+			cookie.setMaxAge(3600);
+			cookie.setDomain(domain);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 获取cookie中存的用户信息
 	 * @param req
 	 * @return
@@ -90,6 +125,9 @@ public class CookieUtil {
 			e.printStackTrace();
 		}
 	}
+	
+
+	
 	
 	/**
 	 * 添加cookie

@@ -1,7 +1,6 @@
-<? directive dynamic rlmap;?>
-<?
-	layout("/inc/layout.html",{title:'知识服务平台后台管理系统'}){
-?>
+	<?
+	  include("/inc/header.html") {}
+    ?>
 <script  type="text/javascript"  src="../page/systemmanager/js/update_role.js"> </script>
 <input type="hidden" value="Y" id="cname">
 <input type="hidden"  id="treeids" value="${role.purview}">
@@ -9,12 +8,9 @@
 <input type="hidden"  id="srolename" value="${role.roleName}">
 <input type="hidden"  id="roleid" value="${role.roleId}">
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="margin-left: 0;">
     <!-- Content Header (Page header) -->
    <section class="content-header">
-      <h1>
-       	角色修改
-      </h1>
      <!--   <ol class="breadcrumb">
         <li><a href="../user/toIndex.do"><i class="fa fa-dashboard"></i>首页</a></li>
         <li><a href="javascript:void(0)">系统管理</a></li>
@@ -30,38 +26,25 @@
           <!-- general form elements -->
           <div class="box box-primary">
           <form>
-          <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name">部门名称：</label>
-                 	<select id="deptname">
-                 	<?if(rlmap.~size>0){?>
-                 	<?for(var a in rlmap){?>
-                 	<?if(a.deptName==role.deptName){?>
-                 	<option selected="selected" value="${a.id}">${a.deptName}</option>
-                 	<?}else{?>
-                 		<option value="${a.id}">${a.deptName}</option>
-                 	<?}?>
-                 	<?}?>
-                 	<?}?>
-                 	</select>
-                </div>
 					<div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name">角色名称：</label><span style="color: red">*</span>
-                  <input type="text" id="rolename" class="form-control input_width" onblur="checkrolename(this.value)" value="${role.roleName}"><span id="checkrolename"></span>
+                  <label for="exampleInputEmail1" class="input_name"><span style="color: red">*</span>角色名称</label>
+                  <input type="text" id="rolename" maxlength="16" class="form-control input_width" onkeyup="this.value=this.value.replace(/^\s+|\s+$/gm,'');" onafterpaste="this.value=this.value.replace(/^\s+|\s+$/gm,'')" onblur="checkrolename(this.value)" value="${role.roleName}"><span class="voidName" id="checkrolename"></span>
                 </div>
       			 <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name"  >角色描述：</label>
+                  <label for="exampleInputEmail1" class="input_name"  >角色描述</label>
                    <textarea class="form-control input_width" rows="3" name="ipSegment" id="roledescribe" >${role.description}</textarea>
                 </div>
                 <div class="form-group input_block">
-                  <label for="exampleInputEmail1" class="input_name"  >权限配置：</label>
-                  全选：<input type="checkbox" id="checkall" onclick="checkrole(this)">
-                  
-                 	 <ul id="treeDemo" class="ztree"></ul>
-                </div>
                 
+                  <label for="exampleInputEmail1" class="input_name"  ><span style="color: red">*</span>权限配置</label>
+                  全选：<input type="checkbox" id="checkall" onclick="checkrole(this)"><span class="voidName" id="ruleName"></span>
+                  
+                 	 <ul id="treeDemo" class="ztree" style="margin-left: 172px;"></ul>
+                </div>
+                  <div class="selectPower" id="roleName"></div>
              	 <div class="box-footer" style="text-align:center;">
-                <button type="button" onclick="doupdaterole()"   class="btn btn-primary">提交</button>
-                <button type="reset"   class="btn btn-primary" onclick="resttree()">重置</button>
+                <button type="button" onclick="doupdaterole()"   class="btn btn-primary">修改</button>
+                <button type="reset" class="btn btn-primary" onclick="closeWindow()">取消</button>
               </div>
               </form>
             </div>
@@ -70,4 +53,3 @@
       </div>
     </section>
   </div>
-<?}?>

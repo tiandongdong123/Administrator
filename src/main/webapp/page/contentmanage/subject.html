@@ -70,13 +70,13 @@
             <div class="box-body no-padding">
               <div class="mailbox-controls">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-sm" onclick="deleteMore()"><i class="fa fa-trash-o"></i></button>
+                  <button <?if(!strutil.contain(session.purviews,"C411")){?>style="display:none"<?}?> type="button" class="btn btn-default btn-sm" onclick="deleteMore()"><i class="fa fa-trash-o"></i></button>
                 </div>
                 <!-- /.btn-group -->
-                <button type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addsub()">添加学科分类</button>
-                 <button type="button" style="width: 50px;margin-left: 455px;" class="btn btn-default btn-sm" onclick="publish()">发布</button>
-                 <button type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
-                 <button type="button" style="float: right;margin-right: 5px;" onclick="exportSubject()"  class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
+                <button <?if(!strutil.contain(session.purviews,"C413")){?>style="display:none"<?}?>  type="button" style="width: 100px;" class="btn btn-default btn-sm" onclick="addsub()">添加学科分类</button>
+                 <button <?if(!strutil.contain(session.purviews,"C414")){?>style="display:none"<?}?> type="button" style="width: 50px;margin-left: 455px;" class="btn btn-default btn-sm" onclick="publish()">发布</button>
+                 <button <?if(!strutil.contain(session.purviews,"C415")){?>style="display:none"<?}?> type="button" style="float: right;" onclick="refresh()" class="btn btn-default btn-sm"><a href="#"><i class="fa fa-refresh"></i></a></button>
+                 <button <?if(!strutil.contain(session.purviews,"C416")){?>style="display:none"<?}?> type="button" style="float: right;margin-right: 5px;" onclick="exportSubject()"  class="btn btn-default btn-sm"><a href="#"><i class="fa fa-fw fa-file-excel-o"></i></a></button>
               </div>
               
               <div class="table-responsive mailbox-messages">

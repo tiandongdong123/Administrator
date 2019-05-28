@@ -4,12 +4,12 @@
         <div class="mailbox-controls">
             <div class="btn-group">
                 <? if(pager.pageRecords.~size != 0 ){?>
-                <button type="button" class="btn btn-default btn-sm delete_batch"><i class="fa fa-trash-o"></i></button>
+                <button <?if(!strutil.contain(session.purviews,"C124")){?>style="display:none"<?}?> type="button" class="btn btn-default btn-sm delete_batch"><i class="fa fa-trash-o"></i></button>
                 <?}?>
             </div>
             <div class="btn-group" style="padding:0 10px;margin-left: 300px;">
                 <input type="text" placeholder="请输入添加的标签" class="label_input">
-                <button type="button" class="btn btn-default btn-sm add_label-btn" style="float: none;">添加标签</button>
+                <button <?if(!strutil.contain(session.purviews,"C121")){?>style="display:none"<?}?> type="button" class="btn btn-default btn-sm add_label-btn" style="float: none;">添加标签</button>
                 <span class="add_label-tip">请填写标签!</span>
             </div>
         </div>
@@ -44,9 +44,9 @@
                     <td>${item.operatingTime}</td>
                     <td>
                         <div>
-                            <button type="button" class="btn btn-primary modify-style">修改</button>
+                            <button <?if(!strutil.contain(session.purviews,"C122")){?>style="display:none"<?}?> type="button" class="btn btn-primary modify-style">修改</button>
                             &nbsp;
-                            <button type="button" class="btn btn-primary delete_label">删除</button>
+                            <button <?if(!strutil.contain(session.purviews,"C123")){?>style="display:none"<?}?> type="button" class="btn btn-primary delete_label">删除</button>
                         </div>
                     </td>
                 </tr>

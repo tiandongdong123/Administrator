@@ -50,6 +50,7 @@ import com.redis.RedisUtil;
 import com.utils.AuthorityLimit;
 import com.utils.CookieUtil;
 import com.utils.DateUtil;
+import com.utils.GetDetails;
 import com.utils.HttpClientUtil;
 import com.utils.IPConvertHelper;
 import com.utils.InstitutionUtils;
@@ -428,7 +429,8 @@ public class AheadUserController {
 	@RequestMapping("findpatent")
 	@ResponseBody
 	public Map<String,Object> findPatent(String num){
-		String str = RedisUtil.get("PatentIPC",0);
+
+		String str = GetDetails.PATENT_IPC==null ? GetDetails.getPatentIpc() : GetDetails.PATENT_IPC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -455,11 +457,11 @@ public class AheadUserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String gazetter = "";
 		if ("0".equals(pid)) {
-			gazetter = RedisUtil.get("gazetteerTypeDIC", 13);// 专辑分类
+			gazetter = GetDetails.GAZETTEER_TYPE_DIC==null ? GetDetails.getGazetteerTypeDic():GetDetails.GAZETTEER_TYPE_DIC;// 专辑分类
 			map.put("arrayGazetter", JSONArray.fromObject(gazetter));
 		}
 		JSONArray arrayArea = new JSONArray();
-		String reg = RedisUtil.get("Region", 13);// 省级区域
+		String reg = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(reg);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -522,7 +524,8 @@ public class AheadUserController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONArray arrayArea = new JSONArray();
-		String area = RedisUtil.get("Region", 13);// 省级区域
+
+		String area = GetDetails.REGION==null ? GetDetails.getRegion() : GetDetails.REGION;// 省级区域
 		JSONArray region = JSONArray.fromObject(area);
 		for (int i = 0; i < region.size(); i++) {
 			JSONObject obj = region.getJSONObject(i);
@@ -540,7 +543,7 @@ public class AheadUserController {
 	@RequestMapping("findPerioSubject")
 	@ResponseBody
 	public Map<String,Object> findPerioSubject(String num){
-		String str = RedisUtil.get("PerioInfoDic",13);
+		String str = GetDetails.PERIOINFO_DIC==null ? GetDetails.getPerioInfoDic() : GetDetails.PERIOINFO_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -562,7 +565,8 @@ public class AheadUserController {
 	@RequestMapping("findsubject")
 	@ResponseBody
 	public Map<String,Object> findSubject(String num){
-		String str = RedisUtil.get("CLCDic",0);
+
+		String str = GetDetails.CLC_DIC==null?GetDetails.getCLCDic():GetDetails.CLC_DIC;
 		JSONArray array = JSONArray.fromObject(str);
 		for(int i = 0; i < array.size();i++){
 			JSONObject  obj = array.getJSONObject(i);
@@ -1275,7 +1279,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : user.getRdlist()){
 			if(dto.getProjectType().equals("balance")){
 				//增加余额信息
-				if(aheadUserService.chargeProjectBalance(user, dto,adminId) > 0){
+				if(aheadUserService.chargeProjectBalance(user, dto,adminId,new HashMap<String, Object>()) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
@@ -1283,7 +1287,7 @@ public class AheadUserController {
 				}
 			}else if(dto.getProjectType().equals("time")){
 				//增加限时信息
-				if(aheadUserService.addProjectDeadline(user, dto,adminId) > 0){
+				if(aheadUserService.addProjectDeadline(user, dto,adminId,new HashMap<String, Object>()) > 0){
 					aheadUserService.addProjectResources(user, dto);
 					right.append(dto.getProjectname()+"添加成功</br>");
 				}else{
@@ -1368,9 +1372,12 @@ public class AheadUserController {
 		if (delList!=null&&delList.size() > 0) {
 			this.removeproject(req, delList);
 		}
+		//删除转换前的订单
+		Map<String,Object> changeFront = new HashMap<>();
 		if (StringUtils.equals(com.getChangeFront(), "GTimeLimit")
 				|| StringUtils.equals(com.getChangeFront(), "GBalanceLimit")) {
-			if (aheadUserService.deleteChangeAccount(com, adminId) > 0) {
+			changeFront = aheadUserService.deleteChangeAccount(com, adminId);
+			if ((int)changeFront.get("isSuccess") > 0) {
 				aheadUserService.deleteResources(com.getUserId(), com.getChangeFront());
 			}
 		}
@@ -1379,7 +1386,7 @@ public class AheadUserController {
 		for(ResourceDetailedDTO dto : com.getRdlist()){
 			if(dto.getProjectid()!=null){
 				if(dto.getProjectType().equals("balance")){
-					if(aheadUserService.chargeProjectBalance(com, dto, adminId)>0){
+					if(aheadUserService.chargeProjectBalance(com, dto, adminId,changeFront)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
 						right.append(dto.getProjectname()+"添加成功</br>");
@@ -1388,7 +1395,7 @@ public class AheadUserController {
 					}
 				}else if(dto.getProjectType().equals("time")){
 					//增加限时信息
-					if(aheadUserService.addProjectDeadline(com, dto,adminId)>0){
+					if(aheadUserService.addProjectDeadline(com, dto,adminId,changeFront)>0){
 						aheadUserService.deleteResources(com,dto,false);
 						aheadUserService.updateProjectResources(com, dto);
 						right.append(dto.getProjectname()+"添加成功</br>");
@@ -1441,6 +1448,7 @@ public class AheadUserController {
 			dto.setValidityEndtime(endDateTime);
 			dto.setProjectname(projectname);
 			dto.setProjectType(type);
+			dto.setMode((String) obj.get("mode"));
 			if ("balance".equals(type)) {
 				dto.setTotalMoney(balance.toString());
 			} else if ("count".equals(type)) {
@@ -1715,7 +1723,6 @@ public class AheadUserController {
 	/**
 	 * 校验标准机构是否合法
 	 * @param userId
-	 * @param orgCode
 	 * @param companySimp
 	 * @return
 	 * @throws Exception

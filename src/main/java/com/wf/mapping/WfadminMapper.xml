@@ -7,10 +7,7 @@
     <result column="user_realname" property="user_realname" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="is_male" property="is_male" jdbcType="INTEGER" />
-    <result column="mobile_phone" property="mobile_phone" jdbcType="VARCHAR" />
-    <result column="tel_phone" property="tel_phone" jdbcType="VARCHAR" />
     <result column="department" property="department" jdbcType="VARCHAR" />
-    <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="role_id" property="role_id" jdbcType="VARCHAR" />
     <result column="registration_time" property="registration_time" jdbcType="TIMESTAMP" />
     <result column="registrant" property="registrant" jdbcType="VARCHAR" />
@@ -27,12 +24,12 @@
   
   <select id="getAdmin" resultMap="BaseResultMap">
 	  select 
-	  	a.id,a.wangfang_admin_id,a.user_realname,c.dept_name,a.mobile_phone,a.tel_phone,a.email,b.role_name, a.status 
+	  	a.id,a.wangfang_admin_id,a.user_realname,a.department,b.role_name, a.status 
 	  from 
-	  	wfadmin a left join role b on a.role_id=b.role_id left join department c on a.department=c.id
+	  	wfadmin a left join role b on a.role_id=b.role_id
 	  	where 1=1
 		  <if test="param1!=null and param1!=''">
-		  and b.role_name like #{param1}  or c.dept_name like #{param2} or a.user_realname like #{param3} or a.wangfang_admin_id like #{param4}
+		  and b.role_name like #{param1}  or a.department like #{param2} or a.user_realname like #{param3} or a.wangfang_admin_id like #{param4}
 		  </if>
 	  order by registration_time desc
 	  limit #{pagenum},#{pagesize}
@@ -99,17 +96,8 @@
       <if test="is_male != null" >
         is_male,
       </if>
-      <if test="mobile_phone != null" >
-        mobile_phone,
-      </if>
-      <if test="tel_phone != null" >
-        tel_phone,
-      </if>
       <if test="department != null" >
         department,
-      </if>
-      <if test="email != null" >
-        email,
       </if>
       <if test="role_id != null" >
         role_id,
@@ -137,17 +125,8 @@
       <if test="is_male != null" >
         #{is_male,jdbcType=INTEGER},
       </if>
-      <if test="mobile_phone != null" >
-        #{mobile_phone,jdbcType=VARCHAR},
-      </if>
-      <if test="tel_phone != null" >
-        #{tel_phone,jdbcType=VARCHAR},
-      </if>
       <if test="department != null" >
         #{department,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
-        #{email,jdbcType=VARCHAR},
       </if>
       <if test="role_id != null" >
         #{role_id,jdbcType=VARCHAR},
@@ -184,17 +163,8 @@
       <if test="is_male != null" >
         is_male = #{is_male,jdbcType=TINYINT},
       </if>
-      <if test="mobile_phone != null" >
-        mobile_phone = #{mobile_phone,jdbcType=VARCHAR},
-      </if>
-      <if test="tel_phone != null" >
-        tel_phone = #{tel_phone,jdbcType=VARCHAR},
-      </if>
       <if test="department != null" >
         department = #{department,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
       </if>
       <if test="role_id != null" >
         role_id = #{role_id,jdbcType=VARCHAR},
@@ -208,4 +178,8 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="getAdminNames" resultType="String">
+      SELECT wangfang_admin_id FROM wfadmin where wangfang_admin_id LIKE CONCAT('%',#{name},'%')
+  </select>
 </mapper>

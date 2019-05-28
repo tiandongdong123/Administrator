@@ -36,13 +36,13 @@
             <div class="box-body no-padding">
               <div class="mailbox-controls">
                 <div class="btn-group">
-                  <button type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
+                  <button <?if(!strutil.contain(session.purviews,"C421")){?>style="display:none"<?}?> type="button" onclick="deleteMore()" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
                 </div>
                 <!-- /.btn-group -->
-                <button type="button" class="btn btn-primary"  onclick="addResour()">添加资源类型</button>
-                <button type="button" onclick="moveDown()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-down"></i></button>
-                <button type="button" onclick="moveUp()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-up"></i></button>
-                <button type="button" style="float: right;margin-right: 5px;" onclick="exportResource();" class="btn btn-primary">导出</button>
+                <button <?if(!strutil.contain(session.purviews,"C422")){?>style="display:none"<?}?> type="button" class="btn btn-primary"  onclick="addResour()">添加资源类型</button>
+                <button <?if(!strutil.contain(session.purviews,"C423")){?>style="display:none"<?}?> type="button" onclick="moveDown()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-down"></i></button>
+                <button <?if(!strutil.contain(session.purviews,"C423")){?>style="display:none"<?}?> type="button" onclick="moveUp()" class="btn btn-default btn-sm"><i class="fa fa-long-arrow-up"></i></button>
+                <button <?if(!strutil.contain(session.purviews,"C424")){?>style="display:none"<?}?> type="button" style="float: right;margin-right: 5px;" onclick="exportResource();" class="btn btn-primary">导出</button>
 						
               </div>
               

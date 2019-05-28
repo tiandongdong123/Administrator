@@ -57,6 +57,7 @@
 			<mvc:exclude-mapping path="/inc/**"/>  
 			<mvc:exclude-mapping path="/page/**"/>
 			<mvc:exclude-mapping path="/template/**"/>
+			<mvc:exclude-mapping path="/jsonp/**" />
 			<bean class="com.interceptor.UserInterceptor"/>
 		</mvc:interceptor>  
     </mvc:interceptors>

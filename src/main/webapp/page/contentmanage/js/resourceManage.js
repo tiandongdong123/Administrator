@@ -67,6 +67,16 @@ function serachdata(data){
 	$("#pageNum").val(pageNum);
 	$("#pageTotal").val(pageTotal);
 	var pageRow=data.pageRow;
+	var purview="";
+	$.ajax({
+		type : "get",
+		cache: false,
+		async: false,
+		url : "../user/getadminpurview.do",
+		success : function (data){
+			purview=data.purview;
+		}
+	});
 	$("#tbody").remove();
 	var resHtml = "";
 	resHtml += "<tbody id='tbody'><tr style='text-align: center;'>";
@@ -88,15 +98,33 @@ function serachdata(data){
 			resHtml += "<td class='mailbox-attachment' style='text-align: left;'>"+rows.typedescri+"</td>";
 			resHtml += "<td style='vertical-align:middle;' class='mailbox-attachment' style='text-align: left;'>"+rows.typeCode+"</td>";
 			resHtml += "<td >";
-			resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button></br>";
-			resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">删除</button></br>";
-
-			if(rows.typeState == ""){
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button></br>";
-			}else if(rows.typeState == 1){
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button></br>";
-			}else {
-				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button></br>";
+			if(purview.indexOf("C425")!=-1){
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button></br>";
+			}else{
+				resHtml += "<button style=\"width: 100px;display:none;\" type='button' class='btn btn-primary' onclick=\"updateResour('"+rows.id+"')\">修改</button></br>";
+			}
+			if(purview.indexOf("C426")!=-1){
+				resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">删除</button></br>";
+			}else{
+				resHtml += "<button style=\"width: 100px;display:none;\" type='button' class='btn btn-primary' onclick=\"deleteOne('"+rows.id+"')\">删除</button></br>";
+			}
+			
+			if(purview.indexOf("C427")!=-1){
+				if(rows.typeState == ""){
+					resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button></br>";
+				}else if(rows.typeState == 1){
+					resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button></br>";
+				}else {
+					resHtml += "<button style='width: 100px;' type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button></br>";
+				}
+			}else{
+				if(rows.typeState == ""){
+					resHtml += "<button style=\"width: 100px;display:none;\" type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">发布</button></br>";
+				}else if(rows.typeState == 1){
+					resHtml += "<button style=\"width: 100px;display:none;\" type='button' class='btn btn-primary' onclick=\"pushData(0,'"+rows.id+"')\">下撤</button></br>";
+				}else {
+					resHtml += "<button style=\"width: 100px;display:none;\" type='button' class='btn btn-primary' onclick=\"pushData(1,'"+rows.id+"')\">再发布</button></br>";
+				}
 			}
 			resHtml += "</div>";
 			resHtml += "</td>";

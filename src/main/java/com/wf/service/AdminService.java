@@ -26,4 +26,8 @@ public interface AdminService {
 	Wfadmin getAdminById(String id);
 	
 	boolean doUpdateAdmin(Wfadmin admin);
+
+    List<String> getAdminNames(String name);
+
+    String getAdminIdByName(String name);
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wf.bean.Department;
 import com.wf.bean.SystemMenu;
 import com.wf.bean.Wfadmin;
 import com.wf.dao.SystemMenuMapper;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements UserService {
 		map.put("userName", userName);
 		map.put("passWord", passWord);
 		Wfadmin us = userMapper.selectUserInfo(map);
+		Department de=new Department();
+		de.setDeptName(us.getDepartment());
+		us.setDept(de);
 		return us;
 	}
 	
