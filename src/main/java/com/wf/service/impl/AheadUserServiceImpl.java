@@ -1868,6 +1868,29 @@ public class AheadUserServiceImpl implements AheadUserService{
 		long time=System.currentTimeMillis();
 		Map<String,Object> allMap=this.getSolrList(map);
 		List<Object> userList = (List<Object>) allMap.get("data");
+		//验证Ip
+		Long ipstart=(Long) map.get("ipstart");
+		Long ipend=(Long) map.get("ipend");
+		if(ipstart!=null&&ipend!=null&&ipstart.longValue()<=ipend.longValue()){
+			List<String> userIdList=this.findUserIdByIp(ipstart, ipend,(String) map.get("userId"));
+			if(userIdList!=null&&userIdList.size()>0){
+				List<Object> listObj=new ArrayList<Object>();
+				int count=0;
+				for (Object obj : userList) {
+					Map<String,String> js=(Map<String,String>)obj;
+					if(userIdList.contains(js.get("Id"))){
+						listObj.add(obj);
+						count++;
+					}
+				}
+				allMap.put("num", count);
+				userList=listObj;
+			}
+			if(userIdList.size()<=0){
+				userList.removeAll(userList);
+				allMap.put("num", 0);
+			}
+		}
 		long timeSql=System.currentTimeMillis()-time;
 		//2、查询产品
 		long time1=System.currentTimeMillis();

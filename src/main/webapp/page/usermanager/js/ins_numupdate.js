@@ -229,6 +229,7 @@ function updateUser(){
 			$('#IpErrorInfo').html('')
     		layer.alert("更新成功", {
     			icon: 1,
+    			move:false,
     		    skin: 'layui-layer-molv',
     		    btn: ['确定'], //按钮
     		    yes: function(){
