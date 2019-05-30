@@ -516,6 +516,7 @@ function queryType(){
 	var val=$("#proType").val();
 	if(val==""){
 		$("#resource_span").hide();
+		$("#resource").val('');
 		return;
 	}
 	$("#resource").html('<option value="">--请选择--</option>');
