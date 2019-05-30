@@ -99,6 +99,8 @@
 		<wanfang.version>1.2018.606</wanfang.version>
 		<!-- 二维码 -->
 		<zxing.version>3.3.0</zxing.version>
+		<!-- 广告grpc -->
+		<advertmanager-grpc-api.version>1.2019.44-SNAPSHOT</advertmanager-grpc-api.version>
 
 	</properties>
 
@@ -810,6 +812,31 @@
 			<artifactId>common-config-tools</artifactId>
 			<version>1.2018.45</version>
 		</dependency>
+		<!-- 广告grpc -->
+		<dependency>
+			<groupId>com.wanfangdata</groupId>
+			<artifactId>advertmanager-grpc-api</artifactId>
+			<version>${advertmanager-grpc-api.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jdom</groupId>
+					<artifactId>jdom2</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>dom4j</groupId>
+					<artifactId>dom4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>jaxen</groupId>
+					<artifactId>jaxen</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 	</dependencies>
  <build>
     <sourceDirectory>src/main/java</sourceDirectory>
