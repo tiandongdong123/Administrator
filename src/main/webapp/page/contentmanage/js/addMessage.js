@@ -269,7 +269,7 @@ function uploadImage(statu,flag){
 		return false;
 	}
     var options = {
-    	url:"../content/uploadImg.do",
+    	url:"local.wanfangdata.com.cn:8787/advertmanager/pictureManager/upload",
     	dataType: 'json',
         type : 'POST',
         success : function(data) {
