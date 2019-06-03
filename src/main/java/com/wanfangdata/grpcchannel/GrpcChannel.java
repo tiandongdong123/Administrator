@@ -42,8 +42,8 @@ public class GrpcChannel {
             pro.load(new InputStreamReader(in,"UTF-8"));
             GrpcChannel.host = pro.getProperty("grpc_host");
             GrpcChannel.port = Integer.valueOf(pro.getProperty("grpc_port"));
-            GrpcChannel.messagepicturehost = pro.getProperty("message_picture__host");
-            GrpcChannel.messagepictureport = Integer.valueOf(pro.getProperty("message_picture__port"));
+            GrpcChannel.messagepicturehost = pro.getProperty("message_picture_host");
+            GrpcChannel.messagepictureport = Integer.valueOf(pro.getProperty("message_picture_port"));
             in.close();
         } catch (Exception var8) {
             log.error("无法加载配置文件" + GRPC_CONFIG);
