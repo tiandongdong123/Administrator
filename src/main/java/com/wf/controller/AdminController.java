@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.CookieUtil;
 import com.utils.DateTools;
+import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
@@ -188,20 +189,26 @@ public class AdminController {
 	@ResponseBody
 	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request){
 
-			boolean rt=false;
-			boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
-			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
-			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
-			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
-			boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-			boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+		boolean rt=false;
+		boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
+		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
+		boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+		try {
 			if(wfAdminId && password && realName && department && role && !isRepeat){
+				admin.setPassword(PasswordHelper.encryptPassword(admin.getPassword()));
 				rt = this.admin.doAddAdmin(admin);
 				//记录日志
 				Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
 				logService.addLog(log);
 			}
-			return rt;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rt;
 	}
 	/**
 	 * 修改管理员页面
@@ -211,12 +218,18 @@ public class AdminController {
 	 */
 	@RequestMapping("updateadmin")
 	public String updateAdmin(Map<String,Object> map,String id,Integer pagenum,HttpServletRequest request){
-		List<Object> rolename = this.admin.getRole();
-		Wfadmin admin = this.admin.getAdminById(id);
-		map.put("admin", admin);
-		map.put("rolename", rolename);
-		map.put("pagenum",pagenum);
-			return "/page/systemmanager/update_admin";
+		try {
+			List<Object> rolename = this.admin.getRole();
+			Wfadmin admin = this.admin.getAdminById(id);
+			admin.setPassword(PasswordHelper.decryptPassword(admin.getPassword()));
+			map.put("admin", admin);
+			map.put("rolename", rolename);
+			map.put("pagenum",pagenum);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/page/systemmanager/update_admin";
 	}
 
 	/**
@@ -227,7 +240,8 @@ public class AdminController {
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
 	public JSONObject doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-			JSONObject map = new JSONObject();
+		JSONObject map = new JSONObject();
+		try {
 			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
 			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
@@ -251,8 +265,9 @@ public class AdminController {
 						|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
 					map.put("flag", "fail");
 					map.put("fail","管理员自己只能修改自己的密码");
-						return map;
+					return map;
 				}else{
+					admin.setPassword(PasswordHelper.encryptPassword(admin.getPassword()));
 					boolean rt = this.admin.doUpdateAdmin(admin);
 					map.put("flag", rt);
 				}
@@ -263,7 +278,11 @@ public class AdminController {
 			if(map.size()==0){
 				map.put("flag", false);
 			}
-			return map;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return map;
 	}
 	/**
 	 * 管理员管理
