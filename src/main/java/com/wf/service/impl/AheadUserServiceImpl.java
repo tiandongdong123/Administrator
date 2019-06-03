@@ -2507,13 +2507,91 @@ public class AheadUserServiceImpl implements AheadUserService{
 		//通过userId查询详情限定列表
 
 		List<WfksPayChannelResources> listWfks = wfksMapper.selectByUserId(userId);
+		
 		//判断项目ID是存在
 		List<PayChannelModel> list_ = this.purchaseProject();
+		//查询余额表    限时表   次数表  的信息  防止迁徙过来的用户的信息不全
+		List<wfks.accounting.handler.entity.BalanceLimitAccount> balanceLimitList=new ArrayList<wfks.accounting.handler.entity.BalanceLimitAccount>();
+		List<wfks.accounting.handler.entity.TimeLimitAccount> timeLimitList=new ArrayList<wfks.accounting.handler.entity.TimeLimitAccount>();
+		List<wfks.accounting.handler.entity.CountLimitAccount> countLimitList=new ArrayList<wfks.accounting.handler.entity.CountLimitAccount>();
+				
 		List<WfksPayChannelResources> wfList=new ArrayList<WfksPayChannelResources>();
 		for(PayChannelModel pay:list_){
 			for(WfksPayChannelResources res:listWfks){
 				if(StringUtils.equals(pay.getId(), res.getPayChannelid())){
 					wfList.add(res);
+				}
+			}
+			//查询余额表
+			if(pay.getType().equals("balance")){
+				wfks.accounting.handler.entity.BalanceLimitAccount balanceLimit = (wfks.accounting.handler.entity.BalanceLimitAccount)accountDao.get(new AccountId(pay.getId(),userId), new HashMap<String,String>());
+				if(balanceLimit!=null){
+					balanceLimitList.add(balanceLimit);
+				}
+			}
+			
+			//查询限时表
+			if(pay.getType().equals("time")){
+				wfks.accounting.handler.entity.TimeLimitAccount timeLimit = (wfks.accounting.handler.entity.TimeLimitAccount)accountDao.get(new AccountId(pay.getId(),userId), new HashMap<String,String>());
+				if(timeLimit!=null){
+					timeLimitList.add(timeLimit);
+				}
+			}
+			//查询次数表
+			if(pay.getType().equals("count")){
+				wfks.accounting.handler.entity.CountLimitAccount countLimit = (wfks.accounting.handler.entity.CountLimitAccount)accountDao.get(new AccountId(pay.getId(),userId), new HashMap<String,String>());
+				if(countLimit!=null){
+					countLimitList.add(countLimit);
+				}
+			}
+		}
+		//1、循环购买的余额  限时  次数
+		//2、对比wfList里面是否有改资源如果没有new WfksPayChannelResources加入
+		if(balanceLimitList!=null&&balanceLimitList.size()>0){
+			int balanceCount=0;
+			for (wfks.accounting.handler.entity.BalanceLimitAccount blance : balanceLimitList) {
+				for (WfksPayChannelResources wfks : wfList) {
+					if(wfks.getPayChannelid().equals(blance.getPayChannelId())){
+						balanceCount++;
+					}
+				}
+				if(balanceCount==0){
+					WfksPayChannelResources wfks=new WfksPayChannelResources();
+					wfks.setPayChannelid(blance.getPayChannelId());
+					wfks.setUserId(userId);
+					wfList.add(wfks);
+				}
+			}
+		}
+		if(timeLimitList!=null&&timeLimitList.size()>0){
+			int timeCount=0;
+			for (wfks.accounting.handler.entity.TimeLimitAccount timel : timeLimitList) {
+				for (WfksPayChannelResources wfks : wfList) {
+					if(wfks.getPayChannelid().equals(timel.getPayChannelId())){
+						timeCount++;
+					}
+				}
+				if(timeCount==0){
+					WfksPayChannelResources wfks=new WfksPayChannelResources();
+					wfks.setPayChannelid(timel.getPayChannelId());
+					wfks.setUserId(userId);
+					wfList.add(wfks);
+				}
+			}
+		}
+		if(countLimitList!=null&&countLimitList.size()>0){
+			int countCount=0;
+			for (wfks.accounting.handler.entity.CountLimitAccount count : countLimitList) {
+				for (WfksPayChannelResources wfks : wfList) {
+					if(wfks.getPayChannelid().equals(count.getPayChannelId())){
+						countCount++;
+					}
+				}
+				if(countCount==0){
+					WfksPayChannelResources wfks=new WfksPayChannelResources();
+					wfks.setPayChannelid(count.getPayChannelId());
+					wfks.setUserId(userId);
+					wfList.add(wfks);
 				}
 			}
 		}
@@ -2674,6 +2752,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 			}
 			if(!pay.getType().equals("count") && plList.size()>0 && plList.get(0).get("tableName")!=null){					
+				extraData.put("plList", data);
+			}
+			if(plList.size()==0){
 				extraData.put("plList", data);
 			}
 			if(extraData.size()>0){				
