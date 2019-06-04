@@ -37,13 +37,6 @@
 			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" Url="/person/wfcardbind.do" />
 		</Node>
 	</Node>
-	<Node Id="B" Name="充值管理" HasChild="true" Url="">
-		<Node Id="B1" Name="充值管理" HasChild="true" Url="/charge/manage.do">
-			<Node Id="B11" Name="个人充值记录" HasChild="true" Url="">
-				<Node Id="B111" Name="待处理" HasChild="false" Url="" />
-			</Node>
-		</Node>
-	</Node>
 	<Node Id="C" Name="内容管理" HasChild="true" Url="">
 		<Node Id="C1" Name="资讯管理" HasChild="true" Url="">
 			<Node Id="C11" Name="发布资讯管理" HasChild="true" Url="/content/index.do">
