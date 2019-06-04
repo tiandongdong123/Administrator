@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -294,7 +296,8 @@ public class AdminController {
 	public boolean doUpdatePassword(String oldPassword,String newPassword,String repeatPassword,HttpServletRequest request){
 		boolean rt=false;
 		try {
-			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)){
+			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)
+				&&passwordCheck(oldPassword)&&passwordCheck(newPassword)&&passwordCheck(repeatPassword)){
 				//校验密码
 				oldPassword=PasswordHelper.encryptPassword(oldPassword);
 				newPassword=PasswordHelper.encryptPassword(newPassword);
@@ -311,7 +314,17 @@ public class AdminController {
 		}
 		return rt;
 	}
-	
+	private boolean passwordCheck(String password){
+		boolean length=password.length()>=6&&password.length()<=16;
+		boolean kongge=!password.contains(" ");
+        boolean chinese=true;
+		Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(password);
+        if(m.find()){
+        	chinese=false;
+        }
+		return length&&kongge&&chinese;
+	}
 	
 	/**
 	 * 检查密码
