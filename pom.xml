@@ -100,7 +100,7 @@
 		<!-- 二维码 -->
 		<zxing.version>3.3.0</zxing.version>
 		<!-- 广告grpc -->
-		<advertmanager-grpc-api.version>1.2019.44-SNAPSHOT</advertmanager-grpc-api.version>
+		<advertmanager-grpc-api.version>1.2019.57-SNAPSHOT</advertmanager-grpc-api.version>
 
 	</properties>
 
