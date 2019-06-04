@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.utils.*;
+import com.wanfangdata.grpcchannel.PictureManageChannel;
 import com.wanfangdata.model.LabelListModel;
 import com.wanfangdata.model.PagerModel;
 import com.wanfangdata.model.TResult;
+import com.wanfangdata.rpc.picturemanager.PictureMessage;
 import com.wf.Setting.ResourceTypeSetting;
 
 import com.wf.bean.*;
@@ -123,6 +125,9 @@ public class ContentController {
 
 	@Autowired
 	InformationLabelService informationLabelService;
+
+	@Autowired
+	PictureManageChannel pictureManageChannel;
 
 
 	/**
@@ -766,24 +771,38 @@ public class ContentController {
 	 */
 	@RequestMapping("/uploadImg")
 	public void upload(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String path = request.getSession().getServletContext().getRealPath("upload");
-		String fileName = file.getOriginalFilename();
-		String fileNameStr = (new Date().getTime()) + "-" + fileName;
-		File targetFile = new File(path, fileNameStr);
-		if (!targetFile.exists()) {
-			targetFile.mkdirs();
-		}
-		//保存
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			file.transferTo(targetFile);
+			String fileName = file.getOriginalFilename();
+			String picture = null;
+			int indexOf = fileName.lastIndexOf(".");
+			picture = ImgUtil.imageToBase64(file, fileName.substring(indexOf + 1));
+			//存储图片
+			PictureMessage pictureMessage = PictureMessage.newBuilder()
+					.setPicture(picture)
+					.build();
+			PictureMessage insertPicture = pictureManageChannel.getBlockingStub().insertPicture(pictureMessage);
+			JSONObject jo = new JSONObject();
+			String url = String.valueOf(insertPicture.getPictureId());
+			jo.accumulate("url", url);
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().print(jo);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("资讯图片上传存储图片出错！时间：" + sdf.format(new Date()), e);
+			throw e;
 		}
-		JSONObject jo = new JSONObject();
-		String url = request.getContextPath() + "/upload/" + fileNameStr;
-		jo.accumulate("url", url);
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().print(jo);
+//		String fileNameStr = (new Date().getTime()) + "-" + fileName;
+//		File targetFile = new File(path, fileNameStr);
+//		if (!targetFile.exists()) {
+//			targetFile.mkdirs();
+//		}
+//		//保存
+//		try {
+//			file.transferTo(targetFile);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
 
 	}
 
