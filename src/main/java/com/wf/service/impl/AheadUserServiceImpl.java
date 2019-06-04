@@ -1247,6 +1247,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 		String gOArea=dto.getGazetteersOldArea();
 		String gOStartTime=dto.getGazetteersOldStartTime();
 		String gOEndTime=dto.getGazetteersOldEndTime();
+		//专辑数据库   -- 文化志
+		String albumDatabase=dto.getAlbumDatabase();
 		String gType=null; 
 		String localType=dto.getLocalType();
 		if(StringUtils.isNoneEmpty(localType)){
@@ -1278,11 +1280,20 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(igost > 0 && igoet > 0 && (igost>igoet)){
 			return null;
 		}
-		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
-			if(StringUtils.isEmpty(gNType)){
-				gType=gOType;
-			}else{
+		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)||StringUtils.isEmpty(albumDatabase)){
+			if(StringUtils.isNotEmpty(gNType)){
 				gType=gNType;
+			}
+			if(StringUtils.isNotEmpty(gOType)&&StringUtils.isNotEmpty(gType)){
+				gType=gType+","+gOType;
+			}else if(StringUtils.isNotEmpty(gOType)&&StringUtils.isEmpty(gType)){
+				gType=gOType;
+			}
+			
+			if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isNotEmpty(gType)){
+				gType=gType+","+albumDatabase;
+			}else if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isEmpty(gType)){
+				gType=albumDatabase;
 			}
 		}
 		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)

@@ -284,6 +284,58 @@ public class AdminController {
 		}
 		return map;
 	}
+	
+	/**
+	 * 更改密码
+	 * @return
+	 */
+	@RequestMapping("doUpdatePassword")
+	@ResponseBody
+	public boolean doUpdatePassword(String oldPassword,String newPassword,String repeatPassword,HttpServletRequest request){
+		boolean rt=false;
+		try {
+			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)){
+				//校验密码
+				oldPassword=PasswordHelper.encryptPassword(oldPassword);
+				newPassword=PasswordHelper.encryptPassword(newPassword);
+				repeatPassword=PasswordHelper.encryptPassword(repeatPassword);
+				Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+				if(!oldPassword.equals(wfAdmin.getPassword())||!newPassword.equals(repeatPassword)){
+					return false;
+				}
+				wfAdmin.setPassword(newPassword);
+				rt = this.admin.doUpdateAdmin(wfAdmin);
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rt;
+	}
+	
+	
+	/**
+	 * 检查密码
+	 * @return
+	 */
+	@RequestMapping("doUpdatePasswordcheck")
+	@ResponseBody
+	public boolean doUpdatePasswordcheck(String oldPassword,HttpServletRequest request){
+		try {
+			if(StringUtils.isNoneBlank(oldPassword)){
+				//校验密码
+				oldPassword=PasswordHelper.encryptPassword(oldPassword);
+				Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+				if(oldPassword.equals(wfAdmin.getPassword())){
+					return true; 
+				}
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * 管理员管理
 	 * @return

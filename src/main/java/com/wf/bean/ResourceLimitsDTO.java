@@ -2,6 +2,8 @@ package com.wf.bean;
 
 import java.util.Arrays;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+
 public class ResourceLimitsDTO {
 
 	//资源库ID
@@ -64,9 +66,19 @@ public class ResourceLimitsDTO {
 	private String gazetteersOldArea;
 	private String gazetteersOldStartTime;
 	private String gazetteersOldEndTime;
+	private String albumDatabase;
 	
 	
 	
+
+	public String getAlbumDatabase() {
+		return albumDatabase;
+	}
+
+	public void setAlbumDatabase(String albumDatabase) {
+		this.albumDatabase = albumDatabase;
+	}
+
 	public String getLocalType() {
 		return localType;
 	}
@@ -408,12 +420,12 @@ public class ResourceLimitsDTO {
 				+ ", limitedParcelStarttime=" + limitedParcelStarttime + ", limitedParcelEndtime="
 				+ limitedParcelEndtime + ", readingPrint=" + readingPrint + ", onlineVisitor=" + onlineVisitor
 				+ ", copyNo=" + copyNo + ", totalPrintNo=" + totalPrintNo + ", singlePrintNo=" + singlePrintNo
-				+ ", gazetteersId=" + gazetteersId + ", gazetteersType=" + gazetteersType + ", gazetteersLevel="
-				+ gazetteersLevel + ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum=" + gazetteersAlbum
-				+ ", gazetteersStartTime=" + gazetteersStartTime + ", gazetteersEndTime=" + gazetteersEndTime
-				+ ", itemId=" + itemId + ", gazetteersOldType=" + gazetteersOldType + ", gazetteersOldArea="
-				+ gazetteersOldArea + ", gazetteersOldStartTime=" + gazetteersOldStartTime + ", gazetteersOldEndTime="
-				+ gazetteersOldEndTime + "]";
+				+ ", localType=" + localType + ", gazetteersId=" + gazetteersId + ", gazetteersType=" + gazetteersType
+				+ ", gazetteersLevel=" + gazetteersLevel + ", gazetteersArea=" + gazetteersArea + ", gazetteersAlbum="
+				+ gazetteersAlbum + ", gazetteersStartTime=" + gazetteersStartTime + ", gazetteersEndTime="
+				+ gazetteersEndTime + ", itemId=" + itemId + ", gazetteersOldType=" + gazetteersOldType
+				+ ", gazetteersOldArea=" + gazetteersOldArea + ", gazetteersOldStartTime=" + gazetteersOldStartTime
+				+ ", gazetteersOldEndTime=" + gazetteersOldEndTime + ", albumDatabase=" + albumDatabase + "]";
 	}
 
 	
