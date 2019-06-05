@@ -10,6 +10,7 @@
 				<Node Id="A142" Name="添加/移除机构管理员" HasChild="false" Url="/auser/goaddadmin.do" />
 				<Node Id="A143" Name="冻结/解冻" HasChild="false" Url="/auser/setfreeze.do" />
 				<Node Id="A144" Name="查询" HasChild="false" Url="/group/list.do" />
+				<Node Id="A144" Name="订单记录" HasChild="false" Url="/mechanism/mechanism_order.do" />
 			</Node>
 			<Node Id="A15" Name="机构子账号信息管理" HasChild="true" Url="/group/childquery.do">
 				<Node Id="A151" Name="子账号导出" HasChild="false" Url="" />
