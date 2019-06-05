@@ -21,7 +21,7 @@ public class BindAuthorityChannel{
     }
 
     public BindAuthorityGrpc.BindAuthorityBlockingStub getBlockingStub() {
-        return blockingStub = BindAuthorityGrpc.newBlockingStub(GrpcChannel.getInstance());
+        return blockingStub = BindAuthorityGrpc.newBlockingStub(GrpcChannel.getInstance().get(GrpcChannel.BINDAUTHORITY_CONFIG));
     }
 
     public void setBlockingStub(BindAuthorityGrpc.BindAuthorityBlockingStub blockingStub) {
