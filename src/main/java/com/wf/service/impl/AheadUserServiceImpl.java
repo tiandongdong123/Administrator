@@ -557,15 +557,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 		per.setUserId(com.getAdminname());
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
+			per.setLoginMode(1);
+			per.setUsertype(1);
+			per.setIsFreeze(2);
+			per.setRegistrationTime(DateUtil.getStringDate());
+			per.setInstitution(com.getInstitution());
+			per.setAdminEmail(com.getAdminEmail());
+			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
+			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		per.setLoginMode(1);
-		per.setUsertype(1);
-		per.setIsFreeze(2);
-		per.setRegistrationTime(DateUtil.getStringDate());
-		per.setInstitution(com.getInstitution());
-		per.setAdminEmail(com.getAdminEmail());
 		return personMapper.addRegisterAdmin(per);
 	}
 

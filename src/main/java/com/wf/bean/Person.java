@@ -1,5 +1,6 @@
 package com.wf.bean;
 
+import java.util.Date;
 
 /**
  *	用户Bean
@@ -68,7 +69,39 @@ public class Person {
     
     private ResourceDetailed resourceDetailed;
     
-	private String adminEmail;
+	private String adminEmail;    //机构管理员email
+	
+	private String adminIsTrial;  //机构管理员是否试用
+	
+	private Date adminBegintime;  //机构管理员开始时间
+	
+	private Date adminEndtime;  //机构管理员结束时间
+	
+
+	
+	public String getAdminIsTrial() {
+		return adminIsTrial;
+	}
+
+	public void setAdminIsTrial(String adminIsTrial) {
+		this.adminIsTrial = adminIsTrial;
+	}
+
+	public Date getAdminBegintime() {
+		return adminBegintime;
+	}
+
+	public void setAdminBegintime(Date adminBegintime) {
+		this.adminBegintime = adminBegintime;
+	}
+
+	public Date getAdminEndtime() {
+		return adminEndtime;
+	}
+
+	public void setAdminEndtime(Date adminEndtime) {
+		this.adminEndtime = adminEndtime;
+	}
 
 	public String getUserId() {
 		return userId;

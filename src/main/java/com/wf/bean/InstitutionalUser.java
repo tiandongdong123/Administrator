@@ -21,6 +21,9 @@ public class InstitutionalUser implements Serializable {
 
 	// 是否开通机构管理员状态
 	private String checkuser;
+	private String adminIsTrial;
+	private String adminBegintime;//有效期-开始
+	private String adminEndtime;//有效期-结束
 	private String managerType;// 管理员选择状态
 	private String adminOldName;// Old机构管理员id
 	private String adminname;// New机构管理员信息
@@ -68,6 +71,31 @@ public class InstitutionalUser implements Serializable {
 	private String changeFront;//购买项目转换前
     
     private List<ResourceDetailedDTO> rdlist;
+
+    
+	public String getAdminIsTrial() {
+		return adminIsTrial;
+	}
+
+	public void setAdminIsTrial(String adminIsTrial) {
+		this.adminIsTrial = adminIsTrial;
+	}
+
+	public String getAdminBegintime() {
+		return adminBegintime;
+	}
+
+	public void setAdminBegintime(String adminBegintime) {
+		this.adminBegintime = adminBegintime;
+	}
+
+	public String getAdminEndtime() {
+		return adminEndtime;
+	}
+
+	public void setAdminEndtime(String adminEndtime) {
+		this.adminEndtime = adminEndtime;
+	}
 
 	public List<ResourceDetailedDTO> getRdlist() {
 		return rdlist;
@@ -398,19 +426,46 @@ public class InstitutionalUser implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CommonEntity [institution=" + institution + ", userId=" + userId + ", loginMode=" + loginMode + ", password="
-				+ password + ", resetMoney=" + resetMoney + ", resetCount=" + resetCount + ", checkuser=" + checkuser + ", managerType="
-				+ managerType + ", adminOldName=" + adminOldName + ", adminname=" + adminname + ", adminpassword="
-				+ adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail + ", ipSegment=" + ipSegment + ", checks="
-				+ checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
-				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit=" + downloadupperlimit
-				+ ", sendMail="+sendMail+", weChatEamil="+weChatEamil + ", partyLimit="+partyLimit+", isTrial="+isTrial
-				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword + ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
-				+ ", openApp=" + openApp + ", appBegintime=" + appBegintime + ", appEndtime=" + appEndtime
-				+ ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime + ", weChatEndtime=" + weChatEndtime
-				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode
-				+ ", Organization=" + Organization + ", OrderType=" + OrderType
-				+ ", OrderContent=" + OrderContent +", rdlist=" + rdlist + "]";
+		return "InstitutionalUser [institution=" + institution + ", oldInstitution=" + oldInstitution + ", userId="
+				+ userId + ", loginMode=" + loginMode + ", password=" + password + ", resetMoney=" + resetMoney
+				+ ", resetCount=" + resetCount + ", ipSegment=" + ipSegment + ", checkuser=" + checkuser
+				+ ", adminIsTrial=" + adminIsTrial + ", adminBegintime=" + adminBegintime + ", adminEndtime="
+				+ adminEndtime + ", managerType=" + managerType + ", adminOldName=" + adminOldName + ", adminname="
+				+ adminname + ", adminpassword=" + adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail
+				+ ", checks=" + checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
+				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit="
+				+ downloadupperlimit + ", tongji=" + tongji + ", openApp=" + openApp + ", appBegintime=" + appBegintime
+				+ ", appEndtime=" + appEndtime + ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime
+				+ ", weChatEndtime=" + weChatEndtime + ", sendMail=" + sendMail + ", weChatEamil=" + weChatEamil
+				+ ", partyLimit=" + partyLimit + ", isTrial=" + isTrial + ", partyAdmin=" + partyAdmin
+				+ ", partyPassword=" + partyPassword + ", partyBegintime=" + partyBegintime + ", partyEndtime="
+				+ partyEndtime + ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode + ", Organization="
+				+ Organization + ", OrderType=" + OrderType + ", OrderContent=" + OrderContent + ", changeFront="
+				+ changeFront + ", rdlist=" + rdlist + ", getAdminIsTrial()=" + getAdminIsTrial()
+				+ ", getAdminBegintime()=" + getAdminBegintime() + ", getAdminEndtime()=" + getAdminEndtime()
+				+ ", getRdlist()=" + getRdlist() + ", getResetMoney()=" + getResetMoney() + ", getResetCount()="
+				+ getResetCount() + ", getChecks()=" + getChecks() + ", getUpperlimit()=" + getUpperlimit()
+				+ ", getpConcurrentnumber()=" + getpConcurrentnumber() + ", getsConcurrentnumber()="
+				+ getsConcurrentnumber() + ", getChargebacks()=" + getChargebacks() + ", getDownloadupperlimit()="
+				+ getDownloadupperlimit() + ", getInstitution()=" + getInstitution() + ", getOldInstitution()="
+				+ getOldInstitution() + ", getUserId()=" + getUserId() + ", getLoginMode()=" + getLoginMode()
+				+ ", getPassword()=" + getPassword() + ", getIpSegment()=" + getIpSegment() + ", getAdminname()="
+				+ getAdminname() + ", getAdminpassword()=" + getAdminpassword() + ", getAdminIP()=" + getAdminIP()
+				+ ", getAdminEmail()=" + getAdminEmail() + ", getManagerType()=" + getManagerType()
+				+ ", getAdminOldName()=" + getAdminOldName() + ", getCheckuser()=" + getCheckuser() + ", getTongji()="
+				+ getTongji() + ", getOpenApp()=" + getOpenApp() + ", getOpenWeChat()=" + getOpenWeChat()
+				+ ", getSendMail()=" + getSendMail() + ", getWeChatEamil()=" + getWeChatEamil() + ", getPartyLimit()="
+				+ getPartyLimit() + ", getIsTrial()=" + getIsTrial() + ", getPartyAdmin()=" + getPartyAdmin()
+				+ ", getPartyPassword()=" + getPartyPassword() + ", getPartyBegintime()=" + getPartyBegintime()
+				+ ", getPartyEndtime()=" + getPartyEndtime() + ", getCountryRegion()=" + getCountryRegion()
+				+ ", getPostCode()=" + getPostCode() + ", getOrganization()=" + getOrganization() + ", getOrderType()="
+				+ getOrderType() + ", getOrderContent()=" + getOrderContent() + ", getAppBegintime()="
+				+ getAppBegintime() + ", getAppEndtime()=" + getAppEndtime() + ", getWeChatBegintime()="
+				+ getWeChatBegintime() + ", getWeChatEndtime()=" + getWeChatEndtime() + ", getChangeFront()="
+				+ getChangeFront() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
 	}
+
+
 	
 }
