@@ -38,6 +38,9 @@ public class InstitutionalUser implements Serializable {
 	private Integer sConcurrentnumber;
 	private Integer chargebacks;
 	private Integer downloadupperlimit;
+	private String sIsTrial;
+	private String sBegintime;//有效期-开始
+	private String sEndtime;//有效期-结束
 
 	// 统计分析
 	private String tongji;
@@ -73,6 +76,30 @@ public class InstitutionalUser implements Serializable {
     private List<ResourceDetailedDTO> rdlist;
 
     
+	public String getsIsTrial() {
+		return sIsTrial;
+	}
+
+	public void setsIsTrial(String sIsTrial) {
+		this.sIsTrial = sIsTrial;
+	}
+
+	public String getsBegintime() {
+		return sBegintime;
+	}
+
+	public void setsBegintime(String sBegintime) {
+		this.sBegintime = sBegintime;
+	}
+
+	public String getsEndtime() {
+		return sEndtime;
+	}
+
+	public void setsEndtime(String sEndtime) {
+		this.sEndtime = sEndtime;
+	}
+
 	public String getAdminIsTrial() {
 		return adminIsTrial;
 	}
@@ -434,14 +461,16 @@ public class InstitutionalUser implements Serializable {
 				+ adminname + ", adminpassword=" + adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail
 				+ ", checks=" + checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
 				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit="
-				+ downloadupperlimit + ", tongji=" + tongji + ", openApp=" + openApp + ", appBegintime=" + appBegintime
+				+ downloadupperlimit + ", sIsTrial=" + sIsTrial + ", sBegintime=" + sBegintime + ", sEndtime="
+				+ sEndtime + ", tongji=" + tongji + ", openApp=" + openApp + ", appBegintime=" + appBegintime
 				+ ", appEndtime=" + appEndtime + ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime
 				+ ", weChatEndtime=" + weChatEndtime + ", sendMail=" + sendMail + ", weChatEamil=" + weChatEamil
 				+ ", partyLimit=" + partyLimit + ", isTrial=" + isTrial + ", partyAdmin=" + partyAdmin
 				+ ", partyPassword=" + partyPassword + ", partyBegintime=" + partyBegintime + ", partyEndtime="
 				+ partyEndtime + ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode + ", Organization="
 				+ Organization + ", OrderType=" + OrderType + ", OrderContent=" + OrderContent + ", changeFront="
-				+ changeFront + ", rdlist=" + rdlist + ", getAdminIsTrial()=" + getAdminIsTrial()
+				+ changeFront + ", rdlist=" + rdlist + ", getsIsTrial()=" + getsIsTrial() + ", getsBegintime()="
+				+ getsBegintime() + ", getsEndtime()=" + getsEndtime() + ", getAdminIsTrial()=" + getAdminIsTrial()
 				+ ", getAdminBegintime()=" + getAdminBegintime() + ", getAdminEndtime()=" + getAdminEndtime()
 				+ ", getRdlist()=" + getRdlist() + ", getResetMoney()=" + getResetMoney() + ", getResetCount()="
 				+ getResetCount() + ", getChecks()=" + getChecks() + ", getUpperlimit()=" + getUpperlimit()
@@ -465,6 +494,8 @@ public class InstitutionalUser implements Serializable {
 				+ getChangeFront() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
 				+ super.toString() + "]";
 	}
+
+	
 
 
 	

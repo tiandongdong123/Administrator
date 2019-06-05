@@ -102,6 +102,15 @@
       <if test="extend != null and extend !=''" >
         extend = #{extend},
       </if>
+       <if test="admin_istrial != null and admin_istrial !=''" >
+        admin_istrial = #{admin_istrial},
+      </if>
+       <if test="admin_begintime != null and admin_begintime !=''" >
+        admin_begintime = #{admin_begintime},
+      </if>
+       <if test="admin_endtime != null and admin_endtime !=''" >
+        admin_endtime = #{admin_endtime},
+      </if>
     </set>
     where user_id = #{userId}
  </update>

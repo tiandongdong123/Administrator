@@ -14,9 +14,9 @@
   </delete>
   
   <insert id="insert" parameterType="com.wf.bean.UserAccountRestriction" >
-    insert into user_account_restriction (user_id, upperlimit, p_concurrentnumber, s_concurrentnumber, chargebacks, downloadUpperLimit)
+    insert into user_account_restriction (user_id, upperlimit, p_concurrentnumber, s_concurrentnumber, chargebacks, downloadUpperLimit,s_istrial,s_begintime,s_endtime)
     values (#{userId,jdbcType=VARCHAR}, #{upperlimit,jdbcType=INTEGER}, #{pConcurrentnumber,jdbcType=INTEGER}, 
-      #{sConcurrentnumber,jdbcType=INTEGER}, #{chargebacks,jdbcType=INTEGER}, #{downloadupperlimit,jdbcType=INTEGER})
+      #{sConcurrentnumber,jdbcType=INTEGER}, #{chargebacks,jdbcType=INTEGER}, #{downloadupperlimit,jdbcType=INTEGER},#{sIsTrial,jdbcType=VARCHAR},#{sBegintime,jdbcType=DATETIME},#{sEndtime,jdbcType=DATETIME})
   </insert>
   
 	<update id="update" parameterType="com.wf.bean.UserAccountRestriction">
