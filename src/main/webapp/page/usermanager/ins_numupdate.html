@@ -550,9 +550,9 @@
                                       </span>
                                     </div>
                                   </div>
-                                  <div class="databaseInput">
+                                  <div class="database">
 									<input type="checkbox" id="databaseInput_${i}_${j}" data-database="" onclick="gazetteerType(this.value,${i},${j})" value="FZ_Cultur" name="rdlist[${i}].rldto[${j}].albumDatabase" >旧方志
-									<div><input type="checkbox" id="checkData_${i}_${j}">文化志</div>
+									<div class="databaseInput"><input type="checkbox" onclick="databaseClick(${i},${j})" disabled id="checkData_${i}_${j}">文化志</div>
 								  </div>
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">
@@ -574,7 +574,7 @@
                               <input type="hidden" value="${gazetteers_old_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldArea" id="gazetteersOldArea_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
                               
-                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="albumDatabase_${i}_${j}"/>
+                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
                               
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}"/>
@@ -880,9 +880,9 @@
                                       </span>
                                     </div>
                                   </div>
-                                  <div class="databaseInput">
+                                  <div class="database">
 									<input type="checkbox" id="databaseInput_${i}_${j}" data-database="" onclick="gazetteerType(this.value,${i},${j})" value="FZ_Cultur" name="rdlist[${i}].rldto[${j}].albumDatabase" >专辑数据库
-									<div><input type="checkbox" id="checkData_${i}_${j}">文化志</div>
+									<div class="databaseInput"><input type="checkbox" onclick="databaseClick(${i},${j})" disabled id="checkData_${i}_${j}">文化志</div>
 								  </div>
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">

@@ -551,6 +551,10 @@ function openItems(count,i,type){
 						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
 						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
+					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}
 					layer.closeAll();	
 				}
 //				$('.checkType_'+count+'_'+i).text('')
