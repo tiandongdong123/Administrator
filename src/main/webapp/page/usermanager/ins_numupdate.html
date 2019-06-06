@@ -285,7 +285,9 @@
 								gazetteers_old_startTime=data.contract[n];
 							}else if("gazetteers_old_endTime"==data.contract[n].Field){
 								gazetteers_old_endTime=data.contract[n];
-							}
+							}else if("album_database"==data.contract[n].Field){
+						        album_database=data.contract[n];
+						}
 						}
 					}?>
                         <? var perioCLC;if(!isEmpty(perioInfo_CLC.Value)){ for(var co=0;co<perioInfo_CLC.Value.~size;co++){perioCLC=perioCLC+(isEmpty(perioCLC)?"":",")+perioInfo_CLC.Value[co];}}?>
@@ -567,6 +569,9 @@
                               <input type="hidden" value="${gazetteers_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersEndTime" id="gazetteersEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldArea" id="gazetteersOldArea_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
+                              
+                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="albumDatabase_${i}_${j}"/>
+                              
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />

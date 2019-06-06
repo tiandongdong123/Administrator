@@ -253,6 +253,8 @@
 						gazetteers_old_startTime=pldata.contract[n];
 					}else if("gazetteers_old_endTime"==pldata.contract[n].Field){
 						gazetteers_old_endTime=pldata.contract[n];
+					}else if("album_database"==pldata.contract[n].Field){
+						album_database=pldata.contract[n];
 					}
 				}
 			}?>
@@ -439,7 +441,7 @@
 						</div>
 						<div>条目 （以;分隔
 							<textarea class="form-control" rows="3" style="width:100%;">${item_id.Value!}</textarea>
-						</div>
+						</div>album_database
 					</div>
 				</div>
 				<input type="hidden" id="gazetteers_area_${list.Id}_${payid}_${pscode}" value="${gazetteers_area.Value!}">
@@ -453,6 +455,7 @@
 				<input type="hidden" id="gazetteers_old_endTime_${list.Id}_${payid}_${pscode}"
 					value="${gazetteers_old_endTime.Value!}">
 				<input type="hidden" id="gazetteers_type_${list.Id}_${payid}_${pscode}" value="${gazetteers_type.Value!}">
+				<input type="hidden" id="album_database_${list.Id}_${payid}_${pscode}" value="${album_database.Value!}">
 			</div>
 			<?}?>
 	        <?if(strutil.contain(pldata.resType,"standard")){?>
