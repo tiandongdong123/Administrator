@@ -1074,7 +1074,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<span class="locationCounty">县</span><select disabled class="noChecked" id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')" data-oldcounty=""><option value="">全部</option></select></div>'
 		text += '</div>'
 		text += '<div class="database">'
-		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Cultur" name="rdlist['+count+'].rldto['+i+'].albumDatabase" >专辑数据库'
+		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Cultur">专辑数据库'
 		text += '<div class="databaseInput"><input type="checkbox" onclick="databaseClick('+count+','+i+')" disabled id="checkData_'+count+'_'+i+'">文化志</div>'
 		text += '</div>'
 		text += '</div>'
