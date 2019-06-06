@@ -3189,6 +3189,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		am.setIdKey(com.getUserId());
 		am.setRelatedidAccounttype("openApp");
 		am.setRelatedidKey("");
+		am.setIsTrial(com.getAppIsTrial().equals("isTrial")?"1":"0");
 		am.setBegintime(DateUtil.stringToDate1(com.getAppBegintime()));
 		am.setEndtime(DateUtil.stringToDate1(com.getAppEndtime()));
 		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));
@@ -3213,6 +3214,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 		am.setIdKey(com.getUserId());
 		am.setRelatedidAccounttype("openWeChat");
 		am.setRelatedidKey("");
+		am.setIsTrial(com.getWeChatIsTrial().equals("isTrial")?"1":"0");
 		am.setBegintime(DateUtil.stringToDate1(com.getWeChatBegintime()));
 		am.setEndtime(DateUtil.stringToDate1(com.getWeChatEndtime()));
 		am.setLastUpdatetime(DateUtil.stringToDate(DateUtil.getStringDate()));

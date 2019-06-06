@@ -10,6 +10,7 @@
     <result column="begintime" property="begintime" jdbcType="TIMESTAMP" />
     <result column="endtime" property="endtime" jdbcType="TIMESTAMP" />
     <result column="last_updatetime" property="lastUpdatetime" jdbcType="TIMESTAMP" />
+    <result column="istrial" property="istrial" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     mappingid, id_accounttype, id_key, relatedid_accounttype, relatedid_key, begintime, 
@@ -52,9 +53,9 @@
   <insert id="insert" parameterType="com.wf.bean.WfksAccountidMapping" >
     insert into wfks_accountid_mapping (mappingid, id_accounttype, id_key, 
       relatedid_accounttype, relatedid_key, begintime, 
-      endtime, last_updatetime)
+      endtime, last_updatetime,istrial)
     values (#{mappingid,jdbcType=VARCHAR}, #{idAccounttype,jdbcType=VARCHAR}, #{idKey,jdbcType=VARCHAR}, 
       #{relatedidAccounttype,jdbcType=VARCHAR}, #{relatedidKey,jdbcType=VARCHAR}, #{begintime,jdbcType=TIMESTAMP}, 
-      #{endtime,jdbcType=TIMESTAMP}, #{lastUpdatetime,jdbcType=TIMESTAMP})
+      #{endtime,jdbcType=TIMESTAMP}, #{lastUpdatetime,jdbcType=TIMESTAMP},#{isTrial,jdbcType=VARCHAR})
   </insert>
 </mapper>

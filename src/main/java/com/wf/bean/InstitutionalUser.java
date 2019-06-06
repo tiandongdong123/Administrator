@@ -46,10 +46,12 @@ public class InstitutionalUser implements Serializable {
 	private String tongji;
 	// 开通APP嵌入服务
 	private String openApp;
+	private String appIsTrial;
 	private String appBegintime;
 	private String appEndtime;
 	// 开通微信公众号嵌入服务
 	private String openWeChat;
+	private String weChatIsTrial;
 	private String weChatBegintime;
 	private String weChatEndtime;
 	// 开通微信公众号嵌入服务是否立即发送
@@ -76,6 +78,23 @@ public class InstitutionalUser implements Serializable {
     private List<ResourceDetailedDTO> rdlist;
 
     
+    
+	public String getWeChatIsTrial() {
+		return weChatIsTrial;
+	}
+
+	public void setWeChatIsTrial(String weChatIsTrial) {
+		this.weChatIsTrial = weChatIsTrial;
+	}
+
+	public String getAppIsTrial() {
+		return appIsTrial;
+	}
+
+	public void setAppIsTrial(String appIsTrial) {
+		this.appIsTrial = appIsTrial;
+	}
+
 	public String getsIsTrial() {
 		return sIsTrial;
 	}
