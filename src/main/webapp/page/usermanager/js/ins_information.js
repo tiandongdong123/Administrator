@@ -418,6 +418,12 @@ function showGazetteers(userId,payid,pscode){
 		$('.selectType input').prop('checked',false)
 		$('.export input').prop('checked',true)
 	}
+	// 文化志
+	var databaseVal = $('#album_database_'+temp).val()
+	if(databaseVal) {
+		$('#databaseCheck_'+temp).prop('checked',true)
+		$('#databaseInput_'+temp).prop('checked', true)
+	}
 }
 
 //服务权限设置隐藏/显示
