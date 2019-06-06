@@ -8,15 +8,18 @@
     <result column="s_concurrentnumber" property="sConcurrentnumber" jdbcType="INTEGER" />
     <result column="chargebacks" property="chargebacks" jdbcType="INTEGER" />
     <result column="downloadUpperLimit" property="downloadupperlimit" jdbcType="INTEGER" />
+     <result column="s_istrial" property="s_istrial" jdbcType="VARCHAR" />
+      <result column="s_begintime" property="s_begintime" jdbcType="TIMESTAMP" />
+       <result column="s_endtime" property="s_endtime" jdbcType="TIMESTAMP" />
   </resultMap>
   <delete id="deleteAccountRestriction" parameterType="java.lang.String" >
     delete from user_account_restriction where user_id = #{userId}
   </delete>
   
   <insert id="insert" parameterType="com.wf.bean.UserAccountRestriction" >
-    insert into user_account_restriction (user_id, upperlimit, p_concurrentnumber, s_concurrentnumber, chargebacks, downloadUpperLimit)
+    insert into user_account_restriction (user_id, upperlimit, p_concurrentnumber, s_concurrentnumber, chargebacks, downloadUpperLimit,s_istrial,s_begintime,s_endtime)
     values (#{userId,jdbcType=VARCHAR}, #{upperlimit,jdbcType=INTEGER}, #{pConcurrentnumber,jdbcType=INTEGER}, 
-      #{sConcurrentnumber,jdbcType=INTEGER}, #{chargebacks,jdbcType=INTEGER}, #{downloadupperlimit,jdbcType=INTEGER})
+      #{sConcurrentnumber,jdbcType=INTEGER}, #{chargebacks,jdbcType=INTEGER}, #{downloadupperlimit,jdbcType=INTEGER},#{sIsTrial,jdbcType=VARCHAR},#{sBegintime,jdbcType=TIMESTAMP},#{sEndtime,jdbcType=TIMESTAMP})
   </insert>
   
 	<update id="update" parameterType="com.wf.bean.UserAccountRestriction">
@@ -42,7 +45,7 @@
 	</update>
 	<update id="updateAccount" parameterType="com.wf.bean.UserAccountRestriction">
 	    update user_account_restriction set upperlimit = #{upperlimit},p_concurrentnumber = #{pConcurrentnumber},s_concurrentnumber = #{sConcurrentnumber},
-		chargebacks = #{chargebacks},downloadUpperLimit = #{downloadupperlimit} where user_id = #{userId}
+		chargebacks = #{chargebacks},downloadUpperLimit = #{downloadupperlimit},s_istrial = #{sIsTrial},s_begintime = #{sBegintime},s_endtime = #{sEndtime} where user_id = #{userId}
 	</update>
   <select id="getAccountRestriction" resultMap="BaseResultMap" parameterType="java.lang.String">
 	select user_id,upperlimit,p_concurrentnumber,s_concurrentnumber,chargebacks,downloadUpperLimit from user_account_restriction where user_id=#{userId}

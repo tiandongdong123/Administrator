@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -289,12 +292,13 @@ public class AdminController {
 	 * 更改密码
 	 * @return
 	 */
-	@RequestMapping("doUpdatePassword")
+	@RequestMapping(value="doUpdatePassword",method = RequestMethod.POST)
 	@ResponseBody
 	public boolean doUpdatePassword(String oldPassword,String newPassword,String repeatPassword,HttpServletRequest request){
 		boolean rt=false;
 		try {
-			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)){
+			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)
+				&&passwordCheck(oldPassword)&&passwordCheck(newPassword)&&passwordCheck(repeatPassword)){
 				//校验密码
 				oldPassword=PasswordHelper.encryptPassword(oldPassword);
 				newPassword=PasswordHelper.encryptPassword(newPassword);
@@ -305,13 +309,26 @@ public class AdminController {
 				}
 				wfAdmin.setPassword(newPassword);
 				rt = this.admin.doUpdateAdmin(wfAdmin);
-			}			
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return rt;
 	}
-	
+	/*
+	 * 验证密码合法性
+	 */
+	private boolean passwordCheck(String password){
+		boolean length=password.length()>=6&&password.length()<=16;
+		boolean space=!password.contains(" ");
+        boolean chinese=true;
+		Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(password);
+        if(m.find()){
+        	chinese=false;
+        }
+		return length&&space&&chinese;
+	}
 	
 	/**
 	 * 检查密码

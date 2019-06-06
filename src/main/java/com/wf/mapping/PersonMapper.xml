@@ -102,6 +102,15 @@
       <if test="extend != null and extend !=''" >
         extend = #{extend},
       </if>
+       <if test="admin_istrial != null and admin_istrial !=''" >
+        admin_istrial = #{admin_istrial},
+      </if>
+       <if test="admin_begintime != null and admin_begintime !=''" >
+        admin_begintime = #{admin_begintime},
+      </if>
+       <if test="admin_endtime != null and admin_endtime !=''" >
+        admin_endtime = #{admin_endtime},
+      </if>
     </set>
     where user_id = #{userId}
  </update>
@@ -180,8 +189,8 @@
   
   <!-- 机构管理员账号注册 -->
   <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
-	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time)
-     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now())
+	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time,admin_istrial,admin_begintime,admin_endtime)
+     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now(),#{adminIsTrial},#{adminBegintime},#{adminEndtime})
   </insert>
  
   <!-- 移除机构账号管理员 -->

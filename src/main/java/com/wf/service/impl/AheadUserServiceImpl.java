@@ -557,15 +557,19 @@ public class AheadUserServiceImpl implements AheadUserService{
 		per.setUserId(com.getAdminname());
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
+			per.setLoginMode(1);
+			per.setUsertype(1);
+			per.setIsFreeze(2);
+			per.setRegistrationTime(DateUtil.getStringDate());
+			per.setInstitution(com.getInstitution());
+			per.setAdminEmail(com.getAdminEmail());
+			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
+			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		per.setLoginMode(1);
-		per.setUsertype(1);
-		per.setIsFreeze(2);
-		per.setRegistrationTime(DateUtil.getStringDate());
-		per.setInstitution(com.getInstitution());
-		per.setAdminEmail(com.getAdminEmail());
 		return personMapper.addRegisterAdmin(per);
 	}
 
@@ -580,14 +584,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}else{
 			return 0;
 		}
-
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
+			per.setInstitution(com.getInstitution());
+			per.setAdminEmail(com.getAdminEmail());
+			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
+			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		per.setInstitution(com.getInstitution());
-		per.setAdminEmail(com.getAdminEmail());
 		return personMapper.updateRegisterAdmin(per);
 	}
 
@@ -1686,12 +1693,21 @@ public class AheadUserServiceImpl implements AheadUserService{
 				userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());
 			}
 			UserAccountRestriction acc = new UserAccountRestriction();
-			acc.setUserId(user.getUserId());
-			acc.setUpperlimit(user.getUpperlimit());
-			acc.setChargebacks(user.getChargebacks());
-			acc.setDownloadupperlimit(user.getDownloadupperlimit());
-			acc.setpConcurrentnumber(user.getpConcurrentnumber());
-			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			try {
+				acc.setUserId(user.getUserId());
+				acc.setUpperlimit(user.getUpperlimit());
+				acc.setChargebacks(user.getChargebacks());
+				acc.setDownloadupperlimit(user.getDownloadupperlimit());
+				acc.setpConcurrentnumber(user.getpConcurrentnumber());
+				acc.setsConcurrentnumber(user.getsConcurrentnumber());
+				acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+				acc.setsBegintime(sd.parse(user.getsBegintime()));
+				acc.setsEndtime(sd.parse(user.getsEndtime()));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
 			return userAccountRestrictionMapper.insert(acc);
 		}else{
 			UserAccountRestriction acc = new UserAccountRestriction();
@@ -1701,16 +1717,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}else{
 				acc.setpConcurrentnumber(account.getpConcurrentnumber());
 			}
-			if(user.getsConcurrentnumber()!=null){
-				acc.setUpperlimit(user.getUpperlimit());
-				acc.setChargebacks(user.getChargebacks());
-				acc.setDownloadupperlimit(user.getDownloadupperlimit());
-				acc.setsConcurrentnumber(user.getsConcurrentnumber());
-			}else{
-				acc.setUpperlimit(account.getUpperlimit());
-				acc.setChargebacks(account.getChargebacks());
-				acc.setDownloadupperlimit(account.getDownloadupperlimit());
-				acc.setsConcurrentnumber(account.getsConcurrentnumber());
+			try {
+				if(user.getsConcurrentnumber()!=null){
+					acc.setUpperlimit(user.getUpperlimit());
+					acc.setChargebacks(user.getChargebacks());
+					acc.setDownloadupperlimit(user.getDownloadupperlimit());
+					acc.setsConcurrentnumber(user.getsConcurrentnumber());
+					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+					SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+					acc.setsBegintime(sd.parse(user.getsBegintime()));
+					acc.setsEndtime(sd.parse(user.getsEndtime()));
+				}else{
+					acc.setUpperlimit(account.getUpperlimit());
+					acc.setChargebacks(account.getChargebacks());
+					acc.setDownloadupperlimit(account.getDownloadupperlimit());
+					acc.setsConcurrentnumber(account.getsConcurrentnumber());
+					acc.setsIsTrial(account.getsIsTrial().equals("isTrial")?"1":"0");
+					acc.setsBegintime(account.getsBegintime());
+					acc.setsEndtime(account.getsEndtime());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return userAccountRestrictionMapper.updateAccount(acc);
 		}
