@@ -1,5 +1,12 @@
 package com.utils;
 
+import org.neo4j.cypher.internal.compiler.v2_2.functions.Str;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -7,13 +14,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * Created by yeshusheng on 2018/5/2.
@@ -56,10 +56,15 @@ public class Des {
     //  根据参数生成KEY
     private Key setKey(String strKey) {
         try {
-            KeyGenerator generator = KeyGenerator.getInstance("DES");
-            generator.init(new SecureRandom(strKey.getBytes()));
-            return generator.generateKey();
+//            KeyGenerator generator = KeyGenerator.getInstance("DES");
+//            generator.init(new SecureRandom(strKey.getBytes()));
+//            return generator.generateKey();
 
+            KeyGenerator generator = KeyGenerator.getInstance("DES");
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            secureRandom.setSeed(strKey.getBytes());
+            generator.init(secureRandom);
+            return generator.generateKey();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,8 +137,8 @@ public class Des {
     }
 
     // 解密用户名密码
-    public static String deDes(String s){
-        if(s != null) {
+    public static String deDes(String s) {
+        if (s != null) {
             try {
                 String decode = URLDecoder.decode(s, "UTF-8");
                 Des des = Des.getInstance();
@@ -147,10 +152,14 @@ public class Des {
         return "";
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        String s1 = Des.enDes("wjorg01", "f");
-        System.out.println(s1);
-        String s2 = Des.deDes(s1);
-        System.out.println(s2);
+    public static void main(String[] args) {
+//        String s1 = Des.enDes("spstsg123", "spstsg123");
+//        System.out.println(s1);
+//        String s2 = Des.deDes(s1);
+//        System.out.println(s2);
+        String s3 = Des.enDes("zqstsg2019", "123456");
+        System.out.println("http://m.wanfangdata.com.cn/search/jgSearch.html?key=" + s3);
+//        String s4 = Des.deDes(s3);
+//        System.out.println(s4);
     }
 }

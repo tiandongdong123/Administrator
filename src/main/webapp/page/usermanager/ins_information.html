@@ -98,7 +98,7 @@
 			<ul class="dropdown-menu" role="menu">
 			<li><a href="../group/operatelog.do?userId=${list.Id}" class="add_admin">操作记录</a></li>
 			<li><a href="../group/childquery.do?userId=${list.Id}&isBack=true" class="add_admin">子账号列表</a></li>
-			<li><a href="../group/order.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
+			<li><a href="../mechanism/mechanism_order.do?userId=${list.Id}" class="add_admin">订单记录</a></li>
 			<li><a href="../group/personbind.do?userId=${list.Id}" class="add_admin">个人绑定机构列表</a></li>
 			<li><?if(!isEmpty(list.ParentId)){?><a <?if(!strutil.contain(session.purviews,"A142")){?>style="display:none"<?}?> href="javascript:void(0);" onclick="delAdmin('${list.Id}');" class="add_admin">移除机构管理员</a>
 				<?}else{?><a <?if(!strutil.contain(session.purviews,"A142")){?>style="display:none"<?}?> href="javascript:void(0);" onclick="setAdmin('${list.Id}','${list.ParentId}','${list.Institution}');" class="add_admin">添加机构管理员</a><?}?></li>

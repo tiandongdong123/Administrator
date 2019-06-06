@@ -127,10 +127,10 @@ public class UserController {
 				req.getSession();
 				map.put("flag", "true");
 			}
+			log.info(user.getWangfang_admin_id()+"登录耗时："+(System.currentTimeMillis()-time)+"ms");
 		}else{
 			map.put("flag", "false");
 		}
-		log.info(user.getWangfang_admin_id()+"登录耗时："+(System.currentTimeMillis()-time)+"ms");
 		return map;
 	}
 	

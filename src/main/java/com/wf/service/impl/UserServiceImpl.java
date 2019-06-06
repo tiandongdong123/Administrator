@@ -31,8 +31,10 @@ public class UserServiceImpl implements UserService {
 		map.put("passWord", passWord);
 		Wfadmin us = userMapper.selectUserInfo(map);
 		Department de=new Department();
-		de.setDeptName(us.getDepartment());
-		us.setDept(de);
+		de.setDeptName(us==null?"":us.getDepartment());
+		if(us!=null){
+			us.setDept(de);
+		}
 		return us;
 	}
 	

@@ -10,6 +10,7 @@
 				<Node Id="A142" Name="添加/移除机构管理员" HasChild="false" Url="/auser/goaddadmin.do" />
 				<Node Id="A143" Name="冻结/解冻" HasChild="false" Url="/auser/setfreeze.do" />
 				<Node Id="A144" Name="查询" HasChild="false" Url="/group/list.do" />
+				<Node Id="A145" Name="订单记录" HasChild="false" Url="/mechanism/mechanism_order.do" />
 			</Node>
 			<Node Id="A15" Name="机构子账号信息管理" HasChild="true" Url="/group/childquery.do">
 				<Node Id="A151" Name="子账号导出" HasChild="false" Url="" />
@@ -35,13 +36,6 @@
 				<Node Id="A233" Name="修改订单状态" HasChild="false" Url="" />
 			</Node>
 			<Node Id="A24" Name="万方卡绑定记录" HasChild="false" Url="/person/wfcardbind.do" />
-		</Node>
-	</Node>
-	<Node Id="B" Name="充值管理" HasChild="true" Url="">
-		<Node Id="B1" Name="充值管理" HasChild="true" Url="/charge/manage.do">
-			<Node Id="B11" Name="个人充值记录" HasChild="true" Url="">
-				<Node Id="B111" Name="待处理" HasChild="false" Url="" />
-			</Node>
 		</Node>
 	</Node>
 	<Node Id="C" Name="内容管理" HasChild="true" Url="">

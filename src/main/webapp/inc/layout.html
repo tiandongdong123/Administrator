@@ -148,6 +148,17 @@
               </li>
           </ul>
         </li>
+          <!-- 交易管理-->
+          <li class="treeview" <?if(!strutil.contain(session.purviews,"交易管理")){?>style="display:none"<?}?>>
+          <a href="#">
+              <i class="fa fa-pie-chart"></i><span>交易管理</span><i class="fa fa-angle-left pull-right"></i>
+          </a>
+          <ul class="treeview-menu menu-open" style="display: block;">
+              <li <? if(session.menu_first=="order_record.do"){ ?>class="active"<?}?>><a href="../mechanism/mechanism_order.do"><i class="fa fa-circle-o"></i> 机构订单记录</a></li>
+              <li <? if(session.menu_first=="order_record.do"){ ?>class="active"<?}?>><a href="../mechanism/recharge.do"><i class="fa fa-circle-o"></i>机构充值记录</a></li>
+          </ul>
+          </li>
+          <!-- 交易管理-->
         <li class="treeview" <?if(!strutil.contain(session.purviews,"统计分析")){?>style="display:none"<?}?>>
           <a href="#"><i class="fa fa-files-o"></i><span>统计分析</span><i class="fa fa-angle-left pull-right"></i></a>
           	<ul class="treeview-menu menu-open" style="display: block;">
