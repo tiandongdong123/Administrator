@@ -723,7 +723,10 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
 						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
-					
+					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}
 					layer.closeAll();				
 				}
 //				$('.checkType_'+count+'_'+i).text('')
@@ -1070,6 +1073,10 @@ function createDetail(count,i,resourceid,type){
 		text += '<span class="locationCity">市</span><select disabled class="noChecked" id="o_shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+',\'old\')" data-oldcity=""><option value="">全部</option></select>'
 		text += '<span class="locationCounty">县</span><select disabled class="noChecked" id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')" data-oldcounty=""><option value="">全部</option></select></div>'
 		text += '</div>'
+		text += '<div class="database">'
+		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Cultur" name="rdlist['+count+'].rldto['+i+'].albumDatabase" >专辑数据库'
+		text += '<div class="databaseInput"><input type="checkbox" onclick="databaseClick('+count+','+i+')" disabled id="checkData_'+count+'_'+i+'">文化志</div>'
+		text += '</div>'
 		text += '</div>'
 		text += '<div id="changeTextarea_'+count+'_'+i+'" style="display:none">'
 		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
@@ -1086,6 +1093,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].localType" id="gazetteers_type_'+count+'_'+i+'">'
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteers_TopId_'+count+'_'+i+'">'
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].itemId" id="gazetteers_BottomItem_'+count+'_'+i+'">'
+		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].albumDatabase" id="gazetteers_albumDatabase_'+count+'_'+i+'">'
 		text +=	'</div>'
 	}
 	text += '</div></div>';
@@ -1223,6 +1231,16 @@ function gazetteerType(val,count,i){
 			$('#o_xian_'+count+'_'+i).attr('data-oldcounty','')
 			$('#o_xian_'+count+'_'+i).html('<option value="">全部</option>')
 			$('#errorOldTime_'+count+'_'+i).html('')
+		}
+	}else if(val==='FZ_Cultur') { // 专辑数据库
+		if($(event.target).is(":checked")) {
+			$('#checkData_'+count+'_'+i).prop('disabled',false)		
+			$('#checkData_'+count+'_'+i).prop('checked', true)
+			$('#databaseInput_'+count+'_'+i).attr('data-database', 'FZ_Cultur')
+		}else {
+			$('#checkData_'+count+'_'+i).prop('disabled',true)
+			$('#checkData_'+count+'_'+i).prop('checked', false)
+			$('#databaseInput_'+count+'_'+i).attr('data-database', '')
 		}
 	}
 }
@@ -2917,4 +2935,11 @@ function openEnterpriseLike(obj){
 			window.open(data);
 		}
 	});
+}
+function databaseClick(count, i) {
+	if (!$(event.target).is(":checked")) {
+		$('#databaseInput_'+count+'_'+i).prop('checked',false)
+		$('#databaseInput_'+count+'_'+i).attr('data-database', '')
+		$('#checkData_'+count+'_'+i).prop('disabled', true)
+	}
 }
