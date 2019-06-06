@@ -177,7 +177,7 @@
 			<Node Id="E93" Name="机构交易统计" HasChild="false" Url="/mechanism/transaction.do" />
 		</Node>
 		<Node Id="E10" Name="功能统计" HasChild="true" Url="" >
-			<Node Id="E101" Name="广告统计" HasChild="false" Url="functionStatistics/adStatistics.do" />
+			<Node Id="E101" Name="广告统计" HasChild="false" Url="/functionStatistics/adStatistics.do" />
 		</Node>
 	</Node>
 	<Node Id="F" Name="系统管理" HasChild="true" Url="" >
