@@ -1292,13 +1292,13 @@ public class AheadUserServiceImpl implements AheadUserService{
 				gType=gNType;
 			}
 			if(StringUtils.isNotEmpty(gOType)&&StringUtils.isNotEmpty(gType)){
-				gType=gType+","+gOType;
+				gType=gType+";"+gOType;
 			}else if(StringUtils.isNotEmpty(gOType)&&StringUtils.isEmpty(gType)){
 				gType=gOType;
 			}
 			
 			if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isNotEmpty(gType)){
-				gType=gType+","+albumDatabase;
+				gType=gType+";"+albumDatabase;
 			}else if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isEmpty(gType)){
 				gType=albumDatabase;
 			}
