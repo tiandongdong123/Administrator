@@ -435,8 +435,8 @@
 							</div>
 						</div>
 						<div class="database">
-							<input type="checkbox" id="databaseCheck_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(gazetteers_type)&&(strutil.contain(gazetteers_type.Value,"FZ_Cultur"))){?>checked="checked"<?}?>>专辑数据库
-							<div class="databaseInput"><input type="checkbox" id="databaseInput_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(gazetteers_type)&&(strutil.contain(gazetteers_type.Value,"FZ_Cultur"))){?>checked="checked"<?}?>>文化志</div>
+							<input type="checkbox" id="databaseCheck_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(album_database)&&(strutil.contain(album_database.Value,"FZ_Cultur"))){?>checked="checked"<?}?>>专辑数据库
+							<div class="databaseInput"><input type="checkbox" id="databaseInput_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(album_database)&&(strutil.contain(album_database.Value,"FZ_Cultur"))){?>checked="checked"<?}?>>文化志</div>
 						</div>
 					</div>
 					<div id="changeTextarea_${list.Id}_${payid}" style="display:none">
