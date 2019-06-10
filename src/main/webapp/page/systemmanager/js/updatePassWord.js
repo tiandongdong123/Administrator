@@ -22,6 +22,12 @@ function checkOldPassWord(val) {
 }
 function checkrNew(val) {
 	var patt1 = new RegExp(/\s+/g);
+	if(val=='') {
+		$('#checkroleNew').text('密码不能为空')
+		return
+	}else {
+		$('#checkroleNew').text('')
+	}
 	if(val.length<6) {
 		$('#checkroleNew').text('密码长度为6-16位字符')
 		return
@@ -34,7 +40,7 @@ function checkrNew(val) {
 	}else {
 		$('#checkroleNew').text('')
 	}
-	if(!checkId(val)) {
+	if(!(escape(val).indexOf("%u")<0)) {
 		$('#checkroleNew').text('密码不能包含中文')
 		return
 	}else {
@@ -44,6 +50,12 @@ function checkrNew(val) {
 }
 function checkrPwd(val) {
 	var patt1 = new RegExp(/\s+/g);
+	if(val=='') {
+		$('#checkrolePwd').text('密码不能为空')
+		return
+	}else {
+		$('#checkrolePwd').text('')
+	}
 	if(val.length<6) {
 		$('#checkrolePwd').text('密码长度为6-16位字符')
 		return
@@ -56,7 +68,7 @@ function checkrPwd(val) {
 	}else {
 		$('#checkrolePwd').text('')
 	}
-	if(!checkId(val)) {
+	if(!(escape(val).indexOf("%u")<0)) {
 		$('#checkrolePwd').text('密码不能包含中文')
 		return
 	}else {
@@ -72,6 +84,23 @@ function checkrPwd(val) {
 
 function doaddrole() {
 	var cname=$("#cname").val();
+	if($('#rolename').val()=='') {
+		$("#checkrolename").text("密码不能为空")
+	}else {
+		$("#checkrolename").text('')
+	}
+	if($('#roleNew').val()=='') {
+		$('#checkroleNew').text('密码不能为空')
+	}else {
+		$('#checkroleNew').text('')
+	}
+	if($('#rolePwd').val()=='') {
+		$('#checkrolePwd').text('密码不能为空')
+	}else {
+		$('#checkrolePwd').text('')
+	}
+	checkrNew($('#roleNew').val())
+	checkrPwd($('#rolePwd').val())
 	if(cname=="Y"){
 		if($('#roleNew').val()!=$('#rolePwd').val()) {
 			return
@@ -79,7 +108,7 @@ function doaddrole() {
 		if($('#roleNew').val().length<6||$('#rolePwd').val().length<6){
 			return
 		}
-		if(!checkId($('#roleNew').val()) ||!checkId($('#rolePwd').val())) {
+		if(!(escape($('#roleNew').val()).indexOf("%u")<0)||!(escape($('#rolePwd').val()).indexOf("%u")<0)) {
 			return
 		}
 		$.ajax({  
@@ -104,6 +133,12 @@ function doaddrole() {
 				}
 			});
 	}else {
+		if($('#rolename').val()=='') {
+			$("#checkrolename").text("密码不能为空")
+			return
+		}
+		
+		$("#checkrolename").text("密码输入错误")
 		return
 	}
 }
@@ -111,12 +146,4 @@ function doaddrole() {
 function closeWindow() {
 	var index = parent.layer.getFrameIndex(window.name);
 	parent.layer.close(index);
-}
-function checkId(str) {
-    var reg = /^\w+$/;
-    if(reg.test(str)){
-    	return true;
-    }else{
-    	return  false;
-    }
 }
