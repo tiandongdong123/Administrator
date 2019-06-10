@@ -1342,7 +1342,7 @@ function initGazetteer(count,index){
 				})
 				$('#changeSelect_'+count+'_'+index+ ' .oldSelectTime select').prop('disabled',false)
 				$('#changeSelect_'+count+'_'+index+ ' .oldLocationSelect select').prop('disabled',false)
-			}else if(localType=='FZ_New') {
+			}else if(localType.indexOf('FZ_New')>-1) {
 				$('#newLocalType_'+count+'_'+index).prop('checked',true)
 				$('#newLocalType_'+count+'_'+index).attr('data-newtype','FZ_New')
 				$('#changeSelect_'+count+'_'+index+ ' .newSelectTime select').prop('disabled',false)
@@ -1357,7 +1357,7 @@ function initGazetteer(count,index){
 				})
 				$('#changeSelect_'+count+'_'+index+ ' .oldSelectTime select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .oldLocationSelect select').prop('disabled',true)
-			}else if (localType=='FZ_Old') {
+			}else if (localType.indexOf('FZ_Old')>-1) {
 				$('#changeSelect_'+count+'_'+index+ ' .newSelectTime select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .newLocationSelect select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .newDateSelect input').prop('disabled',true)

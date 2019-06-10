@@ -329,7 +329,7 @@ function openItems(count,i,type){
 		// 判断文化志
 		var gazetteers_type = $('#gazetteers_type_'+count+'_'+i).val()
 		var gazetteers_albumDatabaseVal = $('#gazetteers_albumDatabase_'+count+'_'+i).val()
-		if(gazetteers_type.indexOf('FZ_Cultur')>-1 || gazetteers_albumDatabaseVal=='FZ_Cultur') {
+		if(gazetteers_albumDatabaseVal=='FZ_Cultur') {
 			$('#databaseInput_'+count+'_'+i).prop('checked', true)
 			$('#databaseInput_'+count+'_'+i).prop('data-database', 'FZ_Cultur')
 			$('#checkData_'+count+'_'+i).prop('checked', true)
