@@ -309,7 +309,7 @@ public class AdminController {
 				oldPassword=PasswordHelper.encryptPassword(oldPassword);
 				newPassword=PasswordHelper.encryptPassword(newPassword);
 				repeatPassword=PasswordHelper.encryptPassword(repeatPassword);
-				Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+				Wfadmin wfAdmin = admin.getAdminById(CookieUtil.getWfadmin(request).getId());
 				if(!oldPassword.equals(wfAdmin.getPassword())||!newPassword.equals(repeatPassword)){
 					return false;
 				}
