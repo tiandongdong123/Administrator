@@ -349,7 +349,7 @@ public class AdminController {
 			if(StringUtils.isNoneBlank(oldPassword)){
 				//校验密码
 				oldPassword=PasswordHelper.encryptPassword(oldPassword);
-				Wfadmin wfAdmin = CookieUtil.getWfadmin(request);
+				Wfadmin wfAdmin=admin.getAdminById(CookieUtil.getWfadmin(request).getId());
 				if(oldPassword.equals(wfAdmin.getPassword())){
 					return true; 
 				}
