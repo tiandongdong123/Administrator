@@ -287,7 +287,13 @@ public class AdminController {
 		}
 		return map;
 	}
-	
+	/*
+	 * 更改密码 页面
+	 */
+	@RequestMapping("updateaPassword")
+	public String updateaPassword(){
+		return "/page/systemmanager/update_password";
+	}
 	/**
 	 * 更改密码
 	 * @return
@@ -329,6 +335,8 @@ public class AdminController {
         }
 		return length&&space&&chinese;
 	}
+	
+	
 	
 	/**
 	 * 检查密码
