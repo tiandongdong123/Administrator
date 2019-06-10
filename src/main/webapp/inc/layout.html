@@ -70,12 +70,11 @@
     function changePassword () {
     	//$(".dropdown-menu").hide()
     	layer.open({
-		    type: 1, //page层 1div，2页面
+		    type: 2, //page层 1div，2页面
 		    area: ['40%', '40%'],
 		    title: '修改密码',
-		    moveType: 2, //拖拽风格，0是默认，1是传统拖动
-		    
-		    btn: ['保存','取消'],
+		    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		    content: '../admin/updateaPassword.do'
 	    })
     }
 </script>
