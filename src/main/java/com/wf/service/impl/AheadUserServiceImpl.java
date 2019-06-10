@@ -2132,7 +2132,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 					}
 				}
 				List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);
-				int count=0;
+				int count=0; 
+				int count2=0;
 				for (Map<String, Object> map2 : plList) {
 					if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 						List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
@@ -2142,9 +2143,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 							 ||jsonObject.get("Field").equals("item_id")){
 								count++;
 							}
+							if(jsonObject.get("Field").equals("gazetteers_level")){
+								count2++;
+							}
 						}
 						//判断gazetteers_id和item_id都为空的情况下
-						if(count==0){
+						if(count==0&&count2>0){
 							JSONObject json=new JSONObject();
 							json.put("Field", "gazetteers_type");
 							json.put("Logic", "AND");
@@ -2694,6 +2698,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			List<Map<String, Object>> plList = wfksMapper.selectProjectLibrary(libdata);//已购买资源库
 			int count=0;
+			int count2=0;
 			for (Map<String, Object> map2 : plList) {
 				if(map2.get("productSourceCode")!=null&&map2.get("productSourceCode")!=""&&map2.get("productSourceCode").equals("DB_CLGD")&&map2.get("contract")!=null && map2.get("contract")!=""){
 					List<JSONObject> conlist=JSONObject.fromObject(map2.get("contract")).getJSONArray("Terms");
@@ -2703,8 +2708,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 						 ||jsonObject.get("Field").equals("item_id")){
 							count++;
 						}
+						if(jsonObject.get("Field").equals("gazetteers_level")){
+							count2++;
+						}
 					}
-					if(count==0){
+					if(count==0&&count2>0){
 						JSONObject json=new JSONObject();
 						json.put("Field", "gazetteers_type");
 						json.put("Logic", "AND");
