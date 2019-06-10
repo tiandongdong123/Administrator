@@ -1336,7 +1336,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if (StringUtils.isNotEmpty(gOEndTime)) {
 					addStringToTerms("gazetteers_old_endTime", "Equal", gOEndTime, Terms, "String");
 				}
-				if (StringUtils.isNotEmpty(gOEndTime)) {
+				if (StringUtils.isNotEmpty(albumDatabase)) {
 					addStringToTerms("album_database", "Equal", albumDatabase, Terms, "String");
 				}
 			}

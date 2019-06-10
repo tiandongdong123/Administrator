@@ -1074,7 +1074,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<span class="locationCounty">县</span><select disabled class="noChecked" id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')" data-oldcounty=""><option value="">全部</option></select></div>'
 		text += '</div>'
 		text += '<div class="database">'
-		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Cultur">专辑数据库'
+		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Culture">专辑数据库'
 		text += '<div class="databaseInput"><input type="checkbox" onclick="databaseClick('+count+','+i+')" disabled id="checkData_'+count+'_'+i+'">文化志</div>'
 		text += '</div>'
 		text += '</div>'
@@ -1232,11 +1232,11 @@ function gazetteerType(val,count,i){
 			$('#o_xian_'+count+'_'+i).html('<option value="">全部</option>')
 			$('#errorOldTime_'+count+'_'+i).html('')
 		}
-	}else if(val==='FZ_Cultur') { // 专辑数据库
+	}else if(val==='FZ_Culture') { // 专辑数据库
 		if($(event.target).is(":checked")) {
 			$('#checkData_'+count+'_'+i).prop('disabled',false)		
 			$('#checkData_'+count+'_'+i).prop('checked', true)
-			$('#databaseInput_'+count+'_'+i).attr('data-database', 'FZ_Cultur')
+			$('#databaseInput_'+count+'_'+i).attr('data-database', 'FZ_Culture')
 		}else {
 			$('#checkData_'+count+'_'+i).prop('disabled',true)
 			$('#checkData_'+count+'_'+i).prop('checked', false)
