@@ -1287,20 +1287,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 		if(igost > 0 && igoet > 0 && (igost>igoet)){
 			return null;
 		}
-		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)||StringUtils.isEmpty(albumDatabase)){
-			if(StringUtils.isNotEmpty(gNType)){
-				gType=gNType;
-			}
-			if(StringUtils.isNotEmpty(gOType)&&StringUtils.isNotEmpty(gType)){
-				gType=gType+";"+gOType;
-			}else if(StringUtils.isNotEmpty(gOType)&&StringUtils.isEmpty(gType)){
+		if(StringUtils.isEmpty(gNType)||StringUtils.isEmpty(gOType)){
+			if(StringUtils.isEmpty(gNType)){
 				gType=gOType;
-			}
-			
-			if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isNotEmpty(gType)){
-				gType=gType+";"+albumDatabase;
-			}else if(StringUtils.isNotEmpty(albumDatabase)&&StringUtils.isEmpty(gType)){
-				gType=albumDatabase;
+			}else{
+				gType=gNType;
 			}
 		}
 		if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)
@@ -1308,7 +1299,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				|| StringUtils.isNotEmpty(gLevel)|| StringUtils.isNotEmpty(gStartTime)
 				|| StringUtils.isNotEmpty(gEndTime)|| StringUtils.isNotEmpty(gOStartTime)
 				|| StringUtils.isNotEmpty(gOEndTime)||StringUtils.isNotEmpty(gOArea)
-				|| StringUtils.isNotEmpty(gType)) {
+				|| StringUtils.isNotEmpty(gType)||StringUtils.isNotEmpty(albumDatabase)) {
 			if (StringUtils.isNotEmpty(gId) || StringUtils.isNotEmpty(itemId)) {
 				if (StringUtils.isNotEmpty(gId)) {
 					addStringToTerms("gazetteers_id", "Equal", gId, Terms, "String");
@@ -1344,6 +1335,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				}
 				if (StringUtils.isNotEmpty(gOEndTime)) {
 					addStringToTerms("gazetteers_old_endTime", "Equal", gOEndTime, Terms, "String");
+				}
+				if (StringUtils.isNotEmpty(gOEndTime)) {
+					addStringToTerms("album_database", "Equal", albumDatabase, Terms, "String");
 				}
 			}
 		}
@@ -2154,7 +2148,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 							JSONObject json=new JSONObject();
 							json.put("Field", "gazetteers_type");
 							json.put("Logic", "AND");
-							json.put("Value", "FZ_New;FZ_Old;FZ_Cultur");
+							json.put("Value", "FZ_New;FZ_Old");
 							json.put("ValueType", "String");
 							json.put("Verb", "Equal");
 							conlist.add(json);
@@ -2714,7 +2708,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						JSONObject json=new JSONObject();
 						json.put("Field", "gazetteers_type");
 						json.put("Logic", "AND");
-						json.put("Value", "FZ_New;FZ_Old;FZ_Cultur");
+						json.put("Value", "FZ_New;FZ_Old");
 						json.put("ValueType", "String");
 						json.put("Verb", "Equal");
 						conlist.add(json);
