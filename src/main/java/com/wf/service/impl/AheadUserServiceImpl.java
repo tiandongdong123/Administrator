@@ -2154,7 +2154,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 							JSONObject json=new JSONObject();
 							json.put("Field", "gazetteers_type");
 							json.put("Logic", "AND");
-							json.put("Value", "FZ_New;FZ_Old");
+							json.put("Value", "FZ_New;FZ_Old;FZ_Cultur");
 							json.put("ValueType", "String");
 							json.put("Verb", "Equal");
 							conlist.add(json);
@@ -2714,7 +2714,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 						JSONObject json=new JSONObject();
 						json.put("Field", "gazetteers_type");
 						json.put("Logic", "AND");
-						json.put("Value", "FZ_New;FZ_Old");
+						json.put("Value", "FZ_New;FZ_Old;FZ_Cultur");
 						json.put("ValueType", "String");
 						json.put("Verb", "Equal");
 						conlist.add(json);
