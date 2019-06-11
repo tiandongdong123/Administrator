@@ -413,11 +413,17 @@ public class SolrThread implements Runnable {
 			solrMap.put("AdministratorId", pid);
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
 			solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
+			solrMap.put("AdministratorTrial", "isTrial".equals(user.getAdminIsTrial())?true:false);
+			solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminBegintime())));
+			solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminEndtime())));
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
 		}else{
 			solrMap.put("AdministratorId", null);
 			solrMap.put("AdministratorEmail", null);
 			solrMap.put("AdministratorPassword", null);
+			solrMap.put("AdministratorTrial", null);
+			solrMap.put("AdministratorStartTime", null);
+			solrMap.put("AdministratorEndtime", null);
 			solrMap.put("AdministratorOpenIP", null);
 		}
 		//GroupInfo
@@ -476,6 +482,9 @@ public class SolrThread implements Runnable {
 		solrMap.put("ChildGroupConcurrent", user.getsConcurrentnumber());
 		solrMap.put("ChildGroupDownloadLimit", user.getDownloadupperlimit());
 		solrMap.put("ChildGroupPayment", HasChildGroup?user.getChargebacks():null);
+		solrMap.put("ChildGroupTrial", "isTrial".equals(user.getsIsTrial())?true:false);
+		solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsBegintime())));
+		solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsEndtime())));
 		solrMap.put("GroupConcurrent", user.getpConcurrentnumber());
 		
 		//统计分析
@@ -495,18 +504,22 @@ public class SolrThread implements Runnable {
 	private static void addRole(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
 		//openapp
 		if(!StringUtils.isEmpty(user.getOpenApp())){
+			solrMap.put("AppTrial", "isTrial".equals(user.getAppIsTrial())?true:false);
 			solrMap.put("AppStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppBegintime())));
 			solrMap.put("AppEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppEndtime())));
 		}else{
+			solrMap.put("AppTrial", null);
 			solrMap.put("AppStartTime", null);
 			solrMap.put("AppEndTime", null);
 		}
 		//WeChat
 		if(!StringUtils.isEmpty(user.getOpenWeChat())){
+			solrMap.put("WeChatTrial", "isTrial".equals(user.getWeChatIsTrial())?true:false);
 			solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatBegintime())));
 			solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatEndtime())));
 			solrMap.put("Email4WeChat", user.getWeChatEamil());
 		}else{
+			solrMap.put("WeChatTrial", null);
 			solrMap.put("WeChatStartTime", null);
 			solrMap.put("WeChatEndTime", null);
 			solrMap.put("Email4WeChat", null);
