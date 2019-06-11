@@ -82,6 +82,19 @@
 					<label><input type="checkbox" id="checkuser">开通机构管理员</label>
 				</div>
                 <div id="administrator" style="display: none;">
+                	<div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	                  <input type="checkbox" name="adminIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+	                  <input type="text" id="openBindStart" name="adminBegintime"
+	                    value='' class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
+	                  至 <input type="text" id="openBindEnd" name="adminEndtime"
+	                    value='' class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+	                </div>
            	        <div class="form-group input_block">
                   		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
                   		<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
@@ -113,6 +126,10 @@
 	                  <label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
 		            </div>
 		            <div style="display: none;" id="sconcurrent_div">
+			            <div class="form-group input_block">
+		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+		                  <input type="checkbox" name="sIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+		                </div>
 	                  	<div class="form-group input_block">
 		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
 		                  <input type="text" class="form-control input_time" value="" name="upperlimit" id="upperlimit" maxlength="9">
@@ -151,6 +168,10 @@
 					<label><input type="checkbox" id="openApp" name="openApp" value="0" onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
 				</div>
 				<div class="form-group time_block" style="display: none;" id="openAppDiv">
+					<div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	                  <input type="checkbox" class="trial" name="appIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+	                </div>
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                 	<div class="time_input">
 					<span><input type="text" class="Wdate" name="appBegintime" id="appBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span class="to">至</span>
@@ -161,6 +182,10 @@
 					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
 				</div>
 				<div style="display: none;" id="wechatDiv">
+					<div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	                  <input type="checkbox" name="weChatIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+	                </div>
 		            <div class="form-group time_block">
 					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                 	<div class="time_input">

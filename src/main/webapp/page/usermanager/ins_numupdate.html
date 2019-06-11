@@ -994,6 +994,19 @@
                 <?}else{?>style="display: none;"
                 <?}?>>
                 <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+                  <input type="checkbox" name="adminIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+                  <input type="text" id="openBindStart" name="adminBegintime"
+                    value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
+                  至 <input type="text" id="openBindEnd" name="adminEndtime"
+                    value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+                </div>
+                <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
                   <input type="radio" name="managerType" value="new" onclick="radioClick();"
                     <?if(isEmpty(map.pid)){?>checked="checked"
@@ -1049,6 +1062,19 @@
                   style="display: black;"
                   <?}else{?>style="display: none;"
                   <?}?>>
+                  <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+	                  <input type="checkbox" name="sIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
+	                  <input type="text" id="openBindStart" name="sBegintime"
+	                    value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
+	                  至 <input type="text" id="openBindEnd" name="sEndtime"
+	                    value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+                  </div>
                   <div class="form-group input_block">
                     <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
                     <input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit"
@@ -1167,6 +1193,10 @@
               </div>
               <div class="form-group time_block" <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"
                 <?}?> id="openAppDiv">
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+                  <input type="checkbox" class="trial" name="appIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                </div>
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                 <div class="time_input">
                   <span><input type="text" class="Wdate" name="appBegintime" id="appBegintime"
@@ -1184,6 +1214,10 @@
               </div>
               <div <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"
                 <?}?> id="wechatDiv">
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+                  <input type="checkbox" name="weChatIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                </div>
                 <div class="form-group time_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                   <div class="form-group time_input">

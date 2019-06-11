@@ -771,3 +771,7 @@ ul.subset_list{ position:absolute; top:30px; left:-6px; background:#f4f6fb; bord
 	margin-left: 15px;
     margin-top: 10px;
 }
+.time_block .trial {
+	width: 13px;
+    height: 13px;
+}

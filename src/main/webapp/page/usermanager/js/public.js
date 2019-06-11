@@ -2943,3 +2943,11 @@ function databaseClick(count, i) {
 		$('#checkData_'+count+'_'+i).prop('disabled', true)
 	}
 }
+//试用按钮
+function changeVal(val,self) {
+	if(val=='notTrial') {
+		$(self).val('isTrial')
+	}else {
+		$(self).val('notTrial')
+	}
+}
