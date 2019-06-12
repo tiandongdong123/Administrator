@@ -588,7 +588,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 			per.setInstitution(com.getInstitution());
 			per.setAdminEmail(com.getAdminEmail());
-			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			if(com.getAdminIsTrial()!=null){
+				per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			}
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
 			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
@@ -1694,7 +1696,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				acc.setDownloadupperlimit(user.getDownloadupperlimit());
 				acc.setpConcurrentnumber(user.getpConcurrentnumber());
 				acc.setsConcurrentnumber(user.getsConcurrentnumber());
-				acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				if(user.getsIsTrial()!=null){
+					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				}
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 				acc.setsBegintime(sd.parse(user.getsBegintime()));
 				acc.setsEndtime(sd.parse(user.getsEndtime()));
@@ -2339,6 +2343,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+		if(map.get("sIsTrial")!=null){
+			map.put("sIsTrial", map.get("sIsTrial").equals("1")?true:false);
+		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2362,6 +2369,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+			if(map.get("adminIsTrial")!=null){
+				map.put("adminIsTrial",map.get("adminIsTrial").equals("1")?true:false);
+			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
 			for(Map<String, Object> userIp : list_ip){
 				String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));

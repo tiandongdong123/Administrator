@@ -114,13 +114,13 @@ public class WfksAccountidMapping {
 
 	@Override
 	public String toString() {
-		return "WfksAccountidMapping [mappingid=" + mappingid
-				+ ", idAccounttype=" + idAccounttype + ", idKey=" + idKey
-				+ ", relatedidAccounttype=" + relatedidAccounttype
-				+ ", relatedidKey=" + relatedidKey + ", begintime=" + begintime
-				+ ", endtime=" + endtime + ", lastUpdatetime=" + lastUpdatetime
-				+ "]";
+		return "WfksAccountidMapping [mappingid=" + mappingid + ", idAccounttype=" + idAccounttype + ", idKey=" + idKey
+				+ ", relatedidAccounttype=" + relatedidAccounttype + ", relatedidKey=" + relatedidKey + ", isTrial="
+				+ isTrial + ", begintime=" + begintime + ", endtime=" + endtime + ", lastUpdatetime=" + lastUpdatetime
+				+ ", begin=" + begin + ", end=" + end + "]";
 	}
+
+
     
     
 }

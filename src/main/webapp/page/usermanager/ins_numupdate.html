@@ -916,7 +916,6 @@
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}" />
                               <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
                               <input type="hidden" value="${item_id.Value!}" name="rdlist[${i}].rldto[${j}].itemId" id="gazetteers_BottomItem_${i}_${j}" />
-                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
                             </div>
                             <?}?>
                             <?if(strutil.contain(rt,"standard")){?>
@@ -1002,10 +1001,10 @@
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                   <input type="text" id="adminBegintime" name="adminBegintime"
-                    value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
+                    value='${map.adminBegintime,"yyyy-MM-dd"}' class="form-control input_time"
                     placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'adminEndtime\')}'})" style="width:139px; " />
                   至 <input type="text" id="adminEndtime" name="adminEndtime"
-                    value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
+                    value="${map.adminEndtime,'yyyy-MM-dd'}" class="form-control input_time"
                     placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'adminBegintime\')}'})" style="width:139px;" />
                 </div>
                 <div class="form-group input_block">
@@ -1072,10 +1071,10 @@
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
 	                  <input type="text" id="sBegintime" name="sBegintime"
-	                    value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
+	                    value='${map.sBegintime,"yyyy-MM-dd"}' class="form-control input_time"
 	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
 	                  至 <input type="text" id="sEndtime" name="sEndtime"
-	                    value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
+	                    value="${map.sEndtime,'yyyy-MM-dd'}" class="form-control input_time"
 	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'sBegintime\')}'})" style="width:139px;" />
                   </div>
                   <div class="form-group input_block">
