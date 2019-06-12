@@ -481,38 +481,19 @@ public class InstitutionalUser implements Serializable {
 				+ ", checks=" + checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
 				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit="
 				+ downloadupperlimit + ", sIsTrial=" + sIsTrial + ", sBegintime=" + sBegintime + ", sEndtime="
-				+ sEndtime + ", tongji=" + tongji + ", openApp=" + openApp + ", appBegintime=" + appBegintime
-				+ ", appEndtime=" + appEndtime + ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime
-				+ ", weChatEndtime=" + weChatEndtime + ", sendMail=" + sendMail + ", weChatEamil=" + weChatEamil
-				+ ", partyLimit=" + partyLimit + ", isTrial=" + isTrial + ", partyAdmin=" + partyAdmin
-				+ ", partyPassword=" + partyPassword + ", partyBegintime=" + partyBegintime + ", partyEndtime="
-				+ partyEndtime + ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode + ", Organization="
-				+ Organization + ", OrderType=" + OrderType + ", OrderContent=" + OrderContent + ", changeFront="
-				+ changeFront + ", rdlist=" + rdlist + ", getsIsTrial()=" + getsIsTrial() + ", getsBegintime()="
-				+ getsBegintime() + ", getsEndtime()=" + getsEndtime() + ", getAdminIsTrial()=" + getAdminIsTrial()
-				+ ", getAdminBegintime()=" + getAdminBegintime() + ", getAdminEndtime()=" + getAdminEndtime()
-				+ ", getRdlist()=" + getRdlist() + ", getResetMoney()=" + getResetMoney() + ", getResetCount()="
-				+ getResetCount() + ", getChecks()=" + getChecks() + ", getUpperlimit()=" + getUpperlimit()
-				+ ", getpConcurrentnumber()=" + getpConcurrentnumber() + ", getsConcurrentnumber()="
-				+ getsConcurrentnumber() + ", getChargebacks()=" + getChargebacks() + ", getDownloadupperlimit()="
-				+ getDownloadupperlimit() + ", getInstitution()=" + getInstitution() + ", getOldInstitution()="
-				+ getOldInstitution() + ", getUserId()=" + getUserId() + ", getLoginMode()=" + getLoginMode()
-				+ ", getPassword()=" + getPassword() + ", getIpSegment()=" + getIpSegment() + ", getAdminname()="
-				+ getAdminname() + ", getAdminpassword()=" + getAdminpassword() + ", getAdminIP()=" + getAdminIP()
-				+ ", getAdminEmail()=" + getAdminEmail() + ", getManagerType()=" + getManagerType()
-				+ ", getAdminOldName()=" + getAdminOldName() + ", getCheckuser()=" + getCheckuser() + ", getTongji()="
-				+ getTongji() + ", getOpenApp()=" + getOpenApp() + ", getOpenWeChat()=" + getOpenWeChat()
-				+ ", getSendMail()=" + getSendMail() + ", getWeChatEamil()=" + getWeChatEamil() + ", getPartyLimit()="
-				+ getPartyLimit() + ", getIsTrial()=" + getIsTrial() + ", getPartyAdmin()=" + getPartyAdmin()
-				+ ", getPartyPassword()=" + getPartyPassword() + ", getPartyBegintime()=" + getPartyBegintime()
-				+ ", getPartyEndtime()=" + getPartyEndtime() + ", getCountryRegion()=" + getCountryRegion()
-				+ ", getPostCode()=" + getPostCode() + ", getOrganization()=" + getOrganization() + ", getOrderType()="
-				+ getOrderType() + ", getOrderContent()=" + getOrderContent() + ", getAppBegintime()="
-				+ getAppBegintime() + ", getAppEndtime()=" + getAppEndtime() + ", getWeChatBegintime()="
-				+ getWeChatBegintime() + ", getWeChatEndtime()=" + getWeChatEndtime() + ", getChangeFront()="
-				+ getChangeFront() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
-				+ super.toString() + "]";
+				+ sEndtime + ", tongji=" + tongji + ", openApp=" + openApp + ", appIsTrial=" + appIsTrial
+				+ ", appBegintime=" + appBegintime + ", appEndtime=" + appEndtime + ", openWeChat=" + openWeChat
+				+ ", weChatIsTrial=" + weChatIsTrial + ", weChatBegintime=" + weChatBegintime + ", weChatEndtime="
+				+ weChatEndtime + ", sendMail=" + sendMail + ", weChatEamil=" + weChatEamil + ", partyLimit="
+				+ partyLimit + ", isTrial=" + isTrial + ", partyAdmin=" + partyAdmin + ", partyPassword="
+				+ partyPassword + ", partyBegintime=" + partyBegintime + ", partyEndtime=" + partyEndtime
+				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode + ", Organization=" + Organization
+				+ ", OrderType=" + OrderType + ", OrderContent=" + OrderContent + ", changeFront=" + changeFront
+				+ ", rdlist=" + rdlist + "]";
 	}
+	
+
+
 
 	
 
