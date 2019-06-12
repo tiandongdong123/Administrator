@@ -16,6 +16,12 @@ $(function(e){
 		if($(this).is(':checked')){
 			// 开通时限
 			$("#adminBegintime").val(getData());
+			// 试用
+			if($('#adminIsTrialCheck').is(':checked')) {
+				$('#adminIsTrial').val('isTrial')
+			}else {
+				$('#adminIsTrial').val('notTrial')
+			}
 			$("#administrator").show();
 			resetAdminValidate();
 		}else{
@@ -42,6 +48,8 @@ $(function(e){
 			$("#checktongji").prop('checked',false);
 			// 开通时限
 			$("#adminBegintime").val('');
+			// 试用
+			$('#adminIsTrial').val('')
 		}
 	});
 
@@ -87,6 +95,12 @@ $(function(e){
 		if($(this).is(':checked')){
 			// 开通时限
 			$("#sBegintime").val(getData())
+			// 试用
+			if($('#sIsTrialCheck').is(':checked')) {
+				$('#sIsTrial').val('isTrial')
+			}else {
+				$('#sIsTrial').val('notTrial')
+			}
 			$("#upperlimit").val("100");
 			$("#sConcurrentnumber").val("1");
 			$("#downloadupperlimit").val("30");
@@ -101,6 +115,8 @@ $(function(e){
 			$("#sconcurrent_div").hide();
 			// 开通时限
 			$("#sBegintime").val('')
+			// 试用
+			$('#sIsTrial').val('')
 		}
 	});
 	//开通统计分析
@@ -2401,8 +2417,15 @@ function checkWeChat(obj,type) {
 			$("#sendMail").prop("checked",false);
 		}
 		$("#weChatBegintime").val(getData());
+		// 试用
+		if($('#weChatIsTrialCheck').is(':checked')) {
+			$('#weChatIsTrial').val('isTrial')
+		}else {
+			$('#weChatIsTrial').val('notTrial')
+		}
 	} else {
 		$("#wechatDiv").hide();
+		$('#weChatIsTrial').val('')
 	}
 	$("#openWeChatspan").html("");
 }
@@ -2451,8 +2474,16 @@ function checkApp(obj){
 			$("#appBegintime").val(getData());
 			$("#openAppDiv").show();
 		}
+		// 试用
+		if($('#appIsTrialCheck').is(':checked')) {
+			$('#appIsTrial').val('isTrial')
+		}else {
+			$('#appIsTrial').val('notTrial')
+		}
 	}else{
 		$("#openAppDiv").hide();
+		// 试用
+		$('#appIsTrial').val('')
 	}
 	$("#openAppspan").html("");
 }
