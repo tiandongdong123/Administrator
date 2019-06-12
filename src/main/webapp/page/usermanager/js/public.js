@@ -14,6 +14,8 @@ $(function(e){
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
+			// 开通时限
+			$("#adminBegintime").val(getData());
 			$("#administrator").show();
 			resetAdminValidate();
 		}else{
@@ -38,6 +40,8 @@ $(function(e){
 			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 			$("#checktongji").prop('checked',false);
+			// 开通时限
+			$("#adminBegintime").val('');
 		}
 	});
 
@@ -81,17 +85,22 @@ $(function(e){
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
+			// 开通时限
+			$("#sBegintime").val(getData())
 			$("#upperlimit").val("100");
 			$("#sConcurrentnumber").val("1");
 			$("#downloadupperlimit").val("30");
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
+			
 		}else{
 			$("#upperlimit").val("");
 			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
+			// 开通时限
+			$("#sBegintime").val('')
 		}
 	});
 	//开通统计分析
@@ -2427,6 +2436,8 @@ $(function(){
     })();
     meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
     meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+    meDatePicker.datePicker($('#adminBegintime'), $('#adminEndtime'), true);
+    meDatePicker.datePicker($('#adminEndtime'), $('#adminBegintime'), false);
 })
 
 //开通APP嵌入服务
@@ -2944,10 +2955,10 @@ function databaseClick(count, i) {
 	}
 }
 //试用按钮
-function changeVal(val,self) {
-	if(val=='notTrial') {
-		$(self).val('isTrial')
+function changeVal(obj) {
+	if($('#'+obj).val()=='notTrial') {
+		$('#'+obj).val('isTrial')
 	}else {
-		$(self).val('notTrial')
+		$('#'+obj).val('notTrial')
 	}
 }

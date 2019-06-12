@@ -955,7 +955,7 @@
               <div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"
                 <?}?>>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
+                  <label class="input_name">是否试用</label>
                   <input type="radio" name="isTrial" value="isTrial"
                     <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"
                   <?}?>/>是
@@ -995,17 +995,18 @@
                 <?}else{?>style="display: none;"
                 <?}?>>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-                  <input type="checkbox" name="adminIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" onclick=changeVal('adminIsTrial')>试用
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="notTrial">
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                  <input type="text" id="openBindStart" name="adminBegintime"
+                  <input type="text" id="adminBegintime" name="adminBegintime"
                     value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
-                  至 <input type="text" id="openBindEnd" name="adminEndtime"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'adminEndtime\')}'})" style="width:139px; " />
+                  至 <input type="text" id="adminEndtime" name="adminEndtime"
                     value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'adminBegintime\')}'})" style="width:139px;" />
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
@@ -1064,17 +1065,18 @@
                   <?}else{?>style="display: none;"
                   <?}?>>
                   <div class="form-group input_block">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-	                  <input type="checkbox" name="sIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+	                  <label class="input_name">是否试用</label>
+	                  <input type="checkbox" onclick=changeVal('sIsTrial')>试用
+	                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="notTrial">
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-	                  <input type="text" id="openBindStart" name="sBegintime"
+	                  <input type="text" id="sBegintime" name="sBegintime"
 	                    value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
-	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
-	                  至 <input type="text" id="openBindEnd" name="sEndtime"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="sEndtime" name="sEndtime"
 	                    value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
-	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'sBegintime\')}'})" style="width:139px;" />
                   </div>
                   <div class="form-group input_block">
                     <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
@@ -1195,8 +1197,9 @@
               <div class="form-group time_block" <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"
                 <?}?> id="openAppDiv">
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-                  <input type="checkbox" class="trial" name="appIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" class="trial" onclick=changeVal('appIsTrial')>试用
+                  <input type="hidden" name="appIsTrial" id="appIsTrial" value="notTrial">
                 </div>
                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
                 <div class="time_input">
@@ -1216,8 +1219,9 @@
               <div <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"
                 <?}?> id="wechatDiv">
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-                  <input type="checkbox" name="weChatIsTrial" onclick=changeVal(this.value,this) id="" value="notTrial">试用
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" onclick=changeVal('weChatIsTrial')>试用
+                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" value="notTrial">
                 </div>
                 <div class="form-group time_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>

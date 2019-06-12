@@ -257,6 +257,52 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
+			// 开通时限判断
+			openBindStart: {
+				validators : {
+					notEmpty : {
+						message : '开通时限不能为空，请填写正确的时限'
+					},
+				}
+			},
+			adminEndtime: {
+				validators : {
+					notEmpty : {
+						message : '开通时限不能为空，请填写正确的时限'
+					},
+				}
+			},
+			sBegintime: {
+				validators : {
+					notEmpty : {
+						message : '开通时限不能为空，请填写正确的时限'
+					},
+				}
+			},
+			sEndtime: {
+				validators : {
+					notEmpty : {
+						message : '开通时限不能为空，请填写正确的时限'
+					},
+				}
+			},
 		}
 	})
+	$('#adminBegintime').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'adminBegintime', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'adminEndtime', 'NOT_VALIDATED');
+    })
+    $('#adminEndtime').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'adminBegintime', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'adminEndtime', 'NOT_VALIDATED');
+    })
+    
+    $('#sBegintime').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'sBegintime', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'sEndtime', 'NOT_VALIDATED');
+    })
+    $('#sEndtime').mousedown(function(){
+        $('#fromList').bootstrapValidator('updateStatus', 'sBegintime', 'NOT_VALIDATED');
+        $('#fromList').bootstrapValidator('updateStatus', 'sEndtime', 'NOT_VALIDATED');
+    })
 });
