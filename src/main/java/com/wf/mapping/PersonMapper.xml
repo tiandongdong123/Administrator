@@ -112,14 +112,14 @@
       <if test="extend != null and extend !=''" >
         extend = #{extend},
       </if>
-       <if test="admin_istrial != null and admin_istrial !=''" >
-        admin_istrial = #{admin_istrial},
+       <if test="adminIsTrial != null and adminIsTrial !=''" >
+        admin_istrial = #{adminIsTrial},
       </if>
-       <if test="admin_begintime != null and admin_begintime !=''" >
-        admin_begintime = #{admin_begintime},
+       <if test="adminBegintime != null and adminBegintime !=''" >
+        admin_begintime = #{adminBegintime},
       </if>
-       <if test="admin_endtime != null and admin_endtime !=''" >
-        admin_endtime = #{admin_endtime},
+       <if test="adminEndtime != null and adminEndtime !=''" >
+        admin_endtime = #{adminEndtime},
       </if>
     </set>
     where user_id = #{userId}

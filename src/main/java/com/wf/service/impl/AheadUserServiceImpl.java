@@ -588,7 +588,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 			per.setInstitution(com.getInstitution());
 			per.setAdminEmail(com.getAdminEmail());
-			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			if(com.getAdminIsTrial()!=null){
+				per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			}
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
 			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
@@ -1694,7 +1696,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 				acc.setDownloadupperlimit(user.getDownloadupperlimit());
 				acc.setpConcurrentnumber(user.getpConcurrentnumber());
 				acc.setsConcurrentnumber(user.getsConcurrentnumber());
-				acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				if(user.getsIsTrial()!=null){
+					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				}
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 				acc.setsBegintime(sd.parse(user.getsBegintime()));
 				acc.setsEndtime(sd.parse(user.getsEndtime()));
