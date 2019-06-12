@@ -30,6 +30,9 @@
     <result column="award" property="award" jdbcType="VARCHAR" />
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+     <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
@@ -43,13 +46,17 @@
     <result column="login_mode" property="loginMode" jdbcType="INTEGER" />
     <result column="userType" property="usertype" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
-    
+    <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
-    
     <result column="upperlimit" property="upperlimit" jdbcType="INTEGER" />
     <result column="p_concurrentnumber" property="pConcurrentnumber" jdbcType="INTEGER" />
     <result column="s_concurrentnumber" property="sConcurrentnumber" jdbcType="INTEGER" />
+    <result column="s_istrial" property="sIsTrial" jdbcType="INTEGER" />
+    <result column="s_begintime" property="sBegintime" jdbcType="VARCHAR" />
+    <result column="s_endtime" property="sEndtime" jdbcType="VARCHAR" />
     <result column="chargebacks" property="chargebacks" jdbcType="INTEGER" />
     <result column="downloadUpperLimit" property="downloadupperlimit" jdbcType="INTEGER" />
   </resultMap>
@@ -82,6 +89,9 @@
     <result column="award" property="award" jdbcType="VARCHAR" />
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
+     <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
@@ -232,7 +242,7 @@
  </update>
  
   <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
-   select u.user_id,u.password,u.admin_email,institution from user u WHERE u.user_id = #{pid}
+   select u.user_id,u.password,u.admin_email,u.admin_istrial,u.admin_begintime,u.admin_endtime,institution from user u WHERE u.user_id = #{pid}
   </select>
   
  <update id="updateAllInstitution" parameterType="java.util.Map">
@@ -259,7 +269,7 @@
  <!-- 账号修改返显查询的用户信息 -->
   <select id="findListInfoById" resultMap="BaseResultMap2" parameterType="java.lang.String">
 	select u.user_id,u.userType,u.password,u.institution,u.login_mode,u.pid,u.is_freeze,
-	uar.upperlimit,uar.p_concurrentnumber,uar.s_concurrentnumber,uar.chargebacks,uar.downloadUpperLimit
+	uar.upperlimit,uar.s_istrial,uar.s_begintime,uar.s_endtime,uar.p_concurrentnumber,uar.s_concurrentnumber,uar.chargebacks,uar.downloadUpperLimit
 	from user u LEFT JOIN user_account_restriction uar ON u.user_id=uar.user_id WHERE u.user_id = #{userId}
   </select>
  

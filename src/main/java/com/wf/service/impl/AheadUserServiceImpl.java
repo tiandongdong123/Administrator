@@ -2339,6 +2339,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+		if(map.get("sIsTrial")!=null){
+			map.put("sIsTrial", map.get("sIsTrial").equals("1")?true:false);
+		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2362,6 +2365,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
+			if(map.get("adminIsTrial")!=null){
+				map.put("adminIsTrial",map.get("adminIsTrial").equals("1")?true:false);
+			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
 			for(Map<String, Object> userIp : list_ip){
 				String beginIpAddressNumber = IPConvertHelper.NumberToIP((long) userIp.get("beginIpAddressNumber"));
