@@ -31,8 +31,8 @@
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
      <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
-    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
-    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="TIMESTAMP" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="TIMESTAMP" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
@@ -47,8 +47,8 @@
     <result column="userType" property="usertype" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
     <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
-    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
-    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="TIMESTAMP" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="TIMESTAMP" />
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
     <result column="upperlimit" property="upperlimit" jdbcType="INTEGER" />
@@ -90,8 +90,8 @@
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
      <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
-    <result column="admin_begintime" property="adminBegintime" jdbcType="VARCHAR" />
-    <result column="admin_endtime" property="adminEndtime" jdbcType="VARCHAR" />
+    <result column="admin_begintime" property="adminBegintime" jdbcType="TIMESTAMP" />
+    <result column="admin_endtime" property="adminEndtime" jdbcType="TIMESTAMP" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>

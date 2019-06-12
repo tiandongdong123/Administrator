@@ -145,6 +145,13 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			solrMap.put("ChildGroupConcurrent", account.getsConcurrentnumber());
 			solrMap.put("GroupConcurrent", account.getpConcurrentnumber());
 			solrMap.put("ChildGroupDownloadLimit", account.getDownloadupperlimit());
+			if(account.getsIsTrial()!=null){
+				solrMap.put("ChildGroupTrial", account.getsIsTrial().equals("1")?true:false);
+			}
+			if(account.getsBegintime()!=null&&account.getsEndtime()!=null){
+				solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(account.getsBegintime()));
+				solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(account.getsEndtime()));
+			}
 			solrMap.put("ChildGroupPayment", account.getChargebacks());
 		}
 		
@@ -205,6 +212,11 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			Map<String, Object> adminMap=aheadUserService.findInfoByPid(pid);
 			solrMap.put("AdministratorId", adminMap.get("userId"));
 			solrMap.put("AdministratorEmail", adminMap.get("adminEmail"));
+			solrMap.put("AdministratorTrial", adminMap.get("adminIsTrial"));
+			if(adminMap.get("adminBegintime")!=null&&adminMap.get("adminEndtime")!=null){
+				solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr((Date)adminMap.get("adminBegintime")));
+				solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr((Date)adminMap.get("adminEndtime")));
+			}
 			String password=(String) adminMap.get("password");
 			if(!StringUtils.isEmpty(password)){
 				solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(password));
@@ -239,10 +251,16 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				IsTrialList.add(wm.getRelatedidKey());
 			}
 			if("openApp".equals(wm.getRelatedidAccounttype())){
+				if(wm.getIsTrial()!=null){
+					solrMap.put("AppTrial", wm.getIsTrial().equals("1")?true:false);
+				}
 				solrMap.put("AppStartTime", DateUtil.DateToFromatStr(wm.getBegintime()));
 				solrMap.put("AppEndTime", DateUtil.DateToFromatStr(wm.getEndtime()));
 			}
 			if("openWeChat".equals(wm.getRelatedidAccounttype())){
+				if(wm.getIsTrial()!=null){
+					solrMap.put("WeChatTrial", wm.getIsTrial().equals("1")?true:false);
+				}
 				solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(wm.getBegintime()));
 				solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(wm.getEndtime()));
 				WfksUserSettingKey key=new WfksUserSettingKey();
