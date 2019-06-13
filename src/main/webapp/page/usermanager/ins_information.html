@@ -487,7 +487,7 @@
 			<?if(!isEmpty(list.PartyAdminId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">党建管理员</span>
-				<div class="bind"><?if(list.PartyAdminTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"PartyAdmin")){?>试用<?}?></span></div>
 				<div class="bind"><span>党建管理员ID：</span><span>${list.PartyAdminId}</span></div>
 				<div class="bind"><span>党建管理员密码：</span><span>${list.PartyAdminPassword}</span></div>
 				<div class="bind"><span>有效期：</span><span <?if(list.PartyAdminExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.PartyAdminStartTIme}-${list.PartyAdminEndTIme}</span></div>
@@ -498,7 +498,7 @@
 			<?if(!isEmpty(list.AdministratorId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构管理员</span>
-				<div class="bind"><?if(list.AdministratorTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"Administrator")){?>试用<?}?></span></div>
 				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.AdministratorId}</span></div>
 				<div class="bind"><span>机构管理员密码：</span><span>${list.AdministratorPassword}</span></div>
 				<div class="bind"><span>机构管理员邮箱：</span><span>${list.AdministratorEmail}</span></div>
@@ -512,7 +512,7 @@
 			<?if(!isEmpty(list.ChildGroupLimit)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构子账号</span>
-				<div class="bind"><?if(list.ChildGroupTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"ChildGroup")){?>试用<?}?></span></div>
 				<div class="bind"><span>子账号上限：</span><span>${list.ChildGroupLimit}</span></div>
 				<div class="bind"><span>子账号并发数上限：</span><span>${list.ChildGroupConcurrent}</span></div>
 				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.ChildGroupDownloadLimit}</span></div>
@@ -558,7 +558,7 @@
 			<?if(!isEmpty(list.AppStartTime)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">APP嵌入服务</span>
-				<div class="bind"><?if(list.AppTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"App")){?>试用<?}?></span></div>
 				<div class="bind"><span>有效期：</span><span <?if(list.openAppExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AppStartTime}-${list.AppEndTime}</span></div>
 			</div>
 			<?}?>
@@ -567,7 +567,7 @@
 			<?if(!isEmpty(list.WeChatStartTime)){?>
 			<div class="user_bind" style="width:800px">
 				<span style="color: #0099ff">微信公众号嵌入服务</span>
-				<div class="bind"><?if(list.WeChatTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"WeChat")){?>试用<?}?></span></div>
 				<div class="bind"><span>链接发送邮箱：</span><span>${list.Email4WeChat}</span></div>
 				<div class="bind"><span>有效期：</span><span <?if(list.openWeChatExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.WeChatStartTime}-${list.WeChatEndTime}</span></div>
 			</div>
