@@ -85,7 +85,7 @@
                 	<div class="form-group input_block">
 	                  <label class="input_name">是否试用</label>
 	                  <input type="checkbox" id="adminIsTrialCheck" onclick=changeVal('adminIsTrial')>试用
-	                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="notTrial">
+	                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="">
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -130,7 +130,7 @@
 			            <div class="form-group input_block">
 		                  <label class="input_name">是否试用</label>
 		                  <input type="checkbox" id="sIsTrialCheck" onclick=changeVal('sIsTrial')>试用
-		                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="notTrial">
+		                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="">
 		                </div>
 		                <div class="form-group input_block">
 		                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -178,17 +178,22 @@
 				<div class="checkbox input_block block_left">
 					<label><input type="checkbox" id="openApp" name="openApp" value="0" onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
 				</div>
-				<div class="form-group time_block" style="display: none;" id="openAppDiv">
+				<div style="display: none;" id="openAppDiv">
 					<div class="form-group input_block">
 	                  <label class="input_name">是否试用</label>
 	                  <input type="checkbox" class="trial" id="appIsTrialCheck" onclick=changeVal('appIsTrial')>试用
-	                  <input type="hidden" name="appIsTrial" id="appIsTrial" value="notTrial">
+	                  <input type="hidden" name="appIsTrial" id="appIsTrial" value="">
 	                </div>
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                	<div class="time_input">
-					<span><input type="text" class="Wdate" name="appBegintime" id="appBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span class="to">至</span>
-					<span><input type="text" class="Wdate" name="appEndtime" id="appEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})"></span>
-					</div>
+	                <div class="form-group input_block" >
+		                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+		                <input type="text"  class="form-control input_time"
+		                    placeholder="年 /月/日" name="appBegintime" id="appBegintime"
+		                      value="${limit.openApp.begin!}"
+		                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})" style="width:139px; "> 至 
+		                <input type="text"  class="form-control input_time"
+		                    placeholder="年 /月/日" name="appEndtime" id="appEndtime" value="${limit.openApp.end!}"
+		                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})" style="width:139px; ">
+	                </div>
 				</div>
 				<div class="checkbox input_block block_left">
 					<label><input type="checkbox" id="openWeChat" name="openWeChat" value="0" onclick="checkWeChat(this,0)">开通微信公众号嵌入服务<span id="openWeChatspan" style="color:red"></span></label>
@@ -197,15 +202,17 @@
 					<div class="form-group input_block">
 	                  <label class="input_name">是否试用</label>
 	                  <input type="checkbox" id="weChatIsTrialCheck" onclick=changeVal('weChatIsTrial')>试用
-	                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" value="notTrial">
+	                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" value="">
 	                </div>
-		            <div class="form-group time_block">
-					<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                	<div class="time_input">
-					<span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span class="to">至</span>
-					<span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
-					</div>
-	               	</div>
+		            <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text"  class="form-control input_time"
+	                   placeholder="年 /月/日" name="weChatBegintime" id="weChatBegintime"
+	                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})" style="width:139px; "> 至 
+	                  <input type="text"  class="form-control input_time"
+	                   placeholder="年 /月/日" name="weChatEndtime" id="weChatEndtime"
+	                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})" style="width:139px; ">
+	                </div>
 		            <div class="form-group input_block">
 	                 <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>
 	                 <input type="text" class="form-control input_time" name="weChatEamil" id="weChatEamil">
