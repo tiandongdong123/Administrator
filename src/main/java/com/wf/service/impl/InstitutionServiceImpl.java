@@ -216,7 +216,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			Map<String, Object> adminMap=aheadUserService.findInfoByPid(pid);
 			solrMap.put("AdministratorId", adminMap.get("userId"));
 			solrMap.put("AdministratorEmail", adminMap.get("adminEmail"));
-			if(adminMap.get("adminIsTrial")!=null&&adminMap.get("adminIsTrial").equals("true")){
+			if(adminMap.get("adminIsTrial")!=null&&adminMap.get("adminIsTrial").equals(true)){
 				trialType.add("Administrator");
 			}
 			if(adminMap.get("adminBegintime")!=null&&adminMap.get("adminEndtime")!=null){
