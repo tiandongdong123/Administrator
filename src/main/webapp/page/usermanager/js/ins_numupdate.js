@@ -327,9 +327,9 @@ function openItems(count,i,type){
 			}
 		}
 		// 判断文化志
-		var gazetteers_type = $('#gazetteers_type_'+count+'_'+i).val()
+		var gazetteers_type = $('#gazetteers_type_'+count+'_'+i).val()		
 		var gazetteers_albumDatabaseVal = $('#gazetteers_albumDatabase_'+count+'_'+i).val()
-		if(gazetteers_albumDatabaseVal=='FZ_Culture') {
+		if(gazetteers_albumDatabaseVal=='FZ_Culture') {		
 			$('#databaseInput_'+count+'_'+i).prop('checked', true)
 			$('#databaseInput_'+count+'_'+i).prop('data-database', 'FZ_Culture')
 			$('#checkData_'+count+'_'+i).prop('checked', true)
@@ -564,9 +564,9 @@ function openItems(count,i,type){
 						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
 						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
-					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
-						var databaseVal = $('#databaseInput_'+count+'_'+i).val()
-						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {						
+						var databaseVal = $('#databaseInput_'+count+'_'+i).val()						
+						  $('#gazetteers_albumDatabase_'+count+"_"+i).val('FZ_Culture')						
 					}else {
 						$('#gazetteers_albumDatabase_'+count+'_'+i).val('')
 					}
