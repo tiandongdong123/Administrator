@@ -14,6 +14,14 @@ $(function(e){
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
+			// 开通时限
+			$("#adminBegintime").val(getData());
+			// 试用
+			if($('#adminIsTrialCheck').is(':checked')) {
+				$('#adminIsTrial').val('isTrial')
+			}else {
+				$('#adminIsTrial').val('notTrial')
+			}
 			$("#administrator").show();
 			resetAdminValidate();
 		}else{
@@ -38,6 +46,10 @@ $(function(e){
 			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 			$("#checktongji").prop('checked',false);
+			// 开通时限
+			$("#adminBegintime").val('');
+			// 试用
+			$('#adminIsTrial').val('')
 		}
 	});
 
@@ -81,17 +93,30 @@ $(function(e){
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
+			// 开通时限
+			$("#sBegintime").val(getData())
+			// 试用
+			if($('#sIsTrialCheck').is(':checked')) {
+				$('#sIsTrial').val('isTrial')
+			}else {
+				$('#sIsTrial').val('notTrial')
+			}
 			$("#upperlimit").val("100");
 			$("#sConcurrentnumber").val("1");
 			$("#downloadupperlimit").val("30");
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
+			
 		}else{
 			$("#upperlimit").val("");
 			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
+			// 开通时限
+			$("#sBegintime").val('')
+			// 试用
+			$('#sIsTrial').val('')
 		}
 	});
 	//开通统计分析
@@ -2392,8 +2417,15 @@ function checkWeChat(obj,type) {
 			$("#sendMail").prop("checked",false);
 		}
 		$("#weChatBegintime").val(getData());
+		// 试用
+		if($('#weChatIsTrialCheck').is(':checked')) {
+			$('#weChatIsTrial').val('isTrial')
+		}else {
+			$('#weChatIsTrial').val('notTrial')
+		}
 	} else {
 		$("#wechatDiv").hide();
+		$('#weChatIsTrial').val('')
 	}
 	$("#openWeChatspan").html("");
 }
@@ -2427,6 +2459,8 @@ $(function(){
     })();
     meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
     meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+    meDatePicker.datePicker($('#adminBegintime'), $('#adminEndtime'), true);
+    meDatePicker.datePicker($('#adminEndtime'), $('#adminBegintime'), false);
 })
 
 //开通APP嵌入服务
@@ -2440,8 +2474,16 @@ function checkApp(obj){
 			$("#appBegintime").val(getData());
 			$("#openAppDiv").show();
 		}
+		// 试用
+		if($('#appIsTrialCheck').is(':checked')) {
+			$('#appIsTrial').val('isTrial')
+		}else {
+			$('#appIsTrial').val('notTrial')
+		}
 	}else{
 		$("#openAppDiv").hide();
+		// 试用
+		$('#appIsTrial').val('')
 	}
 	$("#openAppspan").html("");
 }
@@ -2944,10 +2986,10 @@ function databaseClick(count, i) {
 	}
 }
 //试用按钮
-function changeVal(val,self) {
-	if(val=='notTrial') {
-		$(self).val('isTrial')
+function changeVal(obj) {
+	if($('#'+obj).val()=='notTrial') {
+		$('#'+obj).val('isTrial')
 	}else {
-		$(self).val('notTrial')
+		$('#'+obj).val('notTrial')
 	}
 }
