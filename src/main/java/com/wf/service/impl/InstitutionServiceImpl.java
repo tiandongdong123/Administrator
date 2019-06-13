@@ -93,10 +93,14 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				Map<String,Object> solrMap=new LinkedHashMap<>();
 				//user
 				Map<String, Object> userMap = (Map<String,Object>) object;
-				this.addUser(userMap,solrMap);//添加用户信息
+				List<String> trialType=new ArrayList<String>();
+				this.addUser(userMap,solrMap,trialType);//添加用户信息
 				this.addIp(userMap,solrMap);//添加Ip
-				this.addLimit(userMap,solrMap);//查询权限信息
-				this.getUserAccountidMapping(userMap,solrMap);//查询角色信息
+				this.addLimit(userMap,solrMap,trialType);//查询权限信息
+				this.getUserAccountidMapping(userMap,solrMap,trialType);//查询角色信息
+				if(trialType.size()>0){
+					solrMap.put("TrialType", trialType);
+				}
 				solrMap.put("CreateTime", date);
 				solrMap.put("UpdateTime", date);
 				solrList.add(solrMap);
@@ -127,7 +131,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 	}
 	
 	//添加权限
-	private void addLimit(Map<String, Object> userMap, Map<String, Object> solrMap) {
+	private void addLimit(Map<String, Object> userMap, Map<String, Object> solrMap,List<String> trialType) {
 		String userId = userMap.get("userId").toString();
 		//wfks_pay_channel_resources
 		List<String> payChannelIdList=new ArrayList<>();
@@ -145,8 +149,8 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			solrMap.put("ChildGroupConcurrent", account.getsConcurrentnumber());
 			solrMap.put("GroupConcurrent", account.getpConcurrentnumber());
 			solrMap.put("ChildGroupDownloadLimit", account.getDownloadupperlimit());
-			if(account.getsIsTrial()!=null){
-				solrMap.put("ChildGroupTrial", account.getsIsTrial().equals("1")?true:false);
+			if(account.getsIsTrial()!=null&&account.getsIsTrial().equals("1")){
+				trialType.add("ChildGroup");
 			}
 			if(account.getsBegintime()!=null&&account.getsEndtime()!=null){
 				solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(account.getsBegintime()));
@@ -196,7 +200,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 	}
 
 	//添加用户信息
-	private void addUser(Map<String, Object> userMap, Map<String, Object> solrMap) throws Exception{
+	private void addUser(Map<String, Object> userMap, Map<String, Object> solrMap,List<String> trialType) throws Exception{
 		String userId=userMap.get("userId").toString();
 		solrMap.put("Id", userId);
 		solrMap.put("Password", userMap.get("password"));
@@ -212,7 +216,9 @@ public class InstitutionServiceImpl  implements InstitutionService {
 			Map<String, Object> adminMap=aheadUserService.findInfoByPid(pid);
 			solrMap.put("AdministratorId", adminMap.get("userId"));
 			solrMap.put("AdministratorEmail", adminMap.get("adminEmail"));
-			solrMap.put("AdministratorTrial", adminMap.get("adminIsTrial"));
+			if(adminMap.get("adminIsTrial")!=null&&adminMap.get("adminIsTrial").equals("true")){
+				trialType.add("Administrator");
+			}
 			if(adminMap.get("adminBegintime")!=null&&adminMap.get("adminEndtime")!=null){
 				solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr((Date)adminMap.get("adminBegintime")));
 				solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr((Date)adminMap.get("adminEndtime")));
@@ -242,7 +248,7 @@ public class InstitutionServiceImpl  implements InstitutionService {
 	}
 
 	//获取权限信息
-	private void getUserAccountidMapping(Map<String, Object> userMap,Map<String, Object> solrMap) throws Exception{
+	private void getUserAccountidMapping(Map<String, Object> userMap,Map<String, Object> solrMap,List<String> trialType) throws Exception{
 		String userId=userMap.get("userId").toString();
 		List<String> IsTrialList=new ArrayList<>();
 		WfksAccountidMapping[] mapping = wfksAccountidMappingMapper.getWfksAccountidByIdKey(userId);
@@ -251,15 +257,15 @@ public class InstitutionServiceImpl  implements InstitutionService {
 				IsTrialList.add(wm.getRelatedidKey());
 			}
 			if("openApp".equals(wm.getRelatedidAccounttype())){
-				if(wm.getIsTrial()!=null){
-					solrMap.put("AppTrial", wm.getIsTrial().equals("1")?true:false);
+				if(wm.getIsTrial()!=null&&wm.getIsTrial().equals("1")){
+					trialType.add("App");
 				}
 				solrMap.put("AppStartTime", DateUtil.DateToFromatStr(wm.getBegintime()));
 				solrMap.put("AppEndTime", DateUtil.DateToFromatStr(wm.getEndtime()));
 			}
 			if("openWeChat".equals(wm.getRelatedidAccounttype())){
-				if(wm.getIsTrial()!=null){
-					solrMap.put("WeChatTrial", wm.getIsTrial().equals("1")?true:false);
+				if(wm.getIsTrial()!=null&&wm.getIsTrial().equals("1")){
+					trialType.add("WeChat");
 				}
 				solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(wm.getBegintime()));
 				solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(wm.getEndtime()));
@@ -282,7 +288,9 @@ public class InstitutionServiceImpl  implements InstitutionService {
 					String json = String.valueOf(per.getExtend());
 					if(!StringUtils.isEmpty(json)){
 						JSONObject obj = JSONObject.fromObject(json);
-						solrMap.put("PartyAdminTrial", String.valueOf(obj.getBoolean("IsTrialPartyAdminTime")));
+						if(obj.getBoolean("IsTrialPartyAdminTime")){
+							trialType.add("PartyAdmin");
+						}
 					}
 				}
 			}
