@@ -1177,6 +1177,19 @@ public class AheadUserController {
 		for(int i=0;i<user.getRdlist().size();i++){
 			log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
 		}
+		List<ResourceDetailedDTO> dtoList=user.getRdlist();
+		for (ResourceDetailedDTO resourceDetailedDTO : dtoList) {
+			List<ResourceLimitsDTO> limitDtoList=resourceDetailedDTO.getRldto();
+			for (ResourceLimitsDTO resourceLimitsDTO : limitDtoList) {
+				if(resourceLimitsDTO.getResourceid()!=null&&resourceLimitsDTO.getResourceid().equals("DB_CLGD")&&resourceLimitsDTO.getProductid()!=null){
+					//String[] clgdProductid={"Income.LocalChronicle", "Income.LocalChronicleItemFulltext","Income.LocalChronicleCulture"};
+					String[] clgdProductid=aheadUserService.getRidBySource(resourceLimitsDTO.getResourceid());
+					resourceLimitsDTO.setProductid(clgdProductid);
+				}
+			}
+		}
+		
+		
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{

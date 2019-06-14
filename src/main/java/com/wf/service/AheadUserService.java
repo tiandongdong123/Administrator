@@ -278,4 +278,6 @@ public interface AheadUserService {
 	 * 获取冲突ip的冲突购买资源
 	 */
 	List<Map<String, Set<String>>> getProjectCheck( InstitutionalUser user,String userid);
+	
+	String[] getRidBySource(String source);
 }

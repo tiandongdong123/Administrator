@@ -3887,4 +3887,14 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public String[] getRidBySource(String source) {
+		List<Map<String, Object>> list=resourcePriceMapper.getPriceBySourceCode(source);
+		String[] clgdProductid=new String[list.size()];
+		for (int j=0;j<list.size();j++) {
+			clgdProductid[j]=list.get(j).get("rid").toString();
+		}
+		return clgdProductid;
+	}
 }
