@@ -2555,6 +2555,12 @@ function checkParty(obj){
 		$("#partyBegintime").val(getData());
 		$("#partyDiv").show();
 		$("input:radio[value=notTrial]").prop("checked",true);
+		// 试用
+		if($('#partyIsTrialCheck').is(':checked')) {
+			$('#partyIsTrial').val('isTrial')
+		}else {
+			$('#partyIsTrial').val('notTrial')
+		}
 	}else{
 		$("#partyDiv").hide();
 	}

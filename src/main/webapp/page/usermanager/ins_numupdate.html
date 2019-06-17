@@ -959,23 +959,20 @@
                 <?}?>>
                 <div class="form-group input_block">
                   <label class="input_name">是否试用</label>
-                  <input type="radio" name="isTrial" value="isTrial"
-                    <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"
-                  <?}?>/>是
-                  <input type="radio" name="isTrial" value="notTrial"
-                    <?if(!isEmpty(party)&&party.trial==false){?>checked="checked"
-                  <?}?>/>否
+                  <input type="checkbox" id="partyIsTrialCheck" onclick=changeVal('partyIsTrial') />试用
+                  <input type="hidden" name="isTrial" id="partyIsTrial"value="" />
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                  <div class="time_input">
-                    <span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime"
-                        value="${party.begintime!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span
+					<input type="text" name="partyBegintime" id="partyBegintime"
+                        value="${party.begintime!}" class="form-control input_time"
+                    placeholder="年 /月/日"
+                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})" style="width:139px;"><span
                       class="to">至</span>
-                    <span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime"
-                        value="${party.endtime!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
+                    <input type="text" name="partyEndtime" id="partyEndtime"
+                        value="${party.endtime!}" class="form-control input_time"
+                    placeholder="年 /月/日"
+                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})" style="width:139px;">
                   </div>
                 </div>
                 <div class="form-group input_block">
