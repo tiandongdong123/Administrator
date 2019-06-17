@@ -227,9 +227,7 @@ public class SolrThread implements Runnable {
 		addRole(solrMap,user,trialType);
 		updateAllAdministrator(user);
 		Date date=SolrThread.getDate();
-		if(trialType.size()>0){
-			solrMap.put("TrialType", trialType);
-		}
+		solrMap.put("TrialType", trialType);
 		solrMap.put("CreateTime", date);
 		solrMap.put("UpdateTime", date);
 		List<Map<String, Object>> solrList=new ArrayList<>();
