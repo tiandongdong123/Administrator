@@ -3496,7 +3496,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				if(StringUtils.isNotEmpty(rld.getAlbumDatabase())){
 					boo=true;
 				}
-			}else if(tableCheckCultrue(tableContract)&&StringUtils.isNotEmpty(rld.getAlbumDatabase())&&StringUtils.isEmpty(rld.getGazetteersType())){
+			}else if(tableCheckCultrue(tableContract)&&StringUtils.isNotEmpty(rld.getAlbumDatabase())&&StringUtils.isEmpty(rld.getGazetteersType())&&StringUtils.isEmpty(rld.getGazetteersOldType())){
 				//如果老数据没有选择文化志 并且页面没有地方志
 				boo=false;
 			}else{
