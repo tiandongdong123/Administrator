@@ -903,17 +903,16 @@ function checkRes(count,i){
 
 //获取当前时间，放入时限起始时间
 function getData(){
-	var mydate = new Date();
-	//获取当前年
-	var year = mydate.getFullYear();
-	//获取当前月
-	var month = mydate.getMonth()+1;
-	//获取当前日
-	var date = mydate.getDate();
-
-	var now = year+'-'+getFormatDate(month)+"-"+getFormatDate(date);
-	
-	return now;
+	var now 
+	$.ajax({
+		type : "get",
+		async: false,
+		url : "../auser/getServerTime.do",
+		success:function(data){
+			now = data
+		}
+	})
+	return now
 }
 
 function getFormatDate(s){
