@@ -1180,11 +1180,13 @@ public class AheadUserController {
 		List<ResourceDetailedDTO> dtoList=user.getRdlist();
 		for (ResourceDetailedDTO resourceDetailedDTO : dtoList) {
 			List<ResourceLimitsDTO> limitDtoList=resourceDetailedDTO.getRldto();
-			for (ResourceLimitsDTO resourceLimitsDTO : limitDtoList) {
-				if(resourceLimitsDTO.getResourceid()!=null&&resourceLimitsDTO.getResourceid().equals("DB_CLGD")&&resourceLimitsDTO.getProductid()!=null){
-					//String[] clgdProductid={"Income.LocalChronicle", "Income.LocalChronicleItemFulltext","Income.LocalChronicleCulture"};
-					String[] clgdProductid=aheadUserService.getRidBySource(resourceLimitsDTO.getResourceid());
-					resourceLimitsDTO.setProductid(clgdProductid);
+			if(limitDtoList!=null){
+				for (ResourceLimitsDTO resourceLimitsDTO : limitDtoList) {
+					if(resourceLimitsDTO.getResourceid()!=null&&resourceLimitsDTO.getResourceid().equals("DB_CLGD")&&resourceLimitsDTO.getProductid()!=null){
+						//String[] clgdProductid={"Income.LocalChronicle", "Income.LocalChronicleItemFulltext","Income.LocalChronicleCulture"};
+						String[] clgdProductid=aheadUserService.getRidBySource(resourceLimitsDTO.getResourceid());
+						resourceLimitsDTO.setProductid(clgdProductid);
+					}
 				}
 			}
 		}
