@@ -504,7 +504,11 @@
 				<div class="bind"><span>机构管理员邮箱：</span><span>${list.AdministratorEmail}</span></div>
 				<?if(!isEmpty(list.AdministratorOpenIP)){?><div class="bind"><span>机构管理员IP：</span><span>
 				<?for(listIp in list.AdministratorOpenIP){?>${listIp} <?}?></span></div><?}?>
-				<div class="bind"><span>有效期：</span><span <?if(list.administratorExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AdministratorStartTime}-${list.AdministratorEndtime}</span></div>
+				<div class="bind">
+				<?if(!isEmpty(list.AdministratorStartTime)&&!isEmpty(list.AdministratorEndtime)){?>
+				<span>有效期：</span><span <?if(list.administratorExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AdministratorStartTime}-${list.AdministratorEndtime}</span>
+				<?}?>
+				</div>
 			</div>
 			<?}?>
 			<!-- 机构管理员结束 -->
@@ -517,7 +521,11 @@
 				<div class="bind"><span>子账号并发数上限：</span><span>${list.ChildGroupConcurrent}</span></div>
 				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.ChildGroupDownloadLimit}</span></div>
 				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.ChildGroupPayment==0){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
-				<div class="bind"><span>有效期：</span><span <?if(list.childGroupExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.ChildGroupStartTime}-${list.ChildGroupEndtime}</span></div>
+				<div class="bind">
+				<?if(!isEmpty(list.ChildGroupStartTime)&&!isEmpty(list.ChildGroupEndtime)){?>
+				<span>有效期：</span><span <?if(list.childGroupExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.ChildGroupStartTime}-${list.ChildGroupEndtime}</span>
+				<?}?>
+				</div>
 			</div>
 			<?}?>
 			<!-- 机构子账号结束 -->
