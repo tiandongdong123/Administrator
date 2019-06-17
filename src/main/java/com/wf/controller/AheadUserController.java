@@ -628,6 +628,18 @@ public class AheadUserController {
 		return SettingUtil.getRegionCode();
 	}
 
+	/**
+	 * 获取服务器时间
+	 */
+	@RequestMapping("getServerTime")
+	@ResponseBody
+	public String serverTime(){
+		long l = System.currentTimeMillis();
+		Date date = new Date(l);
+		//转换提日期输出格式
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date);
+	}
 
 
 	/**
