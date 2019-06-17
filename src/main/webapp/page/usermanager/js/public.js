@@ -14,8 +14,6 @@ $(function(e){
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
-			// 开通时限
-			$("#adminBegintime").val(getData());
 			// 试用
 			if($('#adminIsTrialCheck').is(':checked')) {
 				$('#adminIsTrial').val('isTrial')
@@ -23,6 +21,8 @@ $(function(e){
 				$('#adminIsTrial').val('notTrial')
 			}
 			$("#administrator").show();
+			// 开通时限
+			$("#Begintime").val(getData());
 			resetAdminValidate();
 		}else{
 			$("#adminname").val("");

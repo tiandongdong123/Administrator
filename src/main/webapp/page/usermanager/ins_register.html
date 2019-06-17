@@ -110,6 +110,13 @@
 		              	<input type="radio" name="isTrial" value="isTrial"/>是
 		                <input type="radio" name="isTrial" value="notTrial"/>否
 			        </div>
+			        <div class="form-group input_block">
+	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                	<div class="time_input">
+						<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
+						<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
+						</div>
+	                </div>
 	                <div class="form-group input_block">
 	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
 	                	<input type="text" class="form-control input_time" name="partyAdmin" id="partyAdmin" maxlength="100">
@@ -117,14 +124,7 @@
 	                <div class="form-group input_block">
 	                 	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员密码</label>
 	                 	<input class="form-control input_time" type="text" name="partyPassword" id="partyPassword" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');" onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
-	                </div>
-	                <div class="form-group time_block">
-	                	<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-	                	<div class="time_input">
-						<span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span class="to">至</span>
-						<span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
-						</div>
-	                </div>
+	                </div>                
                 </div>
                 <div class="checkbox input_block block_left">
                   <label><input  type="checkbox" id="checkuser">开通机构管理员</label>
@@ -136,14 +136,14 @@
                   <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="">
                 </div>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                  <input type="text" id="adminBegintime" name="adminBegintime"
-                    class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'adminEndtime\')}'})" style="width:139px; " />
-                  至 <input type="text" id="adminEndtime" name="adminEndtime"
-                    class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'adminBegintime\')}'})" style="width:139px;" />
-                </div>
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="Begintime" name="adminBegintime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Endtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="Endtime" name="adminEndtime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'Begintime\')}'})" style="width:139px;" />
+                  </div>
            	        <div class="form-group input_block">
                   		<label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
                   		<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
