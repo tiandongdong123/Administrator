@@ -7,6 +7,7 @@ import io.grpc.netty.NettyChannelBuilder;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -637,6 +638,50 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> registerInfo(InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
+		try {
+			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getPartyBegintime());
+				Date end=format.parse(user.getPartyEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAdminBegintime())&&StringUtils.isNoneEmpty(user.getAdminEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAdminBegintime());
+				Date end=format.parse(user.getAdminEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getsBegintime())&&StringUtils.isNoneEmpty(user.getsEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getsBegintime());
+				Date end=format.parse(user.getsEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAppBegintime())&&StringUtils.isNoneEmpty(user.getAppBegintime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAppBegintime());
+				Date end=format.parse(user.getAppBegintime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getWeChatBegintime())&&StringUtils.isNoneEmpty(user.getWeChatEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getWeChatBegintime());
+				Date end=format.parse(user.getWeChatEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		long time = System.currentTimeMillis();
 		Map<String, String> errorMap = new HashMap<String, String>();
 		try {
@@ -682,6 +727,50 @@ public class AheadUserController {
 	public Map<String, Object> addbatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
 
+		try {
+			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getPartyBegintime());
+				Date end=format.parse(user.getPartyEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAdminBegintime())&&StringUtils.isNoneEmpty(user.getAdminEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAdminBegintime());
+				Date end=format.parse(user.getAdminEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getsBegintime())&&StringUtils.isNoneEmpty(user.getsEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getsBegintime());
+				Date end=format.parse(user.getsEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAppBegintime())&&StringUtils.isNoneEmpty(user.getAppBegintime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAppBegintime());
+				Date end=format.parse(user.getAppBegintime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getWeChatBegintime())&&StringUtils.isNoneEmpty(user.getWeChatEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getWeChatBegintime());
+				Date end=format.parse(user.getWeChatEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		long time=System.currentTimeMillis();
 		Map<String,Object> errorMap = new HashMap<>();
 		List<Map<String,String>> errorList=new ArrayList<>();
@@ -810,6 +899,50 @@ public class AheadUserController {
 	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
 
+		try {
+			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getPartyBegintime());
+				Date end=format.parse(user.getPartyEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAdminBegintime())&&StringUtils.isNoneEmpty(user.getAdminEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAdminBegintime());
+				Date end=format.parse(user.getAdminEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getsBegintime())&&StringUtils.isNoneEmpty(user.getsEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getsBegintime());
+				Date end=format.parse(user.getsEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAppBegintime())&&StringUtils.isNoneEmpty(user.getAppBegintime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAppBegintime());
+				Date end=format.parse(user.getAppBegintime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getWeChatBegintime())&&StringUtils.isNoneEmpty(user.getWeChatEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getWeChatBegintime());
+				Date end=format.parse(user.getWeChatEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		long time=System.currentTimeMillis();
 		Map<String, Object> errorMap = new HashMap<>();
 		int sucNum = 0;
@@ -1173,6 +1306,50 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
+		try {
+			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getPartyBegintime());
+				Date end=format.parse(user.getPartyEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAdminBegintime())&&StringUtils.isNoneEmpty(user.getAdminEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAdminBegintime());
+				Date end=format.parse(user.getAdminEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getsBegintime())&&StringUtils.isNoneEmpty(user.getsEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getsBegintime());
+				Date end=format.parse(user.getsEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getAppBegintime())&&StringUtils.isNoneEmpty(user.getAppBegintime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getAppBegintime());
+				Date end=format.parse(user.getAppBegintime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+			if(StringUtils.isNotEmpty(user.getWeChatBegintime())&&StringUtils.isNoneEmpty(user.getWeChatEndtime())){
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+				Date begin=format.parse(user.getWeChatBegintime());
+				Date end=format.parse(user.getWeChatEndtime());
+				if(end.compareTo(begin)<0){
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		//日志打印充值名称和充值金额
 		for(int i=0;i<user.getRdlist().size();i++){
 			log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
