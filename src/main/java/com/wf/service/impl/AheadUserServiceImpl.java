@@ -3489,14 +3489,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 	//方志库ip查重
 	private void clgdCheck(Map<String, Object> tableContract,ResourceLimitsDTO rld,Set<String> errorSet){
 		//判断地方志
-		//如果老数据没有选择详情
 		if(tableContract.containsKey("contract")){
 			boolean boo=false;
 			//判断页面是否选择了详情  如果只选择了文化志
-			if(tableCheck(tableContract,rld)){
+			if(tableCheck(tableContract)){
 				if(StringUtils.isNotEmpty(rld.getAlbumDatabase())){
 					boo=true;
 				}
+			}else if(tableCheckCultrue(tableContract)&&StringUtils.isNotEmpty(rld.getAlbumDatabase())&&StringUtils.isEmpty(rld.getGazetteersType())){
+				//如果老数据没有选择文化志 并且页面没有地方志
+				boo=false;
 			}else{
 				boo=clgdContrast(tableContract,rld);
 			}
@@ -3514,7 +3516,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	//判断旧数据是否只选了文化志
-	private boolean tableCheck(Map<String, Object> tableContract,ResourceLimitsDTO rld){
+	private boolean tableCheck(Map<String, Object> tableContract){
 		List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
 		//存储的值
 		String tableGazetteersArea=null;
@@ -3577,6 +3579,24 @@ public class AheadUserServiceImpl implements AheadUserService{
 		}
 		return false;
 	}
+	
+	//判断旧数据是否没有选了文化志
+		private boolean tableCheckCultrue(Map<String, Object> tableContract){
+			List<JSONObject> conlist=(List<JSONObject>) tableContract.get("contract");
+			//存储的值
+			String[] tableAlbumDatabase=null;
+			for(int i=0;i<conlist.size();i++){
+				if(conlist.get(i).get("Field").equals("album_database")){
+					String jsona=(String) conlist.get(i).get("Value");
+					tableAlbumDatabase=jsona.split(";");
+				}
+
+			}
+			if(tableAlbumDatabase==null){
+				return true;
+			}
+			return false;
+		}
 
 	private boolean clgdContrast(Map<String, Object> tableContract,ResourceLimitsDTO rld){
 		boolean boo=false;
