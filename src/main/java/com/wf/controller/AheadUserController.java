@@ -650,6 +650,26 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> registerInfo(InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
+		if(StringUtils.isNotEmpty(user.getPartyAdmin())
+		 &&(StringUtils.isEmpty(user.getPartyBegintime())||StringUtils.isEmpty(user.getPartyEndtime()))){
+			return null;
+		}
+		if((StringUtils.isNotEmpty(user.getAdminname())||StringUtils.isNotEmpty(user.getAdminOldName()))
+		 &&(StringUtils.isEmpty(user.getAdminBegintime())||StringUtils.isEmpty(user.getAdminEndtime()))){
+					return null;
+		}
+		if(StringUtils.isNotEmpty(user.getChecks())
+				 &&(StringUtils.isEmpty(user.getsBegintime())||StringUtils.isEmpty(user.getsEndtime()))){
+					return null;
+		}
+		if(StringUtils.isNotEmpty(user.getOpenApp())
+				 &&(StringUtils.isEmpty(user.getAppBegintime())||StringUtils.isEmpty(user.getAppEndtime()))){
+					return null;
+		}
+		if(StringUtils.isNotEmpty(user.getOpenWeChat())
+				 &&(StringUtils.isEmpty(user.getWeChatBegintime())||StringUtils.isEmpty(user.getWeChatEndtime()))){
+					return null;
+		}
 		try {
 			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -739,6 +759,26 @@ public class AheadUserController {
 	public Map<String, Object> addbatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
 
+		if(StringUtils.isNotEmpty(user.getPartyAdmin())
+				 &&(StringUtils.isEmpty(user.getPartyBegintime())||StringUtils.isEmpty(user.getPartyEndtime()))){
+					return null;
+				}
+				if((StringUtils.isNotEmpty(user.getAdminname())||StringUtils.isNotEmpty(user.getAdminOldName()))
+				 &&(StringUtils.isEmpty(user.getAdminBegintime())||StringUtils.isEmpty(user.getAdminEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getChecks())
+						 &&(StringUtils.isEmpty(user.getsBegintime())||StringUtils.isEmpty(user.getsEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenApp())
+						 &&(StringUtils.isEmpty(user.getAppBegintime())||StringUtils.isEmpty(user.getAppEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenWeChat())
+						 &&(StringUtils.isEmpty(user.getWeChatBegintime())||StringUtils.isEmpty(user.getWeChatEndtime()))){
+							return null;
+				}
 		try {
 			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -911,6 +951,26 @@ public class AheadUserController {
 	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
 
+		if(StringUtils.isNotEmpty(user.getPartyAdmin())
+				 &&(StringUtils.isEmpty(user.getPartyBegintime())||StringUtils.isEmpty(user.getPartyEndtime()))){
+					return null;
+				}
+				if((StringUtils.isNotEmpty(user.getAdminname())||StringUtils.isNotEmpty(user.getAdminOldName()))
+				 &&(StringUtils.isEmpty(user.getAdminBegintime())||StringUtils.isEmpty(user.getAdminEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getChecks())
+						 &&(StringUtils.isEmpty(user.getsBegintime())||StringUtils.isEmpty(user.getsEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenApp())
+						 &&(StringUtils.isEmpty(user.getAppBegintime())||StringUtils.isEmpty(user.getAppEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenWeChat())
+						 &&(StringUtils.isEmpty(user.getWeChatBegintime())||StringUtils.isEmpty(user.getWeChatEndtime()))){
+							return null;
+				}
 		try {
 			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
@@ -1318,6 +1378,26 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
+		if(StringUtils.isNotEmpty(user.getPartyAdmin())
+				 &&(StringUtils.isEmpty(user.getPartyBegintime())||StringUtils.isEmpty(user.getPartyEndtime()))){
+					return null;
+				}
+				if((StringUtils.isNotEmpty(user.getAdminname())||StringUtils.isNotEmpty(user.getAdminOldName()))
+				 &&(StringUtils.isEmpty(user.getAdminBegintime())||StringUtils.isEmpty(user.getAdminEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getChecks())
+						 &&(StringUtils.isEmpty(user.getsBegintime())||StringUtils.isEmpty(user.getsEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenApp())
+						 &&(StringUtils.isEmpty(user.getAppBegintime())||StringUtils.isEmpty(user.getAppEndtime()))){
+							return null;
+				}
+				if(StringUtils.isNotEmpty(user.getOpenWeChat())
+						 &&(StringUtils.isEmpty(user.getWeChatBegintime())||StringUtils.isEmpty(user.getWeChatEndtime()))){
+							return null;
+				}
 		try {
 			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
 				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
