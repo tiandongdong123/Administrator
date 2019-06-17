@@ -3509,7 +3509,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			//没有详情 如果页面只选择了文化志  那就不冲突  如果选择了其他  那就冲突
 			if(StringUtils.isEmpty(rld.getAlbumDatabase())){
 				errorSet.add(tableContract.get("abbreviation")+"库");
-			}else if(StringUtils.isNotEmpty(rld.getGazetteersType())){
+			}else if(StringUtils.isNotEmpty(rld.getGazetteersType())||StringUtils.isNotEmpty(rld.getGazetteersOldType())){
 				errorSet.add(tableContract.get("abbreviation")+"库");
 			}
 		}
