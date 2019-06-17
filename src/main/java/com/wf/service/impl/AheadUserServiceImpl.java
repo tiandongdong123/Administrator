@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -565,8 +567,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 			per.setAdminEmail(com.getAdminEmail());
 			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
-			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
+			JSONObject json = new JSONObject();
+			json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
+			json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+			per.setExtend(json.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -592,8 +596,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 				per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
 			}
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-			per.setAdminBegintime(sd.parse(com.getAdminBegintime()));
-			per.setAdminEndtime(sd.parse(com.getAdminEndtime()));
+			JSONObject json = new JSONObject();
+			json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
+			json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+			per.setExtend(json.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2059,6 +2065,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 			this.isExpired(userMap,"PartyAdminExpired","PartyAdminEndTIme");
 			this.isExpired(userMap,"openWeChatExpired","WeChatEndTime");
 			this.isExpired(userMap,"openAppExpired","AppEndTime");
+			
+			this.isExpired(userMap,"administratorExpired","AdministratorEndtime");
+			this.isExpired(userMap,"childGroupExpired","ChildGroupEndtime");
 
 			//购买项目列表
 			List<Map<String, Object>> projectList = new ArrayList<Map<String, Object>>();
@@ -2371,6 +2380,12 @@ public class AheadUserServiceImpl implements AheadUserService{
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
 			if(map.get("adminIsTrial")!=null){
 				map.put("adminIsTrial",map.get("adminIsTrial").equals("1")?true:false);
+			}
+			if(map.get("extend")!=null&&map.get("extend")!=""){
+				com.alibaba.fastjson.JSONObject extend=JSON.parseObject(map.get("extend").toString());
+				 SimpleDateFormat sdf = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+				map.put("adminBegintime", sdf.parse(extend.get("adminBegintime").toString()));
+				map.put("adminEndtime", sdf.parse(extend.get("adminEndtime").toString()));
 			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
 			for(Map<String, Object> userIp : list_ip){

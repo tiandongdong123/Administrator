@@ -73,11 +73,6 @@ public class Person {
 	
 	private String adminIsTrial;  //机构管理员是否试用
 	
-	private Date adminBegintime;  //机构管理员开始时间
-	
-	private Date adminEndtime;  //机构管理员结束时间
-	
-
 	
 	public String getAdminIsTrial() {
 		return adminIsTrial;
@@ -85,22 +80,6 @@ public class Person {
 
 	public void setAdminIsTrial(String adminIsTrial) {
 		this.adminIsTrial = adminIsTrial;
-	}
-
-	public Date getAdminBegintime() {
-		return adminBegintime;
-	}
-
-	public void setAdminBegintime(Date adminBegintime) {
-		this.adminBegintime = adminBegintime;
-	}
-
-	public Date getAdminEndtime() {
-		return adminEndtime;
-	}
-
-	public void setAdminEndtime(Date adminEndtime) {
-		this.adminEndtime = adminEndtime;
 	}
 
 	public String getUserId() {
@@ -361,22 +340,18 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "Person [userId=" + userId + ", userRealname=" + userRealname
-				+ ", userNickname=" + userNickname + ", password=" + password
-				+ ", isMale=" + isMale + ", mobilePhone=" + mobilePhone
-				+ ", idcardNumber=" + idcardNumber + ", educationLevel="
-				+ educationLevel + ", subject=" + subject + ", dateBirth="
-				+ dateBirth + ", email=" + email + ", topical=" + topical
-				+ ", workUnit=" + workUnit + ", old_work_unit=" + old_work_unit
-				+ ", title=" + title + ", isFreeze=" + isFreeze
-				+ ", avatarUrl=" + avatarUrl + ", userRoles=" + userRoles
-				+ ", is_phone_verification=" + is_phone_verification
-				+ ", is_email_verification=" + is_email_verification
-				+ ", registrationTime=" + registrationTime + ", institution="
-				+ institution + ", pid=" + pid + ", loginMode=" + loginMode
-				+ ", usertype=" + usertype + ", extend=" + extend
-				+ ", usedName=" + usedName + ", award=" + award + ", thirdNum="
-				+ thirdNum + ", status=" + status + ", resourceDetailed="
-				+ resourceDetailed + ", adminEmail=" + adminEmail + "]";
+		return "Person [userId=" + userId + ", userRealname=" + userRealname + ", userNickname=" + userNickname
+				+ ", password=" + password + ", isMale=" + isMale + ", mobilePhone=" + mobilePhone + ", idcardNumber="
+				+ idcardNumber + ", educationLevel=" + educationLevel + ", subject=" + subject + ", dateBirth="
+				+ dateBirth + ", email=" + email + ", topical=" + topical + ", workUnit=" + workUnit
+				+ ", old_work_unit=" + old_work_unit + ", title=" + title + ", isFreeze=" + isFreeze + ", avatarUrl="
+				+ avatarUrl + ", userRoles=" + userRoles + ", is_phone_verification=" + is_phone_verification
+				+ ", is_email_verification=" + is_email_verification + ", registrationTime=" + registrationTime
+				+ ", institution=" + institution + ", pid=" + pid + ", loginMode=" + loginMode + ", usertype="
+				+ usertype + ", extend=" + extend + ", usedName=" + usedName + ", award=" + award + ", thirdNum="
+				+ thirdNum + ", status=" + status + ", resourceDetailed=" + resourceDetailed + ", adminEmail="
+				+ adminEmail + ", adminIsTrial=" + adminIsTrial + "]";
 	}
+
+
 }
