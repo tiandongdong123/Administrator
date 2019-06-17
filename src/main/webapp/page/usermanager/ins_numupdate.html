@@ -959,8 +959,19 @@
                 <?}?>>
                 <div class="form-group input_block">
                   <label class="input_name">是否试用</label>
-                  <input type="checkbox" id="partyIsTrialCheck" onclick=changeVal('partyIsTrial') />试用
-                  <input type="hidden" name="isTrial" id="partyIsTrial"value="" />
+                  <input type="checkbox" id="partyIsTrialCheck" onclick=changeVal('partyIsTrial') 
+                  <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"
+                  <?}?>
+                  />试用
+                  <input type="hidden" name="isTrial" id="partyIsTrial"
+                   <?if(!isEmpty(party)&&party.trial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(party)&&party.trial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                   />
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
