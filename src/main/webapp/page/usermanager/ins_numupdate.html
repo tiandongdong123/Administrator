@@ -210,7 +210,7 @@
 			    	<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 					books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_startTime,gazetteers_endTime,
-		gazetteers_old_area,gazetteers_old_startTime,gazetteers_old_endTime,gazetteers_album,item_id; 
+		gazetteers_old_area,album_database,gazetteers_old_startTime,gazetteers_old_endTime,gazetteers_album,item_id; 
 			    	for(var n=0;n<data.contract.~size;n++){
 						if("perioInfo_CLC"==data.contract[n].Field){
 							perioInfo_CLC=data.contract[n];
@@ -573,7 +573,7 @@
                               <input type="hidden" value="${gazetteers_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersEndTime" id="gazetteersEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldArea" id="gazetteersOldArea_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
-                              
+                               <!-- 上 -->
                               <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
                               
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
@@ -903,6 +903,7 @@
                               <input type="hidden" value="${gazetteers_startTime.Value!}"
                                 name="rdlist[${i}].rldto[${j}].gazetteersStartTime"
                                 id="gazetteersStartTime_${i}_${j}" />
+                 
                               <input type="hidden" value="${gazetteers_endTime.Value!}"
                                 name="rdlist[${i}].rldto[${j}].gazetteersEndTime" id="gazetteersEndTime_${i}_${j}" />
                               <input type="hidden" value="${gazetteers_old_area.Value!}"
@@ -910,10 +911,12 @@
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}"
                                 name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime"
                                 id="gazetteersOldStartTime_${i}_${j}" />
+
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}"
                                 name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime"
                                 id="gazetteersOldEndTime_${i}_${j}" />
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}" />
+                              <!-- 下 -->
                               <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
                               <input type="hidden" value="${item_id.Value!}" name="rdlist[${i}].rldto[${j}].itemId" id="gazetteers_BottomItem_${i}_${j}" />
