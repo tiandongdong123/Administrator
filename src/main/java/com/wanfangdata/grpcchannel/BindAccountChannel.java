@@ -17,7 +17,7 @@ public class BindAccountChannel {
 
 
     public BindAccountGrpc.BindAccountBlockingStub getBlockingStub() {
-        return blockingStub = BindAccountGrpc.newBlockingStub(GrpcChannel.getInstance());
+        return blockingStub = BindAccountGrpc.newBlockingStub(GrpcChannel.getInstance().get(GrpcChannel.BINDACCOUNT_CHANNEL));
     }
 
     public void setBlockingStub(BindAccountGrpc.BindAccountBlockingStub blockingStub) {
