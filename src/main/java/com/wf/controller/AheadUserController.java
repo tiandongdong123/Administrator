@@ -827,70 +827,10 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
-
-		if(StringUtils.isNotEmpty(user.getPartyAdmin())
-				 &&(StringUtils.isEmpty(user.getPartyBegintime())||StringUtils.isEmpty(user.getPartyEndtime()))){
-					return null;
-				}
-				if((StringUtils.isNotEmpty(user.getAdminname())||StringUtils.isNotEmpty(user.getAdminOldName()))
-				 &&(StringUtils.isEmpty(user.getAdminBegintime())||StringUtils.isEmpty(user.getAdminEndtime()))){
-							return null;
-				}
-				if(StringUtils.isNotEmpty(user.getChecks())
-						 &&(StringUtils.isEmpty(user.getsBegintime())||StringUtils.isEmpty(user.getsEndtime()))){
-							return null;
-				}
-				if(StringUtils.isNotEmpty(user.getOpenApp())
-						 &&(StringUtils.isEmpty(user.getAppBegintime())||StringUtils.isEmpty(user.getAppEndtime()))){
-							return null;
-				}
-				if(StringUtils.isNotEmpty(user.getOpenWeChat())
-						 &&(StringUtils.isEmpty(user.getWeChatBegintime())||StringUtils.isEmpty(user.getWeChatEndtime()))){
-							return null;
-				}
-		try {
-			if(StringUtils.isNotEmpty(user.getPartyBegintime())&&StringUtils.isNoneEmpty(user.getPartyEndtime())){
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date begin=format.parse(user.getPartyBegintime());
-				Date end=format.parse(user.getPartyEndtime());
-				if(end.compareTo(begin)<0){
-					return null;
-				}
-			}
-			if(StringUtils.isNotEmpty(user.getAdminBegintime())&&StringUtils.isNoneEmpty(user.getAdminEndtime())){
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date begin=format.parse(user.getAdminBegintime());
-				Date end=format.parse(user.getAdminEndtime());
-				if(end.compareTo(begin)<0){
-					return null;
-				}
-			}
-			if(StringUtils.isNotEmpty(user.getsBegintime())&&StringUtils.isNoneEmpty(user.getsEndtime())){
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date begin=format.parse(user.getsBegintime());
-				Date end=format.parse(user.getsEndtime());
-				if(end.compareTo(begin)<0){
-					return null;
-				}
-			}
-			if(StringUtils.isNotEmpty(user.getAppBegintime())&&StringUtils.isNoneEmpty(user.getAppBegintime())){
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date begin=format.parse(user.getAppBegintime());
-				Date end=format.parse(user.getAppBegintime());
-				if(end.compareTo(begin)<0){
-					return null;
-				}
-			}
-			if(StringUtils.isNotEmpty(user.getWeChatBegintime())&&StringUtils.isNoneEmpty(user.getWeChatEndtime())){
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date begin=format.parse(user.getWeChatBegintime());
-				Date end=format.parse(user.getWeChatEndtime());
-				if(end.compareTo(begin)<0){
-					return null;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())){
+			user.setAdminIsTrial("");
+			user.setAdminBegintime("");
+			user.setAdminEndtime("");
 		}
 		long time=System.currentTimeMillis();
 		Map<String, Object> errorMap = new HashMap<>();
@@ -1261,6 +1201,11 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
+		if(StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())){
+			user.setAdminIsTrial("");
+			user.setAdminBegintime("");
+			user.setAdminEndtime("");
+		}
 		//日志打印充值名称和充值金额
 		for(int i=0;i<user.getRdlist().size();i++){
 			log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
