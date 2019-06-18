@@ -3799,7 +3799,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(tableGazetteersType==null||gazetteersType==null){
 				zyfl=true;
 			}
-			if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.equals(gazetteersType)){
+			if(tableGazetteersType!=null&&gazetteersType!=null&&tableGazetteersType.contains(gazetteersType)){
 				zyfl=true;
 			}
 			//判断新方志时间是否冲突
@@ -3838,7 +3838,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			if(tableGazetteersArea==null || gazetteersArea==null){
 				dq=true;
 			}
-			if(zygxsj||dq||zjfl){
+			if(zyfl&&(zygxsj||dq||zjfl)){
 				boo=true;
 			}
 		}
