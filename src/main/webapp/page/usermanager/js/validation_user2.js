@@ -258,7 +258,7 @@ $(function() {/* 文档加载，执行一个函数 */
 				}
 			},
 			// 开通时限判断
-			openBindStart: {
+			openBindEnd: {
 				validators : {
 					notEmpty : {
 						message : '有效期不能为空，请正确填写有效期'

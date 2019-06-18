@@ -50,6 +50,17 @@ $(function(e){
 			$("#adminBegintime").val('');
 			// 试用
 			$('#adminIsTrial').val('')
+			$('#adminIsTrialCheck').prop('checked',false)
+			$('#adminIsTrial').val('')
+			$('#Begintime').val('')
+			$('#Endtime').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
+			$("#upperlimit").val("");
+			$("#sConcurrentnumber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
 		}
 	});
 
@@ -62,15 +73,16 @@ $(function(e){
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
-			$('#openBindStart').val(meGetDate());
+			$('#openBindStart1').val(meGetDate());
 		}else{
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
 			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
 			$("#bindLimit").val("1");
-			$("#bindLimit").val("");
 			$("#bindValidity").val("");
 			$("#downlaodLimit").val("");
+			$('#openBindStart1').val('')
+			$('#openBindEnd1').val('')
 			$("#dinding").hide();
 		}
 	})
@@ -117,6 +129,9 @@ $(function(e){
 			$("#sBegintime").val('')
 			// 试用
 			$('#sIsTrial').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
 		}
 	});
 	//开通统计分析
@@ -2425,6 +2440,9 @@ function checkWeChat(obj,type) {
 	} else {
 		$("#wechatDiv").hide();
 		$('#weChatIsTrial').val('')
+		$('#weChatIsTrialCheck').prop('checked',false)
+		$('#weChatBegintime').val('')
+		$('#weChatEndtime').val('')
 	}
 	$("#openWeChatspan").html("");
 }
@@ -2482,7 +2500,10 @@ function checkApp(obj){
 	}else{
 		$("#openAppDiv").hide();
 		// 试用
+		$('#appIsTrialCheck').prop('checked',false)
 		$('#appIsTrial').val('')
+		$('#appBegintime').val('')
+		$('#appEndtime').val('')
 	}
 	$("#openAppspan").html("");
 }
@@ -2562,6 +2583,13 @@ function checkParty(obj){
 		}
 	}else{
 		$("#partyDiv").hide();
+		$("#partyIsTrial").val('')
+		$('#partyIsTrialCheck').prop('checked',false)
+		$('#partyBegintime').val('')
+		$('#partyEndtime').val('')
+		$('#partyAdmin').val('')
+		$('#partyPassword').val('')
+		resetAdminValidate();
 	}
 }
 //工单类型
