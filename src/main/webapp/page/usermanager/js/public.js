@@ -769,6 +769,9 @@ function openPurchaseItems(count,i,type){
 					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
 						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
 						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}else {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
 					}
 					layer.closeAll();				
 				}
