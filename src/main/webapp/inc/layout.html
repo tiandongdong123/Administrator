@@ -181,7 +181,6 @@
                     <li <?if(!strutil.contain(session.purviews,"资源类型使用统计")){?>style="display:none"<?}?> <? if(session.menu_first=="/resourceTypeStatistics/resourceTypeStatistics.do"){ ?>class="active"<?}?>><a href="../resourceTypeStatistics/resourceTypeStatistics.do"><i class="fa fa-circle-o"></i> 资源类型使用统计</a></li>
                 </ul>
                 </li>
-                <li <?if(!strutil.contain(session.purviews,"功能概况")){?>style="display:none"<?}?> <? if(session.menu_first=="/functionProfile/functionProfile.do"){ ?>class="active"<?}?>><a href="../functionProfile/functionProfile.do"><i class="fa fa-circle-o"></i> 功能概况</a></li>
                 <li <?if(!strutil.contain(session.purviews,"功能统计")){?>style="display:none"<?}?>>
                 <a href="#"><i class="fa fa-circle-o"></i>功能统计<i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu menu-open" style="display: block;">
@@ -192,7 +191,8 @@
             <li <?if(!strutil.contain(session.purviews,"来源分析")){?>style="display:none"<?}?> <? if(session.menu_first=="/sourceAnalysis/sourceAnalysis.do"){ ?>class="active"<?}?>><a href="../sourceAnalysis/sourceAnalysis.do"><i class="fa fa-circle-o"></i> 来源分析</a></li>
             <li <?if(!strutil.contain(session.purviews,"功能模块分析")){?>style="display:none"<?}?> <? if(session.menu_first=="/modelanalysis/modelanalysis.do"){ ?>class="active"<?}?>><a href="../modelanalysis/modelanalysis.do"><i class="fa fa-circle-o"></i> 功能模块分析</a></li>
             <li <?if(!strutil.contain(session.purviews,"页面分析")){?>style="display:none"<?}?> <? if(session.menu_first=="/pageAnalysis/pageAnalysis.do"){ ?>class="active"<?}?>><a href="../pageAnalysis/pageAnalysis.do"><i class="fa fa-circle-o"></i> 页面分析</a></li>
-                <li <?if(!strutil.contain(session.purviews,"分析管理")){?>style="display:none"<?}?>>
+            <li <?if(!strutil.contain(session.purviews,"功能概况")){?>style="display:none"<?}?> <? if(session.menu_first=="/functionProfile/functionProfile.do"){ ?>class="active"<?}?>><a href="../functionProfile/functionProfile.do"><i class="fa fa-circle-o"></i> 功能概况</a></li>
+            <li <?if(!strutil.contain(session.purviews,"分析管理")){?>style="display:none"<?}?>>
                 <a href=""><i class="fa fa-circle-o"></i>分析管理<i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu menu-open" style="display: block;">
                     <li <?if(!strutil.contain(session.purviews,"分析页面管理")){?>style="display:none"<?}?> <? if(session.menu_first=="/page/pageManager.do"){ ?>class="active"<?}?>><a href="../page/pageManager.do"><i class="fa fa-circle-o"></i> 分析页面管理</a></li>
