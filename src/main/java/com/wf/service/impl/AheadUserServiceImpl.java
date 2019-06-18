@@ -1689,8 +1689,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			return 1;
 		}
+		if(StringUtils.isBlank(user.getChecks())){
+			userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());	
+		}
 		UserAccountRestriction account=userAccountRestrictionMapper.getAccountRestriction(user.getUserId());
-		if(account==null||isReset){
+		if((account==null||isReset)&&StringUtils.isNotBlank(user.getChecks())){
 			if(isReset){
 				userAccountRestrictionMapper.deleteAccountRestriction(user.getUserId());
 			}
@@ -1711,9 +1714,8 @@ public class AheadUserServiceImpl implements AheadUserService{
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-
 			return userAccountRestrictionMapper.insert(acc);
-		}else{
+		}else if(StringUtils.isNotBlank(user.getChecks())){
 			UserAccountRestriction acc = new UserAccountRestriction();
 			acc.setUserId(user.getUserId());
 			if(user.getpConcurrentnumber()!=null){
@@ -1745,6 +1747,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			}
 			return userAccountRestrictionMapper.updateAccount(acc);
 		}
+		return 0;
 	}
 
 	@Override
