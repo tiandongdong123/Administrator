@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.utils.CookieUtil;
 import com.utils.DateTools;
+import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.Log;
 import com.wf.bean.PageList;
 import com.wf.bean.Role;
@@ -188,20 +192,26 @@ public class AdminController {
 	@ResponseBody
 	public boolean doAddAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request){
 
-			boolean rt=false;
-			boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
-			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
-			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
-			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
-			boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
-			boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+		boolean rt=false;
+		boolean wfAdminId=admin.getWangfang_admin_id()!=null&&StringUtils.isNotBlank(admin.getWangfang_admin_id());
+		boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
+		boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
+		boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
+		boolean role=admin.getRole_id()!=null && StringUtils.isNotBlank(admin.getRole_id());
+		boolean isRepeat = this.admin.checkAdminId(admin.getWangfang_admin_id());
+		try {
 			if(wfAdminId && password && realName && department && role && !isRepeat){
+				admin.setPassword(PasswordHelper.encryptPassword(admin.getPassword()));
 				rt = this.admin.doAddAdmin(admin);
 				//记录日志
 				Log log=new Log("管理员管理","增加","增加管理员信息:"+admin.toString(),request);
 				logService.addLog(log);
 			}
-			return rt;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rt;
 	}
 	/**
 	 * 修改管理员页面
@@ -211,12 +221,18 @@ public class AdminController {
 	 */
 	@RequestMapping("updateadmin")
 	public String updateAdmin(Map<String,Object> map,String id,Integer pagenum,HttpServletRequest request){
-		List<Object> rolename = this.admin.getRole();
-		Wfadmin admin = this.admin.getAdminById(id);
-		map.put("admin", admin);
-		map.put("rolename", rolename);
-		map.put("pagenum",pagenum);
-			return "/page/systemmanager/update_admin";
+		try {
+			List<Object> rolename = this.admin.getRole();
+			Wfadmin admin = this.admin.getAdminById(id);
+			admin.setPassword(PasswordHelper.decryptPassword(admin.getPassword()));
+			map.put("admin", admin);
+			map.put("rolename", rolename);
+			map.put("pagenum",pagenum);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/page/systemmanager/update_admin";
 	}
 
 	/**
@@ -227,7 +243,8 @@ public class AdminController {
 	@RequestMapping("doupdateadmin")
 	@ResponseBody
 	public JSONObject doUpdateAdmin(@ModelAttribute Wfadmin admin,HttpServletRequest request ){
-			JSONObject map = new JSONObject();
+		JSONObject map = new JSONObject();
+		try {
 			boolean password=admin.getPassword()!=null && StringUtils.isNotBlank(admin.getPassword());
 			boolean realName=admin.getUser_realname()!=null && StringUtils.isNotBlank(admin.getUser_realname());
 			boolean department=admin.getDepartment()!=null && StringUtils.isNotBlank(admin.getDepartment());
@@ -251,8 +268,9 @@ public class AdminController {
 						|| !wfAdmin.getUser_realname().equals(admin.getUser_realname()))){
 					map.put("flag", "fail");
 					map.put("fail","管理员自己只能修改自己的密码");
-						return map;
+					return map;
 				}else{
+					admin.setPassword(PasswordHelper.encryptPassword(admin.getPassword()));
 					boolean rt = this.admin.doUpdateAdmin(admin);
 					map.put("flag", rt);
 				}
@@ -263,8 +281,86 @@ public class AdminController {
 			if(map.size()==0){
 				map.put("flag", false);
 			}
-			return map;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return map;
 	}
+	/*
+	 * 更改密码 页面
+	 */
+	@RequestMapping("updateaPassword")
+	public String updateaPassword(){
+		return "/page/systemmanager/update_password";
+	}
+	/**
+	 * 更改密码
+	 * @return
+	 */
+	@RequestMapping(value="doUpdatePassword",method = RequestMethod.POST)
+	@ResponseBody
+	public boolean doUpdatePassword(String oldPassword,String newPassword,String repeatPassword,HttpServletRequest request){
+		boolean rt=false;
+		try {
+			if(StringUtils.isNoneBlank(oldPassword)&&StringUtils.isNoneBlank(newPassword)&&StringUtils.isNoneBlank(repeatPassword)
+				&&passwordCheck(oldPassword)&&passwordCheck(newPassword)&&passwordCheck(repeatPassword)){
+				//校验密码
+				oldPassword=PasswordHelper.encryptPassword(oldPassword);
+				newPassword=PasswordHelper.encryptPassword(newPassword);
+				repeatPassword=PasswordHelper.encryptPassword(repeatPassword);
+				Wfadmin wfAdmin = admin.getAdminById(CookieUtil.getWfadmin(request).getId());
+				if(!oldPassword.equals(wfAdmin.getPassword())||!newPassword.equals(repeatPassword)){
+					return false;
+				}
+				wfAdmin.setPassword(newPassword);
+				rt = this.admin.doUpdateAdmin(wfAdmin);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rt;
+	}
+	/*
+	 * 验证密码合法性
+	 */
+	private boolean passwordCheck(String password){
+		boolean length=password.length()>=6&&password.length()<=16;
+		boolean space=!password.contains(" ");
+        boolean chinese=true;
+		Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(password);
+        if(m.find()){
+        	chinese=false;
+        }
+		return length&&space&&chinese;
+	}
+	
+	
+	
+	/**
+	 * 检查密码
+	 * @return
+	 */
+	@RequestMapping("doUpdatePasswordcheck")
+	@ResponseBody
+	public boolean doUpdatePasswordcheck(String oldPassword,HttpServletRequest request){
+		try {
+			if(StringUtils.isNoneBlank(oldPassword)){
+				//校验密码
+				oldPassword=PasswordHelper.encryptPassword(oldPassword);
+				Wfadmin wfAdmin=admin.getAdminById(CookieUtil.getWfadmin(request).getId());
+				if(oldPassword.equals(wfAdmin.getPassword())){
+					return true; 
+				}
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * 管理员管理
 	 * @return

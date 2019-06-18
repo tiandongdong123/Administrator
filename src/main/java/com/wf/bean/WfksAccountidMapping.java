@@ -12,6 +12,8 @@ public class WfksAccountidMapping {
     private String relatedidAccounttype;
 
     private String relatedidKey;
+    
+    private String isTrial;
 
     private Date begintime;
 
@@ -22,7 +24,15 @@ public class WfksAccountidMapping {
     private String begin;
     private String end;
 
-    public String getMappingid() {
+    public String getIsTrial() {
+		return isTrial;
+	}
+
+	public void setIsTrial(String isTrial) {
+		this.isTrial = isTrial;
+	}
+
+	public String getMappingid() {
         return mappingid;
     }
 
@@ -104,13 +114,13 @@ public class WfksAccountidMapping {
 
 	@Override
 	public String toString() {
-		return "WfksAccountidMapping [mappingid=" + mappingid
-				+ ", idAccounttype=" + idAccounttype + ", idKey=" + idKey
-				+ ", relatedidAccounttype=" + relatedidAccounttype
-				+ ", relatedidKey=" + relatedidKey + ", begintime=" + begintime
-				+ ", endtime=" + endtime + ", lastUpdatetime=" + lastUpdatetime
-				+ "]";
+		return "WfksAccountidMapping [mappingid=" + mappingid + ", idAccounttype=" + idAccounttype + ", idKey=" + idKey
+				+ ", relatedidAccounttype=" + relatedidAccounttype + ", relatedidKey=" + relatedidKey + ", isTrial="
+				+ isTrial + ", begintime=" + begintime + ", endtime=" + endtime + ", lastUpdatetime=" + lastUpdatetime
+				+ ", begin=" + begin + ", end=" + end + "]";
 	}
+
+
     
     
 }

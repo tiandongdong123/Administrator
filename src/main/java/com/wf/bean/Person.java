@@ -1,5 +1,6 @@
 package com.wf.bean;
 
+import java.util.Date;
 
 /**
  *	用户Bean
@@ -68,7 +69,18 @@ public class Person {
     
     private ResourceDetailed resourceDetailed;
     
-	private String adminEmail;
+	private String adminEmail;    //机构管理员email
+	
+	private String adminIsTrial;  //机构管理员是否试用
+	
+	
+	public String getAdminIsTrial() {
+		return adminIsTrial;
+	}
+
+	public void setAdminIsTrial(String adminIsTrial) {
+		this.adminIsTrial = adminIsTrial;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -328,22 +340,18 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "Person [userId=" + userId + ", userRealname=" + userRealname
-				+ ", userNickname=" + userNickname + ", password=" + password
-				+ ", isMale=" + isMale + ", mobilePhone=" + mobilePhone
-				+ ", idcardNumber=" + idcardNumber + ", educationLevel="
-				+ educationLevel + ", subject=" + subject + ", dateBirth="
-				+ dateBirth + ", email=" + email + ", topical=" + topical
-				+ ", workUnit=" + workUnit + ", old_work_unit=" + old_work_unit
-				+ ", title=" + title + ", isFreeze=" + isFreeze
-				+ ", avatarUrl=" + avatarUrl + ", userRoles=" + userRoles
-				+ ", is_phone_verification=" + is_phone_verification
-				+ ", is_email_verification=" + is_email_verification
-				+ ", registrationTime=" + registrationTime + ", institution="
-				+ institution + ", pid=" + pid + ", loginMode=" + loginMode
-				+ ", usertype=" + usertype + ", extend=" + extend
-				+ ", usedName=" + usedName + ", award=" + award + ", thirdNum="
-				+ thirdNum + ", status=" + status + ", resourceDetailed="
-				+ resourceDetailed + ", adminEmail=" + adminEmail + "]";
+		return "Person [userId=" + userId + ", userRealname=" + userRealname + ", userNickname=" + userNickname
+				+ ", password=" + password + ", isMale=" + isMale + ", mobilePhone=" + mobilePhone + ", idcardNumber="
+				+ idcardNumber + ", educationLevel=" + educationLevel + ", subject=" + subject + ", dateBirth="
+				+ dateBirth + ", email=" + email + ", topical=" + topical + ", workUnit=" + workUnit
+				+ ", old_work_unit=" + old_work_unit + ", title=" + title + ", isFreeze=" + isFreeze + ", avatarUrl="
+				+ avatarUrl + ", userRoles=" + userRoles + ", is_phone_verification=" + is_phone_verification
+				+ ", is_email_verification=" + is_email_verification + ", registrationTime=" + registrationTime
+				+ ", institution=" + institution + ", pid=" + pid + ", loginMode=" + loginMode + ", usertype="
+				+ usertype + ", extend=" + extend + ", usedName=" + usedName + ", award=" + award + ", thirdNum="
+				+ thirdNum + ", status=" + status + ", resourceDetailed=" + resourceDetailed + ", adminEmail="
+				+ adminEmail + ", adminIsTrial=" + adminIsTrial + "]";
 	}
+
+
 }

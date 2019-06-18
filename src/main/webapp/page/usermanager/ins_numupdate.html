@@ -210,7 +210,7 @@
 			    	<? var perioInfo_CLC,journal_CLC,journal_IDNo,journal_time,degree_CLC,degree_types,degree_time,conference_CLC,conference_No,patent_IPC,books_CLC,
 					books_IDNo,standard_types,company,org_name,company_simp,full_IP_range,limited_parcel_time,reading_print,online_visitor,
 					copy_No,total_print_No,single_print_No,gazetteers_id,gazetteers_type,gazetteers_level,gazetteers_area,gazetteers_startTime,gazetteers_endTime,
-		gazetteers_old_area,gazetteers_old_startTime,gazetteers_old_endTime,gazetteers_album,item_id; 
+		gazetteers_old_area,album_database,gazetteers_old_startTime,gazetteers_old_endTime,gazetteers_album,item_id; 
 			    	for(var n=0;n<data.contract.~size;n++){
 						if("perioInfo_CLC"==data.contract[n].Field){
 							perioInfo_CLC=data.contract[n];
@@ -285,7 +285,9 @@
 								gazetteers_old_startTime=data.contract[n];
 							}else if("gazetteers_old_endTime"==data.contract[n].Field){
 								gazetteers_old_endTime=data.contract[n];
-							}
+							}else if("album_database"==data.contract[n].Field){
+						        album_database=data.contract[n];
+						}
 						}
 					}?>
                         <? var perioCLC;if(!isEmpty(perioInfo_CLC.Value)){ for(var co=0;co<perioInfo_CLC.Value.~size;co++){perioCLC=perioCLC+(isEmpty(perioCLC)?"":",")+perioInfo_CLC.Value[co];}}?>
@@ -548,6 +550,10 @@
                                       </span>
                                     </div>
                                   </div>
+                                  <div class="database">
+									<input type="checkbox" id="databaseInput_${i}_${j}" data-database="" onclick="gazetteerType(this.value,${i},${j})" value="FZ_Culture" >专辑数据库
+									<div class="databaseInput"><input type="checkbox" onclick="databaseClick(${i},${j})" disabled id="checkData_${i}_${j}">文化志</div>
+								  </div>
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">
                                   <div>整本 （以;分隔）
@@ -567,6 +573,9 @@
                               <input type="hidden" value="${gazetteers_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersEndTime" id="gazetteersEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_area.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldArea" id="gazetteersOldArea_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_old_startTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldStartTime" id="gazetteersOldStartTime_${i}_${j}"/>
+                              
+                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
+                              
                               <input type="hidden" value="${gazetteers_old_endTime.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime" id="gazetteersOldEndTime_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
@@ -871,6 +880,10 @@
                                       </span>
                                     </div>
                                   </div>
+                                  <div class="database">
+									<input type="checkbox" id="databaseInput_${i}_${j}" data-database="" onclick="gazetteerType(this.value,${i},${j})" value="FZ_Culture">专辑数据库
+									<div class="databaseInput"><input type="checkbox" onclick="databaseClick(${i},${j})" disabled id="checkData_${i}_${j}">文化志</div>
+								  </div>
                                 </div>
                                 <div id="changeTextarea_${i}_${j}" style="display:none">
                                   <div>整本 （以;分隔）
@@ -901,6 +914,7 @@
                                 name="rdlist[${i}].rldto[${j}].gazetteersOldEndTime"
                                 id="gazetteersOldEndTime_${i}_${j}" />
                               <input type="hidden" value="${gazetteers_type.Value!}" name="rdlist[${i}].rldto[${j}].localType" id="gazetteers_type_${i}_${j}" />
+                              <input type="hidden" value="${album_database.Value!}" name="rdlist[${i}].rldto[${j}].albumDatabase" id="gazetteers_albumDatabase_${i}_${j}"/>
                               <input type="hidden" value="${gazetteers_id.Value!}" name="rdlist[${i}].rldto[${j}].gazetteersId" id="gazetteers_TopId_${i}_${j}" />
                               <input type="hidden" value="${item_id.Value!}" name="rdlist[${i}].rldto[${j}].itemId" id="gazetteers_BottomItem_${i}_${j}" />
                             </div>
@@ -941,13 +955,32 @@
               <div id="partyDiv" <?if(isEmpty(party)){?>style="display: none;"
                 <?}?>>
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>是否试用</label>
-                  <input type="radio" name="isTrial" value="isTrial"
-                    <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"
-                  <?}?>/>是
-                  <input type="radio" name="isTrial" value="notTrial"
-                    <?if(!isEmpty(party)&&party.trial==false){?>checked="checked"
-                  <?}?>/>否
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" id="partyIsTrialCheck" onclick=changeVal('partyIsTrial') 
+                  <?if(!isEmpty(party)&&party.trial==true){?>checked="checked"
+                  <?}?>
+                  />试用
+                  <input type="hidden" name="isTrial" id="partyIsTrial"
+                   <?if(!isEmpty(party)&&party.trial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(party)&&party.trial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                   />
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                    <input type="text" name="partyBegintime" id="partyBegintime"
+                        value="${party.begintime!}" class="form-control input_time"
+                    placeholder="年 /月/日"
+                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})" style="width:139px;"><span
+                      class="to">至</span>
+                    <input type="text" name="partyEndtime" id="partyEndtime"
+                        value="${party.endtime!}" class="form-control input_time"
+                    placeholder="年 /月/日"
+                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})" style="width:139px;">
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>党建管理员ID</label>
@@ -960,18 +993,6 @@
                     value="${party.password!}" onkeyup="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'');"
                     onafterpaste="this.value=this.value.replace(/[\u4e00-\u9fa5 ]/g,'')">
                 </div>
-                <div class="form-group time_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
-                  <div class="time_input">
-                    <span><input type="text" class="Wdate" name="partyBegintime" id="partyBegintime"
-                        value="${party.begintime!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'partyEndtime\')}'})"></span><span
-                      class="to">至</span>
-                    <span><input type="text" class="Wdate" name="partyEndtime" id="partyEndtime"
-                        value="${party.endtime!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'partyBegintime\')}'})"></span>
-                  </div>
-                </div>
               </div>
               <div class="checkbox input_block block_left">
                 <label><input type="checkbox" id="checkuser" <?if(!isEmpty(map.pid)){?>checked="checked"
@@ -980,6 +1001,31 @@
               <div id="administrator" <?if(!isEmpty(map.pid)){?>style="display: black;"
                 <?}else{?>style="display: none;"
                 <?}?>>
+                <div class="form-group input_block">
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" id="adminIsTrialCheck" onclick=changeVal('adminIsTrial')
+                  <?if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==true){?>checked="checked"
+                  <?}?>
+                  >试用
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" 
+                  <?if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                  <input type="text" id="Begintime" name="adminBegintime"
+                    value='${map.adminBegintime,"yyyy-MM-dd"}' class="form-control input_time"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Endtime\')}'})" style="width:139px; " />
+                  至 <input type="text" id="Endtime" name="adminEndtime"
+                    value="${map.adminEndtime,'yyyy-MM-dd'}" class="form-control input_time"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'Begintime\')}'})" style="width:139px;" />
+                </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
                   <input type="radio" name="managerType" value="new" onclick="radioClick();"
@@ -1037,6 +1083,31 @@
                   <?}else{?>style="display: none;"
                   <?}?>>
                   <div class="form-group input_block">
+	                  <label class="input_name">是否试用</label>
+	                  <input type="checkbox" id="sIsTrialCheck" onclick=changeVal('sIsTrial')
+	                  <?if(!isEmpty(map.sIsTrial)&&map.sIsTrial==true){?>checked="checked"
+                  <?}?>
+	                  >试用
+	                  <input type="hidden" name="sIsTrial" id="sIsTrial" 
+	               <?if(!isEmpty(map.sIsTrial)&&map.sIsTrial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(map.sIsTrial)&&map.sIsTrial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+	                >
+	                </div>
+	                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="sBegintime" name="sBegintime"
+	                    value='${map.sBegintime,"yyyy-MM-dd"}' class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="sEndtime" name="sEndtime"
+	                    value="${map.sEndtime,'yyyy-MM-dd'}" class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'sBegintime\')}'})" style="width:139px;" />
+                  </div>
+                  <div class="form-group input_block">
                     <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
                     <input type="text" class="form-control input_time" value="${map.upperlimit}" name="upperlimit"
                       id="upperlimit" maxlength="9">
@@ -1086,13 +1157,13 @@
               </div>
               <div id="dinding">
                 <div class="form-group input_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                  <input type="text" id="openBindStart" name="openBindStart"
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                  <input type="text" id="openBindStart1" name="openBindStart"
                     value='${bindInformation.openBindStart,"yyyy-MM-dd"}' class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px; " />
-                  至 <input type="text" id="openBindEnd" name="openBindEnd"
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'openBindEnd1\')}'})" style="width:139px; " />
+                  至 <input type="text" id="openBindEnd1" name="openBindEnd"
                     value="${bindInformation.openBindEnd,'yyyy-MM-dd'}" class="form-control input_time"
-                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:139px;" />
+                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'openBindStart1\')}'})" style="width:139px;" />
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>绑定模式</label>
@@ -1152,16 +1223,33 @@
                     <?if(!isEmpty(limit.openApp.begintime)){?>checked="checked"
                   <?}?> onclick="checkApp(this)">开通APP嵌入服务<span id="openAppspan" style="color:red"></span></label>
               </div>
-              <div class="form-group time_block" <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"
+              <div <?if(isEmpty(limit.openApp.begin)){?>style="display: none;"
                 <?}?> id="openAppDiv">
-                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                <div class="time_input">
-                  <span><input type="text" class="Wdate" name="appBegintime" id="appBegintime"
-                      value="${limit.openApp.begin!}"
-                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})"></span><span
-                    class="to">至</span>
-                  <span><input type="text" class="Wdate" name="appEndtime" id="appEndtime" value="${limit.openApp.end!}"
-                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})"></span>
+                <div class="form-group input_block">
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" class="trial" id="appIsTrialCheck" onclick=changeVal('appIsTrial')
+                  <?if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="1"){?>checked="checked"
+                  <?}?>
+                  >试用
+                  <input type="hidden" name="appIsTrial" id="appIsTrial" 
+                  <?if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="1"){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="0"){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
+                </div>
+                <div class="form-group input_block" >
+	                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                <input type="text"  class="form-control input_time"
+	                    placeholder="年 /月/日" name="appBegintime" id="appBegintime"
+	                      value="${limit.openApp.begin!}"
+	                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'appEndtime\')}'})" style="width:139px; "> 至 
+	                <input type="text"  class="form-control input_time"
+	                    placeholder="年 /月/日" name="appEndtime" id="appEndtime" value="${limit.openApp.end!}"
+	                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'appBegintime\')}'})" style="width:139px; ">
                 </div>
               </div>
               <div class="checkbox input_block block_left">
@@ -1171,17 +1259,32 @@
               </div>
               <div <?if(isEmpty(limit.openWeChat.begin)){?>style="display: none;"
                 <?}?> id="wechatDiv">
-                <div class="form-group time_block">
-                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>开通时限</label>
-                  <div class="form-group time_input">
-                    <span><input type="text" class="Wdate" name="weChatBegintime" id="weChatBegintime"
-                        value="${limit.openWeChat.begin!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})"></span><span
-                      class="to">至</span>
-                    <span><input type="text" class="Wdate" name="weChatEndtime" id="weChatEndtime"
-                        value="${limit.openWeChat.end!}"
-                        onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})"></span>
-                  </div>
+                <div class="form-group input_block">
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" id="weChatIsTrialCheck" onclick=changeVal('weChatIsTrial')
+                  <?if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="1"){?>checked="checked"
+                  <?}?>
+                  >试用
+                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" 
+                  <?if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="1"){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="0"){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
+                </div>
+                <div class="form-group input_block">
+                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+                  <input type="text"  class="form-control input_time"
+                   placeholder="年 /月/日" name="weChatBegintime" id="weChatBegintime"
+                      value="${limit.openWeChat.begin!}"
+                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'weChatEndtime\')}'})" style="width:139px; "> 至 
+                  <input type="text"  class="form-control input_time"
+                   placeholder="年 /月/日" name="weChatEndtime" id="weChatEndtime"
+                      value="${limit.openWeChat.end!}"
+                      onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'weChatBegintime\')}'})" style="width:139px; ">
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>链接发送邮箱</label>

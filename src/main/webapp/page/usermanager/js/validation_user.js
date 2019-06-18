@@ -129,28 +129,28 @@ $(function() {/* 文档加载，执行一个函数 */
                     },
 				}
 			},
-            openBindStart:{
-                enabled: false
-			},
-            openBindEnd:{
-                message : '请选择日期',
-                validators : {
-                    callback:{
-                        callback:function(value,validator){
-                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
-                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
-                        	if(!startDay){
-                        		return false;
-							}
-                            if(!endDay){
-                                return false;
-                            }
-							return true;
-                        }
-                    }
-                }
-
-            },
+//            openBindStart:{
+//                enabled: false
+//			},
+//            openBindEnd:{
+//                message : '请选择日期',
+//                validators : {
+//                    callback:{
+//                        callback:function(value,validator){
+//                        	var startDay = $.trim(validator.getFieldElements('openBindStart').val());
+//                        	var endDay = $.trim(validator.getFieldElements('openBindEnd').val());
+//                        	if(!startDay){
+//                        		return false;
+//							}
+//                            if(!endDay){
+//                                return false;
+//                            }
+//							return true;
+//                        }
+//                    }
+//                }
+//
+//            },
 			pullDepartment:{
 				validators : {
 					notEmpty : {/*非空提示*/
@@ -301,18 +301,41 @@ $(function() {/* 文档加载，执行一个函数 */
 					},
 				}
 			},
+			// 开通时限判断
+			openBindEnd: {
+				validators : {
+					notEmpty : {
+						message : '有效期不能为空，请正确填写有效期'
+					},
+				}
+			},
+			adminEndtime: {
+				validators : {
+					notEmpty : {
+						message : '有效期不能为空，请正确填写有效期'
+					},
+				}
+			},
+			sEndtime: {
+				validators : {
+					notEmpty : {
+						message : '有效期不能为空，请正确填写有效期'
+					},
+				}
+			},
 		}
 	})
 	
     $('#fromList').bootstrapValidator('removeField','email');
-    $('#openBindStart').mousedown(function(){
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
-    })
-    $('#openBindEnd').mousedown(function(){
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
-        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
-    })
+//    $('#openBindStart').mousedown(function(){
+//        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+//        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+//    })
+//    $('#openBindEnd').mousedown(function(){
+//        $('#fromList').bootstrapValidator('updateStatus', 'openBindStart', 'NOT_VALIDATED');
+//        $('#fromList').bootstrapValidator('updateStatus', 'openBindEnd', 'NOT_VALIDATED');
+//    })
+    
 });
 
 function fieldsCheck() {

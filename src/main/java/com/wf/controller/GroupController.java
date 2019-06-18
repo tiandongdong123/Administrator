@@ -193,6 +193,9 @@ public class GroupController {
 			Map<String, Object> m = aheadUserService.findInfoByPid(map.get("pid").toString());
 			map.put("adminname", m.get("userId"));
 			map.put("adminpassword", m.get("password"));
+			map.put("adminIsTrial", m.get("adminIsTrial"));
+			map.put("adminBegintime", m.get("adminBegintime"));
+			map.put("adminEndtime", m.get("adminEndtime"));
 			map.put("adminIP", m.get("adminIP"));
 			map.put("adminEmail", m.get("adminEmail"));
 			List<Map<String, Object>> admin=personservice.getAllInstitutional(String.valueOf(map.get("institution")));

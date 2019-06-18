@@ -253,6 +253,8 @@
 						gazetteers_old_startTime=pldata.contract[n];
 					}else if("gazetteers_old_endTime"==pldata.contract[n].Field){
 						gazetteers_old_endTime=pldata.contract[n];
+					}else if("album_database"==pldata.contract[n].Field){
+						album_database=pldata.contract[n];
 					}
 				}
 			}?>
@@ -432,6 +434,10 @@
 								</span>
 							</div>
 						</div>
+						<div class="database">
+							<input type="checkbox" id="databaseCheck_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(album_database)&&(strutil.contain(album_database.Value,"FZ_Culture"))){?>checked="checked"<?}?>>专辑数据库
+							<div class="databaseInput"><input type="checkbox" id="databaseInput_${list.Id}_${payid}_${pscode}" <?if(!isEmpty(album_database)&&(strutil.contain(album_database.Value,"FZ_Culture"))){?>checked="checked"<?}?>>文化志</div>
+						</div>
 					</div>
 					<div id="changeTextarea_${list.Id}_${payid}" style="display:none">
 						<div>整本 （以;分隔）
@@ -453,6 +459,7 @@
 				<input type="hidden" id="gazetteers_old_endTime_${list.Id}_${payid}_${pscode}"
 					value="${gazetteers_old_endTime.Value!}">
 				<input type="hidden" id="gazetteers_type_${list.Id}_${payid}_${pscode}" value="${gazetteers_type.Value!}">
+				<input type="hidden" id="album_database_${list.Id}_${payid}_${pscode}" value="${album_database.Value!}">
 			</div>
 			<?}?>
 	        <?if(strutil.contain(pldata.resType,"standard")){?>
@@ -480,7 +487,7 @@
 			<?if(!isEmpty(list.PartyAdminId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">党建管理员</span>
-				<div class="bind"><?if(list.PartyAdminTrial=='true'){?>试用<?}?></span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"PartyAdmin")){?>试用<?}?></span></div>
 				<div class="bind"><span>党建管理员ID：</span><span>${list.PartyAdminId}</span></div>
 				<div class="bind"><span>党建管理员密码：</span><span>${list.PartyAdminPassword}</span></div>
 				<div class="bind"><span>有效期：</span><span <?if(list.PartyAdminExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.PartyAdminStartTIme}-${list.PartyAdminEndTIme}</span></div>
@@ -491,11 +498,17 @@
 			<?if(!isEmpty(list.AdministratorId)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构管理员</span>
+				<div class="bind"><?if(array.contain(list.TrialType,"Administrator")){?>试用<?}?></span></div>
 				<div class="bind"><span>机构管理员ID：</span><span class="bind_type">${list.AdministratorId}</span></div>
 				<div class="bind"><span>机构管理员密码：</span><span>${list.AdministratorPassword}</span></div>
 				<div class="bind"><span>机构管理员邮箱：</span><span>${list.AdministratorEmail}</span></div>
 				<?if(!isEmpty(list.AdministratorOpenIP)){?><div class="bind"><span>机构管理员IP：</span><span>
 				<?for(listIp in list.AdministratorOpenIP){?>${listIp} <?}?></span></div><?}?>
+				<div class="bind">
+				<?if(!isEmpty(list.AdministratorStartTime)&&!isEmpty(list.AdministratorEndtime)){?>
+				<span>有效期：</span><span <?if(list.administratorExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AdministratorStartTime}-${list.AdministratorEndtime}</span>
+				<?}?>
+				</div>
 			</div>
 			<?}?>
 			<!-- 机构管理员结束 -->
@@ -503,10 +516,16 @@
 			<?if(!isEmpty(list.ChildGroupLimit)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">机构子账号</span>
+				<div class="bind"><?if(array.contain(list.TrialType,"ChildGroup")){?>试用<?}?></span></div>
 				<div class="bind"><span>子账号上限：</span><span>${list.ChildGroupLimit}</span></div>
 				<div class="bind"><span>子账号并发数上限：</span><span>${list.ChildGroupConcurrent}</span></div>
 				<div class="bind"><span>子账号下载量（点击次数）上限/天：</span><span>${list.ChildGroupDownloadLimit}</span></div>
 				<div class="bind"><span>设置子账号扣款模式：</span><span><?if(list.ChildGroupPayment==0){?>从机构账号扣款<?}else{?>从机构子账号扣款<?}?></span></div>
+				<div class="bind">
+				<?if(!isEmpty(list.ChildGroupStartTime)&&!isEmpty(list.ChildGroupEndtime)){?>
+				<span>有效期：</span><span <?if(list.childGroupExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.ChildGroupStartTime}-${list.ChildGroupEndtime}</span>
+				<?}?>
+				</div>
 			</div>
 			<?}?>
 			<!-- 机构子账号结束 -->
@@ -547,7 +566,8 @@
 			<?if(!isEmpty(list.AppStartTime)){?>
 			<div class="user_bind" style="width:80%">
 				<span style="color: #0099ff">APP嵌入服务</span>
-				<div class="bind"><span>开通时限：</span><span <?if(list.openAppExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AppStartTime}-${list.AppStartTime}</span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"App")){?>试用<?}?></span></div>
+				<div class="bind"><span>有效期：</span><span <?if(list.openAppExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.AppStartTime}-${list.AppEndTime}</span></div>
 			</div>
 			<?}?>
 			<!-- APP嵌入服务结束 -->
@@ -555,8 +575,9 @@
 			<?if(!isEmpty(list.WeChatStartTime)){?>
 			<div class="user_bind" style="width:800px">
 				<span style="color: #0099ff">微信公众号嵌入服务</span>
-				<div class="bind"><span>开通时限：</span><span <?if(list.openWeChatExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.WeChatStartTime}-${list.WeChatEndTime}</span></div>
+				<div class="bind"><?if(array.contain(list.TrialType,"WeChat")){?>试用<?}?></span></div>
 				<div class="bind"><span>链接发送邮箱：</span><span>${list.Email4WeChat}</span></div>
+				<div class="bind"><span>有效期：</span><span <?if(list.openWeChatExpired){?>style="background-color:red;color:#FFFFFF;"<?}?>>${list.WeChatStartTime}-${list.WeChatEndTime}</span></div>
 			</div>
 			<?}?>
 			<!-- 微信公众号嵌入服务结束 -->

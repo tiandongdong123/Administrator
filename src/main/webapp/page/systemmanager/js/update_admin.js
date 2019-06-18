@@ -19,7 +19,7 @@ function doupdateadmin(){
 		$("#checkpassword").text('密码不能包含空格');
 		$("#password").focus();
 		return;
-	}else if (!checkId(password)){
+	}else if (!(escape(password).indexOf("%u")<0)){
 		$("#pwdStr").text('密码不能包含中文');
 		$("#password").focus();
 		return;
@@ -129,7 +129,7 @@ function checkValue(type,str) {
 			$(typeClass).text('由6-16个字符组成')
 		}else if (patt1.test(str)) {
 			$(typeClass).text('密码不能包含空格')
-		}else if (!checkId(str)) {
+		}else if (!(escape(str).indexOf("%u")<0)) {
 			$(typeClass).text('密码不能包含中文')
 		}
 	}

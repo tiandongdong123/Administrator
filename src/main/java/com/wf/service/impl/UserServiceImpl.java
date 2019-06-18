@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.Department;
 import com.wf.bean.SystemMenu;
 import com.wf.bean.Wfadmin;
@@ -27,15 +28,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Wfadmin getuser(String userName,String passWord) {
 		Map<String,String> map = new HashMap<String, String>();
-		map.put("userName", userName);
-		map.put("passWord", passWord);
-		Wfadmin us = userMapper.selectUserInfo(map);
-		Department de=new Department();
-		de.setDeptName(us==null?"":us.getDepartment());
-		if(us!=null){
-			us.setDept(de);
+		try {
+			map.put("userName", userName);
+
+			map.put("passWord", PasswordHelper.encryptPassword(passWord));
+
+			Wfadmin us = userMapper.selectUserInfo(map);
+			Department de=new Department();
+			de.setDeptName(us==null?"":us.getDepartment());
+			if(us!=null){
+				us.setDept(de);
+			}
+			return us;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Wfadmin();
 		}
-		return us;
 	}
 	
 	/**
