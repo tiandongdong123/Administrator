@@ -29,4 +29,11 @@ public class TransactionController {
         view.setViewName("/page/usermanager/mechanism_transaction");
         return view;
     }
+
+    @RequestMapping("WFCardStatistics")
+    public ModelAndView WFCardStatistics(){
+        ModelAndView view = new ModelAndView();
+        view.setViewName("/page/usermanager/WFCardStatistics");
+        return view;
+    }
 }
