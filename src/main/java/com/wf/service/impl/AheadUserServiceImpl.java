@@ -3496,7 +3496,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			boolean boo=false;
 			//判断页面是否选择了详情  如果只选择了文化志
 			if(tableCheck(tableContract)){
-				if(StringUtils.isNotEmpty(rld.getAlbumDatabase())){
+				if(StringUtils.isNotEmpty(rld.getAlbumDatabase())&&StringUtils.isEmpty(rld.getGazetteersId())&&StringUtils.isEmpty(rld.getItemId())){
 					boo=true;
 				}
 			}else if(tableCheckCultrue(tableContract)&&StringUtils.isNotEmpty(rld.getAlbumDatabase())&&StringUtils.isEmpty(rld.getGazetteersType())&&StringUtils.isEmpty(rld.getGazetteersOldType())){
