@@ -691,4 +691,65 @@ function changExport(type,count,num) {
 	}
 }
 
-
+//新增机构管理员
+function addAdmin(){
+	var adminname = $("#adminname").val().trim();
+	var adminpassword = $("#adminpassword").val().trim();
+	var adminEmail = $("#adminEmail").val().trim();
+	var adminIp = $("#adminIP").val().trim();
+	if(!validateFrom()){
+		return false;
+	}else if(adminIp!="" && !IpFormat(adminIp)){
+		layer.msg("管理员IP段格式有误",{icon: 2});
+	}else{
+		 $.ajax({
+			type : "post",
+			url : "../auser/addadmin.do",
+			data:{"adminname": adminname,
+				"adminpassword" : adminpassword,
+				"adminIP" : adminIp,
+				"adminEmail" : adminEmail,
+				"userId" : $("#userId").val(),
+				"institution" : $("#institution").val(),
+				"managerType" : $("input[name='managerType']:checked").val(),
+				"adminOldName" : $("#adminOldName").val(),
+				"adminname" : $("#adminname").val(),
+				"adminpassword" : $("#adminpassword").val(),
+				"adminIP" : $("#adminIP").val(),
+				"adminEmail" : $("#adminEmail").val(),
+				"checks" : $("#checks").val(),
+				"upperlimit" : $("#upperlimit").val(),
+				"sConcurrentnumber" : $("#sConcurrentnumber").val(),
+				"downloadupperlimit" : $("#downloadupperlimit").val(),
+				"chargebacks" : $("#chargebacks").val(),
+				"tongji" : $("#tongji").val(),
+				"adminIsTrial": $("#adminIsTrial").val(),
+				"adminBegintime": $("#Begintime").val(),
+				"adminEndtime": $("#Endtime").val(),
+				"sIsTrial": $("#sIsTrial").val(),
+				"sBegintime": $("#sBegintime").val(),
+				"sEndtime": $("#sEndtime").val()
+			},
+			beforeSend: function(){
+				$("#submit").attr({disabled: "disabled"});
+				$("#submit1").attr({disabled: "disabled"});
+			},
+			success: function(data){
+			   if(data == "true"){
+				   layer.msg('操作成功', {icon: 1});
+			   }else if(data=="false"){
+				   layer.msg('机构管理员被占用', {icon: 2});
+			   }else{
+				   layer.msg('操作失败', {icon: 2});
+			   }
+			   if(data == "true"){
+				   window.parent.findList();
+			   }
+			},
+			complete: function(){
+				$("#submit").removeAttr("disabled");
+				$("#submit1").removeAttr("disabled");
+			}
+		});
+	}
+}
