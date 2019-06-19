@@ -396,7 +396,7 @@ public class AheadUserController {
 		if(StringUtils.isEmpty(com.getAdminBegintime())||StringUtils.isEmpty(com.getAdminEndtime())){
 			return "adminTime";
 		}
-		if(StringUtils.isEmpty(com.getsBegintime())||StringUtils.isEmpty(com.getsEndtime())){
+		if(StringUtils.isNotEmpty(com.getChecks())&&com.getChecks().equals("true")&&(StringUtils.isEmpty(com.getsBegintime())||StringUtils.isEmpty(com.getsEndtime()))){
 			return "sTime";
 		}
 		com.setsIsTrial(com.getsIsTrial().equals("true")?com.getsIsTrial():null);
