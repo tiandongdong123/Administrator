@@ -1843,6 +1843,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 				&&set.contains("DB_CCPD")
 				&&set.contains("DB_CDDB")
 				&&set.contains("DB_WFSD")
+				&&set.contains("DB_StandardDigest")
 				&&set.contains("DB_WFPD")
 				&&set.contains("DB_CLRD")
 				&&set.contains("DB_CSTAD")
@@ -1858,6 +1859,7 @@ public class AheadUserServiceImpl implements AheadUserService{
 			listDB.add("DB_CCPD");
 			listDB.add("DB_WFPD");
 			listDB.add("DB_WFSD");
+			listDB.add("DB_StandardDigest");			
 			listDB.add("DB_CLRD");
 			listDB.add("DB_CLGD");
 			listDB.add("DB_CSTAD");
