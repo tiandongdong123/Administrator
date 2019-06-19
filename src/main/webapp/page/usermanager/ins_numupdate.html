@@ -1007,7 +1007,15 @@
                   <?if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==true){?>checked="checked"
                   <?}?>
                   >试用
-                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="">
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" 
+                  <?if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(map.adminIsTrial)&&map.adminIsTrial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -1080,7 +1088,15 @@
 	                  <?if(!isEmpty(map.sIsTrial)&&map.sIsTrial==true){?>checked="checked"
                   <?}?>
 	                  >试用
-	                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="">
+	                  <input type="hidden" name="sIsTrial" id="sIsTrial" 
+	               <?if(!isEmpty(map.sIsTrial)&&map.sIsTrial==true){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(map.sIsTrial)&&map.sIsTrial==false){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+	                >
 	                </div>
 	                <div class="form-group input_block">
 	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -1215,7 +1231,15 @@
                   <?if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="1"){?>checked="checked"
                   <?}?>
                   >试用
-                  <input type="hidden" name="appIsTrial" id="appIsTrial" value="">
+                  <input type="hidden" name="appIsTrial" id="appIsTrial" 
+                  <?if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="1"){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(limit.openApp.isTrial)&&limit.openApp.isTrial=="0"){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
                 </div>
                 <div class="form-group input_block" >
 	                <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
@@ -1241,7 +1265,15 @@
                   <?if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="1"){?>checked="checked"
                   <?}?>
                   >试用
-                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" value="">
+                  <input type="hidden" name="weChatIsTrial" id="weChatIsTrial" 
+                  <?if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="1"){?>
+                   value="isTrial"
+                   <?}else if(!isEmpty(limit.openWeChat.isTrial)&&limit.openWeChat.isTrial=="0"){?>
+                   value="notTrial"
+                   <?}else{?>
+                   value=""
+                   <?}?>
+                  >
                 </div>
                 <div class="form-group input_block">
                   <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>

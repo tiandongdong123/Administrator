@@ -75,6 +75,7 @@ $(function(e){
 			$("#dinding").show();
 			$('#openBindStart1').val(meGetDate());
 		}else{
+			resetValidate('person')
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
 			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
@@ -120,6 +121,7 @@ $(function(e){
 			$("#sconcurrent_div").show();
 			
 		}else{
+			resetValidate('child')
 			$("#upperlimit").val("");
 			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
@@ -169,6 +171,7 @@ function resetAdminValidate(){
 	$("#fromList").data("bootstrapValidator").updateStatus("adminOldName","NOT_VALIDATED",null);
 	$("#fromList").data("bootstrapValidator").updateStatus("adminpassword","NOT_VALIDATED",null);
 	$("#fromList").data("bootstrapValidator").updateStatus("adminEmail","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminEndtime","NOT_VALIDATED",null);
 }
 //校验绑定个人上限
 function check(){
@@ -764,6 +767,9 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
 					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}else {
 						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
 						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
 					}
@@ -2438,6 +2444,7 @@ function checkWeChat(obj,type) {
 			$('#weChatIsTrial').val('notTrial')
 		}
 	} else {
+		resetValidate('wechat')
 		$("#wechatDiv").hide();
 		$('#weChatIsTrial').val('')
 		$('#weChatIsTrialCheck').prop('checked',false)
@@ -2498,6 +2505,7 @@ function checkApp(obj){
 			$('#appIsTrial').val('notTrial')
 		}
 	}else{
+		resetValidate('app')
 		$("#openAppDiv").hide();
 		// 试用
 		$('#appIsTrialCheck').prop('checked',false)
@@ -2582,6 +2590,7 @@ function checkParty(obj){
 			$('#partyIsTrial').val('notTrial')
 		}
 	}else{
+		resetValidate('party');
 		$("#partyDiv").hide();
 		$("#partyIsTrial").val('')
 		$('#partyIsTrialCheck').prop('checked',false)
@@ -2589,7 +2598,7 @@ function checkParty(obj){
 		$('#partyEndtime').val('')
 		$('#partyAdmin').val('')
 		$('#partyPassword').val('')
-		resetAdminValidate();
+		
 	}
 }
 //工单类型
@@ -3024,5 +3033,28 @@ function changeVal(obj) {
 		$('#'+obj).val('isTrial')
 	}else {
 		$('#'+obj).val('notTrial')
+	}
+}
+// 重置校验规征
+function resetValidate(val) {
+	if(val=='party') {
+		$("#fromList").data("bootstrapValidator").updateStatus("partyEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("partyAdmin","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("partyPassword","NOT_VALIDATED",null);
+	}else if (val=='child') {
+		$("#fromList").data("bootstrapValidator").updateStatus("sEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("upperlimit","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("sConcurrentnumber","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("downloadupperlimit","NOT_VALIDATED",null);
+	}else if (val=='person') {
+		$("#fromList").data("bootstrapValidator").updateStatus("openBindEnd","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("bindValidity","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("downloadLimit","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("resourceType","NOT_VALIDATED",null);
+	}else if (val=='app') {
+		$("#fromList").data("bootstrapValidator").updateStatus("appEndtime","NOT_VALIDATED",null);
+	} else if (val=='wechat') {
+		$("#fromList").data("bootstrapValidator").updateStatus("weChatEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("weChatEamil","NOT_VALIDATED",null);
 	}
 }
