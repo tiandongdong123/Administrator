@@ -23,4 +23,6 @@
 	
 	<!-- 敏感词 -->
 	<dubbo:reference interface="org.bigdata.framework.forbidden.iservice.IForbiddenSerivce"  id="forbiddenService" check="false" />
+	<dubbo:reference id="transactionRepositoryReader" interface="wfks.accounting.transaction.TransactionRepository"
+					 group="reader"/>
 </beans>

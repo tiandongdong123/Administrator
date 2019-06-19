@@ -86,6 +86,20 @@
 					<input type="text" class="form-control input_width" value="${institution}" disabled>
 				</div>
 				<div class="form-group input_block">
+                  <label class="input_name">是否试用</label>
+                  <input type="checkbox" id="adminIsTrialCheck" onclick=changeVal('adminIsTrial')>试用
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="">
+                </div>
+                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="Begintime" name="adminBegintime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Endtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="Endtime" name="adminEndtime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'Begintime\')}'})" style="width:139px;" />
+                  </div>
+				<div class="form-group input_block">
 					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
 					<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
 					<input type="radio" name="managerType" value="old" onclick="radioClick();"/>选择已有机构管理员
@@ -116,6 +130,20 @@
 					<label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
 				</div>
 				<div style="display: none;" id="sconcurrent_div">
+				<div class="form-group input_block">
+		                  <label class="input_name">是否试用</label>
+		                  <input type="checkbox" id="sIsTrialCheck"  onclick=changeVal('sIsTrial')>试用
+		                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="">
+		                </div>
+		                <div class="form-group input_block">
+	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="sBegintime" name="sBegintime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="sEndtime" name="sEndtime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'sBegintime\')}'})" style="width:139px;" />
+                  </div>
 					<div class="form-group input_block">
 						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
 						<input type="text" class="form-control input_width" id="upperlimit" name="upperlimit" maxlength="9">
