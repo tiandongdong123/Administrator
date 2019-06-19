@@ -393,6 +393,13 @@ public class AheadUserController {
 	@RequestMapping("addadmin")
 	@ResponseBody
 	public String addadmin(InstitutionalUser com){
+		if(StringUtils.isEmpty(com.getAdminBegintime())||StringUtils.isEmpty(com.getAdminEndtime())){
+			return "adminTime";
+		}
+		if(StringUtils.isEmpty(com.getsBegintime())||StringUtils.isEmpty(com.getsEndtime())){
+			return "sTime";
+		}
+		com.setsIsTrial(com.getsIsTrial().equals("true")?com.getsIsTrial():null);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!StringUtils.isEmpty(com.getAdminname())){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
