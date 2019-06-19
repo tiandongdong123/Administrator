@@ -1828,6 +1828,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 			acc.setDownloadupperlimit(user.getDownloadupperlimit());
 			acc.setpConcurrentnumber(user.getpConcurrentnumber());
 			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			try {
+				if(user.getsIsTrial()!=null){
+					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				}
+				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+				acc.setsBegintime(sd.parse(user.getsBegintime()));
+				acc.setsEndtime(sd.parse(user.getsEndtime()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return userAccountRestrictionMapper.insert(acc);
 		}else{
 			UserAccountRestriction acc = new UserAccountRestriction();
@@ -1838,6 +1848,16 @@ public class AheadUserServiceImpl implements AheadUserService{
 			acc.setChargebacks(user.getChargebacks());
 			acc.setDownloadupperlimit(user.getDownloadupperlimit());
 			acc.setsConcurrentnumber(user.getsConcurrentnumber());
+			try {
+				if(user.getsIsTrial()!=null){
+					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
+				}
+				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+				acc.setsBegintime(sd.parse(user.getsBegintime()));
+				acc.setsEndtime(sd.parse(user.getsEndtime()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return userAccountRestrictionMapper.updateAccount(acc);
 		}
 	}
