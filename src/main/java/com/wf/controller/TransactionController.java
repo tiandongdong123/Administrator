@@ -9,9 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class TransactionController {
 
     @RequestMapping("mechanism_order")
-    public ModelAndView mechanismOrder(){
+    public ModelAndView mechanismOrder(String userId){
         ModelAndView view = new ModelAndView();
         view.setViewName("/page/usermanager/mechanism_order");
+        view.addObject("userId",userId);
         return view;
     }
 
@@ -26,6 +27,13 @@ public class TransactionController {
     public ModelAndView transaction(){
         ModelAndView view = new ModelAndView();
         view.setViewName("/page/usermanager/mechanism_transaction");
+        return view;
+    }
+
+    @RequestMapping("WFCardStatistics")
+    public ModelAndView WFCardStatistics(){
+        ModelAndView view = new ModelAndView();
+        view.setViewName("/page/usermanager/WFCardStatistics");
         return view;
     }
 }

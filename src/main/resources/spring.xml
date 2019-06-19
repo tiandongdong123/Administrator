@@ -182,6 +182,7 @@
     <bean id="grpcServer" class="com.wanfangdata.grpcchannel.GrpcServer"/>
 	<bean id="bindAuthorityChannel" class="com.wanfangdata.grpcchannel.BindAuthorityChannel"/>
 	<bean id="bindAccountChannel" class="com.wanfangdata.grpcchannel.BindAccountChannel"/>
+	<bean id="pictureManageChannel" class="com.wanfangdata.grpcchannel.PictureManageChannel"/>
 
 	<!--邮箱发送链接信息验证-->
 	<bean id="sendEmailConfig" class="com.utils.WFMailUtil">
