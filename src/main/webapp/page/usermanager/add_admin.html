@@ -72,6 +72,33 @@
 			});
 		}
 	}
+	$(function(e){
+		function getData(){
+			var now 
+			$.ajax({
+				type : "get",
+				async: false,
+				url : "../auser/getServerTime.do",
+				success:function(data){
+					now = data
+				}
+			})
+			return now
+		}
+		$('#Begintime').val(getData())
+	})
+	function getData(){
+		var now 
+		$.ajax({
+			type : "get",
+			async: false,
+			url : "../auser/getServerTime.do",
+			success:function(data){
+				now = data
+			}
+		})
+		return now
+	}
 </script>
     <section class="content">
       <div class="row">
@@ -86,12 +113,12 @@
 					<input type="text" class="form-control input_width" value="${institution}" disabled>
 				</div>
 				<div class="form-group input_block">
-                  <label class="input_name">是否试用</label>
+                  <label class="input_name" style="width:25%">是否试用</label>
                   <input type="checkbox" id="adminIsTrialCheck" onclick=changeVal('adminIsTrial')>试用
-                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="">
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="notTrial">
                 </div>
                 <div class="form-group input_block">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
 	                  <input type="text" id="Begintime" name="adminBegintime"
 	                    class="form-control input_time"
 	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Endtime\')}'})" style="width:139px; " />
@@ -131,12 +158,12 @@
 				</div>
 				<div style="display: none;" id="sconcurrent_div">
 				<div class="form-group input_block">
-		                  <label class="input_name">是否试用</label>
+		                  <label class="input_name" style="width:25%">是否试用</label>
 		                  <input type="checkbox" id="sIsTrialCheck"  onclick=changeVal('sIsTrial')>试用
 		                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="">
 		                </div>
 		                <div class="form-group input_block">
-	                  <label class="input_name"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
 	                  <input type="text" id="sBegintime" name="sBegintime"
 	                    class="form-control input_time"
 	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
