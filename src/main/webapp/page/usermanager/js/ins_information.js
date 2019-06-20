@@ -717,7 +717,7 @@ function addAdmin(){
 				"adminpassword" : $("#adminpassword").val(),
 				"adminIP" : $("#adminIP").val(),
 				"adminEmail" : $("#adminEmail").val(),
-				"checks" : $("#checks").val(),
+				"checks" : $("#newChecks").val(),
 				"upperlimit" : $("#upperlimit").val(),
 				"sConcurrentnumber" : $("#sConcurrentnumber").val(),
 				"downloadupperlimit" : $("#downloadupperlimit").val(),
@@ -739,6 +739,10 @@ function addAdmin(){
 				   layer.msg('操作成功', {icon: 1});
 			   }else if(data=="false"){
 				   layer.msg('机构管理员被占用', {icon: 2});
+			   }else if(data=='adminTime') {
+				   layer.msg('机构管理员有效期不能为空，请正确填写有效期', {icon: 2});
+			   } else if (data == 'sTime') {
+				   layer.msg('机构子账号有效期不能为空，请正确填写有效期', {icon: 2});
 			   }else{
 				   layer.msg('操作失败', {icon: 2});
 			   }

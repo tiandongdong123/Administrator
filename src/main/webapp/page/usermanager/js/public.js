@@ -136,6 +136,41 @@ $(function(e){
 			$('#sEndtime').val('')
 		}
 	});
+	//添加机构管理员
+	$("#newChecks").click(function(){
+		if($(this).is(':checked')){
+			// 开通时限
+			$("#sBegintime").val(getData())
+			// 试用
+			if($('#sIsTrialCheck').is(':checked')) {
+				$('#sIsTrial').val('isTrial')
+			}else {
+				$('#sIsTrial').val('notTrial')
+			}
+			$("#upperlimit").val("100");
+			$("#sConcurrentnumber").val("1");
+			$("#downloadupperlimit").val("30");
+			$("#chargebacks").val("0");
+			$("#sconcurrent_div").show();
+			$('#newChecks').val('true')
+			
+		}else{
+			resetValidate('child')
+			$('#newChecks').val('false')
+			$("#upperlimit").val("");
+			$("#sConcurrentnumber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
+			$("#sconcurrent_div").hide();
+			// 开通时限
+			$("#sBegintime").val('')
+			// 试用
+			$('#sIsTrial').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
+		}
+	});
 	//开通统计分析
 	$("#checktongji").click(function(){
 		if($(this).is(':checked')){
