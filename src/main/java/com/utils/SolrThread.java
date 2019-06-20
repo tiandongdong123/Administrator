@@ -596,9 +596,28 @@ public class SolrThread implements Runnable {
 	}
 	
 	public static void updateInfo(InstitutionalUser user) throws Exception{
-		Map<String,Object> solrMap=new LinkedHashMap<>();
 		List<String> trialType=new ArrayList<String>();
+		Object tryalType=null;
+		try {
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			sq.setQuery("Id:("+user.getUserId()+")");
+			SolrDocumentList sdList=SolrService.getDataList(sq);
+			ArrayList allMap=(ArrayList)InstitutionUtils.getFieldMap(sdList);
+			Map allMapObject=(Map)allMap.get(0);
+			tryalType=allMapObject.get("TrialType");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		if(tryalType!=null){
+			List<String> trialTypeObject=(List<String>)tryalType;
+			for (String string : trialTypeObject) {
+				trialType.add(string);
+			}
+		}
 		
+		Map<String,Object> solrMap=new LinkedHashMap<>();
 		updateUser(solrMap,user,trialType);
 		updateIp(solrMap,user);
 		updateLimit(solrMap,user,trialType);
@@ -666,8 +685,10 @@ public class SolrThread implements Runnable {
 			if(!StringUtils.isEmpty(user.getAdminIP())){
 				solrMap.put("AdministratorOpenIP", user.getAdminIP());
 			}
-			if("isTrial".equals(user.getAdminIsTrial())){
+			if("isTrial".equals(user.getAdminIsTrial())&&!trialType.contains("Administrator")){
 				trialType.add("Administrator");
+			}else if("notTrial".equals(user.getAdminIsTrial())&&trialType.contains("Administrator")){
+				trialType.remove("Administrator");
 			}
 			if(!StringUtils.isEmpty(user.getAdminBegintime())){
 				solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminBegintime())));
@@ -718,8 +739,10 @@ public class SolrThread implements Runnable {
 		boolean limit=user.getUpperlimit()==null?false:true;
 		solrMap.put("HasChildGroup",limit);
 		if(limit){
-			if("isTrial".equals(user.getsIsTrial())){
+			if("isTrial".equals(user.getsIsTrial())&&!trialType.contains("ChildGroup")){
 				trialType.add("ChildGroup");
+			}else if("notTrial".equals(user.getsIsTrial())&&trialType.contains("ChildGroup")){
+				trialType.remove("ChildGroup");
 			}
 			solrMap.put("ChildGroupLimit",user.getUpperlimit());
 			solrMap.put("ChildGroupConcurrent", user.getsConcurrentnumber());
@@ -752,8 +775,10 @@ public class SolrThread implements Runnable {
 		if(!StringUtils.isEmpty(user.getOpenApp())){
 			solrMap.put("AppStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppBegintime())));
 			solrMap.put("AppEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppEndtime())));
-			if("isTrial".equals(user.getAppIsTrial())){
+			if("isTrial".equals(user.getAppIsTrial())&&!trialType.contains("App")){
 				trialType.add("App");
+			}else if("notTrial".equals(user.getAppIsTrial())&&trialType.contains("App")){
+				trialType.remove("App");
 			}
 		}
 		//WeChat
@@ -761,8 +786,10 @@ public class SolrThread implements Runnable {
 			solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatBegintime())));
 			solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatEndtime())));
 			solrMap.put("Email4WeChat", user.getWeChatEamil());
-			if("isTrial".equals(user.getWeChatIsTrial())){
+			if("isTrial".equals(user.getWeChatIsTrial())&&!trialType.contains("WeChat")){
 				trialType.add("WeChat");
+			}else if("notTrial".equals(user.getWeChatIsTrial())&&trialType.contains("WeChat")){
+				trialType.remove("WeChat");
 			}
 		}
 		//PartyAdmin
@@ -771,8 +798,10 @@ public class SolrThread implements Runnable {
 			solrMap.put("PartyAdminEndTIme", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getPartyEndtime())));
 			solrMap.put("PartyAdminId", user.getPartyAdmin());
 			solrMap.put("PartyAdminPassword", PasswordHelper.encryptPassword(user.getPartyPassword()));
-			if("isTrial".equals(user.getIsTrial())){
+			if("isTrial".equals(user.getIsTrial())&&!trialType.contains("PartyAdmin")){
 				trialType.add("PartyAdmin");
+			}else if("notTrial".equals(user.getIsTrial())&&trialType.contains("PartyAdmin")){
+				trialType.remove("PartyAdmin");
 			}
 		}
 	}
