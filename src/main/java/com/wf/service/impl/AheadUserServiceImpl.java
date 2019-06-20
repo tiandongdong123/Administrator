@@ -1960,6 +1960,17 @@ public class AheadUserServiceImpl implements AheadUserService{
 				Map<String, Object> m = datamanagerMapper.selectDataByPsc(se);
 				if(m!=null && m.get("productSourceCode")!=""){
 					List<Map<String, Object>> rp = resourcePriceMapper.getPriceBySourceCode(m.get("productSourceCode").toString());
+					if(m.get("productSourceCode").equals("DB_CLGD")){
+						//rd排序
+						  Collections.sort(rp, new Comparator<Map<String, Object>>(){
+				              public int compare(Map<String, Object> o1, Map<String, Object> o2) 
+				              {
+				            	  String d1 = (String)o1.get("name");
+				            	  String d2 = (String)o2.get("name");
+				                   return d2.compareTo(d1);
+				               }
+				        });
+					}
 					if(se.equals("DB_PEDB")){
 						List<Map<String,Object>> listdb =new ArrayList<Map<String,Object>>();
 						Map<String, Object> mapDB1=new HashMap<String, Object>();
