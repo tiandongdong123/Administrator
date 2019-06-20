@@ -193,7 +193,10 @@
  
   <!-- 移除机构账号管理员 -->
  <update id="updatePid" parameterType="java.util.Map">
-    update user set pid = #{pid} where user_id = #{userId}
+    update user set pid = #{pid},
+        extend = #{extend},
+        admin_istrial=#{adminIstrial}
+    where user_id = #{userId}
   </update>
  
  

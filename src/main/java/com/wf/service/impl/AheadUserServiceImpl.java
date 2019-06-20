@@ -1833,8 +1833,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
 				}
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+				if(user.getsBegintime()!=null&&user.getsEndtime()!=null){
 				acc.setsBegintime(sd.parse(user.getsBegintime()));
 				acc.setsEndtime(sd.parse(user.getsEndtime()));
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1853,8 +1855,10 @@ public class AheadUserServiceImpl implements AheadUserService{
 					acc.setsIsTrial(user.getsIsTrial().equals("isTrial")?"1":"0");
 				}
 				SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+				if(user.getsBegintime()!=null&&user.getsEndtime()!=null){
 				acc.setsBegintime(sd.parse(user.getsBegintime()));
 				acc.setsEndtime(sd.parse(user.getsEndtime()));
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

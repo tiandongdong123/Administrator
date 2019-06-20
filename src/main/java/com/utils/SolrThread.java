@@ -14,6 +14,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
+import com.alibaba.dubbo.common.json.JSONObject;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.ResourceDetailedDTO;
@@ -22,7 +23,7 @@ import com.xxl.conf.core.XxlConfClient;
 
 public class SolrThread implements Runnable {
 	
-	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
+	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
 	private static Logger log = Logger.getLogger(SolrThread.class);
 	private Thread t;
 	private List<SolrInputDocument> solrList=null;
@@ -102,11 +103,15 @@ public class SolrThread implements Runnable {
 		solrMap.put("ChildGroupDownloadLimit", null);
 		solrMap.put("ChildGroupPayment", null);
 		solrMap.put("StatisticalAnalysis", null);
+		solrMap.put("ChildGroupStartTime", null);
+		solrMap.put("ChildGroupEndtime", null);
 		solrMap.put("UpdateTime", SolrThread.getDate());//修改时间
 		solrMap.put("AdministratorId", null);
 		solrMap.put("AdministratorEmail", null);
 		solrMap.put("AdministratorPassword", null);
 		solrMap.put("AdministratorOpenIP", null);
+		solrMap.put("AdministratorStartTime", null);
+		solrMap.put("AdministratorEndtime", null);
 		solrMap.put("HasChildGroup", false);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
@@ -128,6 +133,27 @@ public class SolrThread implements Runnable {
 	 * @param com
 	 */
 	public static void addAdmin(String userId,String pid, InstitutionalUser com) {
+	
+		Object tryalType=null;
+		try {
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			sq.setQuery("Id:("+userId+")");
+			SolrDocumentList sdList=SolrService.getDataList(sq);
+			ArrayList allMap=(ArrayList)InstitutionUtils.getFieldMap(sdList);
+			Map allMapObject=(Map)allMap.get(0);
+			tryalType=allMapObject.get("TrialType");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		List<String> trialType=new ArrayList<String>();
+		if(tryalType!=null){
+			List<String> trialTypeObject=(List<String>)tryalType;
+			for (String string : trialTypeObject) {
+				trialType.add(string);
+			}
+		}
 		Map<String,Object> solrMap=new HashMap<String,Object>();
 		//机构子账号表
 		solrMap.put("ParentId", pid);
@@ -139,6 +165,11 @@ public class SolrThread implements Runnable {
 			}
 			solrMap.put("ChildGroupDownloadLimit", com.getDownloadupperlimit()==null?"":com.getDownloadupperlimit());
 			solrMap.put("ChildGroupPayment", com.getChargebacks()==null?"":com.getChargebacks());
+			if("isTrial".equals(com.getsIsTrial())){
+				trialType.add("ChildGroup");
+			}
+			solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsBegintime())));
+			solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsEndtime())));
 			solrMap.put("HasChildGroup", true);
 		}else{
 			solrMap.put("HasChildGroup", false);
@@ -158,7 +189,6 @@ public class SolrThread implements Runnable {
 			operation.put("set", ls);
 			solrMap.put("StatisticalAnalysis", operation);
 		}
-
 		//管理员
 		solrMap.put("AdministratorId", pid);
 		solrMap.put("AdministratorEmail", com.getAdminEmail());
@@ -167,8 +197,13 @@ public class SolrThread implements Runnable {
 		} catch (Exception e) {
 			
 		}
+		if("isTrial".equals(com.getAdminIsTrial())){
+			trialType.add("Administrator");
+		}
+		solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminBegintime())));
+		solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminEndtime())));
 		solrMap.put("AdministratorOpenIP", "".equals(com.getAdminIP())?null:com.getAdminIP());
-		
+		solrMap.put("TrialType", trialType);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
 		doc.setField("Id", userId);

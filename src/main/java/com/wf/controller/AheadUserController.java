@@ -423,6 +423,20 @@ public class AheadUserController {
 		// 统计分析权限
 		aheadUserService.addUserIns(com);
 		map.put("userId", com.getUserId());
+		JSONObject json = new JSONObject();
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		if(com.getAdminBegintime()!=null&&com.getAdminEndtime()!=null){
+			try {
+				json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
+				json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		map.put("extend", json.toString());
+		if(com.getAdminIsTrial()!=null){
+			map.put("adminIstrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+		}
 		int resinfo = aheadUserService.updatePid(map);
 		SolrThread.addAdmin(com.getUserId(),String.valueOf(map.get("pid")),com);
 		if(resinfo>0){
