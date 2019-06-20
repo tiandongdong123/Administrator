@@ -166,7 +166,13 @@ public class SolrThread implements Runnable {
 			solrMap.put("ChildGroupDownloadLimit", com.getDownloadupperlimit()==null?"":com.getDownloadupperlimit());
 			solrMap.put("ChildGroupPayment", com.getChargebacks()==null?"":com.getChargebacks());
 			if("isTrial".equals(com.getsIsTrial())){
-				trialType.add("ChildGroup");
+				if(!trialType.contains("ChildGroup")){
+					trialType.add("ChildGroup");
+				}
+			}else{
+				if(trialType.contains("ChildGroup")){
+					trialType.remove("ChildGroup");
+				}
 			}
 			solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsBegintime())));
 			solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsEndtime())));
@@ -198,7 +204,13 @@ public class SolrThread implements Runnable {
 			
 		}
 		if("isTrial".equals(com.getAdminIsTrial())){
-			trialType.add("Administrator");
+			if(!trialType.contains("Administrator")){
+				trialType.add("Administrator");
+			}
+		}else{
+			if(trialType.contains("Administrator")){
+				trialType.remove("Administrator");
+			}
 		}
 		solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminBegintime())));
 		solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminEndtime())));

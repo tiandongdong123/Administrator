@@ -193,12 +193,21 @@
  
   <!-- 移除机构账号管理员 -->
  <update id="updatePid" parameterType="java.util.Map">
-    update user set pid = #{pid},
-        extend = #{extend},
-        admin_istrial=#{adminIstrial}
+    update user set pid = #{pid}
     where user_id = #{userId}
   </update>
  
+   <!-- 移除机构账号管理员 -->
+ <update id="updateOldAdmin" parameterType="java.util.Map">
+    update user set 
+    <if test="extend != null and extend !=''">
+        extend = #{extend},
+      </if>
+    <if test="adminIstrial != null and adminIstrial !=''">
+        admin_istrial = #{adminIstrial}
+     </if>
+    where user_id = #{userId}
+  </update>
  
  <!-- 更新机构账号 -->
  <update id="updateRegisterInfo" parameterType="com.wf.bean.Person">

@@ -399,7 +399,7 @@ public class AheadUserController {
 		if(StringUtils.isNotEmpty(com.getChecks())&&com.getChecks().equals("true")&&(StringUtils.isEmpty(com.getsBegintime())||StringUtils.isEmpty(com.getsEndtime()))){
 			return "sTime";
 		}
-		com.setsIsTrial(com.getsIsTrial().equals("true")?com.getsIsTrial():null);
+		com.setsIsTrial((com.getChecks()!=null&&com.getChecks().equals("true"))?com.getsIsTrial():null);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!StringUtils.isEmpty(com.getAdminname())){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
@@ -417,26 +417,30 @@ public class AheadUserController {
 			map.put("pid", com.getAdminname());
 		}else{
 			map.put("pid", com.getAdminOldName());
+			//更新旧机构管理员试用及日期
+			Map<String, Object> mapOldAdmin = new HashMap<String, Object>();
+			JSONObject json = new JSONObject();
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			if(com.getAdminBegintime()!=null&&com.getAdminEndtime()!=null){
+				try {
+					json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
+					json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			mapOldAdmin.put("userId", com.getAdminOldName());
+			mapOldAdmin.put("extend", json.toString());
+			if(com.getAdminIsTrial()!=null){
+				mapOldAdmin.put("adminIstrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			}
+			aheadUserService.updateOldAdmin(mapOldAdmin);
 		}
 		// 机构子账号权限
 		aheadUserService.setPartAccountRestriction(com);
 		// 统计分析权限
 		aheadUserService.addUserIns(com);
 		map.put("userId", com.getUserId());
-		JSONObject json = new JSONObject();
-		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-		if(com.getAdminBegintime()!=null&&com.getAdminEndtime()!=null){
-			try {
-				json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
-				json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		map.put("extend", json.toString());
-		if(com.getAdminIsTrial()!=null){
-			map.put("adminIstrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
-		}
 		int resinfo = aheadUserService.updatePid(map);
 		SolrThread.addAdmin(com.getUserId(),String.valueOf(map.get("pid")),com);
 		if(resinfo>0){

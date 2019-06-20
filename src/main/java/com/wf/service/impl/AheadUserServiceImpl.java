@@ -2439,6 +2439,11 @@ public class AheadUserServiceImpl implements AheadUserService{
 	}
 
 	@Override
+	public int updateOldAdmin(Map<String, Object> map){
+		return personMapper.updateOldAdmin(map);
+	}
+	
+	@Override
 	public Map<String, Object> findListInfoById(String userId){
 		Map<String, Object> map = personMapper.findListInfoById(userId);
 		if(map==null){
