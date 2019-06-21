@@ -7,6 +7,7 @@ import io.grpc.netty.NettyChannelBuilder;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -392,6 +393,13 @@ public class AheadUserController {
 	@RequestMapping("addadmin")
 	@ResponseBody
 	public String addadmin(InstitutionalUser com){
+		if(StringUtils.isEmpty(com.getAdminBegintime())||StringUtils.isEmpty(com.getAdminEndtime())){
+			return "adminTime";
+		}
+		if(StringUtils.isNotEmpty(com.getChecks())&&com.getChecks().equals("true")&&(StringUtils.isEmpty(com.getsBegintime())||StringUtils.isEmpty(com.getsEndtime()))){
+			return "sTime";
+		}
+		com.setsIsTrial((com.getChecks()!=null&&com.getChecks().equals("true"))?com.getsIsTrial():null);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(!StringUtils.isEmpty(com.getAdminname())){
 			Person per=aheadUserService.queryPersonInfo(com.getAdminname());
@@ -409,6 +417,24 @@ public class AheadUserController {
 			map.put("pid", com.getAdminname());
 		}else{
 			map.put("pid", com.getAdminOldName());
+			//更新旧机构管理员试用及日期
+			Map<String, Object> mapOldAdmin = new HashMap<String, Object>();
+			JSONObject json = new JSONObject();
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			if(com.getAdminBegintime()!=null&&com.getAdminEndtime()!=null){
+				try {
+					json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
+					json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			mapOldAdmin.put("userId", com.getAdminOldName());
+			mapOldAdmin.put("extend", json.toString());
+			if(com.getAdminIsTrial()!=null){
+				mapOldAdmin.put("adminIstrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			}
+			aheadUserService.updateOldAdmin(mapOldAdmin);
 		}
 		// 机构子账号权限
 		aheadUserService.setPartAccountRestriction(com);
@@ -627,6 +653,18 @@ public class AheadUserController {
 		return SettingUtil.getRegionCode();
 	}
 
+	/**
+	 * 获取服务器时间
+	 */
+	@RequestMapping("getServerTime")
+	@ResponseBody
+	public String serverTime(){
+		long l = System.currentTimeMillis();
+		Date date = new Date(l);
+		//转换提日期输出格式
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date);
+	}
 
 
 	/**
@@ -681,7 +719,6 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, Object> addbatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) {
-
 		long time=System.currentTimeMillis();
 		Map<String,Object> errorMap = new HashMap<>();
 		List<Map<String,String>> errorList=new ArrayList<>();
@@ -769,6 +806,12 @@ public class AheadUserController {
 		// 校验机构管理员
 		Map<String,String> error = new HashMap<>();
 		this.adminValidate(user, error);
+		//检验子账号
+		this.childGroupValidate(user, error);
+		//检验APP
+		this.appValidate(user, error);
+		//检验微信
+		this.weChatValidate(user, error);
 		if (error.size() > 0) {
 			String fail=(String) error.get("fail");
 			InstitutionUtils.addErrorMap(user.getUserId(),user.getInstitution(),fail,errorList);
@@ -809,7 +852,11 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, Object> updateBatchRegister(MultipartFile file, InstitutionalUser user,
 			BindAuthorityModel bindAuthorityModel, ModelAndView view, HttpServletRequest req,HttpServletResponse res) throws Exception {
-
+		if(StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())){
+			user.setAdminIsTrial("");
+			user.setAdminBegintime("");
+			user.setAdminEndtime("");
+		}
 		long time=System.currentTimeMillis();
 		Map<String, Object> errorMap = new HashMap<>();
 		int sucNum = 0;
@@ -937,6 +984,12 @@ public class AheadUserController {
 		// 校验机构管理员
 		Map<String,String> error=new HashMap<String,String>();
 		this.adminValidate(user, error);
+		//检验子账号
+		this.childGroupValidate(user, error);
+		//检验APP
+		this.appValidate(user, error);
+		//检验微信
+		this.weChatValidate(user, error);
 		if (error.size() > 0) {
 			String fail=error.get("fail");
 			InstitutionUtils.addErrorMap(user.getUserId(),user.getInstitution(),fail,errorList);
@@ -1173,10 +1226,30 @@ public class AheadUserController {
 	@ResponseBody
 	public Map<String, String> updateinfo(InstitutionalUser user, BindAuthorityModel bindAuthorityModel,
 			HttpServletRequest req, HttpServletResponse res) {
+		if(StringUtils.isEmpty(user.getAdminname())&&StringUtils.isEmpty(user.getAdminOldName())){
+			user.setAdminIsTrial("");
+			user.setAdminBegintime("");
+			user.setAdminEndtime("");
+		}
 		//日志打印充值名称和充值金额
 		for(int i=0;i<user.getRdlist().size();i++){
 			log.info(user.getUserId()+" - '"+user.getRdlist().get(i).getProjectname()+"',充值金额为："+user.getRdlist().get(i).getTotalMoney());
 		}
+		List<ResourceDetailedDTO> dtoList=user.getRdlist();
+		for (ResourceDetailedDTO resourceDetailedDTO : dtoList) {
+			List<ResourceLimitsDTO> limitDtoList=resourceDetailedDTO.getRldto();
+			if(limitDtoList!=null){
+				for (ResourceLimitsDTO resourceLimitsDTO : limitDtoList) {
+					if(resourceLimitsDTO.getResourceid()!=null&&resourceLimitsDTO.getResourceid().equals("DB_CLGD")&&resourceLimitsDTO.getProductid()!=null){
+						//String[] clgdProductid={"Income.LocalChronicle", "Income.LocalChronicleItemFulltext","Income.LocalChronicleCulture"};
+						String[] clgdProductid=aheadUserService.getRidBySource(resourceLimitsDTO.getResourceid());
+						resourceLimitsDTO.setProductid(clgdProductid);
+					}
+				}
+			}
+		}
+		
+		
 		long time=System.currentTimeMillis();
 		Map<String,String> errorMap = new HashMap<String, String>();
 		try{
@@ -1262,6 +1335,21 @@ public class AheadUserController {
 		}
 		// 校验党建管理
 		this.partyAdminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//检验子账号
+		this.childGroupValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//检验APP
+		this.appValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//检验微信
+		this.weChatValidate(user, errorMap);
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}
@@ -1478,6 +1566,11 @@ public class AheadUserController {
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}
+		// 校验党建管理
+		this.partyAdminValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
 		//验证机构用户名是否存在
 		this.userValidate(user, errorMap);
 		if (errorMap.size() > 0) {
@@ -1488,14 +1581,88 @@ public class AheadUserController {
 		if (errorMap.size() > 0) {
 			return errorMap;
 		}
-		// 校验党建管理
-		this.partyAdminValidate(user, errorMap);
+		//检验子账号
+		this.childGroupValidate(user, errorMap);
 		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//检验APP
+		this.appValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		//检验微信
+		this.weChatValidate(user, errorMap);
+		if (errorMap.size() > 0) {
+			return errorMap;
+		}
+		
+		return errorMap;
+	}
+	private Map<String,String> weChatValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		if(StringUtils.isBlank(user.getOpenWeChat())){
+			return errorMap;
+		}
+		if(StringUtils.isBlank(user.getWeChatBegintime())||StringUtils.isBlank(user.getWeChatEndtime())){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通微信有效期不能为空，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getWeChatBegintime())==null||DateUtil.stringToDate1(user.getWeChatEndtime())==null){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通微信有效期格式不正确，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getWeChatBegintime()).getTime()>DateUtil.stringToDate1(user.getWeChatEndtime()).getTime()){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通微信有效期开始时间不能大于结束时间");
 			return errorMap;
 		}
 		return errorMap;
 	}
-
+	
+	private Map<String,String> appValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		if(StringUtils.isBlank(user.getOpenApp())){
+			return errorMap;
+		}
+		if(StringUtils.isBlank(user.getAppBegintime())||StringUtils.isBlank(user.getAppEndtime())){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通APP有效期不能为空，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getAppBegintime())==null||DateUtil.stringToDate1(user.getAppEndtime())==null){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通APP有效期格式不正确，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getAppBegintime()).getTime()>DateUtil.stringToDate1(user.getAppEndtime()).getTime()){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "开通APP有效期开始时间不能大于结束时间");
+			return errorMap;
+		}
+		return errorMap;
+	}
+	private Map<String,String> childGroupValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
+		if(StringUtils.isBlank(user.getChecks())){
+			return errorMap;
+		}
+		if(StringUtils.isBlank(user.getsBegintime())||StringUtils.isBlank(user.getsEndtime())){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "机构子账号有效期不能为空，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getsBegintime())==null||DateUtil.stringToDate1(user.getsEndtime())==null){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "机构子账号有效期格式不正确，请正确填写有效期");
+			return errorMap;
+		}
+		if(DateUtil.stringToDate1(user.getsBegintime()).getTime()>DateUtil.stringToDate1(user.getsEndtime()).getTime()){
+			errorMap.put("flag", "fail");
+			errorMap.put("fail", "机构子账号有效期开始时间不能大于结束时间");
+			return errorMap;
+		}
+		return errorMap;
+	}
 	//验证机构用户名是否存在
 	private Map<String,String> userValidate(InstitutionalUser user,Map<String,String> errorMap) throws Exception{
 		Person p = aheadUserService.queryPersonInfo(user.getUserId());
@@ -1524,12 +1691,28 @@ public class AheadUserController {
 				"old".equals(user.getManagerType())&&StringUtils.isEmpty(user.getAdminOldName())){
 			return hashmap;
 		}
+		if(StringUtils.isBlank(user.getAdminBegintime())||StringUtils.isBlank(user.getAdminEndtime())){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员有效期不能为空，请正确填写有效期");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(user.getAdminBegintime())==null||DateUtil.stringToDate1(user.getAdminEndtime())==null){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员有效期格式不正确，请正确填写有效期");
+			return hashmap;
+		}
+		if(DateUtil.stringToDate1(user.getAdminBegintime()).getTime()>DateUtil.stringToDate1(user.getAdminEndtime()).getTime()){
+			hashmap.put("flag", "fail");
+			hashmap.put("fail", "机构管理员有效期开始时间不能大于结束时间");
+			return hashmap;
+		}
 		String adminId = user.getManagerType().equals("new") ? user.getAdminname() : user
 				.getAdminOldName();
 		Person per = aheadUserService.queryPersonInfo(adminId);
 		if (per == null) {
 			return hashmap;
 		}
+		
 		if(user.getManagerType().equals("new")){
 			if(per.getUsertype() != 1){
 				hashmap.put("flag", "fail");

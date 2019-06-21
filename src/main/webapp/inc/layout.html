@@ -67,6 +67,17 @@
     		dataType : 'json',
     	});
     }
+   function changePassword () {
+   $(document).click()
+    	//$(".dropdown-menu").hide()
+    	layer.open({
+		    type: 2, //page层 1div，2页面
+		    area: ['40%', '40%'],
+		    title: '修改密码',
+		    moveType: 1, //拖拽风格，0是默认，1是传统拖动
+		    content: '../admin/updateaPassword.do'
+	    })
+    }
 </script>
 <body class="sidebar-mini skin-blue-light">
 <div class="backdrop"></div>
@@ -101,6 +112,9 @@
                   <p>${session.userName} - ${session.department}</p>
               </li>
               <li class="user-footer">
+              <div class="pull-left">
+              		<input type="button" onclick="changePassword()" class="btn btn-default btn-flat" value="修改密码">
+              	</div>
                 <div class="pull-right">
                   <a href="javascript:void(0)" onclick="logout();" class="btn btn-default btn-flat">注销</a>
                 </div>

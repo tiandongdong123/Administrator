@@ -16,62 +16,22 @@
 	function cancelAdmin(){
 		 parent.layer.closeAll();
 	}
-	//新增机构管理员
-	function addAdmin(){
-		var adminname = $("#adminname").val().trim();
-		var adminpassword = $("#adminpassword").val().trim();
-		var adminEmail = $("#adminEmail").val().trim();
-		var adminIp = $("#adminIP").val().trim();
-		if(!validateFrom()){
-			return false;
-		}else if(adminIp!="" && !IpFormat(adminIp)){
-			layer.msg("管理员IP段格式有误",{icon: 2});
-		}else{
-			 $.ajax({
-				type : "post",
-				url : "../auser/addadmin.do",
-				data:{"adminname": adminname,
-					"adminpassword" : adminpassword,
-					"adminIP" : adminIp,
-					"adminEmail" : adminEmail,
-					"userId" : $("#userId").val(),
-					"institution" : $("#institution").val(),
-					"managerType" : $("input[name='managerType']:checked").val(),
-					"adminOldName" : $("#adminOldName").val(),
-					"adminname" : $("#adminname").val(),
-					"adminpassword" : $("#adminpassword").val(),
-					"adminIP" : $("#adminIP").val(),
-					"adminEmail" : $("#adminEmail").val(),
-					"checks" : $("#checks").val(),
-					"upperlimit" : $("#upperlimit").val(),
-					"sConcurrentnumber" : $("#sConcurrentnumber").val(),
-					"downloadupperlimit" : $("#downloadupperlimit").val(),
-					"chargebacks" : $("#chargebacks").val(),
-					"tongji" : $("#tongji").val()
-				},
-				beforeSend: function(){
-					$("#submit").attr({disabled: "disabled"});
-					$("#submit1").attr({disabled: "disabled"});
-				},
-				success: function(data){
-				   if(data == "true"){
-					   layer.msg('操作成功', {icon: 1});
-				   }else if(data=="false"){
-					   layer.msg('机构管理员被占用', {icon: 2});
-				   }else{
-					   layer.msg('操作失败', {icon: 2});
-				   }
-				   if(data == "true"){
-					   window.parent.findList();
-				   }
-				},
-				complete: function(){
-					$("#submit").removeAttr("disabled");
-					$("#submit1").removeAttr("disabled");
+	
+	$(function(e){
+		function getData(){
+			var now 
+			$.ajax({
+				type : "get",
+				async: false,
+				url : "../auser/getServerTime.do",
+				success:function(data){
+					now = data
 				}
-			});
+			})
+			return now
 		}
-	}
+		$('#Begintime').val(getData())
+	})
 </script>
     <section class="content">
       <div class="row">
@@ -85,6 +45,20 @@
 					<label class="input_name" style="width:25%">机构名称 </label>
 					<input type="text" class="form-control input_width" value="${institution}" disabled>
 				</div>
+				<div class="form-group input_block">
+                  <label class="input_name" style="width:25%">是否试用</label>
+                  <input type="checkbox" id="adminIsTrialCheck" onclick=changeVal('adminIsTrial')>试用
+                  <input type="hidden" name="adminIsTrial" id="adminIsTrial" value="notTrial">
+                </div>
+                <div class="form-group input_block">
+	                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="Begintime" name="adminBegintime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'Endtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="Endtime" name="adminEndtime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'Begintime\')}'})" style="width:139px;" />
+                  </div>
 				<div class="form-group input_block">
 					<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>管理员类型</label>
 					<input type="radio" name="managerType" value="new" onclick="radioClick();" checked="checked"/>创建新管理员
@@ -113,9 +87,23 @@
 					<input type="text" class="form-control input_width" name="adminIP" id="adminIP">
 				</div>
 				<div class="checkbox input_block block_left">
-					<label><input type="checkbox" id="checks" name="checks" value="true">开通机构子账号</label>
+					<label><input type="checkbox" id="newChecks" name="checks" value="false">开通机构子账号</label>
 				</div>
 				<div style="display: none;" id="sconcurrent_div">
+				<div class="form-group input_block">
+		                  <label class="input_name" style="width:25%">是否试用</label>
+		                  <input type="checkbox" id="sIsTrialCheck"  onclick=changeVal('sIsTrial')>试用
+		                  <input type="hidden" name="sIsTrial" id="sIsTrial" value="">
+		                </div>
+		                <div class="form-group input_block">
+	                  <label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>有效期</label>
+	                  <input type="text" id="sBegintime" name="sBegintime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'sEndtime\')}'})" style="width:139px; " />
+	                  至 <input type="text" id="sEndtime" name="sEndtime"
+	                    class="form-control input_time"
+	                    placeholder="年 /月/日" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'sBegintime\')}'})" style="width:139px;" />
+                  </div>
 					<div class="form-group input_block">
 						<label class="input_name" style="width:25%"><b style="color: #FF0000;margin-right: 5px;">*</b>设置子帐号上限</label>
 						<input type="text" class="form-control input_width" id="upperlimit" name="upperlimit" maxlength="9">
