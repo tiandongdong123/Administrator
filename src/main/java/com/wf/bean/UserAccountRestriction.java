@@ -1,5 +1,7 @@
 package com.wf.bean;
 
+import java.util.Date;
+
 public class UserAccountRestriction {
     private String userId;
 
@@ -12,8 +14,41 @@ public class UserAccountRestriction {
     private Integer chargebacks;
 
     private Integer downloadupperlimit;
+    
+    private String sIsTrial;  //机构子账号是否试用
+	
+	private Date sBegintime;  //机构子账号开始时间
+	
+	private Date sEndtime;  //机构子账号结束时间
+	
+	
+	
 
-    public String getUserId() {
+    public String getsIsTrial() {
+		return sIsTrial;
+	}
+
+	public void setsIsTrial(String sIsTrial) {
+		this.sIsTrial = sIsTrial;
+	}
+
+	public Date getsBegintime() {
+		return sBegintime;
+	}
+
+	public void setsBegintime(Date sBegintime) {
+		this.sBegintime = sBegintime;
+	}
+
+	public Date getsEndtime() {
+		return sEndtime;
+	}
+
+	public void setsEndtime(Date sEndtime) {
+		this.sEndtime = sEndtime;
+	}
+
+	public String getUserId() {
         return userId;
     }
 

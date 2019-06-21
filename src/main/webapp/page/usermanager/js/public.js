@@ -14,7 +14,15 @@ $(function(e){
 	//是否开通管理员
 	$("#checkuser").click(function(){
 		if($(this).is(':checked')){
+			// 试用
+			if($('#adminIsTrialCheck').is(':checked')) {
+				$('#adminIsTrial').val('isTrial')
+			}else {
+				$('#adminIsTrial').val('notTrial')
+			}
 			$("#administrator").show();
+			// 开通时限
+			$("#Begintime").val(getData());
 			resetAdminValidate();
 		}else{
 			$("#adminname").val("");
@@ -38,6 +46,21 @@ $(function(e){
 			$("#tongji").val("");
 			$("#tongjiDiv").hide();
 			$("#checktongji").prop('checked',false);
+			// 开通时限
+			$("#adminBegintime").val('');
+			// 试用
+			$('#adminIsTrial').val('')
+			$('#adminIsTrialCheck').prop('checked',false)
+			$('#adminIsTrial').val('')
+			$('#Begintime').val('')
+			$('#Endtime').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
+			$("#upperlimit").val("");
+			$("#sConcurrentnumber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
 		}
 	});
 
@@ -50,15 +73,17 @@ $(function(e){
 			$("#bindValidity").val("180");
 			$("#downlaodLimit").val("30");
 			$("#dinding").show();
-			$('#openBindStart').val(meGetDate());
+			$('#openBindStart1').val(meGetDate());
 		}else{
+			resetValidate('person')
 			$("#user_dinding").val("false");
 			$("#bindAuthority").val("");
 			$("#resourceInherited").prop("checked",true).siblings().prop("checked",false);
 			$("#bindLimit").val("1");
-			$("#bindLimit").val("");
 			$("#bindValidity").val("");
 			$("#downlaodLimit").val("");
+			$('#openBindStart1').val('')
+			$('#openBindEnd1').val('')
 			$("#dinding").hide();
 		}
 	})
@@ -81,17 +106,69 @@ $(function(e){
 	//是否开通机构子账号
 	$("#checks").click(function(){
 		if($(this).is(':checked')){
+			// 开通时限
+			$("#sBegintime").val(getData())
+			// 试用
+			if($('#sIsTrialCheck').is(':checked')) {
+				$('#sIsTrial').val('isTrial')
+			}else {
+				$('#sIsTrial').val('notTrial')
+			}
 			$("#upperlimit").val("100");
 			$("#sConcurrentnumber").val("1");
 			$("#downloadupperlimit").val("30");
 			$("#chargebacks").val("0");
 			$("#sconcurrent_div").show();
+			
 		}else{
+			resetValidate('child')
 			$("#upperlimit").val("");
 			$("#sConcurrentnumber").val("");
 			$("#downloadupperlimit").val("");
 			$("#chargebacks").val("");
 			$("#sconcurrent_div").hide();
+			// 开通时限
+			$("#sBegintime").val('')
+			// 试用
+			$('#sIsTrial').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
+		}
+	});
+	//添加机构管理员
+	$("#newChecks").click(function(){
+		if($(this).is(':checked')){
+			// 开通时限
+			$("#sBegintime").val(getData())
+			// 试用
+			if($('#sIsTrialCheck').is(':checked')) {
+				$('#sIsTrial').val('isTrial')
+			}else {
+				$('#sIsTrial').val('notTrial')
+			}
+			$("#upperlimit").val("100");
+			$("#sConcurrentnumber").val("1");
+			$("#downloadupperlimit").val("30");
+			$("#chargebacks").val("0");
+			$("#sconcurrent_div").show();
+			$('#newChecks').val('true')
+			
+		}else{
+			resetValidate('child')
+			$('#newChecks').val('false')
+			$("#upperlimit").val("");
+			$("#sConcurrentnumber").val("");
+			$("#downloadupperlimit").val("");
+			$("#chargebacks").val("");
+			$("#sconcurrent_div").hide();
+			// 开通时限
+			$("#sBegintime").val('')
+			// 试用
+			$('#sIsTrial').val('')
+			$('#sIsTrialCheck').prop('checked',false)
+			$('#sBegintime').val('')
+			$('#sEndtime').val('')
 		}
 	});
 	//开通统计分析
@@ -129,6 +206,7 @@ function resetAdminValidate(){
 	$("#fromList").data("bootstrapValidator").updateStatus("adminOldName","NOT_VALIDATED",null);
 	$("#fromList").data("bootstrapValidator").updateStatus("adminpassword","NOT_VALIDATED",null);
 	$("#fromList").data("bootstrapValidator").updateStatus("adminEmail","NOT_VALIDATED",null);
+	$("#fromList").data("bootstrapValidator").updateStatus("adminEndtime","NOT_VALIDATED",null);
 }
 //校验绑定个人上限
 function check(){
@@ -723,7 +801,13 @@ function openPurchaseItems(count,i,type){
 						$('#gazetteers_TopId_'+count+'_'+i).val($('#gazetteersId_'+count+'_'+i).val())
 						$('#gazetteers_BottomItem_'+count+'_'+i).val($('#itemId_'+count+'_'+i).val())
 					}
-					
+					if ($("#databaseInput_"+count+"_"+i).is(':checked')) {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}else {
+						var databaseVal = $('#databaseInput_'+count+'_'+i).attr('data-database')
+						$('#gazetteers_albumDatabase_'+count+'_'+i).val(databaseVal)
+					}
 					layer.closeAll();				
 				}
 //				$('.checkType_'+count+'_'+i).text('')
@@ -875,17 +959,16 @@ function checkRes(count,i){
 
 //获取当前时间，放入时限起始时间
 function getData(){
-	var mydate = new Date();
-	//获取当前年
-	var year = mydate.getFullYear();
-	//获取当前月
-	var month = mydate.getMonth()+1;
-	//获取当前日
-	var date = mydate.getDate();
-
-	var now = year+'-'+getFormatDate(month)+"-"+getFormatDate(date);
-	
-	return now;
+	var now 
+	$.ajax({
+		type : "get",
+		async: false,
+		url : "../auser/getServerTime.do",
+		success:function(data){
+			now = data
+		}
+	})
+	return now
 }
 
 function getFormatDate(s){
@@ -1070,6 +1153,10 @@ function createDetail(count,i,resourceid,type){
 		text += '<span class="locationCity">市</span><select disabled class="noChecked" id="o_shi_'+count+'_'+i+'" onchange="findArea(this.value,2,'+count+','+i+',\'old\')" data-oldcity=""><option value="">全部</option></select>'
 		text += '<span class="locationCounty">县</span><select disabled class="noChecked" id="o_xian_'+count+'_'+i+'" onchange="saveArea('+count+','+i+',\'old\')" data-oldcounty=""><option value="">全部</option></select></div>'
 		text += '</div>'
+		text += '<div class="database">'
+		text += '<input type="checkbox"  id="databaseInput_'+count+'_'+i+'" data-database="" onclick="gazetteerType(this.value,'+count+','+i+')" value="FZ_Culture">专辑数据库'
+		text += '<div class="databaseInput"><input type="checkbox" onclick="databaseClick('+count+','+i+')" disabled id="checkData_'+count+'_'+i+'">文化志</div>'
+		text += '</div>'
 		text += '</div>'
 		text += '<div id="changeTextarea_'+count+'_'+i+'" style="display:none">'
 		text +=  '<div>整本 （以;分隔）<textarea class="form-control" rows="3" id="gazetteersId_'+count+'_'+i+'" style="width:100%;"></textarea></div>'
@@ -1086,6 +1173,7 @@ function createDetail(count,i,resourceid,type){
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].localType" id="gazetteers_type_'+count+'_'+i+'">'
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].gazetteersId" id="gazetteers_TopId_'+count+'_'+i+'">'
 		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].itemId" id="gazetteers_BottomItem_'+count+'_'+i+'">'
+		text += '<input type="hidden" value="" name="rdlist['+count+'].rldto['+i+'].albumDatabase" id="gazetteers_albumDatabase_'+count+'_'+i+'">'
 		text +=	'</div>'
 	}
 	text += '</div></div>';
@@ -1224,6 +1312,16 @@ function gazetteerType(val,count,i){
 			$('#o_xian_'+count+'_'+i).html('<option value="">全部</option>')
 			$('#errorOldTime_'+count+'_'+i).html('')
 		}
+	}else if(val==='FZ_Culture') { // 专辑数据库
+		if($(event.target).is(":checked")) {
+			$('#checkData_'+count+'_'+i).prop('disabled',false)		
+			$('#checkData_'+count+'_'+i).prop('checked', true)
+			$('#databaseInput_'+count+'_'+i).attr('data-database', 'FZ_Culture')
+		}else {
+			$('#checkData_'+count+'_'+i).prop('disabled',true)
+			$('#checkData_'+count+'_'+i).prop('checked', false)
+			$('#databaseInput_'+count+'_'+i).attr('data-database', '')
+		}
 	}
 }
 
@@ -1324,7 +1422,7 @@ function initGazetteer(count,index){
 				})
 				$('#changeSelect_'+count+'_'+index+ ' .oldSelectTime select').prop('disabled',false)
 				$('#changeSelect_'+count+'_'+index+ ' .oldLocationSelect select').prop('disabled',false)
-			}else if(localType=='FZ_New') {
+			}else if(localType.indexOf('FZ_New')>-1) {
 				$('#newLocalType_'+count+'_'+index).prop('checked',true)
 				$('#newLocalType_'+count+'_'+index).attr('data-newtype','FZ_New')
 				$('#changeSelect_'+count+'_'+index+ ' .newSelectTime select').prop('disabled',false)
@@ -1339,7 +1437,7 @@ function initGazetteer(count,index){
 				})
 				$('#changeSelect_'+count+'_'+index+ ' .oldSelectTime select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .oldLocationSelect select').prop('disabled',true)
-			}else if (localType=='FZ_Old') {
+			}else if (localType.indexOf('FZ_Old')>-1) {
 				$('#changeSelect_'+count+'_'+index+ ' .newSelectTime select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .newLocationSelect select').prop('disabled',true)
 				$('#changeSelect_'+count+'_'+index+ ' .newDateSelect input').prop('disabled',true)
@@ -2374,8 +2472,19 @@ function checkWeChat(obj,type) {
 			$("#sendMail").prop("checked",false);
 		}
 		$("#weChatBegintime").val(getData());
+		// 试用
+		if($('#weChatIsTrialCheck').is(':checked')) {
+			$('#weChatIsTrial').val('isTrial')
+		}else {
+			$('#weChatIsTrial').val('notTrial')
+		}
 	} else {
+		resetValidate('wechat')
 		$("#wechatDiv").hide();
+		$('#weChatIsTrial').val('')
+		$('#weChatIsTrialCheck').prop('checked',false)
+		$('#weChatBegintime').val('')
+		$('#weChatEndtime').val('')
 	}
 	$("#openWeChatspan").html("");
 }
@@ -2409,6 +2518,8 @@ $(function(){
     })();
     meDatePicker.datePicker($('#openBindStart'), $('#openBindEnd'), true);
     meDatePicker.datePicker($('#openBindEnd'), $('#openBindStart'), false);
+    meDatePicker.datePicker($('#adminBegintime'), $('#adminEndtime'), true);
+    meDatePicker.datePicker($('#adminEndtime'), $('#adminBegintime'), false);
 })
 
 //开通APP嵌入服务
@@ -2422,8 +2533,20 @@ function checkApp(obj){
 			$("#appBegintime").val(getData());
 			$("#openAppDiv").show();
 		}
+		// 试用
+		if($('#appIsTrialCheck').is(':checked')) {
+			$('#appIsTrial').val('isTrial')
+		}else {
+			$('#appIsTrial').val('notTrial')
+		}
 	}else{
+		resetValidate('app')
 		$("#openAppDiv").hide();
+		// 试用
+		$('#appIsTrialCheck').prop('checked',false)
+		$('#appIsTrial').val('')
+		$('#appBegintime').val('')
+		$('#appEndtime').val('')
 	}
 	$("#openAppspan").html("");
 }
@@ -2495,8 +2618,22 @@ function checkParty(obj){
 		$("#partyBegintime").val(getData());
 		$("#partyDiv").show();
 		$("input:radio[value=notTrial]").prop("checked",true);
+		// 试用
+		if($('#partyIsTrialCheck').is(':checked')) {
+			$('#partyIsTrial').val('isTrial')
+		}else {
+			$('#partyIsTrial').val('notTrial')
+		}
 	}else{
+		resetValidate('party');
 		$("#partyDiv").hide();
+		$("#partyIsTrial").val('')
+		$('#partyIsTrialCheck').prop('checked',false)
+		$('#partyBegintime').val('')
+		$('#partyEndtime').val('')
+		$('#partyAdmin').val('')
+		$('#partyPassword').val('')
+		
 	}
 }
 //工单类型
@@ -2917,4 +3054,42 @@ function openEnterpriseLike(obj){
 			window.open(data);
 		}
 	});
+}
+function databaseClick(count, i) {
+	if (!$(event.target).is(":checked")) {
+		$('#databaseInput_'+count+'_'+i).prop('checked',false)
+		$('#databaseInput_'+count+'_'+i).attr('data-database', '')
+		$('#checkData_'+count+'_'+i).prop('disabled', true)
+	}
+}
+//试用按钮
+function changeVal(obj) {
+	if($('#'+obj).val()=='notTrial') {
+		$('#'+obj).val('isTrial')
+	}else {
+		$('#'+obj).val('notTrial')
+	}
+}
+// 重置校验规征
+function resetValidate(val) {
+	if(val=='party') {
+		$("#fromList").data("bootstrapValidator").updateStatus("partyEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("partyAdmin","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("partyPassword","NOT_VALIDATED",null);
+	}else if (val=='child') {
+		$("#fromList").data("bootstrapValidator").updateStatus("sEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("upperlimit","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("sConcurrentnumber","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("downloadupperlimit","NOT_VALIDATED",null);
+	}else if (val=='person') {
+		$("#fromList").data("bootstrapValidator").updateStatus("openBindEnd","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("bindValidity","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("downloadLimit","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("resourceType","NOT_VALIDATED",null);
+	}else if (val=='app') {
+		$("#fromList").data("bootstrapValidator").updateStatus("appEndtime","NOT_VALIDATED",null);
+	} else if (val=='wechat') {
+		$("#fromList").data("bootstrapValidator").updateStatus("weChatEndtime","NOT_VALIDATED",null);
+		$("#fromList").data("bootstrapValidator").updateStatus("weChatEamil","NOT_VALIDATED",null);
+	}
 }

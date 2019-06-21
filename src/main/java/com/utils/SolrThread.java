@@ -14,6 +14,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
+import com.alibaba.dubbo.common.json.JSONObject;
 import com.wanfangdata.encrypt.PasswordHelper;
 import com.wf.bean.InstitutionalUser;
 import com.wf.bean.ResourceDetailedDTO;
@@ -22,7 +23,7 @@ import com.xxl.conf.core.XxlConfClient;
 
 public class SolrThread implements Runnable {
 	
-	private String hosts=XxlConfClient.get("wf-public.solr.url", null);
+	private static String hosts=XxlConfClient.get("wf-public.solr.url", null);
 	private static Logger log = Logger.getLogger(SolrThread.class);
 	private Thread t;
 	private List<SolrInputDocument> solrList=null;
@@ -102,11 +103,15 @@ public class SolrThread implements Runnable {
 		solrMap.put("ChildGroupDownloadLimit", null);
 		solrMap.put("ChildGroupPayment", null);
 		solrMap.put("StatisticalAnalysis", null);
+		solrMap.put("ChildGroupStartTime", null);
+		solrMap.put("ChildGroupEndtime", null);
 		solrMap.put("UpdateTime", SolrThread.getDate());//修改时间
 		solrMap.put("AdministratorId", null);
 		solrMap.put("AdministratorEmail", null);
 		solrMap.put("AdministratorPassword", null);
 		solrMap.put("AdministratorOpenIP", null);
+		solrMap.put("AdministratorStartTime", null);
+		solrMap.put("AdministratorEndtime", null);
 		solrMap.put("HasChildGroup", false);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
@@ -128,6 +133,27 @@ public class SolrThread implements Runnable {
 	 * @param com
 	 */
 	public static void addAdmin(String userId,String pid, InstitutionalUser com) {
+	
+		Object tryalType=null;
+		try {
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			sq.setQuery("Id:("+userId+")");
+			SolrDocumentList sdList=SolrService.getDataList(sq);
+			ArrayList allMap=(ArrayList)InstitutionUtils.getFieldMap(sdList);
+			Map allMapObject=(Map)allMap.get(0);
+			tryalType=allMapObject.get("TrialType");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		List<String> trialType=new ArrayList<String>();
+		if(tryalType!=null){
+			List<String> trialTypeObject=(List<String>)tryalType;
+			for (String string : trialTypeObject) {
+				trialType.add(string);
+			}
+		}
 		Map<String,Object> solrMap=new HashMap<String,Object>();
 		//机构子账号表
 		solrMap.put("ParentId", pid);
@@ -139,6 +165,17 @@ public class SolrThread implements Runnable {
 			}
 			solrMap.put("ChildGroupDownloadLimit", com.getDownloadupperlimit()==null?"":com.getDownloadupperlimit());
 			solrMap.put("ChildGroupPayment", com.getChargebacks()==null?"":com.getChargebacks());
+			if("isTrial".equals(com.getsIsTrial())){
+				if(!trialType.contains("ChildGroup")){
+					trialType.add("ChildGroup");
+				}
+			}else{
+				if(trialType.contains("ChildGroup")){
+					trialType.remove("ChildGroup");
+				}
+			}
+			solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsBegintime())));
+			solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getsEndtime())));
 			solrMap.put("HasChildGroup", true);
 		}else{
 			solrMap.put("HasChildGroup", false);
@@ -158,7 +195,6 @@ public class SolrThread implements Runnable {
 			operation.put("set", ls);
 			solrMap.put("StatisticalAnalysis", operation);
 		}
-
 		//管理员
 		solrMap.put("AdministratorId", pid);
 		solrMap.put("AdministratorEmail", com.getAdminEmail());
@@ -167,8 +203,19 @@ public class SolrThread implements Runnable {
 		} catch (Exception e) {
 			
 		}
+		if("isTrial".equals(com.getAdminIsTrial())){
+			if(!trialType.contains("Administrator")){
+				trialType.add("Administrator");
+			}
+		}else{
+			if(trialType.contains("Administrator")){
+				trialType.remove("Administrator");
+			}
+		}
+		solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminBegintime())));
+		solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(com.getAdminEndtime())));
 		solrMap.put("AdministratorOpenIP", "".equals(com.getAdminIP())?null:com.getAdminIP());
-		
+		solrMap.put("TrialType", trialType);
 		List<SolrInputDocument> list=new ArrayList<SolrInputDocument>();
 		SolrInputDocument doc=new SolrInputDocument();
 		doc.setField("Id", userId);
@@ -219,13 +266,15 @@ public class SolrThread implements Runnable {
 	//整体更新solr数据
 	public static void registerInfo(InstitutionalUser user,boolean isAdd) throws Exception{
 		Map<String,Object> solrMap=new LinkedHashMap<>();
+		List<String> trialType=new ArrayList<String>();
 		// 全库更新机构管理员 
-		addUser(solrMap,user,isAdd);
+		addUser(solrMap,user,isAdd,trialType);
 		addIp(solrMap,user);
-		addLimit(solrMap,user);
-		addRole(solrMap,user);
+		addLimit(solrMap,user,trialType);
+		addRole(solrMap,user,trialType);
 		updateAllAdministrator(user);
 		Date date=SolrThread.getDate();
+		solrMap.put("TrialType", trialType);
 		solrMap.put("CreateTime", date);
 		solrMap.put("UpdateTime", date);
 		List<Map<String, Object>> solrList=new ArrayList<>();
@@ -387,7 +436,7 @@ public class SolrThread implements Runnable {
 	}
 
 	//添加用户信息
-	private static void addUser(Map<String,Object> solrMap,InstitutionalUser user,boolean isAdd) throws Exception{
+	private static void addUser(Map<String,Object> solrMap,InstitutionalUser user,boolean isAdd,List<String> trialType) throws Exception{
 		solrMap.put("Id", user.getUserId());
 		String password = "";
 		if (StringUtils.isNotBlank(user.getPassword())) {
@@ -410,14 +459,21 @@ public class SolrThread implements Runnable {
 			solrMap.put("IsFreeze", false);
 		}
 		if(!"".equals(pid)){
+			if("isTrial".equals(user.getAdminIsTrial())){
+				trialType.add("Administrator");
+			}
 			solrMap.put("AdministratorId", pid);
 			solrMap.put("AdministratorEmail", user.getAdminEmail());
 			solrMap.put("AdministratorPassword", PasswordHelper.encryptPassword(user.getAdminpassword()));
+			solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminBegintime())));
+			solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminEndtime())));
 			solrMap.put("AdministratorOpenIP", user.getAdminIP());
 		}else{
 			solrMap.put("AdministratorId", null);
 			solrMap.put("AdministratorEmail", null);
 			solrMap.put("AdministratorPassword", null);
+			solrMap.put("AdministratorStartTime", null);
+			solrMap.put("AdministratorEndtime", null);
 			solrMap.put("AdministratorOpenIP", null);
 		}
 		//GroupInfo
@@ -456,7 +512,7 @@ public class SolrThread implements Runnable {
 		}
 	}
 	//添加权限
-	private static void addLimit(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void addLimit(Map<String,Object> solrMap,InstitutionalUser user,List<String> trialType) throws Exception{
 		//PayChannelId
 		List<ResourceDetailedDTO> rdList=user.getRdlist();
 		Map<String,String> ProjectMap=new HashMap<String,String>();
@@ -471,11 +527,16 @@ public class SolrThread implements Runnable {
 		solrMap.put("IsTrial", IsTrialMap.values());
 		//子账号权限
 		boolean HasChildGroup=user.getUpperlimit()==null?false:true;
+		if(HasChildGroup&&"isTrial".equals(user.getsIsTrial())){
+			trialType.add("ChildGroup");
+		}
 		solrMap.put("HasChildGroup", HasChildGroup);
 		solrMap.put("ChildGroupLimit",user.getUpperlimit());
 		solrMap.put("ChildGroupConcurrent", user.getsConcurrentnumber());
 		solrMap.put("ChildGroupDownloadLimit", user.getDownloadupperlimit());
 		solrMap.put("ChildGroupPayment", HasChildGroup?user.getChargebacks():null);
+		solrMap.put("ChildGroupStartTime", HasChildGroup?DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsBegintime())):null);
+		solrMap.put("ChildGroupEndtime", HasChildGroup?DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsEndtime())):null);
 		solrMap.put("GroupConcurrent", user.getpConcurrentnumber());
 		
 		//统计分析
@@ -492,9 +553,12 @@ public class SolrThread implements Runnable {
 		solrMap.put("StatisticalAnalysis",operation);
 	}
 	//添加角色
-	private static void addRole(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void addRole(Map<String,Object> solrMap,InstitutionalUser user,List<String> trialType) throws Exception{
 		//openapp
 		if(!StringUtils.isEmpty(user.getOpenApp())){
+			if("isTrial".equals(user.getAppIsTrial())){
+				trialType.add("App");
+			}
 			solrMap.put("AppStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppBegintime())));
 			solrMap.put("AppEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppEndtime())));
 		}else{
@@ -503,6 +567,9 @@ public class SolrThread implements Runnable {
 		}
 		//WeChat
 		if(!StringUtils.isEmpty(user.getOpenWeChat())){
+			if("isTrial".equals(user.getWeChatIsTrial())){
+				trialType.add("WeChat");
+			}
 			solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatBegintime())));
 			solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatEndtime())));
 			solrMap.put("Email4WeChat", user.getWeChatEamil());
@@ -517,24 +584,47 @@ public class SolrThread implements Runnable {
 			solrMap.put("PartyAdminEndTIme", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getPartyEndtime())));
 			solrMap.put("PartyAdminId", user.getPartyAdmin());
 			solrMap.put("PartyAdminPassword", PasswordHelper.encryptPassword(user.getPartyPassword()));
-			solrMap.put("PartyAdminTrial", "isTrial".equals(user.getIsTrial())?true:false);
+			if("isTrial".equals(user.getIsTrial())){
+				trialType.add("PartyAdmin");
+			}
 		}else{
 			solrMap.put("PartyAdminStartTIme", null);
 			solrMap.put("PartyAdminEndTIme", null);
 			solrMap.put("PartyAdminId", null);
 			solrMap.put("PartyAdminPassword", null);
-			solrMap.put("PartyAdminTrial", null);
 		}
 	}
 	
 	public static void updateInfo(InstitutionalUser user) throws Exception{
+		List<String> trialType=new ArrayList<String>();
+		Object tryalType=null;
+		try {
+			SolrService.getInstance(hosts+"/GroupInfo");
+			SolrQuery sq=new SolrQuery();
+			sq.set("collection", "GroupInfo");
+			sq.setQuery("Id:("+user.getUserId()+")");
+			SolrDocumentList sdList=SolrService.getDataList(sq);
+			ArrayList allMap=(ArrayList)InstitutionUtils.getFieldMap(sdList);
+			Map allMapObject=(Map)allMap.get(0);
+			tryalType=allMapObject.get("TrialType");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		if(tryalType!=null){
+			List<String> trialTypeObject=(List<String>)tryalType;
+			for (String string : trialTypeObject) {
+				trialType.add(string);
+			}
+		}
+		
 		Map<String,Object> solrMap=new LinkedHashMap<>();
-		updateUser(solrMap,user);
+		updateUser(solrMap,user,trialType);
 		updateIp(solrMap,user);
-		updateLimit(solrMap,user);
-		updateRole(solrMap,user);
+		updateLimit(solrMap,user,trialType);
+		updateRole(solrMap,user,trialType);
 		updateAllAdministrator(user);
 		Date date=SolrThread.getDate();
+		solrMap.put("TrialType", trialType);
 		solrMap.put("UpdateTime", date);
 		List<Map<String, Object>> solrList=new ArrayList<>();
 		solrList.add(solrMap);
@@ -544,7 +634,7 @@ public class SolrThread implements Runnable {
 	}
 	
 	//设置user
-	private static void updateUser(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void updateUser(Map<String,Object> solrMap,InstitutionalUser user,List<String> trialType) throws Exception{
 		solrMap.put("Id", user.getUserId());
 		if (StringUtils.isNotBlank(user.getPassword())) {
 			String password = PasswordHelper.encryptPassword(user.getPassword());
@@ -580,6 +670,8 @@ public class SolrThread implements Runnable {
 			solrMap.put("AdministratorId", "");
 			solrMap.put("AdministratorEmail", "");
 			solrMap.put("AdministratorPassword", "");
+			solrMap.put("AdministratorStartTime", "");
+			solrMap.put("AdministratorEndtime", "");
 			solrMap.put("AdministratorOpenIP", "");
 		}		
 		if(!StringUtils.isEmpty(pid)){
@@ -592,6 +684,17 @@ public class SolrThread implements Runnable {
 			}
 			if(!StringUtils.isEmpty(user.getAdminIP())){
 				solrMap.put("AdministratorOpenIP", user.getAdminIP());
+			}
+			if("isTrial".equals(user.getAdminIsTrial())&&!trialType.contains("Administrator")){
+				trialType.add("Administrator");
+			}else if("notTrial".equals(user.getAdminIsTrial())&&trialType.contains("Administrator")){
+				trialType.remove("Administrator");
+			}
+			if(!StringUtils.isEmpty(user.getAdminBegintime())){
+				solrMap.put("AdministratorStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminBegintime())));
+			}
+			if(!StringUtils.isEmpty(user.getAdminEndtime())){
+				solrMap.put("AdministratorEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAdminEndtime())));
 			}
 		}
 	}
@@ -619,7 +722,7 @@ public class SolrThread implements Runnable {
 	}
 	
 	//设置权限
-	private static void updateLimit(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void updateLimit(Map<String,Object> solrMap,InstitutionalUser user,List<String> trialType) throws Exception{
 		//PayChannelId
 		List<ResourceDetailedDTO> rdList=user.getRdlist();
 		Map<String,String> ProjectMap=new HashMap<String,String>();
@@ -636,10 +739,17 @@ public class SolrThread implements Runnable {
 		boolean limit=user.getUpperlimit()==null?false:true;
 		solrMap.put("HasChildGroup",limit);
 		if(limit){
+			if("isTrial".equals(user.getsIsTrial())&&!trialType.contains("ChildGroup")){
+				trialType.add("ChildGroup");
+			}else if("notTrial".equals(user.getsIsTrial())&&trialType.contains("ChildGroup")){
+				trialType.remove("ChildGroup");
+			}
 			solrMap.put("ChildGroupLimit",user.getUpperlimit());
 			solrMap.put("ChildGroupConcurrent", user.getsConcurrentnumber());
 			solrMap.put("ChildGroupDownloadLimit", user.getDownloadupperlimit());
 			solrMap.put("ChildGroupPayment", user.getChargebacks());
+			solrMap.put("ChildGroupStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsBegintime())));
+			solrMap.put("ChildGroupEndtime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getsEndtime())));
 		}
 		
 		if(user.getpConcurrentnumber()!=null){
@@ -660,17 +770,27 @@ public class SolrThread implements Runnable {
 	}
 	
 	//设置角色
-	private static void updateRole(Map<String,Object> solrMap,InstitutionalUser user) throws Exception{
+	private static void updateRole(Map<String,Object> solrMap,InstitutionalUser user,List<String> trialType) throws Exception{
 		//openapp
 		if(!StringUtils.isEmpty(user.getOpenApp())){
 			solrMap.put("AppStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppBegintime())));
 			solrMap.put("AppEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getAppEndtime())));
+			if("isTrial".equals(user.getAppIsTrial())&&!trialType.contains("App")){
+				trialType.add("App");
+			}else if("notTrial".equals(user.getAppIsTrial())&&trialType.contains("App")){
+				trialType.remove("App");
+			}
 		}
 		//WeChat
 		if(!StringUtils.isEmpty(user.getOpenWeChat())){
 			solrMap.put("WeChatStartTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatBegintime())));
 			solrMap.put("WeChatEndTime", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getWeChatEndtime())));
 			solrMap.put("Email4WeChat", user.getWeChatEamil());
+			if("isTrial".equals(user.getWeChatIsTrial())&&!trialType.contains("WeChat")){
+				trialType.add("WeChat");
+			}else if("notTrial".equals(user.getWeChatIsTrial())&&trialType.contains("WeChat")){
+				trialType.remove("WeChat");
+			}
 		}
 		//PartyAdmin
 		if(!StringUtils.isEmpty(user.getPartyLimit())){
@@ -678,7 +798,11 @@ public class SolrThread implements Runnable {
 			solrMap.put("PartyAdminEndTIme", DateUtil.DateToFromatStr(DateUtil.stringToDate1(user.getPartyEndtime())));
 			solrMap.put("PartyAdminId", user.getPartyAdmin());
 			solrMap.put("PartyAdminPassword", PasswordHelper.encryptPassword(user.getPartyPassword()));
-			solrMap.put("PartyAdminTrial", "isTrial".equals(user.getIsTrial())?true:false);
+			if("isTrial".equals(user.getIsTrial())&&!trialType.contains("PartyAdmin")){
+				trialType.add("PartyAdmin");
+			}else if("notTrial".equals(user.getIsTrial())&&trialType.contains("PartyAdmin")){
+				trialType.remove("PartyAdmin");
+			}
 		}
 	}
 	

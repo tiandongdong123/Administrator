@@ -21,6 +21,9 @@ public class InstitutionalUser implements Serializable {
 
 	// 是否开通机构管理员状态
 	private String checkuser;
+	private String adminIsTrial;
+	private String adminBegintime;//有效期-开始
+	private String adminEndtime;//有效期-结束
 	private String managerType;// 管理员选择状态
 	private String adminOldName;// Old机构管理员id
 	private String adminname;// New机构管理员信息
@@ -35,15 +38,20 @@ public class InstitutionalUser implements Serializable {
 	private Integer sConcurrentnumber;
 	private Integer chargebacks;
 	private Integer downloadupperlimit;
+	private String sIsTrial;
+	private String sBegintime;//有效期-开始
+	private String sEndtime;//有效期-结束
 
 	// 统计分析
 	private String tongji;
 	// 开通APP嵌入服务
 	private String openApp;
+	private String appIsTrial;
 	private String appBegintime;
 	private String appEndtime;
 	// 开通微信公众号嵌入服务
 	private String openWeChat;
+	private String weChatIsTrial;
 	private String weChatBegintime;
 	private String weChatEndtime;
 	// 开通微信公众号嵌入服务是否立即发送
@@ -68,6 +76,72 @@ public class InstitutionalUser implements Serializable {
 	private String changeFront;//购买项目转换前
     
     private List<ResourceDetailedDTO> rdlist;
+
+    
+    
+	public String getWeChatIsTrial() {
+		return weChatIsTrial;
+	}
+
+	public void setWeChatIsTrial(String weChatIsTrial) {
+		this.weChatIsTrial = weChatIsTrial;
+	}
+
+	public String getAppIsTrial() {
+		return appIsTrial;
+	}
+
+	public void setAppIsTrial(String appIsTrial) {
+		this.appIsTrial = appIsTrial;
+	}
+
+	public String getsIsTrial() {
+		return sIsTrial;
+	}
+
+	public void setsIsTrial(String sIsTrial) {
+		this.sIsTrial = sIsTrial;
+	}
+
+	public String getsBegintime() {
+		return sBegintime;
+	}
+
+	public void setsBegintime(String sBegintime) {
+		this.sBegintime = sBegintime;
+	}
+
+	public String getsEndtime() {
+		return sEndtime;
+	}
+
+	public void setsEndtime(String sEndtime) {
+		this.sEndtime = sEndtime;
+	}
+
+	public String getAdminIsTrial() {
+		return adminIsTrial;
+	}
+
+	public void setAdminIsTrial(String adminIsTrial) {
+		this.adminIsTrial = adminIsTrial;
+	}
+
+	public String getAdminBegintime() {
+		return adminBegintime;
+	}
+
+	public void setAdminBegintime(String adminBegintime) {
+		this.adminBegintime = adminBegintime;
+	}
+
+	public String getAdminEndtime() {
+		return adminEndtime;
+	}
+
+	public void setAdminEndtime(String adminEndtime) {
+		this.adminEndtime = adminEndtime;
+	}
 
 	public List<ResourceDetailedDTO> getRdlist() {
 		return rdlist;
@@ -398,19 +472,31 @@ public class InstitutionalUser implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CommonEntity [institution=" + institution + ", userId=" + userId + ", loginMode=" + loginMode + ", password="
-				+ password + ", resetMoney=" + resetMoney + ", resetCount=" + resetCount + ", checkuser=" + checkuser + ", managerType="
-				+ managerType + ", adminOldName=" + adminOldName + ", adminname=" + adminname + ", adminpassword="
-				+ adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail + ", ipSegment=" + ipSegment + ", checks="
-				+ checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
-				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit=" + downloadupperlimit
-				+ ", sendMail="+sendMail+", weChatEamil="+weChatEamil + ", partyLimit="+partyLimit+", isTrial="+isTrial
-				+ ", partyAdmin="+partyAdmin+", partyPassword="+partyPassword + ", partyBegintime="+partyBegintime+", partyEndtime="+partyEndtime
-				+ ", openApp=" + openApp + ", appBegintime=" + appBegintime + ", appEndtime=" + appEndtime
-				+ ", openWeChat=" + openWeChat + ", weChatBegintime=" + weChatBegintime + ", weChatEndtime=" + weChatEndtime
-				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode
-				+ ", Organization=" + Organization + ", OrderType=" + OrderType
-				+ ", OrderContent=" + OrderContent +", rdlist=" + rdlist + "]";
+		return "InstitutionalUser [institution=" + institution + ", oldInstitution=" + oldInstitution + ", userId="
+				+ userId + ", loginMode=" + loginMode + ", password=" + password + ", resetMoney=" + resetMoney
+				+ ", resetCount=" + resetCount + ", ipSegment=" + ipSegment + ", checkuser=" + checkuser
+				+ ", adminIsTrial=" + adminIsTrial + ", adminBegintime=" + adminBegintime + ", adminEndtime="
+				+ adminEndtime + ", managerType=" + managerType + ", adminOldName=" + adminOldName + ", adminname="
+				+ adminname + ", adminpassword=" + adminpassword + ", adminIP=" + adminIP + ", adminEmail=" + adminEmail
+				+ ", checks=" + checks + ", upperlimit=" + upperlimit + ", pConcurrentnumber=" + pConcurrentnumber
+				+ ", sConcurrentnumber=" + sConcurrentnumber + ", chargebacks=" + chargebacks + ", downloadupperlimit="
+				+ downloadupperlimit + ", sIsTrial=" + sIsTrial + ", sBegintime=" + sBegintime + ", sEndtime="
+				+ sEndtime + ", tongji=" + tongji + ", openApp=" + openApp + ", appIsTrial=" + appIsTrial
+				+ ", appBegintime=" + appBegintime + ", appEndtime=" + appEndtime + ", openWeChat=" + openWeChat
+				+ ", weChatIsTrial=" + weChatIsTrial + ", weChatBegintime=" + weChatBegintime + ", weChatEndtime="
+				+ weChatEndtime + ", sendMail=" + sendMail + ", weChatEamil=" + weChatEamil + ", partyLimit="
+				+ partyLimit + ", isTrial=" + isTrial + ", partyAdmin=" + partyAdmin + ", partyPassword="
+				+ partyPassword + ", partyBegintime=" + partyBegintime + ", partyEndtime=" + partyEndtime
+				+ ", CountryRegion=" + CountryRegion + ", PostCode=" + PostCode + ", Organization=" + Organization
+				+ ", OrderType=" + OrderType + ", OrderContent=" + OrderContent + ", changeFront=" + changeFront
+				+ ", rdlist=" + rdlist + "]";
 	}
+	
+
+
+
+	
+
+
 	
 }
