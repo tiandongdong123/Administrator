@@ -88,6 +88,7 @@ import com.wf.service.AheadUserService;
 import com.wf.service.LogService;
 import com.wf.service.OpreationLogsService;
 import com.wf.service.PersonService;
+import com.wf.service.WfksUserSettingService;
 
 /**
  *	@author: CuiCan
@@ -116,6 +117,9 @@ public class AheadUserController {
 
 	@Autowired
 	private BindAccountChannel bindAccountChannel;
+	
+	@Autowired
+	private WfksUserSettingService wfksUserSettingService;
 
 	private static Logger log = Logger.getLogger(AheadUserController.class);
 
@@ -420,21 +424,24 @@ public class AheadUserController {
 			//更新旧机构管理员试用及日期
 			Map<String, Object> mapOldAdmin = new HashMap<String, Object>();
 			JSONObject json = new JSONObject();
+			WfksUserSetting setting = new WfksUserSetting();
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			if(com.getAdminBegintime()!=null&&com.getAdminEndtime()!=null){
 				try {
 					json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
 					json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
+					json.put("adminIsTrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+					setting.setUserType("Group");
+					setting.setUserId(com.getAdminOldName());
+					setting.setPropertyName("AdministratorTime");
+					setting.setPropertyValue(json.toString());
+					wfksUserSettingService.delectWfksUserSetting(setting);
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
 			mapOldAdmin.put("userId", com.getAdminOldName());
-			mapOldAdmin.put("extend", json.toString());
-			if(com.getAdminIsTrial()!=null){
-				mapOldAdmin.put("adminIstrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
-			}
-			aheadUserService.updateOldAdmin(mapOldAdmin);
+			wfksUserSettingService.addWfksUserSetting(setting);
 		}
 		// 机构子账号权限
 		aheadUserService.setPartAccountRestriction(com);

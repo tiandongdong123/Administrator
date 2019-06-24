@@ -71,9 +71,6 @@ public interface AheadUserService {
 
 	/** 添加/移除机构管理员 */
 	int updatePid(Map<String, Object> map);
-	
-	/** 添加/移除机构管理员 */
-	int updateOldAdmin(Map<String, Object> map);
 
 	/** 通过id查询用户信息 */
 	Map<String,Object> findListInfoById(String userId);

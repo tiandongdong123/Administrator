@@ -30,7 +30,6 @@
     <result column="award" property="award" jdbcType="VARCHAR" />
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
-     <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
@@ -44,7 +43,6 @@
     <result column="login_mode" property="loginMode" jdbcType="INTEGER" />
     <result column="userType" property="usertype" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
-    <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
     <result column="begin_ip_address_number" property="beginIpAddressNumber" jdbcType="BIGINT" />
     <result column="end_ip_address_number" property="endIpAddressNumber" jdbcType="BIGINT" />
     <result column="upperlimit" property="upperlimit" jdbcType="INTEGER" />
@@ -85,7 +83,6 @@
     <result column="award" property="award" jdbcType="VARCHAR" />
     <result column="user_usedname" property="usedName" jdbcType="INTEGER" />
     <result column="admin_email" property="adminEmail" jdbcType="VARCHAR" />
-     <result column="admin_istrial" property="adminIsTrial" jdbcType="INTEGER" />
     <result column="openid" property="thirdNum" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
@@ -105,9 +102,6 @@
       </if>
       <if test="extend != null and extend !=''" >
         extend = #{extend},
-      </if>
-       <if test="adminIsTrial != null and adminIsTrial !=''" >
-        admin_istrial = #{adminIsTrial},
       </if>
     </set>
     where user_id = #{userId}
@@ -187,25 +181,13 @@
   
   <!-- 机构管理员账号注册 -->
   <insert id="addRegisterAdmin" parameterType="com.wf.bean.Person">
-	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,extend,registration_time,admin_istrial)
-     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},#{extend},now(),#{adminIsTrial})
+	insert into user(user_id,password,userType,is_freeze,institution,admin_email,login_mode,registration_time)
+     values(#{userId},#{password},#{usertype},#{isFreeze},#{institution},#{adminEmail},#{loginMode},now())
   </insert>
  
   <!-- 移除机构账号管理员 -->
  <update id="updatePid" parameterType="java.util.Map">
     update user set pid = #{pid}
-    where user_id = #{userId}
-  </update>
- 
-   <!-- 移除机构账号管理员 -->
- <update id="updateOldAdmin" parameterType="java.util.Map">
-    update user set 
-    <if test="extend != null and extend !=''">
-        extend = #{extend},
-      </if>
-    <if test="adminIstrial != null and adminIstrial !=''">
-        admin_istrial = #{adminIstrial}
-     </if>
     where user_id = #{userId}
   </update>
  
@@ -242,7 +224,7 @@
  </update>
  
   <select id="findInfoByPid" resultMap="BaseResultMap2" parameterType="java.lang.String">
-   select u.user_id,u.password,u.admin_email,u.admin_istrial,u.extend,institution from user u WHERE u.user_id = #{pid}
+   select u.user_id,u.password,u.admin_email,u.extend,institution from user u WHERE u.user_id = #{pid}
   </select>
   
  <update id="updateAllInstitution" parameterType="java.util.Map">

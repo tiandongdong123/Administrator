@@ -562,7 +562,9 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int addRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
+		WfksUserSetting setting = new WfksUserSetting();
 		per.setUserId(com.getAdminname());
+		int i=0;
 		try {
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 			per.setLoginMode(1);
@@ -571,22 +573,31 @@ public class AheadUserServiceImpl implements AheadUserService{
 			per.setRegistrationTime(DateUtil.getStringDate());
 			per.setInstitution(com.getInstitution());
 			per.setAdminEmail(com.getAdminEmail());
-			per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			JSONObject json = new JSONObject();
 			json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
 			json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
-			per.setExtend(json.toString());
+			json.put("adminIsTrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			setting.setUserType("Group");
+			setting.setUserId(per.getUserId());
+			setting.setPropertyName("AdministratorTime");
+			setting.setPropertyValue(json.toString());
+			i=wfksUserSettingMapper.deleteByUserId(setting);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return personMapper.addRegisterAdmin(per);
+		i=wfksUserSettingMapper.insert(setting);
+		i=personMapper.addRegisterAdmin(per);
+		return i;
 	}
 
 	@Override
 	public int updateRegisterAdmin(InstitutionalUser com){
 		//机构管理员注册
 		Person per = new Person();
+		WfksUserSetting setting = new WfksUserSetting();
 		if(!StringUtils.isEmpty(com.getAdminname())){
 			per.setUserId(com.getAdminname());
 		}else if(!StringUtils.isEmpty(com.getAdminOldName())){
@@ -595,20 +606,25 @@ public class AheadUserServiceImpl implements AheadUserService{
 			return 0;
 		}
 		try {
+			
 			per.setPassword(PasswordHelper.encryptPassword(com.getAdminpassword()));
 			per.setInstitution(com.getInstitution());
 			per.setAdminEmail(com.getAdminEmail());
-			if(com.getAdminIsTrial()!=null){
-				per.setAdminIsTrial(com.getAdminIsTrial().equals("isTrial")?"1":"0");
-			}
 			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
 			JSONObject json = new JSONObject();
 			json.put("adminBegintime", sd.parse(com.getAdminBegintime()).toString());
 			json.put("adminEndtime", sd.parse(com.getAdminEndtime()).toString());
-			per.setExtend(json.toString());
+			json.put("adminIsTrial", com.getAdminIsTrial().equals("isTrial")?"1":"0");
+			setting.setUserType("Group");
+			setting.setUserId(per.getUserId());
+			setting.setPropertyName("AdministratorTime");
+			setting.setPropertyValue(json.toString());
+			wfksUserSettingMapper.deleteByUserId(setting);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		wfksUserSettingMapper.insert(setting);
 		return personMapper.updateRegisterAdmin(per);
 	}
 
@@ -2448,11 +2464,6 @@ public class AheadUserServiceImpl implements AheadUserService{
 	public int updatePid(Map<String, Object> map){
 		return personMapper.updatePid(map);
 	}
-
-	@Override
-	public int updateOldAdmin(Map<String, Object> map){
-		return personMapper.updateOldAdmin(map);
-	}
 	
 	@Override
 	public Map<String, Object> findListInfoById(String userId){
@@ -2483,19 +2494,27 @@ public class AheadUserServiceImpl implements AheadUserService{
 	@Override
 	public Map<String, Object> findInfoByPid(String pid){
 		Map<String, Object> map = personMapper.findInfoByPid(pid);
+		WfksUserSettingKey key=new WfksUserSettingKey();
+		key.setUserId(pid);
+		key.setUserType("Group");
+		key.setPropertyName("AdministratorTime");
+		WfksUserSetting[] userSetting=wfksUserSettingMapper.selectByUserId(key);
+
 		if(map==null){
 			return new HashMap<String,Object>();
 		}
 		try {
 			map.put("password", map.get("password")==null?"":PasswordHelper.decryptPassword(map.get("password").toString()));
-			if(map.get("adminIsTrial")!=null){
-				map.put("adminIsTrial",map.get("adminIsTrial").equals("1")?true:false);
+			String propertyValue="";
+			if(userSetting.length>=1){
+				propertyValue=userSetting[0].getPropertyValue();
 			}
-			if(map.get("extend")!=null&&map.get("extend")!=""){
-				com.alibaba.fastjson.JSONObject extend=JSON.parseObject(map.get("extend").toString());
-				 SimpleDateFormat sdf = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+			if(StringUtils.isNotEmpty(propertyValue)){
+				com.alibaba.fastjson.JSONObject extend=JSON.parseObject(propertyValue);
+				SimpleDateFormat sdf = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
 				map.put("adminBegintime", sdf.parse(extend.get("adminBegintime").toString()));
 				map.put("adminEndtime", sdf.parse(extend.get("adminEndtime").toString()));
+				map.put("adminIsTrial",(extend.get("adminIsTrial").toString()).equals("1")?true:false);
 			}
 			List<Map<String,Object>> list_ip = userIpMapper.findIpByUserId(pid);
 			for(Map<String, Object> userIp : list_ip){

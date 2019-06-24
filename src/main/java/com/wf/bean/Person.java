@@ -71,17 +71,6 @@ public class Person {
     
 	private String adminEmail;    //机构管理员email
 	
-	private String adminIsTrial;  //机构管理员是否试用
-	
-	
-	public String getAdminIsTrial() {
-		return adminIsTrial;
-	}
-
-	public void setAdminIsTrial(String adminIsTrial) {
-		this.adminIsTrial = adminIsTrial;
-	}
-
 	public String getUserId() {
 		return userId;
 	}
@@ -350,7 +339,7 @@ public class Person {
 				+ ", institution=" + institution + ", pid=" + pid + ", loginMode=" + loginMode + ", usertype="
 				+ usertype + ", extend=" + extend + ", usedName=" + usedName + ", award=" + award + ", thirdNum="
 				+ thirdNum + ", status=" + status + ", resourceDetailed=" + resourceDetailed + ", adminEmail="
-				+ adminEmail + ", adminIsTrial=" + adminIsTrial + "]";
+				+ adminEmail + "]";
 	}
 
 
