@@ -143,7 +143,7 @@ public class DatabaseAnalysisServiceImpl implements DatabaseAnalysisService {
 		//根据分析指标数判断
 		//当分析指标数组长度小于等于1，按分析指标展示
 		//当分析指标数组长度大于1，按数据库名称展示
-		if(database_name.length<=1){
+		if(database_name==null||database_name.length<=1){
 			/**
 			 * 分三种情况：
 			 * 1.机构名称和用户ID都为空时
