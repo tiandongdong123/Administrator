@@ -73,7 +73,7 @@
 		<jmockit_version>0.999.8</jmockit_version>
 		<mybatis_version>3.2.6</mybatis_version>
 		<mybatisspring_version>1.2.2</mybatisspring_version>
-		<mysqlconnectorj_version>5.1.38</mysqlconnectorj_version>
+		<mysqlconnectorj_version>8.0.28</mysqlconnectorj_version>
 		<druid_version>1.0.18</druid_version>
 		<!-- 分布式事务 atomikos -->
 		<atomikos.version>4.0.4</atomikos.version>
